@@ -21,7 +21,7 @@ namespace MultiMiner.Win
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            MinerConfig minerConfig = new MinerConfig();
+            MinerConfiguration minerConfig = new MinerConfiguration();
             minerConfig.ExecutablePath = @"Miners\cgminer\cgminer.exe";
             Miner miner = new Miner(minerConfig);
 

@@ -10,10 +10,10 @@ namespace MultiMiner.Xgminer.Tests
         [TestMethod]
         public void TestMethod1()
         {
-            MinerConfig minerConfig = new MinerConfig();
+            MinerConfiguration minerConfig = new MinerConfiguration();
             minerConfig.ExecutablePath = @"C:\Users\Nathanial\Documents\visual studio 2012\Projects\MultiMiner\MultiMiner.Win\bin\Debug\Miners\cgminer\cgminer.exe";
             Miner miner = new Miner(minerConfig);
-
+            System.Collections.Generic.List<Device> devices = miner.GetDevices();
         }
     }
 }

@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MultiMiner.Xgminer
 {
     public class Miner : IDisposable
     {
         private Process minerProcess;
-        private readonly MinerConfig minerConfig;
+        private readonly MinerConfiguration minerConfig;
 
-        public Miner(MinerConfig minerConfig)
+        public Miner(MinerConfiguration minerConfig)
         {
             this.minerConfig = minerConfig;
         }
