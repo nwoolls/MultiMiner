@@ -151,20 +151,20 @@
             // 
             // addPoolButton
             // 
-            this.addPoolButton.Location = new System.Drawing.Point(239, 19);
+            this.addPoolButton.Location = new System.Drawing.Point(265, 19);
             this.addPoolButton.Name = "addPoolButton";
             this.addPoolButton.Size = new System.Drawing.Size(100, 23);
-            this.addPoolButton.TabIndex = 26;
+            this.addPoolButton.TabIndex = 1;
             this.addPoolButton.Text = "Add Pool";
             this.addPoolButton.UseVisualStyleBackColor = true;
             this.addPoolButton.Click += new System.EventHandler(this.addPoolButton_Click);
             // 
             // removePoolButton
             // 
-            this.removePoolButton.Location = new System.Drawing.Point(239, 52);
+            this.removePoolButton.Location = new System.Drawing.Point(265, 52);
             this.removePoolButton.Name = "removePoolButton";
             this.removePoolButton.Size = new System.Drawing.Size(100, 23);
-            this.removePoolButton.TabIndex = 25;
+            this.removePoolButton.TabIndex = 2;
             this.removePoolButton.Text = "Remove Pool";
             this.removePoolButton.UseVisualStyleBackColor = true;
             this.removePoolButton.Click += new System.EventHandler(this.removePoolButton_Click);
@@ -176,8 +176,8 @@
             this.poolListBox.FormattingEnabled = true;
             this.poolListBox.Location = new System.Drawing.Point(6, 19);
             this.poolListBox.Name = "poolListBox";
-            this.poolListBox.Size = new System.Drawing.Size(227, 56);
-            this.poolListBox.TabIndex = 24;
+            this.poolListBox.Size = new System.Drawing.Size(253, 56);
+            this.poolListBox.TabIndex = 0;
             this.poolListBox.SelectedIndexChanged += new System.EventHandler(this.poolListBox_SelectedIndexChanged);
             // 
             // miningPoolBindingSource
@@ -205,7 +205,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(236, 98);
+            this.label2.Location = new System.Drawing.Point(262, 98);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(29, 13);
             this.label2.TabIndex = 21;
@@ -225,32 +225,32 @@
             this.textBox4.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Username", true));
             this.textBox4.Location = new System.Drawing.Point(71, 121);
             this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(159, 20);
-            this.textBox4.TabIndex = 19;
+            this.textBox4.Size = new System.Drawing.Size(188, 20);
+            this.textBox4.TabIndex = 5;
             // 
             // hostEdit
             // 
             this.hostEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Host", true));
             this.hostEdit.Location = new System.Drawing.Point(71, 95);
             this.hostEdit.Name = "hostEdit";
-            this.hostEdit.Size = new System.Drawing.Size(159, 20);
-            this.hostEdit.TabIndex = 18;
+            this.hostEdit.Size = new System.Drawing.Size(188, 20);
+            this.hostEdit.TabIndex = 3;
             // 
             // textBox2
             // 
             this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Port", true));
-            this.textBox2.Location = new System.Drawing.Point(271, 95);
+            this.textBox2.Location = new System.Drawing.Point(297, 95);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(68, 20);
-            this.textBox2.TabIndex = 17;
+            this.textBox2.TabIndex = 4;
             // 
             // textBox1
             // 
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Password", true));
             this.textBox1.Location = new System.Drawing.Point(71, 147);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(159, 20);
-            this.textBox1.TabIndex = 16;
+            this.textBox1.Size = new System.Drawing.Size(188, 20);
+            this.textBox1.TabIndex = 6;
             // 
             // CoinsForm
             // 
