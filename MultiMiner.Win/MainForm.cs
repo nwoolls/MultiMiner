@@ -31,9 +31,10 @@ namespace MultiMiner.Win
             if (File.Exists(fileName))
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(List<CoinConfiguration>));
-                TextReader reader = new StreamReader(fileName);
-
-                configurations = (List<CoinConfiguration>)serializer.Deserialize(reader); 
+                using (TextReader reader = new StreamReader(fileName))
+                {
+                    configurations = (List<CoinConfiguration>)serializer.Deserialize(reader);
+                } 
             }
         }
 
@@ -42,9 +43,10 @@ namespace MultiMiner.Win
             string fileName = CoinConfigurationsFileName();
             Directory.CreateDirectory(Path.GetDirectoryName(fileName));
             XmlSerializer serializer = new XmlSerializer(typeof(List<CoinConfiguration>));
-            TextWriter writer = new StreamWriter(fileName);
-
-            serializer.Serialize(writer, configurations);           
+            using (TextWriter writer = new StreamWriter(fileName))
+            {
+                serializer.Serialize(writer, configurations);
+            }           
             
         }
 
