@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MultiMiner.Engine
 {
-    class KnownCoins
+    public class KnownCoins
     {
         public KnownCoins()
         {

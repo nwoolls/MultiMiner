@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MultiMiner.Engine
 {
-    class MiningPool
+    public class MiningPool
     {
         public string Host { get; set; }
         public int Port { get; set; }

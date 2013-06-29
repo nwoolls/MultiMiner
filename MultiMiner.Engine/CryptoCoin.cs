@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MultiMiner.Engine
 {
-    class CryptoCoin
+    public class CryptoCoin
     {
         public string Name { get; set; }
         public string Symbol { get; set; }

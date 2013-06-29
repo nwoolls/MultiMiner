@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace MultiMiner.Engine
 {
-    class CoinConfiguration
+    public class CoinConfiguration
     {
+        public CoinConfiguration()
+        {
+            this.Pools = new List<MiningPool>();
+        }
+
         public CryptoCoin CryptoCoin { get; set; }
         public List<MiningPool> Pools { get; set; }
     }
