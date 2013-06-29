@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MultiMiner.Xgminer
 {
-    public class Miner
+    public class Miner : IDisposable
     {
         private Process minerProcess;
         private readonly MinerConfig minerConfig;
@@ -45,6 +45,15 @@ namespace MultiMiner.Xgminer
             DeviceParser.ParseOutputForDevices(output, result);
 
             return result;
+        }
+
+        public void Dispose()
+        {
+            if (minerProcess != null)
+            {
+                minerProcess.Dispose();
+                minerProcess = null;
+            }
         }
     }
 }
