@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace MultiMiner.Engine
 {
-    public class Class1
+    enum CoinAlgorithm
     {
+        SHA256 = 0,
+        Scrypt = 1
     }
 }

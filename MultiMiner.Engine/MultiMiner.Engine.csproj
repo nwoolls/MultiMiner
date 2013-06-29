@@ -39,7 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="CoinAlgorithm.cs" />
+    <Compile Include="CoinConfiguration.cs" />
+    <Compile Include="CryptoCoin.cs" />
+    <Compile Include="KnownCoins.cs" />
+    <Compile Include="MinerConfiguration.cs" />
+    <Compile Include="MiningPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
