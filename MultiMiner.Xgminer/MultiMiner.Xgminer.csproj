@@ -42,6 +42,7 @@
     <Compile Include="Device.cs" />
     <Compile Include="DeviceKind.cs" />
     <Compile Include="DeviceParser.cs" />
+    <Compile Include="DevicePatterns.cs" />
     <Compile Include="Miner.cs" />
     <Compile Include="MinerConfig.cs" />
     <Compile Include="MinerParameter.cs" />
