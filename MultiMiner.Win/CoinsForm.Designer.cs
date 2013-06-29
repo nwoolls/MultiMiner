@@ -41,6 +41,7 @@
             this.addPoolButton = new System.Windows.Forms.Button();
             this.removePoolButton = new System.Windows.Forms.Button();
             this.poolListBox = new System.Windows.Forms.ListBox();
+            this.miningPoolBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -49,7 +50,6 @@
             this.hostEdit = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.miningPoolBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -95,6 +95,7 @@
             this.coinListBox.Size = new System.Drawing.Size(160, 239);
             this.coinListBox.TabIndex = 3;
             this.coinListBox.SelectedIndexChanged += new System.EventHandler(this.coinListBox_SelectedIndexChanged);
+            this.coinListBox.RightToLeftChanged += new System.EventHandler(this.coinListBox_RightToLeftChanged);
             // 
             // panel1
             // 
@@ -109,6 +110,7 @@
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.saveButton.Location = new System.Drawing.Point(390, 12);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
@@ -119,6 +121,7 @@
             // cancelButton
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cancelButton.Location = new System.Drawing.Point(471, 12);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
@@ -154,6 +157,7 @@
             this.addPoolButton.TabIndex = 26;
             this.addPoolButton.Text = "Add Pool";
             this.addPoolButton.UseVisualStyleBackColor = true;
+            this.addPoolButton.Click += new System.EventHandler(this.addPoolButton_Click);
             // 
             // removePoolButton
             // 
@@ -163,6 +167,7 @@
             this.removePoolButton.TabIndex = 25;
             this.removePoolButton.Text = "Remove Pool";
             this.removePoolButton.UseVisualStyleBackColor = true;
+            this.removePoolButton.Click += new System.EventHandler(this.removePoolButton_Click);
             // 
             // poolListBox
             // 
@@ -173,6 +178,11 @@
             this.poolListBox.Name = "poolListBox";
             this.poolListBox.Size = new System.Drawing.Size(227, 56);
             this.poolListBox.TabIndex = 24;
+            this.poolListBox.SelectedIndexChanged += new System.EventHandler(this.poolListBox_SelectedIndexChanged);
+            // 
+            // miningPoolBindingSource
+            // 
+            this.miningPoolBindingSource.DataSource = typeof(MultiMiner.Engine.MiningPool);
             // 
             // label4
             // 
@@ -241,10 +251,6 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(159, 20);
             this.textBox1.TabIndex = 16;
-            // 
-            // miningPoolBindingSource
-            // 
-            this.miningPoolBindingSource.DataSource = typeof(MultiMiner.Engine.MiningPool);
             // 
             // CoinsForm
             // 

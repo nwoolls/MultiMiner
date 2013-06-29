@@ -16,8 +16,9 @@ namespace MultiMiner.Win
         private List<CoinConfiguration> configurations = new List<CoinConfiguration>();
         private KnownCoins knownCoins = new KnownCoins();
 
-        public CoinsForm()
+        public CoinsForm(List<CoinConfiguration> configurations)
         {
+            this.configurations = configurations;
             InitializeComponent();
         }
 
@@ -25,6 +26,7 @@ namespace MultiMiner.Win
         {
             PopulateKnownCoins();
             PopulateConfigurations();
+            UpdateButtonStates();
         }
 
         private void PopulateKnownCoins()
@@ -78,9 +80,48 @@ namespace MultiMiner.Win
         private void coinListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             CoinConfiguration configuration = configurations[coinListBox.SelectedIndex];
+
             miningPoolBindingSource.DataSource = configuration.Pools;
             poolListBox.DataSource = miningPoolBindingSource;
             poolListBox.DisplayMember = "Host";
+
+            UpdateButtonStates();
+        }
+
+        private void addPoolButton_Click(object sender, EventArgs e)
+        {
+            CoinConfiguration configuration = configurations[coinListBox.SelectedIndex];
+            miningPoolBindingSource.Add(new MiningPool());
+            poolListBox.SelectedIndex = configuration.Pools.Count - 1;
+            hostEdit.Focus();
+        }
+
+        private void removePoolButton_Click(object sender, EventArgs e)
+        {
+            DialogResult promptResult = MessageBox.Show("Remove the selected pool configuration?", "Confirm", MessageBoxButtons.YesNo);
+            if (promptResult == System.Windows.Forms.DialogResult.Yes)
+            {
+                CoinConfiguration configuration = configurations[coinListBox.SelectedIndex];
+                miningPoolBindingSource.RemoveAt(poolListBox.SelectedIndex);
+                hostEdit.Focus();
+            }
+        }
+
+        private void UpdateButtonStates()
+        {
+            addPoolButton.Enabled = coinListBox.SelectedIndex >= 0;
+            removePoolButton.Enabled = poolListBox.SelectedIndex >= 0;
+            removeCoinButton.Enabled = coinListBox.SelectedIndex >= 0;
+        }
+
+        private void coinListBox_RightToLeftChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void poolListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateButtonStates();
         }
     }
 }
