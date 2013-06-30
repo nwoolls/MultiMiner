@@ -261,7 +261,10 @@
             this.Controls.Add(this.coinListBox);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.panel1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "CoinsForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Configure Coins";
             this.Load += new System.EventHandler(this.CoinsForm_Load);
             this.toolStrip1.ResumeLayout(false);
