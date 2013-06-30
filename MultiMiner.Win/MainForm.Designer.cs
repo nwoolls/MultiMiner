@@ -30,14 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.deviceGridView = new System.Windows.Forms.DataGridView();
-            this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.vendorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.platformDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.versionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.coinColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.rateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.settingsButton = new System.Windows.Forms.Button();
@@ -46,8 +38,18 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.statsTimer = new System.Windows.Forms.Timer(this.components);
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.splitter1 = new System.Windows.Forms.Splitter();
+            this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.vendorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.platformDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.versionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.coinColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.temperatureColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.rateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.acceptedColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.rejectedColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.errorsColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
@@ -69,16 +71,97 @@
             this.platformDataGridViewTextBoxColumn,
             this.versionDataGridViewTextBoxColumn,
             this.coinColumn,
-            this.rateColumn});
+            this.temperatureColumn,
+            this.rateColumn,
+            this.acceptedColumn,
+            this.rejectedColumn,
+            this.errorsColumn});
             this.deviceGridView.DataSource = this.deviceBindingSource;
             this.deviceGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.deviceGridView.Location = new System.Drawing.Point(0, 0);
             this.deviceGridView.Name = "deviceGridView";
             this.deviceGridView.RowHeadersVisible = false;
-            this.deviceGridView.Size = new System.Drawing.Size(766, 393);
+            this.deviceGridView.Size = new System.Drawing.Size(1127, 393);
             this.deviceGridView.TabIndex = 0;
             this.deviceGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.deviceGridView_CellValueChanged);
             this.deviceGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.deviceGridView_CurrentCellDirtyStateChanged);
+            // 
+            // deviceBindingSource
+            // 
+            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.settingsButton);
+            this.panel1.Controls.Add(this.stopButton);
+            this.panel1.Controls.Add(this.startButton);
+            this.panel1.Controls.Add(this.cancelButton);
+            this.panel1.Controls.Add(this.saveButton);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 393);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1127, 41);
+            this.panel1.TabIndex = 1;
+            // 
+            // settingsButton
+            // 
+            this.settingsButton.Location = new System.Drawing.Point(176, 9);
+            this.settingsButton.Name = "settingsButton";
+            this.settingsButton.Size = new System.Drawing.Size(75, 23);
+            this.settingsButton.TabIndex = 4;
+            this.settingsButton.Text = "Settings";
+            this.settingsButton.UseVisualStyleBackColor = true;
+            this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
+            // 
+            // stopButton
+            // 
+            this.stopButton.Enabled = false;
+            this.stopButton.Location = new System.Drawing.Point(95, 9);
+            this.stopButton.Name = "stopButton";
+            this.stopButton.Size = new System.Drawing.Size(75, 23);
+            this.stopButton.TabIndex = 3;
+            this.stopButton.Text = "Stop";
+            this.stopButton.UseVisualStyleBackColor = true;
+            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
+            // 
+            // startButton
+            // 
+            this.startButton.Location = new System.Drawing.Point(13, 9);
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(75, 23);
+            this.startButton.TabIndex = 2;
+            this.startButton.Text = "Start";
+            this.startButton.UseVisualStyleBackColor = true;
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cancelButton.Enabled = false;
+            this.cancelButton.Location = new System.Drawing.Point(1040, 9);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(75, 23);
+            this.cancelButton.TabIndex = 1;
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            // 
+            // saveButton
+            // 
+            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveButton.Enabled = false;
+            this.saveButton.Location = new System.Drawing.Point(959, 9);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(75, 23);
+            this.saveButton.TabIndex = 0;
+            this.saveButton.Text = "Save";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            // 
+            // statsTimer
+            // 
+            this.statsTimer.Interval = 10000;
+            this.statsTimer.Tick += new System.EventHandler(this.statsTimer_Tick);
             // 
             // kindDataGridViewTextBoxColumn
             // 
@@ -129,115 +212,41 @@
             "Configure Coins"});
             this.coinColumn.Name = "coinColumn";
             // 
+            // temperatureColumn
+            // 
+            this.temperatureColumn.HeaderText = "Temperature";
+            this.temperatureColumn.Name = "temperatureColumn";
+            this.temperatureColumn.ReadOnly = true;
+            // 
             // rateColumn
             // 
             this.rateColumn.HeaderText = "Hashrate";
             this.rateColumn.Name = "rateColumn";
             this.rateColumn.ReadOnly = true;
             // 
-            // deviceBindingSource
+            // acceptedColumn
             // 
-            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
+            this.acceptedColumn.HeaderText = "Accepted";
+            this.acceptedColumn.Name = "acceptedColumn";
+            this.acceptedColumn.ReadOnly = true;
             // 
-            // panel1
+            // rejectedColumn
             // 
-            this.panel1.Controls.Add(this.settingsButton);
-            this.panel1.Controls.Add(this.stopButton);
-            this.panel1.Controls.Add(this.startButton);
-            this.panel1.Controls.Add(this.cancelButton);
-            this.panel1.Controls.Add(this.saveButton);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 393);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(766, 41);
-            this.panel1.TabIndex = 1;
+            this.rejectedColumn.HeaderText = "Rejected";
+            this.rejectedColumn.Name = "rejectedColumn";
+            this.rejectedColumn.ReadOnly = true;
             // 
-            // settingsButton
+            // errorsColumn
             // 
-            this.settingsButton.Location = new System.Drawing.Point(176, 9);
-            this.settingsButton.Name = "settingsButton";
-            this.settingsButton.Size = new System.Drawing.Size(75, 23);
-            this.settingsButton.TabIndex = 4;
-            this.settingsButton.Text = "Settings";
-            this.settingsButton.UseVisualStyleBackColor = true;
-            this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
-            // 
-            // stopButton
-            // 
-            this.stopButton.Enabled = false;
-            this.stopButton.Location = new System.Drawing.Point(95, 9);
-            this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(75, 23);
-            this.stopButton.TabIndex = 3;
-            this.stopButton.Text = "Stop";
-            this.stopButton.UseVisualStyleBackColor = true;
-            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
-            // 
-            // startButton
-            // 
-            this.startButton.Location = new System.Drawing.Point(13, 9);
-            this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(75, 23);
-            this.startButton.TabIndex = 2;
-            this.startButton.Text = "Start";
-            this.startButton.UseVisualStyleBackColor = true;
-            this.startButton.Click += new System.EventHandler(this.startButton_Click);
-            // 
-            // cancelButton
-            // 
-            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cancelButton.Enabled = false;
-            this.cancelButton.Location = new System.Drawing.Point(679, 9);
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 1;
-            this.cancelButton.Text = "Cancel";
-            this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
-            // 
-            // saveButton
-            // 
-            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveButton.Enabled = false;
-            this.saveButton.Location = new System.Drawing.Point(598, 9);
-            this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(75, 23);
-            this.saveButton.TabIndex = 0;
-            this.saveButton.Text = "Save";
-            this.saveButton.UseVisualStyleBackColor = true;
-            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
-            // 
-            // statsTimer
-            // 
-            this.statsTimer.Interval = 5000;
-            this.statsTimer.Tick += new System.EventHandler(this.statsTimer_Tick);
-            // 
-            // textBox1
-            // 
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.textBox1.Location = new System.Drawing.Point(0, 266);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(766, 127);
-            this.textBox1.TabIndex = 2;
-            // 
-            // splitter1
-            // 
-            this.splitter1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter1.Location = new System.Drawing.Point(0, 263);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(766, 3);
-            this.splitter1.TabIndex = 3;
-            this.splitter1.TabStop = false;
+            this.errorsColumn.HeaderText = "HW Errors";
+            this.errorsColumn.Name = "errorsColumn";
+            this.errorsColumn.ReadOnly = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(766, 434);
-            this.Controls.Add(this.splitter1);
-            this.Controls.Add(this.textBox1);
+            this.ClientSize = new System.Drawing.Size(1127, 434);
             this.Controls.Add(this.deviceGridView);
             this.Controls.Add(this.panel1);
             this.Name = "MainForm";
@@ -248,7 +257,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -262,6 +270,7 @@
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button settingsButton;
+        private System.Windows.Forms.Timer statsTimer;
         private System.Windows.Forms.DataGridViewTextBoxColumn kindDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn descriptionDataGridViewTextBoxColumn;
@@ -269,10 +278,11 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn platformDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn versionDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewComboBoxColumn coinColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn temperatureColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn rateColumn;
-        private System.Windows.Forms.Timer statsTimer;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Splitter splitter1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn acceptedColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn rejectedColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn errorsColumn;
     }
 }
 

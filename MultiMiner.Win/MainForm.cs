@@ -102,6 +102,11 @@ namespace MultiMiner.Win
 
         private void saveButton_Click(object sender, EventArgs e)
         {
+            SaveChanges();
+        }
+
+        private void SaveChanges()
+        {
             SaveGridValuesToConfiguration();
             engineConfiguration.SaveDeviceConfigurations();
 
@@ -190,16 +195,17 @@ namespace MultiMiner.Win
 
         private void startButton_Click(object sender, EventArgs e)
         {
+            SaveChanges();
             StartMining();
         }
 
         private void StartMining()
         {
-            miningEngine.StartMining(engineConfiguration);
-            statsTimer.Enabled = true;
-
             startButton.Enabled = false;
             stopButton.Enabled = true;
+
+            miningEngine.StartMining(engineConfiguration);
+            statsTimer.Enabled = true;
         }
 
         private void settingsButton_Click(object sender, EventArgs e)
@@ -219,8 +225,34 @@ namespace MultiMiner.Win
                 MultiMiner.Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
                 if (apiContext != null)
                 {
-                    //string deviceInformation = apiContext.GetDeviceInformation();
-                    //textBox1.AppendText(Environment.NewLine + deviceInformation);
+                    IEnumerable<MultiMiner.Xgminer.Api.DeviceInformation> enabledDevices = apiContext.GetDeviceInformation().Where(d => d.Enabled);
+                    foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in enabledDevices)
+                    {
+                        int index = 0;
+                        int rowIndex = -1;
+
+                        for (int i = 0; i < devices.Count; i++)
+                        {
+                            if ((deviceInformation.Kind.Equals("GPU") && (devices[i].Kind == DeviceKind.GPU)) || (!deviceInformation.Kind.Equals("GPU") && (devices[i].Kind == DeviceKind.USB)))
+                            {
+                                if (index == deviceInformation.Index)
+                                {
+                                    rowIndex = i;
+                                    break;
+                                }
+                                index++;
+                            }
+                        }
+
+                        if (rowIndex >= 0)
+                        {
+                            deviceGridView.Rows[rowIndex].Cells[temperatureColumn.Index].Value = deviceInformation.Temperature;
+                            deviceGridView.Rows[rowIndex].Cells[rateColumn.Index].Value = deviceInformation.AverageHashrate;
+                            deviceGridView.Rows[rowIndex].Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
+                            deviceGridView.Rows[rowIndex].Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
+                            deviceGridView.Rows[rowIndex].Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
+                        }
+                    }
                 }
             }
         }
