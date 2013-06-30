@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MultiMiner.Engine;
+using MultiMiner.Engine.Configuration;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +14,37 @@ namespace MultiMiner.Win
 {
     public partial class SettingsForm : Form
     {
-        public SettingsForm()
+        private readonly MinerConfiguration minerConfiguration;
+
+        public SettingsForm(MinerConfiguration minerConfiguration)
         {
             InitializeComponent();
+
+            this.minerConfiguration = minerConfiguration;
+        }
+
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            SaveSettings();
+        }
+
+        private void SaveSettings()
+        {
+            minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256] = sha256ParamsEdit.Text;
+            minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt] = scryptParamsEdit.Text;
+        }
+
+        private void SettingsForm_Load(object sender, EventArgs e)
+        {
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
+            if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.SHA256))
+                sha256ParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256];
+            if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.Scrypt))
+                scryptParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt];
         }
     }
 }
