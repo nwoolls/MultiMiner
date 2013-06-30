@@ -22,7 +22,7 @@ namespace MultiMiner.Xgminer
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
             startInfo.Arguments = MinerParameter.EnumerateDevices;
-            startInfo.UseShellExecute = false;
+            startInfo.UseShellExecute = false; //required for launching app with Windows startup to work
             startInfo.RedirectStandardOutput = true;
 
             Process minerProcess = Process.Start(startInfo);
@@ -46,6 +46,7 @@ namespace MultiMiner.Xgminer
             startInfo.FileName = minerConfiguration.ExecutablePath;
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
+            startInfo.UseShellExecute = false; //required for launching app with Windows startup to work
 
             foreach (MiningPool pool in minerConfiguration.Pools)
             {
