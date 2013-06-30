@@ -88,8 +88,6 @@ namespace MultiMiner.Engine
                 if (process.HasExited)
                     process = miner.StartMining(arguments);
                 
-                port++;
-
                 if (!process.HasExited)
                 {
                     MinerProcess minerProcess = new MinerProcess();
@@ -103,6 +101,8 @@ namespace MultiMiner.Engine
 
                     minerProcesses.Add(minerProcess);
                 }
+
+                port++;
             }
         }
 
