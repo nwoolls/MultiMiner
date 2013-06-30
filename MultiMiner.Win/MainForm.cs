@@ -1,34 +1,50 @@
-﻿using MultiMiner.Engine.Configuration;
+﻿using MultiMiner.Engine;
+using MultiMiner.Engine.Configuration;
 using MultiMiner.Xgminer;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace MultiMiner.Win
 {
     public partial class MainForm : Form
     {
+        private List<Device> devices;
         private readonly EngineConfiguration engineConfiguration = new EngineConfiguration();
+        private readonly KnownCoins knownCoins = new KnownCoins();
 
         public MainForm()
         {
             InitializeComponent();
-            engineConfiguration.LoadCoinConfigurations();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            MinerConfiguration minerConfig = new MinerConfiguration();
-            minerConfig.ExecutablePath = @"Miners\cgminer\cgminer.exe";
-            Miner miner = new Miner(minerConfig);
-
-            List<Device> devices = miner.GetDevices();
+            devices = GetDevices();
             deviceBindingSource.DataSource = devices;
-
-            RefreshCoinComboBox();
 
             if (devices.Count > 0)
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
+
+            engineConfiguration.LoadCoinConfigurations();
+            RefreshCoinComboBox();
+
+            engineConfiguration.LoadDeviceConfigurations();
+            LoadValuesFromConfiguration();
+
+            saveButton.Enabled = false;
+            cancelButton.Enabled = false;
+        }
+
+        private static List<Device> GetDevices()
+        {
+            MinerConfiguration minerConfig = new MinerConfiguration();
+            minerConfig.ExecutablePath = @"Miners\cgminer\cgminer.exe";
+            using (Miner miner = new Miner(minerConfig))
+            {
+                return miner.GetDevices();
+            }
         }
 
         private void ConfigureCoins()
@@ -46,14 +62,14 @@ namespace MultiMiner.Win
         {
             coinColumn.Items.Clear();
             coinColumn.Items.Add("Configure Coins");
+            coinColumn.Items.Add(string.Empty);
             foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations)
             {
                 coinColumn.Items.Add(configuration.Coin.Name);
             }
         }
 
-        private bool configuringCoins = false;
-        
+        private bool configuringCoins = false;        
         private void deviceGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (deviceGridView.CurrentCell.RowIndex >= 0)
@@ -78,19 +94,93 @@ namespace MultiMiner.Win
                         }
                     }
 
-                    //deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                    deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
                 }
             }
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
+            SaveValuesToConfiguration();
             engineConfiguration.SaveDeviceConfigurations();
+
+            saveButton.Enabled = false;
+            cancelButton.Enabled = false;
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
             engineConfiguration.LoadDeviceConfigurations();
+            LoadValuesFromConfiguration();
+
+            saveButton.Enabled = false;
+            cancelButton.Enabled = false;
+        }
+
+        private void deviceGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            saveButton.Enabled = true;
+            cancelButton.Enabled = true;
+        }
+
+        private void SaveValuesToConfiguration()
+        {
+            deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            
+            engineConfiguration.DeviceConfigurations.Clear();
+            int index = 0;
+            DeviceKind? lastDeviceKind = null;
+            for (int i = 0; i < devices.Count; i++)
+            {
+                if ((lastDeviceKind != null) && (lastDeviceKind != devices[i].Kind))
+                    index = 0;
+                
+                CryptoCoin coin = knownCoins.Coins.SingleOrDefault(c => c.Name.Equals(deviceGridView.Rows[i].Cells[coinColumn.Index].Value));
+                if (coin != null)
+                {
+                    DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+
+                    deviceConfiguration.DeviceKind = devices[i].Kind;
+                    deviceConfiguration.DeviceIndex = index;
+                    deviceConfiguration.CoinSymbol = coin.Symbol;
+
+                    engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+                }
+
+                lastDeviceKind = devices[i].Kind;
+                index++;
+            }
+        }
+
+        private void LoadValuesFromConfiguration()
+        {
+            int index = 0;
+            DeviceKind? lastDeviceKind = null;
+            for (int i = 0; i < devices.Count; i++)
+            {
+                Device device = devices[i];
+
+                if ((lastDeviceKind != null) && (lastDeviceKind != devices[i].Kind))
+                    index = 0;
+
+                DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
+                    c => (c.DeviceKind == device.Kind)
+                    && (c.DeviceIndex == index));
+
+                if (deviceConfiguration != null)
+                {
+                    CryptoCoin coin = knownCoins.Coins.SingleOrDefault(c => c.Symbol.Equals(deviceConfiguration.CoinSymbol));
+                    if (coin != null)
+                        deviceGridView.Rows[i].Cells[coinColumn.Index].Value = coin.Name;
+                }
+                else
+                {
+                    deviceGridView.Rows[i].Cells[coinColumn.Index].Value = string.Empty;
+                }
+
+                lastDeviceKind = devices[i].Kind;
+                index++;
+            }
         }
     }
 }
