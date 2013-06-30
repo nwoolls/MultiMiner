@@ -41,7 +41,7 @@
   <ItemGroup>
     <Compile Include="Device.cs" />
     <Compile Include="DeviceKind.cs" />
-    <Compile Include="Parsers\DeviceParser.cs" />
+    <Compile Include="Parsers\DeviceOutputParser.cs" />
     <Compile Include="DevicePatterns.cs" />
     <Compile Include="Miner.cs" />
     <Compile Include="MinerConfiguration.cs" />

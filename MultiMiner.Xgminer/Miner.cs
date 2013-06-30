@@ -35,7 +35,7 @@ namespace MultiMiner.Xgminer
                 output.Add(line);
             }
 
-            DeviceParser.ParseTextForDevices(output, result);
+            DeviceOutputParser.ParseTextForDevices(output, result);
 
             return result;
         }

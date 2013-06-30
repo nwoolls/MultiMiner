@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace MultiMiner.Xgminer.Parsers
 {
-    public static class DeviceParser
+    public static class DeviceOutputParser
     {
         public static void ParseTextForDevices(List<string> text, List<Device> devices)
         {
