@@ -16,7 +16,8 @@ namespace MultiMiner.Win
         private readonly EngineConfiguration engineConfiguration = new EngineConfiguration();
         private readonly KnownCoins knownCoins = new KnownCoins();
         private readonly MiningEngine miningEngine = new MiningEngine();
-        private readonly ApplicationConfiguration applictionConfiguration = new ApplicationConfiguration();
+        private readonly ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+        private int countdownSeconds = 0;
 
         public MainForm()
         {
@@ -33,18 +34,35 @@ namespace MultiMiner.Win
             if (devices.Count > 0)
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
 
-            engineConfiguration.LoadCoinConfigurations();
+            LoadSettings();
+
             RefreshCoinComboBox();
-
-            engineConfiguration.LoadDeviceConfigurations();
             LoadGridValuesFromConfiguration();
-
-            engineConfiguration.LoadMinerConfiguration();
-
-            applictionConfiguration.LoadApplicationConfiguration();
 
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
+        }
+
+        private void LoadSettings()
+        {
+            engineConfiguration.LoadCoinConfigurations();
+            engineConfiguration.LoadDeviceConfigurations();
+            engineConfiguration.LoadMinerConfiguration();
+            applicationConfiguration.LoadApplicationConfiguration();
+
+            if (applicationConfiguration.StartMiningOnStartup)
+            {
+                startupMiningTimer.Interval = 1000 * applicationConfiguration.StartupMiningDelay;
+                countdownSeconds = applicationConfiguration.StartupMiningDelay;
+                startupMiningTimer.Enabled = true;
+                countdownTimer.Enabled = true;
+                RefreshCountdownLabel();
+            }
+        }
+
+        private void RefreshCountdownLabel()
+        {
+            countdownLabel.Text = string.Format("Mining will start automatically in {0} seconds...", countdownSeconds);    
         }
 
         private static List<Device> GetDevices()
@@ -223,17 +241,17 @@ namespace MultiMiner.Win
 
         private void settingsButton_Click(object sender, EventArgs e)
         {
-            SettingsForm settingsForm = new SettingsForm(applictionConfiguration, engineConfiguration.MinerConfiguration);
+            SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.MinerConfiguration);
             DialogResult dialogResult = settingsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 engineConfiguration.SaveMinerConfiguration();
-                applictionConfiguration.SaveApplicationConfiguration();
+                applicationConfiguration.SaveApplicationConfiguration();
             }
             else
             {
                 engineConfiguration.LoadMinerConfiguration();
-                applictionConfiguration.LoadApplicationConfiguration();
+                applicationConfiguration.LoadApplicationConfiguration();
             }
         }
 
@@ -311,6 +329,35 @@ namespace MultiMiner.Win
                     }
                 }
             }
+        }
+
+        private void startupMiningTimer_Tick(object sender, EventArgs e)
+        {
+            startupMiningPanel.Visible = false;
+            startupMiningTimer.Enabled = false;
+            countdownTimer.Enabled = false;
+
+            Application.DoEvents();
+
+            StartMining();
+        }
+
+        private void cancelAutoMineButton_Click(object sender, EventArgs e)
+        {
+            startupMiningTimer.Enabled = false;
+            startupMiningPanel.Visible = false;
+        }
+
+        private void countdownTimer_Tick(object sender, EventArgs e)
+        {
+            countdownSeconds--;
+            RefreshCountdownLabel();
+        }
+
+        private void cancelStartupMiningButton_Click(object sender, EventArgs e)
+        {
+            startupMiningTimer.Enabled = false;
+            startupMiningPanel.Visible = false;
         }
     }
 }

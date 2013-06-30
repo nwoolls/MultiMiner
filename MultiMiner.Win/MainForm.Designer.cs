@@ -54,9 +54,15 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.deviceStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
+            this.startupMiningTimer = new System.Windows.Forms.Timer(this.components);
+            this.countdownTimer = new System.Windows.Forms.Timer(this.components);
+            this.startupMiningPanel = new System.Windows.Forms.Panel();
+            this.cancelStartupMiningButton = new System.Windows.Forms.Button();
+            this.countdownLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
+            this.startupMiningPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // deviceGridView
@@ -266,11 +272,50 @@
             this.coinStatsTimer.Interval = 900000;
             this.coinStatsTimer.Tick += new System.EventHandler(this.coinStatsTimer_Tick);
             // 
+            // startupMiningTimer
+            // 
+            this.startupMiningTimer.Tick += new System.EventHandler(this.startupMiningTimer_Tick);
+            // 
+            // countdownTimer
+            // 
+            this.countdownTimer.Interval = 1000;
+            this.countdownTimer.Tick += new System.EventHandler(this.countdownTimer_Tick);
+            // 
+            // startupMiningPanel
+            // 
+            this.startupMiningPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.startupMiningPanel.Controls.Add(this.cancelStartupMiningButton);
+            this.startupMiningPanel.Controls.Add(this.countdownLabel);
+            this.startupMiningPanel.Location = new System.Drawing.Point(404, 199);
+            this.startupMiningPanel.Name = "startupMiningPanel";
+            this.startupMiningPanel.Size = new System.Drawing.Size(319, 37);
+            this.startupMiningPanel.TabIndex = 6;
+            // 
+            // cancelStartupMiningButton
+            // 
+            this.cancelStartupMiningButton.Location = new System.Drawing.Point(229, 8);
+            this.cancelStartupMiningButton.Name = "cancelStartupMiningButton";
+            this.cancelStartupMiningButton.Size = new System.Drawing.Size(75, 23);
+            this.cancelStartupMiningButton.TabIndex = 5;
+            this.cancelStartupMiningButton.Text = "Cancel";
+            this.cancelStartupMiningButton.UseVisualStyleBackColor = true;
+            this.cancelStartupMiningButton.Click += new System.EventHandler(this.cancelStartupMiningButton_Click);
+            // 
+            // countdownLabel
+            // 
+            this.countdownLabel.AutoSize = true;
+            this.countdownLabel.Location = new System.Drawing.Point(3, 13);
+            this.countdownLabel.Name = "countdownLabel";
+            this.countdownLabel.Size = new System.Drawing.Size(220, 13);
+            this.countdownLabel.TabIndex = 0;
+            this.countdownLabel.Text = "Mining will start automatically in 45 seconds...";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1127, 434);
+            this.Controls.Add(this.startupMiningPanel);
             this.Controls.Add(this.deviceGridView);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -281,6 +326,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
+            this.startupMiningPanel.ResumeLayout(false);
+            this.startupMiningPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -311,6 +358,11 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn acceptedColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn rejectedColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn errorsColumn;
+        private System.Windows.Forms.Timer startupMiningTimer;
+        private System.Windows.Forms.Timer countdownTimer;
+        private System.Windows.Forms.Panel startupMiningPanel;
+        private System.Windows.Forms.Button cancelStartupMiningButton;
+        private System.Windows.Forms.Label countdownLabel;
     }
 }
 

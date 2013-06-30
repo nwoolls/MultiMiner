@@ -6,6 +6,11 @@ namespace MultiMiner.Win
 {
     public class ApplicationConfiguration
     {
+        public ApplicationConfiguration()
+        {
+            this.StartupMiningDelay = 45;
+        }
+
         public bool LaunchOnWindowsLogin { get; set; }
         public bool StartMiningOnStartup { get; set; }
         public int StartupMiningDelay { get; set; }
