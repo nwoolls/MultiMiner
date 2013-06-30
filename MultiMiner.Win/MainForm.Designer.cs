@@ -54,6 +54,7 @@
             // 
             this.deviceGridView.AllowUserToAddRows = false;
             this.deviceGridView.AllowUserToDeleteRows = false;
+            this.deviceGridView.AllowUserToResizeRows = false;
             this.deviceGridView.AutoGenerateColumns = false;
             this.deviceGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.deviceGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -73,6 +74,7 @@
             this.deviceGridView.RowHeadersVisible = false;
             this.deviceGridView.Size = new System.Drawing.Size(766, 393);
             this.deviceGridView.TabIndex = 0;
+            this.deviceGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.deviceGridView_CellValueChanged);
             this.deviceGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.deviceGridView_CurrentCellDirtyStateChanged);
             // 
             // deviceBindingSource
