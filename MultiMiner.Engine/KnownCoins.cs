@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MultiMiner.Xgminer;
+using System.Collections.Generic;
 
 namespace MultiMiner.Engine
 {

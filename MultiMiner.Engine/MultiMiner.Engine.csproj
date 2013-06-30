@@ -39,16 +39,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CoinAlgorithm.cs" />
     <Compile Include="Configuration\CoinConfiguration.cs" />
     <Compile Include="CryptoCoin.cs" />
     <Compile Include="Configuration\DeviceConfiguration.cs" />
     <Compile Include="Configuration\EngineConfiguration.cs" />
     <Compile Include="KnownCoins.cs" />
-    <Compile Include="Configuration\MinerConfiguration.cs" />
+    <Compile Include="Configuration\XgminerConfiguration.cs" />
     <Compile Include="MinerProcess.cs" />
     <Compile Include="MiningEngine.cs" />
-    <Compile Include="MiningPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerializableDictionary.cs" />
   </ItemGroup>

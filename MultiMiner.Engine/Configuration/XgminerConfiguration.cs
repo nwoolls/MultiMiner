@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using MultiMiner.Xgminer;
+using System.Collections.Generic;
 
 namespace MultiMiner.Engine.Configuration
 {
-    public class MinerConfiguration
+    public class XgminerConfiguration
     {
-        public MinerConfiguration()
+        public XgminerConfiguration()
         {
             AlgorithmFlags = new SerializableDictionary<CoinAlgorithm, string>();
         }

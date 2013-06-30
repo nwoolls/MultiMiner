@@ -11,12 +11,12 @@ namespace MultiMiner.Engine.Configuration
         {
             DeviceConfigurations = new List<DeviceConfiguration>();
             CoinConfigurations = new List<CoinConfiguration>();
-            MinerConfiguration = new MinerConfiguration();
+            MinerConfiguration = new XgminerConfiguration();
         }
 
         public List<DeviceConfiguration> DeviceConfigurations { get; set; }
         public List<CoinConfiguration> CoinConfigurations { get; set; }
-        public MinerConfiguration MinerConfiguration { get; set; }
+        public XgminerConfiguration MinerConfiguration { get; set; }
 
         private static string AppDataPath()
         {
@@ -61,7 +61,7 @@ namespace MultiMiner.Engine.Configuration
 
         public void LoadMinerConfiguration()
         {
-            MinerConfiguration = LoadConfiguration<MinerConfiguration>(MinerConfigurationFileName());
+            MinerConfiguration = LoadConfiguration<XgminerConfiguration>(MinerConfigurationFileName());
         }
 
         public void SaveMinerConfiguration()

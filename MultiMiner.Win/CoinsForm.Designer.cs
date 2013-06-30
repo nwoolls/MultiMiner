@@ -182,7 +182,7 @@
             // 
             // miningPoolBindingSource
             // 
-            this.miningPoolBindingSource.DataSource = typeof(MultiMiner.Engine.MiningPool);
+            this.miningPoolBindingSource.DataSource = typeof(MultiMiner.Xgminer.MiningPool);
             // 
             // label4
             // 

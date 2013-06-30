@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Engine.Configuration;
+using MultiMiner.Xgminer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,9 +15,9 @@ namespace MultiMiner.Win
 {
     public partial class SettingsForm : Form
     {
-        private readonly MinerConfiguration minerConfiguration;
+        private readonly XgminerConfiguration minerConfiguration;
 
-        public SettingsForm(MinerConfiguration minerConfiguration)
+        public SettingsForm(XgminerConfiguration minerConfiguration)
         {
             InitializeComponent();
 

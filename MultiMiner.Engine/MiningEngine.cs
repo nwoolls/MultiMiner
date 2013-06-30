@@ -60,34 +60,28 @@ namespace MultiMiner.Engine
                 IEnumerable<DeviceConfiguration> coinGpuConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.CoinSymbol.Equals(coinSymbol));
                                 
                 MultiMiner.Xgminer.MinerConfiguration minerConfig = new MultiMiner.Xgminer.MinerConfiguration();
+
                 minerConfig.ExecutablePath = @"Miners\cgminer\cgminer.exe";
+                minerConfig.Pools = coinConfiguration.Pools;
+                minerConfig.Algorithm = coinConfiguration.Coin.Algorithm;
+                minerConfig.ApiPort = port;
+                minerConfig.ApiListen = true;
+
+                foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
+                    minerConfig.DeviceIndexes.Add(coinGpuConfiguration.DeviceIndex);
+
                 Miner miner = new Miner(minerConfig);
 
-                string arguments = string.Empty;
-
-                if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
-                    arguments = arguments + " --scrypt";
-
-                foreach (MiningPool pool in coinConfiguration.Pools)
-                {
-                    string argument = string.Format("-o {0}:{1} -u {2} -p {3}", pool.Host, pool.Port, pool.Username, pool.Password);
-                    arguments = String.Format("{0} {1}", arguments, argument);
-                }
-
+                string arguments = string.Empty;                
                 if (engineConfiguration.MinerConfiguration.AlgorithmFlags.ContainsKey(coinConfiguration.Coin.Algorithm))
                     arguments = String.Format("{0} {1}", arguments, 
                         engineConfiguration.MinerConfiguration.AlgorithmFlags[coinConfiguration.Coin.Algorithm]);
-
-                foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
-                    arguments = String.Format("{0} -d {1}", arguments, coinGpuConfiguration.DeviceIndex);
-
-                arguments = String.Format("{0} --api-listen --api-port {1} --api-allow W:127.0.0.1", arguments, port);
-
-                Process process = miner.StartMining(arguments);
+                                                
+                Process process = miner.Launch(arguments);
 
                 Thread.Sleep(2000);
                 if (process.HasExited)
-                    process = miner.StartMining(arguments);
+                    process = miner.Launch(arguments);
                 
                 if (!process.HasExited)
                 {

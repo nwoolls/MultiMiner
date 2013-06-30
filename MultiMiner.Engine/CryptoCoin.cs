@@ -1,4 +1,6 @@
-﻿namespace MultiMiner.Engine
+﻿using MultiMiner.Xgminer;
+
+namespace MultiMiner.Engine
 {
     public class CryptoCoin
     {

@@ -6,11 +6,11 @@ namespace MultiMiner.Xgminer
 {
     public class Miner
     {
-        private readonly MinerConfiguration minerConfig;
+        private readonly MinerConfiguration minerConfiguration;
 
         public Miner(MinerConfiguration minerConfig)
         {
-            this.minerConfig = minerConfig;
+            this.minerConfiguration = minerConfig;
         }
 
         public List<Device> GetDevices()
@@ -18,7 +18,7 @@ namespace MultiMiner.Xgminer
             List<Device> result = new List<Device>();
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = minerConfig.ExecutablePath;
+            startInfo.FileName = minerConfiguration.ExecutablePath;
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
             startInfo.Arguments = MinerParameter.EnumerateDevices;
@@ -40,12 +40,28 @@ namespace MultiMiner.Xgminer
             return result;
         }
 
-        public Process StartMining(string arguments)
+        public Process Launch(string arguments)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = minerConfig.ExecutablePath;
+            startInfo.FileName = minerConfiguration.ExecutablePath;
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
+
+            foreach (MiningPool pool in minerConfiguration.Pools)
+            {
+                string argument = string.Format("-o {0}:{1} -u {2} -p {3}", pool.Host, pool.Port, pool.Username, pool.Password);
+                arguments = string.Format("{0} {1}", arguments, argument);
+            }
+
+            foreach (int deviceIndex in minerConfiguration.DeviceIndexes)
+                arguments = string.Format("{0} -d {1}", arguments, deviceIndex);
+
+            if (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
+                arguments = arguments + " --scrypt";
+
+            if (minerConfiguration.ApiListen)
+                arguments = string.Format("{0} --api-listen --api-port {1} --api-allow W:127.0.0.1", arguments, minerConfiguration.ApiPort);
+
             startInfo.Arguments = arguments;
 
             return Process.Start(startInfo);

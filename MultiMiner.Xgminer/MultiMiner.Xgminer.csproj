@@ -39,8 +39,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoinAlgorithm.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="DeviceKind.cs" />
+    <Compile Include="MiningPool.cs" />
     <Compile Include="Parsers\DeviceOutputParser.cs" />
     <Compile Include="DevicePatterns.cs" />
     <Compile Include="Miner.cs" />
