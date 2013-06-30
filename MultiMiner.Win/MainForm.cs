@@ -5,11 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace MultiMiner.Win
 {
     public partial class MainForm : Form
     {
+        private JArray coinInformation;
         private List<Device> devices;
         private readonly EngineConfiguration engineConfiguration = new EngineConfiguration();
         private readonly KnownCoins knownCoins = new KnownCoins();
@@ -22,6 +24,8 @@ namespace MultiMiner.Win
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            RefreshCoinStats();
+
             devices = GetDevices();
             deviceBindingSource.DataSource = devices;
 
@@ -187,7 +191,7 @@ namespace MultiMiner.Win
         private void StopMining()
         {
             miningEngine.StopMining();
-            statsTimer.Enabled = false;
+            deviceStatsTimer.Enabled = false;
 
             stopButton.Enabled = false;
             startButton.Enabled = true;
@@ -205,7 +209,7 @@ namespace MultiMiner.Win
             stopButton.Enabled = true;
 
             miningEngine.StartMining(engineConfiguration);
-            statsTimer.Enabled = true;
+            deviceStatsTimer.Enabled = true;
         }
 
         private void settingsButton_Click(object sender, EventArgs e)
@@ -247,7 +251,7 @@ namespace MultiMiner.Win
                         if (rowIndex >= 0)
                         {
                             deviceGridView.Rows[rowIndex].Cells[temperatureColumn.Index].Value = deviceInformation.Temperature;
-                            deviceGridView.Rows[rowIndex].Cells[rateColumn.Index].Value = deviceInformation.AverageHashrate;
+                            deviceGridView.Rows[rowIndex].Cells[hashRateColumn.Index].Value = deviceInformation.AverageHashrate;
                             deviceGridView.Rows[rowIndex].Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
                             deviceGridView.Rows[rowIndex].Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
                             deviceGridView.Rows[rowIndex].Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
@@ -260,6 +264,38 @@ namespace MultiMiner.Win
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             StopMining();
+        }
+
+        private void coinStatsTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshCoinStats();
+        }
+
+        private void RefreshCoinStats()
+        {
+            coinInformation = MultiMiner.Coinchoose.Api.ApiContext.GetCoinInformation();
+
+            LoadGridValuesFromCoinStats();
+        }
+
+        private void LoadGridValuesFromCoinStats()
+        {
+            foreach (JToken jToken in coinInformation)
+            {
+                string symbol = jToken.Value<string>("symbol");
+                string name = jToken.Value<string>("name");
+                double difficulty = jToken.Value<double>("difficulty");
+                double price = jToken.Value<double>("price");
+
+                foreach (DataGridViewRow row in deviceGridView.Rows)
+                {
+                    if (name.Equals((string)row.Cells[coinColumn.Index].Value, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        row.Cells[difficultyColumn.Index].Value = difficulty.ToString(".################");
+                        row.Cells[priceColumn.Index].Value = price.ToString(".################");
+                    }
+                }
+            }
         }
     }
 }

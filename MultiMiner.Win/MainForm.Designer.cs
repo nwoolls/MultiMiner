@@ -37,7 +37,8 @@
             this.startButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
-            this.statsTimer = new System.Windows.Forms.Timer(this.components);
+            this.deviceStatsTimer = new System.Windows.Forms.Timer(this.components);
+            this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -45,8 +46,10 @@
             this.platformDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.versionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.coinColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.difficultyColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.priceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.temperatureColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.rateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hashRateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.acceptedColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rejectedColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.errorsColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -71,8 +74,10 @@
             this.platformDataGridViewTextBoxColumn,
             this.versionDataGridViewTextBoxColumn,
             this.coinColumn,
+            this.difficultyColumn,
+            this.priceColumn,
             this.temperatureColumn,
-            this.rateColumn,
+            this.hashRateColumn,
             this.acceptedColumn,
             this.rejectedColumn,
             this.errorsColumn});
@@ -158,10 +163,16 @@
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
-            // statsTimer
+            // deviceStatsTimer
             // 
-            this.statsTimer.Interval = 10000;
-            this.statsTimer.Tick += new System.EventHandler(this.statsTimer_Tick);
+            this.deviceStatsTimer.Interval = 10000;
+            this.deviceStatsTimer.Tick += new System.EventHandler(this.statsTimer_Tick);
+            // 
+            // coinStatsTimer
+            // 
+            this.coinStatsTimer.Enabled = true;
+            this.coinStatsTimer.Interval = 900000;
+            this.coinStatsTimer.Tick += new System.EventHandler(this.coinStatsTimer_Tick);
             // 
             // kindDataGridViewTextBoxColumn
             // 
@@ -212,17 +223,29 @@
             "Configure Coins"});
             this.coinColumn.Name = "coinColumn";
             // 
+            // difficultyColumn
+            // 
+            this.difficultyColumn.HeaderText = "Difficulty";
+            this.difficultyColumn.Name = "difficultyColumn";
+            this.difficultyColumn.ReadOnly = true;
+            // 
+            // priceColumn
+            // 
+            this.priceColumn.HeaderText = "Price";
+            this.priceColumn.Name = "priceColumn";
+            this.priceColumn.ReadOnly = true;
+            // 
             // temperatureColumn
             // 
             this.temperatureColumn.HeaderText = "Temperature";
             this.temperatureColumn.Name = "temperatureColumn";
             this.temperatureColumn.ReadOnly = true;
             // 
-            // rateColumn
+            // hashRateColumn
             // 
-            this.rateColumn.HeaderText = "Hashrate";
-            this.rateColumn.Name = "rateColumn";
-            this.rateColumn.ReadOnly = true;
+            this.hashRateColumn.HeaderText = "Hashrate";
+            this.hashRateColumn.Name = "hashRateColumn";
+            this.hashRateColumn.ReadOnly = true;
             // 
             // acceptedColumn
             // 
@@ -270,7 +293,8 @@
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button settingsButton;
-        private System.Windows.Forms.Timer statsTimer;
+        private System.Windows.Forms.Timer deviceStatsTimer;
+        private System.Windows.Forms.Timer coinStatsTimer;
         private System.Windows.Forms.DataGridViewTextBoxColumn kindDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn descriptionDataGridViewTextBoxColumn;
@@ -278,8 +302,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn platformDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn versionDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewComboBoxColumn coinColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn difficultyColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn priceColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn temperatureColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn rateColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn hashRateColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn acceptedColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn rejectedColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn errorsColumn;
