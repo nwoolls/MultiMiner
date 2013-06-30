@@ -4,9 +4,8 @@ using System.Diagnostics;
 
 namespace MultiMiner.Xgminer
 {
-    public class Miner : IDisposable
+    public class Miner
     {
-        private Process minerProcess;
         private readonly MinerConfiguration minerConfig;
 
         public Miner(MinerConfiguration minerConfig)
@@ -25,8 +24,8 @@ namespace MultiMiner.Xgminer
             startInfo.Arguments = MinerParameter.EnumerateDevices;
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = true;
-            minerProcess = Process.Start(startInfo);
 
+            Process minerProcess = Process.Start(startInfo);
 
             List<string> output = new List<string>();
 
@@ -39,15 +38,6 @@ namespace MultiMiner.Xgminer
             DeviceParser.ParseOutputForDevices(output, result);
 
             return result;
-        }
-
-        public void Dispose()
-        {
-            if (minerProcess != null)
-            {
-                minerProcess.Dispose();
-                minerProcess = null;
-            }
         }
     }
 }
