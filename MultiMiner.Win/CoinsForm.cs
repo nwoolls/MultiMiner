@@ -43,6 +43,13 @@ namespace MultiMiner.Win
         private void removeCoinButton_Click(object sender, EventArgs e)
         {
 
+            DialogResult promptResult = MessageBox.Show("Remove the selected coin configuration?", "Confirm", MessageBoxButtons.YesNo);
+            if (promptResult == System.Windows.Forms.DialogResult.Yes)
+            {
+                CoinConfiguration configuration = configurations[coinListBox.SelectedIndex];
+                configurations.Remove(configuration);
+                coinListBox.Items.RemoveAt(coinListBox.SelectedIndex);
+            }
         }
 
         private void PopulateConfigurations()
