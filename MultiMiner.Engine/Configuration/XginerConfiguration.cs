@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MultiMiner.Engine
+namespace MultiMiner.Engine.Configuration
 {
     class XginerConfiguration
     {

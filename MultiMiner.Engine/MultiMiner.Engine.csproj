@@ -40,12 +40,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CoinAlgorithm.cs" />
-    <Compile Include="CoinConfiguration.cs" />
+    <Compile Include="Configuration\CoinConfiguration.cs" />
     <Compile Include="CryptoCoin.cs" />
+    <Compile Include="Configuration\DeviceConfiguration.cs" />
+    <Compile Include="Configuration\EngineConfiguration.cs" />
     <Compile Include="KnownCoins.cs" />
-    <Compile Include="XginerConfiguration.cs" />
+    <Compile Include="Configuration\XginerConfiguration.cs" />
+    <Compile Include="MiningEngine.cs" />
     <Compile Include="MiningPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MultiMiner.Xgminer\MultiMiner.Xgminer.csproj">
+      <Project>{0dbef993-1b34-4d80-ab6a-f662604325dc}</Project>
+      <Name>MultiMiner.Xgminer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
