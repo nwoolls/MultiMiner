@@ -70,6 +70,8 @@ namespace MultiMiner.Win
             List<Device> devices = miner.GetDevices();
             deviceBindingSource.DataSource = devices;
 
+            RefreshCoinComboBox();
+
             if (devices.Count > 0)
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
         }
@@ -82,6 +84,17 @@ namespace MultiMiner.Win
                 SaveCoinConfigurations();
             else
                 LoadCoinConfigurations();
+            RefreshCoinComboBox();
+        }
+
+        private void RefreshCoinComboBox()
+        {
+            coinColumn.Items.Clear();
+            coinColumn.Items.Add("Configure Coins");
+            foreach (CoinConfiguration configuration in configurations)
+            {
+                coinColumn.Items.Add(configuration.CryptoCoin.Name);
+            }
         }
 
         private bool configuringCoins = false;
