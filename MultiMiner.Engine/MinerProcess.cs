@@ -1,4 +1,5 @@
-﻿using MultiMiner.Xgminer.Api;
+﻿using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Api;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
@@ -7,14 +8,9 @@ namespace MultiMiner.Engine
 {
     public class MinerProcess
     {
-        public MinerProcess()
-        {
-            DevicesIndexes = new List<int>();
-        }
-
         public Process Process { get; set; }
-
         public int ApiPort { get; set; }
+        public MinerConfiguration MinerConfiguration { get; set; }
 
         public ApiContext ApiContext 
         { 
@@ -34,6 +30,5 @@ namespace MultiMiner.Engine
             } 
         }
 
-        public List<int> DevicesIndexes { get; set; }
     }
 }

@@ -95,7 +95,7 @@ namespace MultiMiner.Engine
 
                     minerProcess.Process = process;
                     minerProcess.ApiPort = port;
-                    minerProcess.DevicesIndexes = minerConfig.DeviceIndexes;
+                    minerProcess.MinerConfiguration = minerConfig;
 
                     minerProcesses.Add(minerProcess);
                 }
