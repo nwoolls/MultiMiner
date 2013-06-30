@@ -176,6 +176,11 @@ namespace MultiMiner.Win
 
         private void stopButton_Click(object sender, EventArgs e)
         {
+            StopMining();
+        }
+
+        private void StopMining()
+        {
             miningEngine.StopMining();
             statsTimer.Enabled = false;
 
@@ -184,6 +189,11 @@ namespace MultiMiner.Win
         }
 
         private void startButton_Click(object sender, EventArgs e)
+        {
+            StartMining();
+        }
+
+        private void StartMining()
         {
             miningEngine.StartMining(engineConfiguration);
             statsTimer.Enabled = true;
