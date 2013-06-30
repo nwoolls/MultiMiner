@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
@@ -48,7 +49,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(114, 170);
+            this.textBox1.Location = new System.Drawing.Point(129, 170);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(52, 20);
             this.textBox1.TabIndex = 2;
@@ -59,7 +60,7 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(11, 101);
+            this.checkBox1.Location = new System.Drawing.Point(26, 101);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(198, 17);
             this.checkBox1.TabIndex = 4;
@@ -71,7 +72,7 @@
             this.checkBox2.AutoSize = true;
             this.checkBox2.Checked = true;
             this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox2.Location = new System.Drawing.Point(11, 124);
+            this.checkBox2.Location = new System.Drawing.Point(26, 124);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(134, 17);
             this.checkBox2.TabIndex = 5;
@@ -81,7 +82,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(27, 173);
+            this.label3.Location = new System.Drawing.Point(42, 173);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(81, 13);
             this.label3.TabIndex = 6;
@@ -96,7 +97,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(418, 47);
             this.panel1.TabIndex = 8;
-            
             // 
             // saveButton
             // 
@@ -126,7 +126,7 @@
             this.checkBox3.AutoSize = true;
             this.checkBox3.Checked = true;
             this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox3.Location = new System.Drawing.Point(11, 147);
+            this.checkBox3.Location = new System.Drawing.Point(26, 147);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(182, 17);
             this.checkBox3.TabIndex = 9;
@@ -136,7 +136,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(172, 173);
+            this.label4.Location = new System.Drawing.Point(187, 173);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(47, 13);
             this.label4.TabIndex = 10;
@@ -200,6 +200,7 @@
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.textBox1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SettingsForm";

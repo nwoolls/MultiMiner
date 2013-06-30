@@ -261,6 +261,7 @@
             this.Controls.Add(this.coinListBox);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.panel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "CoinsForm";
