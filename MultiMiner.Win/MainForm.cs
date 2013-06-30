@@ -93,6 +93,8 @@ namespace MultiMiner.Win
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
                 SaveCoinConfigurations();
+            else
+                LoadCoinConfigurations();
         }
 
         private void deviceGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
