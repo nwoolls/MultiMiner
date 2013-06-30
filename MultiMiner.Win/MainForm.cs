@@ -2,56 +2,18 @@
 using MultiMiner.Xgminer;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 
 namespace MultiMiner.Win
 {
     public partial class MainForm : Form
     {
-        private EngineConfiguration engineConfiguration = new EngineConfiguration();
+        private readonly EngineConfiguration engineConfiguration = new EngineConfiguration();
 
         public MainForm()
         {
             InitializeComponent();
-            LoadCoinConfigurations();
-        }
-
-        private void LoadCoinConfigurations()
-        {
-            string fileName = CoinConfigurationsFileName();
-            if (File.Exists(fileName))
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<CoinConfiguration>));
-                using (TextReader reader = new StreamReader(fileName))
-                {
-                    engineConfiguration.CoinConfigurations = (List<CoinConfiguration>)serializer.Deserialize(reader);
-                } 
-            }
-        }
-
-        private void SaveCoinConfigurations()
-        {
-            string fileName = CoinConfigurationsFileName();
-            Directory.CreateDirectory(Path.GetDirectoryName(fileName));
-            XmlSerializer serializer = new XmlSerializer(typeof(List<CoinConfiguration>));
-            using (TextWriter writer = new StreamWriter(fileName))
-            {
-                serializer.Serialize(writer, engineConfiguration.CoinConfigurations);
-            }           
-            
-        }
-
-        private string AppDataPath()
-        {
-            string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(rootPath, "MultiMiner");
-        }
-
-        private string CoinConfigurationsFileName()
-        {
-            return Path.Combine(AppDataPath(), "CoinConfigurations.xml");
+            engineConfiguration.LoadCoinConfigurations();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -74,9 +36,9 @@ namespace MultiMiner.Win
             CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations);
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
-                SaveCoinConfigurations();
+                engineConfiguration.SaveCoinConfigurations();
             else
-                LoadCoinConfigurations();
+                engineConfiguration.LoadCoinConfigurations();
             RefreshCoinComboBox();
         }
 
@@ -119,6 +81,16 @@ namespace MultiMiner.Win
                     //deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
                 }
             }
+        }
+
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            engineConfiguration.SaveDeviceConfigurations();
+        }
+
+        private void cancelButton_Click(object sender, EventArgs e)
+        {
+            engineConfiguration.LoadDeviceConfigurations();
         }
     }
 }

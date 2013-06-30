@@ -130,6 +130,7 @@
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // saveButton
             // 
@@ -140,6 +141,7 @@
             this.saveButton.TabIndex = 0;
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
             // kindDataGridViewTextBoxColumn
             // 
@@ -183,17 +185,17 @@
             this.versionDataGridViewTextBoxColumn.Name = "versionDataGridViewTextBoxColumn";
             this.versionDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // CoinColumn
+            // coinColumn
             // 
             this.coinColumn.HeaderText = "Coin";
             this.coinColumn.Items.AddRange(new object[] {
-            "Add Coin"});
-            this.coinColumn.Name = "CoinColumn";
+            "Configure Coins"});
+            this.coinColumn.Name = "coinColumn";
             // 
-            // RateColumn
+            // rateColumn
             // 
             this.rateColumn.HeaderText = "Hashrate";
-            this.rateColumn.Name = "RateColumn";
+            this.rateColumn.Name = "rateColumn";
             this.rateColumn.ReadOnly = true;
             // 
             // MainForm
