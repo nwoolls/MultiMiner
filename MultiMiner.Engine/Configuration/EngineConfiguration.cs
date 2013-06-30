@@ -37,7 +37,7 @@ namespace MultiMiner.Engine.Configuration
             string fileName = DeviceConfigurationsFileName();
             if (File.Exists(fileName))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<CoinConfiguration>));
+                XmlSerializer serializer = new XmlSerializer(typeof(List<DeviceConfiguration>));
                 using (TextReader reader = new StreamReader(fileName))
                 {
                     DeviceConfigurations = (List<DeviceConfiguration>)serializer.Deserialize(reader);
