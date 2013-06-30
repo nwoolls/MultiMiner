@@ -79,20 +79,23 @@ namespace MultiMiner.Engine
                                                 
                 Process process = miner.Launch(arguments);
 
-                Thread.Sleep(2000);
-                if (process.HasExited)
+                //newest cgminer, paired with USB ASIC's, likes to die on startup a few times saying the specified device
+                //wasn't detected, happens when starting/stopping mining on USB ASIC's repeatedly
+                Thread.Sleep(5000);
+
+                while (process.HasExited)
+                {
                     process = miner.Launch(arguments);
+                    Thread.Sleep(2000);
+                }
                 
                 if (!process.HasExited)
                 {
                     MinerProcess minerProcess = new MinerProcess();
 
                     minerProcess.Process = process;
-
                     minerProcess.ApiPort = port;
-
-                    foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
-                        minerProcess.DevicesIndexes.Add(coinGpuConfiguration.DeviceIndex);
+                    minerProcess.DevicesIndexes = minerConfig.DeviceIndexes;
 
                     minerProcesses.Add(minerProcess);
                 }
