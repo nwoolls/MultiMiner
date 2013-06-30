@@ -134,8 +134,14 @@ namespace MultiMiner.Win
 
         private void deviceGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            saveButton.Enabled = true;
-            cancelButton.Enabled = true;
+            if (e.ColumnIndex == coinColumn.Index)
+            {
+                saveButton.Enabled = true;
+                cancelButton.Enabled = true;
+
+                if (this.coinInformation != null)
+                    LoadGridValuesFromCoinStats();
+            }
         }
 
         private void SaveGridValuesToConfiguration()
