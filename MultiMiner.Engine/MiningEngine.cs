@@ -1,10 +1,9 @@
 ﻿using MultiMiner.Engine.Configuration;
+using MultiMiner.Xgminer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MultiMiner.Engine
 {
@@ -47,32 +46,30 @@ namespace MultiMiner.Engine
                 CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(coinSymbol));
 
                 IEnumerable<DeviceConfiguration> coinGpuConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.CoinSymbol.Equals(coinSymbol));
-                
-                ProcessStartInfo startInfo = new ProcessStartInfo();
-                startInfo.FileName = @"Miners\cgminer\cgminer.exe";
-                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                startInfo.CreateNoWindow = true;
-                startInfo.Arguments = string.Empty;
+                                
+                MultiMiner.Xgminer.MinerConfiguration minerConfig = new MultiMiner.Xgminer.MinerConfiguration();
+                minerConfig.ExecutablePath = @"Miners\cgminer\cgminer.exe";
+                Miner miner = new Miner(minerConfig);
+
+                string arguments = string.Empty;
 
                 if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
-                    startInfo.Arguments = startInfo.Arguments + " --scrypt";
+                    arguments = arguments + " --scrypt";
 
                 foreach (MiningPool pool in coinConfiguration.Pools)
                 {
                     string argument = string.Format("-o {0}:{1} -u {2} -p {3}", pool.Host, pool.Port, pool.Username, pool.Password);
-                    startInfo.Arguments = String.Format("{0} {1}", startInfo.Arguments, argument);
+                    arguments = String.Format("{0} {1}", arguments, argument);
                 }
 
                 if (engineConfiguration.MinerConfiguration.AlgorithmFlags.ContainsKey(coinConfiguration.Coin.Algorithm))
-                    startInfo.Arguments = String.Format("{0} {1}", startInfo.Arguments, 
+                    arguments = String.Format("{0} {1}", arguments, 
                         engineConfiguration.MinerConfiguration.AlgorithmFlags[coinConfiguration.Coin.Algorithm]);
 
                 foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
-                {
-                    startInfo.Arguments = String.Format("{0} -d {1}", startInfo.Arguments, coinGpuConfiguration.DeviceIndex);
-                }
+                    arguments = String.Format("{0} -d {1}", arguments, coinGpuConfiguration.DeviceIndex);
 
-                Process minerProcess = Process.Start(startInfo);
+                Process minerProcess = miner.StartMining(arguments);
                                 
                 if (!minerProcess.HasExited)
                     miningProcesses.Add(minerProcess);

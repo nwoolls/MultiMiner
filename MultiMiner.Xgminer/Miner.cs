@@ -39,5 +39,16 @@ namespace MultiMiner.Xgminer
 
             return result;
         }
+
+        public Process StartMining(string arguments)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = minerConfig.ExecutablePath;
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.CreateNoWindow = true;
+            startInfo.Arguments = arguments;
+
+            return Process.Start(startInfo);
+        }
     }
 }
