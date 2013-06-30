@@ -11,73 +11,71 @@ namespace MultiMiner.Engine.Configuration
         {
             DeviceConfigurations = new List<DeviceConfiguration>();
             CoinConfigurations = new List<CoinConfiguration>();
+            MinerConfiguration = new MinerConfiguration();
         }
 
         public List<DeviceConfiguration> DeviceConfigurations { get; set; }
         public List<CoinConfiguration> CoinConfigurations { get; set; }
-        
-        public void SaveDeviceConfigurations()
-        {
-            string fileName = DeviceConfigurationsFileName();
-            Directory.CreateDirectory(Path.GetDirectoryName(fileName));
-            XmlSerializer serializer = new XmlSerializer(typeof(List<DeviceConfiguration>));
-            using (TextWriter writer = new StreamWriter(fileName))
-            {
-                serializer.Serialize(writer, DeviceConfigurations);
-            }
-        }
+        public MinerConfiguration MinerConfiguration { get; set; }
 
-        private string AppDataPath()
+        private static string AppDataPath()
         {
             string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             return Path.Combine(rootPath, "MultiMiner");
         }
 
-        private string DeviceConfigurationsFileName()
+        private static string DeviceConfigurationsFileName()
         {
             return Path.Combine(AppDataPath(), "DeviceConfigurations.xml");
         }
 
+        
+        public void SaveDeviceConfigurations()
+        {
+            SaveConfiguration(DeviceConfigurations, DeviceConfigurationsFileName());
+        }
+
         public void LoadDeviceConfigurations()
         {
-            string fileName = DeviceConfigurationsFileName();
-            if (File.Exists(fileName))
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<DeviceConfiguration>));
-                using (TextReader reader = new StreamReader(fileName))
-                {
-                    DeviceConfigurations = (List<DeviceConfiguration>)serializer.Deserialize(reader);
-                }
-            }
+            DeviceConfigurations = LoadConfiguration<List<DeviceConfiguration>>(DeviceConfigurationsFileName());
+        }
+
+        private static string CoinConfigurationsFileName()
+        {
+            return Path.Combine(AppDataPath(), "CoinConfigurations.xml");
         }
 
         public void LoadCoinConfigurations()
         {
-            string fileName = CoinConfigurationsFileName();
-            if (File.Exists(fileName))
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<CoinConfiguration>));
-                using (TextReader reader = new StreamReader(fileName))
-                {
-                    CoinConfigurations = (List<CoinConfiguration>)serializer.Deserialize(reader);
-                }
-            }
+            CoinConfigurations = LoadConfiguration<List<CoinConfiguration>>(CoinConfigurationsFileName());
         }
 
         public void SaveCoinConfigurations()
         {
-            string fileName = CoinConfigurationsFileName();
-            Directory.CreateDirectory(Path.GetDirectoryName(fileName));
-            XmlSerializer serializer = new XmlSerializer(typeof(List<CoinConfiguration>));
-            using (TextWriter writer = new StreamWriter(fileName))
-            {
-                serializer.Serialize(writer, CoinConfigurations);
-            }
+            SaveConfiguration(CoinConfigurations, CoinConfigurationsFileName());
         }
 
-        private string CoinConfigurationsFileName()
+        public static T LoadConfiguration<T>(string fileName)
         {
-            return Path.Combine(AppDataPath(), "CoinConfigurations.xml");
+            if (File.Exists(fileName))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                using (TextReader reader = new StreamReader(fileName))
+                    return (T)serializer.Deserialize(reader);
+            }
+
+            return default(T);
+        }
+
+        private static void SaveConfiguration(object source, string fileName)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(fileName));
+            Type type = source.GetType();
+            XmlSerializer serializer = new XmlSerializer(type);
+            using (TextWriter writer = new StreamWriter(fileName))
+            {
+                serializer.Serialize(writer, source);
+            }
         }
     }
 }

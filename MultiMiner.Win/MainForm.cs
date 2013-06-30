@@ -39,7 +39,7 @@ namespace MultiMiner.Win
 
         private static List<Device> GetDevices()
         {
-            MinerConfiguration minerConfig = new MinerConfiguration();
+            MultiMiner.Xgminer.MinerConfiguration minerConfig = new MultiMiner.Xgminer.MinerConfiguration();
             minerConfig.ExecutablePath = @"Miners\cgminer\cgminer.exe";
             Miner miner = new Miner(minerConfig);
             return miner.GetDevices();
