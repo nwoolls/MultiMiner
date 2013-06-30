@@ -153,18 +153,13 @@ namespace MultiMiner.Win
 
         private void LoadGridValuesFromConfiguration()
         {
-            int index = 0;
-            DeviceKind? lastDeviceKind = null;
             for (int i = 0; i < devices.Count; i++)
             {
                 Device device = devices[i];
-
-                if ((lastDeviceKind != null) && (lastDeviceKind != devices[i].Kind))
-                    index = 0;
-
+                
                 DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
                     c => (c.DeviceKind == device.Kind)
-                    && (c.DeviceIndex == index));
+                    && (c.DeviceIndex == i));
 
                 if (deviceConfiguration != null)
                 {
@@ -176,9 +171,6 @@ namespace MultiMiner.Win
                 {
                     deviceGridView.Rows[i].Cells[coinColumn.Index].Value = string.Empty;
                 }
-
-                lastDeviceKind = devices[i].Kind;
-                index++;
             }
         }
 
