@@ -2,7 +2,7 @@
 
 namespace MultiMiner.Engine.Configuration
 {
-    class XginerConfiguration
+    class XgminerConfiguration
     {
         public Dictionary<CoinAlgorithm, string> AlgorithmFlags { get; set; }
     }
