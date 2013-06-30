@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 namespace MultiMiner.Engine
 {
@@ -110,7 +111,15 @@ namespace MultiMiner.Engine
         {
             foreach (MinerProcess minerProcess in minerProcesses)
                 if (!minerProcess.Process.HasExited)
+                {
+                    ApiContext apiContext = minerProcess.ApiContext;
+                    if (apiContext != null)
+                    {
+                        apiContext.QuitMining();
+                        Thread.Sleep(250);
+                    }
                     minerProcess.Process.Kill();
+                }
 
             minerProcesses.Clear();
 
