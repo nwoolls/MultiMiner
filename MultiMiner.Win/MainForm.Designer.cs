@@ -31,12 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.deviceGridView = new System.Windows.Forms.DataGridView();
-            this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.vendorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.platformDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.versionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.coinColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.difficultyColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.priceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -45,7 +39,6 @@
             this.acceptedColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rejectedColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.errorsColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.settingsButton = new System.Windows.Forms.Button();
             this.stopButton = new System.Windows.Forms.Button();
@@ -60,10 +53,17 @@
             this.cancelStartupMiningButton = new System.Windows.Forms.Button();
             this.countdownLabel = new System.Windows.Forms.Label();
             this.crashRecoveryTimer = new System.Windows.Forms.Timer(this.components);
+            this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.vendorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.platformDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.versionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
             this.startupMiningPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // deviceGridView
@@ -98,48 +98,6 @@
             this.deviceGridView.TabIndex = 0;
             this.deviceGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.deviceGridView_CellValueChanged);
             this.deviceGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.deviceGridView_CurrentCellDirtyStateChanged);
-            // 
-            // kindDataGridViewTextBoxColumn
-            // 
-            this.kindDataGridViewTextBoxColumn.DataPropertyName = "Kind";
-            this.kindDataGridViewTextBoxColumn.HeaderText = "Kind";
-            this.kindDataGridViewTextBoxColumn.Name = "kindDataGridViewTextBoxColumn";
-            this.kindDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // descriptionDataGridViewTextBoxColumn
-            // 
-            this.descriptionDataGridViewTextBoxColumn.DataPropertyName = "Description";
-            this.descriptionDataGridViewTextBoxColumn.HeaderText = "Description";
-            this.descriptionDataGridViewTextBoxColumn.Name = "descriptionDataGridViewTextBoxColumn";
-            this.descriptionDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // vendorDataGridViewTextBoxColumn
-            // 
-            this.vendorDataGridViewTextBoxColumn.DataPropertyName = "Vendor";
-            this.vendorDataGridViewTextBoxColumn.HeaderText = "Vendor";
-            this.vendorDataGridViewTextBoxColumn.Name = "vendorDataGridViewTextBoxColumn";
-            this.vendorDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // platformDataGridViewTextBoxColumn
-            // 
-            this.platformDataGridViewTextBoxColumn.DataPropertyName = "Platform";
-            this.platformDataGridViewTextBoxColumn.HeaderText = "Platform";
-            this.platformDataGridViewTextBoxColumn.Name = "platformDataGridViewTextBoxColumn";
-            this.platformDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // versionDataGridViewTextBoxColumn
-            // 
-            this.versionDataGridViewTextBoxColumn.DataPropertyName = "Version";
-            this.versionDataGridViewTextBoxColumn.HeaderText = "Version";
-            this.versionDataGridViewTextBoxColumn.Name = "versionDataGridViewTextBoxColumn";
-            this.versionDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // coinColumn
             // 
@@ -189,10 +147,6 @@
             this.errorsColumn.HeaderText = "HW Errors";
             this.errorsColumn.Name = "errorsColumn";
             this.errorsColumn.ReadOnly = true;
-            // 
-            // deviceBindingSource
-            // 
-            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
             // 
             // panel1
             // 
@@ -264,7 +218,7 @@
             // 
             // deviceStatsTimer
             // 
-            this.deviceStatsTimer.Interval = 10000;
+            this.deviceStatsTimer.Interval = 5000;
             this.deviceStatsTimer.Tick += new System.EventHandler(this.statsTimer_Tick);
             // 
             // coinStatsTimer
@@ -317,6 +271,52 @@
             this.crashRecoveryTimer.Interval = 30000;
             this.crashRecoveryTimer.Tick += new System.EventHandler(this.crashRecoveryTimer_Tick);
             // 
+            // kindDataGridViewTextBoxColumn
+            // 
+            this.kindDataGridViewTextBoxColumn.DataPropertyName = "Kind";
+            this.kindDataGridViewTextBoxColumn.HeaderText = "Kind";
+            this.kindDataGridViewTextBoxColumn.Name = "kindDataGridViewTextBoxColumn";
+            this.kindDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // descriptionDataGridViewTextBoxColumn
+            // 
+            this.descriptionDataGridViewTextBoxColumn.DataPropertyName = "Description";
+            this.descriptionDataGridViewTextBoxColumn.HeaderText = "Description";
+            this.descriptionDataGridViewTextBoxColumn.Name = "descriptionDataGridViewTextBoxColumn";
+            this.descriptionDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // vendorDataGridViewTextBoxColumn
+            // 
+            this.vendorDataGridViewTextBoxColumn.DataPropertyName = "Vendor";
+            this.vendorDataGridViewTextBoxColumn.HeaderText = "Vendor";
+            this.vendorDataGridViewTextBoxColumn.Name = "vendorDataGridViewTextBoxColumn";
+            this.vendorDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // platformDataGridViewTextBoxColumn
+            // 
+            this.platformDataGridViewTextBoxColumn.DataPropertyName = "Platform";
+            this.platformDataGridViewTextBoxColumn.HeaderText = "Platform";
+            this.platformDataGridViewTextBoxColumn.Name = "platformDataGridViewTextBoxColumn";
+            this.platformDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // versionDataGridViewTextBoxColumn
+            // 
+            this.versionDataGridViewTextBoxColumn.DataPropertyName = "Version";
+            this.versionDataGridViewTextBoxColumn.HeaderText = "Version";
+            this.versionDataGridViewTextBoxColumn.Name = "versionDataGridViewTextBoxColumn";
+            this.versionDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // deviceBindingSource
+            // 
+            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -332,10 +332,10 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
             this.startupMiningPanel.ResumeLayout(false);
             this.startupMiningPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
