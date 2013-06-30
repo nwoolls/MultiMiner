@@ -129,27 +129,20 @@ namespace MultiMiner.Win
             deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
             
             engineConfiguration.DeviceConfigurations.Clear();
-            int index = 0;
-            DeviceKind? lastDeviceKind = null;
+
             for (int i = 0; i < devices.Count; i++)
-            {
-                if ((lastDeviceKind != null) && (lastDeviceKind != devices[i].Kind))
-                    index = 0;
-                
+            {                
                 CryptoCoin coin = knownCoins.Coins.SingleOrDefault(c => c.Name.Equals(deviceGridView.Rows[i].Cells[coinColumn.Index].Value));
                 if (coin != null)
                 {
                     DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
                     deviceConfiguration.DeviceKind = devices[i].Kind;
-                    deviceConfiguration.DeviceIndex = index;
+                    deviceConfiguration.DeviceIndex = i;
                     deviceConfiguration.CoinSymbol = coin.Symbol;
 
                     engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
                 }
-
-                lastDeviceKind = devices[i].Kind;
-                index++;
             }
         }
 
