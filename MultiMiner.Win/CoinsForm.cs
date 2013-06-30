@@ -58,6 +58,9 @@ namespace MultiMiner.Win
             {
                 coinListBox.Items.Add(configuration.CryptoCoin.Name);
             }
+
+            if (configurations.Count > 0)
+                coinListBox.SelectedIndex = 0;
         }
 
         private void HandleCoinButtonClick(object sender, EventArgs e)
