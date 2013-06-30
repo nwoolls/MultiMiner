@@ -59,6 +59,7 @@
             this.startupMiningPanel = new System.Windows.Forms.Panel();
             this.cancelStartupMiningButton = new System.Windows.Forms.Button();
             this.countdownLabel = new System.Windows.Forms.Label();
+            this.crashRecoveryTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
@@ -311,6 +312,11 @@
             this.countdownLabel.TabIndex = 0;
             this.countdownLabel.Text = "Mining will start automatically in 45 seconds...";
             // 
+            // crashRecoveryTimer
+            // 
+            this.crashRecoveryTimer.Interval = 30000;
+            this.crashRecoveryTimer.Tick += new System.EventHandler(this.crashRecoveryTimer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -365,6 +371,7 @@
         private System.Windows.Forms.Panel startupMiningPanel;
         private System.Windows.Forms.Button cancelStartupMiningButton;
         private System.Windows.Forms.Label countdownLabel;
+        private System.Windows.Forms.Timer crashRecoveryTimer;
     }
 }
 

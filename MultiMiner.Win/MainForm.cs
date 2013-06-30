@@ -60,6 +60,8 @@ namespace MultiMiner.Win
             }
 
             startupMiningPanel.Visible = applicationConfiguration.StartMiningOnStartup;
+
+            crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
         }
 
         private void RefreshCountdownLabel()
@@ -249,6 +251,7 @@ namespace MultiMiner.Win
             {
                 engineConfiguration.SaveMinerConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
+                crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
             }
             else
             {
@@ -360,6 +363,13 @@ namespace MultiMiner.Win
         {
             startupMiningTimer.Enabled = false;
             startupMiningPanel.Visible = false;
+        }
+
+        private void crashRecoveryTimer_Tick(object sender, EventArgs e)
+        {
+            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+                if (minerProcess.Process.HasExited)
+                    minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
         }
     }
 }
