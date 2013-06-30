@@ -91,7 +91,8 @@ namespace MultiMiner.Engine
                     MinerProcess minerProcess = new MinerProcess();
 
                     minerProcess.Process = process;
-                    minerProcess.ApiContext = new ApiContext(port);
+
+                    minerProcess.ApiPort = port;
 
                     foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
                         minerProcess.DevicesIndexes.Add(coinGpuConfiguration.DeviceIndex);
