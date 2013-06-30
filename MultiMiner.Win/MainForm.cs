@@ -180,11 +180,17 @@ namespace MultiMiner.Win
         private void stopButton_Click(object sender, EventArgs e)
         {
             miningEngine.StopMining();
+
+            stopButton.Enabled = false;
+            startButton.Enabled = true;
         }
 
         private void startButton_Click(object sender, EventArgs e)
         {
             miningEngine.StartMining(engineConfiguration);
+
+            startButton.Enabled = false;
+            stopButton.Enabled = true;
         }
 
         private void settingsButton_Click(object sender, EventArgs e)
