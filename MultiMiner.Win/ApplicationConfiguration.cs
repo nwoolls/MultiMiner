@@ -37,12 +37,11 @@ namespace MultiMiner.Win
 
         private void ApplyLaunchOnWindowsStartup()
         {
-            RegistryKey registrykey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
+            //launch using a .lnk file - launching via registry has proven troublesome, trouble launching cgminer after
             if (LaunchOnWindowsLogin)
-                registrykey.SetValue("MultiMiner", Application.ExecutablePath);
+                WindowsStartupShortcut.CreateStartupFolderShortcut();
             else
-                registrykey.DeleteValue("MultiMiner", false);    
+                WindowsStartupShortcut.DeleteStartupFolderShortcuts();
         }
 
         public void LoadApplicationConfiguration()
