@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml.Serialization;
 
 namespace MultiMiner.Engine.Configuration
 {
@@ -31,12 +30,12 @@ namespace MultiMiner.Engine.Configuration
         
         public void SaveDeviceConfigurations()
         {
-            SaveConfiguration(DeviceConfigurations, DeviceConfigurationsFileName());
+            ConfigurationReaderWriter.WriteConfiguration(DeviceConfigurations, DeviceConfigurationsFileName());
         }
 
         public void LoadDeviceConfigurations()
         {
-            DeviceConfigurations = LoadConfiguration<List<DeviceConfiguration>>(DeviceConfigurationsFileName());
+            DeviceConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<DeviceConfiguration>>(DeviceConfigurationsFileName());
         }
 
         private static string CoinConfigurationsFileName()
@@ -46,50 +45,27 @@ namespace MultiMiner.Engine.Configuration
 
         public void LoadCoinConfigurations()
         {
-            CoinConfigurations = LoadConfiguration<List<CoinConfiguration>>(CoinConfigurationsFileName());
+            CoinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<CoinConfiguration>>(CoinConfigurationsFileName());
         }
 
         public void SaveCoinConfigurations()
         {
-            SaveConfiguration(CoinConfigurations, CoinConfigurationsFileName());
+            ConfigurationReaderWriter.WriteConfiguration(CoinConfigurations, CoinConfigurationsFileName());
         }
 
         private static string MinerConfigurationFileName()
         {
-            return Path.Combine(AppDataPath(), "MinerConfiguration.xml");
+            return Path.Combine(AppDataPath(), "XgminerConfiguration.xml");
         }
 
         public void LoadMinerConfiguration()
         {
-            MinerConfiguration = LoadConfiguration<XgminerConfiguration>(MinerConfigurationFileName());
+            MinerConfiguration = ConfigurationReaderWriter.ReadConfiguration<XgminerConfiguration>(MinerConfigurationFileName());
         }
 
         public void SaveMinerConfiguration()
         {
-            SaveConfiguration(MinerConfiguration, MinerConfigurationFileName());
-        }
-
-        public static T LoadConfiguration<T>(string fileName) where T: new()
-        {
-            if (File.Exists(fileName))
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-                using (TextReader reader = new StreamReader(fileName))
-                    return (T)serializer.Deserialize(reader);
-            }
-
-            return new T();
-        }
-
-        private static void SaveConfiguration(object source, string fileName)
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(fileName));
-            Type type = source.GetType();
-            XmlSerializer serializer = new XmlSerializer(type);
-            using (TextWriter writer = new StreamWriter(fileName))
-            {
-                serializer.Serialize(writer, source);
-            }
+            ConfigurationReaderWriter.WriteConfiguration(MinerConfiguration, MinerConfigurationFileName());
         }
     }
 }
