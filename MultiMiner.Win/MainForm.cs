@@ -212,6 +212,19 @@ namespace MultiMiner.Win
                 engineConfiguration.LoadMinerConfiguration();
         }
 
+        private void statsTimer_Tick(object sender, EventArgs e)
+        {
+            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+            {
+                MultiMiner.Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+                if (apiContext != null)
+                {
+                    string deviceInformation = apiContext.GetDeviceInformation();
+                    textBox1.AppendText(Environment.NewLine + deviceInformation);
+                }
+            }
+        }
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             StopMining();

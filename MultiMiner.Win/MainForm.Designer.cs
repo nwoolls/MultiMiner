@@ -46,6 +46,8 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.statsTimer = new System.Windows.Forms.Timer(this.components);
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.splitter1 = new System.Windows.Forms.Splitter();
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
@@ -183,6 +185,7 @@
             // 
             // cancelButton
             // 
+            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.Enabled = false;
             this.cancelButton.Location = new System.Drawing.Point(679, 9);
             this.cancelButton.Name = "cancelButton";
@@ -194,6 +197,7 @@
             // 
             // saveButton
             // 
+            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.saveButton.Enabled = false;
             this.saveButton.Location = new System.Drawing.Point(598, 9);
             this.saveButton.Name = "saveButton";
@@ -206,21 +210,45 @@
             // statsTimer
             // 
             this.statsTimer.Interval = 5000;
+            this.statsTimer.Tick += new System.EventHandler(this.statsTimer_Tick);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.textBox1.Location = new System.Drawing.Point(0, 266);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBox1.Size = new System.Drawing.Size(766, 127);
+            this.textBox1.TabIndex = 2;
+            // 
+            // splitter1
+            // 
+            this.splitter1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitter1.Location = new System.Drawing.Point(0, 263);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(766, 3);
+            this.splitter1.TabIndex = 3;
+            this.splitter1.TabStop = false;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(766, 434);
+            this.Controls.Add(this.splitter1);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.deviceGridView);
             this.Controls.Add(this.panel1);
             this.Name = "MainForm";
             this.Text = "MultiMiner";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -243,6 +271,8 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn coinColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn rateColumn;
         private System.Windows.Forms.Timer statsTimer;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Splitter splitter1;
     }
 }
 
