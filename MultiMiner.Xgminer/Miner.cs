@@ -1,6 +1,7 @@
 ﻿using MultiMiner.Xgminer.Parsers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 
 namespace MultiMiner.Xgminer
 {
@@ -40,13 +41,15 @@ namespace MultiMiner.Xgminer
             return result;
         }
 
-        public Process Launch(string arguments)
+        public Process Launch()
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = minerConfiguration.ExecutablePath;
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
-            startInfo.UseShellExecute = false; 
+            startInfo.UseShellExecute = false;
+
+            string arguments = minerConfiguration.Arguments;
 
             foreach (MiningPool pool in minerConfiguration.Pools)
             {
@@ -65,7 +68,26 @@ namespace MultiMiner.Xgminer
 
             startInfo.Arguments = arguments;
 
-            return Process.Start(startInfo);
+            Process process = StartMiningProcess(startInfo);
+
+            return process;
+        }
+
+        private static Process StartMiningProcess(ProcessStartInfo startInfo)
+        {
+            Process process = Process.Start(startInfo);
+
+            //newest cgminer, paired with USB ASIC's, likes to die on startup a few times saying the specified device
+            //wasn't detected, happens when starting/stopping mining on USB ASIC's repeatedly
+            Thread.Sleep(5000);
+
+            while (process.HasExited)
+            {
+                process = process = Process.Start(startInfo);
+                Thread.Sleep(2000);
+            }
+
+            return process;
         }
     }
 }

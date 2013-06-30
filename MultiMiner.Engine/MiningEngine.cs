@@ -55,39 +55,9 @@ namespace MultiMiner.Engine
 
             foreach (string coinSymbol in coinSymbols)
             {
-                CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(coinSymbol));
+                MultiMiner.Xgminer.MinerConfiguration minerConfiguration = CreateMinerConfiguration(port, coinSymbol);
 
-                IEnumerable<DeviceConfiguration> coinGpuConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.CoinSymbol.Equals(coinSymbol));
-                                
-                MultiMiner.Xgminer.MinerConfiguration minerConfig = new MultiMiner.Xgminer.MinerConfiguration();
-
-                minerConfig.ExecutablePath = @"Miners\cgminer\cgminer.exe";
-                minerConfig.Pools = coinConfiguration.Pools;
-                minerConfig.Algorithm = coinConfiguration.Coin.Algorithm;
-                minerConfig.ApiPort = port;
-                minerConfig.ApiListen = true;
-
-                foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
-                    minerConfig.DeviceIndexes.Add(coinGpuConfiguration.DeviceIndex);
-
-                Miner miner = new Miner(minerConfig);
-
-                string arguments = string.Empty;                
-                if (engineConfiguration.MinerConfiguration.AlgorithmFlags.ContainsKey(coinConfiguration.Coin.Algorithm))
-                    arguments = String.Format("{0} {1}", arguments, 
-                        engineConfiguration.MinerConfiguration.AlgorithmFlags[coinConfiguration.Coin.Algorithm]);
-                                                
-                Process process = miner.Launch(arguments);
-
-                //newest cgminer, paired with USB ASIC's, likes to die on startup a few times saying the specified device
-                //wasn't detected, happens when starting/stopping mining on USB ASIC's repeatedly
-                Thread.Sleep(5000);
-
-                while (process.HasExited)
-                {
-                    process = miner.Launch(arguments);
-                    Thread.Sleep(2000);
-                }
+                Process process = LaunchMinerProcess(minerConfiguration);
                 
                 if (!process.HasExited)
                 {
@@ -95,13 +65,47 @@ namespace MultiMiner.Engine
 
                     minerProcess.Process = process;
                     minerProcess.ApiPort = port;
-                    minerProcess.MinerConfiguration = minerConfig;
+                    minerProcess.MinerConfiguration = minerConfiguration;
 
                     minerProcesses.Add(minerProcess);
                 }
 
                 port++;
             }
+        }
+
+        private static Process LaunchMinerProcess(MultiMiner.Xgminer.MinerConfiguration minerConfiguration)
+        {
+            Miner miner = new Miner(minerConfiguration);
+            Process process = miner.Launch();
+            return process;
+        }
+
+        private MultiMiner.Xgminer.MinerConfiguration CreateMinerConfiguration(int port, string coinSymbol)
+        {
+            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(coinSymbol));
+
+            IEnumerable<DeviceConfiguration> coinGpuConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.CoinSymbol.Equals(coinSymbol));
+
+            MultiMiner.Xgminer.MinerConfiguration minerConfiguration = new MultiMiner.Xgminer.MinerConfiguration();
+
+            minerConfiguration.ExecutablePath = @"Miners\cgminer\cgminer.exe";
+            minerConfiguration.Pools = coinConfiguration.Pools;
+            minerConfiguration.Algorithm = coinConfiguration.Coin.Algorithm;
+            minerConfiguration.ApiPort = port;
+            minerConfiguration.ApiListen = true;
+
+            foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
+                minerConfiguration.DeviceIndexes.Add(coinGpuConfiguration.DeviceIndex);
+
+            string arguments = string.Empty;
+            if (engineConfiguration.MinerConfiguration.AlgorithmFlags.ContainsKey(coinConfiguration.Coin.Algorithm))
+                arguments = String.Format("{0} {1}", arguments,
+                    engineConfiguration.MinerConfiguration.AlgorithmFlags[coinConfiguration.Coin.Algorithm]);
+
+            minerConfiguration.Arguments = arguments;
+
+            return minerConfiguration;
         }
 
         public void StopMining()
