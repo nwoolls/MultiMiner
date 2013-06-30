@@ -28,7 +28,6 @@ namespace MultiMiner.Engine.Configuration
         {
             return Path.Combine(AppDataPath(), "DeviceConfigurations.xml");
         }
-
         
         public void SaveDeviceConfigurations()
         {
@@ -55,7 +54,22 @@ namespace MultiMiner.Engine.Configuration
             SaveConfiguration(CoinConfigurations, CoinConfigurationsFileName());
         }
 
-        public static T LoadConfiguration<T>(string fileName)
+        private static string MinerConfigurationFileName()
+        {
+            return Path.Combine(AppDataPath(), "MinerConfiguration.xml");
+        }
+
+        public void LoadMinerConfiguration()
+        {
+            MinerConfiguration = LoadConfiguration<MinerConfiguration>(MinerConfigurationFileName());
+        }
+
+        public void SaveMinerConfiguration()
+        {
+            SaveConfiguration(MinerConfiguration, MinerConfigurationFileName());
+        }
+
+        public static T LoadConfiguration<T>(string fileName) where T: new()
         {
             if (File.Exists(fileName))
             {
@@ -64,7 +78,7 @@ namespace MultiMiner.Engine.Configuration
                     return (T)serializer.Deserialize(reader);
             }
 
-            return default(T);
+            return new T();
         }
 
         private static void SaveConfiguration(object source, string fileName)
