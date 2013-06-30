@@ -7,6 +7,12 @@ namespace MultiMiner.Engine.Configuration
 {
     public class EngineConfiguration
     {
+        public EngineConfiguration()
+        {
+            DeviceConfigurations = new List<DeviceConfiguration>();
+            CoinConfigurations = new List<CoinConfiguration>();
+        }
+
         public List<DeviceConfiguration> DeviceConfigurations { get; set; }
         public List<CoinConfiguration> CoinConfigurations { get; set; }
         
