@@ -73,8 +73,6 @@
             this.deviceGridView.RowHeadersVisible = false;
             this.deviceGridView.Size = new System.Drawing.Size(766, 393);
             this.deviceGridView.TabIndex = 0;
-            this.deviceGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.deviceGridView_CellContentClick);
-            this.deviceGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.deviceGridView_CellValueChanged);
             this.deviceGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.deviceGridView_CurrentCellDirtyStateChanged);
             // 
             // deviceBindingSource
@@ -93,7 +91,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(766, 41);
             this.panel1.TabIndex = 1;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
             // settingsButton
             // 
