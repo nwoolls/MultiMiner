@@ -72,21 +72,6 @@ namespace MultiMiner.Win
 
         }
 
-        private void deviceGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                if (e.ColumnIndex == coinColumn.Index)
-                {
-                    string value = (string)deviceGridView.CurrentCell.EditedFormattedValue;
-                    if (value.Equals("Add Coin"))
-                    {
-                        ConfigureCoins();
-                    }
-                }
-            }
-        }
-
         private void ConfigureCoins()
         {
             CoinsForm coinsForm = new CoinsForm(configurations);
@@ -97,25 +82,35 @@ namespace MultiMiner.Win
                 LoadCoinConfigurations();
         }
 
-        private void deviceGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
+        private bool configuringCoins = false;
+        
         private void deviceGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (deviceGridView.CurrentCell.RowIndex >= 0)
             {
                 if (deviceGridView.CurrentCell.ColumnIndex == coinColumn.Index)
                 {
-                    deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                    string value = (string)deviceGridView.CurrentCell.EditedFormattedValue;
+                    if (value.Equals("Add Coin"))
+                    {
+                        if (!configuringCoins)
+                        {
+                            configuringCoins = true;
+                            try
+                            {
+                                deviceGridView.CancelEdit();
+                                ConfigureCoins();
+                            }
+                            finally
+                            {
+                                configuringCoins = false;
+                            }
+                        }
+                    }
+
+                    //deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
                 }
             }
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }
