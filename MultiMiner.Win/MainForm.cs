@@ -70,6 +70,8 @@ namespace MultiMiner.Win
             List<Device> devices = miner.GetDevices();
             deviceBindingSource.DataSource = devices;
 
+            if (devices.Count > 0)
+                deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
         }
 
         private void ConfigureCoins()
