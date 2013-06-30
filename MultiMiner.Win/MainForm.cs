@@ -31,7 +31,7 @@ namespace MultiMiner.Win
             RefreshCoinComboBox();
 
             engineConfiguration.LoadDeviceConfigurations();
-            LoadValuesFromConfiguration();
+            LoadGridValuesFromConfiguration();
 
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
@@ -41,10 +41,8 @@ namespace MultiMiner.Win
         {
             MinerConfiguration minerConfig = new MinerConfiguration();
             minerConfig.ExecutablePath = @"Miners\cgminer\cgminer.exe";
-            using (Miner miner = new Miner(minerConfig))
-            {
-                return miner.GetDevices();
-            }
+            Miner miner = new Miner(minerConfig);
+            return miner.GetDevices();
         }
 
         private void ConfigureCoins()
@@ -101,7 +99,7 @@ namespace MultiMiner.Win
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            SaveValuesToConfiguration();
+            SaveGridValuesToConfiguration();
             engineConfiguration.SaveDeviceConfigurations();
 
             saveButton.Enabled = false;
@@ -111,7 +109,7 @@ namespace MultiMiner.Win
         private void cancelButton_Click(object sender, EventArgs e)
         {
             engineConfiguration.LoadDeviceConfigurations();
-            LoadValuesFromConfiguration();
+            LoadGridValuesFromConfiguration();
 
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
@@ -123,7 +121,7 @@ namespace MultiMiner.Win
             cancelButton.Enabled = true;
         }
 
-        private void SaveValuesToConfiguration()
+        private void SaveGridValuesToConfiguration()
         {
             deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
             
@@ -152,7 +150,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private void LoadValuesFromConfiguration()
+        private void LoadGridValuesFromConfiguration()
         {
             int index = 0;
             DeviceKind? lastDeviceKind = null;
