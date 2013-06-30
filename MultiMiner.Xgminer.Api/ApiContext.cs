@@ -10,7 +10,7 @@ namespace MultiMiner.Xgminer.Api
 {
     public class ApiContext
     {
-        private static TcpClient tcpClient;
+        private TcpClient tcpClient;
         public ApiContext(int port)
         {
             tcpClient = new TcpClient("127.0.0.1", port);
@@ -29,7 +29,7 @@ namespace MultiMiner.Xgminer.Api
             GetResponse(ApiVerb.Quit);
         }
 
-        private static string GetResponse(string apiVerb)
+        private string GetResponse(string apiVerb)
         {
             NetworkStream stream = tcpClient.GetStream();
             Byte[] request = System.Text.Encoding.ASCII.GetBytes(apiVerb);
