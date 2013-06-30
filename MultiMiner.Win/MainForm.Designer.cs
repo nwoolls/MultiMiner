@@ -290,6 +290,7 @@
             this.startupMiningPanel.Name = "startupMiningPanel";
             this.startupMiningPanel.Size = new System.Drawing.Size(319, 37);
             this.startupMiningPanel.TabIndex = 6;
+            this.startupMiningPanel.Visible = false;
             // 
             // cancelStartupMiningButton
             // 
@@ -320,6 +321,7 @@
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
             this.Text = "MultiMiner";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);

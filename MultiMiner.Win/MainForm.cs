@@ -58,6 +58,8 @@ namespace MultiMiner.Win
                 countdownTimer.Enabled = true;
                 RefreshCountdownLabel();
             }
+
+            startupMiningPanel.Visible = applicationConfiguration.StartMiningOnStartup;
         }
 
         private void RefreshCountdownLabel()
