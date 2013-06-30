@@ -1,6 +1,8 @@
-﻿using MultiMiner.Engine.Configuration;
+﻿using Microsoft.Win32;
+using MultiMiner.Engine.Configuration;
 using System;
 using System.IO;
+using System.Windows.Forms;
 
 namespace MultiMiner.Win
 {
@@ -30,6 +32,17 @@ namespace MultiMiner.Win
         public void SaveApplicationConfiguration()
         {
             ConfigurationReaderWriter.WriteConfiguration(this, DeviceConfigurationsFileName());
+            ApplyLaunchOnWindowsStartup();
+        }
+
+        private void ApplyLaunchOnWindowsStartup()
+        {
+            RegistryKey registrykey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
+            if (LaunchOnWindowsLogin)
+                registrykey.SetValue("MultiMiner", Application.ExecutablePath);
+            else
+                registrykey.DeleteValue("MultiMiner", false);    
         }
 
         public void LoadApplicationConfiguration()
