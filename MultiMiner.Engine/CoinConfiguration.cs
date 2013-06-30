@@ -9,7 +9,7 @@ namespace MultiMiner.Engine
             this.Pools = new List<MiningPool>();
         }
 
-        public CryptoCoin CryptoCoin { get; set; }
+        public CryptoCoin Coin { get; set; }
         public List<MiningPool> Pools { get; set; }
     }
 }

@@ -93,7 +93,7 @@ namespace MultiMiner.Win
             coinColumn.Items.Add("Configure Coins");
             foreach (CoinConfiguration configuration in configurations)
             {
-                coinColumn.Items.Add(configuration.CryptoCoin.Name);
+                coinColumn.Items.Add(configuration.Coin.Name);
             }
         }
 

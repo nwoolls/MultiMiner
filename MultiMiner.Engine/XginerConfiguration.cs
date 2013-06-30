@@ -2,9 +2,8 @@
 
 namespace MultiMiner.Engine
 {
-    class MinerConfiguration
+    class XginerConfiguration
     {
         public Dictionary<CoinAlgorithm, string> AlgorithmFlags { get; set; }
-        public int Intensity { get; set; }
     }
 }

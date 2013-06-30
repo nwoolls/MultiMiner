@@ -56,7 +56,7 @@ namespace MultiMiner.Win
         {
             foreach (CoinConfiguration configuration in configurations)
             {
-                coinListBox.Items.Add(configuration.CryptoCoin.Name);
+                coinListBox.Items.Add(configuration.Coin.Name);
             }
 
             if (configurations.Count > 0)
@@ -66,7 +66,7 @@ namespace MultiMiner.Win
         private void HandleCoinButtonClick(object sender, EventArgs e)
         {
             string clickedSymbol = (string)((ToolStripButton)sender).Tag;
-            CoinConfiguration configuration = configurations.SingleOrDefault(c => c.CryptoCoin.Symbol.Equals(clickedSymbol));
+            CoinConfiguration configuration = configurations.SingleOrDefault(c => c.Coin.Symbol.Equals(clickedSymbol));
             if (configuration != null)
             {
                 coinListBox.SelectedIndex = configurations.IndexOf(configuration);
@@ -75,12 +75,12 @@ namespace MultiMiner.Win
             {
                 configuration = new CoinConfiguration();
 
-                configuration.CryptoCoin = knownCoins.Coins.Single(c => c.Symbol.Equals(clickedSymbol));
+                configuration.Coin = knownCoins.Coins.Single(c => c.Symbol.Equals(clickedSymbol));
                 configuration.Pools.Add(new MiningPool());
 
                 configurations.Add(configuration);
 
-                coinListBox.Items.Add(configuration.CryptoCoin.Name);
+                coinListBox.Items.Add(configuration.Coin.Name);
                 coinListBox.SelectedIndex = configurations.IndexOf(configuration);
             }
 

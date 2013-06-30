@@ -43,7 +43,7 @@
     <Compile Include="CoinConfiguration.cs" />
     <Compile Include="CryptoCoin.cs" />
     <Compile Include="KnownCoins.cs" />
-    <Compile Include="MinerConfiguration.cs" />
+    <Compile Include="XginerConfiguration.cs" />
     <Compile Include="MiningPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
