@@ -31,14 +31,19 @@ namespace MultiMiner.Xgminer.Api
 
         private string GetResponse(string apiVerb)
         {
-            NetworkStream stream = tcpClient.GetStream();
-            Byte[] request = System.Text.Encoding.ASCII.GetBytes(apiVerb);
-            stream.Write(request, 0, request.Length);
+            NetworkStream tcpStream = tcpClient.GetStream();
+
+            Byte[] request = Encoding.ASCII.GetBytes(apiVerb);
+            tcpStream.Write(request, 0, request.Length);
 
             Byte[] responseBuffer = new Byte[4096];
             string response = string.Empty;
-            int bytesRead = stream.Read(responseBuffer, 0, responseBuffer.Length);
-            response = System.Text.Encoding.ASCII.GetString(responseBuffer, 0, bytesRead);
+            do
+            {
+                int bytesRead = tcpStream.Read(responseBuffer, 0, responseBuffer.Length);
+                response = response + Encoding.ASCII.GetString(responseBuffer, 0, bytesRead);
+            } while (tcpStream.DataAvailable);
+
             return response;
         } 
     }
