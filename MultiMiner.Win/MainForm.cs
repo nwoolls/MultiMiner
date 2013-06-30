@@ -211,5 +211,10 @@ namespace MultiMiner.Win
             else
                 engineConfiguration.LoadMinerConfiguration();
         }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            StopMining();
+        }
     }
 }
