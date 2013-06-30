@@ -10,7 +10,7 @@ namespace MultiMiner.Win
 {
     public partial class MainForm : Form
     {
-        private List<CoinConfiguration> configurations = new List<CoinConfiguration>();
+        private EngineConfiguration engineConfiguration = new EngineConfiguration();
 
         public MainForm()
         {
@@ -26,7 +26,7 @@ namespace MultiMiner.Win
                 XmlSerializer serializer = new XmlSerializer(typeof(List<CoinConfiguration>));
                 using (TextReader reader = new StreamReader(fileName))
                 {
-                    configurations = (List<CoinConfiguration>)serializer.Deserialize(reader);
+                    engineConfiguration.CoinConfigurations = (List<CoinConfiguration>)serializer.Deserialize(reader);
                 } 
             }
         }
@@ -38,7 +38,7 @@ namespace MultiMiner.Win
             XmlSerializer serializer = new XmlSerializer(typeof(List<CoinConfiguration>));
             using (TextWriter writer = new StreamWriter(fileName))
             {
-                serializer.Serialize(writer, configurations);
+                serializer.Serialize(writer, engineConfiguration.CoinConfigurations);
             }           
             
         }
@@ -71,7 +71,7 @@ namespace MultiMiner.Win
 
         private void ConfigureCoins()
         {
-            CoinsForm coinsForm = new CoinsForm(configurations);
+            CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations);
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
                 SaveCoinConfigurations();
@@ -84,7 +84,7 @@ namespace MultiMiner.Win
         {
             coinColumn.Items.Clear();
             coinColumn.Items.Add("Configure Coins");
-            foreach (CoinConfiguration configuration in configurations)
+            foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations)
             {
                 coinColumn.Items.Add(configuration.Coin.Name);
             }

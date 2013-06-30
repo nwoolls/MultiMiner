@@ -2,7 +2,7 @@
 
 namespace MultiMiner.Engine.Configuration
 {
-    class DeviceConfiguration
+    public class DeviceConfiguration
     {
         public DeviceKind DeviceKind { get; set; }
         public int DeviceIndex { get; set; }
