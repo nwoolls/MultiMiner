@@ -106,7 +106,7 @@ namespace MultiMiner.Win
                 if (deviceGridView.CurrentCell.ColumnIndex == coinColumn.Index)
                 {
                     string value = (string)deviceGridView.CurrentCell.EditedFormattedValue;
-                    if (value.Equals("Add Coin"))
+                    if (value.Equals("Configure Coins"))
                     {
                         if (!configuringCoins)
                         {

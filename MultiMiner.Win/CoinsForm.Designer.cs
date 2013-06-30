@@ -262,7 +262,7 @@
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.panel1);
             this.Name = "CoinsForm";
-            this.Text = "Coins";
+            this.Text = "Configure Coins";
             this.Load += new System.EventHandler(this.CoinsForm_Load);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
