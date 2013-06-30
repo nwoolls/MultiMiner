@@ -62,12 +62,12 @@ namespace MultiMiner.Win
         private void RefreshCoinComboBox()
         {
             coinColumn.Items.Clear();
-            coinColumn.Items.Add("Configure Coins");
-            coinColumn.Items.Add(string.Empty);
+
             foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations)
-            {
                 coinColumn.Items.Add(configuration.Coin.Name);
-            }
+
+            coinColumn.Items.Add(string.Empty);
+            coinColumn.Items.Add("Configure Coins");
         }
 
         private bool configuringCoins = false;        
