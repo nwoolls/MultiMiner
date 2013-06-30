@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Engine", "MultiM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Win", "MultiMiner.Win\MultiMiner.Win.csproj", "{E9F8076E-217A-4720-975E-75B7BE8446A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Tests", "MultiMiner.Xgminer.Tests\MultiMiner.Xgminer.Tests.csproj", "{33516EF7-1A09-4156-8F31-533CCE3AE284}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Api", "MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj", "{5B43AD9D-8B67-4AA8-B76D-AA83CAF9D29F}"
 EndProject
 Global
