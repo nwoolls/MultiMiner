@@ -9,9 +9,17 @@ namespace MultiMiner.Engine
 {
     public class MiningEngine
     {
-        private List<Process> miningProcesses = new List<Process>();
+        private List<MinerProcess> minerProcesses = new List<MinerProcess>();
         private EngineConfiguration engineConfiguration;
-        
+
+        public List<MinerProcess> MinerProcesses
+        {
+            get
+            {
+                return minerProcesses;
+            }
+        }
+
         private bool mining = false;
         public bool Mining
         {
@@ -41,6 +49,8 @@ namespace MultiMiner.Engine
         {
             IEnumerable<string> coinSymbols = engineConfiguration.DeviceConfigurations.Select(c => c.CoinSymbol).Distinct();
 
+            int port = 4028;
+
             foreach (string coinSymbol in coinSymbols)
             {
                 CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(coinSymbol));
@@ -69,20 +79,34 @@ namespace MultiMiner.Engine
                 foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
                     arguments = String.Format("{0} -d {1}", arguments, coinGpuConfiguration.DeviceIndex);
 
-                Process minerProcess = miner.StartMining(arguments);
-                                
-                if (!minerProcess.HasExited)
-                    miningProcesses.Add(minerProcess);
+                arguments = String.Format("{0} --api-listen --api-port {1}", arguments, port);
+
+                Process process = miner.StartMining(arguments);
+
+                port++;
+
+                if (!process.HasExited)
+                {
+                    MinerProcess minerProcess = new MinerProcess();
+
+                    minerProcess.Process = process;
+                    minerProcess.ApiPort = port;
+
+                    foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
+                        minerProcess.DevicesIndexes.Add(coinGpuConfiguration.DeviceIndex);
+
+                    minerProcesses.Add(minerProcess);
+                }
             }
         }
 
         public void StopMining()
         {
-            foreach (Process miningProcess in miningProcesses)
-                if (!miningProcess.HasExited)
-                    miningProcess.Kill();
+            foreach (MinerProcess minerProcess in minerProcesses)
+                if (!minerProcess.Process.HasExited)
+                    minerProcess.Process.Kill();
 
-            miningProcesses.Clear();
+            minerProcesses.Clear();
 
             mining = false;
         }

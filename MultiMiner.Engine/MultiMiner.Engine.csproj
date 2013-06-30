@@ -46,6 +46,7 @@
     <Compile Include="Configuration\EngineConfiguration.cs" />
     <Compile Include="KnownCoins.cs" />
     <Compile Include="Configuration\MinerConfiguration.cs" />
+    <Compile Include="MinerProcess.cs" />
     <Compile Include="MiningEngine.cs" />
     <Compile Include="MiningPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
