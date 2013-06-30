@@ -219,8 +219,8 @@ namespace MultiMiner.Win
                 MultiMiner.Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
                 if (apiContext != null)
                 {
-                    string deviceInformation = apiContext.GetDeviceInformation();
-                    textBox1.AppendText(Environment.NewLine + deviceInformation);
+                    //string deviceInformation = apiContext.GetDeviceInformation();
+                    //textBox1.AppendText(Environment.NewLine + deviceInformation);
                 }
             }
         }

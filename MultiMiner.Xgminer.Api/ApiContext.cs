@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiMiner.Xgminer.Api.Parsers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -15,9 +16,12 @@ namespace MultiMiner.Xgminer.Api
             tcpClient = new TcpClient("127.0.0.1", port);
         }
 
-        public string GetDeviceInformation()
+        public List<DeviceInformation> GetDeviceInformation()
         {
-            return GetResponse(ApiVerb.Devs);
+            string textResponse = GetResponse(ApiVerb.Devs);
+            List<DeviceInformation> result = new List<DeviceInformation>();
+            DeviceInformationParser.ParseTextForDeviceInformation(textResponse, result);
+            return result;
         }
 
         public void QuitMining()

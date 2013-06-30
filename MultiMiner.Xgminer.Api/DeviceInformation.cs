@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MultiMiner.Xgminer.Api
+{
+    public class DeviceInformation
+    {
+        public string Kind { get; set; }
+        public int Index { get; set; }
+        public bool Enabled { get; set; }
+        public string Status { get; set; }
+        public double Temperature { get; set; }
+        public int FanSpeed { get; set; }
+        public int FanPercent { get; set; }
+        public int GpuClock { get; set; }
+        public int MemoryClock { get; set; }
+        public double GpuVoltage { get; set; }
+        public int GpuActivity { get; set; }
+        public int PowerTune { get; set; }
+        public double AverageHashrate { get; set; }
+        public double CurrentHashrate { get; set; }
+        public int AcceptedShares { get; set; }
+        public int RejectedShares { get; set; }
+        public int HardwareErrors { get; set; }
+        public double Utility { get; set; }
+        public int Intensity { get; set; }
+    }
+}
