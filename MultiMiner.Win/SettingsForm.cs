@@ -1,14 +1,6 @@
-﻿using MultiMiner.Engine;
-using MultiMiner.Engine.Configuration;
+﻿using MultiMiner.Engine.Configuration;
 using MultiMiner.Xgminer;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MultiMiner.Win

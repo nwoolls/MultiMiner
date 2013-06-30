@@ -1,10 +1,8 @@
 ﻿using MultiMiner.Xgminer.Api.Parsers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MultiMiner.Xgminer.Api
 {
