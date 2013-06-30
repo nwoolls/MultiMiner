@@ -15,5 +15,6 @@ namespace MultiMiner.Xgminer
         public int ApiPort { get; set; }
         public bool ApiListen { get; set; }
         public List<int> DeviceIndexes { get; set; }
+        public string Arguments { get; set; }
     }
 }
