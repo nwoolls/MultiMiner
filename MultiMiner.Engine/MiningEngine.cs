@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Engine.Configuration;
 using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Api;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -90,7 +91,7 @@ namespace MultiMiner.Engine
                     MinerProcess minerProcess = new MinerProcess();
 
                     minerProcess.Process = process;
-                    minerProcess.ApiPort = port;
+                    minerProcess.ApiContext = new ApiContext(port);
 
                     foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
                         minerProcess.DevicesIndexes.Add(coinGpuConfiguration.DeviceIndex);

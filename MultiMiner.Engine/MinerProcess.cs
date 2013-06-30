@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MultiMiner.Xgminer.Api;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace MultiMiner.Engine
@@ -11,7 +12,7 @@ namespace MultiMiner.Engine
         }
 
         public Process Process { get; set; }
-        public int ApiPort { get; set; }
+        public ApiContext ApiContext { get; set; }
         public List<int> DevicesIndexes { get; set; }
     }
 }

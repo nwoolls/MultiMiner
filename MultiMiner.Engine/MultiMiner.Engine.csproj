@@ -53,6 +53,10 @@
     <Compile Include="SerializableDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj">
+      <Project>{5b43ad9d-8b67-4aa8-b76d-aa83caf9d29f}</Project>
+      <Name>MultiMiner.Xgminer.Api</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Xgminer\MultiMiner.Xgminer.csproj">
       <Project>{0dbef993-1b34-4d80-ab6a-f662604325dc}</Project>
       <Name>MultiMiner.Xgminer</Name>
