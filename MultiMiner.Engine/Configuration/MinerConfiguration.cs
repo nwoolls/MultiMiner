@@ -2,8 +2,13 @@
 
 namespace MultiMiner.Engine.Configuration
 {
-    class MinerConfiguration
+    public class MinerConfiguration
     {
-        public Dictionary<CoinAlgorithm, string> AlgorithmFlags { get; set; }
+        public MinerConfiguration()
+        {
+            AlgorithmFlags = new SerializableDictionary<CoinAlgorithm, string>();
+        }
+
+        public SerializableDictionary<CoinAlgorithm, string> AlgorithmFlags { get; set; }
     }
 }
