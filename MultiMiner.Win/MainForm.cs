@@ -107,6 +107,11 @@ namespace MultiMiner.Win
 
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
+
+            if (miningEngine.Mining)
+            {
+                miningEngine.RestartMining();
+            }
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
