@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
@@ -43,16 +44,19 @@
             this.scryptParamsEdit = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox1
             // 
+            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "StartupMiningDelay", true));
             this.textBox1.Location = new System.Drawing.Point(129, 170);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(52, 20);
-            this.textBox1.TabIndex = 2;
+            this.textBox1.TabIndex = 4;
             this.textBox1.Text = "45";
             // 
             // checkBox1
@@ -60,10 +64,11 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "LaunchOnWindowsLogin", true));
             this.checkBox1.Location = new System.Drawing.Point(26, 101);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(198, 17);
-            this.checkBox1.TabIndex = 4;
+            this.checkBox1.TabIndex = 1;
             this.checkBox1.Text = "Launch when you log in to Windows";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
@@ -72,10 +77,11 @@
             this.checkBox2.AutoSize = true;
             this.checkBox2.Checked = true;
             this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "RestartCrashedMiners", true));
             this.checkBox2.Location = new System.Drawing.Point(26, 124);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(134, 17);
-            this.checkBox2.TabIndex = 5;
+            this.checkBox2.TabIndex = 2;
             this.checkBox2.Text = "Restart crashed miners";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
@@ -96,7 +102,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 218);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(418, 47);
-            this.panel1.TabIndex = 8;
+            this.panel1.TabIndex = 5;
             // 
             // saveButton
             // 
@@ -105,7 +111,7 @@
             this.saveButton.Location = new System.Drawing.Point(250, 12);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
-            this.saveButton.TabIndex = 4;
+            this.saveButton.TabIndex = 0;
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
@@ -117,7 +123,7 @@
             this.cancelButton.Location = new System.Drawing.Point(331, 12);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 5;
+            this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
@@ -126,10 +132,11 @@
             this.checkBox3.AutoSize = true;
             this.checkBox3.Checked = true;
             this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox3.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "StartMiningOnStartup", true));
             this.checkBox3.Location = new System.Drawing.Point(26, 147);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(182, 17);
-            this.checkBox3.TabIndex = 9;
+            this.checkBox3.TabIndex = 3;
             this.checkBox3.Text = "Begin mining when the app starts";
             this.checkBox3.UseVisualStyleBackColor = true;
             // 
@@ -151,7 +158,7 @@
             this.groupBox1.Location = new System.Drawing.Point(11, 8);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(372, 77);
-            this.groupBox1.TabIndex = 11;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Miner Parameters";
             // 
@@ -160,14 +167,14 @@
             this.sha256ParamsEdit.Location = new System.Drawing.Point(68, 19);
             this.sha256ParamsEdit.Name = "sha256ParamsEdit";
             this.sha256ParamsEdit.Size = new System.Drawing.Size(279, 20);
-            this.sha256ParamsEdit.TabIndex = 11;
+            this.sha256ParamsEdit.TabIndex = 0;
             // 
             // scryptParamsEdit
             // 
             this.scryptParamsEdit.Location = new System.Drawing.Point(68, 45);
             this.scryptParamsEdit.Name = "scryptParamsEdit";
             this.scryptParamsEdit.Size = new System.Drawing.Size(279, 20);
-            this.scryptParamsEdit.TabIndex = 10;
+            this.scryptParamsEdit.TabIndex = 1;
             // 
             // label2
             // 
@@ -186,6 +193,10 @@
             this.label1.Size = new System.Drawing.Size(50, 13);
             this.label1.TabIndex = 8;
             this.label1.Text = "SHA256:";
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
             // 
             // SettingsForm
             // 
@@ -210,6 +221,7 @@
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -231,5 +243,6 @@
         private System.Windows.Forms.TextBox scryptParamsEdit;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.BindingSource applicationConfigurationBindingSource;
     }
 }

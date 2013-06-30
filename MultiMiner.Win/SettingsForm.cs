@@ -16,12 +16,14 @@ namespace MultiMiner.Win
     public partial class SettingsForm : Form
     {
         private readonly XgminerConfiguration minerConfiguration;
+        private readonly ApplicationConfiguration applicationConfiguration;
 
-        public SettingsForm(XgminerConfiguration minerConfiguration)
+        public SettingsForm(ApplicationConfiguration applicationConfiguration, XgminerConfiguration minerConfiguration)
         {
             InitializeComponent();
 
             this.minerConfiguration = minerConfiguration;
+            this.applicationConfiguration = applicationConfiguration;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -46,6 +48,8 @@ namespace MultiMiner.Win
                 sha256ParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256];
             if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.Scrypt))
                 scryptParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt];
+
+            applicationConfigurationBindingSource.DataSource = this.applicationConfiguration;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace MultiMiner.Win
         private readonly EngineConfiguration engineConfiguration = new EngineConfiguration();
         private readonly KnownCoins knownCoins = new KnownCoins();
         private readonly MiningEngine miningEngine = new MiningEngine();
+        private readonly ApplicationConfiguration applictionConfiguration = new ApplicationConfiguration();
 
         public MainForm()
         {
@@ -39,6 +40,8 @@ namespace MultiMiner.Win
             LoadGridValuesFromConfiguration();
 
             engineConfiguration.LoadMinerConfiguration();
+
+            applictionConfiguration.LoadApplicationConfiguration();
 
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
@@ -220,12 +223,18 @@ namespace MultiMiner.Win
 
         private void settingsButton_Click(object sender, EventArgs e)
         {
-            SettingsForm settingsForm = new SettingsForm(engineConfiguration.MinerConfiguration);
+            SettingsForm settingsForm = new SettingsForm(applictionConfiguration, engineConfiguration.MinerConfiguration);
             DialogResult dialogResult = settingsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
                 engineConfiguration.SaveMinerConfiguration();
+                applictionConfiguration.SaveApplicationConfiguration();
+            }
             else
+            {
                 engineConfiguration.LoadMinerConfiguration();
+                applictionConfiguration.LoadApplicationConfiguration();
+            }
         }
 
         private void statsTimer_Tick(object sender, EventArgs e)

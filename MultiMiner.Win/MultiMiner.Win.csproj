@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationConfiguration.cs" />
     <Compile Include="CoinsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,6 +91,7 @@
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\ApplicationConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.CoinConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.MiningPool.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Device.datasource" />
