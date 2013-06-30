@@ -84,6 +84,10 @@ namespace MultiMiner.Engine
 
                 Process process = miner.StartMining(arguments);
 
+                Thread.Sleep(2000);
+                if (process.HasExited)
+                    process = miner.StartMining(arguments);
+                
                 port++;
 
                 if (!process.HasExited)
