@@ -81,7 +81,7 @@ namespace MultiMiner.Engine
                 foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
                     arguments = String.Format("{0} -d {1}", arguments, coinGpuConfiguration.DeviceIndex);
 
-                arguments = String.Format("{0} --api-listen --api-port {1}", arguments, port);
+                arguments = String.Format("{0} --api-listen --api-port {1} --api-allow W:127.0.0.1", arguments, port);
 
                 Process process = miner.StartMining(arguments);
 
