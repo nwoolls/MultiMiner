@@ -30,24 +30,24 @@
         {
             this.components = new System.ComponentModel.Container();
             this.deviceGridView = new System.Windows.Forms.DataGridView();
-            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.settingsButton = new System.Windows.Forms.Button();
             this.stopButton = new System.Windows.Forms.Button();
             this.startButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
+            this.coinColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.rateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.vendorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.platformDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.versionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.coinColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.rateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // deviceGridView
@@ -77,10 +77,6 @@
             this.deviceGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.deviceGridView_CellValueChanged);
             this.deviceGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.deviceGridView_CurrentCellDirtyStateChanged);
             // 
-            // deviceBindingSource
-            // 
-            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
-            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.settingsButton);
@@ -102,6 +98,7 @@
             this.settingsButton.TabIndex = 4;
             this.settingsButton.Text = "Settings";
             this.settingsButton.UseVisualStyleBackColor = true;
+            this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
             // 
             // stopButton
             // 
@@ -112,6 +109,7 @@
             this.stopButton.TabIndex = 3;
             this.stopButton.Text = "Stop";
             this.stopButton.UseVisualStyleBackColor = true;
+            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
             // 
             // startButton
             // 
@@ -122,6 +120,7 @@
             this.startButton.TabIndex = 2;
             this.startButton.Text = "Start";
             this.startButton.UseVisualStyleBackColor = true;
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
             // cancelButton
             // 
@@ -144,6 +143,19 @@
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            // 
+            // coinColumn
+            // 
+            this.coinColumn.HeaderText = "Coin";
+            this.coinColumn.Items.AddRange(new object[] {
+            "Configure Coins"});
+            this.coinColumn.Name = "coinColumn";
+            // 
+            // rateColumn
+            // 
+            this.rateColumn.HeaderText = "Hashrate";
+            this.rateColumn.Name = "rateColumn";
+            this.rateColumn.ReadOnly = true;
             // 
             // kindDataGridViewTextBoxColumn
             // 
@@ -187,18 +199,9 @@
             this.versionDataGridViewTextBoxColumn.Name = "versionDataGridViewTextBoxColumn";
             this.versionDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // coinColumn
+            // deviceBindingSource
             // 
-            this.coinColumn.HeaderText = "Coin";
-            this.coinColumn.Items.AddRange(new object[] {
-            "Configure Coins"});
-            this.coinColumn.Name = "coinColumn";
-            // 
-            // rateColumn
-            // 
-            this.rateColumn.HeaderText = "Hashrate";
-            this.rateColumn.Name = "rateColumn";
-            this.rateColumn.ReadOnly = true;
+            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
             // 
             // MainForm
             // 
@@ -211,8 +214,8 @@
             this.Text = "MultiMiner";
             this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }

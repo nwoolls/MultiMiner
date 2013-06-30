@@ -13,6 +13,7 @@ namespace MultiMiner.Win
         private List<Device> devices;
         private readonly EngineConfiguration engineConfiguration = new EngineConfiguration();
         private readonly KnownCoins knownCoins = new KnownCoins();
+        private readonly MiningEngine miningEngine = new MiningEngine();
 
         public MainForm()
         {
@@ -32,6 +33,8 @@ namespace MultiMiner.Win
 
             engineConfiguration.LoadDeviceConfigurations();
             LoadGridValuesFromConfiguration();
+
+            engineConfiguration.LoadMinerConfiguration();
 
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
@@ -179,6 +182,26 @@ namespace MultiMiner.Win
                 lastDeviceKind = devices[i].Kind;
                 index++;
             }
+        }
+
+        private void stopButton_Click(object sender, EventArgs e)
+        {
+            miningEngine.StopMining();
+        }
+
+        private void startButton_Click(object sender, EventArgs e)
+        {
+            miningEngine.StartMining(engineConfiguration);
+        }
+
+        private void settingsButton_Click(object sender, EventArgs e)
+        {
+            SettingsForm settingsForm = new SettingsForm(engineConfiguration.MinerConfiguration);
+            DialogResult dialogResult = settingsForm.ShowDialog();
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+                engineConfiguration.SaveMinerConfiguration();
+            else
+                engineConfiguration.LoadMinerConfiguration();
         }
     }
 }
