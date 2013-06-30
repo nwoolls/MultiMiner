@@ -7,20 +7,17 @@ using System.Threading.Tasks;
 
 namespace MultiMiner.Xgminer.Api
 {
-    public class Context
+    public class ApiContext
     {
-        public string Config()
+        private static TcpClient tcpClient;
+        public ApiContext(int port)
         {
-            string apiVerb = Verb.Config;
-
-            string response = GetResponse(apiVerb);
-
-            return response;
+            tcpClient = new TcpClient("127.0.0.1", port);
         }
 
-        public string Devs()
+        public string GetDeviceInformation()
         {
-            string apiVerb = Verb.Devs;
+            string apiVerb = ApiVerb.Devs;
 
             string response = GetResponse(apiVerb);
 
@@ -29,7 +26,6 @@ namespace MultiMiner.Xgminer.Api
 
         private static string GetResponse(string apiVerb)
         {
-            TcpClient tcpClient = new TcpClient("127.0.0.1", 4028);
             NetworkStream stream = tcpClient.GetStream();
             Byte[] request = System.Text.Encoding.ASCII.GetBytes(apiVerb);
             stream.Write(request, 0, request.Length);

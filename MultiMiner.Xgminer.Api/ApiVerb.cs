@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MultiMiner.Xgminer.Api
 {
-    public static class Verb
+    public static class ApiVerb
     {
         public const string Config = "config";
         public const string Devs = "devs";
