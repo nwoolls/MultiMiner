@@ -1,24 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace MultiMiner.Xgminer
+namespace MultiMiner.Xgminer.Parsers
 {
     public static class DeviceParser
     {
-        public static void ParseOutputForDevices(List<string> output, List<Device> devices)
+        public static void ParseTextForDevices(List<string> text, List<Device> devices)
         {
-            ParseOutputForGpuDevices(output, devices);
-            ParseOutputForUsbDevices(output, devices);
+            ParseTextForGpuDevices(text, devices);
+            ParseTextForUsbDevices(text, devices);
         }
 
-        private static void ParseOutputForUsbDevices(List<string> output, List<Device> devices)
+        private static void ParseTextForUsbDevices(List<string> text, List<Device> devices)
         {
             bool inUsbList = false;
 
             string currentUsbManufacturer = string.Empty;
             string currentUsbProduct = string.Empty;
 
-            foreach (string line in output)
+            foreach (string line in text)
             {
                 if (Regex.Match(line, DevicePatterns.UsbDevicesFooter).Success)
                 {
@@ -55,7 +55,7 @@ namespace MultiMiner.Xgminer
             }
         }
 
-        private static void ParseOutputForGpuDevices(List<string> output, List<Device> devices)
+        private static void ParseTextForGpuDevices(List<string> text, List<Device> devices)
         {
             bool inPlatform = false;
 
@@ -68,7 +68,7 @@ namespace MultiMiner.Xgminer
             List<string> names = new List<string>();
             List<string> descriptions = new List<string>();
 
-            foreach (string line in output)
+            foreach (string line in text)
             {
                 Match match = Regex.Match(line, DevicePatterns.PlatformVendor);
                 if (match.Success)

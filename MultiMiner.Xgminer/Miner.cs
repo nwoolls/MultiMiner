@@ -1,4 +1,4 @@
-﻿using System;
+﻿using MultiMiner.Xgminer.Parsers;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -35,7 +35,7 @@ namespace MultiMiner.Xgminer
                 output.Add(line);
             }
 
-            DeviceParser.ParseOutputForDevices(output, result);
+            DeviceParser.ParseTextForDevices(output, result);
 
             return result;
         }
