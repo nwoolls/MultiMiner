@@ -10,5 +10,6 @@ namespace MultiMiner.Xgminer.Api
     {
         public const string Config = "config";
         public const string Devs = "devs";
+        public const string Quit = "quit";
     }
 }

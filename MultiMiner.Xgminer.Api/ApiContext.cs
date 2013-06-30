@@ -17,11 +17,12 @@ namespace MultiMiner.Xgminer.Api
 
         public string GetDeviceInformation()
         {
-            string apiVerb = ApiVerb.Devs;
+            return GetResponse(ApiVerb.Devs);
+        }
 
-            string response = GetResponse(apiVerb);
-
-            return response;
+        public void QuitMining()
+        {
+            GetResponse(ApiVerb.Quit);
         }
 
         private static string GetResponse(string apiVerb)
@@ -30,7 +31,7 @@ namespace MultiMiner.Xgminer.Api
             Byte[] request = System.Text.Encoding.ASCII.GetBytes(apiVerb);
             stream.Write(request, 0, request.Length);
 
-            Byte[] responseBuffer = new Byte[1024];
+            Byte[] responseBuffer = new Byte[4096];
             string response = string.Empty;
             int bytesRead = stream.Read(responseBuffer, 0, responseBuffer.Length);
             response = System.Text.Encoding.ASCII.GetString(responseBuffer, 0, bytesRead);
