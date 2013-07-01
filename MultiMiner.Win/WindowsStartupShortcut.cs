@@ -27,8 +27,7 @@ namespace MultiMiner.Win
             string pathOnly = Path.GetDirectoryName(shortcutFilename);
             string filenameOnly = Path.GetFileName(shortcutFilename);
 
-            Shell32.Shell shell = new Shell32.ShellClass();
-            Shell32.Folder folder = shell.NameSpace(pathOnly);
+            Shell32.Folder folder = GetShell32NameSpace(pathOnly);
             Shell32.FolderItem folderItem = folder.ParseName(filenameOnly);
             if (folderItem != null)
             {
@@ -37,6 +36,15 @@ namespace MultiMiner.Win
             }
 
             return String.Empty; // Not found
+        }
+
+        //used instead of shellClass.NameSpace() for compatibility with various Windows OS's
+        //http://techitongue.blogspot.com/2012/06/shell32-code-compiled-on-windows-7.html
+        public static Shell32.Folder GetShell32NameSpace(Object folder)
+        {
+            Type shellAppType = Type.GetTypeFromProgID("Shell.Application");
+            Object shell = Activator.CreateInstance(shellAppType);
+            return (Shell32.Folder)shellAppType.InvokeMember("NameSpace", System.Reflection.BindingFlags.InvokeMethod, null, shell, new object[] { folder });
         }
 
         public static void DeleteStartupFolderShortcuts()
