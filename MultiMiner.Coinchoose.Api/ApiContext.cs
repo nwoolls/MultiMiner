@@ -8,8 +8,8 @@ namespace MultiMiner.Coinchoose.Api
         public static JArray GetCoinInformation()
         {
             WebClient client = new WebClient();
-            string s = client.DownloadString("http://www.coinchoose.com/api.php");
-            JArray jsonArray = JArray.Parse(s);
+            string jsonString = client.DownloadString("http://www.coinchoose.com/api.php");
+            JArray jsonArray = JArray.Parse(jsonString);
             return jsonArray;
         }
     }
