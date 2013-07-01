@@ -32,7 +32,9 @@ namespace MultiMiner.Win
         public void SaveApplicationConfiguration()
         {
             ConfigurationReaderWriter.WriteConfiguration(this, DeviceConfigurationsFileName());
-            ApplyLaunchOnWindowsStartup();
+
+            if (Environment.OSVersion.Platform != PlatformID.Unix)
+                ApplyLaunchOnWindowsStartup();
         }
 
         private void ApplyLaunchOnWindowsStartup()

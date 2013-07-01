@@ -32,6 +32,8 @@ namespace MultiMiner.Win
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             LoadSettings();
+
+            autoLaunchCheckBox.Visible = Environment.OSVersion.Platform != PlatformID.Unix;
         }
 
         private void LoadSettings()
