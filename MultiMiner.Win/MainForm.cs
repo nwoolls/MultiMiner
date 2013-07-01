@@ -71,7 +71,7 @@ namespace MultiMiner.Win
 
         private static List<Device> GetDevices()
         {
-            MultiMiner.Xgminer.MinerConfiguration minerConfiguration = new MultiMiner.Xgminer.MinerConfiguration();
+            MinerConfiguration minerConfiguration = new MinerConfiguration();
 
             switch (Environment.OSVersion.Platform)
             {
@@ -118,23 +118,26 @@ namespace MultiMiner.Win
                 {
                     string value = (string)deviceGridView.CurrentCell.EditedFormattedValue;
                     if (value.Equals("Configure Coins"))
-                    {
-                        if (!configuringCoins)
-                        {
-                            configuringCoins = true;
-                            try
-                            {
-                                deviceGridView.CancelEdit();
-                                ConfigureCoins();
-                            }
-                            finally
-                            {
-                                configuringCoins = false;
-                            }
-                        }
-                    }
+                        CheckAndConfigureCoins();
 
                     deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                }
+            }
+        }
+
+        private void CheckAndConfigureCoins()
+        {
+            if (!configuringCoins)
+            {
+                configuringCoins = true;
+                try
+                {
+                    deviceGridView.CancelEdit();
+                    ConfigureCoins();
+                }
+                finally
+                {
+                    configuringCoins = false;
                 }
             }
         }
