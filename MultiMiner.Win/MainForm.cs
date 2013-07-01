@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace MultiMiner.Win
 {
@@ -288,7 +289,17 @@ namespace MultiMiner.Win
                 MultiMiner.Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
                 if (apiContext != null)
                 {
-                    IEnumerable<MultiMiner.Xgminer.Api.DeviceInformation> enabledDevices = apiContext.GetDeviceInformation().Where(d => d.Enabled);
+                    IEnumerable<MultiMiner.Xgminer.Api.DeviceInformation> enabledDevices = null;
+                    try
+                    {
+                        enabledDevices = apiContext.GetDeviceInformation().Where(d => d.Enabled); ;                       
+                    }
+                    catch (IOException ex)
+                    {
+                        //don't fail and crash out due to any issues communicating via the API
+                        continue;
+                    }
+
                     foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in enabledDevices)
                     {
                         int index = 0;
