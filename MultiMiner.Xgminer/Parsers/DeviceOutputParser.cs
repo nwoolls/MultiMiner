@@ -81,7 +81,7 @@ namespace MultiMiner.Xgminer.Parsers
                 match = Regex.Match(line, DevicePatterns.PlatformVersion);
                 if (match.Success)
                     currentPlatformVersion = match.Groups[1].Value.TrimEnd();
-
+                
                 if (Regex.Match(line, DevicePatterns.PlatformDevicesFooter).Success)
                 {
                     for (int i = 0; i < names.Count; i++)
@@ -90,8 +90,13 @@ namespace MultiMiner.Xgminer.Parsers
                         device.Platform = currentPlatformName;
                         device.Vendor = currentPlatformVendor;
                         device.Version = currentPlatformVersion;
+
                         device.Name = names[i];
-                        device.Description = descriptions[i];
+
+                        //may not be descriptions, e.g. under OS X
+                        if (i < descriptions.Count)
+                            device.Description = descriptions[i];
+
                         device.Kind = DeviceKind.GPU;
 
                         devices.Add(device);
@@ -110,7 +115,6 @@ namespace MultiMiner.Xgminer.Parsers
                         currentDeviceName = match.Groups[1].Value.TrimEnd();
                         names.Add(currentDeviceName);
                     }
-
 
                     match = Regex.Match(line, DevicePatterns.DeviceDescription);
                     if (match.Success)
