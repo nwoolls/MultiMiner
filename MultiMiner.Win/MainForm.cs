@@ -174,6 +174,14 @@ namespace MultiMiner.Win
         {
             if (e.ColumnIndex == coinColumn.Index)
             {
+                //have to do this in CellValueChanged under Mono - CurrentCellDirtyStateChanged not called
+                if (Environment.OSVersion.Platform == PlatformID.Unix)
+                {
+                    string value = (string)deviceGridView.CurrentCell.EditedFormattedValue;
+                    if (value.Equals("Configure Coins"))
+                        CheckAndConfigureCoins();
+                }
+
                 saveButton.Enabled = true;
                 cancelButton.Enabled = true;
 
