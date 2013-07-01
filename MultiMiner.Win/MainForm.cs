@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace MultiMiner.Win
 {
@@ -343,7 +345,19 @@ namespace MultiMiner.Win
 
         private void RefreshCoinStats()
         {
-            coinInformation = MultiMiner.Coinchoose.Api.ApiContext.GetCoinInformation();
+            try
+            {
+                coinInformation = MultiMiner.Coinchoose.Api.ApiContext.GetCoinInformation();
+            }
+            catch (Exception ex)
+            {
+                //don't crash if website cannot be resolved or JSON cannot be parsed
+                if (ex is WebException || ex is JsonReaderException)
+                {
+                    return;
+                }
+                throw;
+            }
 
             LoadGridValuesFromCoinStats();
         }
@@ -352,7 +366,6 @@ namespace MultiMiner.Win
         {
             foreach (JToken jToken in coinInformation)
             {
-                string symbol = jToken.Value<string>("symbol");
                 string name = jToken.Value<string>("name");
                 double difficulty = jToken.Value<double>("difficulty");
                 double price = jToken.Value<double>("price");
@@ -377,12 +390,6 @@ namespace MultiMiner.Win
             Application.DoEvents();
 
             StartMining();
-        }
-
-        private void cancelAutoMineButton_Click(object sender, EventArgs e)
-        {
-            startupMiningTimer.Enabled = false;
-            startupMiningPanel.Visible = false;
         }
 
         private void countdownTimer_Tick(object sender, EventArgs e)
