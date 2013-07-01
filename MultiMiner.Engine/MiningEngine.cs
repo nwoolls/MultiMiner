@@ -88,8 +88,17 @@ namespace MultiMiner.Engine
             IEnumerable<DeviceConfiguration> coinGpuConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.CoinSymbol.Equals(coinSymbol));
 
             MultiMiner.Xgminer.MinerConfiguration minerConfiguration = new MultiMiner.Xgminer.MinerConfiguration();
-
-            minerConfiguration.ExecutablePath = @"Miners\cgminer\cgminer.exe";
+            
+            switch (Environment.OSVersion.Platform) 
+            {
+                case PlatformID.Unix:
+                    minerConfiguration.ExecutablePath = @"cgminer";
+                    break;
+                default:
+                    minerConfiguration.ExecutablePath = @"Miners\cgminer\cgminer.exe";
+                    break;
+            }
+            
             minerConfiguration.Pools = coinConfiguration.Pools;
             minerConfiguration.Algorithm = coinConfiguration.Coin.Algorithm;
             minerConfiguration.ApiPort = port;

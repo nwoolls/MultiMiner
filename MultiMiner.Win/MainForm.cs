@@ -71,9 +71,19 @@ namespace MultiMiner.Win
 
         private static List<Device> GetDevices()
         {
-            MultiMiner.Xgminer.MinerConfiguration minerConfig = new MultiMiner.Xgminer.MinerConfiguration();
-            minerConfig.ExecutablePath = @"Miners\cgminer\cgminer.exe";
-            Miner miner = new Miner(minerConfig);
+            MultiMiner.Xgminer.MinerConfiguration minerConfiguration = new MultiMiner.Xgminer.MinerConfiguration();
+
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Unix:
+                    minerConfiguration.ExecutablePath = @"cgminer";
+                    break;
+                default:
+                    minerConfiguration.ExecutablePath = @"Miners\cgminer\cgminer.exe";
+                    break;
+            }
+
+            Miner miner = new Miner(minerConfiguration);
             return miner.GetDevices();
         }
 
