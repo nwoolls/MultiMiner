@@ -383,7 +383,10 @@ namespace MultiMiner.Win
         private void cancelStartupMiningButton_Click(object sender, EventArgs e)
         {
             startupMiningTimer.Enabled = false;
+            countdownTimer.Enabled = false;
             startupMiningPanel.Visible = false;
+            countdownLabel.Visible = false; //or remains visible under Mono
+            cancelStartupMiningButton.Visible = false; //or remains visible under Mono
         }
 
         private void crashRecoveryTimer_Tick(object sender, EventArgs e)
