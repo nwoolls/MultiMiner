@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Xgminer.Parsers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -79,12 +80,19 @@ namespace MultiMiner.Xgminer
 
             //newest cgminer, paired with USB ASIC's, likes to die on startup a few times saying the specified device
             //wasn't detected, happens when starting/stopping mining on USB ASIC's repeatedly
-            Thread.Sleep(5000);
+            Thread.Sleep(2000);
+
+            int retries = 0;
+            const int maxRetries = 5;
 
             while (process.HasExited)
             {
+                if (retries >= maxRetries)
+                    throw new Exception(string.Format("Miner keeps exiting after launching - retried {0} times. Exit code {1}.", retries, process.ExitCode));
+
                 process = process = Process.Start(startInfo);
                 Thread.Sleep(2000);
+                retries++;
             }
 
             return process;
