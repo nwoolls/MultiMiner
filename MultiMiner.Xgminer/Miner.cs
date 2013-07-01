@@ -49,7 +49,11 @@ namespace MultiMiner.Xgminer
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
             startInfo.UseShellExecute = false;
-            startInfo.RedirectStandardOutput = true; //otherwise cgminer output shows under *nix in the terminal
+
+            //otherwise cgminer output shows under *nix in the terminal
+            //DONT do it for Windows though or cgminer will close after opening
+            if (Environment.OSVersion.Platform == PlatformID.Unix)
+                startInfo.RedirectStandardOutput = true;
 
             string arguments = minerConfiguration.Arguments;
 
