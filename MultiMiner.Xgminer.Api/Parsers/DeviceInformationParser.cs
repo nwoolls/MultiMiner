@@ -6,7 +6,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
     public class DeviceInformationParser
     {
         public static void ParseTextForDeviceInformation(string text, List<DeviceInformation> deviceInformation)
-        {
+        {            
             List<string> deviceBlob = text.Split('|').ToList();
             deviceBlob.RemoveAt(0);
 
@@ -39,7 +39,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     newDevice.GpuVoltage = double.Parse(keyValuePairs["GPU Voltage"]);
                     newDevice.GpuActivity = int.Parse(keyValuePairs["GPU Activity"]);
                     newDevice.PowerTune = int.Parse(keyValuePairs["Powertune"]);
-                    newDevice.Intensity = int.Parse(keyValuePairs["Intensity"]);
+                    newDevice.Intensity = keyValuePairs["Intensity"];
                 }
 
                 newDevice.AverageHashrate = double.Parse(keyValuePairs["MHS av"]) * 1000;

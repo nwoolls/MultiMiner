@@ -20,6 +20,6 @@
         public int RejectedShares { get; set; }
         public int HardwareErrors { get; set; }
         public double Utility { get; set; }
-        public int Intensity { get; set; }
+        public string Intensity { get; set; } //string, might be D
     }
 }
