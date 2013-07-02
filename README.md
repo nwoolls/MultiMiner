@@ -1,5 +1,6 @@
 MultiMiner
 ==========
+### Your coins. Your pools. Your way.
 MultiMiner is a GUI front-end for [cgminer][1] (and soon [bfgminer][2]) that simplifies switching individal devices - GPUs, ASICs, etc. - between crypto-currencies.
 
 MultiMiner uses the underlying mining engine (cgminer by default) to detect available mining devices.
