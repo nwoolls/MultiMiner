@@ -38,7 +38,9 @@ Mono (OS X, Linux) Installation
 
 Planned Features
 ----------------
-Coin switching strategies and automatic coin switching
+* Ability to edit the known crypto-coins
+* Coin switching strategies
+* Automatic coin switching
 
 Source Code
 -----------
