@@ -1,5 +1,7 @@
-﻿using MultiMiner.Xgminer;
+﻿using MultiMiner.Engine.Configuration;
+using MultiMiner.Xgminer;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MultiMiner.Engine
 {
@@ -8,75 +10,24 @@ namespace MultiMiner.Engine
         public KnownCoins()
         {
             this.Coins = new List<CryptoCoin>();
-            SeedKnownCoins();
+            LoadFromFile();
         }
-
-        private void SeedKnownCoins()
+        
+        public void LoadFromFile()
         {
-            CryptoCoin coin = new CryptoCoin() 
-            { 
-                Name = "Bitcoin", 
-                Symbol = "BTC", 
-                Algorithm = CoinAlgorithm.SHA256 
-            };
-
-            this.Coins.Add(coin);
-
-            coin = new CryptoCoin()
-            {
-                Name = "Litecoin",
-                Symbol = "LTC",
-                Algorithm = CoinAlgorithm.Scrypt
-            };
-
-            this.Coins.Add(coin);
-
-            coin = new CryptoCoin()
-            {
-                Name = "Novacoin",
-                Symbol = "NVC",
-                Algorithm = CoinAlgorithm.Scrypt
-            };
-
-            this.Coins.Add(coin);
-
-            coin = new CryptoCoin()
-            {
-                Name = "Feathercoin",
-                Symbol = "FTC",
-                Algorithm = CoinAlgorithm.Scrypt
-            };
-
-            this.Coins.Add(coin);
-
-            coin = new CryptoCoin()
-            {
-                Name = "Megacoin",
-                Symbol = "MEC",
-                Algorithm = CoinAlgorithm.Scrypt
-            };
-
-            this.Coins.Add(coin);
-
-            coin = new CryptoCoin()
-            {
-                Name = "BBQCoin",
-                Symbol = "BQC",
-                Algorithm = CoinAlgorithm.Scrypt
-            };
-
-            this.Coins.Add(coin);
-
-            coin = new CryptoCoin()
-            {
-                Name = "Terracoin",
-                Symbol = "TRC",
-                Algorithm = CoinAlgorithm.SHA256
-            };
-
-            this.Coins.Add(coin);
+            Coins = ConfigurationReaderWriter.ReadConfiguration<List<CryptoCoin>>(KnownCoinsFileName());
         }
 
+        private static string AppPath()
+        {
+            return Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+        }
+        
+        private static string KnownCoinsFileName()
+        {
+            return Path.Combine(AppPath(), "KnownCoins.xml");
+        }
+        
         public List<CryptoCoin> Coins { get; set; }
     }
 }

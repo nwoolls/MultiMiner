@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfCryptoCoin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <CryptoCoin>
+    <Name>Bitcoin</Name>
+    <Symbol>BTC</Symbol>
+    <Algorithm>SHA256</Algorithm>
+  </CryptoCoin>
+  <CryptoCoin>
+    <Name>Litecoin</Name>
+    <Symbol>LTC</Symbol>
+    <Algorithm>Scrypt</Algorithm>
+  </CryptoCoin>
+  <CryptoCoin>
+    <Name>Novacoin</Name>
+    <Symbol>NVC</Symbol>
+    <Algorithm>Scrypt</Algorithm>
+  </CryptoCoin>
+  <CryptoCoin>
+    <Name>Feathercoin</Name>
+    <Symbol>FTC</Symbol>
+    <Algorithm>Scrypt</Algorithm>
+  </CryptoCoin>
+  <CryptoCoin>
+    <Name>Megacoin</Name>
+    <Symbol>MEC</Symbol>
+    <Algorithm>Scrypt</Algorithm>
+  </CryptoCoin>
+  <CryptoCoin>
+    <Name>BBQCoin</Name>
+    <Symbol>BQC</Symbol>
+    <Algorithm>Scrypt</Algorithm>
+  </CryptoCoin>
+  <CryptoCoin>
+    <Name>Terracoin</Name>
+    <Symbol>TRC</Symbol>
+    <Algorithm>SHA256</Algorithm>
+  </CryptoCoin>
+</ArrayOfCryptoCoin>
