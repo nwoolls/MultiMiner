@@ -28,3 +28,5 @@ TestResults/
 Elmah.sdf
 generated/
 WebsiteTmp/
+*.lnk
+Thumbs.db
