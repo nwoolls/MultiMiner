@@ -21,7 +21,7 @@ Binary Downloads
 Windows Installation
 --------------------
 1. Download and extract the above binary distribution
-2. Find the Miners\cgminer directory and extract the current [binary distribution] for cgminer
+2. Find the Miners\cgminer directory and extract the current [binary distribution][4] for cgminer
 3. Launch MultiMiner.Win.exe to get started
 
 Mono (OS X, Linux) Installation
