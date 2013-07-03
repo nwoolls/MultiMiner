@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Configuration\CoinConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationReaderWriter.cs" />
+    <Compile Include="Configuration\StrategyConfiguration.cs" />
     <Compile Include="CryptoCoin.cs" />
     <Compile Include="Configuration\DeviceConfiguration.cs" />
     <Compile Include="Configuration\EngineConfiguration.cs" />

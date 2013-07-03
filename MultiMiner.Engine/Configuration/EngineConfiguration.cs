@@ -11,16 +11,33 @@ namespace MultiMiner.Engine.Configuration
             DeviceConfigurations = new List<DeviceConfiguration>();
             CoinConfigurations = new List<CoinConfiguration>();
             XgminerConfiguration = new XgminerConfiguration();
+            StrategyConfiguration = new StrategyConfiguration();
         }
 
         public List<DeviceConfiguration> DeviceConfigurations { get; set; }
         public List<CoinConfiguration> CoinConfigurations { get; set; }
         public XgminerConfiguration XgminerConfiguration { get; set; }
+        public StrategyConfiguration StrategyConfiguration { get; set; }
 
         private static string AppDataPath()
         {
             string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             return Path.Combine(rootPath, "MultiMiner");
+        }
+
+        private static string StrategyConfigurationsFileName()
+        {
+            return Path.Combine(AppDataPath(), "StrategyConfiguration.xml");
+        }
+
+        public void SaveStrategyConfiguration()
+        {
+            ConfigurationReaderWriter.WriteConfiguration(StrategyConfiguration, StrategyConfigurationsFileName());
+        }
+
+        public void LoadStrategyConfiguration()
+        {
+            StrategyConfiguration = ConfigurationReaderWriter.ReadConfiguration<StrategyConfiguration>(StrategyConfigurationsFileName());
         }
 
         private static string DeviceConfigurationsFileName()
