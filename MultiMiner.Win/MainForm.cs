@@ -229,24 +229,34 @@ namespace MultiMiner.Win
 
         private void LoadGridValuesFromConfiguration()
         {
-            for (int i = 0; i < devices.Count; i++)
+            bool saveEnabled = saveButton.Enabled;
+            try
             {
-                Device device = devices[i];
-                
-                DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
-                    c => (c.DeviceKind == device.Kind)
-                    && (c.DeviceIndex == i));
+                for (int i = 0; i < devices.Count; i++)
+                {
+                    Device device = devices[i];
 
-                if (deviceConfiguration != null)
-                {
-                    CryptoCoin coin = knownCoins.Coins.SingleOrDefault(c => c.Symbol.Equals(deviceConfiguration.CoinSymbol));
-                    if (coin != null)
-                        deviceGridView.Rows[i].Cells[coinColumn.Index].Value = coin.Name;
-                }
-                else
-                {
-                    deviceGridView.Rows[i].Cells[coinColumn.Index].Value = string.Empty;
-                }
+                    DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
+                        c => (c.DeviceKind == device.Kind)
+                        && (c.DeviceIndex == i));
+
+                    if (deviceConfiguration != null)
+                    {
+                        CryptoCoin coin = knownCoins.Coins.SingleOrDefault(c => c.Symbol.Equals(deviceConfiguration.CoinSymbol));
+                        if (coin != null)
+                            deviceGridView.Rows[i].Cells[coinColumn.Index].Value = coin.Name;
+                    }
+                    else
+                    {
+                        deviceGridView.Rows[i].Cells[coinColumn.Index].Value = string.Empty;
+                    }
+                }                
+            }
+            finally
+            {
+                //restore button states after
+                saveButton.Enabled = saveEnabled;
+                cancelButton.Enabled = saveEnabled;
             }
         }
 
