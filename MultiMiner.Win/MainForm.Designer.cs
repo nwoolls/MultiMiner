@@ -31,21 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.deviceGridView = new System.Windows.Forms.DataGridView();
-            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.settingsButton = new System.Windows.Forms.Button();
-            this.stopButton = new System.Windows.Forms.Button();
-            this.startButton = new System.Windows.Forms.Button();
-            this.cancelButton = new System.Windows.Forms.Button();
-            this.saveButton = new System.Windows.Forms.Button();
-            this.deviceStatsTimer = new System.Windows.Forms.Timer(this.components);
-            this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
-            this.startupMiningTimer = new System.Windows.Forms.Timer(this.components);
-            this.countdownTimer = new System.Windows.Forms.Timer(this.components);
-            this.startupMiningPanel = new System.Windows.Forms.Panel();
-            this.cancelStartupMiningButton = new System.Windows.Forms.Button();
-            this.countdownLabel = new System.Windows.Forms.Label();
-            this.crashRecoveryTimer = new System.Windows.Forms.Timer(this.components);
             this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -57,10 +42,28 @@
             this.acceptedColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rejectedColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.errorsColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.deviceStatsTimer = new System.Windows.Forms.Timer(this.components);
+            this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
+            this.startupMiningTimer = new System.Windows.Forms.Timer(this.components);
+            this.countdownTimer = new System.Windows.Forms.Timer(this.components);
+            this.startupMiningPanel = new System.Windows.Forms.Panel();
+            this.cancelStartupMiningButton = new System.Windows.Forms.Button();
+            this.countdownLabel = new System.Windows.Forms.Label();
+            this.crashRecoveryTimer = new System.Windows.Forms.Timer(this.components);
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.startButton = new System.Windows.Forms.ToolStripButton();
+            this.settingsButton = new System.Windows.Forms.ToolStripButton();
+            this.saveButton = new System.Windows.Forms.ToolStripButton();
+            this.cancelButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+            this.stopButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
-            this.panel1.SuspendLayout();
             this.startupMiningPanel.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // deviceGridView
@@ -85,140 +88,13 @@
             this.errorsColumn});
             this.deviceGridView.DataSource = this.deviceBindingSource;
             this.deviceGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.deviceGridView.Location = new System.Drawing.Point(0, 0);
+            this.deviceGridView.Location = new System.Drawing.Point(0, 25);
             this.deviceGridView.Name = "deviceGridView";
             this.deviceGridView.RowHeadersVisible = false;
-            this.deviceGridView.Size = new System.Drawing.Size(1127, 393);
+            this.deviceGridView.Size = new System.Drawing.Size(1127, 409);
             this.deviceGridView.TabIndex = 0;
             this.deviceGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.deviceGridView_CellValueChanged);
             this.deviceGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.deviceGridView_CurrentCellDirtyStateChanged);
-            // 
-            // deviceBindingSource
-            // 
-            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.settingsButton);
-            this.panel1.Controls.Add(this.stopButton);
-            this.panel1.Controls.Add(this.startButton);
-            this.panel1.Controls.Add(this.cancelButton);
-            this.panel1.Controls.Add(this.saveButton);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 393);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1127, 41);
-            this.panel1.TabIndex = 1;
-            // 
-            // settingsButton
-            // 
-            this.settingsButton.Location = new System.Drawing.Point(176, 9);
-            this.settingsButton.Name = "settingsButton";
-            this.settingsButton.Size = new System.Drawing.Size(75, 23);
-            this.settingsButton.TabIndex = 4;
-            this.settingsButton.Text = "Settings";
-            this.settingsButton.UseVisualStyleBackColor = true;
-            this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
-            // 
-            // stopButton
-            // 
-            this.stopButton.Enabled = false;
-            this.stopButton.Location = new System.Drawing.Point(95, 9);
-            this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(75, 23);
-            this.stopButton.TabIndex = 3;
-            this.stopButton.Text = "Stop";
-            this.stopButton.UseVisualStyleBackColor = true;
-            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
-            // 
-            // startButton
-            // 
-            this.startButton.Location = new System.Drawing.Point(13, 9);
-            this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(75, 23);
-            this.startButton.TabIndex = 2;
-            this.startButton.Text = "Start";
-            this.startButton.UseVisualStyleBackColor = true;
-            this.startButton.Click += new System.EventHandler(this.startButton_Click);
-            // 
-            // cancelButton
-            // 
-            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cancelButton.Enabled = false;
-            this.cancelButton.Location = new System.Drawing.Point(1040, 9);
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 1;
-            this.cancelButton.Text = "Cancel";
-            this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
-            // 
-            // saveButton
-            // 
-            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveButton.Enabled = false;
-            this.saveButton.Location = new System.Drawing.Point(959, 9);
-            this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(75, 23);
-            this.saveButton.TabIndex = 0;
-            this.saveButton.Text = "Save";
-            this.saveButton.UseVisualStyleBackColor = true;
-            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
-            // 
-            // deviceStatsTimer
-            // 
-            this.deviceStatsTimer.Interval = 5000;
-            this.deviceStatsTimer.Tick += new System.EventHandler(this.statsTimer_Tick);
-            // 
-            // coinStatsTimer
-            // 
-            this.coinStatsTimer.Enabled = true;
-            this.coinStatsTimer.Interval = 900000;
-            this.coinStatsTimer.Tick += new System.EventHandler(this.coinStatsTimer_Tick);
-            // 
-            // startupMiningTimer
-            // 
-            this.startupMiningTimer.Tick += new System.EventHandler(this.startupMiningTimer_Tick);
-            // 
-            // countdownTimer
-            // 
-            this.countdownTimer.Interval = 1000;
-            this.countdownTimer.Tick += new System.EventHandler(this.countdownTimer_Tick);
-            // 
-            // startupMiningPanel
-            // 
-            this.startupMiningPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.startupMiningPanel.Controls.Add(this.cancelStartupMiningButton);
-            this.startupMiningPanel.Controls.Add(this.countdownLabel);
-            this.startupMiningPanel.Location = new System.Drawing.Point(404, 199);
-            this.startupMiningPanel.Name = "startupMiningPanel";
-            this.startupMiningPanel.Size = new System.Drawing.Size(319, 37);
-            this.startupMiningPanel.TabIndex = 6;
-            this.startupMiningPanel.Visible = false;
-            // 
-            // cancelStartupMiningButton
-            // 
-            this.cancelStartupMiningButton.Location = new System.Drawing.Point(229, 8);
-            this.cancelStartupMiningButton.Name = "cancelStartupMiningButton";
-            this.cancelStartupMiningButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelStartupMiningButton.TabIndex = 5;
-            this.cancelStartupMiningButton.Text = "Cancel";
-            this.cancelStartupMiningButton.UseVisualStyleBackColor = true;
-            this.cancelStartupMiningButton.Click += new System.EventHandler(this.cancelStartupMiningButton_Click);
-            // 
-            // countdownLabel
-            // 
-            this.countdownLabel.AutoSize = true;
-            this.countdownLabel.Location = new System.Drawing.Point(3, 13);
-            this.countdownLabel.Name = "countdownLabel";
-            this.countdownLabel.Size = new System.Drawing.Size(220, 13);
-            this.countdownLabel.TabIndex = 0;
-            this.countdownLabel.Text = "Mining will start automatically in 45 seconds...";
-            // 
-            // crashRecoveryTimer
-            // 
-            this.crashRecoveryTimer.Interval = 30000;
-            this.crashRecoveryTimer.Tick += new System.EventHandler(this.crashRecoveryTimer_Tick);
             // 
             // kindDataGridViewTextBoxColumn
             // 
@@ -290,6 +166,149 @@
             this.errorsColumn.Name = "errorsColumn";
             this.errorsColumn.ReadOnly = true;
             // 
+            // deviceBindingSource
+            // 
+            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
+            // 
+            // deviceStatsTimer
+            // 
+            this.deviceStatsTimer.Interval = 5000;
+            this.deviceStatsTimer.Tick += new System.EventHandler(this.statsTimer_Tick);
+            // 
+            // coinStatsTimer
+            // 
+            this.coinStatsTimer.Enabled = true;
+            this.coinStatsTimer.Interval = 900000;
+            this.coinStatsTimer.Tick += new System.EventHandler(this.coinStatsTimer_Tick);
+            // 
+            // startupMiningTimer
+            // 
+            this.startupMiningTimer.Tick += new System.EventHandler(this.startupMiningTimer_Tick);
+            // 
+            // countdownTimer
+            // 
+            this.countdownTimer.Interval = 1000;
+            this.countdownTimer.Tick += new System.EventHandler(this.countdownTimer_Tick);
+            // 
+            // startupMiningPanel
+            // 
+            this.startupMiningPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.startupMiningPanel.Controls.Add(this.cancelStartupMiningButton);
+            this.startupMiningPanel.Controls.Add(this.countdownLabel);
+            this.startupMiningPanel.Location = new System.Drawing.Point(404, 199);
+            this.startupMiningPanel.Name = "startupMiningPanel";
+            this.startupMiningPanel.Size = new System.Drawing.Size(319, 37);
+            this.startupMiningPanel.TabIndex = 6;
+            this.startupMiningPanel.Visible = false;
+            // 
+            // cancelStartupMiningButton
+            // 
+            this.cancelStartupMiningButton.Location = new System.Drawing.Point(229, 8);
+            this.cancelStartupMiningButton.Name = "cancelStartupMiningButton";
+            this.cancelStartupMiningButton.Size = new System.Drawing.Size(75, 23);
+            this.cancelStartupMiningButton.TabIndex = 5;
+            this.cancelStartupMiningButton.Text = "Cancel";
+            this.cancelStartupMiningButton.UseVisualStyleBackColor = true;
+            this.cancelStartupMiningButton.Click += new System.EventHandler(this.cancelStartupMiningButton_Click);
+            // 
+            // countdownLabel
+            // 
+            this.countdownLabel.AutoSize = true;
+            this.countdownLabel.Location = new System.Drawing.Point(3, 13);
+            this.countdownLabel.Name = "countdownLabel";
+            this.countdownLabel.Size = new System.Drawing.Size(220, 13);
+            this.countdownLabel.TabIndex = 0;
+            this.countdownLabel.Text = "Mining will start automatically in 45 seconds...";
+            // 
+            // crashRecoveryTimer
+            // 
+            this.crashRecoveryTimer.Interval = 30000;
+            this.crashRecoveryTimer.Tick += new System.EventHandler(this.crashRecoveryTimer_Tick);
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startButton,
+            this.stopButton,
+            this.toolStripSeparator2,
+            this.settingsButton,
+            this.toolStripButton5,
+            this.toolStripSeparator1,
+            this.saveButton,
+            this.cancelButton});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(1127, 25);
+            this.toolStrip1.TabIndex = 7;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // startButton
+            // 
+            this.startButton.Image = ((System.Drawing.Image)(resources.GetObject("startButton.Image")));
+            this.startButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(51, 22);
+            this.startButton.Text = "Start";
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
+            // 
+            // settingsButton
+            // 
+            this.settingsButton.Image = ((System.Drawing.Image)(resources.GetObject("settingsButton.Image")));
+            this.settingsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.settingsButton.Name = "settingsButton";
+            this.settingsButton.Size = new System.Drawing.Size(69, 22);
+            this.settingsButton.Text = "Settings";
+            this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
+            // 
+            // saveButton
+            // 
+            this.saveButton.Enabled = false;
+            this.saveButton.Image = ((System.Drawing.Image)(resources.GetObject("saveButton.Image")));
+            this.saveButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(51, 22);
+            this.saveButton.Text = "Save";
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.Enabled = false;
+            this.cancelButton.Image = ((System.Drawing.Image)(resources.GetObject("cancelButton.Image")));
+            this.cancelButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(63, 22);
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            // 
+            // toolStripButton5
+            // 
+            this.toolStripButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton5.Image")));
+            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton5.Name = "toolStripButton5";
+            this.toolStripButton5.Size = new System.Drawing.Size(109, 22);
+            this.toolStripButton5.Text = "Refresh Devices";
+            this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
+            // 
+            // stopButton
+            // 
+            this.stopButton.Enabled = false;
+            this.stopButton.Image = ((System.Drawing.Image)(resources.GetObject("stopButton.Image")));
+            this.stopButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stopButton.Name = "stopButton";
+            this.stopButton.Size = new System.Drawing.Size(51, 22);
+            this.stopButton.Text = "Stop";
+            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -297,7 +316,7 @@
             this.ClientSize = new System.Drawing.Size(1127, 434);
             this.Controls.Add(this.startupMiningPanel);
             this.Controls.Add(this.deviceGridView);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.toolStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
@@ -306,10 +325,12 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
-            this.panel1.ResumeLayout(false);
             this.startupMiningPanel.ResumeLayout(false);
             this.startupMiningPanel.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -317,12 +338,6 @@
 
         private System.Windows.Forms.DataGridView deviceGridView;
         private System.Windows.Forms.BindingSource deviceBindingSource;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button stopButton;
-        private System.Windows.Forms.Button startButton;
-        private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.Button saveButton;
-        private System.Windows.Forms.Button settingsButton;
         private System.Windows.Forms.Timer deviceStatsTimer;
         private System.Windows.Forms.Timer coinStatsTimer;
         private System.Windows.Forms.Timer startupMiningTimer;
@@ -342,6 +357,15 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn acceptedColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn rejectedColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn errorsColumn;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton startButton;
+        private System.Windows.Forms.ToolStripButton settingsButton;
+        private System.Windows.Forms.ToolStripButton saveButton;
+        private System.Windows.Forms.ToolStripButton cancelButton;
+        private System.Windows.Forms.ToolStripButton toolStripButton5;
+        private System.Windows.Forms.ToolStripButton stopButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 

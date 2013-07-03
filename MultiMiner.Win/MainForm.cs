@@ -453,5 +453,10 @@ namespace MultiMiner.Win
                 if (minerProcess.Process.HasExited)
                     minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
         }
+
+        private void toolStripButton5_Click(object sender, EventArgs e)
+        {
+            RefreshDevices();
+        }
     }
 }
