@@ -5,16 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
-using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Net;
-using Newtonsoft.Json;
+using MultiMiner.Coinchoose.Api;
 
 namespace MultiMiner.Win
 {
     public partial class MainForm : Form
     {
-        private JArray coinInformation;
+        private List<CoinInformation> coinInformation;
         private List<Device> devices;
         private readonly EngineConfiguration engineConfiguration = new EngineConfiguration();
         private readonly KnownCoins knownCoins = new KnownCoins();
@@ -433,7 +432,7 @@ namespace MultiMiner.Win
             catch (Exception ex)
             {
                 //don't crash if website cannot be resolved or JSON cannot be parsed
-                if (ex is WebException || ex is JsonReaderException)
+                if (ex is WebException)
                 {
                     return;
                 }
@@ -445,20 +444,15 @@ namespace MultiMiner.Win
 
         private void LoadGridValuesFromCoinStats()
         {
-            foreach (JToken jToken in coinInformation)
+            foreach (CoinInformation coin in coinInformation)
             {
-                string name = jToken.Value<string>("name");
-                double difficulty = jToken.Value<double>("difficulty");
-                double price = jToken.Value<double>("price");
-                double profitability = jToken.Value<double>("adjustedratio");
-
                 foreach (DataGridViewRow row in deviceGridView.Rows)
                 {
-                    if (name.Equals((string)row.Cells[coinColumn.Index].Value, StringComparison.CurrentCultureIgnoreCase))
+                    if (coin.Name.Equals((string)row.Cells[coinColumn.Index].Value, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        row.Cells[difficultyColumn.Index].Value = difficulty.ToString(".################");
-                        row.Cells[priceColumn.Index].Value = price.ToString(".################");
-                        row.Cells[profitabilityColumn.Index].Value = profitability.ToString(".################");
+                        row.Cells[difficultyColumn.Index].Value = coin.Difficulty.ToString(".################");
+                        row.Cells[priceColumn.Index].Value = coin.Price.ToString(".################");
+                        row.Cells[profitabilityColumn.Index].Value = coin.AdjustedProfitability.ToString(".################");
                     }
                 }
             }
