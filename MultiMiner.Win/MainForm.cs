@@ -87,7 +87,7 @@ namespace MultiMiner.Win
             }
 
             Miner miner = new Miner(minerConfiguration);
-            return miner.EnumerateDevices();
+            return miner.DeviceList();
         }
 
         private void ConfigureCoins()
@@ -284,6 +284,11 @@ namespace MultiMiner.Win
             }
         }
 
+        private bool IdentifierIsGpu(string identifier)
+        {
+            return (identifier.Equals("GPU") || identifier.Equals("OCL"));
+        }
+
         private void statsTimer_Tick(object sender, EventArgs e)
         {
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
@@ -309,7 +314,8 @@ namespace MultiMiner.Win
 
                         for (int i = 0; i < devices.Count; i++)
                         {
-                            if ((deviceInformation.Kind.Equals("GPU") && (devices[i].Kind == DeviceKind.GPU)) || (!deviceInformation.Kind.Equals("GPU") && (devices[i].Kind == DeviceKind.USB)))
+                            if ((deviceInformation.Kind.Equals("GPU") && IdentifierIsGpu(devices[i].Identifier))
+                                || (!deviceInformation.Kind.Equals("GPU") && !IdentifierIsGpu(devices[i].Identifier)))
                             {
                                 if (index == deviceInformation.Index)
                                 {
