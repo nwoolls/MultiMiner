@@ -221,7 +221,6 @@ namespace MultiMiner.Win
                 {
                     DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
-                    deviceConfiguration.DeviceKind = devices[i].Kind;
                     deviceConfiguration.DeviceIndex = i;
                     deviceConfiguration.CoinSymbol = coin.Symbol;
 
@@ -240,8 +239,7 @@ namespace MultiMiner.Win
                     Device device = devices[i];
 
                     DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
-                        c => (c.DeviceKind == device.Kind)
-                        && (c.DeviceIndex == i));
+                        c => (c.DeviceIndex == i));
 
                     if (deviceConfiguration != null)
                     {
