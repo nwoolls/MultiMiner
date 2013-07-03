@@ -7,8 +7,7 @@ namespace MultiMiner.Xgminer
 {
     public enum MinerBackend
     {
-        Automatic = 0,
-        Cgminer = 1,
-        Bfgminer = 2
+        Cgminer = 0,
+        Bfgminer = 1
     }
 }
