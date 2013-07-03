@@ -476,7 +476,7 @@ namespace MultiMiner.Win
                     minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
         }
 
-        private void toolStripButton5_Click(object sender, EventArgs e)
+        private void detectDevicesButton_Click(object sender, EventArgs e)
         {
             RefreshDevices();
         }
