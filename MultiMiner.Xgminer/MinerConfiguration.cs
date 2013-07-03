@@ -17,5 +17,21 @@ namespace MultiMiner.Xgminer
         public bool ApiListen { get; set; }
         public List<int> DeviceIndexes { get; set; }
         public string Arguments { get; set; }
+
+        public MinerBackend ActualMinerBackend
+        {
+            get
+            {
+                MinerBackend result = this.MinerBackend;
+                if (result == Xgminer.MinerBackend.Automatic)
+                {
+                    result = Xgminer.MinerBackend.Cgminer;
+                    if (ExecutablePath.ToLower().Contains("bfgminer"))
+                        result = Xgminer.MinerBackend.Bfgminer;
+                }
+                return result;
+            }
+        }
+
     }
 }
