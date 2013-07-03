@@ -46,18 +46,34 @@ namespace MultiMiner.Win
             
             singleCoinRadio.Checked = strategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.SingleMostProfitable;
             multiCoinRadio.Checked = strategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.AllMostProfitable;
+
+            minPercentageEdit.Text = strategyConfiguration.MinimumProfitabilityPercentage.ToString();
         }
 
         private void SaveSettings()
         {
-            CryptoCoin coin = knownCoins.Coins.SingleOrDefault(c => c.Name.Equals(minCoinCombo.Text));
-            if (coin != null)
-                this.strategyConfiguration.MinimumProfitabilitySymbol = coin.Symbol;
-            
+            if (string.IsNullOrEmpty(minCoinCombo.Text))
+                this.strategyConfiguration.MinimumProfitabilitySymbol = string.Empty;
+            else
+            {
+                CryptoCoin coin = knownCoins.Coins.SingleOrDefault(c => c.Name.Equals(minCoinCombo.Text));
+                if (coin != null)
+                    this.strategyConfiguration.MinimumProfitabilitySymbol = coin.Symbol;
+            }
+
             if (singleCoinRadio.Checked)
                 strategyConfiguration.SwitchStrategy = StrategyConfiguration.CoinSwitchStrategy.SingleMostProfitable;
             else
                 strategyConfiguration.SwitchStrategy = StrategyConfiguration.CoinSwitchStrategy.AllMostProfitable;
+
+            if (string.IsNullOrEmpty(minPercentageEdit.Text))
+                this.strategyConfiguration.MinimumProfitabilityPercentage = null;
+            else
+            {
+                double percentage;
+                if (double.TryParse(minPercentageEdit.Text, out percentage))
+                    strategyConfiguration.MinimumProfitabilityPercentage = percentage;
+            }
         }
     }
 

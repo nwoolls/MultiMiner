@@ -40,9 +40,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.strategyConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.minPercentageEdit = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.strategyConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).BeginInit();
@@ -137,7 +137,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.textBox1);
+            this.groupBox1.Controls.Add(this.minPercentageEdit);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.minCoinCombo);
@@ -159,17 +159,12 @@
             this.label1.TabIndex = 9;
             this.label1.Text = "Don\'t mine coins less profitable than";
             // 
-            // textBox1
+            // minPercentageEdit
             // 
-            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.strategyConfigurationBindingSource, "MinimumProfitabilityPercentage", true));
-            this.textBox1.Location = new System.Drawing.Point(193, 97);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(90, 20);
-            this.textBox1.TabIndex = 10;
-            // 
-            // strategyConfigurationBindingSource
-            // 
-            this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.StrategyConfiguration);
+            this.minPercentageEdit.Location = new System.Drawing.Point(193, 97);
+            this.minPercentageEdit.Name = "minPercentageEdit";
+            this.minPercentageEdit.Size = new System.Drawing.Size(90, 20);
+            this.minPercentageEdit.TabIndex = 10;
             // 
             // label3
             // 
@@ -179,6 +174,10 @@
             this.label3.Size = new System.Drawing.Size(15, 13);
             this.label3.TabIndex = 11;
             this.label3.Text = "%";
+            // 
+            // strategyConfigurationBindingSource
+            // 
+            this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.StrategyConfiguration);
             // 
             // StrategiesForm
             // 
@@ -216,7 +215,7 @@
         private System.Windows.Forms.ComboBox minCoinCombo;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox minPercentageEdit;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
     }
