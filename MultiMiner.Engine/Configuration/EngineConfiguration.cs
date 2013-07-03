@@ -10,12 +10,12 @@ namespace MultiMiner.Engine.Configuration
         {
             DeviceConfigurations = new List<DeviceConfiguration>();
             CoinConfigurations = new List<CoinConfiguration>();
-            MinerConfiguration = new XgminerConfiguration();
+            XgminerConfiguration = new XgminerConfiguration();
         }
 
         public List<DeviceConfiguration> DeviceConfigurations { get; set; }
         public List<CoinConfiguration> CoinConfigurations { get; set; }
-        public XgminerConfiguration MinerConfiguration { get; set; }
+        public XgminerConfiguration XgminerConfiguration { get; set; }
 
         private static string AppDataPath()
         {
@@ -53,19 +53,19 @@ namespace MultiMiner.Engine.Configuration
             ConfigurationReaderWriter.WriteConfiguration(CoinConfigurations, CoinConfigurationsFileName());
         }
 
-        private static string MinerConfigurationFileName()
+        private static string XgminerConfigurationFileName()
         {
             return Path.Combine(AppDataPath(), "XgminerConfiguration.xml");
         }
 
         public void LoadMinerConfiguration()
         {
-            MinerConfiguration = ConfigurationReaderWriter.ReadConfiguration<XgminerConfiguration>(MinerConfigurationFileName());
+            XgminerConfiguration = ConfigurationReaderWriter.ReadConfiguration<XgminerConfiguration>(XgminerConfigurationFileName());
         }
 
         public void SaveMinerConfiguration()
         {
-            ConfigurationReaderWriter.WriteConfiguration(MinerConfiguration, MinerConfigurationFileName());
+            ConfigurationReaderWriter.WriteConfiguration(XgminerConfiguration, XgminerConfigurationFileName());
         }
     }
 }

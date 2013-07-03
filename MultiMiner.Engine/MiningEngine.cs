@@ -90,7 +90,7 @@ namespace MultiMiner.Engine
             MultiMiner.Xgminer.MinerConfiguration minerConfiguration = new MultiMiner.Xgminer.MinerConfiguration();
 
             string minerName = "cgminer";
-            if (engineConfiguration.MinerConfiguration.MinerBackend == MinerBackend.Bfgminer)
+            if (engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Bfgminer)
                 minerName = "bfgminer";
 
             switch (Environment.OSVersion.Platform) 
@@ -103,7 +103,7 @@ namespace MultiMiner.Engine
                     break;
             }
 
-            minerConfiguration.MinerBackend = engineConfiguration.MinerConfiguration.MinerBackend;
+            minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
             
             minerConfiguration.Pools = coinConfiguration.Pools;
             minerConfiguration.Algorithm = coinConfiguration.Coin.Algorithm;
@@ -114,9 +114,9 @@ namespace MultiMiner.Engine
                 minerConfiguration.DeviceIndexes.Add(coinGpuConfiguration.DeviceIndex);
 
             string arguments = string.Empty;
-            if (engineConfiguration.MinerConfiguration.AlgorithmFlags.ContainsKey(coinConfiguration.Coin.Algorithm))
+            if (engineConfiguration.XgminerConfiguration.AlgorithmFlags.ContainsKey(coinConfiguration.Coin.Algorithm))
                 arguments = String.Format("{0} {1}", arguments,
-                    engineConfiguration.MinerConfiguration.AlgorithmFlags[coinConfiguration.Coin.Algorithm]);
+                    engineConfiguration.XgminerConfiguration.AlgorithmFlags[coinConfiguration.Coin.Algorithm]);
 
             minerConfiguration.Arguments = arguments;
 

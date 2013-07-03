@@ -82,11 +82,11 @@ namespace MultiMiner.Win
         private List<Device> GetDevices()
         {
             string minerName = "cgminer";
-            if (engineConfiguration.MinerConfiguration.MinerBackend == MinerBackend.Bfgminer)
+            if (engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Bfgminer)
                 minerName = "bfgminer";
 
             MinerConfiguration minerConfiguration = new MinerConfiguration();
-            minerConfiguration.MinerBackend = engineConfiguration.MinerConfiguration.MinerBackend;
+            minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
 
             switch (Environment.OSVersion.Platform)
             {
@@ -291,15 +291,15 @@ namespace MultiMiner.Win
 
         private void RefreshBackendLabel()
         {
-            if (engineConfiguration.MinerConfiguration.MinerBackend == MinerBackend.Bfgminer)
+            if (engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Bfgminer)
                 backendLabel.Text = "Backend: bfgminer";
-            else if (engineConfiguration.MinerConfiguration.MinerBackend == MinerBackend.Cgminer)
+            else if (engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Cgminer)
                 backendLabel.Text = "Backend: cgminer";
         }
 
         private void settingsButton_Click(object sender, EventArgs e)
         {
-            SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.MinerConfiguration);
+            SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration);
             DialogResult dialogResult = settingsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
