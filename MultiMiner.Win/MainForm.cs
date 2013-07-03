@@ -33,7 +33,7 @@ namespace MultiMiner.Win
 
             LoadSettings();
 
-            PopulateDevices();
+            RefreshDevices();
 
             if (devices.Count > 0)
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
@@ -44,7 +44,7 @@ namespace MultiMiner.Win
             cancelButton.Enabled = false;
         }
 
-        private void PopulateDevices()
+        private void RefreshDevices()
         {
             devices = GetDevices();
             deviceBindingSource.DataSource = devices;
@@ -285,7 +285,7 @@ namespace MultiMiner.Win
             {
                 engineConfiguration.SaveMinerConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
-                PopulateDevices();
+                RefreshDevices();
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
             }
             else
