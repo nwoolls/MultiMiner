@@ -45,7 +45,6 @@
     <Compile Include="CryptoCoin.cs" />
     <Compile Include="Configuration\DeviceConfiguration.cs" />
     <Compile Include="Configuration\EngineConfiguration.cs" />
-    <Compile Include="KnownCoins.cs" />
     <Compile Include="Configuration\XgminerConfiguration.cs" />
     <Compile Include="MinerProcess.cs" />
     <Compile Include="MiningEngine.cs" />
@@ -65,11 +64,6 @@
       <Project>{0dbef993-1b34-4d80-ab6a-f662604325dc}</Project>
       <Name>MultiMiner.Xgminer</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="KnownCoins.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
