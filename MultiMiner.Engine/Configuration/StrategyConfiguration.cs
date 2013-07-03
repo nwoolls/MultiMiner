@@ -16,7 +16,6 @@ namespace MultiMiner.Engine.Configuration
         public bool MineProfitableCoins { get; set; }
         public CoinSwitchStrategy SwitchStrategy { get; set; }
         public string MinimumProfitabilitySymbol { get; set; }
-        public int PermanentDeviceCount { get; set; }
-        public string PermanentCoinSymbol { get; set; }
+        public double? MinimumProfitabilityPercentage { get; set; }
     }
 }

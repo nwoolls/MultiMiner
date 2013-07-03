@@ -29,10 +29,8 @@ namespace MultiMiner.Win
             foreach (CryptoCoin coin in knownCoins.Coins)
             {
                 minCoinCombo.Items.Add(coin.Name);
-                permCoinCombo.Items.Add(coin.Name);
             }
             minCoinCombo.Items.Add("");
-            permCoinCombo.Items.Add("");
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -45,10 +43,9 @@ namespace MultiMiner.Win
             CryptoCoin coin = knownCoins.Coins.SingleOrDefault(c => c.Symbol.Equals(this.strategyConfiguration.MinimumProfitabilitySymbol));
             if (coin != null)
                 minCoinCombo.Text = coin.Name;
-
-            coin = knownCoins.Coins.SingleOrDefault(c => c.Symbol.Equals(this.strategyConfiguration.PermanentCoinSymbol));
-            if (coin != null)
-                permCoinCombo.Text = coin.Name;
+            
+            singleCoinRadio.Checked = strategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.SingleMostProfitable;
+            multiCoinRadio.Checked = strategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.AllMostProfitable;
         }
 
         private void SaveSettings()
@@ -56,10 +53,11 @@ namespace MultiMiner.Win
             CryptoCoin coin = knownCoins.Coins.SingleOrDefault(c => c.Name.Equals(minCoinCombo.Text));
             if (coin != null)
                 this.strategyConfiguration.MinimumProfitabilitySymbol = coin.Symbol;
-
-            coin = knownCoins.Coins.SingleOrDefault(c => c.Name.Equals(permCoinCombo.Text));
-            if (coin != null)
-                this.strategyConfiguration.PermanentCoinSymbol = coin.Symbol;
+            
+            if (singleCoinRadio.Checked)
+                strategyConfiguration.SwitchStrategy = StrategyConfiguration.CoinSwitchStrategy.SingleMostProfitable;
+            else
+                strategyConfiguration.SwitchStrategy = StrategyConfiguration.CoinSwitchStrategy.AllMostProfitable;
         }
     }
 

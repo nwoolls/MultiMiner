@@ -28,6 +28,8 @@ namespace MultiMiner.Win
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            coinStatsTimer.Interval = 15 * 60 * 1000; //15 minutes
+
             RefreshCoinStats();
 
             LoadSettings();
@@ -286,8 +288,11 @@ namespace MultiMiner.Win
             startButton.Enabled = false;
             stopButton.Enabled = true;
 
-            miningEngine.StartMining(engineConfiguration);
+            miningEngine.StartMining(engineConfiguration, devices, coinInformation);
             deviceStatsTimer.Enabled = true;
+
+            //to get changes from strategy config
+            LoadGridValuesFromConfiguration();
         }
 
         private void RefreshBackendLabel()
@@ -419,6 +424,10 @@ namespace MultiMiner.Win
         private void coinStatsTimer_Tick(object sender, EventArgs e)
         {
             RefreshCoinStats();
+            miningEngine.ApplyMiningStrategy(devices, coinInformation);
+
+            //to get changes from strategy config
+            LoadGridValuesFromConfiguration();
         }
 
         private void RefreshCoinStats()

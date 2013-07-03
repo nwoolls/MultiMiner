@@ -34,16 +34,15 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.permCoinCombo = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.singleCoinRadio = new System.Windows.Forms.RadioButton();
+            this.multiCoinRadio = new System.Windows.Forms.RadioButton();
             this.minCoinCombo = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.strategyConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label3 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).BeginInit();
@@ -93,73 +92,27 @@
             this.checkBox1.Text = "Automatically mine the most profitable coin(s)";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
+            // singleCoinRadio
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.minCoinCombo);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.permCoinCombo);
-            this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Controls.Add(this.radioButton2);
-            this.groupBox1.Controls.Add(this.radioButton1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 35);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(324, 150);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Strategies";
+            this.singleCoinRadio.AutoSize = true;
+            this.singleCoinRadio.Checked = true;
+            this.singleCoinRadio.Location = new System.Drawing.Point(14, 21);
+            this.singleCoinRadio.Name = "singleCoinRadio";
+            this.singleCoinRadio.Size = new System.Drawing.Size(212, 17);
+            this.singleCoinRadio.TabIndex = 0;
+            this.singleCoinRadio.TabStop = true;
+            this.singleCoinRadio.Text = "Mine only the single most profitable coin";
+            this.singleCoinRadio.UseVisualStyleBackColor = true;
             // 
-            // radioButton1
+            // multiCoinRadio
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point(14, 21);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(212, 17);
-            this.radioButton1.TabIndex = 0;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Mine only the single most profitable coin";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            // 
-            // radioButton2
-            // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(14, 44);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(190, 17);
-            this.radioButton2.TabIndex = 1;
-            this.radioButton2.Text = "Mine all of the most profitable coins";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            // 
-            // textBox1
-            // 
-            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.strategyConfigurationBindingSource, "PermanentDeviceCount", true));
-            this.textBox1.Location = new System.Drawing.Point(54, 95);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(39, 20);
-            this.textBox1.TabIndex = 3;
-            this.textBox1.Text = "1";
-            // 
-            // permCoinCombo
-            // 
-            this.permCoinCombo.FormattingEnabled = true;
-            this.permCoinCombo.Location = new System.Drawing.Point(193, 94);
-            this.permCoinCombo.Name = "permCoinCombo";
-            this.permCoinCombo.Size = new System.Drawing.Size(90, 21);
-            this.permCoinCombo.TabIndex = 4;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(99, 98);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(83, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "device(s) mining";
+            this.multiCoinRadio.AutoSize = true;
+            this.multiCoinRadio.Location = new System.Drawing.Point(14, 44);
+            this.multiCoinRadio.Name = "multiCoinRadio";
+            this.multiCoinRadio.Size = new System.Drawing.Size(190, 17);
+            this.multiCoinRadio.TabIndex = 1;
+            this.multiCoinRadio.Text = "Mine all of the most profitable coins";
+            this.multiCoinRadio.UseVisualStyleBackColor = true;
             // 
             // minCoinCombo
             // 
@@ -178,18 +131,54 @@
             this.label2.TabIndex = 8;
             this.label2.Text = "Don\'t mine coins less profitable than";
             // 
-            // label3
+            // groupBox1
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 98);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(37, 13);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "Leave";
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.textBox1);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.minCoinCombo);
+            this.groupBox1.Controls.Add(this.multiCoinRadio);
+            this.groupBox1.Controls.Add(this.singleCoinRadio);
+            this.groupBox1.Location = new System.Drawing.Point(12, 35);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(324, 150);
+            this.groupBox1.TabIndex = 1;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Strategies";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(11, 100);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(176, 13);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Don\'t mine coins less profitable than";
+            // 
+            // textBox1
+            // 
+            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.strategyConfigurationBindingSource, "MinimumProfitabilityPercentage", true));
+            this.textBox1.Location = new System.Drawing.Point(193, 97);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(90, 20);
+            this.textBox1.TabIndex = 10;
             // 
             // strategyConfigurationBindingSource
             // 
             this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.StrategyConfiguration);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(289, 100);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(15, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "%";
             // 
             // StrategiesForm
             // 
@@ -221,15 +210,14 @@
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ComboBox minCoinCombo;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox permCoinCombo;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.BindingSource strategyConfigurationBindingSource;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.RadioButton singleCoinRadio;
+        private System.Windows.Forms.RadioButton multiCoinRadio;
+        private System.Windows.Forms.ComboBox minCoinCombo;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label3;
     }
 }
