@@ -46,6 +46,33 @@ namespace MultiMiner.Engine
 
             mining = true;
         }
+
+        public void StopMining()
+        {
+            foreach (MinerProcess minerProcess in minerProcesses)
+                if (!minerProcess.Process.HasExited)
+                {
+                    ApiContext apiContext = minerProcess.ApiContext;
+                    if (apiContext != null)
+                    {
+                        apiContext.QuitMining();
+                        Thread.Sleep(250);
+                    }
+                    minerProcess.Process.Kill();
+                }
+
+            minerProcesses.Clear();
+
+            mining = false;
+        }
+
+        public void RelaunchCrashedMiners()
+        {
+            foreach (MinerProcess minerProcess in MinerProcesses)
+                if (minerProcess.Process.HasExited)
+                    minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
+        }
+
         
         private void StartMining()
         {
@@ -121,32 +148,6 @@ namespace MultiMiner.Engine
             minerConfiguration.Arguments = arguments;
 
             return minerConfiguration;
-        }
-
-        public void StopMining()
-        {
-            foreach (MinerProcess minerProcess in minerProcesses)
-                if (!minerProcess.Process.HasExited)
-                {
-                    ApiContext apiContext = minerProcess.ApiContext;
-                    if (apiContext != null)
-                    {
-                        apiContext.QuitMining();
-                        Thread.Sleep(250);
-                    }
-                    minerProcess.Process.Kill();
-                }
-
-            minerProcesses.Clear();
-
-            mining = false;
-        }
-
-        public void RelaunchCrashedMiners()
-        {
-            foreach (MinerProcess minerProcess in MinerProcesses)
-                if (minerProcess.Process.HasExited)
-                    minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
         }
     }
 }
