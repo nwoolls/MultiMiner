@@ -467,7 +467,13 @@ namespace MultiMiner.Win
         {
             foreach (CoinInformation item in coinInformation)
             {
-                CryptoCoin knownCoin = new CryptoCoin();
+                //find existing known coin or create a knew one
+                CryptoCoin knownCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(item.Symbol));
+                if (knownCoin == null)
+                {
+                    knownCoin = new CryptoCoin();
+                    this.knownCoins.Add(knownCoin);
+                }
 
                 knownCoin.Symbol = item.Symbol;
                 knownCoin.Name = item.Name;
@@ -476,7 +482,6 @@ namespace MultiMiner.Win
                 else
                     knownCoin.Algorithm = CoinAlgorithm.SHA256;
 
-                this.knownCoins.Add(knownCoin);
             }
             SaveKnownCoinsToFile();
         }
