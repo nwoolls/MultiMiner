@@ -417,6 +417,7 @@ namespace MultiMiner.Win
                             deviceGridView.Rows[rowIndex].Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
                             deviceGridView.Rows[rowIndex].Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
                             deviceGridView.Rows[rowIndex].Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
+                            deviceGridView.Rows[rowIndex].Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
                         }
                     }
                 }
