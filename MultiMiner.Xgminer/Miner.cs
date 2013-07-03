@@ -15,9 +15,9 @@ namespace MultiMiner.Xgminer
             this.minerConfiguration = minerConfig;
         }
 
+        //uses --ndevs, returns platform information
         public List<Device> EnumerateDevices()
         {
-
             string arguments = MinerParameter.EnumerateDevices;
             bool redirectOutput = true;
 
@@ -33,6 +33,26 @@ namespace MultiMiner.Xgminer
 
             List<Device> result = new List<Device>();
             EnumerateDevicesParser.ParseTextForDevices(output, result);
+
+            return result;
+        }
+
+        //uses -d?, returns driver information
+        public List<Device> DeviceList()
+        {
+            string arguments = MinerParameter.DeviceList;
+            bool redirectOutput = true;
+
+            List<string> output = new List<string>();
+
+            while (!minerProcess.StandardOutput.EndOfStream)
+            {
+                string line = minerProcess.StandardOutput.ReadLine();
+                output.Add(line);
+            }
+
+            List<Device> result = new List<Device>();
+            DeviceListParser.ParseTextForDevices(output, result);
 
             return result;
         }

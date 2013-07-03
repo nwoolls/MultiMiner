@@ -46,6 +46,7 @@
     <Compile Include="DevicePlatform.cs" />
     <Compile Include="MinerBackend.cs" />
     <Compile Include="MiningPool.cs" />
+    <Compile Include="Parsers\DeviceListParser.cs" />
     <Compile Include="Parsers\EnumerateDevicesParser.cs" />
     <Compile Include="Miner.cs" />
     <Compile Include="MinerConfiguration.cs" />

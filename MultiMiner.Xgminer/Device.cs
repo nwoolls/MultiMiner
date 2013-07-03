@@ -8,8 +8,10 @@
         }
 
         public DeviceKind Kind { get; set; }
+        public string Identifier { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public DevicePlatform Platform { get; set; }
+        public string Driver { get; set; }
     }
 }
