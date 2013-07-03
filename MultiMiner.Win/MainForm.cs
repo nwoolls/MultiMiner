@@ -302,6 +302,30 @@ namespace MultiMiner.Win
 
         private void statsTimer_Tick(object sender, EventArgs e)
         {
+            ClearStatsForDisabledCoins();
+            PopulateStatsFromMinerProcesses();
+        }
+
+        private void ClearStatsForDisabledCoins()
+        {
+            if (saveButton.Enabled) //otherwise cleared coin isn't saved yet
+                return;
+
+            foreach (DataGridViewRow row in deviceGridView.Rows)
+            {
+                if (row.Cells[coinColumn.Index].Value == null)
+                {
+                    row.Cells[temperatureColumn.Index].Value = null;
+                    row.Cells[hashRateColumn.Index].Value = null;
+                    row.Cells[acceptedColumn.Index].Value = null;
+                    row.Cells[rejectedColumn.Index].Value = null;
+                    row.Cells[errorsColumn.Index].Value = null;
+                }
+            }
+        }
+
+        private void PopulateStatsFromMinerProcesses()
+        {
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
                 MultiMiner.Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
@@ -310,7 +334,7 @@ namespace MultiMiner.Win
                     IEnumerable<MultiMiner.Xgminer.Api.DeviceInformation> enabledDevices = null;
                     try
                     {
-                        enabledDevices = apiContext.GetDeviceInformation().Where(d => d.Enabled); ;                       
+                        enabledDevices = apiContext.GetDeviceInformation().Where(d => d.Enabled);
                     }
                     catch (IOException ex)
                     {
@@ -349,7 +373,6 @@ namespace MultiMiner.Win
                 }
             }
         }
-
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             StopMining();
