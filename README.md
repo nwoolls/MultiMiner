@@ -1,7 +1,7 @@
 MultiMiner
 ==========
 ### Your coins. Your pools. Your way.
-MultiMiner is a GUI front-end for [cgminer][1] (and soon [bfgminer][2]) that simplifies switching individal devices - GPUs, ASICs, etc. - between crypto-currencies.
+MultiMiner is a GUI front-end for [cgminer][1] and [bfgminer][2] that simplifies switching individal devices - GPUs, ASICs, etc. - between crypto-currencies.
 
 MultiMiner uses the underlying mining engine (cgminer by default) to detect available mining devices.
 
@@ -10,6 +10,10 @@ MultiMiner uses the underlying mining engine (cgminer by default) to detect avai
 You can then use the UI to configure individual crypto-currencies and their pools, including support for load balancing.
 
 ![Configure Coins](/Screenshots/Configure%20Coins.png "Configure Coins")
+
+MultiMiner also supports automatically mining the most profitable coins based on a set of configurable strategies.
+
+![Configure Strategies](/Screenshots/Configure%20Strategies.png "Configure Strategies")
 
 MultiMiner also supports basic features such as relaunching crashed miners, starting with Windows, and mining on startup.
 
@@ -37,12 +41,6 @@ Mono (OS X, Linux) Installation
         
 ![Main Screen - OS X](/Screenshots/Main%20Screen%20-%20OS%20X.png "Main Screen - OS X")
 
-Planned Features
-----------------
-* Ability to edit the known crypto-coins
-* Coin switching strategies
-* Automatic coin switching
-
 Source Code
 -----------
 The source code is structured in such a way that it should be fairly easy to use and re-use for other projects:
@@ -55,7 +53,7 @@ The source code is structured in such a way that it should be fairly easy to use
 
 [1]: https://github.com/ckolivas/cgminer
 [2]: https://github.com/luke-jr/bfgminer
-[3]: https://www.dropbox.com/s/2cng9gchy09khcw/MultiMiner_PR1.zip
+[3]: https://www.dropbox.com/s/akuzbqme1ef5fgh/MultiMiner_PR2.zip
 [4]: http://ck.kolivas.org/apps/cgminer/
 [5]: https://github.com/nwoolls/homebrew-cryptocoin
 [6]: http://blog.nwoolls.com/2013/04/24/bitcoin-mining-on-mac-os-x-cgminer-bfgminer/
