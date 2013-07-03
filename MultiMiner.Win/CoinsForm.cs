@@ -11,11 +11,12 @@ namespace MultiMiner.Win
     public partial class CoinsForm : Form
     {
         private List<CoinConfiguration> configurations = new List<CoinConfiguration>();
-        private KnownCoins knownCoins = new KnownCoins();
+        private List<CryptoCoin> knownCoins;
 
-        public CoinsForm(List<CoinConfiguration> configurations)
+        public CoinsForm(List<CoinConfiguration> configurations, List<CryptoCoin> knownCoins)
         {
             this.configurations = configurations;
+            this.knownCoins = knownCoins;
             InitializeComponent();
         }
 
@@ -28,7 +29,7 @@ namespace MultiMiner.Win
 
         private void PopulateKnownCoins()
         {
-            foreach (CryptoCoin coin in knownCoins.Coins)
+            foreach (CryptoCoin coin in knownCoins)
             {
                 ToolStripButton coinButton = new ToolStripButton(coin.Name);
                 coinButton.Tag = coin.Symbol;
@@ -72,7 +73,7 @@ namespace MultiMiner.Win
             {
                 configuration = new CoinConfiguration();
 
-                configuration.Coin = knownCoins.Coins.Single(c => c.Symbol.Equals(clickedSymbol));
+                configuration.Coin = knownCoins.Single(c => c.Symbol.Equals(clickedSymbol));
                 configuration.Pools.Add(new MiningPool());
 
                 configurations.Add(configuration);

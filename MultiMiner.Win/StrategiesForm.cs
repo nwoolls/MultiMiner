@@ -3,18 +3,20 @@ using MultiMiner.Engine.Configuration;
 using System;
 using System.Windows.Forms;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace MultiMiner.Win
 {
     public partial class StrategiesForm : Form
     {
-        private readonly KnownCoins knownCoins = new KnownCoins();
+        private readonly List<CryptoCoin> knownCoins;
         private readonly StrategyConfiguration strategyConfiguration;
 
-        public StrategiesForm(StrategyConfiguration strategyConfiguration)
+        public StrategiesForm(StrategyConfiguration strategyConfiguration, List<CryptoCoin> knownCoins)
         {
             InitializeComponent();
             this.strategyConfiguration = strategyConfiguration;
+            this.knownCoins = knownCoins;
         }
 
         private void StrategiesForm_Load(object sender, EventArgs e)
@@ -26,7 +28,7 @@ namespace MultiMiner.Win
 
         private void PopulateKnownCoins()
         {
-            foreach (CryptoCoin coin in knownCoins.Coins)
+            foreach (CryptoCoin coin in knownCoins)
             {
                 minCoinCombo.Items.Add(coin.Name);
             }
@@ -40,7 +42,7 @@ namespace MultiMiner.Win
 
         private void LoadSettings()
         {
-            CryptoCoin coin = knownCoins.Coins.SingleOrDefault(c => c.Symbol.Equals(this.strategyConfiguration.MinimumProfitabilitySymbol));
+            CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(this.strategyConfiguration.MinimumProfitabilitySymbol));
             if (coin != null)
                 minCoinCombo.Text = coin.Name;
             
@@ -56,7 +58,7 @@ namespace MultiMiner.Win
                 this.strategyConfiguration.MinimumProfitabilitySymbol = string.Empty;
             else
             {
-                CryptoCoin coin = knownCoins.Coins.SingleOrDefault(c => c.Name.Equals(minCoinCombo.Text));
+                CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Name.Equals(minCoinCombo.Text));
                 if (coin != null)
                     this.strategyConfiguration.MinimumProfitabilitySymbol = coin.Symbol;
             }

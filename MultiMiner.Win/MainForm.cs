@@ -16,7 +16,7 @@ namespace MultiMiner.Win
         private List<CoinInformation> coinInformation;
         private List<Device> devices;
         private readonly EngineConfiguration engineConfiguration = new EngineConfiguration();
-        private readonly KnownCoins knownCoins = new KnownCoins();
+        private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
         private readonly MiningEngine miningEngine = new MiningEngine();
         private readonly ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
         private int startupMiningCountdownSeconds = 0;
@@ -113,7 +113,7 @@ namespace MultiMiner.Win
 
         private void ConfigureCoins()
         {
-            CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations);
+            CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins);
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
                 engineConfiguration.SaveCoinConfigurations();
@@ -222,7 +222,7 @@ namespace MultiMiner.Win
 
             for (int i = 0; i < devices.Count; i++)
             {                
-                CryptoCoin coin = knownCoins.Coins.SingleOrDefault(c => c.Name.Equals(deviceGridView.Rows[i].Cells[coinColumn.Index].Value));
+                CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Name.Equals(deviceGridView.Rows[i].Cells[coinColumn.Index].Value));
                 if (coin != null)
                 {
                     DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
@@ -249,7 +249,7 @@ namespace MultiMiner.Win
 
                     if (deviceConfiguration != null)
                     {
-                        CryptoCoin coin = knownCoins.Coins.SingleOrDefault(c => c.Symbol.Equals(deviceConfiguration.CoinSymbol));
+                        CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(deviceConfiguration.CoinSymbol));
                         if (coin != null)
                             deviceGridView.Rows[i].Cells[coinColumn.Index].Value = coin.Name;
                     }
@@ -453,12 +453,53 @@ namespace MultiMiner.Win
                 //don't crash if website cannot be resolved or JSON cannot be parsed
                 if (ex is WebException)
                 {
+                    LoadKnownCoinsFromFile();
                     return;
                 }
                 throw;
             }
 
             LoadGridValuesFromCoinStats();
+            LoadKnownCoinsFromCoinStats();
+        }
+
+        private void LoadKnownCoinsFromCoinStats()
+        {
+            foreach (CoinInformation item in coinInformation)
+            {
+                CryptoCoin knownCoin = new CryptoCoin();
+
+                knownCoin.Symbol = item.Symbol;
+                knownCoin.Name = item.Name;
+                if (item.Algorithm.Contains("scrypt"))
+                    knownCoin.Algorithm = CoinAlgorithm.Scrypt;
+                else
+                    knownCoin.Algorithm = CoinAlgorithm.SHA256;
+
+                this.knownCoins.Add(knownCoin);
+            }
+            SaveKnownCoinsToFile();
+        }
+
+        private static string AppDataPath()
+        {
+            string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            return Path.Combine(rootPath, "MultiMiner");
+        }
+
+        private static string KnownCoinsFileName()
+        {
+            return Path.Combine(AppDataPath(), "KnownCoinsCache.xml");
+        }
+
+        private void LoadKnownCoinsFromFile()
+        {
+            knownCoins = ConfigurationReaderWriter.ReadConfiguration<List<CryptoCoin>>(KnownCoinsFileName());
+        }
+
+        private void SaveKnownCoinsToFile()
+        {
+            ConfigurationReaderWriter.WriteConfiguration(knownCoins, KnownCoinsFileName());
         }
 
         private void LoadGridValuesFromCoinStats()
@@ -545,7 +586,7 @@ namespace MultiMiner.Win
 
         private void ConfigureStrategies()
         {
-            StrategiesForm strategiesForm = new StrategiesForm(engineConfiguration.StrategyConfiguration);
+            StrategiesForm strategiesForm = new StrategiesForm(engineConfiguration.StrategyConfiguration, knownCoins);
             DialogResult dialogResult = strategiesForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
