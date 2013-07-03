@@ -134,6 +134,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Miners\bfgminer\Extract bfgminer here.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Miners\cgminer\Extract cgminer here.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>
