@@ -72,6 +72,12 @@
     <Compile Include="SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="StrategiesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StrategiesForm.Designer.cs">
+      <DependentUpon>StrategiesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="WindowsStartupShortcut.cs" />
     <EmbeddedResource Include="CoinsForm.resx">
       <DependentUpon>CoinsForm.cs</DependentUpon>
@@ -92,9 +98,13 @@
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StrategiesForm.resx">
+      <DependentUpon>StrategiesForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\ApplicationConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.CoinConfiguration.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.StrategyConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.MiningPool.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Device.datasource" />
     <None Include="Properties\Settings.settings">

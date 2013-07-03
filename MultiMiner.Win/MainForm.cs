@@ -58,6 +58,10 @@ namespace MultiMiner.Win
             engineConfiguration.LoadCoinConfigurations();
             engineConfiguration.LoadDeviceConfigurations();
             engineConfiguration.LoadMinerConfiguration();
+
+            engineConfiguration.LoadStrategyConfiguration();
+            coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.MineProfitableCoins;
+
             applicationConfiguration.LoadApplicationConfiguration();
 
             if (applicationConfiguration.StartMiningOnStartup)
@@ -299,6 +303,11 @@ namespace MultiMiner.Win
 
         private void settingsButton_Click(object sender, EventArgs e)
         {
+            ShowApplicationSettings();
+        }
+
+        private void ShowApplicationSettings()
+        {
             SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration);
             DialogResult dialogResult = settingsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
@@ -489,6 +498,26 @@ namespace MultiMiner.Win
         private void detectDevicesButton_Click(object sender, EventArgs e)
         {
             RefreshDevices();
+        }
+
+        private void strategiesButton_Click(object sender, EventArgs e)
+        {
+            ConfigureStrategies();
+        }
+
+        private void ConfigureStrategies()
+        {
+            StrategiesForm strategiesForm = new StrategiesForm(engineConfiguration.StrategyConfiguration);
+            DialogResult dialogResult = strategiesForm.ShowDialog();
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                engineConfiguration.SaveStrategyConfiguration();
+                coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.MineProfitableCoins;
+            }
+            else
+            {
+                engineConfiguration.LoadStrategyConfiguration();
+            }
         }
     }
 }
