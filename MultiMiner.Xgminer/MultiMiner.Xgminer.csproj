@@ -43,6 +43,7 @@
     <Compile Include="CoinAlgorithm.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="DeviceKind.cs" />
+    <Compile Include="DevicePlatform.cs" />
     <Compile Include="MinerBackend.cs" />
     <Compile Include="MiningPool.cs" />
     <Compile Include="Parsers\EnumerateDevicesParser.cs" />

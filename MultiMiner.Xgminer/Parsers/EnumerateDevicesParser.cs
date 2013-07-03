@@ -49,9 +49,9 @@ namespace MultiMiner.Xgminer.Parsers
                         currentUsbProduct = match.Groups[1].Value.TrimEnd();
 
                         Device device = new Device();
-                        device.Platform = string.Empty;
-                        device.Vendor = currentUsbManufacturer;
-                        device.Version = string.Empty;
+                        device.Platform.Name = string.Empty;
+                        device.Platform.Vendor = currentUsbManufacturer;
+                        device.Platform.Version = string.Empty;
                         device.Name = currentUsbProduct;
                         device.Description = string.Empty;
                         device.Kind = DeviceKind.USB;
@@ -99,9 +99,9 @@ namespace MultiMiner.Xgminer.Parsers
                     for (int i = 0; i < names.Count; i++)
                     {
                         Device device = new Device();
-                        device.Platform = currentPlatformName;
-                        device.Vendor = currentPlatformVendor;
-                        device.Version = currentPlatformVersion;
+                        device.Platform.Name = currentPlatformName;
+                        device.Platform.Vendor = currentPlatformVendor;
+                        device.Platform.Version = currentPlatformVersion;
 
                         device.Name = names[i];
 
