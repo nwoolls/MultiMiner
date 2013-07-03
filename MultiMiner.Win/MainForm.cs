@@ -326,6 +326,8 @@ namespace MultiMiner.Win
 
         private void PopulateStatsFromMinerProcesses()
         {
+            double totalScryptRate = 0;
+            double totalSha256Rate = 0;
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
                 MultiMiner.Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
@@ -363,6 +365,11 @@ namespace MultiMiner.Win
 
                         if (rowIndex >= 0)
                         {
+                            if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
+                                totalScryptRate += deviceInformation.AverageHashrate;
+                            else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
+                                totalSha256Rate += deviceInformation.AverageHashrate;
+
                             deviceGridView.Rows[rowIndex].Cells[temperatureColumn.Index].Value = deviceInformation.Temperature;
                             deviceGridView.Rows[rowIndex].Cells[hashRateColumn.Index].Value = deviceInformation.AverageHashrate;
                             deviceGridView.Rows[rowIndex].Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
@@ -372,6 +379,10 @@ namespace MultiMiner.Win
                     }
                 }
             }
+
+            scryptRateLabel.Text = "Scrypt: " + totalScryptRate + " kh/s";
+            sha256RateLabel.Text = "SHA256: " + totalSha256Rate / 1000 + " mh/s";
+
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {

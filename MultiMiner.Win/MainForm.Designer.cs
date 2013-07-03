@@ -60,10 +60,14 @@
             this.stopButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.sha256RateLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.scryptRateLabel = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.startupMiningPanel.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // deviceGridView
@@ -309,11 +313,36 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sha256RateLabel,
+            this.scryptRateLabel});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 412);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(1127, 22);
+            this.statusStrip1.TabIndex = 8;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // sha256RateLabel
+            // 
+            this.sha256RateLabel.Name = "sha256RateLabel";
+            this.sha256RateLabel.Size = new System.Drawing.Size(931, 17);
+            this.sha256RateLabel.Spring = true;
+            this.sha256RateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // scryptRateLabel
+            // 
+            this.scryptRateLabel.AutoSize = false;
+            this.scryptRateLabel.Name = "scryptRateLabel";
+            this.scryptRateLabel.Size = new System.Drawing.Size(150, 17);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1127, 434);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.startupMiningPanel);
             this.Controls.Add(this.deviceGridView);
             this.Controls.Add(this.toolStrip1);
@@ -329,6 +358,8 @@
             this.startupMiningPanel.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -366,6 +397,9 @@
         private System.Windows.Forms.ToolStripButton stopButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel sha256RateLabel;
+        private System.Windows.Forms.ToolStripStatusLabel scryptRateLabel;
     }
 }
 
