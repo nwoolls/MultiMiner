@@ -31,19 +31,24 @@ namespace MultiMiner.Win
         {
             RefreshCoinStats();
 
-            devices = GetDevices();
-            deviceBindingSource.DataSource = devices;
+            LoadSettings();
+
+            PopulateDevices();
 
             if (devices.Count > 0)
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
-
-            LoadSettings();
-
+            
             RefreshCoinComboBox();
-            LoadGridValuesFromConfiguration();
 
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
+        }
+
+        private void PopulateDevices()
+        {
+            devices = GetDevices();
+            deviceBindingSource.DataSource = devices;
+            LoadGridValuesFromConfiguration();
         }
 
         private void LoadSettings()
@@ -72,17 +77,22 @@ namespace MultiMiner.Win
             countdownLabel.Text = string.Format("Mining will start automatically in {0} seconds...", countdownSeconds);    
         }
 
-        private static List<Device> GetDevices()
+        private List<Device> GetDevices()
         {
+            string minerName = "cgminer";
+            if (engineConfiguration.MinerConfiguration.MinerBackend == MinerBackend.Bfgminer)
+                minerName = "bfgminer";
+
             MinerConfiguration minerConfiguration = new MinerConfiguration();
+            minerConfiguration.MinerBackend = engineConfiguration.MinerConfiguration.MinerBackend;
 
             switch (Environment.OSVersion.Platform)
             {
                 case PlatformID.Unix:
-                    minerConfiguration.ExecutablePath = @"cgminer";
+                    minerConfiguration.ExecutablePath = minerName;
                     break;
                 default:
-                    minerConfiguration.ExecutablePath = @"Miners\cgminer\cgminer.exe";
+                    minerConfiguration.ExecutablePath = string.Format(@"Miners\{0}\{0}.exe", minerName);
                     break;
             }
 
@@ -275,6 +285,7 @@ namespace MultiMiner.Win
             {
                 engineConfiguration.SaveMinerConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
+                PopulateDevices();
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
             }
             else
