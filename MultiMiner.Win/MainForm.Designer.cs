@@ -69,11 +69,16 @@
             this.sha256RateLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.scryptRateLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.coinStatsCountdownTimer = new System.Windows.Forms.Timer(this.components);
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.coinChooseLink = new System.Windows.Forms.LinkLabel();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.startupMiningPanel.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // deviceGridView
@@ -102,7 +107,7 @@
             this.deviceGridView.Location = new System.Drawing.Point(0, 25);
             this.deviceGridView.Name = "deviceGridView";
             this.deviceGridView.RowHeadersVisible = false;
-            this.deviceGridView.Size = new System.Drawing.Size(1127, 409);
+            this.deviceGridView.Size = new System.Drawing.Size(1127, 350);
             this.deviceGridView.TabIndex = 0;
             this.deviceGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.deviceGridView_CellValueChanged);
             this.deviceGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.deviceGridView_CurrentCellDirtyStateChanged);
@@ -391,15 +396,57 @@
             this.coinStatsCountdownTimer.Interval = 60000;
             this.coinStatsCountdownTimer.Tick += new System.EventHandler(this.coinStatsCountdownTimer_Tick);
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.coinChooseLink);
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 375);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1127, 37);
+            this.panel1.TabIndex = 9;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(407, 13);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(24, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "API";
+            // 
+            // coinChooseLink
+            // 
+            this.coinChooseLink.AutoSize = true;
+            this.coinChooseLink.Location = new System.Drawing.Point(321, 13);
+            this.coinChooseLink.Name = "coinChooseLink";
+            this.coinChooseLink.Size = new System.Drawing.Size(87, 13);
+            this.coinChooseLink.TabIndex = 1;
+            this.coinChooseLink.TabStop = true;
+            this.coinChooseLink.Text = "CoinChoose.com";
+            this.coinChooseLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.coinChooseLink_LinkClicked);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 13);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(318, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Crypto-currency pricing and profitability information powered by the";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1127, 434);
-            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.startupMiningPanel);
             this.Controls.Add(this.deviceGridView);
             this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.statusStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
@@ -414,6 +461,8 @@
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -460,6 +509,10 @@
         private System.Windows.Forms.ToolStripStatusLabel strategiesLabel;
         private System.Windows.Forms.ToolStripStatusLabel strategyCountdownLabel;
         private System.Windows.Forms.Timer coinStatsCountdownTimer;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.LinkLabel coinChooseLink;
+        private System.Windows.Forms.Label label1;
     }
 }
 

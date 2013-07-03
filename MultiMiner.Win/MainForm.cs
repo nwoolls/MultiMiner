@@ -564,5 +564,10 @@ namespace MultiMiner.Win
             coinStatsCountdownMinutes--;
             RefreshStrategiesCountdown();
         }
+
+        private void coinChooseLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://coinchoose.com/");
+        }
     }
 }
