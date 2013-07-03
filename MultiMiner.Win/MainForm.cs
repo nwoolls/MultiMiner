@@ -441,6 +441,7 @@ namespace MultiMiner.Win
                 string name = jToken.Value<string>("name");
                 double difficulty = jToken.Value<double>("difficulty");
                 double price = jToken.Value<double>("price");
+                double profitability = jToken.Value<double>("adjustedratio");
 
                 foreach (DataGridViewRow row in deviceGridView.Rows)
                 {
@@ -448,6 +449,7 @@ namespace MultiMiner.Win
                     {
                         row.Cells[difficultyColumn.Index].Value = difficulty.ToString(".################");
                         row.Cells[priceColumn.Index].Value = price.ToString(".################");
+                        row.Cells[profitabilityColumn.Index].Value = profitability.ToString(".################");
                     }
                 }
             }
