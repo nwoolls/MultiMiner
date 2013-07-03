@@ -141,5 +141,12 @@ namespace MultiMiner.Engine
 
             mining = false;
         }
+
+        public void RelaunchCrashedMiners()
+        {
+            foreach (MinerProcess minerProcess in MinerProcesses)
+                if (minerProcess.Process.HasExited)
+                    minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
+        }
     }
 }

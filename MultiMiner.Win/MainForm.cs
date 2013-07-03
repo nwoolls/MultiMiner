@@ -481,9 +481,7 @@ namespace MultiMiner.Win
 
         private void crashRecoveryTimer_Tick(object sender, EventArgs e)
         {
-            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
-                if (minerProcess.Process.HasExited)
-                    minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
+            miningEngine.RelaunchCrashedMiners();
         }
 
         private void detectDevicesButton_Click(object sender, EventArgs e)
