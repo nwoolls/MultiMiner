@@ -17,17 +17,11 @@ namespace MultiMiner.Xgminer
 
         public List<Device> EnumerateDevices()
         {
-            List<Device> result = new List<Device>();
 
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = minerConfiguration.ExecutablePath;
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.CreateNoWindow = true;
-            startInfo.Arguments = MinerParameter.EnumerateDevices;
-            startInfo.UseShellExecute = false;
-            startInfo.RedirectStandardOutput = true;
+            string arguments = MinerParameter.EnumerateDevices;
+            bool redirectOutput = true;
 
-            Process minerProcess = Process.Start(startInfo);
+            Process minerProcess = StartMinerProcess(arguments, redirectOutput);
 
             List<string> output = new List<string>();
 
@@ -37,6 +31,7 @@ namespace MultiMiner.Xgminer
                 output.Add(line);
             }
 
+            List<Device> result = new List<Device>();
             EnumerateDevicesParser.ParseTextForDevices(output, result);
 
             return result;
@@ -44,16 +39,13 @@ namespace MultiMiner.Xgminer
 
         public Process Launch()
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = minerConfiguration.ExecutablePath;
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.CreateNoWindow = true;
-            startInfo.UseShellExecute = false;
+            bool redirectOutput = false;
+            bool ensureProcessStarts = true;
 
             //otherwise cgminer output shows under *nix in the terminal
             //DONT do it for Windows though or cgminer will close after opening
             if (Environment.OSVersion.Platform == PlatformID.Unix)
-                startInfo.RedirectStandardOutput = true;
+                redirectOutput = true;
 
             string arguments = minerConfiguration.Arguments;
 
@@ -72,17 +64,32 @@ namespace MultiMiner.Xgminer
             if (minerConfiguration.ApiListen)
                 arguments = string.Format("{0} --api-listen --api-port {1} --api-allow W:127.0.0.1", arguments, minerConfiguration.ApiPort);
 
-            startInfo.Arguments = arguments;
-
-            Process process = StartMiningProcess(startInfo);
+            Process process = StartMinerProcess(arguments, redirectOutput, ensureProcessStarts);
 
             return process;
         }
 
-        private static Process StartMiningProcess(ProcessStartInfo startInfo)
+        private Process StartMinerProcess(string arguments, bool redirectOutput, bool ensureProcessStarts = false)
         {
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+
+            startInfo.FileName = minerConfiguration.ExecutablePath;
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.CreateNoWindow = true;
+            startInfo.Arguments = arguments;
+            startInfo.UseShellExecute = false;
+            startInfo.RedirectStandardOutput = redirectOutput;
+
             Process process = Process.Start(startInfo);
 
+            if (ensureProcessStarts)
+                EnsureProcessStarts(process, startInfo);
+
+            return process;
+        }
+
+        private static void EnsureProcessStarts(Process process, ProcessStartInfo startInfo)
+        {
             //newest cgminer, paired with USB ASIC's, likes to die on startup a few times saying the specified device
             //wasn't detected, happens when starting/stopping mining on USB ASIC's repeatedly
             Thread.Sleep(2000);
@@ -99,8 +106,6 @@ namespace MultiMiner.Xgminer
                 Thread.Sleep(2000);
                 retries++;
             }
-
-            return process;
         }
     }
 }
