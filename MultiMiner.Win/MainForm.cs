@@ -87,7 +87,7 @@ namespace MultiMiner.Win
             }
 
             Miner miner = new Miner(minerConfiguration);
-            return miner.GetDevices();
+            return miner.EnumerateDevices();
         }
 
         private void ConfigureCoins()

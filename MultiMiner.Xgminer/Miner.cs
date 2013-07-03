@@ -15,7 +15,7 @@ namespace MultiMiner.Xgminer
             this.minerConfiguration = minerConfig;
         }
 
-        public List<Device> GetDevices()
+        public List<Device> EnumerateDevices()
         {
             List<Device> result = new List<Device>();
 
@@ -37,7 +37,7 @@ namespace MultiMiner.Xgminer
                 output.Add(line);
             }
 
-            DeviceOutputParser.ParseTextForDevices(output, result);
+            EnumerateDevicesParser.ParseTextForDevices(output, result);
 
             return result;
         }

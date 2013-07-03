@@ -3,8 +3,20 @@ using System.Text.RegularExpressions;
 
 namespace MultiMiner.Xgminer.Parsers
 {
-    public static class DeviceOutputParser
+    public static class EnumerateDevicesParser
     {
+        private const string PlatformVendorPattern = @"\[.+ .+\] \w* Platform \d+ vendor: (.*)";
+        private const string PlatformNamePattern = @"\[.+ .+\] \w* Platform \d+ name: (.*)";
+        private const string PlatformVersionPattern = @"\[.+ .+\] \w* Platform \d+ version: (.*)";
+        private const string PlatformDevicesHeaderPattern = @"\[.+ .+\] Platform \d+ devices: \d+";
+        private const string PlatformDevicesFooterPattern = @"\[.+ .+\] \d+ \w+ devices max detected";
+        private const string DeviceNamePattern = @"\[.+ .+\] \t\d+\t(.*)";
+        private const string DeviceDescriptionPattern = @"\[.+ .+\] \w* \d+ (.*)";
+        private const string UsbDevicesHeaderPattern = @"\[.+ .+\] USB all: found .*";
+        private const string UsbDevicesFooterPattern = @"\[.+ .+\] \d+ known USB devices";
+        private const string UsbManufacturerPattern = @" Manufacturer: '(.*)'";
+        private const string UsbProductPattern = @" Product: '(.*)'";
+
         public static void ParseTextForDevices(List<string> text, List<Device> devices)
         {
             ParseTextForGpuDevices(text, devices);
@@ -20,18 +32,18 @@ namespace MultiMiner.Xgminer.Parsers
 
             foreach (string line in text)
             {
-                if (Regex.Match(line, DevicePatterns.UsbDevicesFooter).Success)
+                if (Regex.Match(line, UsbDevicesFooterPattern).Success)
                 {
                     inUsbList = false;
                 }
 
                 if (inUsbList)
                 {
-                    Match match = Regex.Match(line, DevicePatterns.UsbManufacturer);
+                    Match match = Regex.Match(line, UsbManufacturerPattern);
                     if (match.Success)
                         currentUsbManufacturer = match.Groups[1].Value.TrimEnd();
 
-                    match = Regex.Match(line, DevicePatterns.UsbProduct);
+                    match = Regex.Match(line, UsbProductPattern);
                     if (match.Success)
                     {
                         currentUsbProduct = match.Groups[1].Value.TrimEnd();
@@ -48,7 +60,7 @@ namespace MultiMiner.Xgminer.Parsers
                     }
                 }
 
-                if (Regex.Match(line, DevicePatterns.UsbDevicesHeader).Success)
+                if (Regex.Match(line, UsbDevicesHeaderPattern).Success)
                 {
                     inUsbList = true;
                 }
@@ -70,19 +82,19 @@ namespace MultiMiner.Xgminer.Parsers
 
             foreach (string line in text)
             {
-                Match match = Regex.Match(line, DevicePatterns.PlatformVendor);
+                Match match = Regex.Match(line, PlatformVendorPattern);
                 if (match.Success)
                     currentPlatformVendor = match.Groups[1].Value.TrimEnd();
 
-                match = Regex.Match(line, DevicePatterns.PlatformName);
+                match = Regex.Match(line, PlatformNamePattern);
                 if (match.Success)
                     currentPlatformName = match.Groups[1].Value.TrimEnd();
 
-                match = Regex.Match(line, DevicePatterns.PlatformVersion);
+                match = Regex.Match(line, PlatformVersionPattern);
                 if (match.Success)
                     currentPlatformVersion = match.Groups[1].Value.TrimEnd();
                 
-                if (Regex.Match(line, DevicePatterns.PlatformDevicesFooter).Success)
+                if (Regex.Match(line, PlatformDevicesFooterPattern).Success)
                 {
                     for (int i = 0; i < names.Count; i++)
                     {
@@ -109,14 +121,14 @@ namespace MultiMiner.Xgminer.Parsers
 
                 if (inPlatform)
                 {
-                    match = Regex.Match(line, DevicePatterns.DeviceName);
+                    match = Regex.Match(line, DeviceNamePattern);
                     if (match.Success)
                     {
                         currentDeviceName = match.Groups[1].Value.TrimEnd();
                         names.Add(currentDeviceName);
                     }
 
-                    match = Regex.Match(line, DevicePatterns.DeviceDescription);
+                    match = Regex.Match(line, DeviceDescriptionPattern);
                     if (match.Success)
                     {
                         currentDeviceDescription = match.Groups[1].Value.TrimEnd();
@@ -125,7 +137,7 @@ namespace MultiMiner.Xgminer.Parsers
 
                 }
 
-                if (Regex.Match(line, DevicePatterns.PlatformDevicesHeader).Success)
+                if (Regex.Match(line, PlatformDevicesHeaderPattern).Success)
                 {
                     inPlatform = true;
                     names.Clear();
