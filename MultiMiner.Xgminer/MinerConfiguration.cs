@@ -9,6 +9,7 @@ namespace MultiMiner.Xgminer
             this.DeviceIndexes = new List<int>();
         }
 
+        public MinerBackend MinerBackend { get; set; }
         public string ExecutablePath { get; set; }
         public List<MiningPool> Pools { get; set; }
         public CoinAlgorithm Algorithm { get; set; }

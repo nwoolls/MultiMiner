@@ -39,9 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bfgminer\MinerParameter.cs" />
     <Compile Include="CoinAlgorithm.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="DeviceKind.cs" />
+    <Compile Include="MinerBackend.cs" />
     <Compile Include="MiningPool.cs" />
     <Compile Include="Parsers\EnumerateDevicesParser.cs" />
     <Compile Include="Miner.cs" />
@@ -49,6 +51,7 @@
     <Compile Include="MinerParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
