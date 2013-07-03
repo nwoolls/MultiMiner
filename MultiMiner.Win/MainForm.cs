@@ -33,6 +33,8 @@ namespace MultiMiner.Win
 
             LoadSettings();
 
+            RefreshBackendLabel();
+
             RefreshDevices();
 
             if (devices.Count > 0)
@@ -277,6 +279,14 @@ namespace MultiMiner.Win
             deviceStatsTimer.Enabled = true;
         }
 
+        private void RefreshBackendLabel()
+        {
+            if (engineConfiguration.MinerConfiguration.MinerBackend == MinerBackend.Bfgminer)
+                backendLabel.Text = "Backend: bfgminer";
+            else if (engineConfiguration.MinerConfiguration.MinerBackend == MinerBackend.Cgminer)
+                backendLabel.Text = "Backend: cgminer";
+        }
+
         private void settingsButton_Click(object sender, EventArgs e)
         {
             SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.MinerConfiguration);
@@ -286,6 +296,7 @@ namespace MultiMiner.Win
                 engineConfiguration.SaveMinerConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
                 RefreshDevices();
+                RefreshBackendLabel();
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
             }
             else

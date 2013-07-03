@@ -63,6 +63,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.sha256RateLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.scryptRateLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.backendLabel = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.startupMiningPanel.SuspendLayout();
@@ -316,6 +317,7 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.backendLabel,
             this.sha256RateLabel,
             this.scryptRateLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 412);
@@ -327,7 +329,7 @@
             // sha256RateLabel
             // 
             this.sha256RateLabel.Name = "sha256RateLabel";
-            this.sha256RateLabel.Size = new System.Drawing.Size(931, 17);
+            this.sha256RateLabel.Size = new System.Drawing.Size(962, 17);
             this.sha256RateLabel.Spring = true;
             this.sha256RateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -336,6 +338,11 @@
             this.scryptRateLabel.AutoSize = false;
             this.scryptRateLabel.Name = "scryptRateLabel";
             this.scryptRateLabel.Size = new System.Drawing.Size(150, 17);
+            // 
+            // backendLabel
+            // 
+            this.backendLabel.Name = "backendLabel";
+            this.backendLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // MainForm
             // 
@@ -400,6 +407,7 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel sha256RateLabel;
         private System.Windows.Forms.ToolStripStatusLabel scryptRateLabel;
+        private System.Windows.Forms.ToolStripStatusLabel backendLabel;
     }
 }
 
