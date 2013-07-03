@@ -27,6 +27,11 @@ namespace MultiMiner.Win
         {
             minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256] = sha256ParamsEdit.Text;
             minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt] = scryptParamsEdit.Text;
+
+            if (cgminerRadio.Checked)
+                minerConfiguration.MinerBackend = MinerBackend.Cgminer;
+            else
+                minerConfiguration.MinerBackend = MinerBackend.Bfgminer;
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -44,6 +49,9 @@ namespace MultiMiner.Win
                 scryptParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt];
 
             applicationConfigurationBindingSource.DataSource = this.applicationConfiguration;
+
+            cgminerRadio.Checked = minerConfiguration.MinerBackend == MinerBackend.Cgminer;
+            bfgminerRadio.Checked = minerConfiguration.MinerBackend == MinerBackend.Bfgminer;
         }
     }
 }
