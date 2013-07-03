@@ -19,7 +19,8 @@ namespace MultiMiner.Win
         private readonly KnownCoins knownCoins = new KnownCoins();
         private readonly MiningEngine miningEngine = new MiningEngine();
         private readonly ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
-        private int countdownSeconds = 0;
+        private int startupMiningCountdownSeconds = 0;
+        private int coinStatsCountdownMinutes = 0;
 
         public MainForm()
         {
@@ -28,7 +29,8 @@ namespace MultiMiner.Win
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            coinStatsTimer.Interval = 15 * 60 * 1000; //15 minutes
+            coinStatsCountdownMinutes = 15;
+            coinStatsTimer.Interval = coinStatsCountdownMinutes * 60 * 1000; //15 minutes
 
             RefreshCoinStats();
 
@@ -59,18 +61,20 @@ namespace MultiMiner.Win
             engineConfiguration.LoadCoinConfigurations();
             engineConfiguration.LoadDeviceConfigurations();
             engineConfiguration.LoadMinerConfiguration();
-
             engineConfiguration.LoadStrategyConfiguration();
+
             coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.MineProfitableCoins;
+            RefreshStrategiesLabel();
+            RefreshStrategiesCountdown();
 
             applicationConfiguration.LoadApplicationConfiguration();
 
             if (applicationConfiguration.StartMiningOnStartup)
             {
                 startupMiningTimer.Interval = 1000 * applicationConfiguration.StartupMiningDelay;
-                countdownSeconds = applicationConfiguration.StartupMiningDelay;
+                startupMiningCountdownSeconds = applicationConfiguration.StartupMiningDelay;
                 startupMiningTimer.Enabled = true;
-                countdownTimer.Enabled = true;
+                startupMiningCountdownTimer.Enabled = true;
                 RefreshCountdownLabel();
             }
 
@@ -81,7 +85,7 @@ namespace MultiMiner.Win
 
         private void RefreshCountdownLabel()
         {
-            countdownLabel.Text = string.Format("Mining will start automatically in {0} seconds...", countdownSeconds);    
+            countdownLabel.Text = string.Format("Mining will start automatically in {0} seconds...", startupMiningCountdownSeconds);    
         }
 
         private List<Device> GetDevices()
@@ -272,6 +276,10 @@ namespace MultiMiner.Win
         {
             miningEngine.StopMining();
             deviceStatsTimer.Enabled = false;
+            coinStatsCountdownTimer.Enabled = false;
+            RefreshStrategiesCountdown();
+            scryptRateLabel.Text = string.Empty;
+            sha256RateLabel.Text = string.Empty;
 
             stopButton.Enabled = false;
             startButton.Enabled = true;
@@ -290,6 +298,8 @@ namespace MultiMiner.Win
 
             miningEngine.StartMining(engineConfiguration, devices, coinInformation);
             deviceStatsTimer.Enabled = true;
+            coinStatsCountdownTimer.Enabled = true;
+            RefreshStrategiesCountdown();
 
             //to get changes from strategy config
             LoadGridValuesFromConfiguration();
@@ -428,6 +438,8 @@ namespace MultiMiner.Win
 
             //to get changes from strategy config
             LoadGridValuesFromConfiguration();
+
+            coinStatsCountdownMinutes = coinStatsTimer.Interval / 1000 / 60;
         }
 
         private void RefreshCoinStats()
@@ -469,7 +481,7 @@ namespace MultiMiner.Win
         {
             startupMiningPanel.Visible = false;
             startupMiningTimer.Enabled = false;
-            countdownTimer.Enabled = false;
+            startupMiningCountdownTimer.Enabled = false;
 
             Application.DoEvents();
 
@@ -478,14 +490,14 @@ namespace MultiMiner.Win
 
         private void countdownTimer_Tick(object sender, EventArgs e)
         {
-            countdownSeconds--;
+            startupMiningCountdownSeconds--;
             RefreshCountdownLabel();
         }
 
         private void cancelStartupMiningButton_Click(object sender, EventArgs e)
         {
             startupMiningTimer.Enabled = false;
-            countdownTimer.Enabled = false;
+            startupMiningCountdownTimer.Enabled = false;
             startupMiningPanel.Visible = false;
             countdownLabel.Visible = false; //or remains visible under Mono
             cancelStartupMiningButton.Visible = false; //or remains visible under Mono
@@ -506,6 +518,31 @@ namespace MultiMiner.Win
             ConfigureStrategies();
         }
 
+        private void RefreshStrategiesLabel()
+        {
+            if (engineConfiguration.StrategyConfiguration.MineProfitableCoins)
+            {
+                strategiesLabel.Text = "Strategies: enabled";
+            }
+            else
+            {
+                strategiesLabel.Text = "Strategies: disabled";
+            }
+        }
+
+        private void RefreshStrategiesCountdown()
+        {
+            //Time until strategy check: 60s
+            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.MineProfitableCoins)
+            {
+                strategyCountdownLabel.Text = string.Format("Time until strategy check: {0}m", coinStatsCountdownMinutes);
+            }
+            else
+            {
+                strategyCountdownLabel.Text = "";
+            }
+        }
+
         private void ConfigureStrategies()
         {
             StrategiesForm strategiesForm = new StrategiesForm(engineConfiguration.StrategyConfiguration);
@@ -514,11 +551,18 @@ namespace MultiMiner.Win
             {
                 engineConfiguration.SaveStrategyConfiguration();
                 coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.MineProfitableCoins;
+                RefreshStrategiesLabel();
             }
             else
             {
                 engineConfiguration.LoadStrategyConfiguration();
             }
+        }
+
+        private void coinStatsCountdownTimer_Tick(object sender, EventArgs e)
+        {
+            coinStatsCountdownMinutes--;
+            RefreshStrategiesCountdown();
         }
     }
 }

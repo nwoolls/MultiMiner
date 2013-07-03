@@ -47,7 +47,7 @@
             this.deviceStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.startupMiningTimer = new System.Windows.Forms.Timer(this.components);
-            this.countdownTimer = new System.Windows.Forms.Timer(this.components);
+            this.startupMiningCountdownTimer = new System.Windows.Forms.Timer(this.components);
             this.startupMiningPanel = new System.Windows.Forms.Panel();
             this.cancelStartupMiningButton = new System.Windows.Forms.Button();
             this.countdownLabel = new System.Windows.Forms.Label();
@@ -64,8 +64,11 @@
             this.cancelButton = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.backendLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.strategiesLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.strategyCountdownLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.sha256RateLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.scryptRateLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.coinStatsCountdownTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.startupMiningPanel.SuspendLayout();
@@ -101,7 +104,6 @@
             this.deviceGridView.RowHeadersVisible = false;
             this.deviceGridView.Size = new System.Drawing.Size(1127, 409);
             this.deviceGridView.TabIndex = 0;
-            
             this.deviceGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.deviceGridView_CellValueChanged);
             this.deviceGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.deviceGridView_CurrentCellDirtyStateChanged);
             // 
@@ -200,10 +202,10 @@
             // 
             this.startupMiningTimer.Tick += new System.EventHandler(this.startupMiningTimer_Tick);
             // 
-            // countdownTimer
+            // startupMiningCountdownTimer
             // 
-            this.countdownTimer.Interval = 1000;
-            this.countdownTimer.Tick += new System.EventHandler(this.countdownTimer_Tick);
+            this.startupMiningCountdownTimer.Interval = 1000;
+            this.startupMiningCountdownTimer.Tick += new System.EventHandler(this.countdownTimer_Tick);
             // 
             // startupMiningPanel
             // 
@@ -338,6 +340,8 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.backendLabel,
+            this.strategiesLabel,
+            this.strategyCountdownLabel,
             this.sha256RateLabel,
             this.scryptRateLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 412);
@@ -348,13 +352,31 @@
             // 
             // backendLabel
             // 
+            this.backendLabel.AutoSize = false;
             this.backendLabel.Name = "backendLabel";
-            this.backendLabel.Size = new System.Drawing.Size(0, 17);
+            this.backendLabel.Size = new System.Drawing.Size(150, 17);
+            this.backendLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // strategiesLabel
+            // 
+            this.strategiesLabel.AutoSize = false;
+            this.strategiesLabel.Name = "strategiesLabel";
+            this.strategiesLabel.Size = new System.Drawing.Size(150, 17);
+            this.strategiesLabel.Text = "Strategies: enabled";
+            this.strategiesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // strategyCountdownLabel
+            // 
+            this.strategyCountdownLabel.AutoSize = false;
+            this.strategyCountdownLabel.Name = "strategyCountdownLabel";
+            this.strategyCountdownLabel.Size = new System.Drawing.Size(200, 17);
+            this.strategyCountdownLabel.Text = "Time until strategy check: 60s";
+            this.strategyCountdownLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // sha256RateLabel
             // 
             this.sha256RateLabel.Name = "sha256RateLabel";
-            this.sha256RateLabel.Size = new System.Drawing.Size(962, 17);
+            this.sha256RateLabel.Size = new System.Drawing.Size(462, 17);
             this.sha256RateLabel.Spring = true;
             this.sha256RateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -363,6 +385,11 @@
             this.scryptRateLabel.AutoSize = false;
             this.scryptRateLabel.Name = "scryptRateLabel";
             this.scryptRateLabel.Size = new System.Drawing.Size(150, 17);
+            // 
+            // coinStatsCountdownTimer
+            // 
+            this.coinStatsCountdownTimer.Interval = 60000;
+            this.coinStatsCountdownTimer.Tick += new System.EventHandler(this.coinStatsCountdownTimer_Tick);
             // 
             // MainForm
             // 
@@ -399,7 +426,7 @@
         private System.Windows.Forms.Timer deviceStatsTimer;
         private System.Windows.Forms.Timer coinStatsTimer;
         private System.Windows.Forms.Timer startupMiningTimer;
-        private System.Windows.Forms.Timer countdownTimer;
+        private System.Windows.Forms.Timer startupMiningCountdownTimer;
         private System.Windows.Forms.Panel startupMiningPanel;
         private System.Windows.Forms.Button cancelStartupMiningButton;
         private System.Windows.Forms.Label countdownLabel;
@@ -430,6 +457,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn acceptedColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn rejectedColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn errorsColumn;
+        private System.Windows.Forms.ToolStripStatusLabel strategiesLabel;
+        private System.Windows.Forms.ToolStripStatusLabel strategyCountdownLabel;
+        private System.Windows.Forms.Timer coinStatsCountdownTimer;
     }
 }
 
