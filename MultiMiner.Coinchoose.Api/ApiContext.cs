@@ -10,6 +10,9 @@ namespace MultiMiner.Coinchoose.Api
         public static List<CoinInformation> GetCoinInformation()
         {
             WebClient client = new WebClient();
+            const string userAgent = "MultiMiner/V1";
+            client.Headers.Add("user-agent", userAgent);
+
             string jsonString = client.DownloadString("http://www.coinchoose.com/api.php");
             JArray jsonArray = JArray.Parse(jsonString);
 
@@ -18,9 +21,7 @@ namespace MultiMiner.Coinchoose.Api
             foreach (JToken jToken in jsonArray)
             {
                 CoinInformation coinInformation = new CoinInformation();
-
                 coinInformation.PopulateFromJson(jToken);
-
                 result.Add(coinInformation);
             }
 
