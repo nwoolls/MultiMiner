@@ -26,13 +26,13 @@ Binary Downloads
 Windows Installation
 --------------------
 1. Download and extract the above binary distribution
-2. Find the Miners\cgminer directory and extract the current [binary distribution][4] for cgminer
+2. Find the Miners\ directory and extract the [binary distribution][4] for cgminer or the [binary distribution][10] for bfgminer into their subdirectories
 3. Launch MultiMiner.Win.exe to get started
 
 Mono (OS X, Linux) Installation
 -------------------------------
 1. Download and extract the above binary distribution
-2. Install cgminer. For OS X, you can find packages and for doing so [here][5] and instructions for using them [here][6].
+2. Install cgminer or bfgminer. For OS X, you can find packages and for doing so [here][5] and instructions for using them [here][6].
 3. Install X11. Under OS X you should install Xquartz available [here][7].
 4. Install the latest version of [Mono][8].
 5. Run MultiMiner.Win.exe using mono:
@@ -60,3 +60,4 @@ The source code is structured in such a way that it should be fairly easy to use
 [7]: http://xquartz.macosforge.org/
 [8]: http://www.mono-project.com/Main_Page
 [9]: http://coinchoose.com/
+[10]: http://luke.dashjr.org/programs/bitcoin/files/bfgminer/
