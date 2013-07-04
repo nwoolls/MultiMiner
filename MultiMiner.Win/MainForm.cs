@@ -38,15 +38,15 @@ namespace MultiMiner.Win
 
             RefreshBackendLabel();
 
-            RefreshDevices();
-
-            if (devices.Count > 0)
-                deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
-            
             RefreshCoinComboBox();
 
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
+
+            RefreshDevices();
+
+            if (devices.Count > 0)
+                deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
         }
 
         private void RefreshDevices()
@@ -130,42 +130,19 @@ namespace MultiMiner.Win
                 coinColumn.Items.Add(configuration.Coin.Name);
 
             coinColumn.Items.Add(string.Empty);
-            coinColumn.Items.Add("Configure Coins");
         }
-
-        private bool configuringCoins = false;        
+     
         private void deviceGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (deviceGridView.CurrentCell.RowIndex >= 0)
             {
                 if (deviceGridView.CurrentCell.ColumnIndex == coinColumn.Index)
                 {
-                    string value = (string)deviceGridView.CurrentCell.EditedFormattedValue;
-                    if (value.Equals("Configure Coins"))
-                        CheckAndConfigureCoins();
-
                     deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
                 }
             }
         }
-
-        private void CheckAndConfigureCoins()
-        {
-            if (!configuringCoins)
-            {
-                configuringCoins = true;
-                try
-                {
-                    deviceGridView.CancelEdit();
-                    ConfigureCoins();
-                }
-                finally
-                {
-                    configuringCoins = false;
-                }
-            }
-        }
-
+        
         private void saveButton_Click(object sender, EventArgs e)
         {
             SaveChanges();
@@ -198,14 +175,6 @@ namespace MultiMiner.Win
         {
             if (e.ColumnIndex == coinColumn.Index)
             {
-                //have to do this in CellValueChanged under Mono - CurrentCellDirtyStateChanged not called
-                if (Environment.OSVersion.Platform == PlatformID.Unix)
-                {
-                    string value = (string)deviceGridView.CurrentCell.EditedFormattedValue;
-                    if (value.Equals("Configure Coins"))
-                        CheckAndConfigureCoins();
-                }
-
                 saveButton.Enabled = true;
                 cancelButton.Enabled = true;
 
@@ -615,6 +584,11 @@ namespace MultiMiner.Win
         private void coinChooseLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://coinchoose.com/");
+        }
+
+        private void coinsButton_Click(object sender, EventArgs e)
+        {
+            ConfigureCoins();
         }
     }
 }
