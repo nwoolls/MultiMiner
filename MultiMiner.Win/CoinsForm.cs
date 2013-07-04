@@ -89,6 +89,7 @@ namespace MultiMiner.Win
         {
             CoinConfiguration configuration = configurations[coinListBox.SelectedIndex];
 
+            coinConfigurationBindingSource.DataSource = configuration;
             miningPoolBindingSource.DataSource = configuration.Pools;
             poolListBox.DataSource = miningPoolBindingSource;
             poolListBox.DisplayMember = "Host";
@@ -121,12 +122,7 @@ namespace MultiMiner.Win
             removePoolButton.Enabled = poolListBox.SelectedIndex >= 0;
             removeCoinButton.Enabled = coinListBox.SelectedIndex >= 0;
         }
-
-        private void coinListBox_RightToLeftChanged(object sender, EventArgs e)
-        {
-
-        }
-
+        
         private void poolListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateButtonStates();

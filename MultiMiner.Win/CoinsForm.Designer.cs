@@ -50,10 +50,14 @@
             this.hostEdit = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.coinConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.miningPoolBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.coinConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -95,7 +99,6 @@
             this.coinListBox.Size = new System.Drawing.Size(160, 239);
             this.coinListBox.TabIndex = 3;
             this.coinListBox.SelectedIndexChanged += new System.EventHandler(this.coinListBox_SelectedIndexChanged);
-            this.coinListBox.RightToLeftChanged += new System.EventHandler(this.coinListBox_RightToLeftChanged);
             // 
             // panel1
             // 
@@ -144,7 +147,7 @@
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Location = new System.Drawing.Point(166, 25);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(380, 233);
+            this.groupBox1.Size = new System.Drawing.Size(380, 182);
             this.groupBox1.TabIndex = 16;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pools";
@@ -252,11 +255,34 @@
             this.textBox1.Size = new System.Drawing.Size(188, 20);
             this.textBox1.TabIndex = 6;
             // 
+            // textBox3
+            // 
+            this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.coinConfigurationBindingSource, "MinerFlags", true));
+            this.textBox3.Location = new System.Drawing.Point(270, 223);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(261, 20);
+            this.textBox3.TabIndex = 17;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(173, 226);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(91, 13);
+            this.label5.TabIndex = 18;
+            this.label5.Text = "Miner parameters:";
+            // 
+            // coinConfigurationBindingSource
+            // 
+            this.coinConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.CoinConfiguration);
+            // 
             // CoinsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(558, 311);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.textBox3);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.coinListBox);
             this.Controls.Add(this.toolStrip1);
@@ -274,6 +300,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.miningPoolBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.coinConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -301,5 +328,8 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.BindingSource miningPoolBindingSource;
+        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.BindingSource coinConfigurationBindingSource;
     }
 }
