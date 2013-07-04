@@ -12,5 +12,6 @@ namespace MultiMiner.Engine.Configuration
 
         public CryptoCoin Coin { get; set; }
         public List<MiningPool> Pools { get; set; }
+        public string MinerFlags { get; set; }
     }
 }
