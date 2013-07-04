@@ -51,8 +51,8 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.coinConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label5 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -263,6 +263,10 @@
             this.textBox3.Size = new System.Drawing.Size(261, 20);
             this.textBox3.TabIndex = 17;
             // 
+            // coinConfigurationBindingSource
+            // 
+            this.coinConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.CoinConfiguration);
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -271,10 +275,6 @@
             this.label5.Size = new System.Drawing.Size(91, 13);
             this.label5.TabIndex = 18;
             this.label5.Text = "Miner parameters:";
-            // 
-            // coinConfigurationBindingSource
-            // 
-            this.coinConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.CoinConfiguration);
             // 
             // CoinsForm
             // 

@@ -58,6 +58,7 @@
             this.stopButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.settingsButton = new System.Windows.Forms.ToolStripButton();
+            this.coinsButton = new System.Windows.Forms.ToolStripButton();
             this.strategiesButton = new System.Windows.Forms.ToolStripButton();
             this.detectDevicesButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -74,7 +75,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.coinChooseLink = new System.Windows.Forms.LinkLabel();
             this.label1 = new System.Windows.Forms.Label();
-            this.coinsButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.startupMiningPanel.SuspendLayout();
@@ -262,9 +263,10 @@
             this.startButton,
             this.stopButton,
             this.toolStripSeparator2,
-            this.settingsButton,
             this.coinsButton,
             this.strategiesButton,
+            this.settingsButton,
+            this.toolStripSeparator3,
             this.detectDevicesButton,
             this.toolStripSeparator1,
             this.saveButton,
@@ -307,6 +309,15 @@
             this.settingsButton.Size = new System.Drawing.Size(69, 22);
             this.settingsButton.Text = "Settings";
             this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
+            // 
+            // coinsButton
+            // 
+            this.coinsButton.Image = ((System.Drawing.Image)(resources.GetObject("coinsButton.Image")));
+            this.coinsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.coinsButton.Name = "coinsButton";
+            this.coinsButton.Size = new System.Drawing.Size(57, 22);
+            this.coinsButton.Text = "Coins";
+            this.coinsButton.Click += new System.EventHandler(this.coinsButton_Click);
             // 
             // strategiesButton
             // 
@@ -447,14 +458,10 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Crypto-currency pricing and profitability information powered by the";
             // 
-            // coinsButton
+            // toolStripSeparator3
             // 
-            this.coinsButton.Image = ((System.Drawing.Image)(resources.GetObject("coinsButton.Image")));
-            this.coinsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.coinsButton.Name = "coinsButton";
-            this.coinsButton.Size = new System.Drawing.Size(57, 22);
-            this.coinsButton.Text = "Coins";
-            this.coinsButton.Click += new System.EventHandler(this.coinsButton_Click);
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // MainForm
             // 
@@ -534,6 +541,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn errorsColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn intensityColumn;
         private System.Windows.Forms.ToolStripButton coinsButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
     }
 }
 
