@@ -31,7 +31,8 @@ namespace MultiMiner.Xgminer.Api.Parsers
 
                 if (newDevice.Kind.Equals("GPU"))
                 {
-                    newDevice.Temperature = double.Parse(keyValuePairs["Temperature"]);
+                    if (keyValuePairs.ContainsKey("Temperature")) //check required for bfgminer
+                        newDevice.Temperature = double.Parse(keyValuePairs["Temperature"]);
                     newDevice.FanSpeed = int.Parse(keyValuePairs["Fan Speed"]);
                     newDevice.FanPercent = int.Parse(keyValuePairs["Fan Percent"]);
                     newDevice.GpuClock = int.Parse(keyValuePairs["GPU Clock"]);
