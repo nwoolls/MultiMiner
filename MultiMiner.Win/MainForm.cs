@@ -54,6 +54,12 @@ namespace MultiMiner.Win
             devices = GetDevices();
             deviceBindingSource.DataSource = devices;
             LoadGridValuesFromConfiguration();
+            CheckAndHideNameColumn();
+        }
+
+        private void CheckAndHideNameColumn()
+        {
+            nameColumn.Visible = devices.Count(d => !string.IsNullOrEmpty(d.Name)) > 0;
         }
 
         private void LoadSettings()
