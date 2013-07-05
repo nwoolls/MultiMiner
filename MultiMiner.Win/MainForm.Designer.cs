@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.deviceGridView = new System.Windows.Forms.DataGridView();
             this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.coinColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.difficultyColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -57,9 +57,10 @@
             this.startButton = new System.Windows.Forms.ToolStripButton();
             this.stopButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.settingsButton = new System.Windows.Forms.ToolStripButton();
             this.coinsButton = new System.Windows.Forms.ToolStripButton();
             this.strategiesButton = new System.Windows.Forms.ToolStripButton();
+            this.settingsButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.detectDevicesButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.saveButton = new System.Windows.Forms.ToolStripButton();
@@ -75,7 +76,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.coinChooseLink = new System.Windows.Forms.LinkLabel();
             this.label1 = new System.Windows.Forms.Label();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.coinStatsLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.startupMiningPanel.SuspendLayout();
@@ -94,7 +95,7 @@
             this.deviceGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.deviceGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.kindDataGridViewTextBoxColumn,
-            this.nameDataGridViewTextBoxColumn,
+            this.nameColumn,
             this.descriptionDataGridViewTextBoxColumn,
             this.coinColumn,
             this.difficultyColumn,
@@ -123,12 +124,12 @@
             this.kindDataGridViewTextBoxColumn.Name = "kindDataGridViewTextBoxColumn";
             this.kindDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // nameDataGridViewTextBoxColumn
+            // nameColumn
             // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.nameColumn.DataPropertyName = "Name";
+            this.nameColumn.HeaderText = "Name";
+            this.nameColumn.Name = "nameColumn";
+            this.nameColumn.ReadOnly = true;
             // 
             // descriptionDataGridViewTextBoxColumn
             // 
@@ -301,15 +302,6 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
-            // settingsButton
-            // 
-            this.settingsButton.Image = ((System.Drawing.Image)(resources.GetObject("settingsButton.Image")));
-            this.settingsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.settingsButton.Name = "settingsButton";
-            this.settingsButton.Size = new System.Drawing.Size(69, 22);
-            this.settingsButton.Text = "Settings";
-            this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
-            // 
             // coinsButton
             // 
             this.coinsButton.Image = ((System.Drawing.Image)(resources.GetObject("coinsButton.Image")));
@@ -327,6 +319,20 @@
             this.strategiesButton.Size = new System.Drawing.Size(78, 22);
             this.strategiesButton.Text = "Strategies";
             this.strategiesButton.Click += new System.EventHandler(this.strategiesButton_Click);
+            // 
+            // settingsButton
+            // 
+            this.settingsButton.Image = ((System.Drawing.Image)(resources.GetObject("settingsButton.Image")));
+            this.settingsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.settingsButton.Name = "settingsButton";
+            this.settingsButton.Size = new System.Drawing.Size(69, 22);
+            this.settingsButton.Text = "Settings";
+            this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // detectDevicesButton
             // 
@@ -411,6 +417,7 @@
             this.scryptRateLabel.AutoSize = false;
             this.scryptRateLabel.Name = "scryptRateLabel";
             this.scryptRateLabel.Size = new System.Drawing.Size(150, 17);
+            this.scryptRateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // coinStatsCountdownTimer
             // 
@@ -420,6 +427,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.panel1.Controls.Add(this.coinStatsLabel);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.coinChooseLink);
             this.panel1.Controls.Add(this.label1);
@@ -434,9 +442,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(407, 13);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(24, 13);
+            this.label2.Size = new System.Drawing.Size(27, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "API";
+            this.label2.Text = "API.";
             // 
             // coinChooseLink
             // 
@@ -458,10 +466,14 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Crypto-currency pricing and profitability information powered by the";
             // 
-            // toolStripSeparator3
+            // coinStatsLabel
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            this.coinStatsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.coinStatsLabel.Location = new System.Drawing.Point(915, 13);
+            this.coinStatsLabel.Name = "coinStatsLabel";
+            this.coinStatsLabel.Size = new System.Drawing.Size(200, 23);
+            this.coinStatsLabel.TabIndex = 3;
+            this.coinStatsLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // MainForm
             // 
@@ -527,8 +539,10 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.LinkLabel coinChooseLink;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripButton coinsButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.DataGridViewTextBoxColumn kindDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn descriptionDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewComboBoxColumn coinColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn difficultyColumn;
@@ -540,8 +554,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn rejectedColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn errorsColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn intensityColumn;
-        private System.Windows.Forms.ToolStripButton coinsButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.Label coinStatsLabel;
     }
 }
 

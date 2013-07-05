@@ -447,6 +447,12 @@ namespace MultiMiner.Win
 
             LoadGridValuesFromCoinStats();
             LoadKnownCoinsFromCoinStats();
+            RefreshCoinStatsLabel();
+        }
+
+        private void RefreshCoinStatsLabel()
+        {
+            coinStatsLabel.Text = string.Format("Coin stats last fetched at {0}.", DateTime.Now.ToShortTimeString());
         }
 
         private void LoadKnownCoinsFromCoinStats()
