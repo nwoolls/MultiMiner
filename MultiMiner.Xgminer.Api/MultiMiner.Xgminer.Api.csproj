@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="ApiContext.cs" />
     <Compile Include="DeviceInformation.cs" />
+    <Compile Include="LogEventArgs.cs" />
     <Compile Include="Parsers\DeviceInformationParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ApiVerb.cs" />

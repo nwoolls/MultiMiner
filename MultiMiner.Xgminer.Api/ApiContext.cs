@@ -8,10 +8,17 @@ namespace MultiMiner.Xgminer.Api
 {
     public class ApiContext
     {
-        private TcpClient tcpClient;
+        //events
+        // delegate declaration 
+        public delegate void LogEventHandler(object sender, LogEventArgs ca);
+
+        // event declaration 
+        public event LogEventHandler LogEvent;
+
+        private readonly int port;
         public ApiContext(int port)
         {
-            tcpClient = new TcpClient("127.0.0.1", port);
+            this.port = port;
         }
 
         public List<DeviceInformation> GetDeviceInformation()
@@ -29,6 +36,7 @@ namespace MultiMiner.Xgminer.Api
 
         private string GetResponse(string apiVerb)
         {
+            TcpClient tcpClient = new TcpClient("127.0.0.1", port);
             NetworkStream tcpStream = tcpClient.GetStream();
 
             Byte[] request = Encoding.ASCII.GetBytes(apiVerb);
@@ -41,6 +49,16 @@ namespace MultiMiner.Xgminer.Api
                 int bytesRead = tcpStream.Read(responseBuffer, 0, responseBuffer.Length);
                 response = response + Encoding.ASCII.GetString(responseBuffer, 0, bytesRead);
             } while (tcpStream.DataAvailable);
+
+
+            LogEventArgs args = new LogEventArgs();
+
+            args.DateTime = DateTime.Now;
+            args.Request = apiVerb;
+            args.Response = response;
+
+            if (LogEvent != null)
+                LogEvent(this, args); 
 
             return response;
         } 
