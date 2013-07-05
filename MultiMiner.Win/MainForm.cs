@@ -441,7 +441,7 @@ namespace MultiMiner.Win
         {
             try
             {
-                coinInformation = MultiMiner.Coinchoose.Api.ApiContext.GetCoinInformation();
+                coinInformation = ApiContext.GetCoinInformation();
             }
             catch (Exception ex)
             {
@@ -620,6 +620,28 @@ namespace MultiMiner.Win
         private void coinsButton_Click(object sender, EventArgs e)
         {
             ConfigureCoins();
+        }
+
+        private void closeApiButton_Click(object sender, EventArgs e)
+        {
+            HideApiMonitor();
+        }
+
+        private void HideApiMonitor()
+        {
+            splitContainer1.Panel2.Hide();
+            splitContainer1.Panel2Collapsed = true;
+        }
+
+        private void ShowApiMonitor()
+        {
+            splitContainer1.Panel2Collapsed = false;
+            splitContainer1.Panel2.Show();
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            ShowApiMonitor();
         }
     }
 }
