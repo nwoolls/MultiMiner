@@ -300,9 +300,15 @@ namespace MultiMiner.Engine
                 minerConfiguration.DeviceIndexes.Add(coinGpuConfiguration.DeviceIndex);
 
             string arguments = string.Empty;
+
+            //apply algorithm-specific parameters
             if (engineConfiguration.XgminerConfiguration.AlgorithmFlags.ContainsKey(coinConfiguration.Coin.Algorithm))
                 arguments = String.Format("{0} {1}", arguments,
                     engineConfiguration.XgminerConfiguration.AlgorithmFlags[coinConfiguration.Coin.Algorithm]);
+
+            //apply coin-specific parameters
+            if (!string.IsNullOrEmpty(coinConfiguration.MinerFlags))
+                arguments = string.Format("{0} {1}", arguments, coinConfiguration.MinerFlags);
 
             minerConfiguration.Arguments = arguments;
 
