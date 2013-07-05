@@ -509,7 +509,7 @@ namespace MultiMiner.Win
                     {
                         row.Cells[difficultyColumn.Index].Value = coin.Difficulty.ToString(".################");
                         row.Cells[priceColumn.Index].Value = coin.Price.ToString(".################");
-                        row.Cells[profitabilityColumn.Index].Value = coin.AdjustedProfitability.ToString(".################");
+                        row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AdjustedProfitability, 2); 
                     }
                 }
             }
