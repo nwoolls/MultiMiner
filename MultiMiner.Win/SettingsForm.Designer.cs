@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.autoLaunchCheckBox = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -41,30 +40,27 @@
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.bfgminerRadio = new System.Windows.Forms.RadioButton();
+            this.cgminerRadio = new System.Windows.Forms.RadioButton();
             this.sha256ParamsEdit = new System.Windows.Forms.TextBox();
             this.scryptParamsEdit = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.bfgminerRadio = new System.Windows.Forms.RadioButton();
-            this.cgminerRadio = new System.Windows.Forms.RadioButton();
-            this.label5 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox1
             // 
-            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "StartupMiningDelay", true));
+            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "StartupMiningDelay", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox1.Location = new System.Drawing.Point(127, 201);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(52, 20);
             this.textBox1.TabIndex = 4;
             this.textBox1.Text = "45";
-            // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
             // 
             // autoLaunchCheckBox
             // 
@@ -172,6 +168,37 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Miner Parameters";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(10, 21);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(86, 13);
+            this.label5.TabIndex = 15;
+            this.label5.Text = "Mining backend:";
+            // 
+            // bfgminerRadio
+            // 
+            this.bfgminerRadio.AutoSize = true;
+            this.bfgminerRadio.Location = new System.Drawing.Point(221, 19);
+            this.bfgminerRadio.Name = "bfgminerRadio";
+            this.bfgminerRadio.Size = new System.Drawing.Size(65, 17);
+            this.bfgminerRadio.TabIndex = 1;
+            this.bfgminerRadio.Text = "bfgminer";
+            this.bfgminerRadio.UseVisualStyleBackColor = true;
+            // 
+            // cgminerRadio
+            // 
+            this.cgminerRadio.AutoSize = true;
+            this.cgminerRadio.Checked = true;
+            this.cgminerRadio.Location = new System.Drawing.Point(118, 19);
+            this.cgminerRadio.Name = "cgminerRadio";
+            this.cgminerRadio.Size = new System.Drawing.Size(62, 17);
+            this.cgminerRadio.TabIndex = 0;
+            this.cgminerRadio.TabStop = true;
+            this.cgminerRadio.Text = "cgminer";
+            this.cgminerRadio.UseVisualStyleBackColor = true;
+            // 
             // sha256ParamsEdit
             // 
             this.sha256ParamsEdit.Location = new System.Drawing.Point(118, 42);
@@ -204,36 +231,9 @@
             this.label1.TabIndex = 8;
             this.label1.Text = "SHA256 parameters:";
             // 
-            // bfgminerRadio
+            // applicationConfigurationBindingSource
             // 
-            this.bfgminerRadio.AutoSize = true;
-            this.bfgminerRadio.Location = new System.Drawing.Point(221, 19);
-            this.bfgminerRadio.Name = "bfgminerRadio";
-            this.bfgminerRadio.Size = new System.Drawing.Size(65, 17);
-            this.bfgminerRadio.TabIndex = 1;
-            this.bfgminerRadio.Text = "bfgminer";
-            this.bfgminerRadio.UseVisualStyleBackColor = true;
-            // 
-            // cgminerRadio
-            // 
-            this.cgminerRadio.AutoSize = true;
-            this.cgminerRadio.Checked = true;
-            this.cgminerRadio.Location = new System.Drawing.Point(118, 19);
-            this.cgminerRadio.Name = "cgminerRadio";
-            this.cgminerRadio.Size = new System.Drawing.Size(62, 17);
-            this.cgminerRadio.TabIndex = 0;
-            this.cgminerRadio.TabStop = true;
-            this.cgminerRadio.Text = "cgminer";
-            this.cgminerRadio.UseVisualStyleBackColor = true;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 21);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(86, 13);
-            this.label5.TabIndex = 15;
-            this.label5.Text = "Mining backend:";
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
             // 
             // SettingsForm
             // 
@@ -255,10 +255,10 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.SettingsForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
