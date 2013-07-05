@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MultiMiner.Engine.Configuration
+﻿namespace MultiMiner.Engine.Configuration
 {
     public class StrategyConfiguration
     {

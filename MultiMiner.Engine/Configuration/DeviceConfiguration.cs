@@ -1,6 +1,4 @@
-﻿using MultiMiner.Xgminer;
-
-namespace MultiMiner.Engine.Configuration
+﻿namespace MultiMiner.Engine.Configuration
 {
     public class DeviceConfiguration
     {

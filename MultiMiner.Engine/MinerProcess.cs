@@ -1,6 +1,5 @@
 ﻿using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Api;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
 

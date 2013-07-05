@@ -1,8 +1,6 @@
-﻿using Microsoft.Win32;
-using MultiMiner.Engine.Configuration;
+﻿using MultiMiner.Engine.Configuration;
 using System;
 using System.IO;
-using System.Windows.Forms;
 
 namespace MultiMiner.Win
 {
