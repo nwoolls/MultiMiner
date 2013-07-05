@@ -73,10 +73,10 @@
             this.scryptRateLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.coinStatsCountdownTimer = new System.Windows.Forms.Timer(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.coinChooseLink = new System.Windows.Forms.LinkLabel();
-            this.label1 = new System.Windows.Forms.Label();
             this.coinStatsLabel = new System.Windows.Forms.Label();
+            this.coinChooseSuffixLabel = new System.Windows.Forms.Label();
+            this.coinChooseLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.coinChoosePrefixLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             this.startupMiningPanel.SuspendLayout();
@@ -114,6 +114,7 @@
             this.deviceGridView.RowHeadersVisible = false;
             this.deviceGridView.Size = new System.Drawing.Size(1127, 350);
             this.deviceGridView.TabIndex = 0;
+            
             this.deviceGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.deviceGridView_CellValueChanged);
             this.deviceGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.deviceGridView_CurrentCellDirtyStateChanged);
             // 
@@ -428,43 +429,14 @@
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.panel1.Controls.Add(this.coinStatsLabel);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.coinChooseLink);
-            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.coinChooseSuffixLabel);
+            this.panel1.Controls.Add(this.coinChooseLinkLabel);
+            this.panel1.Controls.Add(this.coinChoosePrefixLabel);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 375);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1127, 37);
             this.panel1.TabIndex = 9;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(407, 13);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(27, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "API.";
-            // 
-            // coinChooseLink
-            // 
-            this.coinChooseLink.AutoSize = true;
-            this.coinChooseLink.Location = new System.Drawing.Point(321, 13);
-            this.coinChooseLink.Name = "coinChooseLink";
-            this.coinChooseLink.Size = new System.Drawing.Size(87, 13);
-            this.coinChooseLink.TabIndex = 1;
-            this.coinChooseLink.TabStop = true;
-            this.coinChooseLink.Text = "CoinChoose.com";
-            this.coinChooseLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.coinChooseLink_LinkClicked);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 13);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(318, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Crypto-currency pricing and profitability information powered by the";
             // 
             // coinStatsLabel
             // 
@@ -474,6 +446,35 @@
             this.coinStatsLabel.Size = new System.Drawing.Size(200, 23);
             this.coinStatsLabel.TabIndex = 3;
             this.coinStatsLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // coinChooseSuffixLabel
+            // 
+            this.coinChooseSuffixLabel.AutoSize = true;
+            this.coinChooseSuffixLabel.Location = new System.Drawing.Point(454, 13);
+            this.coinChooseSuffixLabel.Name = "coinChooseSuffixLabel";
+            this.coinChooseSuffixLabel.Size = new System.Drawing.Size(27, 13);
+            this.coinChooseSuffixLabel.TabIndex = 2;
+            this.coinChooseSuffixLabel.Text = "API.";
+            // 
+            // coinChooseLinkLabel
+            // 
+            this.coinChooseLinkLabel.AutoSize = true;
+            this.coinChooseLinkLabel.Location = new System.Drawing.Point(343, 13);
+            this.coinChooseLinkLabel.Name = "coinChooseLinkLabel";
+            this.coinChooseLinkLabel.Size = new System.Drawing.Size(87, 13);
+            this.coinChooseLinkLabel.TabIndex = 1;
+            this.coinChooseLinkLabel.TabStop = true;
+            this.coinChooseLinkLabel.Text = "CoinChoose.com";
+            this.coinChooseLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.coinChooseLink_LinkClicked);
+            // 
+            // coinChoosePrefixLabel
+            // 
+            this.coinChoosePrefixLabel.AutoSize = true;
+            this.coinChoosePrefixLabel.Location = new System.Drawing.Point(3, 13);
+            this.coinChoosePrefixLabel.Name = "coinChoosePrefixLabel";
+            this.coinChoosePrefixLabel.Size = new System.Drawing.Size(318, 13);
+            this.coinChoosePrefixLabel.TabIndex = 0;
+            this.coinChoosePrefixLabel.Text = "Crypto-currency pricing and profitability information powered by the";
             // 
             // MainForm
             // 
@@ -536,9 +537,9 @@
         private System.Windows.Forms.ToolStripStatusLabel strategyCountdownLabel;
         private System.Windows.Forms.Timer coinStatsCountdownTimer;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.LinkLabel coinChooseLink;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label coinChooseSuffixLabel;
+        private System.Windows.Forms.LinkLabel coinChooseLinkLabel;
+        private System.Windows.Forms.Label coinChoosePrefixLabel;
         private System.Windows.Forms.ToolStripButton coinsButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.DataGridViewTextBoxColumn kindDataGridViewTextBoxColumn;

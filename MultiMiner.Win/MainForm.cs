@@ -40,6 +40,8 @@ namespace MultiMiner.Win
 
             RefreshCoinComboBox();
 
+            PositionCoinchooseLabels();
+
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
 
@@ -47,6 +49,13 @@ namespace MultiMiner.Win
 
             if (devices.Count > 0)
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
+        }
+
+        private void PositionCoinchooseLabels()
+        {
+            //so things align correctly under Mono
+            coinChooseLinkLabel.Left = coinChoosePrefixLabel.Left + coinChoosePrefixLabel.Width;
+            coinChooseSuffixLabel.Left = coinChooseLinkLabel.Left + coinChooseLinkLabel.Width;
         }
 
         private void RefreshDevices()
