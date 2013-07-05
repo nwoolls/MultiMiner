@@ -345,6 +345,9 @@ namespace MultiMiner.Win
         {
             double totalScryptRate = 0;
             double totalSha256Rate = 0;
+
+            bool hasTempValue = false;
+
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
                 MultiMiner.Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
@@ -393,6 +396,9 @@ namespace MultiMiner.Win
                             deviceGridView.Rows[rowIndex].Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
                             deviceGridView.Rows[rowIndex].Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
                             deviceGridView.Rows[rowIndex].Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
+
+                            if (deviceInformation.Temperature > 0)
+                                hasTempValue = true;
                         }
                     }
                 }
@@ -401,7 +407,10 @@ namespace MultiMiner.Win
             scryptRateLabel.Text = "Scrypt: " + totalScryptRate + " kh/s";
             sha256RateLabel.Text = "SHA256: " + totalSha256Rate / 1000 + " mh/s";
 
+            //hide the temperature column if there are no tempts returned (USBs, OS X, etc)
+            temperatureColumn.Visible = hasTempValue;
         }
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             StopMining();
@@ -410,6 +419,7 @@ namespace MultiMiner.Win
         private void coinStatsTimer_Tick(object sender, EventArgs e)
         {
             RefreshCoinStats();
+
             miningEngine.ApplyMiningStrategy(devices, coinInformation);
 
             //to get changes from strategy config
