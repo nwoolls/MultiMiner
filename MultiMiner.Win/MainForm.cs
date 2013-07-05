@@ -21,6 +21,7 @@ namespace MultiMiner.Win
         private readonly ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
         private int startupMiningCountdownSeconds = 0;
         private int coinStatsCountdownMinutes = 0;
+        private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
 
         public MainForm()
         {
@@ -41,6 +42,10 @@ namespace MultiMiner.Win
             RefreshCoinComboBox();
 
             PositionCoinchooseLabels();
+
+            apiLogEntryBindingSource.DataSource = apiLogEntries;
+
+            HideApiMonitor();
 
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
@@ -350,6 +355,39 @@ namespace MultiMiner.Win
             }
         }
 
+        private void LogApiEvent(object sender, Xgminer.Api.LogEventArgs eventArgs)
+        {
+            ApiLogEntry logEntry = new ApiLogEntry();
+
+            logEntry.DateTime = eventArgs.DateTime;
+            logEntry.Request = eventArgs.Request;
+            logEntry.Response = eventArgs.Response;
+            logEntry.CoinName = GetCoinNameForApiContext((Xgminer.Api.ApiContext)sender);
+
+            apiLogEntryBindingSource.Add(logEntry);
+            apiLogEntryBindingSource.Position = apiLogEntryBindingSource.IndexOf(logEntry);
+
+            while (apiLogEntryBindingSource.Count > 1000)
+                apiLogEntryBindingSource.RemoveAt(0);
+        }
+
+        private string GetCoinNameForApiContext(Xgminer.Api.ApiContext apiContext)
+        {
+            string coinName = string.Empty;
+
+            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+            {
+                MultiMiner.Xgminer.Api.ApiContext loopContext = minerProcess.ApiContext;
+                if (loopContext == apiContext)
+                {
+                    coinName = minerProcess.MinerConfiguration.CoinName;
+                    break;
+                }
+            }
+
+            return coinName;
+        }
+
         private void PopulateStatsFromMinerProcesses()
         {
             double totalScryptRate = 0;
@@ -362,6 +400,11 @@ namespace MultiMiner.Win
                 MultiMiner.Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
                 if (apiContext != null)
                 {
+
+                    //setup logging
+                    apiContext.LogEvent -= LogApiEvent;
+                    apiContext.LogEvent += LogApiEvent;
+
                     IEnumerable<MultiMiner.Xgminer.Api.DeviceInformation> enabledDevices = null;
                     try
                     {

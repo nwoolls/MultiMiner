@@ -54,6 +54,7 @@
     <Compile Include="CoinsForm.Designer.cs">
       <DependentUpon>CoinsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ApiLogEntry.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,11 +98,13 @@
     <EmbeddedResource Include="StrategiesForm.resx">
       <DependentUpon>StrategiesForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Properties\DataSources\ApiLogEntry.datasource" />
     <None Include="Properties\DataSources\ApplicationConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.CoinConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.CoinConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.StrategyConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.MiningPool.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.LogEntry.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Device.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
