@@ -58,7 +58,9 @@ namespace MultiMiner.Xgminer.Api
             args.Response = response;
 
             if (LogEvent != null)
-                LogEvent(this, args); 
+                LogEvent(this, args);
+
+            tcpClient.Close();
 
             return response;
         } 

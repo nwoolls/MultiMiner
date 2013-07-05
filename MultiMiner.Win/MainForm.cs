@@ -8,6 +8,7 @@ using System.Linq;
 using System.IO;
 using System.Net;
 using MultiMiner.Coinchoose.Api;
+using System.Net.Sockets;
 
 namespace MultiMiner.Win
 {
@@ -398,14 +399,14 @@ namespace MultiMiner.Win
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
                 MultiMiner.Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
-                if (apiContext != null)
+                
+                //setup logging
+                apiContext.LogEvent -= LogApiEvent;
+                apiContext.LogEvent += LogApiEvent;
+
+                IEnumerable<MultiMiner.Xgminer.Api.DeviceInformation> enabledDevices = null;
+                try
                 {
-
-                    //setup logging
-                    apiContext.LogEvent -= LogApiEvent;
-                    apiContext.LogEvent += LogApiEvent;
-
-                    IEnumerable<MultiMiner.Xgminer.Api.DeviceInformation> enabledDevices = null;
                     try
                     {
                         enabledDevices = apiContext.GetDeviceInformation().Where(d => d.Enabled);
@@ -415,45 +416,51 @@ namespace MultiMiner.Win
                         //don't fail and crash out due to any issues communicating via the API
                         continue;
                     }
+                }
+                catch (SocketException ex)
+                {
+                    //won't be able to connect for the first 5s or so
+                    continue;
+                }
 
-                    foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in enabledDevices)
+                foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in enabledDevices)
+                {
+                    int index = 0;
+                    int rowIndex = -1;
+
+                    for (int i = 0; i < devices.Count; i++)
                     {
-                        int index = 0;
-                        int rowIndex = -1;
-
-                        for (int i = 0; i < devices.Count; i++)
+                        if ((deviceInformation.Kind.Equals("GPU") && IdentifierIsGpu(devices[i].Identifier))
+                            || (!deviceInformation.Kind.Equals("GPU") && !IdentifierIsGpu(devices[i].Identifier)))
                         {
-                            if ((deviceInformation.Kind.Equals("GPU") && IdentifierIsGpu(devices[i].Identifier))
-                                || (!deviceInformation.Kind.Equals("GPU") && !IdentifierIsGpu(devices[i].Identifier)))
+                            if (index == deviceInformation.Index)
                             {
-                                if (index == deviceInformation.Index)
-                                {
-                                    rowIndex = i;
-                                    break;
-                                }
-                                index++;
+                                rowIndex = i;
+                                break;
                             }
-                        }
-
-                        if (rowIndex >= 0)
-                        {
-                            if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
-                                totalScryptRate += deviceInformation.AverageHashrate;
-                            else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
-                                totalSha256Rate += deviceInformation.AverageHashrate;
-
-                            deviceGridView.Rows[rowIndex].Cells[temperatureColumn.Index].Value = deviceInformation.Temperature;
-                            deviceGridView.Rows[rowIndex].Cells[hashRateColumn.Index].Value = deviceInformation.AverageHashrate;
-                            deviceGridView.Rows[rowIndex].Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
-                            deviceGridView.Rows[rowIndex].Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
-                            deviceGridView.Rows[rowIndex].Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
-                            deviceGridView.Rows[rowIndex].Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
-
-                            if (deviceInformation.Temperature > 0)
-                                hasTempValue = true;
+                            index++;
                         }
                     }
+
+                    if (rowIndex >= 0)
+                    {
+                        if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
+                            totalScryptRate += deviceInformation.AverageHashrate;
+                        else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
+                            totalSha256Rate += deviceInformation.AverageHashrate;
+
+                        deviceGridView.Rows[rowIndex].Cells[temperatureColumn.Index].Value = deviceInformation.Temperature;
+                        deviceGridView.Rows[rowIndex].Cells[hashRateColumn.Index].Value = deviceInformation.AverageHashrate;
+                        deviceGridView.Rows[rowIndex].Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
+                        deviceGridView.Rows[rowIndex].Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
+                        deviceGridView.Rows[rowIndex].Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
+                        deviceGridView.Rows[rowIndex].Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
+
+                        if (deviceInformation.Temperature > 0)
+                            hasTempValue = true;
+                    }
                 }
+
             }
 
             scryptRateLabel.Text = "Scrypt: " + totalScryptRate + " kh/s";
