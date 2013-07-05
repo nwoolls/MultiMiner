@@ -17,5 +17,6 @@ namespace MultiMiner.Engine.Configuration
         public CoinSwitchStrategy SwitchStrategy { get; set; }
         public string MinimumProfitabilitySymbol { get; set; }
         public double? MinimumProfitabilityPercentage { get; set; }
+        public double? MineMostProfitableOverridePercentage { get; set; }
     }
 }

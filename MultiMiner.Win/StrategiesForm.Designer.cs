@@ -39,9 +39,12 @@
             this.minCoinCombo = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.minPercentageEdit = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.minPercentageEdit = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.exceptPercentLabel = new System.Windows.Forms.Label();
+            this.exceptionEdit = new System.Windows.Forms.TextBox();
+            this.exceptionLabel = new System.Windows.Forms.Label();
             this.strategyConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -53,10 +56,11 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 200);
+            this.panel1.Location = new System.Drawing.Point(0, 224);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(348, 47);
             this.panel1.TabIndex = 2;
+            
             // 
             // saveButton
             // 
@@ -96,10 +100,10 @@
             // 
             this.singleCoinRadio.AutoSize = true;
             this.singleCoinRadio.Checked = true;
-            this.singleCoinRadio.Location = new System.Drawing.Point(14, 21);
+            this.singleCoinRadio.Location = new System.Drawing.Point(19, 84);
             this.singleCoinRadio.Name = "singleCoinRadio";
             this.singleCoinRadio.Size = new System.Drawing.Size(212, 17);
-            this.singleCoinRadio.TabIndex = 0;
+            this.singleCoinRadio.TabIndex = 2;
             this.singleCoinRadio.TabStop = true;
             this.singleCoinRadio.Text = "Mine only the single most profitable coin";
             this.singleCoinRadio.UseVisualStyleBackColor = true;
@@ -107,25 +111,26 @@
             // multiCoinRadio
             // 
             this.multiCoinRadio.AutoSize = true;
-            this.multiCoinRadio.Location = new System.Drawing.Point(14, 44);
+            this.multiCoinRadio.Location = new System.Drawing.Point(19, 111);
             this.multiCoinRadio.Name = "multiCoinRadio";
             this.multiCoinRadio.Size = new System.Drawing.Size(190, 17);
-            this.multiCoinRadio.TabIndex = 1;
+            this.multiCoinRadio.TabIndex = 3;
             this.multiCoinRadio.Text = "Mine all of the most profitable coins";
             this.multiCoinRadio.UseVisualStyleBackColor = true;
+            this.multiCoinRadio.CheckedChanged += new System.EventHandler(this.multiCoinRadio_CheckedChanged);
             // 
             // minCoinCombo
             // 
             this.minCoinCombo.FormattingEnabled = true;
-            this.minCoinCombo.Location = new System.Drawing.Point(193, 67);
+            this.minCoinCombo.Location = new System.Drawing.Point(198, 23);
             this.minCoinCombo.Name = "minCoinCombo";
             this.minCoinCombo.Size = new System.Drawing.Size(90, 21);
-            this.minCoinCombo.TabIndex = 2;
+            this.minCoinCombo.TabIndex = 0;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(11, 70);
+            this.label2.Location = new System.Drawing.Point(16, 26);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(176, 13);
             this.label2.TabIndex = 8;
@@ -136,6 +141,9 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.exceptPercentLabel);
+            this.groupBox1.Controls.Add(this.exceptionEdit);
+            this.groupBox1.Controls.Add(this.exceptionLabel);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.minPercentageEdit);
             this.groupBox1.Controls.Add(this.label1);
@@ -145,35 +153,63 @@
             this.groupBox1.Controls.Add(this.singleCoinRadio);
             this.groupBox1.Location = new System.Drawing.Point(12, 35);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(324, 150);
+            this.groupBox1.Size = new System.Drawing.Size(324, 174);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Strategies";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(294, 56);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(15, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "%";
+            // 
+            // minPercentageEdit
+            // 
+            this.minPercentageEdit.Location = new System.Drawing.Point(198, 53);
+            this.minPercentageEdit.Name = "minPercentageEdit";
+            this.minPercentageEdit.Size = new System.Drawing.Size(90, 20);
+            this.minPercentageEdit.TabIndex = 1;
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 100);
+            this.label1.Location = new System.Drawing.Point(16, 56);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(176, 13);
             this.label1.TabIndex = 9;
             this.label1.Text = "Don\'t mine coins less profitable than";
             // 
-            // minPercentageEdit
+            // exceptPercentLabel
             // 
-            this.minPercentageEdit.Location = new System.Drawing.Point(193, 97);
-            this.minPercentageEdit.Name = "minPercentageEdit";
-            this.minPercentageEdit.Size = new System.Drawing.Size(90, 20);
-            this.minPercentageEdit.TabIndex = 10;
+            this.exceptPercentLabel.AutoSize = true;
+            this.exceptPercentLabel.Enabled = false;
+            this.exceptPercentLabel.Location = new System.Drawing.Point(294, 137);
+            this.exceptPercentLabel.Name = "exceptPercentLabel";
+            this.exceptPercentLabel.Size = new System.Drawing.Size(15, 13);
+            this.exceptPercentLabel.TabIndex = 14;
+            this.exceptPercentLabel.Text = "%";
             // 
-            // label3
+            // exceptionEdit
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(289, 100);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(15, 13);
-            this.label3.TabIndex = 11;
-            this.label3.Text = "%";
+            this.exceptionEdit.Enabled = false;
+            this.exceptionEdit.Location = new System.Drawing.Point(198, 134);
+            this.exceptionEdit.Name = "exceptionEdit";
+            this.exceptionEdit.Size = new System.Drawing.Size(90, 20);
+            this.exceptionEdit.TabIndex = 4;
+            // 
+            // exceptionLabel
+            // 
+            this.exceptionLabel.AutoSize = true;
+            this.exceptionLabel.Enabled = false;
+            this.exceptionLabel.Location = new System.Drawing.Point(35, 137);
+            this.exceptionLabel.Name = "exceptionLabel";
+            this.exceptionLabel.Size = new System.Drawing.Size(151, 13);
+            this.exceptionLabel.TabIndex = 12;
+            this.exceptionLabel.Text = "Mine a single coin if it exceeds";
             // 
             // strategyConfigurationBindingSource
             // 
@@ -183,7 +219,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(348, 247);
+            this.ClientSize = new System.Drawing.Size(348, 271);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.panel1);
@@ -218,5 +254,8 @@
         private System.Windows.Forms.TextBox minPercentageEdit;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label exceptPercentLabel;
+        private System.Windows.Forms.TextBox exceptionEdit;
+        private System.Windows.Forms.Label exceptionLabel;
     }
 }

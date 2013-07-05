@@ -50,6 +50,9 @@ namespace MultiMiner.Win
             multiCoinRadio.Checked = strategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.AllMostProfitable;
 
             minPercentageEdit.Text = strategyConfiguration.MinimumProfitabilityPercentage.ToString();
+
+            if (multiCoinRadio.Checked)
+                exceptionEdit.Text = strategyConfiguration.MineMostProfitableOverridePercentage.ToString();
         }
 
         private void SaveSettings()
@@ -76,6 +79,30 @@ namespace MultiMiner.Win
                 if (double.TryParse(minPercentageEdit.Text, out percentage))
                     strategyConfiguration.MinimumProfitabilityPercentage = percentage;
             }
+
+            if (multiCoinRadio.Checked)
+            {
+                if (string.IsNullOrEmpty(exceptionEdit.Text))
+                    this.strategyConfiguration.MineMostProfitableOverridePercentage = null;
+                else
+                {
+                    double percentage;
+                    if (double.TryParse(exceptionEdit.Text, out percentage))
+                        strategyConfiguration.MineMostProfitableOverridePercentage = percentage;
+                }
+            }
+        }
+
+        private void multiCoinRadio_CheckedChanged(object sender, EventArgs e)
+        {
+            RefreshExceptionControls();
+        }
+
+        private void RefreshExceptionControls()
+        {
+            exceptionEdit.Enabled = multiCoinRadio.Checked;
+            exceptionLabel.Enabled = multiCoinRadio.Checked;
+            exceptPercentLabel.Enabled = multiCoinRadio.Checked;
         }
     }
 

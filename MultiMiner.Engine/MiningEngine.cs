@@ -154,10 +154,7 @@ namespace MultiMiner.Engine
                 if (DeviceIsGpu(device))
                 {
                     //sha256 or scrypt
-                    if (engineConfiguration.StrategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.SingleMostProfitable)
-                        profitableCoin = allProfitableCoins.First();
-                    else
-                        profitableCoin = allProfitableCoins[gpuIterator];
+                    profitableCoin = GetProfitableCoinFromList(allProfitableCoins, gpuIterator);
 
                     gpuIterator++;
                     if (gpuIterator >= allProfitableCoins.Count())
@@ -166,10 +163,7 @@ namespace MultiMiner.Engine
                 else if (sha256ProfitableCoins.Count > 0)
                 {
                     //sha256 only
-                    if (engineConfiguration.StrategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.SingleMostProfitable)
-                        profitableCoin = sha256ProfitableCoins.First();
-                    else
-                        profitableCoin = sha256ProfitableCoins[amuIterator];
+                    profitableCoin = GetProfitableCoinFromList(sha256ProfitableCoins, amuIterator);
 
                     amuIterator++;
                     if (amuIterator >= sha256ProfitableCoins.Count())
@@ -188,6 +182,22 @@ namespace MultiMiner.Engine
             }
 
             return newConfiguration;
+        }
+
+        private CoinInformation GetProfitableCoinFromList(List<CoinInformation> coinList, int deviceIterator)
+        {
+            CoinInformation profitableCoin;
+
+            bool mineSingle = engineConfiguration.StrategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.SingleMostProfitable;
+            if (!mineSingle && engineConfiguration.StrategyConfiguration.MineMostProfitableOverridePercentage.HasValue)
+                mineSingle = coinList.First().AdjustedProfitability > engineConfiguration.StrategyConfiguration.MineMostProfitableOverridePercentage;
+
+            if (mineSingle)
+                profitableCoin = coinList.First();
+            else
+                profitableCoin = coinList[deviceIterator];
+
+            return profitableCoin;
         }
 
         private List<CoinInformation> GetFilteredProfitableCoins(IEnumerable<CoinInformation> unfilteredProfitableCoins)
