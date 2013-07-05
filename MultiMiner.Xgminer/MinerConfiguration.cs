@@ -17,5 +17,6 @@ namespace MultiMiner.Xgminer
         public bool ApiListen { get; set; }
         public List<int> DeviceIndexes { get; set; }
         public string Arguments { get; set; }
+        public string CoinName { get; set; }
     }
 }

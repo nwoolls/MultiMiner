@@ -305,6 +305,7 @@ namespace MultiMiner.Engine
             minerConfiguration.Algorithm = coinConfiguration.Coin.Algorithm;
             minerConfiguration.ApiPort = port;
             minerConfiguration.ApiListen = true;
+            minerConfiguration.CoinName = coinConfiguration.Coin.Name;
 
             foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
                 minerConfiguration.DeviceIndexes.Add(coinGpuConfiguration.DeviceIndex);
