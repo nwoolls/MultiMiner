@@ -250,7 +250,7 @@ namespace MultiMiner.Engine
 
             return configDifferent;
         }
-        
+
         private void StartMining()
         {
             IEnumerable<string> coinSymbols = engineConfiguration.DeviceConfigurations.Select(c => c.CoinSymbol).Distinct();
@@ -259,10 +259,10 @@ namespace MultiMiner.Engine
 
             foreach (string coinSymbol in coinSymbols)
             {
-                MultiMiner.Xgminer.MinerConfiguration minerConfiguration = CreateMinerConfiguration(port, coinSymbol);
+                MinerConfiguration minerConfiguration = CreateMinerConfiguration(port, coinSymbol);
 
                 Process process = LaunchMinerProcess(minerConfiguration);
-                
+
                 if (!process.HasExited)
                 {
                     MinerProcess minerProcess = new MinerProcess();
@@ -280,26 +280,26 @@ namespace MultiMiner.Engine
             mining = true;
         }
 
-        private static Process LaunchMinerProcess(MultiMiner.Xgminer.MinerConfiguration minerConfiguration)
+        private static Process LaunchMinerProcess(MinerConfiguration minerConfiguration)
         {
             Miner miner = new Miner(minerConfiguration);
             Process process = miner.Launch();
             return process;
         }
 
-        private MultiMiner.Xgminer.MinerConfiguration CreateMinerConfiguration(int port, string coinSymbol)
+        private MinerConfiguration CreateMinerConfiguration(int port, string coinSymbol)
         {
             CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(coinSymbol));
 
             IEnumerable<DeviceConfiguration> coinGpuConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.CoinSymbol.Equals(coinSymbol));
 
-            MultiMiner.Xgminer.MinerConfiguration minerConfiguration = new MultiMiner.Xgminer.MinerConfiguration();
+            MinerConfiguration minerConfiguration = new MinerConfiguration();
 
             string minerName = "cgminer";
             if (engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Bfgminer)
                 minerName = "bfgminer";
 
-            switch (Environment.OSVersion.Platform) 
+            switch (Environment.OSVersion.Platform)
             {
                 case PlatformID.Unix:
                     minerConfiguration.ExecutablePath = minerName;
@@ -310,7 +310,7 @@ namespace MultiMiner.Engine
             }
 
             minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
-            
+
             minerConfiguration.Pools = coinConfiguration.Pools;
             minerConfiguration.Algorithm = coinConfiguration.Coin.Algorithm;
             minerConfiguration.ApiPort = port;

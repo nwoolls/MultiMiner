@@ -110,7 +110,6 @@ namespace MultiMiner.Win
             DialogResult promptResult = MessageBox.Show("Remove the selected pool configuration?", "Confirm", MessageBoxButtons.YesNo);
             if (promptResult == System.Windows.Forms.DialogResult.Yes)
             {
-                CoinConfiguration configuration = configurations[coinListBox.SelectedIndex];
                 miningPoolBindingSource.RemoveAt(poolListBox.SelectedIndex);
                 hostEdit.Focus();
             }
