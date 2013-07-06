@@ -87,12 +87,15 @@ namespace MultiMiner.Win
 
         private void coinListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CoinConfiguration configuration = configurations[coinListBox.SelectedIndex];
+            if (coinListBox.SelectedIndex >= 0)
+            {
+                CoinConfiguration configuration = configurations[coinListBox.SelectedIndex];
 
-            coinConfigurationBindingSource.DataSource = configuration;
-            miningPoolBindingSource.DataSource = configuration.Pools;
-            poolListBox.DataSource = miningPoolBindingSource;
-            poolListBox.DisplayMember = "Host";
+                coinConfigurationBindingSource.DataSource = configuration;
+                miningPoolBindingSource.DataSource = configuration.Pools;
+                poolListBox.DataSource = miningPoolBindingSource;
+                poolListBox.DisplayMember = "Host";
+            }
 
             UpdateButtonStates();
         }
@@ -118,8 +121,8 @@ namespace MultiMiner.Win
         private void UpdateButtonStates()
         {
             addPoolButton.Enabled = coinListBox.SelectedIndex >= 0;
-            removePoolButton.Enabled = poolListBox.SelectedIndex >= 0;
-            removeCoinButton.Enabled = coinListBox.SelectedIndex >= 0;
+            removePoolButton.Enabled = (coinListBox.SelectedIndex >= 0) && (poolListBox.SelectedIndex >= 0);
+            removeCoinButton.Enabled = (coinListBox.SelectedIndex >= 0) && (coinListBox.SelectedIndex >= 0);
         }
         
         private void poolListBox_SelectedIndexChanged(object sender, EventArgs e)
