@@ -126,7 +126,7 @@ namespace MultiMiner.Engine
         }
 
         private List<DeviceConfiguration> CreateAutomaticDeviceConfiguration(List<Device> devices, IEnumerable<CoinInformation> unfilteredProfitableCoins)
-        {            
+        {
             //order by adjusted profitability
             List<CoinInformation> filteredProfitableCoins = GetFilteredProfitableCoins(unfilteredProfitableCoins);
 
@@ -139,7 +139,7 @@ namespace MultiMiner.Engine
 
             if (sha256ProfitableCoins.Count == 0)
             {
-                Coinchoose.Api.CoinInformation sha256Info = unfilteredProfitableCoins.Where(c => c.Algorithm.Equals("SHA-256")).FirstOrDefault();
+                CoinInformation sha256Info = unfilteredProfitableCoins.Where(c => c.Algorithm.Equals("SHA-256")).FirstOrDefault();
                 if (sha256Info != null)
                     sha256ProfitableCoins.Add(sha256Info);
             }
