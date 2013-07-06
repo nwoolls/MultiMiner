@@ -69,8 +69,11 @@ namespace MultiMiner.Xgminer
 
             //otherwise cgminer output shows under *nix in the terminal
             //DONT do it for Windows though or cgminer will close after opening
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
-                redirectOutput = true;
+
+            //commented out for now - seems to eventually cause issues under .nix too
+            //the miner keeps mining but Accepted shares stop updating
+            //if (Environment.OSVersion.Platform == PlatformID.Unix)
+            //    redirectOutput = true;
 
             string arguments = minerConfiguration.Arguments;
 
