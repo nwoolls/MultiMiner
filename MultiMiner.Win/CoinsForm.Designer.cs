@@ -53,6 +53,8 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.coinConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textBox5 = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -96,7 +98,7 @@
             this.coinListBox.FormattingEnabled = true;
             this.coinListBox.Location = new System.Drawing.Point(0, 25);
             this.coinListBox.Name = "coinListBox";
-            this.coinListBox.Size = new System.Drawing.Size(160, 239);
+            this.coinListBox.Size = new System.Drawing.Size(160, 259);
             this.coinListBox.TabIndex = 3;
             this.coinListBox.SelectedIndexChanged += new System.EventHandler(this.coinListBox_SelectedIndexChanged);
             // 
@@ -105,7 +107,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 264);
+            this.panel1.Location = new System.Drawing.Point(0, 284);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(558, 47);
             this.panel1.TabIndex = 4;
@@ -258,9 +260,9 @@
             // textBox3
             // 
             this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.coinConfigurationBindingSource, "MinerFlags", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox3.Location = new System.Drawing.Point(270, 223);
+            this.textBox3.Location = new System.Drawing.Point(293, 223);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(261, 20);
+            this.textBox3.Size = new System.Drawing.Size(238, 20);
             this.textBox3.TabIndex = 17;
             // 
             // coinConfigurationBindingSource
@@ -276,11 +278,30 @@
             this.label5.TabIndex = 18;
             this.label5.Text = "Miner parameters:";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(173, 252);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(114, 13);
+            this.label6.TabIndex = 20;
+            this.label6.Text = "Profitability adjustment:";
+            // 
+            // textBox5
+            // 
+            this.textBox5.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.coinConfigurationBindingSource, "ProfitabilityAdjustment", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox5.Location = new System.Drawing.Point(293, 249);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(238, 20);
+            this.textBox5.TabIndex = 19;
+            // 
             // CoinsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(558, 311);
+            this.ClientSize = new System.Drawing.Size(558, 331);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.textBox5);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.groupBox1);
@@ -331,5 +352,7 @@
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.BindingSource coinConfigurationBindingSource;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox textBox5;
     }
 }
