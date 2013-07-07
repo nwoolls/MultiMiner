@@ -106,12 +106,7 @@ namespace MultiMiner.Engine
                 if (configuredProfitableCoins.Count() > 0)
                 {
                     //adjust profitabilities based on config adjustments
-                    foreach (CoinInformation configuredProfitableCoin in configuredProfitableCoins)
-                    {
-                        CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(configuredProfitableCoin.Symbol));
-                        configuredProfitableCoin.AdjustedProfitability += coinConfiguration.ProfitabilityAdjustment;
-                    }
-
+                    ApplyProfitabilityAdjustments(configuredProfitableCoins);
 
                     List<CoinInformation> orderedProfitableCoins = configuredProfitableCoins.OrderByDescending(c => c.AdjustedProfitability).ToList();
 
@@ -130,6 +125,15 @@ namespace MultiMiner.Engine
                     if (configDifferent)
                         RestartMining();
                 }
+            }
+        }
+
+        private void ApplyProfitabilityAdjustments(IEnumerable<CoinInformation> configuredProfitableCoins)
+        {
+            foreach (CoinInformation configuredProfitableCoin in configuredProfitableCoins)
+            {
+                CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(configuredProfitableCoin.Symbol));
+                configuredProfitableCoin.AdjustedProfitability += coinConfiguration.ProfitabilityAdjustment;
             }
         }
 
