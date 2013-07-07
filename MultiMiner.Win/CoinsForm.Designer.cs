@@ -55,6 +55,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.textBox5 = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -292,14 +293,24 @@
             this.textBox5.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.coinConfigurationBindingSource, "ProfitabilityAdjustment", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox5.Location = new System.Drawing.Point(293, 249);
             this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(238, 20);
+            this.textBox5.Size = new System.Drawing.Size(217, 20);
             this.textBox5.TabIndex = 19;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(516, 252);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(15, 13);
+            this.label7.TabIndex = 21;
+            this.label7.Text = "%";
             // 
             // CoinsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(558, 331);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBox5);
             this.Controls.Add(this.label5);
@@ -354,5 +365,6 @@
         private System.Windows.Forms.BindingSource coinConfigurationBindingSource;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.Label label7;
     }
 }
