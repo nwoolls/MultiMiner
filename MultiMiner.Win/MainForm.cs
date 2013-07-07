@@ -681,10 +681,15 @@ namespace MultiMiner.Win
         {
             splitContainer1.Panel2.Hide();
             splitContainer1.Panel2Collapsed = true;
+            //hide all controls or they will show/flicker under OS X/mono
+            closeApiButton.Visible = false;
+            apiLogGridView.Visible = false;
         }
 
         private void ShowApiMonitor()
         {
+            closeApiButton.Visible = true;
+            apiLogGridView.Visible = true;
             splitContainer1.Panel2Collapsed = false;
             splitContainer1.Panel2.Show();
         }
