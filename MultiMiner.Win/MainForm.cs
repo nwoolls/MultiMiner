@@ -157,13 +157,28 @@ namespace MultiMiner.Win
         {
             //remove any Coin values from the grid that may now be invalid
             RemoveInvalidCoinValues();
+                        
+            //remove any Coin combo items that are no longer valid
+            //cannot clear as there are values bound in the grid
+            RemoveInvalidCoinComboItems();
 
-            coinColumn.Items.Clear();
-
-            foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations)
-                coinColumn.Items.Add(configuration.Coin.Name);
+            AddMissingCoinComboItems();
 
             coinColumn.Items.Add(string.Empty);
+        }
+
+        private void AddMissingCoinComboItems()
+        {
+            foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations)
+                if (!coinColumn.Items.Contains(configuration.Coin.Name))
+                    coinColumn.Items.Add(configuration.Coin.Name);
+        }
+
+        private void RemoveInvalidCoinComboItems()
+        {
+            for (int i = coinColumn.Items.Count - 1; i >= 0; i--)
+                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(coinColumn.Items[i])) == null)
+                    coinColumn.Items.RemoveAt(i);
         }
 
         private void RemoveInvalidCoinValues()
@@ -171,6 +186,8 @@ namespace MultiMiner.Win
             foreach (DataGridViewRow row in deviceGridView.Rows)
                 if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(row.Cells[coinColumn.Index].Value)) == null)
                     row.Cells[coinColumn.Index].Value = string.Empty;
+
+            ClearCoinStatsForDisabledCoins();
         }
 
         private void deviceGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -397,6 +414,19 @@ namespace MultiMiner.Win
             }
         }
 
+        private void ClearCoinStatsForDisabledCoins()
+        {
+            foreach (DataGridViewRow row in deviceGridView.Rows)
+            {
+                if (string.IsNullOrEmpty((string)row.Cells[coinColumn.Index].Value))
+                {
+                    row.Cells[difficultyColumn.Index].Value = null;
+                    row.Cells[priceColumn.Index].Value = null;
+                    row.Cells[profitabilityColumn.Index].Value = null;
+                }
+            }
+        }
+
         private void LogApiEvent(object sender, Xgminer.Api.LogEventArgs eventArgs)
         {
             ApiLogEntry logEntry = new ApiLogEntry();
@@ -613,6 +643,8 @@ namespace MultiMiner.Win
                     }
                 }
             }
+
+            ClearCoinStatsForDisabledCoins();
         }
 
         private void startupMiningTimer_Tick(object sender, EventArgs e)
