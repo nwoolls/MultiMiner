@@ -9,6 +9,7 @@ using System.IO;
 using System.Net;
 using MultiMiner.Coinchoose.Api;
 using System.Net.Sockets;
+using System.ComponentModel;
 
 namespace MultiMiner.Win
 {
@@ -66,7 +67,16 @@ namespace MultiMiner.Win
 
         private void RefreshDevices()
         {
-            devices = GetDevices();
+            try
+            {
+                devices = GetDevices();
+            }
+            catch (Win32Exception ex)
+            {
+                //miner not installed/not launched
+                devices = new List<Device>(); //dummy empty device list
+                MessageBox.Show("The miner specified in your settings was not found. Please go to https://github.com/nwoolls/multiminer for instructions on installing either cgminer or bfgminer.");
+            }
             deviceBindingSource.DataSource = devices;
             LoadGridValuesFromConfiguration();
             CheckAndHideNameColumn();
@@ -191,6 +201,8 @@ namespace MultiMiner.Win
             {
                 miningEngine.RestartMining();
             }
+
+            UpdateMiningButtons();
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
@@ -211,6 +223,8 @@ namespace MultiMiner.Win
 
                 if (this.coinInformation != null)
                     LoadGridValuesFromCoinStats();
+
+                UpdateMiningButtons();
             }
         }
 
@@ -275,6 +289,12 @@ namespace MultiMiner.Win
             }
         }
 
+        private void UpdateMiningButtons()
+        {
+            startButton.Enabled = (engineConfiguration.DeviceConfigurations.Count > 0) && !miningEngine.Mining;
+            stopButton.Enabled = miningEngine.Mining;
+        }
+
         private void stopButton_Click(object sender, EventArgs e)
         {
             StopMining();
@@ -289,8 +309,7 @@ namespace MultiMiner.Win
             scryptRateLabel.Text = string.Empty;
             sha256RateLabel.Text = string.Empty;
 
-            stopButton.Enabled = false;
-            startButton.Enabled = true;
+            UpdateMiningButtons();
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -301,8 +320,10 @@ namespace MultiMiner.Win
 
         private void StartMining()
         {
-            startButton.Enabled = false;
-            stopButton.Enabled = true;
+            if (engineConfiguration.DeviceConfigurations.Count == 0)
+                return;
+
+            startButton.Enabled = false; //immediately disable, update after
 
             miningEngine.StartMining(engineConfiguration, devices, coinInformation);
             deviceStatsTimer.Enabled = true;
@@ -311,6 +332,8 @@ namespace MultiMiner.Win
 
             //to get changes from strategy config
             LoadGridValuesFromConfiguration();
+
+            UpdateMiningButtons();
         }
 
         private void RefreshBackendLabel()
