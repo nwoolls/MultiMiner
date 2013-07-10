@@ -145,6 +145,9 @@ namespace MultiMiner.Win
 
         private void RefreshCoinComboBox()
         {
+            //remove any Coin values from the grid that may now be invalid
+            RemoveInvalidCoinValues();
+
             coinColumn.Items.Clear();
 
             foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations)
@@ -152,7 +155,14 @@ namespace MultiMiner.Win
 
             coinColumn.Items.Add(string.Empty);
         }
-     
+
+        private void RemoveInvalidCoinValues()
+        {
+            foreach (DataGridViewRow row in deviceGridView.Rows)
+                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(row.Cells[coinColumn.Index].Value)) == null)
+                    row.Cells[coinColumn.Index].Value = string.Empty;
+        }
+
         private void deviceGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (deviceGridView.CurrentCell.RowIndex >= 0)
@@ -241,7 +251,15 @@ namespace MultiMiner.Win
                     {
                         CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(deviceConfiguration.CoinSymbol));
                         if (coin != null)
-                            deviceGridView.Rows[i].Cells[coinColumn.Index].Value = coin.Name;
+                        {
+                            //ensure the coin configuration still exists
+                            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(coin.Symbol));
+                            if (coinConfiguration != null)
+                                deviceGridView.Rows[i].Cells[coinColumn.Index].Value = coin.Name;
+                            else
+                                deviceGridView.Rows[i].Cells[coinColumn.Index].Value = string.Empty;
+
+                        }
                     }
                     else
                     {
