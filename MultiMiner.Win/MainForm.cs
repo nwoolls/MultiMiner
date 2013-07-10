@@ -144,6 +144,7 @@ namespace MultiMiner.Win
 
         private void ConfigureCoins()
         {
+            deviceGridView.EndEdit(); //so the coin combo is immediately refreshed even if focused
             CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins);
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
