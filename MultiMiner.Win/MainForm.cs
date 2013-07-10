@@ -375,11 +375,11 @@ namespace MultiMiner.Win
 
         private void statsTimer_Tick(object sender, EventArgs e)
         {
-            ClearStatsForDisabledCoins();
+            ClearMinerStatsForDisabledCoins();
             PopulateStatsFromMinerProcesses();
         }
 
-        private void ClearStatsForDisabledCoins()
+        private void ClearMinerStatsForDisabledCoins()
         {
             if (saveButton.Enabled) //otherwise cleared coin isn't saved yet
                 return;
