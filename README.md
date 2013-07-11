@@ -15,7 +15,7 @@ MultiMiner also supports automatically mining the most profitable coins based on
 
 ![Configure Strategies](/Screenshots/Configure%20Strategies.png "Configure Strategies")
 
-MultiMiner also supports basic features such as relaunching crashed miners, starting with Windows, and mining on startup.
+MultiMiner also supports basic features such as relaunching crashed miners, starting with Windows, minimizing to the notification area, and mining on startup.
 
 ![Settings](/Screenshots/Settings.png "Settings")
 
@@ -53,7 +53,7 @@ The source code is structured in such a way that it should be fairly easy to use
 
 [1]: https://github.com/ckolivas/cgminer
 [2]: https://github.com/luke-jr/bfgminer
-[3]: https://www.dropbox.com/s/zip5zby6yhdlm9i/MultiMiner_PR3.zip
+[3]: https://www.dropbox.com/s/9ryzr1qh3ggnr6a/MultiMiner_PR4.zip
 [4]: http://ck.kolivas.org/apps/cgminer/
 [5]: https://github.com/nwoolls/homebrew-cryptocoin
 [6]: http://blog.nwoolls.com/2013/04/24/bitcoin-mining-on-mac-os-x-cgminer-bfgminer/
