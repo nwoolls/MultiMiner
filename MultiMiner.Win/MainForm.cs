@@ -150,7 +150,15 @@ namespace MultiMiner.Win
             CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins);
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
                 engineConfiguration.SaveCoinConfigurations();
+
+                if (miningEngine.Mining)
+                {
+                    StopMining();
+                    StartMining();
+                }
+            }
             else
                 engineConfiguration.LoadCoinConfigurations();
             RefreshCoinComboBox();
@@ -753,6 +761,12 @@ namespace MultiMiner.Win
                 coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.MineProfitableCoins;
                 RefreshStrategiesLabel();
                 LoadGridValuesFromCoinStats();
+                
+                if (miningEngine.Mining)
+                {
+                    StopMining();
+                    StartMining();
+                }
             }
             else
             {
