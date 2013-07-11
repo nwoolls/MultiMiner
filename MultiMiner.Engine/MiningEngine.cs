@@ -63,14 +63,12 @@ namespace MultiMiner.Engine
                         try
                         {
                             apiContext.QuitMining();
+                            Thread.Sleep(250);
                         }
                         catch (SocketException ex)
                         {
                             //won't be able to connect for the first 5s or so
-                            continue;
                         }
-
-                        Thread.Sleep(250);
                     }
                     minerProcess.Process.Kill();
                 }
