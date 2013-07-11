@@ -662,8 +662,8 @@ namespace MultiMiner.Win
                 {
                     if (coin.Name.Equals((string)row.Cells[coinColumn.Index].Value, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        row.Cells[difficultyColumn.Index].Value = coin.Difficulty.ToString(".################");
-                        row.Cells[priceColumn.Index].Value = coin.Price.ToString(".################");
+                        row.Cells[difficultyColumn.Index].Value = coin.Difficulty.ToString(".##########");
+                        row.Cells[priceColumn.Index].Value = coin.Price.ToString(".##########");
 
                         switch (engineConfiguration.StrategyConfiguration.ProfitabilityBasis)
                         {
