@@ -311,6 +311,8 @@ namespace MultiMiner.Win
         {
             startButton.Enabled = (engineConfiguration.DeviceConfigurations.Count > 0) && !miningEngine.Mining;
             stopButton.Enabled = miningEngine.Mining;
+            startMenuItem.Enabled = startButton.Enabled;
+            stopMenuItem.Enabled = stopButton.Enabled;
         }
 
         private void stopButton_Click(object sender, EventArgs e)
@@ -326,6 +328,7 @@ namespace MultiMiner.Win
             RefreshStrategiesCountdown();
             scryptRateLabel.Text = string.Empty;
             sha256RateLabel.Text = string.Empty;
+            notifyIcon1.Text = "MultiMiner - Stopped";
 
             UpdateMiningButtons();
         }
@@ -342,6 +345,7 @@ namespace MultiMiner.Win
                 return;
 
             startButton.Enabled = false; //immediately disable, update after
+            startMenuItem.Enabled = false;
 
             miningEngine.StartMining(engineConfiguration, devices, coinInformation);
             deviceStatsTimer.Enabled = true;
@@ -385,7 +389,7 @@ namespace MultiMiner.Win
                 applicationConfiguration.LoadApplicationConfiguration();
             }
         }
-
+        
         private bool IdentifierIsGpu(string identifier)
         {
             return (identifier.Equals("GPU") || identifier.Equals("OCL"));
@@ -535,8 +539,9 @@ namespace MultiMiner.Win
 
             }
 
-            scryptRateLabel.Text = "Scrypt: " + totalScryptRate + " kh/s";
-            sha256RateLabel.Text = "SHA256: " + totalSha256Rate / 1000 + " mh/s";
+            scryptRateLabel.Text = string.Format("Scrypt: {0} kh/s", totalScryptRate);
+            sha256RateLabel.Text = string.Format("SHA256: {0} mh/s", totalSha256Rate / 1000);
+            notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
 
             //hide the temperature column if there are no tempts returned (USBs, OS X, etc)
             temperatureColumn.Visible = hasTempValue;
@@ -771,6 +776,46 @@ namespace MultiMiner.Win
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             ShowApiMonitor();
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (applicationConfiguration.MinimizeToNotificationArea && (this.WindowState == FormWindowState.Minimized))
+            {
+                notifyIcon1.Visible = true;
+                this.Hide();
+            }
+            else if (FormWindowState.Normal == this.WindowState)
+            {
+                notifyIcon1.Visible = false;
+            }
+        }
+
+        private void notifyIcon1_DoubleClick(object sender, EventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void showAppMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void quitAppMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void startMenuItem_Click(object sender, EventArgs e)
+        {
+            StartMining();
+        }
+
+        private void stopMenuItem_Click(object sender, EventArgs e)
+        {
+            StopMining();
         }
     }
 }

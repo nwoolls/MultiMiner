@@ -48,6 +48,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
@@ -102,16 +103,16 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 242);
+            this.panel1.Location = new System.Drawing.Point(0, 263);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(394, 47);
+            this.panel1.Size = new System.Drawing.Size(393, 47);
             this.panel1.TabIndex = 5;
             // 
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.saveButton.Location = new System.Drawing.Point(226, 12);
+            this.saveButton.Location = new System.Drawing.Point(225, 12);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
             this.saveButton.TabIndex = 0;
@@ -123,7 +124,7 @@
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(307, 12);
+            this.cancelButton.Location = new System.Drawing.Point(306, 12);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 1;
@@ -235,11 +236,25 @@
             // 
             this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MinimizeToNotificationArea", true));
+            this.checkBox1.Location = new System.Drawing.Point(24, 227);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(235, 17);
+            this.checkBox1.TabIndex = 11;
+            this.checkBox1.Text = "Minimize to the notification area (system tray)";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(394, 289);
+            this.ClientSize = new System.Drawing.Size(393, 310);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.checkBox3);
@@ -284,5 +299,6 @@
         private System.Windows.Forms.RadioButton bfgminerRadio;
         private System.Windows.Forms.RadioButton cgminerRadio;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

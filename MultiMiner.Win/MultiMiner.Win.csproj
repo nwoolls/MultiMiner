@@ -144,6 +144,10 @@
     <Content Include="Miners\cgminer\Extract cgminer here.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\computer-control_play.png" />
+    <None Include="Resources\computer-control_stop.png" />
+    <None Include="Resources\application-delete.png" />
+    <None Include="Resources\application.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

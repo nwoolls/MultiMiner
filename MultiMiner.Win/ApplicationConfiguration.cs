@@ -15,6 +15,7 @@ namespace MultiMiner.Win
         public bool StartMiningOnStartup { get; set; }
         public int StartupMiningDelay { get; set; }
         public bool RestartCrashedMiners { get; set; }
+        public bool MinimizeToNotificationArea { get; set; }
 
         private static string AppDataPath()
         {
@@ -52,6 +53,7 @@ namespace MultiMiner.Win
             this.StartMiningOnStartup = tmp.StartMiningOnStartup;
             this.StartupMiningDelay = tmp.StartupMiningDelay;
             this.RestartCrashedMiners = tmp.RestartCrashedMiners;
+            this.MinimizeToNotificationArea = tmp.MinimizeToNotificationArea;
         }
     }
 }
