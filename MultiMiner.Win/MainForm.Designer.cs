@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.deviceStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
@@ -438,8 +438,8 @@
             // 
             // difficultyColumn
             // 
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.difficultyColumn.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.difficultyColumn.DefaultCellStyle = dataGridViewCellStyle1;
             this.difficultyColumn.HeaderText = "Difficulty";
             this.difficultyColumn.Name = "difficultyColumn";
             this.difficultyColumn.ReadOnly = true;
@@ -447,8 +447,8 @@
             // 
             // priceColumn
             // 
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.priceColumn.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.priceColumn.DefaultCellStyle = dataGridViewCellStyle2;
             this.priceColumn.HeaderText = "Price";
             this.priceColumn.Name = "priceColumn";
             this.priceColumn.ReadOnly = true;
@@ -456,8 +456,8 @@
             // 
             // profitabilityColumn
             // 
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.profitabilityColumn.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.profitabilityColumn.DefaultCellStyle = dataGridViewCellStyle3;
             this.profitabilityColumn.HeaderText = "Profitability";
             this.profitabilityColumn.Name = "profitabilityColumn";
             this.profitabilityColumn.ReadOnly = true;
@@ -465,8 +465,8 @@
             // 
             // temperatureColumn
             // 
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.temperatureColumn.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.temperatureColumn.DefaultCellStyle = dataGridViewCellStyle4;
             this.temperatureColumn.HeaderText = "Temperature";
             this.temperatureColumn.Name = "temperatureColumn";
             this.temperatureColumn.ReadOnly = true;
@@ -474,8 +474,8 @@
             // 
             // hashRateColumn
             // 
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.hashRateColumn.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.hashRateColumn.DefaultCellStyle = dataGridViewCellStyle5;
             this.hashRateColumn.HeaderText = "Hashrate";
             this.hashRateColumn.Name = "hashRateColumn";
             this.hashRateColumn.ReadOnly = true;
@@ -483,8 +483,8 @@
             // 
             // acceptedColumn
             // 
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.acceptedColumn.DefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.acceptedColumn.DefaultCellStyle = dataGridViewCellStyle6;
             this.acceptedColumn.HeaderText = "Accepted";
             this.acceptedColumn.Name = "acceptedColumn";
             this.acceptedColumn.ReadOnly = true;
@@ -492,8 +492,8 @@
             // 
             // rejectedColumn
             // 
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.rejectedColumn.DefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.rejectedColumn.DefaultCellStyle = dataGridViewCellStyle7;
             this.rejectedColumn.HeaderText = "Rejected";
             this.rejectedColumn.Name = "rejectedColumn";
             this.rejectedColumn.ReadOnly = true;
@@ -501,8 +501,8 @@
             // 
             // errorsColumn
             // 
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.errorsColumn.DefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.errorsColumn.DefaultCellStyle = dataGridViewCellStyle8;
             this.errorsColumn.HeaderText = "HW Errors";
             this.errorsColumn.Name = "errorsColumn";
             this.errorsColumn.ReadOnly = true;
@@ -595,6 +595,7 @@
             // 
             // apiMonitorButton
             // 
+            this.apiMonitorButton.CheckOnClick = true;
             this.apiMonitorButton.Image = ((System.Drawing.Image)(resources.GetObject("apiMonitorButton.Image")));
             this.apiMonitorButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.apiMonitorButton.Name = "apiMonitorButton";

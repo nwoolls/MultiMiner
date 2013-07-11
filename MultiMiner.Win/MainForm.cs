@@ -774,6 +774,7 @@ namespace MultiMiner.Win
 
         private void HideApiMonitor()
         {
+            apiMonitorButton.Checked = false;
             splitContainer1.Panel2.Hide();
             splitContainer1.Panel2Collapsed = true;
             //hide all controls or they will show/flicker under OS X/mono
@@ -791,7 +792,10 @@ namespace MultiMiner.Win
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            ShowApiMonitor();
+            if (apiMonitorButton.Checked)
+                ShowApiMonitor();
+            else
+                HideApiMonitor();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
