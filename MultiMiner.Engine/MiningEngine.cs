@@ -394,6 +394,9 @@ namespace MultiMiner.Engine
 
             minerConfiguration.Arguments = arguments;
 
+            if (engineConfiguration.XgminerConfiguration.DesktopMode)
+                minerConfiguration.Arguments = minerConfiguration.Arguments + " -I D";
+
             return minerConfiguration;
         }
     }

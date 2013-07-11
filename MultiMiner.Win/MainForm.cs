@@ -98,6 +98,8 @@ namespace MultiMiner.Win
             RefreshStrategiesLabel();
             RefreshStrategiesCountdown();
 
+            desktopModeButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
+
             applicationConfiguration.LoadApplicationConfiguration();
 
             if (applicationConfiguration.StartMiningOnStartup)
@@ -830,6 +832,17 @@ namespace MultiMiner.Win
         private void stopMenuItem_Click(object sender, EventArgs e)
         {
             StopMining();
+        }
+
+        private void desktopModeButton_Click(object sender, EventArgs e)
+        {
+            engineConfiguration.XgminerConfiguration.DesktopMode = desktopModeButton.Checked;
+            if (miningEngine.Mining)
+            {
+                StopMining();
+                StartMining();
+            }
+            engineConfiguration.SaveMinerConfiguration();
         }
     }
 }
