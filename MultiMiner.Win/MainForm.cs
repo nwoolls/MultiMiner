@@ -391,6 +391,9 @@ namespace MultiMiner.Win
             startMenuItem.Enabled = false;
 
             miningEngine.StartMining(engineConfiguration, devices, coinInformation);
+
+            engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
+
             deviceStatsTimer.Enabled = true;
             coinStatsCountdownTimer.Enabled = true;
             RefreshStrategiesCountdown();
@@ -604,6 +607,8 @@ namespace MultiMiner.Win
             RefreshCoinStats();
 
             miningEngine.ApplyMiningStrategy(devices, coinInformation);
+
+            engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
 
             //to get changes from strategy config
             LoadGridValuesFromConfiguration();
