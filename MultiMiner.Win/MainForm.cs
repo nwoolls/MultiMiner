@@ -315,6 +315,11 @@ namespace MultiMiner.Win
             stopButton.Enabled = miningEngine.Mining;
             startMenuItem.Enabled = startButton.Enabled;
             stopMenuItem.Enabled = stopButton.Enabled;
+
+            startButton.Visible = startButton.Enabled;
+            stopButton.Visible = stopButton.Enabled;
+            startMenuItem.Visible = startMenuItem.Enabled;
+            stopMenuItem.Visible = stopMenuItem.Enabled;
         }
 
         private void stopButton_Click(object sender, EventArgs e)
