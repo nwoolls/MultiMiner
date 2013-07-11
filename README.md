@@ -15,7 +15,7 @@ MultiMiner also supports automatically mining the most profitable coins based on
 
 ![Configure Strategies](/Screenshots/Configure%20Strategies.png "Configure Strategies")
 
-MultiMiner also supports basic features such as relaunching crashed miners, starting with Windows, minimizing to the notifcation area, and mining on startup.
+MultiMiner also supports basic features such as relaunching crashed miners, starting with Windows, minimizing to the notification area, and mining on startup.
 
 ![Settings](/Screenshots/Settings.png "Settings")
 
