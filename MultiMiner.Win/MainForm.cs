@@ -384,11 +384,15 @@ namespace MultiMiner.Win
             DialogResult dialogResult = settingsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
+                bool wasMining = miningEngine.Mining;
+                StopMining(); // or USB devices may be in use for RefreshDevices() call below
                 engineConfiguration.SaveMinerConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
                 RefreshDevices();
                 RefreshBackendLabel();
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
+                if (wasMining)
+                    StartMining();
             }
             else
             {
