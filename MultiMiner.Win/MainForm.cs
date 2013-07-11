@@ -331,7 +331,8 @@ namespace MultiMiner.Win
 
         private void UpdateMiningButtons()
         {
-            startButton.Enabled = (engineConfiguration.DeviceConfigurations.Count > 0) && !miningEngine.Mining;
+            startButton.Enabled = MiningConfigurationValid() && !miningEngine.Mining;
+
             stopButton.Enabled = miningEngine.Mining;
             startMenuItem.Enabled = startButton.Enabled;
             stopMenuItem.Enabled = stopButton.Enabled;
@@ -344,6 +345,17 @@ namespace MultiMiner.Win
 
             startMenuItem.Visible = startMenuItem.Enabled;
             stopMenuItem.Visible = stopMenuItem.Enabled;
+        }
+
+        private bool MiningConfigurationValid()
+        {
+            bool miningConfigurationValid = engineConfiguration.DeviceConfigurations.Count > 0;
+            if (!miningConfigurationValid)
+            {
+                miningConfigurationValid = engineConfiguration.StrategyConfiguration.MineProfitableCoins &&
+                    (engineConfiguration.CoinConfigurations.Count > 0);
+            }
+            return miningConfigurationValid;
         }
 
         private void stopButton_Click(object sender, EventArgs e)
@@ -372,7 +384,7 @@ namespace MultiMiner.Win
 
         private void StartMining()
         {
-            if (engineConfiguration.DeviceConfigurations.Count == 0)
+            if (!MiningConfigurationValid())
                 return;
 
             startButton.Enabled = false; //immediately disable, update after
@@ -777,6 +789,7 @@ namespace MultiMiner.Win
                 coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.MineProfitableCoins;
                 RefreshStrategiesLabel();
                 LoadGridValuesFromCoinStats();
+                UpdateMiningButtons();
                 
                 if (miningEngine.Mining)
                 {
