@@ -47,9 +47,19 @@
             this.countdownLabel = new System.Windows.Forms.Label();
             this.crashRecoveryTimer = new System.Windows.Forms.Timer(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.startButton = new System.Windows.Forms.ToolStripButton();
+            this.stopButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.coinsButton = new System.Windows.Forms.ToolStripButton();
+            this.strategiesButton = new System.Windows.Forms.ToolStripButton();
+            this.settingsButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.detectDevicesButton = new System.Windows.Forms.ToolStripButton();
+            this.apiMonitorButton = new System.Windows.Forms.ToolStripButton();
+            this.desktopModeButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.saveButton = new System.Windows.Forms.ToolStripButton();
+            this.cancelButton = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.backendLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.strategiesLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -64,6 +74,7 @@
             this.coinChoosePrefixLabel = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.deviceGridView = new System.Windows.Forms.DataGridView();
+            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.apiLogGridView = new System.Windows.Forms.DataGridView();
             this.CoinName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -71,22 +82,11 @@
             this.closeApiButton = new System.Windows.Forms.Button();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.notifyIconMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.startButton = new System.Windows.Forms.ToolStripButton();
-            this.stopButton = new System.Windows.Forms.ToolStripButton();
-            this.coinsButton = new System.Windows.Forms.ToolStripButton();
-            this.strategiesButton = new System.Windows.Forms.ToolStripButton();
-            this.settingsButton = new System.Windows.Forms.ToolStripButton();
-            this.detectDevicesButton = new System.Windows.Forms.ToolStripButton();
-            this.apiMonitorButton = new System.Windows.Forms.ToolStripButton();
-            this.saveButton = new System.Windows.Forms.ToolStripButton();
-            this.cancelButton = new System.Windows.Forms.ToolStripButton();
-            this.showAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.quitAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.desktopModeButton = new System.Windows.Forms.ToolStripButton();
-            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.showAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.quitAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dateTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.requestDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.responseDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -112,10 +112,10 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).BeginInit();
             this.panel2.SuspendLayout();
             this.notifyIconMenuStrip.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -144,7 +144,7 @@
             this.startupMiningPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.startupMiningPanel.Controls.Add(this.cancelStartupMiningButton);
             this.startupMiningPanel.Controls.Add(this.countdownLabel);
-            this.startupMiningPanel.Location = new System.Drawing.Point(404, 199);
+            this.startupMiningPanel.Location = new System.Drawing.Point(417, 199);
             this.startupMiningPanel.Name = "startupMiningPanel";
             this.startupMiningPanel.Size = new System.Drawing.Size(319, 37);
             this.startupMiningPanel.TabIndex = 6;
@@ -192,24 +192,119 @@
             this.cancelButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1127, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(1153, 25);
             this.toolStrip1.TabIndex = 7;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // startButton
+            // 
+            this.startButton.Image = ((System.Drawing.Image)(resources.GetObject("startButton.Image")));
+            this.startButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(51, 22);
+            this.startButton.Text = "Start";
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
+            // 
+            // stopButton
+            // 
+            this.stopButton.Enabled = false;
+            this.stopButton.Image = ((System.Drawing.Image)(resources.GetObject("stopButton.Image")));
+            this.stopButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stopButton.Name = "stopButton";
+            this.stopButton.Size = new System.Drawing.Size(51, 22);
+            this.stopButton.Text = "Stop";
+            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
+            // coinsButton
+            // 
+            this.coinsButton.Image = ((System.Drawing.Image)(resources.GetObject("coinsButton.Image")));
+            this.coinsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.coinsButton.Name = "coinsButton";
+            this.coinsButton.Size = new System.Drawing.Size(57, 22);
+            this.coinsButton.Text = "Coins";
+            this.coinsButton.Click += new System.EventHandler(this.coinsButton_Click);
+            // 
+            // strategiesButton
+            // 
+            this.strategiesButton.Image = ((System.Drawing.Image)(resources.GetObject("strategiesButton.Image")));
+            this.strategiesButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.strategiesButton.Name = "strategiesButton";
+            this.strategiesButton.Size = new System.Drawing.Size(78, 22);
+            this.strategiesButton.Text = "Strategies";
+            this.strategiesButton.Click += new System.EventHandler(this.strategiesButton_Click);
+            // 
+            // settingsButton
+            // 
+            this.settingsButton.Image = ((System.Drawing.Image)(resources.GetObject("settingsButton.Image")));
+            this.settingsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.settingsButton.Name = "settingsButton";
+            this.settingsButton.Size = new System.Drawing.Size(69, 22);
+            this.settingsButton.Text = "Settings";
+            this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
+            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
+            // detectDevicesButton
+            // 
+            this.detectDevicesButton.Image = ((System.Drawing.Image)(resources.GetObject("detectDevicesButton.Image")));
+            this.detectDevicesButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.detectDevicesButton.Name = "detectDevicesButton";
+            this.detectDevicesButton.Size = new System.Drawing.Size(104, 22);
+            this.detectDevicesButton.Text = "Detect Devices";
+            this.detectDevicesButton.Click += new System.EventHandler(this.detectDevicesButton_Click);
+            // 
+            // apiMonitorButton
+            // 
+            this.apiMonitorButton.CheckOnClick = true;
+            this.apiMonitorButton.Image = ((System.Drawing.Image)(resources.GetObject("apiMonitorButton.Image")));
+            this.apiMonitorButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.apiMonitorButton.Name = "apiMonitorButton";
+            this.apiMonitorButton.Size = new System.Drawing.Size(91, 22);
+            this.apiMonitorButton.Text = "API Monitor";
+            this.apiMonitorButton.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // desktopModeButton
+            // 
+            this.desktopModeButton.CheckOnClick = true;
+            this.desktopModeButton.Image = ((System.Drawing.Image)(resources.GetObject("desktopModeButton.Image")));
+            this.desktopModeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.desktopModeButton.Name = "desktopModeButton";
+            this.desktopModeButton.Size = new System.Drawing.Size(104, 22);
+            this.desktopModeButton.Text = "Desktop Mode";
+            this.desktopModeButton.Click += new System.EventHandler(this.desktopModeButton_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // saveButton
+            // 
+            this.saveButton.Enabled = false;
+            this.saveButton.Image = ((System.Drawing.Image)(resources.GetObject("saveButton.Image")));
+            this.saveButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(51, 22);
+            this.saveButton.Text = "Save";
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.Enabled = false;
+            this.cancelButton.Image = ((System.Drawing.Image)(resources.GetObject("cancelButton.Image")));
+            this.cancelButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(63, 22);
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // statusStrip1
             // 
@@ -221,7 +316,7 @@
             this.scryptRateLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 412);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1127, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1153, 22);
             this.statusStrip1.TabIndex = 8;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -251,7 +346,7 @@
             // sha256RateLabel
             // 
             this.sha256RateLabel.Name = "sha256RateLabel";
-            this.sha256RateLabel.Size = new System.Drawing.Size(462, 17);
+            this.sha256RateLabel.Size = new System.Drawing.Size(488, 17);
             this.sha256RateLabel.Spring = true;
             this.sha256RateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -277,13 +372,13 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 375);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1127, 37);
+            this.panel1.Size = new System.Drawing.Size(1153, 37);
             this.panel1.TabIndex = 9;
             // 
             // coinStatsLabel
             // 
             this.coinStatsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.coinStatsLabel.Location = new System.Drawing.Point(915, 13);
+            this.coinStatsLabel.Location = new System.Drawing.Point(941, 13);
             this.coinStatsLabel.Name = "coinStatsLabel";
             this.coinStatsLabel.Size = new System.Drawing.Size(200, 23);
             this.coinStatsLabel.TabIndex = 3;
@@ -333,7 +428,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.apiLogGridView);
             this.splitContainer1.Panel2.Controls.Add(this.panel2);
-            this.splitContainer1.Size = new System.Drawing.Size(1127, 350);
+            this.splitContainer1.Size = new System.Drawing.Size(1153, 350);
             this.splitContainer1.SplitterDistance = 234;
             this.splitContainer1.TabIndex = 10;
             // 
@@ -343,7 +438,7 @@
             this.deviceGridView.AllowUserToDeleteRows = false;
             this.deviceGridView.AllowUserToResizeRows = false;
             this.deviceGridView.AutoGenerateColumns = false;
-            this.deviceGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.deviceGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.deviceGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.deviceGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.kindDataGridViewTextBoxColumn,
@@ -364,10 +459,14 @@
             this.deviceGridView.Location = new System.Drawing.Point(0, 0);
             this.deviceGridView.Name = "deviceGridView";
             this.deviceGridView.RowHeadersVisible = false;
-            this.deviceGridView.Size = new System.Drawing.Size(1127, 234);
+            this.deviceGridView.Size = new System.Drawing.Size(1153, 234);
             this.deviceGridView.TabIndex = 1;
             this.deviceGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.deviceGridView_CellValueChanged);
             this.deviceGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.deviceGridView_CurrentCellDirtyStateChanged);
+            // 
+            // deviceBindingSource
+            // 
+            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
             // 
             // apiLogGridView
             // 
@@ -387,7 +486,7 @@
             this.apiLogGridView.Location = new System.Drawing.Point(0, 28);
             this.apiLogGridView.Name = "apiLogGridView";
             this.apiLogGridView.RowHeadersVisible = false;
-            this.apiLogGridView.Size = new System.Drawing.Size(1127, 84);
+            this.apiLogGridView.Size = new System.Drawing.Size(1153, 84);
             this.apiLogGridView.TabIndex = 12;
             // 
             // CoinName
@@ -404,7 +503,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1127, 28);
+            this.panel2.Size = new System.Drawing.Size(1153, 28);
             this.panel2.TabIndex = 14;
             // 
             // label1
@@ -419,7 +518,7 @@
             // closeApiButton
             // 
             this.closeApiButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.closeApiButton.Location = new System.Drawing.Point(1099, 3);
+            this.closeApiButton.Location = new System.Drawing.Point(1125, 3);
             this.closeApiButton.Name = "closeApiButton";
             this.closeApiButton.Size = new System.Drawing.Size(25, 23);
             this.closeApiButton.TabIndex = 0;
@@ -445,112 +544,6 @@
             this.notifyIconMenuStrip.Name = "contextMenuStrip1";
             this.notifyIconMenuStrip.Size = new System.Drawing.Size(104, 98);
             // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(100, 6);
-            // 
-            // startButton
-            // 
-            this.startButton.Image = ((System.Drawing.Image)(resources.GetObject("startButton.Image")));
-            this.startButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(51, 22);
-            this.startButton.Text = "Start";
-            this.startButton.Click += new System.EventHandler(this.startButton_Click);
-            // 
-            // stopButton
-            // 
-            this.stopButton.Enabled = false;
-            this.stopButton.Image = ((System.Drawing.Image)(resources.GetObject("stopButton.Image")));
-            this.stopButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(51, 22);
-            this.stopButton.Text = "Stop";
-            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
-            // 
-            // coinsButton
-            // 
-            this.coinsButton.Image = ((System.Drawing.Image)(resources.GetObject("coinsButton.Image")));
-            this.coinsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.coinsButton.Name = "coinsButton";
-            this.coinsButton.Size = new System.Drawing.Size(57, 22);
-            this.coinsButton.Text = "Coins";
-            this.coinsButton.Click += new System.EventHandler(this.coinsButton_Click);
-            // 
-            // strategiesButton
-            // 
-            this.strategiesButton.Image = ((System.Drawing.Image)(resources.GetObject("strategiesButton.Image")));
-            this.strategiesButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.strategiesButton.Name = "strategiesButton";
-            this.strategiesButton.Size = new System.Drawing.Size(78, 22);
-            this.strategiesButton.Text = "Strategies";
-            this.strategiesButton.Click += new System.EventHandler(this.strategiesButton_Click);
-            // 
-            // settingsButton
-            // 
-            this.settingsButton.Image = ((System.Drawing.Image)(resources.GetObject("settingsButton.Image")));
-            this.settingsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.settingsButton.Name = "settingsButton";
-            this.settingsButton.Size = new System.Drawing.Size(69, 22);
-            this.settingsButton.Text = "Settings";
-            this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
-            // 
-            // detectDevicesButton
-            // 
-            this.detectDevicesButton.Image = ((System.Drawing.Image)(resources.GetObject("detectDevicesButton.Image")));
-            this.detectDevicesButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.detectDevicesButton.Name = "detectDevicesButton";
-            this.detectDevicesButton.Size = new System.Drawing.Size(104, 22);
-            this.detectDevicesButton.Text = "Detect Devices";
-            this.detectDevicesButton.Click += new System.EventHandler(this.detectDevicesButton_Click);
-            // 
-            // apiMonitorButton
-            // 
-            this.apiMonitorButton.CheckOnClick = true;
-            this.apiMonitorButton.Image = ((System.Drawing.Image)(resources.GetObject("apiMonitorButton.Image")));
-            this.apiMonitorButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.apiMonitorButton.Name = "apiMonitorButton";
-            this.apiMonitorButton.Size = new System.Drawing.Size(91, 22);
-            this.apiMonitorButton.Text = "API Monitor";
-            this.apiMonitorButton.Click += new System.EventHandler(this.toolStripButton1_Click);
-            // 
-            // saveButton
-            // 
-            this.saveButton.Enabled = false;
-            this.saveButton.Image = ((System.Drawing.Image)(resources.GetObject("saveButton.Image")));
-            this.saveButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(51, 22);
-            this.saveButton.Text = "Save";
-            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
-            // 
-            // cancelButton
-            // 
-            this.cancelButton.Enabled = false;
-            this.cancelButton.Image = ((System.Drawing.Image)(resources.GetObject("cancelButton.Image")));
-            this.cancelButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(63, 22);
-            this.cancelButton.Text = "Cancel";
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
-            // 
-            // showAppMenuItem
-            // 
-            this.showAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application;
-            this.showAppMenuItem.Name = "showAppMenuItem";
-            this.showAppMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.showAppMenuItem.Text = "Show";
-            this.showAppMenuItem.Click += new System.EventHandler(this.showAppMenuItem_Click);
-            // 
-            // quitAppMenuItem
-            // 
-            this.quitAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_delete;
-            this.quitAppMenuItem.Name = "quitAppMenuItem";
-            this.quitAppMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.quitAppMenuItem.Text = "Quit";
-            this.quitAppMenuItem.Click += new System.EventHandler(this.quitAppMenuItem_Click);
-            // 
             // startMenuItem
             // 
             this.startMenuItem.Image = global::MultiMiner.Win.Properties.Resources.computer_control_play;
@@ -567,19 +560,26 @@
             this.stopMenuItem.Text = "Stop";
             this.stopMenuItem.Click += new System.EventHandler(this.stopMenuItem_Click);
             // 
-            // desktopModeButton
+            // toolStripSeparator4
             // 
-            this.desktopModeButton.CheckOnClick = true;
-            this.desktopModeButton.Image = ((System.Drawing.Image)(resources.GetObject("desktopModeButton.Image")));
-            this.desktopModeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.desktopModeButton.Name = "desktopModeButton";
-            this.desktopModeButton.Size = new System.Drawing.Size(104, 22);
-            this.desktopModeButton.Text = "Desktop Mode";
-            this.desktopModeButton.Click += new System.EventHandler(this.desktopModeButton_Click);
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(100, 6);
             // 
-            // deviceBindingSource
+            // showAppMenuItem
             // 
-            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
+            this.showAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application;
+            this.showAppMenuItem.Name = "showAppMenuItem";
+            this.showAppMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.showAppMenuItem.Text = "Show";
+            this.showAppMenuItem.Click += new System.EventHandler(this.showAppMenuItem_Click);
+            // 
+            // quitAppMenuItem
+            // 
+            this.quitAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_delete;
+            this.quitAppMenuItem.Name = "quitAppMenuItem";
+            this.quitAppMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.quitAppMenuItem.Text = "Quit";
+            this.quitAppMenuItem.Click += new System.EventHandler(this.quitAppMenuItem_Click);
             // 
             // dateTimeDataGridViewTextBoxColumn
             // 
@@ -615,12 +615,11 @@
             this.kindDataGridViewTextBoxColumn.HeaderText = "Identifier";
             this.kindDataGridViewTextBoxColumn.Name = "kindDataGridViewTextBoxColumn";
             this.kindDataGridViewTextBoxColumn.ReadOnly = true;
-            this.kindDataGridViewTextBoxColumn.Width = 72;
             // 
             // nameColumn
             // 
-            this.nameColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.nameColumn.DataPropertyName = "Name";
+            this.nameColumn.FillWeight = 200F;
             this.nameColumn.HeaderText = "Name";
             this.nameColumn.MinimumWidth = 85;
             this.nameColumn.Name = "nameColumn";
@@ -628,7 +627,6 @@
             // 
             // descriptionDataGridViewTextBoxColumn
             // 
-            this.descriptionDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.descriptionDataGridViewTextBoxColumn.DataPropertyName = "Driver";
             this.descriptionDataGridViewTextBoxColumn.HeaderText = "Driver";
             this.descriptionDataGridViewTextBoxColumn.MinimumWidth = 50;
@@ -637,12 +635,12 @@
             // 
             // coinColumn
             // 
+            this.coinColumn.FillWeight = 150F;
             this.coinColumn.HeaderText = "Coin";
             this.coinColumn.Items.AddRange(new object[] {
             "Configure Coins"});
             this.coinColumn.MinimumWidth = 85;
             this.coinColumn.Name = "coinColumn";
-            this.coinColumn.Width = 85;
             // 
             // difficultyColumn
             // 
@@ -651,7 +649,6 @@
             this.difficultyColumn.HeaderText = "Difficulty";
             this.difficultyColumn.Name = "difficultyColumn";
             this.difficultyColumn.ReadOnly = true;
-            this.difficultyColumn.Width = 72;
             // 
             // priceColumn
             // 
@@ -660,7 +657,6 @@
             this.priceColumn.HeaderText = "Price";
             this.priceColumn.Name = "priceColumn";
             this.priceColumn.ReadOnly = true;
-            this.priceColumn.Width = 56;
             // 
             // profitabilityColumn
             // 
@@ -669,7 +665,6 @@
             this.profitabilityColumn.HeaderText = "Profitability";
             this.profitabilityColumn.Name = "profitabilityColumn";
             this.profitabilityColumn.ReadOnly = true;
-            this.profitabilityColumn.Width = 82;
             // 
             // temperatureColumn
             // 
@@ -678,7 +673,6 @@
             this.temperatureColumn.HeaderText = "Temperature";
             this.temperatureColumn.Name = "temperatureColumn";
             this.temperatureColumn.ReadOnly = true;
-            this.temperatureColumn.Width = 92;
             // 
             // hashRateColumn
             // 
@@ -687,7 +681,6 @@
             this.hashRateColumn.HeaderText = "Hashrate";
             this.hashRateColumn.Name = "hashRateColumn";
             this.hashRateColumn.ReadOnly = true;
-            this.hashRateColumn.Width = 75;
             // 
             // acceptedColumn
             // 
@@ -696,7 +689,6 @@
             this.acceptedColumn.HeaderText = "Accepted";
             this.acceptedColumn.Name = "acceptedColumn";
             this.acceptedColumn.ReadOnly = true;
-            this.acceptedColumn.Width = 78;
             // 
             // rejectedColumn
             // 
@@ -705,7 +697,6 @@
             this.rejectedColumn.HeaderText = "Rejected";
             this.rejectedColumn.Name = "rejectedColumn";
             this.rejectedColumn.ReadOnly = true;
-            this.rejectedColumn.Width = 75;
             // 
             // errorsColumn
             // 
@@ -714,20 +705,18 @@
             this.errorsColumn.HeaderText = "HW Errors";
             this.errorsColumn.Name = "errorsColumn";
             this.errorsColumn.ReadOnly = true;
-            this.errorsColumn.Width = 81;
             // 
             // intensityColumn
             // 
             this.intensityColumn.HeaderText = "Intensity";
             this.intensityColumn.Name = "intensityColumn";
             this.intensityColumn.ReadOnly = true;
-            this.intensityColumn.Width = 71;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1127, 434);
+            this.ClientSize = new System.Drawing.Size(1153, 434);
             this.Controls.Add(this.startupMiningPanel);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.panel1);
@@ -752,11 +741,11 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.notifyIconMenuStrip.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
