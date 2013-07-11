@@ -107,7 +107,11 @@ namespace MultiMiner.Xgminer
             startInfo.FileName = minerConfiguration.ExecutablePath;
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
+
             startInfo.Arguments = arguments;
+            if (minerConfiguration.DisableGpu)
+                startInfo.Arguments = startInfo.Arguments + " --disable-gpu";
+
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = redirectOutput;
 

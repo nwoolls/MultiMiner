@@ -375,6 +375,7 @@ namespace MultiMiner.Engine
             minerConfiguration.ApiPort = port;
             minerConfiguration.ApiListen = true;
             minerConfiguration.CoinName = coinConfiguration.Coin.Name;
+            minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
 
             foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
                 minerConfiguration.DeviceIndexes.Add(coinGpuConfiguration.DeviceIndex);

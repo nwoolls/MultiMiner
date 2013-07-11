@@ -18,5 +18,6 @@ namespace MultiMiner.Xgminer
         public List<int> DeviceIndexes { get; set; }
         public string Arguments { get; set; }
         public string CoinName { get; set; }
+        public bool DisableGpu { get; set; }
     }
 }

@@ -32,6 +32,8 @@ namespace MultiMiner.Win
                 minerConfiguration.MinerBackend = MinerBackend.Cgminer;
             else
                 minerConfiguration.MinerBackend = MinerBackend.Bfgminer;
+
+            minerConfiguration.DisableGpu = disableGpuCheckbox.Checked;
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -52,6 +54,8 @@ namespace MultiMiner.Win
 
             cgminerRadio.Checked = minerConfiguration.MinerBackend == MinerBackend.Cgminer;
             bfgminerRadio.Checked = minerConfiguration.MinerBackend == MinerBackend.Bfgminer;
+
+            disableGpuCheckbox.Checked = minerConfiguration.DisableGpu;
         }
     }
 }

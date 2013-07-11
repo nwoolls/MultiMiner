@@ -129,6 +129,7 @@ namespace MultiMiner.Win
 
             MinerConfiguration minerConfiguration = new MinerConfiguration();
             minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
+            minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
 
             switch (Environment.OSVersion.Platform)
             {
