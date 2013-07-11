@@ -53,6 +53,8 @@ namespace MultiMiner.Win
 
             if (multiCoinRadio.Checked)
                 exceptionEdit.Text = strategyConfiguration.MineMostProfitableOverridePercentage.ToString();
+
+            proftabilityBasisCombo.SelectedIndex = (int)strategyConfiguration.ProfitabilityBasis;
         }
 
         private void SaveSettings()
@@ -91,6 +93,8 @@ namespace MultiMiner.Win
                         strategyConfiguration.MineMostProfitableOverridePercentage = percentage;
                 }
             }
+
+            strategyConfiguration.ProfitabilityBasis = (StrategyConfiguration.CoinProfitabilityBasis)proftabilityBasisCombo.SelectedIndex;
         }
 
         private void multiCoinRadio_CheckedChanged(object sender, EventArgs e)

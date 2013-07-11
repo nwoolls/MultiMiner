@@ -39,13 +39,15 @@
             this.minCoinCombo = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.minPercentageEdit = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.exceptPercentLabel = new System.Windows.Forms.Label();
             this.exceptionEdit = new System.Windows.Forms.TextBox();
             this.exceptionLabel = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.minPercentageEdit = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.strategyConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label4 = new System.Windows.Forms.Label();
+            this.proftabilityBasisCombo = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).BeginInit();
@@ -56,17 +58,16 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 224);
+            this.panel1.Location = new System.Drawing.Point(0, 260);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(348, 47);
+            this.panel1.Size = new System.Drawing.Size(326, 47);
             this.panel1.TabIndex = 2;
-            
             // 
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.saveButton.Location = new System.Drawing.Point(180, 12);
+            this.saveButton.Location = new System.Drawing.Point(158, 12);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
             this.saveButton.TabIndex = 0;
@@ -78,7 +79,7 @@
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(261, 12);
+            this.cancelButton.Location = new System.Drawing.Point(239, 12);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 1;
@@ -138,8 +139,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.exceptPercentLabel);
             this.groupBox1.Controls.Add(this.exceptionEdit);
@@ -153,41 +153,16 @@
             this.groupBox1.Controls.Add(this.singleCoinRadio);
             this.groupBox1.Location = new System.Drawing.Point(12, 35);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(324, 174);
+            this.groupBox1.Size = new System.Drawing.Size(302, 169);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Strategies";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(294, 56);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(15, 13);
-            this.label3.TabIndex = 11;
-            this.label3.Text = "%";
-            // 
-            // minPercentageEdit
-            // 
-            this.minPercentageEdit.Location = new System.Drawing.Point(198, 53);
-            this.minPercentageEdit.Name = "minPercentageEdit";
-            this.minPercentageEdit.Size = new System.Drawing.Size(90, 20);
-            this.minPercentageEdit.TabIndex = 1;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 56);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(176, 13);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "Don\'t mine coins less profitable than";
             // 
             // exceptPercentLabel
             // 
             this.exceptPercentLabel.AutoSize = true;
             this.exceptPercentLabel.Enabled = false;
-            this.exceptPercentLabel.Location = new System.Drawing.Point(294, 137);
+            this.exceptPercentLabel.Location = new System.Drawing.Point(273, 137);
             this.exceptPercentLabel.Name = "exceptPercentLabel";
             this.exceptPercentLabel.Size = new System.Drawing.Size(15, 13);
             this.exceptPercentLabel.TabIndex = 14;
@@ -198,7 +173,7 @@
             this.exceptionEdit.Enabled = false;
             this.exceptionEdit.Location = new System.Drawing.Point(198, 134);
             this.exceptionEdit.Name = "exceptionEdit";
-            this.exceptionEdit.Size = new System.Drawing.Size(90, 20);
+            this.exceptionEdit.Size = new System.Drawing.Size(69, 20);
             this.exceptionEdit.TabIndex = 4;
             // 
             // exceptionLabel
@@ -211,15 +186,64 @@
             this.exceptionLabel.TabIndex = 12;
             this.exceptionLabel.Text = "Mine a single coin if it exceeds";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(273, 56);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(15, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "%";
+            // 
+            // minPercentageEdit
+            // 
+            this.minPercentageEdit.Location = new System.Drawing.Point(198, 53);
+            this.minPercentageEdit.Name = "minPercentageEdit";
+            this.minPercentageEdit.Size = new System.Drawing.Size(69, 20);
+            this.minPercentageEdit.TabIndex = 1;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(16, 56);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(176, 13);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Don\'t mine coins less profitable than";
+            // 
             // strategyConfigurationBindingSource
             // 
             this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.StrategyConfiguration);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 225);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(87, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Profitability basis:";
+            // 
+            // proftabilityBasisCombo
+            // 
+            this.proftabilityBasisCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.proftabilityBasisCombo.FormattingEnabled = true;
+            this.proftabilityBasisCombo.Items.AddRange(new object[] {
+            "Profitability Adjusted for Stales",
+            "Average Profitability Past 7 Days",
+            "Straight Profitability of BTC"});
+            this.proftabilityBasisCombo.Location = new System.Drawing.Point(100, 222);
+            this.proftabilityBasisCombo.Name = "proftabilityBasisCombo";
+            this.proftabilityBasisCombo.Size = new System.Drawing.Size(200, 21);
+            this.proftabilityBasisCombo.TabIndex = 2;
             // 
             // StrategiesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(348, 271);
+            this.ClientSize = new System.Drawing.Size(326, 307);
+            this.Controls.Add(this.proftabilityBasisCombo);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.panel1);
@@ -257,5 +281,7 @@
         private System.Windows.Forms.Label exceptPercentLabel;
         private System.Windows.Forms.TextBox exceptionEdit;
         private System.Windows.Forms.Label exceptionLabel;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox proftabilityBasisCombo;
     }
 }

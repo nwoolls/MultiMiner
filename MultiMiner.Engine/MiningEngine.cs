@@ -108,7 +108,7 @@ namespace MultiMiner.Engine
                     //adjust profitabilities based on config adjustments
                     ApplyProfitabilityAdjustments(configuredProfitableCoins);
 
-                    List<CoinInformation> orderedProfitableCoins = configuredProfitableCoins.OrderByDescending(c => c.AdjustedProfitability).ToList();
+                    List<CoinInformation> orderedProfitableCoins = GetCoinsOrderedByProfitability(configuredProfitableCoins);
 
                     List<DeviceConfiguration> newConfiguration = CreateAutomaticDeviceConfiguration(devices, orderedProfitableCoins);
 
@@ -128,12 +128,35 @@ namespace MultiMiner.Engine
             }
         }
 
+        private List<CoinInformation> GetCoinsOrderedByProfitability(IEnumerable<CoinInformation> configuredProfitableCoins)
+        {
+            List<CoinInformation> orderedProfitableCoins = configuredProfitableCoins.ToList();
+
+            switch (engineConfiguration.StrategyConfiguration.ProfitabilityBasis)
+            {
+                case StrategyConfiguration.CoinProfitabilityBasis.AdjustedProfitability:
+                    orderedProfitableCoins = orderedProfitableCoins.OrderByDescending(c => c.AdjustedProfitability).ToList();
+                    break;
+                case StrategyConfiguration.CoinProfitabilityBasis.AverageProfitability:
+                    orderedProfitableCoins = orderedProfitableCoins.OrderByDescending(c => c.AverageProfitability).ToList();
+                    break;
+                case StrategyConfiguration.CoinProfitabilityBasis.StraightProfitability:
+                    orderedProfitableCoins = orderedProfitableCoins.OrderByDescending(c => c.Profitability).ToList();
+                    break;
+            }
+
+            return orderedProfitableCoins;
+        }
+
         private void ApplyProfitabilityAdjustments(IEnumerable<CoinInformation> configuredProfitableCoins)
         {
             foreach (CoinInformation configuredProfitableCoin in configuredProfitableCoins)
             {
                 CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(configuredProfitableCoin.Symbol));
+
                 configuredProfitableCoin.AdjustedProfitability += coinConfiguration.ProfitabilityAdjustment;
+                configuredProfitableCoin.AverageProfitability += coinConfiguration.ProfitabilityAdjustment;
+                configuredProfitableCoin.Profitability += coinConfiguration.ProfitabilityAdjustment;
             }
         }
 
@@ -211,8 +234,22 @@ namespace MultiMiner.Engine
             CoinInformation profitableCoin;
 
             bool mineSingle = engineConfiguration.StrategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.SingleMostProfitable;
+
             if (!mineSingle && engineConfiguration.StrategyConfiguration.MineMostProfitableOverridePercentage.HasValue)
-                mineSingle = coinList.First().AdjustedProfitability > engineConfiguration.StrategyConfiguration.MineMostProfitableOverridePercentage;
+            {
+                switch (engineConfiguration.StrategyConfiguration.ProfitabilityBasis)
+                {
+                    case StrategyConfiguration.CoinProfitabilityBasis.AdjustedProfitability:
+                        mineSingle = coinList.First().AdjustedProfitability > engineConfiguration.StrategyConfiguration.MineMostProfitableOverridePercentage;
+                        break;
+                    case StrategyConfiguration.CoinProfitabilityBasis.AverageProfitability:
+                        mineSingle = coinList.First().AverageProfitability > engineConfiguration.StrategyConfiguration.MineMostProfitableOverridePercentage;
+                        break;
+                    case StrategyConfiguration.CoinProfitabilityBasis.StraightProfitability:
+                        mineSingle = coinList.First().Profitability > engineConfiguration.StrategyConfiguration.MineMostProfitableOverridePercentage;
+                        break;
+                }
+            }
 
             if (mineSingle)
                 profitableCoin = coinList.First();
@@ -236,8 +273,20 @@ namespace MultiMiner.Engine
 
             if (engineConfiguration.StrategyConfiguration.MinimumProfitabilityPercentage.HasValue)
             {
-                filteredProfitableCoins = filteredProfitableCoins.Where(
-                    c => c.AdjustedProfitability > engineConfiguration.StrategyConfiguration.MinimumProfitabilityPercentage).ToList();
+                double minimumValue = engineConfiguration.StrategyConfiguration.MinimumProfitabilityPercentage.Value;
+
+                switch (engineConfiguration.StrategyConfiguration.ProfitabilityBasis)
+                {
+                    case Configuration.StrategyConfiguration.CoinProfitabilityBasis.AdjustedProfitability:
+                        filteredProfitableCoins = filteredProfitableCoins.Where(c => c.AdjustedProfitability > minimumValue).ToList();
+                        break;
+                    case Configuration.StrategyConfiguration.CoinProfitabilityBasis.AverageProfitability:
+                        filteredProfitableCoins = filteredProfitableCoins.Where(c => c.AverageProfitability > minimumValue).ToList();
+                        break;
+                    case Configuration.StrategyConfiguration.CoinProfitabilityBasis.StraightProfitability:
+                        filteredProfitableCoins = filteredProfitableCoins.Where(c => c.Profitability > minimumValue).ToList();
+                        break;
+                }
             }
 
             return filteredProfitableCoins;

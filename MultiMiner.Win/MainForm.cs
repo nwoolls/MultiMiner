@@ -645,7 +645,20 @@ namespace MultiMiner.Win
                     {
                         row.Cells[difficultyColumn.Index].Value = coin.Difficulty.ToString(".################");
                         row.Cells[priceColumn.Index].Value = coin.Price.ToString(".################");
-                        row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AdjustedProfitability, 2); 
+
+                        switch (engineConfiguration.StrategyConfiguration.ProfitabilityBasis)
+                        {
+                            case StrategyConfiguration.CoinProfitabilityBasis.AdjustedProfitability:
+                                row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AdjustedProfitability, 2); 
+                                break;
+                            case StrategyConfiguration.CoinProfitabilityBasis.AverageProfitability:
+                                row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AverageProfitability, 2); 
+                                break;
+                            case StrategyConfiguration.CoinProfitabilityBasis.StraightProfitability:
+                                row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.Profitability, 2); 
+                                break;
+                        }
+
                     }
                 }
             }
@@ -728,6 +741,7 @@ namespace MultiMiner.Win
                 engineConfiguration.SaveStrategyConfiguration();
                 coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.MineProfitableCoins;
                 RefreshStrategiesLabel();
+                LoadGridValuesFromCoinStats();
             }
             else
             {
