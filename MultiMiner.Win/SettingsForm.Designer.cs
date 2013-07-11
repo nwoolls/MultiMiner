@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.autoLaunchCheckBox = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -47,11 +48,10 @@
             this.scryptParamsEdit = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox1
@@ -62,6 +62,10 @@
             this.textBox1.Size = new System.Drawing.Size(52, 20);
             this.textBox1.TabIndex = 4;
             this.textBox1.Text = "45";
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
             // 
             // autoLaunchCheckBox
             // 
@@ -232,10 +236,6 @@
             this.label1.TabIndex = 8;
             this.label1.Text = "SHA256 parameters:";
             // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
-            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -245,7 +245,7 @@
             this.checkBox1.Location = new System.Drawing.Point(24, 227);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(235, 17);
-            this.checkBox1.TabIndex = 11;
+            this.checkBox1.TabIndex = 5;
             this.checkBox1.Text = "Minimize to the notification area (system tray)";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
@@ -270,10 +270,10 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.SettingsForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
