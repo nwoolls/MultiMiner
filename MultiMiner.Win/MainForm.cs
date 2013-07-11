@@ -32,6 +32,8 @@ namespace MultiMiner.Win
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            SetupGridColumns();
+
             coinStatsCountdownMinutes = 15;
             coinStatsTimer.Interval = coinStatsCountdownMinutes * 60 * 1000; //15 minutes
 
@@ -56,6 +58,14 @@ namespace MultiMiner.Win
 
             if (devices.Count > 0)
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
+        }
+
+        private void SetupGridColumns()
+        {
+            //customized FillWeight doesn't behave properly under Mono
+            if (Environment.OSVersion.Platform == PlatformID.Unix)
+                foreach (DataGridViewColumn column in deviceGridView.Columns)
+                    column.FillWeight = 100;
         }
 
         private void PositionCoinchooseLabels()
