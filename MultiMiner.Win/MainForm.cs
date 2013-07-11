@@ -327,6 +327,10 @@ namespace MultiMiner.Win
 
             startButton.Visible = startButton.Enabled;
             stopButton.Visible = stopButton.Enabled;
+
+            if (!startButton.Visible && !stopButton.Visible)
+                startButton.Visible = true; //show something, even if disabled
+
             startMenuItem.Visible = startMenuItem.Enabled;
             stopMenuItem.Visible = stopMenuItem.Enabled;
         }
