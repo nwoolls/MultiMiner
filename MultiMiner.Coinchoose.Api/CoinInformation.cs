@@ -25,7 +25,8 @@ namespace MultiMiner.Coinchoose.Api
             Symbol = jToken.Value<string>("symbol");
             Name = jToken.Value<string>("name");
             Algorithm = jToken.Value<string>("algo");
-            CurrentBlocks = jToken.Value<int>("currentBlocks");
+            if (jToken["currentBlocks"] != null) //potentially null in practice
+                CurrentBlocks = jToken.Value<int>("currentBlocks");
             Difficulty = jToken.Value<double>("difficulty");
             Reward = jToken.Value<double>("reward");
             MinimumBlockTime = jToken.Value<double>("minBlockTime");
