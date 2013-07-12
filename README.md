@@ -53,7 +53,7 @@ The source code is structured in such a way that it should be fairly easy to use
 
 [1]: https://github.com/ckolivas/cgminer
 [2]: https://github.com/luke-jr/bfgminer
-[3]: https://www.dropbox.com/s/rthwzt9yjkz5r3t/MultiMiner_PR5.zip
+[3]: https://www.dropbox.com/s/rli9jo98z0mlb85/MultiMiner_PR6.zip
 [4]: http://ck.kolivas.org/apps/cgminer/
 [5]: https://github.com/nwoolls/homebrew-cryptocoin
 [6]: http://blog.nwoolls.com/2013/04/24/bitcoin-mining-on-mac-os-x-cgminer-bfgminer/
