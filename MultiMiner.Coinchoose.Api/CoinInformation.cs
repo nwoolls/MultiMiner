@@ -25,8 +25,18 @@ namespace MultiMiner.Coinchoose.Api
             Symbol = jToken.Value<string>("symbol");
             Name = jToken.Value<string>("name");
             Algorithm = jToken.Value<string>("algo");
-            if (jToken["currentBlocks"] != null) //potentially null in practice
+
+            try
+            {
                 CurrentBlocks = jToken.Value<int>("currentBlocks");
+            }
+            catch (InvalidCastException)
+            {
+                //handle System.InvalidCastException: Null object cannot be converted to a value type.
+                //tried this but didn't work: if (jToken["currentBlocks"] != null)
+                CurrentBlocks = 0;
+            }
+            
             Difficulty = jToken.Value<double>("difficulty");
             Reward = jToken.Value<double>("reward");
             MinimumBlockTime = jToken.Value<double>("minBlockTime");
