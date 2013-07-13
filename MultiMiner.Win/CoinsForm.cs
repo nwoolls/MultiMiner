@@ -40,13 +40,20 @@ namespace MultiMiner.Win
 
         private void removeCoinButton_Click(object sender, EventArgs e)
         {
-
             DialogResult promptResult = MessageBox.Show("Remove the selected coin configuration?", "Confirm", MessageBoxButtons.YesNo);
             if (promptResult == System.Windows.Forms.DialogResult.Yes)
             {
+                //required to clear bindings if this was the last coin in the list
+                coinConfigurationBindingSource.DataSource = typeof(CoinConfiguration);
+                miningPoolBindingSource.DataSource = typeof(MiningPool);
+
                 CoinConfiguration configuration = configurations[coinListBox.SelectedIndex];
                 configurations.Remove(configuration);
                 coinListBox.Items.RemoveAt(coinListBox.SelectedIndex);
+
+                //select a coin - otherwise nothing will be selected
+                if (configurations.Count > 0)
+                    coinListBox.SelectedIndex = 0;
             }
         }
 
@@ -132,12 +139,18 @@ namespace MultiMiner.Win
 
         private void adjustProfitCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (coinConfigurationBindingSource.Current == null)
+                return;
+
             CoinConfiguration currentConfiguration = (CoinConfiguration)coinConfigurationBindingSource.Current;
             currentConfiguration.ProfitabilityAdjustmentType = (CoinConfiguration.AdjustmentType)((ComboBox)sender).SelectedIndex;
         }
 
         private void coinConfigurationBindingSource_CurrentChanged(object sender, EventArgs e)
         {
+            if (coinConfigurationBindingSource.Current == null)
+                return;
+
             CoinConfiguration currentConfiguration = (CoinConfiguration)coinConfigurationBindingSource.Current;
             adjustProfitCombo.SelectedIndex = (int)currentConfiguration.ProfitabilityAdjustmentType;
         }
