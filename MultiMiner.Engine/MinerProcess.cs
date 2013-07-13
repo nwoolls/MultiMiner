@@ -43,13 +43,11 @@ namespace MultiMiner.Engine
 
         public static void KillProcess(Process process)
         {
-            process.CloseMainWindow();
-            if (!process.HasExited)
-            {
-                process.Kill();
-                process.WaitForExit();
-                process.Close();
-            }
+            //do NOT call process.CloseMainWindow();
+            //can leave zombie cgminer processes
+            process.Kill();
+            process.WaitForExit();
+            process.Close();
         }
 
         private ApiContext GetApiContext()
