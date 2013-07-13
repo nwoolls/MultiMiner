@@ -10,7 +10,7 @@ namespace MultiMiner.Engine
     {
         public Process Process { get; set; }
         public int ApiPort { get; set; }
-        public MinerConfiguration MinerConfiguration { get; set; }
+        public MinerConfiguration MinerConfiguration { get; set; } //for relaunching crashed miners
 
         private ApiContext apiContext;
         public ApiContext ApiContext 
