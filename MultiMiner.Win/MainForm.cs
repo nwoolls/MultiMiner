@@ -24,6 +24,7 @@ namespace MultiMiner.Win
         private int startupMiningCountdownSeconds = 0;
         private int coinStatsCountdownMinutes = 0;
         private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
+        private bool formLoaded = false;
 
         public MainForm()
         {
@@ -65,6 +66,7 @@ namespace MultiMiner.Win
             if (devices.Count > 0)
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
 
+            formLoaded = true;
         }
 
         private void CheckAndDownloadMiners()
@@ -193,6 +195,8 @@ namespace MultiMiner.Win
             desktopModeButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
 
             applicationConfiguration.LoadApplicationConfiguration();
+            if (applicationConfiguration.Maximized)
+                this.WindowState = FormWindowState.Maximized;
 
             if (applicationConfiguration.StartMiningOnStartup)
             {
@@ -971,14 +975,26 @@ namespace MultiMiner.Win
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            if (applicationConfiguration.MinimizeToNotificationArea && (this.WindowState == FormWindowState.Minimized))
+            if (formLoaded)
             {
-                notifyIcon1.Visible = true;
-                this.Hide();
-            }
-            else if (FormWindowState.Normal == this.WindowState)
-            {
-                notifyIcon1.Visible = false;
+                if (applicationConfiguration.MinimizeToNotificationArea && (this.WindowState == FormWindowState.Minimized))
+                {
+                    notifyIcon1.Visible = true;
+                    this.Hide();
+                }
+                else if (FormWindowState.Normal == this.WindowState)
+                {
+                    notifyIcon1.Visible = false;
+                }
+
+                //this happens on startup before FormLoad, so don't save settings here
+                if (this.WindowState == FormWindowState.Maximized)
+                    applicationConfiguration.Maximized = true;
+
+                if (this.WindowState == FormWindowState.Normal) //don't set to false for minimizing
+                    applicationConfiguration.Maximized = false;
+
+                applicationConfiguration.SaveApplicationConfiguration();
             }
         }
 
