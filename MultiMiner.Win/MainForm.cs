@@ -617,6 +617,10 @@ namespace MultiMiner.Win
 
         private void RefreshCoinStats()
         {
+            //always load known coins from file
+            //CoinChoose may not shown coins it once did if there are no orders
+            LoadKnownCoinsFromFile();
+
             try
             {
                 coinInformation = Coinchoose.Api.ApiContext.GetCoinInformation();
@@ -626,7 +630,6 @@ namespace MultiMiner.Win
                 //don't crash if website cannot be resolved or JSON cannot be parsed
                 if (ex is WebException)
                 {
-                    LoadKnownCoinsFromFile();
                     return;
                 }
                 throw;
@@ -678,7 +681,9 @@ namespace MultiMiner.Win
 
         private void LoadKnownCoinsFromFile()
         {
-            knownCoins = ConfigurationReaderWriter.ReadConfiguration<List<CryptoCoin>>(KnownCoinsFileName());
+            string knownCoinsFileName = KnownCoinsFileName();
+            if (File.Exists(knownCoinsFileName))
+                knownCoins = ConfigurationReaderWriter.ReadConfiguration<List<CryptoCoin>>(knownCoinsFileName);
         }
 
         private void SaveKnownCoinsToFile()
