@@ -37,7 +37,18 @@ namespace MultiMiner.Engine
                     //won't be able to connect for the first 5s or so
                 }
 
-                Process.Kill();
+                KillProcess(Process);
+            }
+        }
+
+        public static void KillProcess(Process process)
+        {
+            process.CloseMainWindow();
+            if (!process.HasExited)
+            {
+                process.Kill();
+                process.WaitForExit();
+                process.Close();
             }
         }
 

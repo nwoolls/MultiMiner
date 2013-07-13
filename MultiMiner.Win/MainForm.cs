@@ -9,6 +9,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace MultiMiner.Win
 {
@@ -53,10 +54,35 @@ namespace MultiMiner.Win
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
 
+            //check for disowned miners before refreshing devices
+            if (applicationConfiguration.DetectDisownedMiners)
+                CheckForDisownedMiners();
+
             RefreshDevices();
 
             if (devices.Count > 0)
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
+
+        }
+
+        private void CheckForDisownedMiners()
+        {
+            string minerName = engineConfiguration.XgminerConfiguration.MinerName;
+
+            List<Process> disownedMiners = Process.GetProcessesByName(minerName).ToList();
+
+            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+                disownedMiners.Remove(minerProcess.Process);
+
+            if (disownedMiners.Count > 0)
+            {
+                DialogResult messageBoxResult = MessageBox.Show("MultiMiner has detected running miners that it does not own. Would you like to kill them?", 
+                    "Disowned Miners Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (messageBoxResult == System.Windows.Forms.DialogResult.Yes)
+                    foreach (Process disownedMiner in disownedMiners)
+                        MinerProcess.KillProcess(disownedMiner);
+            }
         }
 
         private void SetupGridColumns()
