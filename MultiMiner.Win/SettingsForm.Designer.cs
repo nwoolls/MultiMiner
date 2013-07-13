@@ -144,9 +144,9 @@
             this.disableGpuCheckbox.AutoSize = true;
             this.disableGpuCheckbox.Location = new System.Drawing.Point(13, 92);
             this.disableGpuCheckbox.Name = "disableGpuCheckbox";
-            this.disableGpuCheckbox.Size = new System.Drawing.Size(123, 17);
+            this.disableGpuCheckbox.Size = new System.Drawing.Size(120, 17);
             this.disableGpuCheckbox.TabIndex = 16;
-            this.disableGpuCheckbox.Text = " Disable GPU mining";
+            this.disableGpuCheckbox.Text = "Disable GPU mining";
             this.disableGpuCheckbox.UseVisualStyleBackColor = true;
             // 
             // label5
