@@ -10,7 +10,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text.RegularExpressions;
 
 namespace MultiMiner.Win
 {
