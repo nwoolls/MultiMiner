@@ -127,12 +127,13 @@ namespace MultiMiner.Xgminer
             Process process = Process.Start(startInfo);
 
             if (ensureProcessStarts)
-                EnsureProcessStarts(process, startInfo);
+                //store the returned process
+                process = EnsureProcessStarts(process, startInfo);
 
             return process;
         }
 
-        private static void EnsureProcessStarts(Process process, ProcessStartInfo startInfo)
+        private static Process EnsureProcessStarts(Process process, ProcessStartInfo startInfo)
         {
             const int timeout = 2500;
 
@@ -148,10 +149,13 @@ namespace MultiMiner.Xgminer
                 if (retries >= maxRetries)
                     throw new Exception(string.Format("Miner keeps exiting after launching - retried {0} times. Exit code {1}.", retries, process.ExitCode));
 
-                process = process = Process.Start(startInfo);
+                //ensure the new process is stored and returned
+                process = Process.Start(startInfo);
                 Thread.Sleep(timeout);
                 retries++;
             }
+
+            return process;
         }
 
         private const string cgminerDomain = "ck.kolivas.org";
