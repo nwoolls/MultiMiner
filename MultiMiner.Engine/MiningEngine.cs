@@ -37,32 +37,53 @@ namespace MultiMiner.Engine
             StartMining();
         }
 
+        private bool startingMining = false;
         public void StartMining(EngineConfiguration engineConfiguration, List<Device> devices, List<CoinInformation> coinInformation)
         {
             StopMining();
 
-            this.engineConfiguration = engineConfiguration;
+            startingMining = true;
+            try
+            {
+                this.engineConfiguration = engineConfiguration;
 
-            ApplyMiningStrategy(devices, coinInformation);
-            
-            if (!mining) //above call to ApplyMiningStrategy may have started mining due to config change
-                StartMining();
+                ApplyMiningStrategy(devices, coinInformation);
 
-            mining = true;
+                if (!mining) //above call to ApplyMiningStrategy may have started mining due to config change
+                    StartMining();
+
+                mining = true;
+            }
+            finally
+            {
+                startingMining = false;
+            }
         }
 
+        private bool stoppingMining = false;
         public void StopMining()
         {
-            foreach (MinerProcess minerProcess in minerProcesses)
-                minerProcess.StopMining();
+            stoppingMining = true;
+            try
+            {
+                foreach (MinerProcess minerProcess in minerProcesses)
+                    minerProcess.StopMining();
 
-            minerProcesses.Clear();
+                minerProcesses.Clear();
 
-            mining = false;
+                mining = false;
+            }
+            finally
+            {
+                stoppingMining = false;
+            }
         }
 
         public void RelaunchCrashedMiners()
         {
+            if (stoppingMining || startingMining)
+                return; //don't try to relaunch miners we are stopping or starting
+
             foreach (MinerProcess minerProcess in MinerProcesses)
                 if (minerProcess.Process.HasExited)
                     minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
