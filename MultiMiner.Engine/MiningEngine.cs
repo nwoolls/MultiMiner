@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
+using System.Reflection;
 
 namespace MultiMiner.Engine
 {
@@ -93,13 +94,18 @@ namespace MultiMiner.Engine
         //update engineConfiguration.DeviceConfiguration based on mining strategy & coin info
         public void ApplyMiningStrategy(List<Device> devices, List<CoinInformation> coinInformation)
         {
+            //make a copy as we'll be modifying individual coin properties (profitability)
+            //if no copy is made this could lead to a compounding effect
+            List<CoinInformation> coinInformationCopy = CopyCoinInformation(coinInformation);
+
             if (engineConfiguration.StrategyConfiguration.MineProfitableCoins)
             {
                 //get a list of the coins that are configured
                 IEnumerable<string> configuredSymbols = engineConfiguration.CoinConfigurations.Select(c => c.Coin.Symbol);
 
                 //filter the coin info by that list
-                IEnumerable<CoinInformation> configuredProfitableCoins = coinInformation.Where(c => configuredSymbols.Contains(c.Symbol));
+                //use the copy here
+                IEnumerable<CoinInformation> configuredProfitableCoins = coinInformationCopy.Where(c => configuredSymbols.Contains(c.Symbol));
 
                 if (configuredProfitableCoins.Count() > 0)
                 {
@@ -123,6 +129,30 @@ namespace MultiMiner.Engine
                     if (configDifferent)
                         RestartMining();
                 }
+            }
+        }
+
+        private List<CoinInformation> CopyCoinInformation(List<CoinInformation> coinInformation)
+        {
+            List<CoinInformation> coinInformationCopy = new List<CoinInformation>();
+            foreach (CoinInformation realCoin in coinInformation)
+            {
+                CoinInformation coinCopy = new CoinInformation();
+                CopyPoco(realCoin, coinCopy);
+                coinInformationCopy.Add(coinCopy);
+            }
+            return coinInformationCopy;
+        }
+
+        private static void CopyPoco(object source, object destination)
+        {
+            Type destionationType = destination.GetType();
+            foreach (PropertyInfo sourceProperty in source.GetType().GetProperties())
+            {
+                MethodInfo sourcePropertyGetter = sourceProperty.GetGetMethod();
+                MethodInfo sourcePropertySetter = destionationType.GetProperty(sourceProperty.Name).GetSetMethod();
+                object valueToSet = sourcePropertyGetter.Invoke(source, null);
+                sourcePropertySetter.Invoke(destination, new[] { valueToSet });
             }
         }
 
