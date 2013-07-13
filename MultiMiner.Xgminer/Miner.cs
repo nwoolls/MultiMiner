@@ -135,10 +135,12 @@ namespace MultiMiner.Xgminer
 
         private static Process EnsureProcessStarts(Process process, ProcessStartInfo startInfo)
         {
-            const int timeout = 2500;
+            //any lower than this seems to have a decent chance of a USB ASIC miner process not
+            //successfully stopping & restarting
+            const int timeout = 3500;
 
             //newest cgminer, paired with USB ASIC's, likes to die on startup a few times saying the specified device
-            //wasn't detected, happens when starting/stopping mining on USB ASIC's repeatedly
+            //wasn't detected, happens when stopping/starting mining on USB ASIC's repeatedly
             Thread.Sleep(timeout);
 
             int retries = 0;
