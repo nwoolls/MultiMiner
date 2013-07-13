@@ -375,9 +375,7 @@ namespace MultiMiner.Engine
 
             MinerConfiguration minerConfiguration = new MinerConfiguration();
 
-            string minerName = "cgminer";
-            if (engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Bfgminer)
-                minerName = "bfgminer";
+            string minerName = engineConfiguration.XgminerConfiguration.MinerName;
 
             switch (Environment.OSVersion.Platform)
             {

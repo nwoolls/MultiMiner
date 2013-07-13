@@ -13,5 +13,15 @@ namespace MultiMiner.Engine.Configuration
         public MinerBackend MinerBackend { get; set; }
         public bool DesktopMode { get; set; }
         public bool DisableGpu { get; set; }
+        public string MinerName
+        {
+            get
+            {
+                string minerName = "cgminer";
+                if (MinerBackend == MinerBackend.Bfgminer)
+                    minerName = "bfgminer";
+                return minerName;
+            }
+        }
     }
 }

@@ -132,9 +132,7 @@ namespace MultiMiner.Win
 
         private List<Device> GetDevices()
         {
-            string minerName = "cgminer";
-            if (engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Bfgminer)
-                minerName = "bfgminer";
+            string minerName = engineConfiguration.XgminerConfiguration.MinerName;
 
             MinerConfiguration minerConfiguration = new MinerConfiguration();
             minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
