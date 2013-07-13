@@ -453,8 +453,8 @@ namespace MultiMiner.Win
             scryptRateLabel.Text = string.Empty;
             sha256RateLabel.Text = string.Empty;
             notifyIcon1.Text = "MultiMiner - Stopped";
-
             UpdateMiningButtons();
+            ClearMinerStats();
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -538,16 +538,24 @@ namespace MultiMiner.Win
                 return;
 
             foreach (DataGridViewRow row in deviceGridView.Rows)
-            {
                 if (row.Cells[coinColumn.Index].Value == null)
-                {
-                    row.Cells[temperatureColumn.Index].Value = null;
-                    row.Cells[hashRateColumn.Index].Value = null;
-                    row.Cells[acceptedColumn.Index].Value = null;
-                    row.Cells[rejectedColumn.Index].Value = null;
-                    row.Cells[errorsColumn.Index].Value = null;
-                }
-            }
+                    ClearMinerStatsForRow(row);
+        }
+
+        private void ClearMinerStatsForRow(DataGridViewRow row)
+        {
+            row.Cells[temperatureColumn.Index].Value = null;
+            row.Cells[hashRateColumn.Index].Value = null;
+            row.Cells[acceptedColumn.Index].Value = null;
+            row.Cells[rejectedColumn.Index].Value = null;
+            row.Cells[errorsColumn.Index].Value = null;
+            row.Cells[intensityColumn.Index].Value = null;
+        }
+
+        private void ClearMinerStats()
+        {
+            foreach (DataGridViewRow row in deviceGridView.Rows)
+                ClearMinerStatsForRow(row);
         }
 
         private void ClearCoinStatsForDisabledCoins()
