@@ -35,7 +35,6 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.disableGpuCheckbox = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -52,10 +51,11 @@
             this.label3 = new System.Windows.Forms.Label();
             this.autoLaunchCheckBox = new System.Windows.Forms.CheckBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -63,7 +63,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 292);
+            this.panel1.Location = new System.Drawing.Point(0, 280);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(444, 47);
             this.panel1.TabIndex = 2;
@@ -105,7 +105,7 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(11, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(420, 148);
+            this.groupBox1.Size = new System.Drawing.Size(420, 150);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Miner";
@@ -115,16 +115,12 @@
             this.checkBox4.Checked = true;
             this.checkBox4.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox4.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "DetectDisownedMiners", true));
-            this.checkBox4.Location = new System.Drawing.Point(230, 92);
+            this.checkBox4.Location = new System.Drawing.Point(229, 99);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(180, 31);
             this.checkBox4.TabIndex = 18;
             this.checkBox4.Text = "Detect disowned miners (orphaned mining processes)";
             this.checkBox4.UseVisualStyleBackColor = true;
-            // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
             // 
             // checkBox2
             // 
@@ -132,7 +128,7 @@
             this.checkBox2.Checked = true;
             this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "RestartCrashedMiners", true));
-            this.checkBox2.Location = new System.Drawing.Point(13, 115);
+            this.checkBox2.Location = new System.Drawing.Point(12, 122);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(134, 17);
             this.checkBox2.TabIndex = 17;
@@ -142,7 +138,7 @@
             // disableGpuCheckbox
             // 
             this.disableGpuCheckbox.AutoSize = true;
-            this.disableGpuCheckbox.Location = new System.Drawing.Point(13, 92);
+            this.disableGpuCheckbox.Location = new System.Drawing.Point(12, 99);
             this.disableGpuCheckbox.Name = "disableGpuCheckbox";
             this.disableGpuCheckbox.Size = new System.Drawing.Size(120, 17);
             this.disableGpuCheckbox.TabIndex = 16;
@@ -152,7 +148,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 16);
+            this.label5.Location = new System.Drawing.Point(9, 23);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(86, 13);
             this.label5.TabIndex = 15;
@@ -161,7 +157,7 @@
             // bfgminerRadio
             // 
             this.bfgminerRadio.AutoSize = true;
-            this.bfgminerRadio.Location = new System.Drawing.Point(221, 14);
+            this.bfgminerRadio.Location = new System.Drawing.Point(220, 21);
             this.bfgminerRadio.Name = "bfgminerRadio";
             this.bfgminerRadio.Size = new System.Drawing.Size(65, 17);
             this.bfgminerRadio.TabIndex = 1;
@@ -172,7 +168,7 @@
             // 
             this.cgminerRadio.AutoSize = true;
             this.cgminerRadio.Checked = true;
-            this.cgminerRadio.Location = new System.Drawing.Point(118, 14);
+            this.cgminerRadio.Location = new System.Drawing.Point(117, 21);
             this.cgminerRadio.Name = "cgminerRadio";
             this.cgminerRadio.Size = new System.Drawing.Size(62, 17);
             this.cgminerRadio.TabIndex = 0;
@@ -182,14 +178,14 @@
             // 
             // sha256ParamsEdit
             // 
-            this.sha256ParamsEdit.Location = new System.Drawing.Point(118, 37);
+            this.sha256ParamsEdit.Location = new System.Drawing.Point(117, 44);
             this.sha256ParamsEdit.Name = "sha256ParamsEdit";
             this.sha256ParamsEdit.Size = new System.Drawing.Size(286, 20);
             this.sha256ParamsEdit.TabIndex = 2;
             // 
             // scryptParamsEdit
             // 
-            this.scryptParamsEdit.Location = new System.Drawing.Point(118, 66);
+            this.scryptParamsEdit.Location = new System.Drawing.Point(117, 73);
             this.scryptParamsEdit.Name = "scryptParamsEdit";
             this.scryptParamsEdit.Size = new System.Drawing.Size(286, 20);
             this.scryptParamsEdit.TabIndex = 3;
@@ -197,7 +193,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 69);
+            this.label2.Location = new System.Drawing.Point(9, 76);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(95, 13);
             this.label2.TabIndex = 9;
@@ -206,7 +202,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 40);
+            this.label1.Location = new System.Drawing.Point(9, 47);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(105, 13);
             this.label1.TabIndex = 8;
@@ -220,9 +216,9 @@
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.autoLaunchCheckBox);
             this.groupBox2.Controls.Add(this.textBox1);
-            this.groupBox2.Location = new System.Drawing.Point(11, 166);
+            this.groupBox2.Location = new System.Drawing.Point(11, 172);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(420, 102);
+            this.groupBox2.Size = new System.Drawing.Size(420, 106);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Application";
@@ -232,7 +228,7 @@
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MinimizeToNotificationArea", true));
-            this.checkBox1.Location = new System.Drawing.Point(230, 19);
+            this.checkBox1.Location = new System.Drawing.Point(230, 25);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(174, 17);
             this.checkBox1.TabIndex = 14;
@@ -242,7 +238,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(176, 68);
+            this.label4.Location = new System.Drawing.Point(176, 74);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(47, 13);
             this.label4.TabIndex = 16;
@@ -254,7 +250,7 @@
             this.checkBox3.Checked = true;
             this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox3.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "StartMiningOnStartup", true));
-            this.checkBox3.Location = new System.Drawing.Point(12, 42);
+            this.checkBox3.Location = new System.Drawing.Point(12, 48);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(182, 17);
             this.checkBox3.TabIndex = 12;
@@ -264,7 +260,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(28, 68);
+            this.label3.Location = new System.Drawing.Point(28, 74);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(81, 13);
             this.label3.TabIndex = 15;
@@ -276,7 +272,7 @@
             this.autoLaunchCheckBox.Checked = true;
             this.autoLaunchCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.autoLaunchCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "LaunchOnWindowsLogin", true));
-            this.autoLaunchCheckBox.Location = new System.Drawing.Point(12, 19);
+            this.autoLaunchCheckBox.Location = new System.Drawing.Point(12, 25);
             this.autoLaunchCheckBox.Name = "autoLaunchCheckBox";
             this.autoLaunchCheckBox.Size = new System.Drawing.Size(198, 17);
             this.autoLaunchCheckBox.TabIndex = 11;
@@ -286,20 +282,25 @@
             // textBox1
             // 
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "StartupMiningDelay", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox1.Location = new System.Drawing.Point(118, 65);
+            this.textBox1.Location = new System.Drawing.Point(118, 71);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(52, 20);
             this.textBox1.TabIndex = 13;
             this.textBox1.Text = "45";
             // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(444, 339);
+            this.ClientSize = new System.Drawing.Size(444, 327);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.panel1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -310,9 +311,9 @@
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
