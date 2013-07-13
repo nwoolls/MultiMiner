@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace MultiMiner.Win
 {
@@ -58,11 +59,67 @@ namespace MultiMiner.Win
             if (applicationConfiguration.DetectDisownedMiners)
                 CheckForDisownedMiners();
 
+            CheckAndDownloadMiners();
+
             RefreshDevices();
 
             if (devices.Count > 0)
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
 
+        }
+
+        private void CheckAndDownloadMiners()
+        {
+            if (Environment.OSVersion.Platform != PlatformID.Unix)
+            {
+                bool hasMiners = HasMinersInstalled();
+
+                if (!hasMiners)
+                {
+                    DialogResult messageBoxResult = MessageBox.Show("You have no miners installed. Would you like to download and install cgminer?", "No Miners Installed", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (messageBoxResult == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        InstallCgminer();
+                        engineConfiguration.XgminerConfiguration.MinerBackend = MinerBackend.Cgminer;
+                        engineConfiguration.SaveMinerConfiguration();
+                    }
+                }
+            }
+        }
+
+        private const string cgminerDomain = "ck.kolivas.org";
+
+        private static void InstallCgminer()
+        {
+            ProgressForm progressForm = new ProgressForm("Downloading and installing cgminer from " + cgminerDomain);
+            progressForm.Show();
+            Application.DoEvents();
+            try
+            {
+                string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Miners\cgminer\");
+                Miner.InstallMiner(MinerBackend.Cgminer, destinationFolder);
+            }
+            finally
+            {
+                progressForm.Close();
+            }
+        }
+
+        private static bool HasMinersInstalled()
+        {
+            bool hasMiners = false;
+
+            hasMiners = MinerIsInstalled(XgminerConfiguration.CgminerName);
+            if (!hasMiners)
+                hasMiners = MinerIsInstalled(XgminerConfiguration.BfgminerName);
+
+            return hasMiners;
+        }
+        
+        private static bool MinerIsInstalled(string minerName)
+        {
+            string path = string.Format(@"Miners\{0}\{0}.exe", minerName);
+            return File.Exists(path);
         }
 
         private void CheckForDisownedMiners()
