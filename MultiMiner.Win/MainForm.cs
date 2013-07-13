@@ -613,49 +613,13 @@ namespace MultiMiner.Win
 
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
-                MultiMiner.Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
-                
-                //setup logging
-                apiContext.LogEvent -= LogApiEvent;
-                apiContext.LogEvent += LogApiEvent;
-
-                IEnumerable<MultiMiner.Xgminer.Api.DeviceInformation> enabledDevices = null;
-                try
-                {
-                    try
-                    {
-                        enabledDevices = apiContext.GetDeviceInformation().Where(d => d.Enabled);
-                    }
-                    catch (IOException ex)
-                    {
-                        //don't fail and crash out due to any issues communicating via the API
-                        continue;
-                    }
-                }
-                catch (SocketException ex)
-                {
-                    //won't be able to connect for the first 5s or so
+                List<MultiMiner.Xgminer.Api.DeviceInformation> deviceInformationList = GetDeviceInformationFromMinerProcess(minerProcess);
+                if (deviceInformationList == null) //handled failure getting API info
                     continue;
-                }
 
-                foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in enabledDevices)
+                foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
                 {
-                    int index = 0;
-                    int rowIndex = -1;
-
-                    for (int i = 0; i < devices.Count; i++)
-                    {
-                        if ((deviceInformation.Kind.Equals("GPU") && IdentifierIsGpu(devices[i].Identifier))
-                            || (!deviceInformation.Kind.Equals("GPU") && !IdentifierIsGpu(devices[i].Identifier)))
-                        {
-                            if (index == deviceInformation.Index)
-                            {
-                                rowIndex = i;
-                                break;
-                            }
-                            index++;
-                        }
-                    }
+                    int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
 
                     if (rowIndex >= 0)
                     {
@@ -664,18 +628,12 @@ namespace MultiMiner.Win
                         else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
                             totalSha256Rate += deviceInformation.AverageHashrate;
 
-                        deviceGridView.Rows[rowIndex].Cells[temperatureColumn.Index].Value = deviceInformation.Temperature;
-                        deviceGridView.Rows[rowIndex].Cells[hashRateColumn.Index].Value = deviceInformation.AverageHashrate;
-                        deviceGridView.Rows[rowIndex].Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
-                        deviceGridView.Rows[rowIndex].Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
-                        deviceGridView.Rows[rowIndex].Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
-                        deviceGridView.Rows[rowIndex].Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
+                        PopulateMinerStatsForRow(deviceInformation, deviceGridView.Rows[rowIndex]);
 
                         if (deviceInformation.Temperature > 0)
                             hasTempValue = true;
                     }
                 }
-
             }
 
             scryptRateLabel.Text = string.Format("Scrypt: {0} kh/s", totalScryptRate);
@@ -684,6 +642,68 @@ namespace MultiMiner.Win
 
             //hide the temperature column if there are no tempts returned (USBs, OS X, etc)
             temperatureColumn.Visible = hasTempValue;
+        }
+
+        private List<MultiMiner.Xgminer.Api.DeviceInformation> GetDeviceInformationFromMinerProcess(MinerProcess minerProcess)
+        {
+            MultiMiner.Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<MultiMiner.Xgminer.Api.DeviceInformation> deviceInformationList = null;
+            try
+            {
+                try
+                {
+                    deviceInformationList = apiContext.GetDeviceInformation().Where(d => d.Enabled).ToList();
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    deviceInformationList = null;
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
+                deviceInformationList = null;
+            }
+
+            return deviceInformationList;
+        }
+
+        private int GetRowIndexForDeviceInformation(MultiMiner.Xgminer.Api.DeviceInformation deviceInformation)
+        {
+            int index = 0;
+            int rowIndex = -1;
+
+            for (int i = 0; i < devices.Count; i++)
+            {
+                if ((deviceInformation.Kind.Equals("GPU") && IdentifierIsGpu(devices[i].Identifier))
+                    || (!deviceInformation.Kind.Equals("GPU") && !IdentifierIsGpu(devices[i].Identifier)))
+                {
+                    if (index == deviceInformation.Index)
+                    {
+                        rowIndex = i;
+                        break;
+                    }
+                    index++;
+                }
+            }
+
+            return rowIndex;
+        }
+
+        private void PopulateMinerStatsForRow(MultiMiner.Xgminer.Api.DeviceInformation deviceInformation, DataGridViewRow row)
+        {
+            row.Cells[temperatureColumn.Index].Value = deviceInformation.Temperature;
+            row.Cells[hashRateColumn.Index].Value = deviceInformation.AverageHashrate;
+            row.Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
+            row.Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
+            row.Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
+            row.Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
