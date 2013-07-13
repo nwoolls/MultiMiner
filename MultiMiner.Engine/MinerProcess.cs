@@ -1,6 +1,8 @@
 ﻿using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Api;
 using System.Diagnostics;
+using System.Net.Sockets;
+using System.Threading;
 
 namespace MultiMiner.Engine
 {
@@ -19,6 +21,24 @@ namespace MultiMiner.Engine
                     apiContext = GetApiContext();
                 return apiContext;
             } 
+        }
+
+        public void StopMining()
+        {
+            if (!Process.HasExited)
+            {
+                try
+                {
+                    ApiContext.QuitMining();
+                    Thread.Sleep(250);
+                }
+                catch (SocketException ex)
+                {
+                    //won't be able to connect for the first 5s or so
+                }
+
+                Process.Kill();
+            }
         }
 
         private ApiContext GetApiContext()

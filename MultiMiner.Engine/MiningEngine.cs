@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Sockets;
-using System.Threading;
 using System.Reflection;
 
 namespace MultiMiner.Engine
@@ -56,23 +54,7 @@ namespace MultiMiner.Engine
         public void StopMining()
         {
             foreach (MinerProcess minerProcess in minerProcesses)
-                if (!minerProcess.Process.HasExited)
-                {
-                    Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
-                    if (apiContext != null)
-                    {
-                        try
-                        {
-                            apiContext.QuitMining();
-                            Thread.Sleep(250);
-                        }
-                        catch (SocketException ex)
-                        {
-                            //won't be able to connect for the first 5s or so
-                        }
-                    }
-                    minerProcess.Process.Kill();
-                }
+                minerProcess.StopMining();
 
             minerProcesses.Clear();
 
