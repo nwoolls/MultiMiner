@@ -416,6 +416,7 @@ namespace MultiMiner.Win
             stopButton.Enabled = miningEngine.Mining;
             startMenuItem.Enabled = startButton.Enabled;
             stopMenuItem.Enabled = stopButton.Enabled;
+            detectDevicesButton.Enabled = startButton.Enabled;
 
             startButton.Visible = startButton.Enabled;
             stopButton.Visible = stopButton.Enabled;
