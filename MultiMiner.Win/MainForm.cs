@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using System.Linq;
 using System.IO;
 using System.Net;
-using MultiMiner.Coinchoose.Api;
 using System.Net.Sockets;
 using System.ComponentModel;
 
@@ -15,7 +14,7 @@ namespace MultiMiner.Win
 {
     public partial class MainForm : Form
     {
-        private List<CoinInformation> coinInformation;
+        private List<Coinchoose.Api.CoinInformation> coinInformation;
         private List<Device> devices;
         private readonly EngineConfiguration engineConfiguration = new EngineConfiguration();
         private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
@@ -620,7 +619,7 @@ namespace MultiMiner.Win
         {
             try
             {
-                coinInformation = ApiContext.GetCoinInformation();
+                coinInformation = Coinchoose.Api.ApiContext.GetCoinInformation();
             }
             catch (Exception ex)
             {
@@ -645,7 +644,7 @@ namespace MultiMiner.Win
 
         private void LoadKnownCoinsFromCoinStats()
         {
-            foreach (CoinInformation item in coinInformation)
+            foreach (Coinchoose.Api.CoinInformation item in coinInformation)
             {
                 //find existing known coin or create a knew one
                 CryptoCoin knownCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(item.Symbol));
@@ -689,7 +688,7 @@ namespace MultiMiner.Win
 
         private void LoadGridValuesFromCoinStats()
         {
-            foreach (CoinInformation coin in coinInformation)
+            foreach (Coinchoose.Api.CoinInformation coin in coinInformation)
             {
                 foreach (DataGridViewRow row in deviceGridView.Rows)
                 {
