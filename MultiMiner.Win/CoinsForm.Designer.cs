@@ -56,6 +56,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.adjustProfitCombo = new System.Windows.Forms.ComboBox();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -261,14 +263,15 @@
             // textBox3
             // 
             this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.coinConfigurationBindingSource, "MinerFlags", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox3.Location = new System.Drawing.Point(293, 223);
+            this.textBox3.Location = new System.Drawing.Point(270, 223);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(238, 20);
+            this.textBox3.Size = new System.Drawing.Size(261, 20);
             this.textBox3.TabIndex = 17;
             // 
             // coinConfigurationBindingSource
             // 
             this.coinConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.CoinConfiguration);
+            this.coinConfigurationBindingSource.CurrentChanged += new System.EventHandler(this.coinConfigurationBindingSource_CurrentChanged);
             // 
             // label5
             // 
@@ -284,32 +287,56 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(173, 252);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(114, 13);
+            this.label6.Size = new System.Drawing.Size(91, 13);
             this.label6.TabIndex = 20;
-            this.label6.Text = "Profitability adjustment:";
+            this.label6.Text = "Adjust profitability:";
             // 
             // textBox5
             // 
             this.textBox5.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.coinConfigurationBindingSource, "ProfitabilityAdjustment", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox5.Location = new System.Drawing.Point(293, 249);
+            this.textBox5.Location = new System.Drawing.Point(270, 249);
             this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(217, 20);
+            this.textBox5.Size = new System.Drawing.Size(67, 20);
             this.textBox5.TabIndex = 19;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(516, 252);
+            this.label7.Location = new System.Drawing.Point(343, 252);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(15, 13);
             this.label7.TabIndex = 21;
             this.label7.Text = "%";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(364, 251);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(53, 13);
+            this.label8.TabIndex = 22;
+            this.label8.Text = "Adjust by:";
+            // 
+            // adjustProfitCombo
+            // 
+            this.adjustProfitCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.adjustProfitCombo.FormattingEnabled = true;
+            this.adjustProfitCombo.Items.AddRange(new object[] {
+            "Addition",
+            "Multiplication"});
+            this.adjustProfitCombo.Location = new System.Drawing.Point(423, 248);
+            this.adjustProfitCombo.Name = "adjustProfitCombo";
+            this.adjustProfitCombo.Size = new System.Drawing.Size(108, 21);
+            this.adjustProfitCombo.TabIndex = 23;
+            this.adjustProfitCombo.SelectedIndexChanged += new System.EventHandler(this.adjustProfitCombo_SelectedIndexChanged);
             // 
             // CoinsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(558, 331);
+            this.Controls.Add(this.adjustProfitCombo);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBox5);
@@ -366,5 +393,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox adjustProfitCombo;
     }
 }

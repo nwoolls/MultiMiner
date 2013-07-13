@@ -5,6 +5,12 @@ namespace MultiMiner.Engine.Configuration
 {
     public class CoinConfiguration
     {
+        public enum AdjustmentType
+        {
+            Addition = 0,
+            Multiplication = 1
+        }
+
         public CoinConfiguration()
         {
             this.Pools = new List<MiningPool>();
@@ -14,5 +20,6 @@ namespace MultiMiner.Engine.Configuration
         public List<MiningPool> Pools { get; set; }
         public string MinerFlags { get; set; }
         public double ProfitabilityAdjustment { get; set; }
+        public AdjustmentType ProfitabilityAdjustmentType { get; set; }
     }
 }

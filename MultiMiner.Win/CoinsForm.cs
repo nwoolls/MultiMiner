@@ -129,5 +129,17 @@ namespace MultiMiner.Win
         {
             UpdateButtonStates();
         }
+
+        private void adjustProfitCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CoinConfiguration currentConfiguration = (CoinConfiguration)coinConfigurationBindingSource.Current;
+            currentConfiguration.ProfitabilityAdjustmentType = (CoinConfiguration.AdjustmentType)((ComboBox)sender).SelectedIndex;
+        }
+
+        private void coinConfigurationBindingSource_CurrentChanged(object sender, EventArgs e)
+        {
+            CoinConfiguration currentConfiguration = (CoinConfiguration)coinConfigurationBindingSource.Current;
+            adjustProfitCombo.SelectedIndex = (int)currentConfiguration.ProfitabilityAdjustmentType;
+        }
     }
 }

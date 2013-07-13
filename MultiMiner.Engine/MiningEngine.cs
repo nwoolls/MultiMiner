@@ -152,9 +152,18 @@ namespace MultiMiner.Engine
             {
                 CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(configuredProfitableCoin.Symbol));
 
-                configuredProfitableCoin.AdjustedProfitability += coinConfiguration.ProfitabilityAdjustment;
-                configuredProfitableCoin.AverageProfitability += coinConfiguration.ProfitabilityAdjustment;
-                configuredProfitableCoin.Profitability += coinConfiguration.ProfitabilityAdjustment;
+                if (coinConfiguration.ProfitabilityAdjustmentType == CoinConfiguration.AdjustmentType.Addition)
+                {
+                    configuredProfitableCoin.AdjustedProfitability += coinConfiguration.ProfitabilityAdjustment;
+                    configuredProfitableCoin.AverageProfitability += coinConfiguration.ProfitabilityAdjustment;
+                    configuredProfitableCoin.Profitability += coinConfiguration.ProfitabilityAdjustment;
+                }
+                else if (coinConfiguration.ProfitabilityAdjustmentType == CoinConfiguration.AdjustmentType.Multiplication)
+                {
+                    configuredProfitableCoin.AdjustedProfitability *= coinConfiguration.ProfitabilityAdjustment;
+                    configuredProfitableCoin.AverageProfitability *= coinConfiguration.ProfitabilityAdjustment;
+                    configuredProfitableCoin.Profitability *= coinConfiguration.ProfitabilityAdjustment;
+                }
             }
         }
 
