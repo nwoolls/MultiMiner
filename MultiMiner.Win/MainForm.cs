@@ -248,11 +248,7 @@ namespace MultiMiner.Win
             {
                 engineConfiguration.SaveCoinConfigurations();
 
-                if (miningEngine.Mining)
-                {
-                    StopMining();
-                    StartMining();
-                }
+                RestartMiningIfMining();
             }
             else
                 engineConfiguration.LoadCoinConfigurations();
@@ -299,12 +295,8 @@ namespace MultiMiner.Win
         private void deviceGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (deviceGridView.CurrentCell.RowIndex >= 0)
-            {
                 if (deviceGridView.CurrentCell.ColumnIndex == coinColumn.Index)
-                {
                     deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
-                }
-            }
         }
         
         private void saveButton_Click(object sender, EventArgs e)
@@ -320,10 +312,7 @@ namespace MultiMiner.Win
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
 
-            if (miningEngine.Mining)
-            {
-                miningEngine.RestartMining();
-            }
+            RestartMiningIfMining();
 
             UpdateMiningButtons();
             ClearMinerStatsForDisabledCoins();
@@ -525,7 +514,7 @@ namespace MultiMiner.Win
             }
         }
         
-        private bool IdentifierIsGpu(string identifier)
+        private static bool IdentifierIsGpu(string identifier)
         {
             return (identifier.Equals("GPU") || identifier.Equals("OCL"));
         }
@@ -554,6 +543,16 @@ namespace MultiMiner.Win
             row.Cells[rejectedColumn.Index].Value = null;
             row.Cells[errorsColumn.Index].Value = null;
             row.Cells[intensityColumn.Index].Value = null;
+        }
+
+        private void PopulateMinerStatsForRow(MultiMiner.Xgminer.Api.DeviceInformation deviceInformation, DataGridViewRow row)
+        {
+            row.Cells[temperatureColumn.Index].Value = deviceInformation.Temperature;
+            row.Cells[hashRateColumn.Index].Value = deviceInformation.AverageHashrate;
+            row.Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
+            row.Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
+            row.Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
+            row.Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
         }
 
         private void ClearMinerStats()
@@ -700,16 +699,6 @@ namespace MultiMiner.Win
             return rowIndex;
         }
 
-        private void PopulateMinerStatsForRow(MultiMiner.Xgminer.Api.DeviceInformation deviceInformation, DataGridViewRow row)
-        {
-            row.Cells[temperatureColumn.Index].Value = deviceInformation.Temperature;
-            row.Cells[hashRateColumn.Index].Value = deviceInformation.AverageHashrate;
-            row.Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
-            row.Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
-            row.Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
-            row.Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
-        }
-
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             StopMining();
@@ -808,32 +797,30 @@ namespace MultiMiner.Win
         private void LoadGridValuesFromCoinStats()
         {
             foreach (Coinchoose.Api.CoinInformation coin in coinInformation)
-            {
                 foreach (DataGridViewRow row in deviceGridView.Rows)
-                {
                     if (coin.Name.Equals((string)row.Cells[coinColumn.Index].Value, StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        row.Cells[difficultyColumn.Index].Value = coin.Difficulty.ToString(".##########");
-                        row.Cells[priceColumn.Index].Value = coin.Price.ToString(".##########");
-
-                        switch (engineConfiguration.StrategyConfiguration.ProfitabilityBasis)
-                        {
-                            case StrategyConfiguration.CoinProfitabilityBasis.AdjustedProfitability:
-                                row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AdjustedProfitability, 2); 
-                                break;
-                            case StrategyConfiguration.CoinProfitabilityBasis.AverageProfitability:
-                                row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AverageProfitability, 2); 
-                                break;
-                            case StrategyConfiguration.CoinProfitabilityBasis.StraightProfitability:
-                                row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.Profitability, 2); 
-                                break;
-                        }
-
-                    }
-                }
-            }
+                        PopulateCoinStatsForRow(coin, row);
 
             ClearCoinStatsForDisabledCoins();
+        }
+
+        private void PopulateCoinStatsForRow(Coinchoose.Api.CoinInformation coin, DataGridViewRow row)
+        {
+            row.Cells[difficultyColumn.Index].Value = coin.Difficulty.ToString(".##########");
+            row.Cells[priceColumn.Index].Value = coin.Price.ToString(".##########");
+
+            switch (engineConfiguration.StrategyConfiguration.ProfitabilityBasis)
+            {
+                case StrategyConfiguration.CoinProfitabilityBasis.AdjustedProfitability:
+                    row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AdjustedProfitability, 2);
+                    break;
+                case StrategyConfiguration.CoinProfitabilityBasis.AverageProfitability:
+                    row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AverageProfitability, 2);
+                    break;
+                case StrategyConfiguration.CoinProfitabilityBasis.StraightProfitability:
+                    row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.Profitability, 2);
+                    break;
+            }
         }
 
         private void startupMiningTimer_Tick(object sender, EventArgs e)
@@ -880,26 +867,18 @@ namespace MultiMiner.Win
         private void RefreshStrategiesLabel()
         {
             if (engineConfiguration.StrategyConfiguration.MineProfitableCoins)
-            {
                 strategiesLabel.Text = "Strategies: enabled";
-            }
             else
-            {
                 strategiesLabel.Text = "Strategies: disabled";
-            }
         }
 
         private void RefreshStrategiesCountdown()
         {
             //Time until strategy check: 60s
             if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.MineProfitableCoins)
-            {
                 strategyCountdownLabel.Text = string.Format("Time until strategy check: {0}m", coinStatsCountdownMinutes);
-            }
             else
-            {
                 strategyCountdownLabel.Text = "";
-            }
         }
 
         private void ConfigureStrategies()
@@ -913,12 +892,8 @@ namespace MultiMiner.Win
                 RefreshStrategiesLabel();
                 LoadGridValuesFromCoinStats();
                 UpdateMiningButtons();
-                
-                if (miningEngine.Mining)
-                {
-                    StopMining();
-                    StartMining();
-                }
+
+                RestartMiningIfMining();
             }
             else
             {
@@ -965,7 +940,7 @@ namespace MultiMiner.Win
             splitContainer1.Panel2.Show();
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
+        private void apiMonitorButton_Click(object sender, EventArgs e)
         {
             if (apiMonitorButton.Checked)
                 ShowApiMonitor();
@@ -977,6 +952,7 @@ namespace MultiMiner.Win
         {
             if (formLoaded)
             {
+                //handling for minimizing to notifcation area
                 if (applicationConfiguration.MinimizeToNotificationArea && (this.WindowState == FormWindowState.Minimized))
                 {
                     notifyIcon1.Visible = true;
@@ -987,7 +963,7 @@ namespace MultiMiner.Win
                     notifyIcon1.Visible = false;
                 }
 
-                //this happens on startup before FormLoad, so don't save settings here
+                //handling for saving Maximized state
                 if (this.WindowState == FormWindowState.Maximized)
                     applicationConfiguration.Maximized = true;
 
@@ -1028,12 +1004,17 @@ namespace MultiMiner.Win
         private void desktopModeButton_Click(object sender, EventArgs e)
         {
             engineConfiguration.XgminerConfiguration.DesktopMode = desktopModeButton.Checked;
+            RestartMiningIfMining();
+            engineConfiguration.SaveMinerConfiguration();
+        }
+
+        private void RestartMiningIfMining()
+        {
             if (miningEngine.Mining)
             {
                 StopMining();
                 StartMining();
             }
-            engineConfiguration.SaveMinerConfiguration();
         }
     }
 }

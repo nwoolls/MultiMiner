@@ -269,7 +269,7 @@
             this.apiMonitorButton.Name = "apiMonitorButton";
             this.apiMonitorButton.Size = new System.Drawing.Size(91, 22);
             this.apiMonitorButton.Text = "API Monitor";
-            this.apiMonitorButton.Click += new System.EventHandler(this.toolStripButton1_Click);
+            this.apiMonitorButton.Click += new System.EventHandler(this.apiMonitorButton_Click);
             // 
             // desktopModeButton
             // 
