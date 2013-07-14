@@ -634,8 +634,6 @@ namespace MultiMiner.Win
 
                 foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
                 {
-                    deviceInformation.Status = "Sick";
-
                     if (deviceInformation.Status.ToLower().Contains("sick"))
                         minerProcess.HasSickDevice = true;
                     if (deviceInformation.Status.ToLower().Contains("dead"))
