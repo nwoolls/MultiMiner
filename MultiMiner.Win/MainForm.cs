@@ -616,12 +616,30 @@ namespace MultiMiner.Win
 
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
+                minerProcess.HasDeadDevice = false;
+                minerProcess.HasSickDevice = false;
+                minerProcess.HasZeroHashrateDevice = false;
+                minerProcess.HasFrozenDevice = false;
+
                 List<MultiMiner.Xgminer.Api.DeviceInformation> deviceInformationList = GetDeviceInformationFromMinerProcess(minerProcess);
+
                 if (deviceInformationList == null) //handled failure getting API info
+                {
+                    minerProcess.HasFrozenDevice = true;
                     continue;
+                }
 
                 foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
                 {
+                    deviceInformation.Status = "Sick";
+
+                    if (deviceInformation.Status.ToLower().Contains("sick"))
+                        minerProcess.HasSickDevice = true;
+                    if (deviceInformation.Status.ToLower().Contains("dead"))
+                        minerProcess.HasDeadDevice = true;
+                    if (deviceInformation.CurrentHashrate == 0)
+                        minerProcess.HasZeroHashrateDevice = true;
+
                     int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
 
                     if (rowIndex >= 0)

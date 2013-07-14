@@ -12,6 +12,11 @@ namespace MultiMiner.Engine
         public int ApiPort { get; set; }
         public MinerConfiguration MinerConfiguration { get; set; } //for relaunching crashed miners
 
+        public bool HasSickDevice { get; set; }
+        public bool HasDeadDevice { get; set; }
+        public bool HasZeroHashrateDevice { get; set; }
+        public bool HasFrozenDevice { get; set; }
+
         private ApiContext apiContext;
         public ApiContext ApiContext 
         { 

@@ -85,8 +85,26 @@ namespace MultiMiner.Engine
                 return; //don't try to relaunch miners we are stopping or starting
 
             foreach (MinerProcess minerProcess in MinerProcesses)
+            {
                 if (minerProcess.Process.HasExited)
                     minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
+
+                else if (minerProcess.HasDeadDevice || minerProcess.HasSickDevice)
+                {
+                    minerProcess.StopMining();
+                    minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
+                }
+
+                else if (minerProcess.HasZeroHashrateDevice || minerProcess.HasFrozenDevice)
+                {
+                    TimeSpan processAge = DateTime.Now - minerProcess.Process.StartTime;
+                    if (processAge.TotalSeconds > 60)
+                    {
+                        minerProcess.StopMining();
+                        minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
+                    }
+                }
+            }
         }
 
         private bool DeviceIsGpu(Device device)

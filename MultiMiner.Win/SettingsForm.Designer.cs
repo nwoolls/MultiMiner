@@ -63,7 +63,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 280);
+            this.panel1.Location = new System.Drawing.Point(0, 291);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(444, 47);
             this.panel1.TabIndex = 2;
@@ -115,7 +115,7 @@
             this.checkBox4.Checked = true;
             this.checkBox4.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox4.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "DetectDisownedMiners", true));
-            this.checkBox4.Location = new System.Drawing.Point(229, 99);
+            this.checkBox4.Location = new System.Drawing.Point(239, 99);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(180, 31);
             this.checkBox4.TabIndex = 18;
@@ -134,9 +134,9 @@
             this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "RestartCrashedMiners", true));
             this.checkBox2.Location = new System.Drawing.Point(12, 122);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(134, 17);
+            this.checkBox2.Size = new System.Drawing.Size(221, 17);
             this.checkBox2.TabIndex = 17;
-            this.checkBox2.Text = "Restart crashed miners";
+            this.checkBox2.Text = "Restart sick/dead/frozen/crashed miners";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // disableGpuCheckbox
@@ -161,7 +161,7 @@
             // bfgminerRadio
             // 
             this.bfgminerRadio.AutoSize = true;
-            this.bfgminerRadio.Location = new System.Drawing.Point(220, 21);
+            this.bfgminerRadio.Location = new System.Drawing.Point(239, 21);
             this.bfgminerRadio.Name = "bfgminerRadio";
             this.bfgminerRadio.Size = new System.Drawing.Size(65, 17);
             this.bfgminerRadio.TabIndex = 1;
@@ -232,7 +232,7 @@
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MinimizeToNotificationArea", true));
-            this.checkBox1.Location = new System.Drawing.Point(230, 25);
+            this.checkBox1.Location = new System.Drawing.Point(239, 25);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(174, 17);
             this.checkBox1.TabIndex = 14;
@@ -296,7 +296,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(444, 327);
+            this.ClientSize = new System.Drawing.Size(444, 338);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.panel1);
