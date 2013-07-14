@@ -123,7 +123,7 @@
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
             this.saveButton.TabIndex = 4;
-            this.saveButton.Text = "Save";
+            this.saveButton.Text = "OK";
             this.saveButton.UseVisualStyleBackColor = true;
             // 
             // cancelButton
