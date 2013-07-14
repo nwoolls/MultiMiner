@@ -55,6 +55,9 @@ namespace MultiMiner.Win
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
 
+            if (!HasMinersInstalled())
+                CancelMiningOnStartup();
+
             //check for disowned miners before refreshing devices
             if (applicationConfiguration.DetectDisownedMiners)
                 CheckForDisownedMiners();
@@ -859,6 +862,11 @@ namespace MultiMiner.Win
         }
 
         private void cancelStartupMiningButton_Click(object sender, EventArgs e)
+        {
+            CancelMiningOnStartup();
+        }
+
+        private void CancelMiningOnStartup()
         {
             startupMiningTimer.Enabled = false;
             startupMiningCountdownTimer.Enabled = false;
