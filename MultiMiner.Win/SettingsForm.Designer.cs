@@ -117,7 +117,7 @@
             this.checkBox4.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "DetectDisownedMiners", true));
             this.checkBox4.Location = new System.Drawing.Point(239, 99);
             this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(180, 31);
+            this.checkBox4.Size = new System.Drawing.Size(174, 31);
             this.checkBox4.TabIndex = 18;
             this.checkBox4.Text = "Detect disowned miners (orphaned mining processes)";
             this.checkBox4.UseVisualStyleBackColor = true;
