@@ -101,7 +101,7 @@ namespace MultiMiner.Win
             try
             {
                 string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Miners\cgminer\");
-                Miner.InstallMiner(MinerBackend.Cgminer, destinationFolder);
+                Xgminer.Installer.InstallMiner(MinerBackend.Cgminer, destinationFolder);
             }
             finally
             {
