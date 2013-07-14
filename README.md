@@ -25,21 +25,20 @@ MultiMiner also supports basic features such as relaunching crashed miners, star
 
 Binary Downloads
 ----------------
-* [Windows/Mono Zip File][3]
-* [Windows Installer][11]
+Refer to the [Github releases page][12] for source code and binary downloads.
 
 Windows Installation
 --------------------
-1. Download and run the above installer and follow instructions
+1. Download and run the installer at the above link and follow instructions
 
 The installer runs without needing admin rights and does not install to Program Files so as not to be too intrusive. However, if you prefer you can use the zip file:
 
-1. Download and extract the above zip file
+1. Download and extract the zip file at the above link
 2. Launch MultiMiner.Win.exe to get started
 
 Mono (OS X, Linux) Installation
 -------------------------------
-1. Download and extract the above zip file
+1. Download and extract the zip file at the above link
 2. Install cgminer or bfgminer. For OS X, you can find packages and for doing so [here][5] and instructions for using them [here][6].
 3. Install X11. Under OS X you should install Xquartz available [here][7].
 4. Install the latest version of [Mono][8].
@@ -70,3 +69,4 @@ The source code is structured in such a way that it should be fairly easy to use
 [9]: http://coinchoose.com/
 [10]: http://luke.dashjr.org/programs/bitcoin/files/bfgminer/
 [11]: https://www.dropbox.com/s/o08inghtw7ut1an/MultiMiner-1.0.7.exe
+[12]: https://github.com/nwoolls/MultiMiner/releases
