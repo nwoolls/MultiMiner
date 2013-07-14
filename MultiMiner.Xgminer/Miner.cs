@@ -204,6 +204,7 @@ namespace MultiMiner.Xgminer
         {
             Shell32.ShellClass shellClass = new Shell32.ShellClass();
             Shell32.Folder sourceFolder = shellClass.NameSpace(zipFilePath);
+            Directory.CreateDirectory(destionationFolder);
             Shell32.Folder destinationFolder = shellClass.NameSpace(destionationFolder);
             Shell32.FolderItems sourceFolderItems = sourceFolder.Items();
             Shell32.FolderItem rootItem = sourceFolderItems.Item(0);
