@@ -22,6 +22,19 @@ export("MM_AppVersion", appVersion);
 //build an InnoSetup installer
 inno.build("Installer.iss", { });
 
-//copy setup.exe to folder for this version
-folder.create("Output/" + appVersion);
-file.copy("Output/MultiMiner-" + appVersion + ".exe", "Output/" + appVersion);
+//create a regular Zip release
+folder.remove("PF", true);
+folder.create("PF/Miners/bfgminer");
+folder.create("PF/Miners/cgminer");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Win.exe", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/Interop.IWshRuntimeLibrary.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/Interop.Shell32.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Coinchoose.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Engine.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/Miners/bfgminer/Extract bfgminer here.txt", "PF/Miners/bfgminer");
+file.copy("../MultiMiner.Win/bin/Release/Miners/cgminer/Extract cgminer here.txt", "PF/Miners/cgminer");
+zip.compress("Output/MultiMiner-" + appVersion + ".zip", "PF/", "*.*", true);
+folder.remove("PF", true);
