@@ -203,9 +203,9 @@ namespace MultiMiner.Xgminer
         private static void UnzipFileToFolder(string zipFilePath, string destionationFolder, bool showProgress, bool yesToAll)
         {
             Shell32.ShellClass shellClass = new Shell32.ShellClass();
-            Shell32.Folder sourceFolder = shellClass.NameSpace(zipFilePath);
+            Shell32.Folder sourceFolder = GetShell32NameSpace(zipFilePath);
             Directory.CreateDirectory(destionationFolder);
-            Shell32.Folder destinationFolder = shellClass.NameSpace(destionationFolder);
+            Shell32.Folder destinationFolder = GetShell32NameSpace(destionationFolder);
             Shell32.FolderItems sourceFolderItems = sourceFolder.Items();
             Shell32.FolderItem rootItem = sourceFolderItems.Item(0);
 
@@ -216,6 +216,15 @@ namespace MultiMiner.Xgminer
                 options += 16;
 
             destinationFolder.CopyHere(((Shell32.Folder)rootItem.GetFolder).Items(), options);
+        }
+
+        //used instead of shellClass.NameSpace() for compatibility with various Windows OS's
+        //http://techitongue.blogspot.com/2012/06/shell32-code-compiled-on-windows-7.html
+        public static Shell32.Folder GetShell32NameSpace(Object folder)
+        {
+            Type shellAppType = Type.GetTypeFromProgID("Shell.Application");
+            Object shell = Activator.CreateInstance(shellAppType);
+            return (Shell32.Folder)shellAppType.InvokeMember("NameSpace", System.Reflection.BindingFlags.InvokeMethod, null, shell, new object[] { folder });
         }
     }
 }
