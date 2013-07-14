@@ -1,0 +1,27 @@
+//get version info from VersionInfo.ini
+var versionInfoIni = ini.fromFile("VersionInfo.ini");
+var appVersion = versionInfoIni.getValue("VersionInfo", "AppVersion", "1.0");
+
+//update the assembly versions for each .NET project using the above version info
+msbuild.updateAssemblyVersion("../MultiMiner.Coinchoose.Api/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.Engine/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.Win/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.Xgminer/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.Xgminer.Api/Properties/AssemblyInfo.cs", appVersion);
+
+//rebuild each .NET project
+msbuild.rebuild("../MultiMiner.Coinchoose.Api/MultiMiner.Coinchoose.Api.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.Engine/MultiMiner.Engine.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.Win/MultiMiner.Win.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.Xgminer/MultiMiner.Xgminer.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.Xgminer.Api/MultiMiner.Xgminer.Api.csproj", { configuration: "Release" });
+
+//export environment variable for InnoSetup to use for app version
+export("MM_AppVersion", appVersion);
+
+//build an InnoSetup installer
+inno.build("Installer.iss", { });
+
+//copy setup.exe to folder for this version
+folder.create("Output/" + appVersion);
+file.copy("Output/MultiMiner-" + appVersion + ".exe", "Output/" + appVersion);

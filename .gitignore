@@ -30,3 +30,4 @@ generated/
 WebsiteTmp/
 *.lnk
 Thumbs.db
+Installer/Output/
