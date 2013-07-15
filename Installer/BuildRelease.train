@@ -67,3 +67,23 @@ file.copy("../MultiMiner.Win/bin/Debug/Miners/bfgminer/Extract bfgminer here.txt
 file.copy("../MultiMiner.Win/bin/Debug/Miners/cgminer/Extract cgminer here.txt", "PF/Miners/cgminer");
 zip.compress("Output/MultiMiner-Debug-" + appVersion + ".zip", "PF/", "*.*", true);
 folder.remove("PF", true);
+
+//create Mac .app package (requires Mono, X11 to run)
+folder.remove("Output/MultiMiner-" + appVersion + ".app", true);
+var macPackPath = "C:/Program Files/Mono-2.10.9/lib/mono/4.0/macpack.exe";
+shell.exec(macPackPath, 
+
+"-o Output \
+-n MultiMiner-" + appVersion + " \
+-m winforms \
+-r \
+../MultiMiner.Win/bin/Release/Interop.IWshRuntimeLibrary.dll,\
+../MultiMiner.Win/bin/Release/Interop.Shell32.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.Coinchoose.Api.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.Engine.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Api.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll,\
+../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll,\
+Miners \
+-i ../MultiMiner.Win/window_sel.icns \
+../MultiMiner.Win/bin/Release/MultiMiner.Win.exe");
