@@ -231,7 +231,7 @@ namespace MultiMiner.Win
             switch (Environment.OSVersion.Platform)
             {
                 case PlatformID.Unix:
-                    minerConfiguration.ExecutablePath = minerName;
+                    minerConfiguration.ExecutablePath = string.Format(@"/usr/local/bin/{0}", minerName);
                     break;
                 default:
                     minerConfiguration.ExecutablePath = string.Format(@"Miners\{0}\{0}.exe", minerName);
