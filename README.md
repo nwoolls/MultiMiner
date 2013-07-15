@@ -25,7 +25,7 @@ MultiMiner also supports basic features such as relaunching crashed miners, star
 
 Binary Downloads
 ----------------
-Refer to the [Github releases page][12] for source code and binary downloads.
+Refer to the [Github Releases page][12] for source code and binary downloads.
 
 Windows Installation
 --------------------
@@ -36,9 +36,19 @@ The installer runs without needing admin rights and does not install to Program 
 1. Download and extract the zip file at the above link
 2. Launch MultiMiner.Win.exe to get started
 
+OS X Installation
+-----------------
+1. Install cgminer or bfgminer. You can find packages and for doing so [here][5] and instructions for using them [here][6].
+2. Install X11. Under OS X you should install Xquartz available [here][7].
+3. Install the latest version of [Mono][8].
+4. Download the .app.zip file at the above Binary Downloads link
+5. Extract MultiMiner.app and drag it to your Applications folder
+
+![Main Screen - OS X](/Screenshots/Main%20Screen%20-%20OS%20X.png "Main Screen - OS X")
+
 Mono (OS X, Linux) Installation
 -------------------------------
-1. Download and extract the zip file at the above link
+1. Download and extract the zip file at the above Binary Downloads link
 2. Install cgminer or bfgminer. For OS X, you can find packages and for doing so [here][5] and instructions for using them [here][6].
 3. Install X11. Under OS X you should install Xquartz available [here][7].
 4. Install the latest version of [Mono][8].
@@ -46,8 +56,6 @@ Mono (OS X, Linux) Installation
 
         mono MultiMiner.Win.exe
         
-![Main Screen - OS X](/Screenshots/Main%20Screen%20-%20OS%20X.png "Main Screen - OS X")
-
 Source Code
 -----------
 The source code is structured in such a way that it should be fairly easy to use and re-use for other projects:
