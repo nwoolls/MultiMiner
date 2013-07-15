@@ -449,10 +449,13 @@ namespace MultiMiner.Engine
             if (!string.IsNullOrEmpty(coinConfiguration.MinerFlags))
                 arguments = string.Format("{0} {1}", arguments, coinConfiguration.MinerFlags);
 
-            minerConfiguration.Arguments = arguments;
-
             if (engineConfiguration.XgminerConfiguration.DesktopMode)
-                minerConfiguration.Arguments = minerConfiguration.Arguments + " -I D";
+                arguments = arguments + " -I D";
+
+            //required to run from inside an .app package on OS X
+            arguments = arguments + " -T";
+
+            minerConfiguration.Arguments = arguments;
 
             return minerConfiguration;
         }
