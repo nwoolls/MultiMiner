@@ -745,7 +745,8 @@ namespace MultiMiner.Win
 
             try
             {
-                coinInformation = Coinchoose.Api.ApiContext.GetCoinInformation();
+                const string userAgent = "MultiMiner/V1";
+                coinInformation = Coinchoose.Api.ApiContext.GetCoinInformation(userAgent);
             }
             catch (Exception ex)
             {

@@ -6,11 +6,11 @@ namespace MultiMiner.Coinchoose.Api
 {
     public static class ApiContext
     {
-        public static List<CoinInformation> GetCoinInformation()
+        public static List<CoinInformation> GetCoinInformation(string userAgent = "")
         {
             WebClient client = new WebClient();
-            const string userAgent = "MultiMiner/V1";
-            client.Headers.Add("user-agent", userAgent);
+            if (!string.IsNullOrEmpty(userAgent))
+                client.Headers.Add("user-agent", userAgent);
 
             string jsonString = client.DownloadString("http://www.coinchoose.com/api.php");
             JArray jsonArray = JArray.Parse(jsonString);
