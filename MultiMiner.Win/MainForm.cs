@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace MultiMiner.Win
 {
@@ -406,6 +407,26 @@ namespace MultiMiner.Win
                 //restore button states after
                 saveButton.Enabled = saveEnabled;
                 cancelButton.Enabled = saveEnabled;
+            }
+
+            RefreshGridColorsFromConfiguration();
+        }
+
+        private void RefreshGridColorsFromConfiguration()
+        {
+            for (int i = 0; i < deviceGridView.Rows.Count; i++)
+            {
+                DataGridViewRow gridRow = deviceGridView.Rows[i];
+                DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
+                    c => (c.DeviceIndex == i));
+
+                foreach (DataGridViewCell gridCell in gridRow.Cells)
+                {
+                    if (deviceConfiguration.Enabled)
+                        gridCell.Style.ForeColor = SystemColors.WindowText;
+                    else
+                        gridCell.Style.ForeColor = SystemColors.GrayText;
+                }
             }
         }
 
