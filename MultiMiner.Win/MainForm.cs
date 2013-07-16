@@ -484,6 +484,8 @@ namespace MultiMiner.Win
 
             //to get changes from strategy config
             LoadGridValuesFromConfiguration();
+            //to get updated coin stats for coin changes
+            LoadGridValuesFromCoinStats();
 
             UpdateMiningButtons();
         }
