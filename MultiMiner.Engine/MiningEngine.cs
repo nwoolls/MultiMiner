@@ -107,7 +107,7 @@ namespace MultiMiner.Engine
             }
         }
 
-        private bool DeviceIsGpu(Device device)
+        private static bool DeviceIsGpu(Device device)
         {
             return device.Identifier.Equals("GPU") || device.Identifier.Equals("OCL");
         }
@@ -153,7 +153,7 @@ namespace MultiMiner.Engine
             }
         }
 
-        private List<CoinInformation> CopyCoinInformation(List<CoinInformation> coinInformation)
+        private static List<CoinInformation> CopyCoinInformation(List<CoinInformation> coinInformation)
         {
             List<CoinInformation> coinInformationCopy = new List<CoinInformation>();
             foreach (CoinInformation realCoin in coinInformation)
