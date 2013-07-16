@@ -415,7 +415,8 @@ namespace MultiMiner.Win
             stopButton.Enabled = miningEngine.Mining;
             startMenuItem.Enabled = startButton.Enabled;
             stopMenuItem.Enabled = stopButton.Enabled;
-            detectDevicesButton.Enabled = startButton.Enabled;
+            //allow clicking Detect Devices with invalid configuration
+            detectDevicesButton.Enabled = !miningEngine.Mining;
 
             startButton.Visible = startButton.Enabled;
             stopButton.Visible = stopButton.Enabled;
