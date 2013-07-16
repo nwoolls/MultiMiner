@@ -457,7 +457,7 @@ namespace MultiMiner.Win
             sha256RateLabel.Text = string.Empty;
             notifyIcon1.Text = "MultiMiner - Stopped";
             UpdateMiningButtons();
-            ClearMinerStats();
+            ClearAllMinerStats();
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -567,7 +567,7 @@ namespace MultiMiner.Win
             row.Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
         }
 
-        private void ClearMinerStats()
+        private void ClearAllMinerStats()
         {
             foreach (DataGridViewRow row in deviceGridView.Rows)
                 ClearMinerStatsForRow(row);
