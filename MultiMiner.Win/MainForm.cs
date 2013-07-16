@@ -573,17 +573,24 @@ namespace MultiMiner.Win
                 ClearMinerStatsForRow(row);
         }
 
+        private void ClearAllCoinStats()
+        {
+            foreach (DataGridViewRow row in deviceGridView.Rows)
+                ClearCoinStatsForGridRow(row);
+        }
+
         private void ClearCoinStatsForDisabledCoins()
         {
             foreach (DataGridViewRow row in deviceGridView.Rows)
-            {
                 if (string.IsNullOrEmpty((string)row.Cells[coinColumn.Index].Value))
-                {
-                    row.Cells[difficultyColumn.Index].Value = null;
-                    row.Cells[priceColumn.Index].Value = null;
-                    row.Cells[profitabilityColumn.Index].Value = null;
-                }
-            }
+                    ClearCoinStatsForGridRow(row);
+        }
+
+        private void ClearCoinStatsForGridRow(DataGridViewRow gridRow)
+        {
+            gridRow.Cells[difficultyColumn.Index].Value = null;
+            gridRow.Cells[priceColumn.Index].Value = null;
+            gridRow.Cells[profitabilityColumn.Index].Value = null;
         }
 
         private void LogApiEvent(object sender, Xgminer.Api.LogEventArgs eventArgs)
@@ -825,12 +832,14 @@ namespace MultiMiner.Win
 
         private void LoadGridValuesFromCoinStats()
         {
+            //clear all coin stats first
+            //there may be coins configured that are no longer returned in the stats
+            ClearAllCoinStats();
+
             foreach (Coinchoose.Api.CoinInformation coin in coinInformation)
                 foreach (DataGridViewRow row in deviceGridView.Rows)
                     if (coin.Name.Equals((string)row.Cells[coinColumn.Index].Value, StringComparison.CurrentCultureIgnoreCase))
                         PopulateCoinStatsForRow(coin, row);
-
-            ClearCoinStatsForDisabledCoins();
         }
 
         private void PopulateCoinStatsForRow(Coinchoose.Api.CoinInformation coin, DataGridViewRow row)
