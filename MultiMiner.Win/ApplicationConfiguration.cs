@@ -18,6 +18,7 @@ namespace MultiMiner.Win
         public bool MinimizeToNotificationArea { get; set; }
         public bool DetectDisownedMiners { get; set; }
         public bool Maximized { get; set; }
+        public bool ApiMonitorVisible { get; set; }
 
         private static string AppDataPath()
         {
@@ -58,6 +59,7 @@ namespace MultiMiner.Win
             this.MinimizeToNotificationArea = tmp.MinimizeToNotificationArea;
             this.DetectDisownedMiners = tmp.DetectDisownedMiners;
             this.Maximized = tmp.Maximized;
+            this.ApiMonitorVisible = tmp.ApiMonitorVisible;
         }
     }
 }

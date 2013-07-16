@@ -40,6 +40,9 @@ namespace MultiMiner.Win
 
             RefreshCoinStats();
 
+            //do this before LoadSettings - it may show the API monitor
+            HideApiMonitor();
+
             LoadSettings();
 
             RefreshBackendLabel();
@@ -49,8 +52,6 @@ namespace MultiMiner.Win
             PositionCoinchooseLabels();
 
             apiLogEntryBindingSource.DataSource = apiLogEntries;
-
-            HideApiMonitor();
 
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
@@ -200,6 +201,8 @@ namespace MultiMiner.Win
             applicationConfiguration.LoadApplicationConfiguration();
             if (applicationConfiguration.Maximized)
                 this.WindowState = FormWindowState.Maximized;
+            if (applicationConfiguration.ApiMonitorVisible)
+                ShowApiMonitor();
 
             if (applicationConfiguration.StartMiningOnStartup)
             {
@@ -959,6 +962,7 @@ namespace MultiMiner.Win
 
         private void ShowApiMonitor()
         {
+            apiMonitorButton.Checked = true;
             closeApiButton.Visible = true;
             apiLogGridView.Visible = true;
             splitContainer1.Panel2Collapsed = false;
@@ -971,6 +975,9 @@ namespace MultiMiner.Win
                 ShowApiMonitor();
             else
                 HideApiMonitor();
+
+            applicationConfiguration.ApiMonitorVisible = apiMonitorButton.Checked;
+            applicationConfiguration.SaveApplicationConfiguration();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
