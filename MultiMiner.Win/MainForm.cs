@@ -431,11 +431,13 @@ namespace MultiMiner.Win
 
         private bool MiningConfigurationValid()
         {
-            bool miningConfigurationValid = engineConfiguration.DeviceConfigurations.Count(c => c.Enabled) > 0;
+            bool miningConfigurationValid = engineConfiguration.DeviceConfigurations.Count(
+                c => c.Enabled && !string.IsNullOrEmpty(c.CoinSymbol)) > 0;
             if (!miningConfigurationValid)
             {
                 miningConfigurationValid = engineConfiguration.StrategyConfiguration.MineProfitableCoins &&
-                    (engineConfiguration.CoinConfigurations.Count > 0);
+                    (engineConfiguration.CoinConfigurations.Count > 0) &&
+                    (engineConfiguration.DeviceConfigurations.Count(c => c.Enabled) > 0);
             }
             return miningConfigurationValid;
         }
