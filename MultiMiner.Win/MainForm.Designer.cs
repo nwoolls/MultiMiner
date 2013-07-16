@@ -74,6 +74,24 @@
             this.coinChoosePrefixLabel = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.deviceGridView = new System.Windows.Forms.DataGridView();
+            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.apiLogGridView = new System.Windows.Forms.DataGridView();
+            this.dateTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CoinName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.requestDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.responseDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.apiLogEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.closeApiButton = new System.Windows.Forms.Button();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.notifyIconMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.startMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.showAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.quitAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.enabledColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -87,23 +105,6 @@
             this.rejectedColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.errorsColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.intensityColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.apiLogGridView = new System.Windows.Forms.DataGridView();
-            this.CoinName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.closeApiButton = new System.Windows.Forms.Button();
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.notifyIconMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.startMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.showAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.quitAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dateTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.requestDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.responseDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.apiLogEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.startupMiningPanel.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -114,9 +115,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).BeginInit();
             this.panel2.SuspendLayout();
             this.notifyIconMenuStrip.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // deviceStatsTimer
@@ -441,6 +442,7 @@
             this.deviceGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.deviceGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.deviceGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.enabledColumn,
             this.kindDataGridViewTextBoxColumn,
             this.nameColumn,
             this.descriptionDataGridViewTextBoxColumn,
@@ -461,9 +463,159 @@
             this.deviceGridView.RowHeadersVisible = false;
             this.deviceGridView.Size = new System.Drawing.Size(1153, 234);
             this.deviceGridView.TabIndex = 1;
-            
             this.deviceGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.deviceGridView_CellValueChanged);
             this.deviceGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.deviceGridView_CurrentCellDirtyStateChanged);
+            // 
+            // deviceBindingSource
+            // 
+            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
+            // 
+            // apiLogGridView
+            // 
+            this.apiLogGridView.AllowUserToAddRows = false;
+            this.apiLogGridView.AllowUserToDeleteRows = false;
+            this.apiLogGridView.AllowUserToOrderColumns = true;
+            this.apiLogGridView.AllowUserToResizeRows = false;
+            this.apiLogGridView.AutoGenerateColumns = false;
+            this.apiLogGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.apiLogGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dateTimeDataGridViewTextBoxColumn,
+            this.CoinName,
+            this.requestDataGridViewTextBoxColumn,
+            this.responseDataGridViewTextBoxColumn});
+            this.apiLogGridView.DataSource = this.apiLogEntryBindingSource;
+            this.apiLogGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.apiLogGridView.Location = new System.Drawing.Point(0, 28);
+            this.apiLogGridView.Name = "apiLogGridView";
+            this.apiLogGridView.RowHeadersVisible = false;
+            this.apiLogGridView.Size = new System.Drawing.Size(1153, 84);
+            this.apiLogGridView.TabIndex = 12;
+            // 
+            // dateTimeDataGridViewTextBoxColumn
+            // 
+            this.dateTimeDataGridViewTextBoxColumn.DataPropertyName = "DateTime";
+            this.dateTimeDataGridViewTextBoxColumn.HeaderText = "Date/Time";
+            this.dateTimeDataGridViewTextBoxColumn.Name = "dateTimeDataGridViewTextBoxColumn";
+            this.dateTimeDataGridViewTextBoxColumn.ReadOnly = true;
+            this.dateTimeDataGridViewTextBoxColumn.Width = 125;
+            // 
+            // CoinName
+            // 
+            this.CoinName.DataPropertyName = "CoinName";
+            this.CoinName.HeaderText = "Coin";
+            this.CoinName.Name = "CoinName";
+            this.CoinName.ReadOnly = true;
+            // 
+            // requestDataGridViewTextBoxColumn
+            // 
+            this.requestDataGridViewTextBoxColumn.DataPropertyName = "Request";
+            this.requestDataGridViewTextBoxColumn.HeaderText = "Request";
+            this.requestDataGridViewTextBoxColumn.Name = "requestDataGridViewTextBoxColumn";
+            this.requestDataGridViewTextBoxColumn.ReadOnly = true;
+            this.requestDataGridViewTextBoxColumn.Width = 125;
+            // 
+            // responseDataGridViewTextBoxColumn
+            // 
+            this.responseDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.responseDataGridViewTextBoxColumn.DataPropertyName = "Response";
+            this.responseDataGridViewTextBoxColumn.HeaderText = "Response";
+            this.responseDataGridViewTextBoxColumn.Name = "responseDataGridViewTextBoxColumn";
+            this.responseDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // apiLogEntryBindingSource
+            // 
+            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.ApiLogEntry);
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Controls.Add(this.closeApiButton);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(1153, 28);
+            this.panel2.TabIndex = 14;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 8);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(62, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "API Monitor";
+            // 
+            // closeApiButton
+            // 
+            this.closeApiButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.closeApiButton.Location = new System.Drawing.Point(1125, 3);
+            this.closeApiButton.Name = "closeApiButton";
+            this.closeApiButton.Size = new System.Drawing.Size(25, 23);
+            this.closeApiButton.TabIndex = 0;
+            this.closeApiButton.Text = "X";
+            this.closeApiButton.UseVisualStyleBackColor = true;
+            this.closeApiButton.Click += new System.EventHandler(this.closeApiButton_Click);
+            // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.ContextMenuStrip = this.notifyIconMenuStrip;
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "MultiMiner - Stopped";
+            this.notifyIcon1.DoubleClick += new System.EventHandler(this.notifyIcon1_DoubleClick);
+            // 
+            // notifyIconMenuStrip
+            // 
+            this.notifyIconMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startMenuItem,
+            this.stopMenuItem,
+            this.toolStripSeparator4,
+            this.showAppMenuItem,
+            this.quitAppMenuItem});
+            this.notifyIconMenuStrip.Name = "contextMenuStrip1";
+            this.notifyIconMenuStrip.Size = new System.Drawing.Size(104, 98);
+            // 
+            // startMenuItem
+            // 
+            this.startMenuItem.Image = global::MultiMiner.Win.Properties.Resources.computer_control_play;
+            this.startMenuItem.Name = "startMenuItem";
+            this.startMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.startMenuItem.Text = "Start";
+            this.startMenuItem.Click += new System.EventHandler(this.startMenuItem_Click);
+            // 
+            // stopMenuItem
+            // 
+            this.stopMenuItem.Image = global::MultiMiner.Win.Properties.Resources.computer_control_stop;
+            this.stopMenuItem.Name = "stopMenuItem";
+            this.stopMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.stopMenuItem.Text = "Stop";
+            this.stopMenuItem.Click += new System.EventHandler(this.stopMenuItem_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(100, 6);
+            // 
+            // showAppMenuItem
+            // 
+            this.showAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application;
+            this.showAppMenuItem.Name = "showAppMenuItem";
+            this.showAppMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.showAppMenuItem.Text = "Show";
+            this.showAppMenuItem.Click += new System.EventHandler(this.showAppMenuItem_Click);
+            // 
+            // quitAppMenuItem
+            // 
+            this.quitAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_delete;
+            this.quitAppMenuItem.Name = "quitAppMenuItem";
+            this.quitAppMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.quitAppMenuItem.Text = "Quit";
+            this.quitAppMenuItem.Click += new System.EventHandler(this.quitAppMenuItem_Click);
+            // 
+            // enabledColumn
+            // 
+            this.enabledColumn.FillWeight = 75F;
+            this.enabledColumn.HeaderText = "Enabled";
+            this.enabledColumn.Name = "enabledColumn";
             // 
             // kindDataGridViewTextBoxColumn
             // 
@@ -558,6 +710,7 @@
             // 
             dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             this.errorsColumn.DefaultCellStyle = dataGridViewCellStyle8;
+            this.errorsColumn.FillWeight = 75F;
             this.errorsColumn.HeaderText = "HW Errors";
             this.errorsColumn.Name = "errorsColumn";
             this.errorsColumn.ReadOnly = true;
@@ -567,151 +720,6 @@
             this.intensityColumn.HeaderText = "Intensity";
             this.intensityColumn.Name = "intensityColumn";
             this.intensityColumn.ReadOnly = true;
-            // 
-            // deviceBindingSource
-            // 
-            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
-            // 
-            // apiLogGridView
-            // 
-            this.apiLogGridView.AllowUserToAddRows = false;
-            this.apiLogGridView.AllowUserToDeleteRows = false;
-            this.apiLogGridView.AllowUserToOrderColumns = true;
-            this.apiLogGridView.AllowUserToResizeRows = false;
-            this.apiLogGridView.AutoGenerateColumns = false;
-            this.apiLogGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.apiLogGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dateTimeDataGridViewTextBoxColumn,
-            this.CoinName,
-            this.requestDataGridViewTextBoxColumn,
-            this.responseDataGridViewTextBoxColumn});
-            this.apiLogGridView.DataSource = this.apiLogEntryBindingSource;
-            this.apiLogGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.apiLogGridView.Location = new System.Drawing.Point(0, 28);
-            this.apiLogGridView.Name = "apiLogGridView";
-            this.apiLogGridView.RowHeadersVisible = false;
-            this.apiLogGridView.Size = new System.Drawing.Size(1153, 84);
-            this.apiLogGridView.TabIndex = 12;
-            // 
-            // CoinName
-            // 
-            this.CoinName.DataPropertyName = "CoinName";
-            this.CoinName.HeaderText = "Coin";
-            this.CoinName.Name = "CoinName";
-            this.CoinName.ReadOnly = true;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.closeApiButton);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1153, 28);
-            this.panel2.TabIndex = 14;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 8);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(62, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "API Monitor";
-            // 
-            // closeApiButton
-            // 
-            this.closeApiButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.closeApiButton.Location = new System.Drawing.Point(1125, 3);
-            this.closeApiButton.Name = "closeApiButton";
-            this.closeApiButton.Size = new System.Drawing.Size(25, 23);
-            this.closeApiButton.TabIndex = 0;
-            this.closeApiButton.Text = "X";
-            this.closeApiButton.UseVisualStyleBackColor = true;
-            this.closeApiButton.Click += new System.EventHandler(this.closeApiButton_Click);
-            // 
-            // notifyIcon1
-            // 
-            this.notifyIcon1.ContextMenuStrip = this.notifyIconMenuStrip;
-            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "MultiMiner - Stopped";
-            this.notifyIcon1.DoubleClick += new System.EventHandler(this.notifyIcon1_DoubleClick);
-            // 
-            // notifyIconMenuStrip
-            // 
-            this.notifyIconMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.startMenuItem,
-            this.stopMenuItem,
-            this.toolStripSeparator4,
-            this.showAppMenuItem,
-            this.quitAppMenuItem});
-            this.notifyIconMenuStrip.Name = "contextMenuStrip1";
-            this.notifyIconMenuStrip.Size = new System.Drawing.Size(104, 98);
-            // 
-            // startMenuItem
-            // 
-            this.startMenuItem.Image = global::MultiMiner.Win.Properties.Resources.computer_control_play;
-            this.startMenuItem.Name = "startMenuItem";
-            this.startMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.startMenuItem.Text = "Start";
-            this.startMenuItem.Click += new System.EventHandler(this.startMenuItem_Click);
-            // 
-            // stopMenuItem
-            // 
-            this.stopMenuItem.Image = global::MultiMiner.Win.Properties.Resources.computer_control_stop;
-            this.stopMenuItem.Name = "stopMenuItem";
-            this.stopMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.stopMenuItem.Text = "Stop";
-            this.stopMenuItem.Click += new System.EventHandler(this.stopMenuItem_Click);
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(100, 6);
-            // 
-            // showAppMenuItem
-            // 
-            this.showAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application;
-            this.showAppMenuItem.Name = "showAppMenuItem";
-            this.showAppMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.showAppMenuItem.Text = "Show";
-            this.showAppMenuItem.Click += new System.EventHandler(this.showAppMenuItem_Click);
-            // 
-            // quitAppMenuItem
-            // 
-            this.quitAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_delete;
-            this.quitAppMenuItem.Name = "quitAppMenuItem";
-            this.quitAppMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.quitAppMenuItem.Text = "Quit";
-            this.quitAppMenuItem.Click += new System.EventHandler(this.quitAppMenuItem_Click);
-            // 
-            // dateTimeDataGridViewTextBoxColumn
-            // 
-            this.dateTimeDataGridViewTextBoxColumn.DataPropertyName = "DateTime";
-            this.dateTimeDataGridViewTextBoxColumn.HeaderText = "Date/Time";
-            this.dateTimeDataGridViewTextBoxColumn.Name = "dateTimeDataGridViewTextBoxColumn";
-            this.dateTimeDataGridViewTextBoxColumn.ReadOnly = true;
-            this.dateTimeDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // requestDataGridViewTextBoxColumn
-            // 
-            this.requestDataGridViewTextBoxColumn.DataPropertyName = "Request";
-            this.requestDataGridViewTextBoxColumn.HeaderText = "Request";
-            this.requestDataGridViewTextBoxColumn.Name = "requestDataGridViewTextBoxColumn";
-            this.requestDataGridViewTextBoxColumn.ReadOnly = true;
-            this.requestDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // responseDataGridViewTextBoxColumn
-            // 
-            this.responseDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.responseDataGridViewTextBoxColumn.DataPropertyName = "Response";
-            this.responseDataGridViewTextBoxColumn.HeaderText = "Response";
-            this.responseDataGridViewTextBoxColumn.Name = "responseDataGridViewTextBoxColumn";
-            this.responseDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // apiLogEntryBindingSource
-            // 
-            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.ApiLogEntry);
             // 
             // MainForm
             // 
@@ -744,10 +752,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.deviceGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.notifyIconMenuStrip.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -808,6 +816,7 @@
         private System.Windows.Forms.ToolStripMenuItem startMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopMenuItem;
         private System.Windows.Forms.ToolStripButton desktopModeButton;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn enabledColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn kindDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn nameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn descriptionDataGridViewTextBoxColumn;

@@ -252,33 +252,49 @@ namespace MultiMiner.Engine
             for (int i = 0; i < devices.Count; i++)
             {
                 Device device = devices[i];
-                profitableCoin = null;
+                //there should be a 1-to-1 relationship of devices and device configurations
+                DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations[i];
 
-                if (DeviceIsGpu(device))
+                if (existingConfiguration.Enabled)
                 {
-                    //sha256 or scrypt
-                    profitableCoin = GetProfitableCoinFromList(allProfitableCoins, gpuIterator);
+                    profitableCoin = null;
 
-                    gpuIterator++;
-                    if (gpuIterator >= allProfitableCoins.Count())
-                        gpuIterator = 0;
+                    if (DeviceIsGpu(device))
+                    {
+                        //sha256 or scrypt
+                        profitableCoin = GetProfitableCoinFromList(allProfitableCoins, gpuIterator);
+
+                        gpuIterator++;
+                        if (gpuIterator >= allProfitableCoins.Count())
+                            gpuIterator = 0;
+                    }
+                    else if (sha256ProfitableCoins.Count > 0)
+                    {
+                        //sha256 only
+                        profitableCoin = GetProfitableCoinFromList(sha256ProfitableCoins, amuIterator);
+
+                        amuIterator++;
+                        if (amuIterator >= sha256ProfitableCoins.Count())
+                            amuIterator = 0;
+                    }
+
+                    if (profitableCoin != null)
+                    {
+                        DeviceConfiguration configEntry = new DeviceConfiguration();
+
+                        configEntry.DeviceIndex = i;
+                        configEntry.CoinSymbol = profitableCoin.Symbol;
+
+                        newConfiguration.Add(configEntry);
+                    }
                 }
-                else if (sha256ProfitableCoins.Count > 0)
-                {
-                    //sha256 only
-                    profitableCoin = GetProfitableCoinFromList(sha256ProfitableCoins, amuIterator);
-
-                    amuIterator++;
-                    if (amuIterator >= sha256ProfitableCoins.Count())
-                        amuIterator = 0;
-                }
-
-                if (profitableCoin != null)
+                else
                 {
                     DeviceConfiguration configEntry = new DeviceConfiguration();
 
                     configEntry.DeviceIndex = i;
-                    configEntry.CoinSymbol = profitableCoin.Symbol;
+                    configEntry.CoinSymbol = existingConfiguration.CoinSymbol;
+                    configEntry.Enabled = false;
 
                     newConfiguration.Add(configEntry);
                 }
@@ -372,7 +388,10 @@ namespace MultiMiner.Engine
 
         private void StartMining()
         {
-            IEnumerable<string> coinSymbols = engineConfiguration.DeviceConfigurations.Select(c => c.CoinSymbol).Distinct();
+            IEnumerable<string> coinSymbols = engineConfiguration.DeviceConfigurations
+                .Where(c => c.Enabled && !string.IsNullOrEmpty(c.CoinSymbol))
+                .Select(c => c.CoinSymbol)
+                .Distinct();
 
             int port = 4028;
 
@@ -410,7 +429,7 @@ namespace MultiMiner.Engine
         {
             CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(coinSymbol));
 
-            IEnumerable<DeviceConfiguration> coinGpuConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.CoinSymbol.Equals(coinSymbol));
+            IEnumerable<DeviceConfiguration> coinGpuConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol));
 
             MinerConfiguration minerConfiguration = new MinerConfiguration();
 

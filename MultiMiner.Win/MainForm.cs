@@ -301,7 +301,7 @@ namespace MultiMiner.Win
         private void deviceGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (deviceGridView.CurrentCell.RowIndex >= 0)
-                if (deviceGridView.CurrentCell.ColumnIndex == coinColumn.Index)
+                if (!deviceGridView.CurrentCell.ReadOnly)
                     deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
         
@@ -335,7 +335,7 @@ namespace MultiMiner.Win
 
         private void deviceGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex == coinColumn.Index)
+            if (!deviceGridView.Columns[e.ColumnIndex].ReadOnly)
             {
                 saveButton.Enabled = true;
                 cancelButton.Enabled = true;
@@ -355,16 +355,17 @@ namespace MultiMiner.Win
 
             for (int i = 0; i < devices.Count; i++)
             {                
-                CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Name.Equals(deviceGridView.Rows[i].Cells[coinColumn.Index].Value));
-                if (coin != null)
-                {
-                    DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                DataGridViewRow gridRow = deviceGridView.Rows[i];
+                CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Name.Equals(gridRow.Cells[coinColumn.Index].Value));
 
-                    deviceConfiguration.DeviceIndex = i;
-                    deviceConfiguration.CoinSymbol = coin.Symbol;
+                DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
-                    engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
-                }
+                deviceConfiguration.DeviceIndex = i;
+                deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
+                deviceConfiguration.Enabled = (bool)gridRow.Cells[enabledColumn.Index].Value;
+
+                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+
             }
         }
 
@@ -375,7 +376,7 @@ namespace MultiMiner.Win
             {
                 for (int i = 0; i < devices.Count; i++)
                 {
-                    Device device = devices[i];
+                    DataGridViewRow gridRow = deviceGridView.Rows[i];
 
                     DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
                         c => (c.DeviceIndex == i));
@@ -388,17 +389,17 @@ namespace MultiMiner.Win
                             //ensure the coin configuration still exists
                             CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(coin.Symbol));
                             if (coinConfiguration != null)
-                                deviceGridView.Rows[i].Cells[coinColumn.Index].Value = coin.Name;
+                                gridRow.Cells[coinColumn.Index].Value = coin.Name;
                             else
-                                deviceGridView.Rows[i].Cells[coinColumn.Index].Value = string.Empty;
-
+                                gridRow.Cells[coinColumn.Index].Value = string.Empty;
                         }
+                        gridRow.Cells[enabledColumn.Index].Value = deviceConfiguration.Enabled;
                     }
                     else
                     {
-                        deviceGridView.Rows[i].Cells[coinColumn.Index].Value = string.Empty;
+                        gridRow.Cells[coinColumn.Index].Value = string.Empty;
                     }
-                }                
+                }
             }
             finally
             {
@@ -430,7 +431,7 @@ namespace MultiMiner.Win
 
         private bool MiningConfigurationValid()
         {
-            bool miningConfigurationValid = engineConfiguration.DeviceConfigurations.Count > 0;
+            bool miningConfigurationValid = engineConfiguration.DeviceConfigurations.Count(c => c.Enabled) > 0;
             if (!miningConfigurationValid)
             {
                 miningConfigurationValid = engineConfiguration.StrategyConfiguration.MineProfitableCoins &&

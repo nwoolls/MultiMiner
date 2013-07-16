@@ -152,7 +152,7 @@
         YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADISURBVDhPY7Ct2HTaqXrLf1KwXcXGMwwwABJImrD3f3jH
         TqIwSK1r7db/UO0QA0ASxAKQ2lEDSDDg79+/E4EUPxAzw3DoqlXMoaGrmKHaIQbgika/zg28Ommrn+pk
         r/mPDWtlr7nBYFexeS8QAxMHOq7/x1Bfz4RNIzKGuoOBQat+FRsMk2UAMrAqXeNlXbY6noHhPyM2TcgY
-        rAGUtsn2gkfuNnaQhunbrv3/9fsvHLd3dP2rr/9PnBcocgEhAFT0HF0TAq95DgDb/2OWYDaRNwAAAABJ
+        rAGUtsn2gkfuNnaQhunbrv3/9fsvHNfXN/6rr/9PnBcocgEhAFT0HF0TAq95DgDK1mN8UKCzVgAAAABJ
         RU5ErkJggg==
 </value>
   </data>
@@ -190,12 +190,12 @@
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFrSURBVDhPY7Ct2HTaqXrLf1KwXcXGMwwwABJImrD3f3jH
-        TqIwSK1r7db/UO0QA0ASxAKQ2pFkQG9v77+/f/9OAzLloMoZouu38bnUbs2Bcgm6IA2qjEEnZ91snew1
+        TqIwSK1r7db/UO0QA0ASxAKQ2pFkQEtLy7+/f/9OAzLloMoZouu38bnUbs2Bcgm6IA2qjEEnZ91snew1
         /8E4Z9UpqDDEAGzRGNaxYx1UCYNW9po/II1m+SvP2RYt2w0zCCxpV7F5LxADEwcaLtvkCZLXLdySBVJ8
-        9Prjqz09Pf9Azvr+/ftpkJhu7rrTYENAQKt+FRsMgwxwqtwoDhLXLdx8CqQYBGAGgIBD8fLturnrEYGJ
+        9Prjq83Nzf9Azvr+/ftpkJhu7rrTYENAQKt+FRsMgwxwqtwoDhLXLdx8CqQYBGAGgIBD8fLturnrEYGJ
         DKxK13i5Fi/iBrF1CjfvBRkA0oyMLfKXHYcbAErb6F6wLd/oBJLTyt2gBTKgbfGJVzAX3Hzw9ibYC/kb
         FjN45G5jB2mYvu3a/1+//8IxEDCCDNDJXHUEpBiG5ePn/4axQfJggO4CBgaIZmDoHwAp1Mxec9Ewf4um
-        QeH2vbqFO07pl+zMBmskBLQyV+8CGoLIuhiAgQEAUkk2JlRL8zQAAAAASUVORK5CYII=
+        QeH2vbqFO07pl+zMBmskBLQyV+8CGoLIuhiAgQEANf01TnA3cXUAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="apiMonitorButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -211,11 +211,11 @@
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAE3SURBVDhPY7Ct2HTaqXrLf1KxXcXGMwwgAOIkTdj7P7xj
-        J9EYpN61dut/uAEgQVIASP0QNeD79+9v//z5cwyo/hVJBjx58uTPv3//8oBMFpCe+vp6Jte6zfFEGwDU
+        J9EYpN61dut/uAEgQVIASP0QNeD79+9v//z5cwyo/hVJBty+ffvPv3//8oBMFpCe+vp6Jte6zfFEGwDU
         XAdSa1Sw9p5Z0Yb/hkUb3oI1gwCRXpCwqNi2C6QZjks3X4cbgD8dzP9tX7+fxaJo6xtkA8xLN0PCwK5i
         814gBqYsfHiTpWXFrkg0A8rBBsCAVv0qNmQM02xTtPkNA8N/RpAas7K1MqaF6yeY56/TBGvCB6xK13jZ
         lqxJsC9ZJQH0Ag/IVlDgmRdvMDcr2HAHxLcq3cALVQ4BoAyC4vSCNe9CQ1cxmwNdgex8OM7bcBOqFQLQ
-        DQDlVJA4KMCwGgDEYI2EgGnJ5kCIsxf/AGvM2vATSN81LdzoAQAFDl17Kyw+/QAAAABJRU5ErkJggg==
+        DQDlVJA4KMCwGgDEYI2EgGnJ5kCIsxf/AGvM2vATSN81LdzoAQDEc11gE5AxiwAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="saveButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -246,6 +246,9 @@
   </metadata>
   <metadata name="coinStatsCountdownTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>133, 56</value>
+  </metadata>
+  <metadata name="enabledColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
   </metadata>
   <metadata name="difficultyColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
