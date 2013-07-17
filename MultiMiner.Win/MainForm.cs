@@ -363,7 +363,8 @@ namespace MultiMiner.Win
 
                 deviceConfiguration.DeviceIndex = i;
                 deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
-                deviceConfiguration.Enabled = (bool)gridRow.Cells[enabledColumn.Index].Value;
+                object cellValue = gridRow.Cells[enabledColumn.Index].Value;
+                deviceConfiguration.Enabled = cellValue == null ? true : (bool)cellValue;
 
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
 
