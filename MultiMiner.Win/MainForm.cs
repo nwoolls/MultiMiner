@@ -422,10 +422,11 @@ namespace MultiMiner.Win
 
                 foreach (DataGridViewCell gridCell in gridRow.Cells)
                 {
-                    if (deviceConfiguration.Enabled)
-                        gridCell.Style.ForeColor = SystemColors.WindowText;
-                    else
+                    //deviceConfiguration may be null - may be a device that hasn't been configured
+                    if ((deviceConfiguration != null) && !deviceConfiguration.Enabled)                        
                         gridCell.Style.ForeColor = SystemColors.GrayText;
+                    else
+                        gridCell.Style.ForeColor = SystemColors.WindowText;
                 }
             }
         }
