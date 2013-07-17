@@ -122,7 +122,7 @@ namespace MultiMiner.Engine
             if (engineConfiguration.StrategyConfiguration.MineProfitableCoins)
             {
                 //get a list of the coins that are configured
-                IEnumerable<string> configuredSymbols = engineConfiguration.CoinConfigurations.Select(c => c.Coin.Symbol);
+                IEnumerable<string> configuredSymbols = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Select(c => c.Coin.Symbol);
 
                 //filter the coin info by that list
                 //use the copy here

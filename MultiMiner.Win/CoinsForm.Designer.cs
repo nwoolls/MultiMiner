@@ -58,6 +58,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.adjustProfitCombo = new System.Windows.Forms.ComboBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -73,7 +74,7 @@
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(558, 25);
-            this.toolStrip1.TabIndex = 1;
+            this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
             // addCoinButton
@@ -101,8 +102,8 @@
             this.coinListBox.FormattingEnabled = true;
             this.coinListBox.Location = new System.Drawing.Point(0, 25);
             this.coinListBox.Name = "coinListBox";
-            this.coinListBox.Size = new System.Drawing.Size(160, 259);
-            this.coinListBox.TabIndex = 3;
+            this.coinListBox.Size = new System.Drawing.Size(160, 286);
+            this.coinListBox.TabIndex = 1;
             this.coinListBox.SelectedIndexChanged += new System.EventHandler(this.coinListBox_SelectedIndexChanged);
             // 
             // panel1
@@ -110,7 +111,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 284);
+            this.panel1.Location = new System.Drawing.Point(0, 311);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(558, 47);
             this.panel1.TabIndex = 4;
@@ -122,7 +123,7 @@
             this.saveButton.Location = new System.Drawing.Point(390, 12);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
-            this.saveButton.TabIndex = 4;
+            this.saveButton.TabIndex = 0;
             this.saveButton.Text = "OK";
             this.saveButton.UseVisualStyleBackColor = true;
             // 
@@ -133,7 +134,7 @@
             this.cancelButton.Location = new System.Drawing.Point(471, 12);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 5;
+            this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
@@ -150,10 +151,10 @@
             this.groupBox1.Controls.Add(this.hostEdit);
             this.groupBox1.Controls.Add(this.textBox2);
             this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Location = new System.Drawing.Point(166, 25);
+            this.groupBox1.Location = new System.Drawing.Point(166, 51);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(380, 182);
-            this.groupBox1.TabIndex = 16;
+            this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pools";
             // 
@@ -263,10 +264,10 @@
             // textBox3
             // 
             this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.coinConfigurationBindingSource, "MinerFlags", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox3.Location = new System.Drawing.Point(270, 223);
+            this.textBox3.Location = new System.Drawing.Point(271, 245);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(261, 20);
-            this.textBox3.TabIndex = 17;
+            this.textBox3.TabIndex = 4;
             // 
             // coinConfigurationBindingSource
             // 
@@ -276,7 +277,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(173, 226);
+            this.label5.Location = new System.Drawing.Point(173, 248);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(91, 13);
             this.label5.TabIndex = 18;
@@ -285,7 +286,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(173, 252);
+            this.label6.Location = new System.Drawing.Point(174, 274);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(91, 13);
             this.label6.TabIndex = 20;
@@ -294,15 +295,15 @@
             // textBox5
             // 
             this.textBox5.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.coinConfigurationBindingSource, "ProfitabilityAdjustment", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox5.Location = new System.Drawing.Point(270, 249);
+            this.textBox5.Location = new System.Drawing.Point(271, 271);
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(67, 20);
-            this.textBox5.TabIndex = 19;
+            this.textBox5.TabIndex = 5;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(343, 252);
+            this.label7.Location = new System.Drawing.Point(344, 274);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(15, 13);
             this.label7.TabIndex = 21;
@@ -311,7 +312,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(364, 251);
+            this.label8.Location = new System.Drawing.Point(365, 274);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(53, 13);
             this.label8.TabIndex = 22;
@@ -324,17 +325,29 @@
             this.adjustProfitCombo.Items.AddRange(new object[] {
             "Addition",
             "Multiplication"});
-            this.adjustProfitCombo.Location = new System.Drawing.Point(423, 248);
+            this.adjustProfitCombo.Location = new System.Drawing.Point(424, 271);
             this.adjustProfitCombo.Name = "adjustProfitCombo";
             this.adjustProfitCombo.Size = new System.Drawing.Size(108, 21);
-            this.adjustProfitCombo.TabIndex = 23;
+            this.adjustProfitCombo.TabIndex = 6;
             this.adjustProfitCombo.SelectedIndexChanged += new System.EventHandler(this.adjustProfitCombo_SelectedIndexChanged);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.coinConfigurationBindingSource, "Enabled", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBox1.Location = new System.Drawing.Point(166, 28);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(152, 17);
+            this.checkBox1.TabIndex = 2;
+            this.checkBox1.Text = "Coin configuration enabled";
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // CoinsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(558, 331);
+            this.ClientSize = new System.Drawing.Size(558, 358);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.adjustProfitCombo);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
@@ -396,5 +409,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox adjustProfitCombo;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

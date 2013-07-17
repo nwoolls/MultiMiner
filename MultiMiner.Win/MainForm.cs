@@ -278,7 +278,7 @@ namespace MultiMiner.Win
 
         private void AddMissingCoinComboItems()
         {
-            foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations)
+            foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
                 if (!coinColumn.Items.Contains(configuration.Coin.Name))
                     coinColumn.Items.Add(configuration.Coin.Name);
         }
@@ -286,14 +286,14 @@ namespace MultiMiner.Win
         private void RemoveInvalidCoinComboItems()
         {
             for (int i = coinColumn.Items.Count - 1; i >= 0; i--)
-                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(coinColumn.Items[i])) == null)
+                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.Coin.Name.Equals(coinColumn.Items[i])) == null)
                     coinColumn.Items.RemoveAt(i);
         }
 
         private void RemoveInvalidCoinValues()
         {
             foreach (DataGridViewRow row in deviceGridView.Rows)
-                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(row.Cells[coinColumn.Index].Value)) == null)
+                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.Coin.Name.Equals(row.Cells[coinColumn.Index].Value)) == null)
                     row.Cells[coinColumn.Index].Value = string.Empty;
 
             ClearCoinStatsForDisabledCoins();
@@ -458,7 +458,7 @@ namespace MultiMiner.Win
             if (!miningConfigurationValid)
             {
                 miningConfigurationValid = engineConfiguration.StrategyConfiguration.MineProfitableCoins &&
-                    (engineConfiguration.CoinConfigurations.Count > 0) &&
+                    (engineConfiguration.CoinConfigurations.Count(c => c.Enabled) > 0) &&
                     (engineConfiguration.DeviceConfigurations.Count(c => c.Enabled) > 0);
             }
             return miningConfigurationValid;

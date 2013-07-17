@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace MultiMiner.Engine.Configuration
 {
@@ -53,6 +54,7 @@ namespace MultiMiner.Engine.Configuration
         public void LoadDeviceConfigurations()
         {
             DeviceConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<DeviceConfiguration>>(DeviceConfigurationsFileName());
+            RemoveIvalidCoinsFromDeviceConfigurations();
         }
 
         private static string CoinConfigurationsFileName()
@@ -63,11 +65,48 @@ namespace MultiMiner.Engine.Configuration
         public void LoadCoinConfigurations()
         {
             CoinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<CoinConfiguration>>(CoinConfigurationsFileName());
+            RemoveIvalidCoinsFromDeviceConfigurations();
+        }
+
+        private void RemoveDisabledCoinsFromDeviceConfigurations()
+        {
+            List<DeviceConfiguration> configurationsToRemove = new List<DeviceConfiguration>();
+
+            foreach (CoinConfiguration coinConfiguration in CoinConfigurations.Where(c => !c.Enabled))
+            {
+                IEnumerable<DeviceConfiguration> coinDeviceConfigurations = DeviceConfigurations.Where(c => c.CoinSymbol.Equals(coinConfiguration.Coin.Symbol));
+                foreach (DeviceConfiguration coinDeviceConfiguration in coinDeviceConfigurations)
+                    configurationsToRemove.Add(coinDeviceConfiguration);
+            }
+
+            foreach (DeviceConfiguration configurationToRemove in configurationsToRemove)
+                DeviceConfigurations.Remove(configurationToRemove);
+        }
+
+        private void RemoveDeletedCoinsFromDeviceConfigurations()
+        {
+            List<DeviceConfiguration> configurationsToRemove = new List<DeviceConfiguration>();
+
+            foreach (DeviceConfiguration deviceConfiguration in DeviceConfigurations)
+            {
+                if (CoinConfigurations.Count(c => c.Coin.Symbol.Equals(deviceConfiguration.CoinSymbol)) == 0)
+                    configurationsToRemove.Add(deviceConfiguration);
+            }
+
+            foreach (DeviceConfiguration configurationToRemove in configurationsToRemove)
+                DeviceConfigurations.Remove(configurationToRemove);
+        }
+
+        private void RemoveIvalidCoinsFromDeviceConfigurations()
+        {
+            RemoveDisabledCoinsFromDeviceConfigurations();
+            RemoveDeletedCoinsFromDeviceConfigurations();
         }
 
         public void SaveCoinConfigurations()
         {
             ConfigurationReaderWriter.WriteConfiguration(CoinConfigurations, CoinConfigurationsFileName());
+            RemoveIvalidCoinsFromDeviceConfigurations();
         }
 
         private static string XgminerConfigurationFileName()

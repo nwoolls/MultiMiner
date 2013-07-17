@@ -14,6 +14,7 @@ namespace MultiMiner.Engine.Configuration
         public CoinConfiguration()
         {
             this.Pools = new List<MiningPool>();
+            this.Enabled = true;
         }
 
         public CryptoCoin Coin { get; set; }
@@ -21,5 +22,6 @@ namespace MultiMiner.Engine.Configuration
         public string MinerFlags { get; set; }
         public double ProfitabilityAdjustment { get; set; }
         public AdjustmentType ProfitabilityAdjustmentType { get; set; }
+        public bool Enabled { get; set; }
     }
 }
