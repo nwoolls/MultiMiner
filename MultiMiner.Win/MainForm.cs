@@ -255,8 +255,8 @@ namespace MultiMiner.Win
             {
                 engineConfiguration.SaveCoinConfigurations();
                 RefreshCoinComboBox();
+                //SaveChanges() will restart mining if needed
                 SaveChanges();
-                RestartMiningIfMining();
             }
             else
                 engineConfiguration.LoadCoinConfigurations();
@@ -308,6 +308,7 @@ namespace MultiMiner.Win
         
         private void saveButton_Click(object sender, EventArgs e)
         {
+            //SaveChanges() will restart mining if needed
             SaveChanges();
         }
 
@@ -493,6 +494,9 @@ namespace MultiMiner.Win
         private void StartMining()
         {
             if (!MiningConfigurationValid())
+                return;
+
+            if (miningEngine.Mining)
                 return;
 
             startButton.Enabled = false; //immediately disable, update after
