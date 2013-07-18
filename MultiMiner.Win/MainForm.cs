@@ -315,6 +315,7 @@ namespace MultiMiner.Win
         {
             SaveGridValuesToConfiguration();
             engineConfiguration.SaveDeviceConfigurations();
+            LoadGridValuesFromConfiguration();
 
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
