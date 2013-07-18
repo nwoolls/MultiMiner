@@ -254,12 +254,12 @@ namespace MultiMiner.Win
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 engineConfiguration.SaveCoinConfigurations();
-
+                RefreshCoinComboBox();
+                SaveChanges();
                 RestartMiningIfMining();
             }
             else
                 engineConfiguration.LoadCoinConfigurations();
-            RefreshCoinComboBox();
         }
 
         private void RefreshCoinComboBox()
