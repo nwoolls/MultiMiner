@@ -70,31 +70,19 @@ namespace MultiMiner.Engine.Configuration
 
         private void RemoveDisabledCoinsFromDeviceConfigurations()
         {
-            List<DeviceConfiguration> configurationsToRemove = new List<DeviceConfiguration>();
-
             foreach (CoinConfiguration coinConfiguration in CoinConfigurations.Where(c => !c.Enabled))
             {
                 IEnumerable<DeviceConfiguration> coinDeviceConfigurations = DeviceConfigurations.Where(c => c.CoinSymbol.Equals(coinConfiguration.Coin.Symbol));
                 foreach (DeviceConfiguration coinDeviceConfiguration in coinDeviceConfigurations)
-                    configurationsToRemove.Add(coinDeviceConfiguration);
+                    coinDeviceConfiguration.CoinSymbol = string.Empty;
             }
-
-            foreach (DeviceConfiguration configurationToRemove in configurationsToRemove)
-                DeviceConfigurations.Remove(configurationToRemove);
         }
 
         private void RemoveDeletedCoinsFromDeviceConfigurations()
         {
-            List<DeviceConfiguration> configurationsToRemove = new List<DeviceConfiguration>();
-
             foreach (DeviceConfiguration deviceConfiguration in DeviceConfigurations)
-            {
                 if (CoinConfigurations.Count(c => c.Coin.Symbol.Equals(deviceConfiguration.CoinSymbol)) == 0)
-                    configurationsToRemove.Add(deviceConfiguration);
-            }
-
-            foreach (DeviceConfiguration configurationToRemove in configurationsToRemove)
-                DeviceConfigurations.Remove(configurationToRemove);
+                    deviceConfiguration.CoinSymbol = string.Empty;
         }
 
         private void RemoveIvalidCoinsFromDeviceConfigurations()

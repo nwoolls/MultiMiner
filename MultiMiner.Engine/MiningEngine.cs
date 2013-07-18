@@ -278,15 +278,12 @@ namespace MultiMiner.Engine
                             amuIterator = 0;
                     }
 
-                    if (profitableCoin != null)
-                    {
-                        DeviceConfiguration configEntry = new DeviceConfiguration();
+                    DeviceConfiguration configEntry = new DeviceConfiguration();
 
-                        configEntry.DeviceIndex = i;
-                        configEntry.CoinSymbol = profitableCoin.Symbol;
-
-                        newConfiguration.Add(configEntry);
-                    }
+                    configEntry.DeviceIndex = i;
+                    configEntry.CoinSymbol = profitableCoin == null ? string.Empty : profitableCoin.Symbol;
+                    
+                    newConfiguration.Add(configEntry);
                 }
                 else
                 {
