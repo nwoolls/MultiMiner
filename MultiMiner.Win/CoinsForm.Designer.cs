@@ -114,7 +114,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 311);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(558, 47);
-            this.panel1.TabIndex = 4;
+            this.panel1.TabIndex = 7;
             // 
             // saveButton
             // 
