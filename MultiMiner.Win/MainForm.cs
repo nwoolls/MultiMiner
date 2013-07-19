@@ -150,7 +150,7 @@ namespace MultiMiner.Win
         private void SetupGridColumns()
         {
             //customized FillWeight doesn't behave properly under Mono
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
                 foreach (DataGridViewColumn column in deviceGridView.Columns)
                     column.FillWeight = 100;
         }

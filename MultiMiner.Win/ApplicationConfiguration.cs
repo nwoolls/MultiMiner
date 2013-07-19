@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Engine.Configuration;
+using MultiMiner.Xgminer;
 using System;
 using System.IO;
 
@@ -35,7 +36,7 @@ namespace MultiMiner.Win
         {
             ConfigurationReaderWriter.WriteConfiguration(this, DeviceConfigurationsFileName());
 
-            if (Environment.OSVersion.Platform != PlatformID.Unix)
+            if (OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix)
                 ApplyLaunchOnWindowsStartup();
         }
 

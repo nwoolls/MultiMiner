@@ -72,7 +72,7 @@ namespace MultiMiner.Xgminer
 
             //commented out for now - seems to eventually cause issues under .nix too
             //the miner keeps mining but Accepted shares stop updating
-            //if (Environment.OSVersion.Platform == PlatformID.Unix)
+            //if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
             //    redirectOutput = true;
 
             string arguments = minerConfiguration.Arguments;
@@ -113,7 +113,7 @@ namespace MultiMiner.Xgminer
             {
                 startInfo.Arguments = startInfo.Arguments + " --disable-gpu";
 
-                if ((Environment.OSVersion.Platform != PlatformID.Unix) && (minerConfiguration.MinerBackend == MinerBackend.Cgminer))
+                if ((OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix) && (minerConfiguration.MinerBackend == MinerBackend.Cgminer))
                     //otherwise it still requires OpenCL.dll - not an issue with bfgminer
                     startInfo.FileName = minerConfiguration.ExecutablePath.Replace("cgminer.exe", "cgminer-nogpu.exe");
             }
