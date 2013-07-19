@@ -81,19 +81,47 @@ namespace MultiMiner.Win
 
             if (!hasMiners)
             {
-                DialogResult messageBoxResult = MessageBox.Show("You have no miners installed. Would you like to download and install cgminer?", "No Miners Installed", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                InstallMinerForm minerForm = new InstallMinerForm();
+
+                DialogResult messageBoxResult = minerForm.ShowDialog();
                 if (messageBoxResult == System.Windows.Forms.DialogResult.Yes)
                 {
-                    InstallCgminer();
-                    engineConfiguration.XgminerConfiguration.MinerBackend = MinerBackend.Cgminer;
+                    if ((minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Cgminer) ||
+                        (minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Both))
+                    {
+                        MinerBackend minerBackend = MinerBackend.Cgminer;
+                        InstallMiner(minerBackend);
+                    }
+
+                    if ((minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Bfgminer) ||
+                        (minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Both))
+                    {
+                        MinerBackend minerBackend = MinerBackend.Bfgminer;
+                        InstallMiner(minerBackend);
+                    }
+
+                    if ((minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Cgminer) ||
+                        (minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Both))
+                    {
+                        engineConfiguration.XgminerConfiguration.MinerBackend = MinerBackend.Cgminer;
+                    }
+                    else if (minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Bfgminer)
+                    {
+                        engineConfiguration.XgminerConfiguration.MinerBackend = MinerBackend.Bfgminer;
+                    }
+
                     engineConfiguration.SaveMinerConfiguration();
                 }
             }
         }
         
-        private static void InstallCgminer()
+        private static void InstallMiner(MinerBackend minerBackend)
         {
-            ProgressForm progressForm = new ProgressForm("Downloading and installing cgminer from " + Installer.GetMinerDownloadRoot(MinerBackend.Cgminer));
+            string minerName = "cgminer";
+            if (minerBackend == MinerBackend.Bfgminer)
+                minerName = "bfgminer";
+
+            ProgressForm progressForm = new ProgressForm("Downloading and installing " + minerName + " from " + Installer.GetMinerDownloadRoot(minerBackend));
             progressForm.Show();
 
             //for Mono - show the UI
@@ -102,9 +130,9 @@ namespace MultiMiner.Win
             Application.DoEvents();
             try
             {
-                string minerPath = Path.Combine("Miners", "cgminer");
+                string minerPath = Path.Combine("Miners", minerName);
                 string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
-                Xgminer.Installer.InstallMiner(MinerBackend.Cgminer, destinationFolder);
+                Xgminer.Installer.InstallMiner(minerBackend, destinationFolder);
             }
             finally
             {

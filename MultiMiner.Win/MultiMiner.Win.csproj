@@ -55,6 +55,12 @@
       <DependentUpon>CoinsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ApiLogEntry.cs" />
+    <Compile Include="InstallMinerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InstallMinerForm.Designer.cs">
+      <DependentUpon>InstallMinerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,6 +90,9 @@
     <Compile Include="WindowsStartupShortcut.cs" />
     <EmbeddedResource Include="CoinsForm.resx">
       <DependentUpon>CoinsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InstallMinerForm.resx">
+      <DependentUpon>InstallMinerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -158,6 +167,7 @@
     <None Include="Resources\application-delete.png" />
     <None Include="Resources\application.png" />
     <None Include="Resources\internet_download.png" />
+    <None Include="Resources\help.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>
