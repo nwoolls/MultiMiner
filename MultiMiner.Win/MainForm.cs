@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
 
 namespace MultiMiner.Win
 {
@@ -76,33 +77,30 @@ namespace MultiMiner.Win
 
         private void CheckAndDownloadMiners()
         {
-            if (Environment.OSVersion.Platform != PlatformID.Unix)
-            {
-                bool hasMiners = HasMinersInstalled();
+            bool hasMiners = HasMinersInstalled();
 
-                if (!hasMiners)
+            if (!hasMiners)
+            {
+                DialogResult messageBoxResult = MessageBox.Show("You have no miners installed. Would you like to download and install cgminer?", "No Miners Installed", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (messageBoxResult == System.Windows.Forms.DialogResult.Yes)
                 {
-                    DialogResult messageBoxResult = MessageBox.Show("You have no miners installed. Would you like to download and install cgminer?", "No Miners Installed", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (messageBoxResult == System.Windows.Forms.DialogResult.Yes)
-                    {
-                        InstallCgminer();
-                        engineConfiguration.XgminerConfiguration.MinerBackend = MinerBackend.Cgminer;
-                        engineConfiguration.SaveMinerConfiguration();
-                    }
+                    InstallCgminer();
+                    engineConfiguration.XgminerConfiguration.MinerBackend = MinerBackend.Cgminer;
+                    engineConfiguration.SaveMinerConfiguration();
                 }
             }
         }
-
-        private const string cgminerDomain = "ck.kolivas.org";
-
+        
         private static void InstallCgminer()
         {
-            ProgressForm progressForm = new ProgressForm("Downloading and installing cgminer from " + cgminerDomain);
+            ProgressForm progressForm = new ProgressForm("Downloading and installing cgminer from " + Installer.GetMinerDownloadRoot(MinerBackend.Cgminer));
             progressForm.Show();
             Application.DoEvents();
+            Thread.Sleep(25); //for Mono - show the UI
             try
             {
-                string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Miners\cgminer\");
+                string minerPath = Path.Combine("Miners", "cgminer");
+                string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
                 Xgminer.Installer.InstallMiner(MinerBackend.Cgminer, destinationFolder);
             }
             finally
@@ -970,7 +968,7 @@ namespace MultiMiner.Win
 
         private void coinChooseLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://coinchoose.com/");
+            Process.Start("http://coinchoose.com/");
         }
 
         private void coinsButton_Click(object sender, EventArgs e)

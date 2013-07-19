@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Xgminer;
 using System;
+using System.IO;
 
 namespace MultiMiner.Engine
 {
@@ -13,10 +14,16 @@ namespace MultiMiner.Engine
             string executablePath = string.Empty;
             string minerName = GetMinerName(minerBackend);
 
-            switch (Environment.OSVersion.Platform)
+            switch (OSVersionPlatform.GetGenericPlatform())
             {
                 case PlatformID.Unix:
-                    executablePath = string.Format(@"/usr/local/bin/{0}", minerName);
+                    //try local path first
+                    executablePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(@"Miners/{0}/bin/{0}", minerName));
+                                        
+                    if (!File.Exists(executablePath))
+                        //try global path (Homebrew)
+                        executablePath = string.Format(@"/usr/local/bin/{0}", minerName);
+
                     break;
                 default:
                     executablePath = string.Format(@"Miners\{0}\{0}.exe", minerName);
