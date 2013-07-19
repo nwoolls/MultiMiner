@@ -113,24 +113,23 @@ namespace MultiMiner.Win
 
         private static bool HasMinersInstalled()
         {
-            bool hasMiners = false;
+            bool hasMiners = MinerIsInstalled(MinerBackend.Cgminer);
 
-            hasMiners = MinerIsInstalled(XgminerConfiguration.CgminerName);
             if (!hasMiners)
-                hasMiners = MinerIsInstalled(XgminerConfiguration.BfgminerName);
+                hasMiners = MinerIsInstalled(MinerBackend.Bfgminer);
 
             return hasMiners;
         }
         
-        private static bool MinerIsInstalled(string minerName)
+        private static bool MinerIsInstalled(MinerBackend minerBackend)
         {
-            string path = string.Format(@"Miners\{0}\{0}.exe", minerName);
+            string path = MinerPath.GetPathToInstalledMiner(minerBackend);
             return File.Exists(path);
         }
 
         private void CheckForDisownedMiners()
         {
-            string minerName = engineConfiguration.XgminerConfiguration.MinerName;
+            string minerName = MinerPath.GetMinerName(engineConfiguration.XgminerConfiguration.MinerBackend);
 
             List<Process> disownedMiners = Process.GetProcessesByName(minerName).ToList();
 
@@ -226,21 +225,12 @@ namespace MultiMiner.Win
 
         private List<Device> GetDevices()
         {
-            string minerName = engineConfiguration.XgminerConfiguration.MinerName;
-
             MinerConfiguration minerConfiguration = new MinerConfiguration();
-            minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
-            minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
 
-            switch (Environment.OSVersion.Platform)
-            {
-                case PlatformID.Unix:
-                    minerConfiguration.ExecutablePath = string.Format(@"/usr/local/bin/{0}", minerName);
-                    break;
-                default:
-                    minerConfiguration.ExecutablePath = string.Format(@"Miners\{0}\{0}.exe", minerName);
-                    break;
-            }
+            minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
+            minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner(minerConfiguration.MinerBackend);
+            
+            minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
 
             Miner miner = new Miner(minerConfiguration);
             return miner.DeviceList();

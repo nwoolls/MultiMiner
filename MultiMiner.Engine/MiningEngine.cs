@@ -429,21 +429,10 @@ namespace MultiMiner.Engine
             IEnumerable<DeviceConfiguration> coinGpuConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol));
 
             MinerConfiguration minerConfiguration = new MinerConfiguration();
-
-            string minerName = engineConfiguration.XgminerConfiguration.MinerName;
-
-            switch (Environment.OSVersion.Platform)
-            {
-                case PlatformID.Unix:
-                    minerConfiguration.ExecutablePath = string.Format(@"/usr/local/bin/{0}", minerName);
-                    break;
-                default:
-                    minerConfiguration.ExecutablePath = string.Format(@"Miners\{0}\{0}.exe", minerName);
-                    break;
-            }
-
+            
             minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
-
+            minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner(minerConfiguration.MinerBackend);
+            
             minerConfiguration.Pools = coinConfiguration.Pools;
             minerConfiguration.Algorithm = coinConfiguration.Coin.Algorithm;
             minerConfiguration.ApiPort = port;
