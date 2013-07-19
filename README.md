@@ -3,7 +3,9 @@ MultiMiner
 ### Your coins. Your pools. Your way.
 MultiMiner is a GUI front-end for [cgminer][1] and [bfgminer][2] that simplifies switching individal devices - GPUs, ASICs, etc. - between crypto-currencies.
 
-MultiMiner will automatically download and install cgminer when run.
+MultiMiner will automatically download and install either cgminer, bfgminer, or both.
+
+![No Miners Prompt](/Screenshots/No%20Miners%20Prompt.png "No Miners Prompt")
 
 ![Downloading and Installing Cgminer](/Screenshots/Downloading%20and%20Installing%20Cgminer.png "Downloading and Installing Cgminer")
 
@@ -38,11 +40,12 @@ The installer runs without needing admin rights and does not install to Program 
 
 OS X Installation
 -----------------
-1. Install cgminer or bfgminer. You can find packages and for doing so [here][5] and instructions for using them [here][6].
-2. Install X11. Under OS X you should install Xquartz available [here][7].
-3. Install the latest version of [Mono][8].
-4. Download the .app.zip file at the above Binary Downloads link
-5. Extract MultiMiner.app and drag it to your Applications folder
+1. Download and extract the __.app__.zip file at the above Binary Downloads link
+2. Launch MultiMiner.app to get started
+
+![No Miners Prompt - OS X](/Screenshots/No%20Miners%20Prompt%20-%20OS%20X.png "No Miners Prompt - OS X")
+
+MultiMiner will automatically download redistributable binaries of cgminer and bfgminer from the [xgminer-osx][13] project.
 
 ![Main Screen - OS X](/Screenshots/Main%20Screen%20-%20OS%20X.png "Main Screen - OS X")
 
@@ -89,3 +92,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [10]: http://luke.dashjr.org/programs/bitcoin/files/bfgminer/
 [11]: https://www.dropbox.com/s/o08inghtw7ut1an/MultiMiner-1.0.7.exe
 [12]: https://github.com/nwoolls/MultiMiner/releases
+[13]: https://github.com/nwoolls/xgminer-osx
