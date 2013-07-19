@@ -11,14 +11,12 @@ namespace MultiMiner.Xgminer
 
         public static void InstallMiner(MinerBackend minerBackend, string destinationFolder)
         {
-            if (minerBackend == MinerBackend.Bfgminer)
-                throw new NotImplementedException();
-
             //support Windows and OS X for now, we'll go for Linux in the future
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
                 throw new NotImplementedException();
 
-            string minerUrl = GetCgminerDownloadUrl();
+            string minerUrl = GetMinerDownloadUrl(minerBackend);
+
             if (!String.IsNullOrEmpty(minerUrl))
             {
                 string minerDownloadFile = Path.Combine(Path.GetTempPath(), "miner.zip");
@@ -36,6 +34,50 @@ namespace MultiMiner.Xgminer
             }
         }
 
+        private static string GetMinerDownloadUrl(MinerBackend minerBackend)
+        {
+            string result = String.Empty;
+
+            if (minerBackend == MinerBackend.Cgminer)
+                result = GetCgminerDownloadUrl();
+            else if (minerBackend == MinerBackend.Bfgminer)
+                result = GetBfgminerDownloadUrl();
+
+            return result;
+        }
+
+        private static string GetBfgminerDownloadUrl()
+        {
+            if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
+                return GetBfgminerMacOSXDownloadUrl();
+            else
+                return GetBfgminerWindowsDownloadUrl();
+        }
+
+        private static string GetBfgminerWindowsDownloadUrl()
+        {
+            string downloadRoot = GetMinerDownloadRoot(MinerBackend.Bfgminer);
+            const string downloadPath = "/programs/bitcoin/files/bfgminer/testing/";
+            string availableDownloadsHtml = new WebClient().DownloadString(String.Format("{0}{1}", downloadRoot, downloadPath));
+            const string pattern = @".*<a href=""(bfgminer-.+?-win32.zip)";
+            Match match = Regex.Match(availableDownloadsHtml, pattern);
+            if (match.Success)
+            {
+                string minerFileName = match.Groups[1].Value;
+                string minerUrl = String.Format("{0}{1}{2}", downloadRoot, downloadPath, minerFileName);
+                return minerUrl;
+            }
+
+            return "";
+        }
+
+        private static string GetBfgminerMacOSXDownloadUrl()
+        {
+            //hard-coded for now, dynamic in the future
+            string downloadRoot = GetMinerDownloadRoot(MinerBackend.Cgminer);
+            return String.Format("{0}/releases/download/v1.0.0/bfgminer-3.1.3-osx64.tar.gz", downloadRoot);
+        }
+
         private static string GetCgminerDownloadUrl()
         {
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
@@ -46,13 +88,15 @@ namespace MultiMiner.Xgminer
 
         public static string GetMinerDownloadRoot(MinerBackend minerBackend)
         {
-            if (minerBackend == MinerBackend.Bfgminer)
-                throw new NotImplementedException();
-
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
                 return "http://github.com/nwoolls/xgminer-osx";
             else
-                return "http://ck.kolivas.org";
+            {
+                if (minerBackend == MinerBackend.Bfgminer)
+                    return "http://luke.dashjr.org";
+                else
+                    return "http://ck.kolivas.org";
+            }
         }
 
         private static string GetCgminerMacOSXDownloadUrl()
@@ -65,18 +109,20 @@ namespace MultiMiner.Xgminer
         private static string GetCgminerWindowsDownloadUrl()
         {
             string downloadRoot = GetMinerDownloadRoot(MinerBackend.Cgminer);
-            string availableDownloadsHtml = new WebClient().DownloadString(String.Format("{0}/apps/cgminer/", downloadRoot));
+            const string downloadPath = "/apps/cgminer/";
+            string availableDownloadsHtml = new WebClient().DownloadString(String.Format("{0}{1}", downloadRoot, downloadPath));
             const string pattern = @".*<a href=""(cgminer-.+?-windows.zip)";
             Match match = Regex.Match(availableDownloadsHtml, pattern);
             if (match.Success)
             {
                 string minerFileName = match.Groups[1].Value;
-                string minerUrl = String.Format("http://ck.kolivas.org/apps/cgminer/{0}", minerFileName);
+                string minerUrl = String.Format("{0}{1}{2}", downloadRoot, downloadPath, minerFileName);
                 return minerUrl;
             }
 
             return "";
         }
+
         private static void UnzipFileToFolder(string zipFilePath, string destionationFolder)
         {
             Directory.CreateDirectory(destionationFolder);

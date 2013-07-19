@@ -11,7 +11,7 @@ namespace MultiMiner.Xgminer.Tests
         public void InstallMiner_Cgminer_InstallsCgminer()
         {
             //arrange
-            string tempPath = System.IO.Path.GetTempPath();
+            string tempPath = Path.GetTempPath();
             string minerPath = Path.Combine(tempPath, Guid.NewGuid().ToString());
             Directory.CreateDirectory(minerPath);
             string executablePath = Path.Combine(minerPath, "cgminer.exe");
@@ -27,10 +27,22 @@ namespace MultiMiner.Xgminer.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
         public void InstallMiner_Bfgminer_ThrowsNotImplemented()
         {
-            Xgminer.Installer.InstallMiner(MinerBackend.Bfgminer, "");
+            //arrange
+            string tempPath = Path.GetTempPath();
+            string minerPath = Path.Combine(tempPath, Guid.NewGuid().ToString());
+            Directory.CreateDirectory(minerPath);
+            string executablePath = Path.Combine(minerPath, "bfgminer.exe");
+
+            //act
+            Xgminer.Installer.InstallMiner(MinerBackend.Bfgminer, minerPath);
+
+            //assert
+            Assert.IsTrue(File.Exists(executablePath));
+
+            //cleanup
+            Directory.Delete(minerPath, true);
         }
     }
 }
