@@ -95,8 +95,11 @@ namespace MultiMiner.Win
         {
             ProgressForm progressForm = new ProgressForm("Downloading and installing cgminer from " + Installer.GetMinerDownloadRoot(MinerBackend.Cgminer));
             progressForm.Show();
+
+            //for Mono - show the UI
             Application.DoEvents();
-            Thread.Sleep(25); //for Mono - show the UI
+            Thread.Sleep(25); 
+            Application.DoEvents();
             try
             {
                 string minerPath = Path.Combine("Miners", "cgminer");
