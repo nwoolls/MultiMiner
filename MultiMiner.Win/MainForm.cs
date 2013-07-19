@@ -762,12 +762,14 @@ namespace MultiMiner.Win
         {
             RefreshCoinStats();
 
-            miningEngine.ApplyMiningStrategy(devices, coinInformation);
-
-            engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
-
-            //to get changes from strategy config
-            LoadGridValuesFromConfiguration();
+            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.MineProfitableCoins)
+            {
+                miningEngine.ApplyMiningStrategy(devices, coinInformation);
+                //save any changes made by the engine
+                engineConfiguration.SaveDeviceConfigurations();
+                //to get changes from strategy config
+                LoadGridValuesFromConfiguration();
+            }
 
             coinStatsCountdownMinutes = coinStatsTimer.Interval / 1000 / 60;
         }
