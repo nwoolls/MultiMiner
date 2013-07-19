@@ -71,11 +71,13 @@ namespace MultiMiner.Xgminer
             return "";
         }
 
+        private const string xgminerOsxRelease = "v1.0.1";
+
         private static string GetBfgminerMacOSXDownloadUrl()
         {
             //hard-coded for now, dynamic in the future
             string downloadRoot = GetMinerDownloadRoot(MinerBackend.Cgminer);
-            return String.Format("{0}/releases/download/v1.0.0/bfgminer-3.1.3-osx64.tar.gz", downloadRoot);
+            return String.Format("{0}/releases/download/{1}/bfgminer-3.1.3-osx64.tar.gz", downloadRoot, xgminerOsxRelease);
         }
 
         private static string GetCgminerDownloadUrl()
@@ -103,7 +105,7 @@ namespace MultiMiner.Xgminer
         {
             //hard-coded for now, dynamic in the future
             string downloadRoot = GetMinerDownloadRoot(MinerBackend.Cgminer);
-            return String.Format("{0}/releases/download/v1.0.0/cgminer-3.3.1-osx64.tar.gz", downloadRoot);
+            return String.Format("{0}/releases/download/{1}/cgminer-3.3.1-osx64.tar.gz", downloadRoot, xgminerOsxRelease);
         }
 
         private static string GetCgminerWindowsDownloadUrl()
