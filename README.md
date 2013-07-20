@@ -40,8 +40,10 @@ The installer runs without needing admin rights and does not install to Program 
 
 OS X Installation
 -----------------
-1. Download and extract the __.app__.zip file at the above Binary Downloads link
-2. Launch MultiMiner.app to get started
+1. Install X11. Under OS X you should install Xquartz available [here][7]
+2. Install the latest version of [Mono][8]
+3. Download and extract the __.app__.zip file at the above Binary Downloads link
+4. Launch MultiMiner.app to get started
 
 ![No Miners Prompt - OS X](/Screenshots/No%20Miners%20Prompt%20-%20OS%20X.png "No Miners Prompt - OS X")
 
