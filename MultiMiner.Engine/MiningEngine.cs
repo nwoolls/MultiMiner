@@ -106,12 +106,7 @@ namespace MultiMiner.Engine
                 }
             }
         }
-
-        private static bool DeviceIsGpu(Device device)
-        {
-            return device.Identifier.Equals("GPU") || device.Identifier.Equals("OCL");
-        }
-
+        
         //update engineConfiguration.DeviceConfiguration based on mining strategy & coin info
         public void ApplyMiningStrategy(List<Device> devices, List<CoinInformation> coinInformation)
         {
@@ -259,7 +254,7 @@ namespace MultiMiner.Engine
                 {
                     profitableCoin = null;
 
-                    if (DeviceIsGpu(device))
+                    if (device.Kind == DeviceKind.GPU)
                     {
                         //sha256 or scrypt
                         profitableCoin = GetProfitableCoinFromList(allProfitableCoins, gpuIterator);

@@ -573,11 +573,6 @@ namespace MultiMiner.Win
             }
         }
         
-        private static bool IdentifierIsGpu(string identifier)
-        {
-            return (identifier.Equals("GPU") || identifier.Equals("OCL"));
-        }
-
         private void statsTimer_Tick(object sender, EventArgs e)
         {
             ClearMinerStatsForDisabledCoins();
@@ -766,8 +761,8 @@ namespace MultiMiner.Win
 
             for (int i = 0; i < devices.Count; i++)
             {
-                if ((deviceInformation.Kind.Equals("GPU") && IdentifierIsGpu(devices[i].Identifier))
-                    || (!deviceInformation.Kind.Equals("GPU") && !IdentifierIsGpu(devices[i].Identifier)))
+                if ((deviceInformation.Kind.Equals("GPU") && (devices[i].Kind == DeviceKind.GPU))
+                    || (!deviceInformation.Kind.Equals("GPU") && (devices[i].Kind != DeviceKind.GPU)))
                 {
                     if (index == deviceInformation.Index)
                     {

@@ -31,6 +31,7 @@ namespace MultiMiner.Xgminer.Parsers
                         newDevice.Identifier = match.Groups[1].Value.TrimEnd();
                         newDevice.Name = match.Groups[2].Value.TrimEnd();
                         newDevice.Driver = match.Groups[3].Value.TrimEnd();
+                        newDevice.Kind = DeviceIsGpu(newDevice) ? DeviceKind.GPU : DeviceKind.USB;
 
                         devices.Add(newDevice);
                     }
@@ -43,6 +44,7 @@ namespace MultiMiner.Xgminer.Parsers
 
                             newDevice.Identifier = match.Groups[1].Value.TrimEnd();
                             newDevice.Driver = match.Groups[2].Value.TrimEnd();
+                            newDevice.Kind = DeviceIsGpu(newDevice) ? DeviceKind.GPU : DeviceKind.USB;
 
                             devices.Add(newDevice);
                         }
@@ -54,6 +56,11 @@ namespace MultiMiner.Xgminer.Parsers
                     inDevices = true;
                 }
             }
+        }
+
+        private static bool DeviceIsGpu(Device device)
+        {
+            return device.Identifier.Equals("GPU") || device.Identifier.Equals("OCL");
         }
     }
 }
