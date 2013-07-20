@@ -27,7 +27,7 @@ namespace MultiMiner.Xgminer.Tests
         }
 
         [TestMethod]
-        public void InstallMiner_Bfgminer_ThrowsNotImplemented()
+        public void InstallMiner_Bfgminer_InstallsBfgminer()
         {
             //arrange
             string tempPath = Path.GetTempPath();
