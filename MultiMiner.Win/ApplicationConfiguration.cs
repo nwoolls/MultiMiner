@@ -21,6 +21,10 @@ namespace MultiMiner.Win
         public bool Maximized { get; set; }
         public bool ApiMonitorVisible { get; set; }
 
+        public string MobileMinerUrl { get; set; }
+        public string MobileMinerEmailAddress { get; set; }
+        public string MobileMinerApplicationKey { get; set; }
+
         private static string AppDataPath()
         {
             string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -61,6 +65,10 @@ namespace MultiMiner.Win
             this.DetectDisownedMiners = tmp.DetectDisownedMiners;
             this.Maximized = tmp.Maximized;
             this.ApiMonitorVisible = tmp.ApiMonitorVisible;
+
+            this.MobileMinerUrl = tmp.MobileMinerUrl;
+            this.MobileMinerEmailAddress = tmp.MobileMinerEmailAddress;
+            this.MobileMinerApplicationKey = tmp.MobileMinerApplicationKey;
         }
     }
 }

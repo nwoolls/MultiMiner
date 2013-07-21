@@ -146,6 +146,10 @@
       <Project>{845687bb-ec47-46d3-ac9d-6fcfb63de8f5}</Project>
       <Name>MultiMiner.Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.MobileMiner.Api\MultiMiner.MobileMiner.Api.csproj">
+      <Project>{70622816-5853-4470-9432-9acda2e96089}</Project>
+      <Name>MultiMiner.MobileMiner.Api</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj">
       <Project>{5b43ad9d-8b67-4aa8-b76d-aa83caf9d29f}</Project>
       <Name>MultiMiner.Xgminer.Api</Name>
