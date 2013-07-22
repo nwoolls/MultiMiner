@@ -1120,5 +1120,70 @@ namespace MultiMiner.Win
                 StartMining();
             }
         }
+
+        private void mobileMinerTimer_Tick(object sender, EventArgs e)
+        {
+            SubmitMobileMinerStats();
+        }
+
+        private void SubmitMobileMinerStats()
+        {
+            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+            {
+                List<MultiMiner.Xgminer.Api.DeviceInformation> deviceInformationList = GetDeviceInformationFromMinerProcess(minerProcess);
+
+                if (deviceInformationList == null) //handled failure getting API info
+                {
+                    continue;
+                }
+
+                foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
+                {
+                    MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics = new MobileMiner.Api.MiningStatistics();
+
+                    miningStatistics.ApplicationKey = applicationConfiguration.MobileMinerApplicationKey;
+                    miningStatistics.EmailAddress = applicationConfiguration.MobileMinerEmailAddress;
+
+                    miningStatistics.CoinName = GetCoinNameForApiContext(minerProcess.ApiContext);
+                    miningStatistics.CoinSymbol = knownCoins.Single(c => c.Name.Equals(miningStatistics.CoinName)).Symbol;
+
+                    miningStatistics.MachineName = Environment.MachineName;
+
+                    PopulateMiningStatsFromDeviceInfo(miningStatistics, deviceInformation);
+
+                    try
+                    {
+                        MobileMiner.Api.ApiContext.SubmitMiningStatistics(applicationConfiguration.MobileMinerUrl, miningStatistics);
+                    }
+                    catch (WebException ex)
+                    {
+                        //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down    
+                    }
+                }
+            }
+        }
+
+        private static void PopulateMiningStatsFromDeviceInfo(MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics, MultiMiner.Xgminer.Api.DeviceInformation deviceInformation)
+        {
+            miningStatistics.AcceptedShares = deviceInformation.AcceptedShares;
+            miningStatistics.AverageHashrate = deviceInformation.AverageHashrate;
+            miningStatistics.CurrentHashrate = deviceInformation.CurrentHashrate;
+            miningStatistics.Enabled = deviceInformation.Enabled;
+            miningStatistics.FanPercent = deviceInformation.FanPercent;
+            miningStatistics.FanSpeed = deviceInformation.FanSpeed;
+            miningStatistics.GpuActivity = deviceInformation.GpuActivity;
+            miningStatistics.GpuClock = deviceInformation.GpuClock;
+            miningStatistics.GpuVoltage = deviceInformation.GpuVoltage;
+            miningStatistics.HardwareErrors = deviceInformation.HardwareErrors;
+            miningStatistics.Index = deviceInformation.Index;
+            miningStatistics.Intensity = deviceInformation.Intensity;
+            miningStatistics.Kind = deviceInformation.Kind;
+            miningStatistics.MemoryClock = deviceInformation.MemoryClock;
+            miningStatistics.PowerTune = deviceInformation.PowerTune;
+            miningStatistics.RejectedShares = deviceInformation.RejectedShares;
+            miningStatistics.Status = deviceInformation.Status;
+            miningStatistics.Temperature = deviceInformation.Temperature;
+            miningStatistics.Utility = deviceInformation.Utility;
+        }
     }
 }
