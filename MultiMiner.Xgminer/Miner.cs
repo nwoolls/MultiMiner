@@ -164,7 +164,10 @@ namespace MultiMiner.Xgminer
             while (process.HasExited)
             {
                 if (retries >= maxRetries)
-                    throw new Exception(string.Format("Miner keeps exiting after launching - retried {0} times. Exit code {1}.", retries, process.ExitCode));
+                    throw new Exception(
+                        string.Format("Miner keeps exiting after launching - retried {0} times. Exit code {1}.\n" +
+                        "Executable: {2}\nArguments: {3}", 
+                        retries, process.ExitCode, startInfo.FileName, startInfo.Arguments));
 
                 //ensure the new process is stored and returned
                 process = Process.Start(startInfo);
