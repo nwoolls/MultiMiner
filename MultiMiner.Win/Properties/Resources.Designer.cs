@@ -103,6 +103,16 @@ namespace MultiMiner.Win.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap computer_find {
+            get {
+                object obj = ResourceManager.GetObject("computer-find", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap help {
             get {
                 object obj = ResourceManager.GetObject("help", resourceCulture);
@@ -116,6 +126,26 @@ namespace MultiMiner.Win.Properties {
         internal static System.Drawing.Bitmap internet_download {
             get {
                 object obj = ResourceManager.GetObject("internet_download", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap network_application {
+            get {
+                object obj = ResourceManager.GetObject("network_application", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap window_text {
+            get {
+                object obj = ResourceManager.GetObject("window_text", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

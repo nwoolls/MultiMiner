@@ -172,6 +172,9 @@
     <None Include="Resources\application.png" />
     <None Include="Resources\internet_download.png" />
     <None Include="Resources\help.png" />
+    <None Include="Resources\computer-find.png" />
+    <None Include="Resources\network_application.png" />
+    <None Include="Resources\window_text.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>
