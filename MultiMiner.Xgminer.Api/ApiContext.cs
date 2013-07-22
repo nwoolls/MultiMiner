@@ -10,7 +10,7 @@ namespace MultiMiner.Xgminer.Api
     {
         //events
         // delegate declaration 
-        public delegate void LogEventHandler(object sender, LogEventArgs ca);
+        public delegate void LogEventHandler(object sender, LogEventArgs ea);
 
         // event declaration 
         public event LogEventHandler LogEvent;
@@ -49,16 +49,17 @@ namespace MultiMiner.Xgminer.Api
                 int bytesRead = tcpStream.Read(responseBuffer, 0, responseBuffer.Length);
                 response = response + Encoding.ASCII.GetString(responseBuffer, 0, bytesRead);
             } while (tcpStream.DataAvailable);
-
-
-            LogEventArgs args = new LogEventArgs();
-
-            args.DateTime = DateTime.Now;
-            args.Request = apiVerb;
-            args.Response = response;
-
+            
             if (LogEvent != null)
+            {
+                LogEventArgs args = new LogEventArgs();
+
+                args.DateTime = DateTime.Now;
+                args.Request = apiVerb;
+                args.Response = response;
+
                 LogEvent(this, args);
+            }
 
             tcpClient.Close();
 
