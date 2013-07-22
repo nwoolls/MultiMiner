@@ -51,10 +51,7 @@ namespace MultiMiner.Win
             coinStatsTimer.Interval = coinStatsCountdownMinutes * 60 * 1000; //15 minutes
 
             RefreshCoinStats();
-
-            //do this before LoadSettings - it may show the API monitor
-            HideApiMonitor();
-
+            
             LoadSettings();
 
             RefreshBackendLabel();
@@ -241,10 +238,14 @@ namespace MultiMiner.Win
             desktopModeButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
 
             applicationConfiguration.LoadApplicationConfiguration();
+
             if (applicationConfiguration.Maximized)
                 this.WindowState = FormWindowState.Maximized;
-            if (applicationConfiguration.ApiMonitorVisible)
+
+            if (applicationConfiguration.LogAreaVisible)
                 ShowApiMonitor();
+            else
+                HideAdvancedPanel();
 
             if (applicationConfiguration.StartMiningOnStartup)
             {
@@ -1019,37 +1020,41 @@ namespace MultiMiner.Win
 
         private void closeApiButton_Click(object sender, EventArgs e)
         {
-            HideApiMonitor();
+            HideAdvancedPanel();
         }
 
-        private void HideApiMonitor()
+        private void HideAdvancedPanel()
         {
-            apiMonitorButton.Checked = false;
             splitContainer1.Panel2.Hide();
             splitContainer1.Panel2Collapsed = true;
             //hide all controls or they will show/flicker under OS X/mono
             closeApiButton.Visible = false;
             apiLogGridView.Visible = false;
+
+            applicationConfiguration.LogAreaVisible = false;
+            applicationConfiguration.SaveApplicationConfiguration();
         }
 
-        private void ShowApiMonitor()
+        private void ShowAdvancedPanel()
         {
-            apiMonitorButton.Checked = true;
             closeApiButton.Visible = true;
             apiLogGridView.Visible = true;
             splitContainer1.Panel2Collapsed = false;
             splitContainer1.Panel2.Show();
         }
 
+        private void ShowApiMonitor()
+        {
+            ShowAdvancedPanel();
+            advancedTabControl.SelectedTab = apiMonitorPage;
+
+            applicationConfiguration.LogAreaVisible = true;
+            applicationConfiguration.SaveApplicationConfiguration();
+        }
+
         private void apiMonitorButton_Click(object sender, EventArgs e)
         {
-            if (apiMonitorButton.Checked)
-                ShowApiMonitor();
-            else
-                HideApiMonitor();
-
-            applicationConfiguration.ApiMonitorVisible = apiMonitorButton.Checked;
-            applicationConfiguration.SaveApplicationConfiguration();
+            ShowApiMonitor();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -1184,6 +1189,15 @@ namespace MultiMiner.Win
             miningStatistics.Status = deviceInformation.Status;
             miningStatistics.Temperature = deviceInformation.Temperature;
             miningStatistics.Utility = deviceInformation.Utility;
+        }
+
+        private void processLogButton_Click(object sender, EventArgs e)
+        {
+            ShowAdvancedPanel();
+            advancedTabControl.SelectedTab = processLogPage;
+
+            applicationConfiguration.LogAreaVisible = true;
+            applicationConfiguration.SaveApplicationConfiguration();
         }
     }
 }
