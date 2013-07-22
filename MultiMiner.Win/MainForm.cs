@@ -435,6 +435,7 @@ namespace MultiMiner.Win
                     else
                     {
                         gridRow.Cells[coinColumn.Index].Value = string.Empty;
+                        gridRow.Cells[enabledColumn.Index].Value = true;
                     }
                 }
             }
