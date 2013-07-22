@@ -11,6 +11,9 @@ namespace MultiMiner.Engine
 {
     public class MiningEngine
     {
+        // event declaration 
+        public event Miner.LogLaunchHandler LogLaunch;
+
         private List<MinerProcess> minerProcesses = new List<MinerProcess>();
         private EngineConfiguration engineConfiguration;
 
@@ -412,9 +415,10 @@ namespace MultiMiner.Engine
             mining = true;
         }
 
-        private static Process LaunchMinerProcess(MinerConfiguration minerConfiguration)
+        private Process LaunchMinerProcess(MinerConfiguration minerConfiguration)
         {
             Miner miner = new Miner(minerConfiguration);
+            miner.LogLaunch += this.LogLaunch;
             Process process = miner.Launch();
             return process;
         }

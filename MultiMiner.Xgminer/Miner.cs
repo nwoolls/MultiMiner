@@ -8,6 +8,13 @@ namespace MultiMiner.Xgminer
 {
     public class Miner
     {
+        //events
+        // delegate declaration 
+        public delegate void LogLaunchHandler(object sender, LogLaunchArgs ea);
+
+        // event declaration 
+        public event LogLaunchHandler LogLaunch;
+
         private readonly MinerConfiguration minerConfiguration;
 
         public Miner(MinerConfiguration minerConfig)
@@ -121,8 +128,19 @@ namespace MultiMiner.Xgminer
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = redirectOutput;
 
-            Process process = Process.Start(startInfo);
+            if (LogLaunch != null)
+            {
+                LogLaunchArgs args = new LogLaunchArgs();
 
+                args.DateTime = DateTime.Now;
+                args.ExecutablePath = minerConfiguration.ExecutablePath;
+                args.Arguments = arguments;
+
+                LogLaunch(this, args);
+            }
+
+            Process process = Process.Start(startInfo);
+            
             if (ensureProcessStarts)
                 //store the returned process
                 process = EnsureProcessStarts(process, startInfo);

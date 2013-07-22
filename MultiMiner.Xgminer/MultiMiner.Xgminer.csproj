@@ -45,6 +45,7 @@
     <Compile Include="DeviceKind.cs" />
     <Compile Include="DevicePlatform.cs" />
     <Compile Include="Installer.cs" />
+    <Compile Include="LogLaunchArgs.cs" />
     <Compile Include="MinerBackend.cs" />
     <Compile Include="MiningPool.cs" />
     <Compile Include="OSVersionPlatform.cs" />
