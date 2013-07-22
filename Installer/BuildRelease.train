@@ -8,6 +8,7 @@ msbuild.updateAssemblyVersion("../MultiMiner.Engine/Properties/AssemblyInfo.cs",
 msbuild.updateAssemblyVersion("../MultiMiner.Win/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Xgminer/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Xgminer.Api/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.MobileMiner.Api/Properties/AssemblyInfo.cs", appVersion);
 
 //rebuild each .NET project - Release configurations
 msbuild.rebuild("../MultiMiner.Coinchoose.Api/MultiMiner.Coinchoose.Api.csproj", { configuration: "Release" });
@@ -15,6 +16,7 @@ msbuild.rebuild("../MultiMiner.Engine/MultiMiner.Engine.csproj", { configuration
 msbuild.rebuild("../MultiMiner.Win/MultiMiner.Win.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Xgminer/MultiMiner.Xgminer.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Xgminer.Api/MultiMiner.Xgminer.Api.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.MobileMiner.Api/MultiMiner.MobileMiner.Api.csproj", { configuration: "Release" });
 
 //export environment variable for InnoSetup to use for app version
 export("MM_AppVersion", appVersion);
@@ -32,6 +34,7 @@ file.copy("../MultiMiner.Win/bin/Release/Interop.Shell32.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Coinchoose.Api.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Engine.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Api.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Miners/bfgminer/Extract bfgminer here.txt", "PF/Miners/bfgminer");
@@ -45,6 +48,7 @@ msbuild.rebuild("../MultiMiner.Engine/MultiMiner.Engine.csproj", { configuration
 msbuild.rebuild("../MultiMiner.Win/MultiMiner.Win.csproj", { configuration: "Debug" });
 msbuild.rebuild("../MultiMiner.Xgminer/MultiMiner.Xgminer.csproj", { configuration: "Debug" });
 msbuild.rebuild("../MultiMiner.Xgminer.Api/MultiMiner.Xgminer.Api.csproj", { configuration: "Debug" });
+msbuild.rebuild("../MultiMiner.MobileMiner.Api/MultiMiner.MobileMiner.Api.csproj", { configuration: "Debug" });
 
 //create a debug Zip release
 folder.remove("PF", true);
@@ -60,6 +64,8 @@ file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Engine.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Engine.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Xgminer.Api.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Xgminer.Api.pdb", "PF/");
+file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.MobileMiner.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.MobileMiner.Api.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Xgminer.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Xgminer.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/Newtonsoft.Json.dll", "PF/");
@@ -82,6 +88,7 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.Coinchoose.Api.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Engine.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Api.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Api.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll,\
 ../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll,\
 Miners \
