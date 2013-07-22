@@ -19,7 +19,7 @@ namespace MultiMiner.Win
         public bool MinimizeToNotificationArea { get; set; }
         public bool DetectDisownedMiners { get; set; }
         public bool Maximized { get; set; }
-        public bool ApiMonitorVisible { get; set; }
+        public bool LogAreaVisible { get; set; }
 
         public string MobileMinerUrl { get; set; }
         public string MobileMinerEmailAddress { get; set; }
@@ -64,7 +64,7 @@ namespace MultiMiner.Win
             this.MinimizeToNotificationArea = tmp.MinimizeToNotificationArea;
             this.DetectDisownedMiners = tmp.DetectDisownedMiners;
             this.Maximized = tmp.Maximized;
-            this.ApiMonitorVisible = tmp.ApiMonitorVisible;
+            this.LogAreaVisible = tmp.LogAreaVisible;
 
             this.MobileMinerUrl = tmp.MobileMinerUrl;
             this.MobileMinerEmailAddress = tmp.MobileMinerEmailAddress;
