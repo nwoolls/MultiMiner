@@ -78,7 +78,7 @@ namespace MultiMiner.Engine
                 stoppingMining = false;
             }
         }
-
+        
         public void RelaunchCrashedMiners()
         {
             if (stoppingMining || startingMining)
@@ -87,12 +87,14 @@ namespace MultiMiner.Engine
             foreach (MinerProcess minerProcess in MinerProcesses)
             {
                 if (minerProcess.Process.HasExited)
-                    minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
+                {
+                    minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration);
+                }
 
                 else if (minerProcess.HasDeadDevice || minerProcess.HasSickDevice)
                 {
                     minerProcess.StopMining();
-                    minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
+                    minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration);
                 }
 
                 else if (minerProcess.HasZeroHashrateDevice || minerProcess.HasFrozenDevice)
@@ -101,7 +103,7 @@ namespace MultiMiner.Engine
                     if (processAge.TotalSeconds > 60)
                     {
                         minerProcess.StopMining();
-                        minerProcess.Process = new Miner(minerProcess.MinerConfiguration).Launch();
+                        minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration);
                     }
                 }
             }

@@ -2,7 +2,7 @@
 
 namespace MultiMiner.Xgminer.Api
 {
-    public class LogEventArgs : System.EventArgs
+    public class LogEventArgs : EventArgs
     {
         public DateTime DateTime { get; set; }
         public string Request { get; set; }
