@@ -27,10 +27,20 @@ namespace MultiMiner.Win
         private int coinStatsCountdownMinutes = 0;
         private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
         private bool formLoaded = false;
+        private readonly List<LogLaunchArgs> logLaunchEntries = new List<LogLaunchArgs>();
 
         public MainForm()
         {
             InitializeComponent();
+        }
+
+        private void LogMinerLaunch(object sender, LogLaunchArgs ea)
+        {
+            logLaunchArgsBindingSource.Add(ea);
+            logLaunchArgsBindingSource.Position = logLaunchArgsBindingSource.IndexOf(ea);
+
+            while (logLaunchArgsBindingSource.Count > 1000)
+                logLaunchArgsBindingSource.RemoveAt(0);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -54,6 +64,9 @@ namespace MultiMiner.Win
             PositionCoinchooseLabels();
 
             apiLogEntryBindingSource.DataSource = apiLogEntries;
+
+            miningEngine.LogLaunch += LogMinerLaunch;
+            logLaunchArgsBindingSource.DataSource = logLaunchEntries;
 
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
