@@ -69,7 +69,7 @@ namespace MultiMiner.Xgminer
             return result;
         }
 
-        public Process Launch()
+        public Process Launch(string reason = "")
         {
             bool redirectOutput = false;
             bool ensureProcessStarts = true;
@@ -102,12 +102,13 @@ namespace MultiMiner.Xgminer
             if (minerConfiguration.ApiListen)
                 arguments = string.Format("{0} --api-listen --api-port {1} --api-allow W:127.0.0.1", arguments, minerConfiguration.ApiPort);
 
-            Process process = StartMinerProcess(arguments, redirectOutput, ensureProcessStarts);
+            Process process = StartMinerProcess(arguments, redirectOutput, ensureProcessStarts, reason);
 
             return process;
         }
 
-        private Process StartMinerProcess(string arguments, bool redirectOutput, bool ensureProcessStarts = false)
+        private Process StartMinerProcess(string arguments, bool redirectOutput, 
+            bool ensureProcessStarts = false, string reason = "")
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
 
@@ -135,6 +136,7 @@ namespace MultiMiner.Xgminer
                 args.DateTime = DateTime.Now;
                 args.ExecutablePath = minerConfiguration.ExecutablePath;
                 args.Arguments = arguments;
+                args.Reason = reason;
 
                 LogLaunch(this, args);
             }

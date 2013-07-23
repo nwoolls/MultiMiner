@@ -91,13 +91,19 @@ namespace MultiMiner.Engine
             {
                 if (minerProcess.Process.HasExited)
                 {
-                    minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration);
+                    minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Process crashed");
                 }
 
-                else if (minerProcess.HasDeadDevice || minerProcess.HasSickDevice)
+                else if (minerProcess.HasDeadDevice)
                 {
                     minerProcess.StopMining();
-                    minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration);
+                    minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Dead device");
+                }
+
+                else if (minerProcess.HasSickDevice)
+                {
+                    minerProcess.StopMining();
+                    minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Sick device");
                 }
 
                 else if (minerProcess.HasZeroHashrateDevice || minerProcess.HasFrozenDevice)
@@ -106,7 +112,7 @@ namespace MultiMiner.Engine
                     if (processAge.TotalSeconds > 60)
                     {
                         minerProcess.StopMining();
-                        minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration);
+                        minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Zero hashrate");
                     }
                 }
             }
@@ -396,7 +402,7 @@ namespace MultiMiner.Engine
             {
                 MinerConfiguration minerConfiguration = CreateMinerConfiguration(port, coinSymbol);
 
-                Process process = LaunchMinerProcess(minerConfiguration);
+                Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
 
                 if (!process.HasExited)
                 {
@@ -415,14 +421,14 @@ namespace MultiMiner.Engine
             mining = true;
         }
 
-        private Process LaunchMinerProcess(MinerConfiguration minerConfiguration)
+        private Process LaunchMinerProcess(MinerConfiguration minerConfiguration, string reason)
         {
             Miner miner = new Miner(minerConfiguration);
             miner.LogLaunch += this.LogLaunch;
-            Process process = miner.Launch();
+            Process process = miner.Launch(reason);
             return process;
         }
-
+        
         private MinerConfiguration CreateMinerConfiguration(int port, string coinSymbol)
         {
             CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(coinSymbol));

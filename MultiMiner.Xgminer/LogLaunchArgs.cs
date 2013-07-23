@@ -7,5 +7,6 @@ namespace MultiMiner.Xgminer
         public DateTime DateTime { get; set; }
         public string ExecutablePath { get; set; }
         public string Arguments { get; set; }
+        public string Reason { get; set; }
     }
 }
