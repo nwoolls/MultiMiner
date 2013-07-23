@@ -7,7 +7,9 @@ namespace MultiMiner.MobileMiner.Api
     {
         static public void SubmitMiningStatistics(string url, MiningStatistics miningStatistics)
         {
-            string fullUrl = url + "/api/MiningStatisticsInput";
+            if (!url.EndsWith("/"))
+                url = url + "/";
+            string fullUrl = url + "api/MiningStatisticsInput";
             using (WebClient client = new WebClient())
             {
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
