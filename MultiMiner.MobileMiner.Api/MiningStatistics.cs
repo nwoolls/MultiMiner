@@ -10,6 +10,7 @@ namespace MultiMiner.MobileMiner.Api
         public virtual string MachineName { get; set; }
 
         //MiningStatistics
+        public string MinerName { get; set; } //e.g. MultiMiner, Asteroid, etc.
         public string CoinSymbol { get; set; }
         public string CoinName { get; set; }
 
