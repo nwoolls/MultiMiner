@@ -1180,6 +1180,7 @@ namespace MultiMiner.Win
                     miningStatistics.ApplicationKey = applicationConfiguration.MobileMinerApplicationKey;
                     miningStatistics.EmailAddress = applicationConfiguration.MobileMinerEmailAddress;
 
+                    miningStatistics.MinerName = "MultiMiner";
                     miningStatistics.CoinName = GetCoinNameForApiContext(minerProcess.ApiContext);
                     miningStatistics.CoinSymbol = knownCoins.Single(c => c.Name.Equals(miningStatistics.CoinName)).Symbol;
 
