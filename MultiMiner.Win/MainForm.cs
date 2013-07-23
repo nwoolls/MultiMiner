@@ -708,6 +708,7 @@ namespace MultiMiner.Win
             double totalSha256Rate = 0;
 
             bool hasTempValue = false;
+            bool hasIntensityValue = false;
 
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
@@ -746,6 +747,9 @@ namespace MultiMiner.Win
 
                         if (deviceInformation.Temperature > 0)
                             hasTempValue = true;
+
+                        if (!string.IsNullOrEmpty(deviceInformation.Intensity))
+                            hasIntensityValue = true;
                     }
                 }
             }
@@ -756,6 +760,9 @@ namespace MultiMiner.Win
 
             //hide the temperature column if there are no tempts returned (USBs, OS X, etc)
             temperatureColumn.Visible = hasTempValue;
+
+            //hide the intensity column if there are no intensities returned (USBs)
+            intensityColumn.Visible = hasIntensityValue;
         }
 
         private List<MultiMiner.Xgminer.Api.DeviceInformation> GetDeviceInformationFromMinerProcess(MinerProcess minerProcess)
