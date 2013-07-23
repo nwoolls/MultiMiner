@@ -731,8 +731,8 @@ namespace MultiMiner.Win
                 }
             }
 
-            scryptRateLabel.Text = string.Format("Scrypt: {0} kh/s", totalScryptRate);
-            sha256RateLabel.Text = string.Format("SHA256: {0} mh/s", totalSha256Rate / 1000);
+            scryptRateLabel.Text = string.Format("Scrypt: {0} Kh/s", totalScryptRate);
+            sha256RateLabel.Text = string.Format("SHA256: {0} Mh/s", totalSha256Rate / 1000); //Mh not mh, mh is milli
             notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
 
             //hide the temperature column if there are no tempts returned (USBs, OS X, etc)
