@@ -1200,7 +1200,7 @@ namespace MultiMiner.Win
 
             try
             {
-                MobileMiner.Api.ApiContext.SubmitMiningStatistics("http://localhost:49609/", statisticsList);
+                MobileMiner.Api.ApiContext.SubmitMiningStatistics("https://mobileminer.azurewebsites.net", statisticsList);
             }
             catch (WebException ex)
             {
