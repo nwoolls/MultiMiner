@@ -1160,6 +1160,10 @@ namespace MultiMiner.Win
 
         private void SubmitMobileMinerStats()
         {
+            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
+                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
+                return;
+
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
                 List<MultiMiner.Xgminer.Api.DeviceInformation> deviceInformationList = GetDeviceInformationFromMinerProcess(minerProcess);
