@@ -21,7 +21,6 @@ namespace MultiMiner.Win
         public bool Maximized { get; set; }
         public bool LogAreaVisible { get; set; }
 
-        public string MobileMinerUrl { get; set; }
         public string MobileMinerEmailAddress { get; set; }
         public string MobileMinerApplicationKey { get; set; }
 
@@ -66,7 +65,6 @@ namespace MultiMiner.Win
             this.Maximized = tmp.Maximized;
             this.LogAreaVisible = tmp.LogAreaVisible;
 
-            this.MobileMinerUrl = tmp.MobileMinerUrl;
             this.MobileMinerEmailAddress = tmp.MobileMinerEmailAddress;
             this.MobileMinerApplicationKey = tmp.MobileMinerApplicationKey;
         }

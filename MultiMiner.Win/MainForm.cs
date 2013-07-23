@@ -1185,7 +1185,7 @@ namespace MultiMiner.Win
 
                     try
                     {
-                        MobileMiner.Api.ApiContext.SubmitMiningStatistics(applicationConfiguration.MobileMinerUrl, miningStatistics);
+                        MobileMiner.Api.ApiContext.SubmitMiningStatistics("https://mobileminer.azurewebsites.net", miningStatistics);
                     }
                     catch (WebException ex)
                     {
