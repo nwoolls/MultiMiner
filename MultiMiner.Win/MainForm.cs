@@ -211,8 +211,27 @@ namespace MultiMiner.Win
             {
                 //miner not installed/not launched
                 devices = new List<Device>(); //dummy empty device list
-                MessageBox.Show("The miner specified in your settings was not found. Please go to https://github.com/nwoolls/multiminer for instructions on installing either cgminer or bfgminer.",
-                    "Miner Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                MinerBackend minerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
+                string minerName = MinerPath.GetMinerName(minerBackend);
+
+                DialogResult dialogResult = MessageBox.Show(String.Format(
+                    "The miner specified in your settings, {0}, is not installed. " +
+                    "Would you like to download and install {0} now?", minerName), "Miner Not Found",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+
+                if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                {
+                    InstallMiner(minerBackend);
+                    RefreshDevices();
+                }
+                else
+                {
+                    MessageBox.Show("The miner specified in your settings was not found. Please go to https://github.com/nwoolls/multiminer for instructions on installing either cgminer or bfgminer.",
+                        "Miner Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
             }
             deviceBindingSource.DataSource = devices;
             LoadGridValuesFromConfiguration();
