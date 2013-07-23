@@ -1167,6 +1167,8 @@ namespace MultiMiner.Win
                 string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
                 return;
 
+            List<MultiMiner.MobileMiner.Api.MiningStatistics> statisticsList = new List<MobileMiner.Api.MiningStatistics>();
+
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
                 List<MultiMiner.Xgminer.Api.DeviceInformation> deviceInformationList = GetDeviceInformationFromMinerProcess(minerProcess);
@@ -1191,15 +1193,18 @@ namespace MultiMiner.Win
 
                     PopulateMiningStatsFromDeviceInfo(miningStatistics, deviceInformation);
 
-                    try
-                    {
-                        MobileMiner.Api.ApiContext.SubmitMiningStatistics("https://mobileminer.azurewebsites.net", miningStatistics);
-                    }
-                    catch (WebException ex)
-                    {
-                        //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down    
-                    }
+                    statisticsList.Add(miningStatistics);
+
                 }
+            }
+
+            try
+            {
+                MobileMiner.Api.ApiContext.SubmitMiningStatistics("http://localhost:49609/", statisticsList);
+            }
+            catch (WebException ex)
+            {
+                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down    
             }
         }
 
