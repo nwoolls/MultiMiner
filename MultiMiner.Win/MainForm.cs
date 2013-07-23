@@ -47,6 +47,9 @@ namespace MultiMiner.Win
         {
             SetupGridColumns();
 
+            const int mobileMinerInterval = 62; //seconds
+            mobileMinerTimer.Interval = mobileMinerInterval * 1000;
+
             coinStatsCountdownMinutes = 15;
             coinStatsTimer.Interval = coinStatsCountdownMinutes * 60 * 1000; //15 minutes
 
