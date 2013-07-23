@@ -56,8 +56,8 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.desktopModeButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.apiMonitorButton = new System.Windows.Forms.ToolStripMenuItem();
             this.detectDevicesButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.apiMonitorButton = new System.Windows.Forms.ToolStripMenuItem();
             this.processLogButton = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.saveButton = new System.Windows.Forms.ToolStripButton();
@@ -94,7 +94,11 @@
             this.advancedTabControl = new System.Windows.Forms.TabControl();
             this.apiMonitorPage = new System.Windows.Forms.TabPage();
             this.apiLogGridView = new System.Windows.Forms.DataGridView();
+            this.dateTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CoinName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.requestDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.responseDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.apiLogEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.processLogPage = new System.Windows.Forms.TabPage();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.dateTimeDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -111,10 +115,6 @@
             this.showAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mobileMinerTimer = new System.Windows.Forms.Timer(this.components);
-            this.dateTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.requestDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.responseDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.apiLogEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.startupMiningPanel.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -127,12 +127,12 @@
             this.advancedTabControl.SuspendLayout();
             this.apiMonitorPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).BeginInit();
             this.processLogPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).BeginInit();
             this.panel2.SuspendLayout();
             this.notifyIconMenuStrip.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // deviceStatsTimer
@@ -289,27 +289,27 @@
             this.toolStripDropDownButton1.Size = new System.Drawing.Size(89, 22);
             this.toolStripDropDownButton1.Text = "Advanced";
             // 
-            // apiMonitorButton
-            // 
-            this.apiMonitorButton.Image = global::MultiMiner.Win.Properties.Resources.network_application;
-            this.apiMonitorButton.Name = "apiMonitorButton";
-            this.apiMonitorButton.Size = new System.Drawing.Size(152, 22);
-            this.apiMonitorButton.Text = "API Monitor";
-            this.apiMonitorButton.Click += new System.EventHandler(this.apiMonitorButton_Click);
-            // 
             // detectDevicesButton
             // 
             this.detectDevicesButton.Image = global::MultiMiner.Win.Properties.Resources.computer_find;
             this.detectDevicesButton.Name = "detectDevicesButton";
-            this.detectDevicesButton.Size = new System.Drawing.Size(152, 22);
+            this.detectDevicesButton.Size = new System.Drawing.Size(151, 22);
             this.detectDevicesButton.Text = "Detect Devices";
             this.detectDevicesButton.Click += new System.EventHandler(this.detectDevicesButton_Click);
+            // 
+            // apiMonitorButton
+            // 
+            this.apiMonitorButton.Image = global::MultiMiner.Win.Properties.Resources.network_application;
+            this.apiMonitorButton.Name = "apiMonitorButton";
+            this.apiMonitorButton.Size = new System.Drawing.Size(151, 22);
+            this.apiMonitorButton.Text = "API Monitor";
+            this.apiMonitorButton.Click += new System.EventHandler(this.apiMonitorButton_Click);
             // 
             // processLogButton
             // 
             this.processLogButton.Image = global::MultiMiner.Win.Properties.Resources.window_text;
             this.processLogButton.Name = "processLogButton";
-            this.processLogButton.Size = new System.Drawing.Size(152, 22);
+            this.processLogButton.Size = new System.Drawing.Size(151, 22);
             this.processLogButton.Text = "Process Log";
             this.processLogButton.Click += new System.EventHandler(this.processLogButton_Click);
             // 
@@ -654,12 +654,40 @@
             this.apiLogGridView.Size = new System.Drawing.Size(1130, 70);
             this.apiLogGridView.TabIndex = 13;
             // 
+            // dateTimeDataGridViewTextBoxColumn
+            // 
+            this.dateTimeDataGridViewTextBoxColumn.DataPropertyName = "DateTime";
+            this.dateTimeDataGridViewTextBoxColumn.HeaderText = "Date/Time";
+            this.dateTimeDataGridViewTextBoxColumn.Name = "dateTimeDataGridViewTextBoxColumn";
+            this.dateTimeDataGridViewTextBoxColumn.ReadOnly = true;
+            this.dateTimeDataGridViewTextBoxColumn.Width = 125;
+            // 
             // CoinName
             // 
             this.CoinName.DataPropertyName = "CoinName";
             this.CoinName.HeaderText = "Coin";
             this.CoinName.Name = "CoinName";
             this.CoinName.ReadOnly = true;
+            // 
+            // requestDataGridViewTextBoxColumn
+            // 
+            this.requestDataGridViewTextBoxColumn.DataPropertyName = "Request";
+            this.requestDataGridViewTextBoxColumn.HeaderText = "Request";
+            this.requestDataGridViewTextBoxColumn.Name = "requestDataGridViewTextBoxColumn";
+            this.requestDataGridViewTextBoxColumn.ReadOnly = true;
+            this.requestDataGridViewTextBoxColumn.Width = 125;
+            // 
+            // responseDataGridViewTextBoxColumn
+            // 
+            this.responseDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.responseDataGridViewTextBoxColumn.DataPropertyName = "Response";
+            this.responseDataGridViewTextBoxColumn.HeaderText = "Response";
+            this.responseDataGridViewTextBoxColumn.Name = "responseDataGridViewTextBoxColumn";
+            this.responseDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // apiLogEntryBindingSource
+            // 
+            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.ApiLogEntry);
             // 
             // processLogPage
             // 
@@ -688,6 +716,7 @@
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(3, 3);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.Size = new System.Drawing.Size(1130, 70);
             this.dataGridView1.TabIndex = 14;
@@ -697,6 +726,7 @@
             this.dateTimeDataGridViewTextBoxColumn1.DataPropertyName = "DateTime";
             this.dateTimeDataGridViewTextBoxColumn1.HeaderText = "DateTime";
             this.dateTimeDataGridViewTextBoxColumn1.Name = "dateTimeDataGridViewTextBoxColumn1";
+            this.dateTimeDataGridViewTextBoxColumn1.ReadOnly = true;
             this.dateTimeDataGridViewTextBoxColumn1.Width = 125;
             // 
             // executablePathDataGridViewTextBoxColumn
@@ -704,6 +734,7 @@
             this.executablePathDataGridViewTextBoxColumn.DataPropertyName = "ExecutablePath";
             this.executablePathDataGridViewTextBoxColumn.HeaderText = "ExecutablePath";
             this.executablePathDataGridViewTextBoxColumn.Name = "executablePathDataGridViewTextBoxColumn";
+            this.executablePathDataGridViewTextBoxColumn.ReadOnly = true;
             this.executablePathDataGridViewTextBoxColumn.Width = 250;
             // 
             // argumentsDataGridViewTextBoxColumn
@@ -712,6 +743,7 @@
             this.argumentsDataGridViewTextBoxColumn.DataPropertyName = "Arguments";
             this.argumentsDataGridViewTextBoxColumn.HeaderText = "Arguments";
             this.argumentsDataGridViewTextBoxColumn.Name = "argumentsDataGridViewTextBoxColumn";
+            this.argumentsDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // logLaunchArgsBindingSource
             // 
@@ -798,34 +830,6 @@
             this.mobileMinerTimer.Interval = 15000;
             this.mobileMinerTimer.Tick += new System.EventHandler(this.mobileMinerTimer_Tick);
             // 
-            // dateTimeDataGridViewTextBoxColumn
-            // 
-            this.dateTimeDataGridViewTextBoxColumn.DataPropertyName = "DateTime";
-            this.dateTimeDataGridViewTextBoxColumn.HeaderText = "Date/Time";
-            this.dateTimeDataGridViewTextBoxColumn.Name = "dateTimeDataGridViewTextBoxColumn";
-            this.dateTimeDataGridViewTextBoxColumn.ReadOnly = true;
-            this.dateTimeDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // requestDataGridViewTextBoxColumn
-            // 
-            this.requestDataGridViewTextBoxColumn.DataPropertyName = "Request";
-            this.requestDataGridViewTextBoxColumn.HeaderText = "Request";
-            this.requestDataGridViewTextBoxColumn.Name = "requestDataGridViewTextBoxColumn";
-            this.requestDataGridViewTextBoxColumn.ReadOnly = true;
-            this.requestDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // responseDataGridViewTextBoxColumn
-            // 
-            this.responseDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.responseDataGridViewTextBoxColumn.DataPropertyName = "Response";
-            this.responseDataGridViewTextBoxColumn.HeaderText = "Response";
-            this.responseDataGridViewTextBoxColumn.Name = "responseDataGridViewTextBoxColumn";
-            this.responseDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // apiLogEntryBindingSource
-            // 
-            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.ApiLogEntry);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -859,12 +863,12 @@
             this.advancedTabControl.ResumeLayout(false);
             this.apiMonitorPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).EndInit();
             this.processLogPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).EndInit();
             this.panel2.ResumeLayout(false);
             this.notifyIconMenuStrip.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
