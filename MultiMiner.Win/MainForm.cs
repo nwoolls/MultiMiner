@@ -1159,6 +1159,7 @@ namespace MultiMiner.Win
         private void mobileMinerTimer_Tick(object sender, EventArgs e)
         {
             SubmitMobileMinerStats();
+            CheckForMobileMinerCommands();
         }
 
         private void SubmitMobileMinerStats()
@@ -1210,6 +1211,42 @@ namespace MultiMiner.Win
             catch (WebException ex)
             {
                 //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down    
+            }
+        }
+
+        private void CheckForMobileMinerCommands()
+        {
+            List<MobileMiner.Api.RemoteCommand> commands = new List<MobileMiner.Api.RemoteCommand>();
+
+            try
+            {
+                commands = MobileMiner.Api.ApiContext.GetCommands("https://mobileminer.azurewebsites.net",
+                    applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                    Environment.MachineName);
+            }
+            catch (WebException ex)
+            {
+                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down    
+            }
+
+            if (commands.Count > 0)
+            {
+                MobileMiner.Api.RemoteCommand command = commands.First();
+
+
+                if (command.CommandText.Equals("START", StringComparison.OrdinalIgnoreCase))
+                    StartMining();
+                else if (command.CommandText.Equals("STOP", StringComparison.OrdinalIgnoreCase))
+                    StopMining();
+                else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
+                {
+                    StopMining();
+                    StartMining();
+                }
+
+                MobileMiner.Api.ApiContext.DeleteCommand("https://mobileminer.azurewebsites.net",
+                    applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                    Environment.MachineName, command.Id);
             }
         }
 
