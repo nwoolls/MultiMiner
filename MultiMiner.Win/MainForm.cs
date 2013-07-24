@@ -1187,14 +1187,19 @@ namespace MultiMiner.Win
 
                     miningStatistics.MinerName = "MultiMiner";
                     miningStatistics.CoinName = GetCoinNameForApiContext(minerProcess.ApiContext);
-                    miningStatistics.CoinSymbol = knownCoins.Single(c => c.Name.Equals(miningStatistics.CoinName)).Symbol;
+                    CryptoCoin coin = knownCoins.Single(c => c.Name.Equals(miningStatistics.CoinName));
+                    miningStatistics.CoinSymbol = coin.Symbol;
 
+                    if (coin.Algorithm == CoinAlgorithm.Scrypt)
+                        miningStatistics.Algorithm = "scrypt";
+                    else if (coin.Algorithm == CoinAlgorithm.SHA256)
+                        miningStatistics.Algorithm = "SHA-256";
+                    
                     miningStatistics.MachineName = Environment.MachineName;
 
                     PopulateMiningStatsFromDeviceInfo(miningStatistics, deviceInformation);
 
                     statisticsList.Add(miningStatistics);
-
                 }
             }
 

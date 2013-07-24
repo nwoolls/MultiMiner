@@ -13,6 +13,7 @@ namespace MultiMiner.MobileMiner.Api
         public string MinerName { get; set; } //e.g. MultiMiner, Asteroid, etc.
         public string CoinSymbol { get; set; }
         public string CoinName { get; set; }
+        public string Algorithm { get; set; } //e.g. scrypt, SHA-256
 
         //rest is taken from MultiMiner.Xgminer.Api.DeviceInformation
         public string Kind { get; set; }
