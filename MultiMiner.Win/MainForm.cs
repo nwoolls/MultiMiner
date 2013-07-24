@@ -28,6 +28,7 @@ namespace MultiMiner.Win
         private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
         private bool formLoaded = false;
         private readonly List<LogLaunchArgs> logLaunchEntries = new List<LogLaunchArgs>();
+        private readonly List<int> processedCommandIds = new List<int>();
 
         public MainForm()
         {
@@ -1233,7 +1234,13 @@ namespace MultiMiner.Win
             {
                 MobileMiner.Api.RemoteCommand command = commands.First();
 
-
+                //check this before actually executing the command
+                //point being, say for some reason it takes 2 minutes to restart mining
+                //if we check for commands again in that time, we don't want to process it again
+                if (processedCommandIds.Contains(command.Id))
+                    return;
+                processedCommandIds.Add(command.Id);
+                                
                 if (command.CommandText.Equals("START", StringComparison.OrdinalIgnoreCase))
                     StartMining();
                 else if (command.CommandText.Equals("STOP", StringComparison.OrdinalIgnoreCase))
