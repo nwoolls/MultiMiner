@@ -1163,6 +1163,9 @@ namespace MultiMiner.Win
             CheckForMobileMinerCommands();
         }
 
+        private const string mobileMinerApiKey = "P3mVX95iP7xfoI";
+        private const string mobileMinerUrl = "https://mobileminer.azurewebsites.net";
+
         private void SubmitMobileMinerStats()
         {
             if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
@@ -1205,14 +1208,18 @@ namespace MultiMiner.Win
                 }
             }
 
-            try
+            if (statisticsList.Count > 0)
             {
-                MobileMiner.Api.ApiContext.SubmitMiningStatistics("https://mobileminer.azurewebsites.net", statisticsList);
+                try
+                {
+                    MobileMiner.Api.ApiContext.SubmitMiningStatistics(mobileMinerUrl, mobileMinerApiKey, statisticsList);
+                }
+                catch (WebException ex)
+                {
+                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down    
+                }
             }
-            catch (WebException ex)
-            {
-                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down    
-            }
+
         }
 
         private void CheckForMobileMinerCommands()
@@ -1221,7 +1228,7 @@ namespace MultiMiner.Win
 
             try
             {
-                commands = MobileMiner.Api.ApiContext.GetCommands("https://mobileminer.azurewebsites.net",
+                commands = MobileMiner.Api.ApiContext.GetCommands(mobileMinerUrl, mobileMinerApiKey,
                     applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
                     Environment.MachineName);
             }
@@ -1251,7 +1258,7 @@ namespace MultiMiner.Win
                     StartMining();
                 }
 
-                MobileMiner.Api.ApiContext.DeleteCommand("https://mobileminer.azurewebsites.net",
+                MobileMiner.Api.ApiContext.DeleteCommand(mobileMinerUrl, mobileMinerApiKey,
                     applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
                     Environment.MachineName, command.Id);
             }
