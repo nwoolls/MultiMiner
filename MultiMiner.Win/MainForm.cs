@@ -1248,14 +1248,18 @@ namespace MultiMiner.Win
                 if (processedCommandIds.Contains(command.Id))
                     return;
                 processedCommandIds.Add(command.Id);
-                                
+
                 if (command.CommandText.Equals("START", StringComparison.OrdinalIgnoreCase))
+                {
+                    SaveChanges(); //necessary to ensure device configurations exist for devices
                     StartMining();
+                }
                 else if (command.CommandText.Equals("STOP", StringComparison.OrdinalIgnoreCase))
                     StopMining();
                 else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
                 {
                     StopMining();
+                    SaveChanges(); //necessary to ensure device configurations exist for devices
                     StartMining();
                 }
 
