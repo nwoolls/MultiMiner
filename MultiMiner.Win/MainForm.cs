@@ -1159,8 +1159,9 @@ namespace MultiMiner.Win
 
         private void mobileMinerTimer_Tick(object sender, EventArgs e)
         {
-            SubmitMobileMinerStats();
+            //check for commands first so we can report mining activity after
             CheckForMobileMinerCommands();
+            SubmitMobileMinerStats();
         }
 
         private const string mobileMinerApiKey = "P3mVX95iP7xfoI";
