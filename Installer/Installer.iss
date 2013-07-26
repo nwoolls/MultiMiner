@@ -54,3 +54,28 @@ Filename: "{app}\{#MyAppExeName}"; Flags: nowait postinstall skipifsilent; Descr
 
 [UninstallDelete]
 Type: dirifempty; Name: "{app}"
+
+[CustomMessages]
+DotNetMissing={#MyAppName} requires version 3.5 of the Microsoft .NET Framework. Would you like to download it now?
+
+[Code]
+function IsDotNET35Detected: Boolean;
+var
+  ErrorCode: Integer;
+  InstallValue: Cardinal;  
+begin
+  Result := True;
+  if not RegQueryDWordValue(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5', 
+    'Install', InstallValue) or (InstallValue <> 1) then
+  begin
+    Result := False;
+    if MsgBox(ExpandConstant('{cm:DotNetMissing}'), mbConfirmation, MB_YESNO) = IDYES then
+      ShellExec('', 'http://www.microsoft.com/downloads/details.aspx?FamilyID=333325fd-ae52-4e35-b531-508d977d32a6&DisplayLang=en',
+        '', '', SW_SHOWNORMAL, ewNoWait, ErrorCode);
+  end;
+end;
+
+function InitializeSetup: Boolean;
+begin
+  Result := IsDotNET35Detected;
+end;
