@@ -2,7 +2,10 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
+using System.Xml;
+using System.Linq;
 
 namespace MultiMiner.Xgminer
 {
@@ -70,14 +73,25 @@ namespace MultiMiner.Xgminer
 
             return "";
         }
-
-        private const string xgminerOsxRelease = "v1.0.1";
-
+        
         private static string GetBfgminerMacOSXDownloadUrl()
         {
-            //hard-coded for now, dynamic in the future
-            string downloadRoot = GetMinerDownloadRoot(MinerBackend.Cgminer);
-            return String.Format("{0}/releases/download/{1}/bfgminer-3.1.3-osx64.tar.gz", downloadRoot, xgminerOsxRelease);
+            string latestVersion = GetLatestXgminerVersion();
+            string downloadRoot = GetMinerDownloadRoot(MinerBackend.Bfgminer);
+            return String.Format("{0}/releases/download/{1}/bfgminer-3.1.3-osx64.tar.gz", downloadRoot, latestVersion);
+        }
+
+        private static string GetLatestXgminerVersion()
+        {
+            Atom10FeedFormatter formatter = new Atom10FeedFormatter();
+            using (XmlReader reader = XmlReader.Create("http://github.com/nwoolls/xgminer-osx/tags.atom"))
+                formatter.ReadFrom(reader);
+
+            SyndicationItem latestItem = formatter.Feed.Items.First();
+            SyndicationLink latestTagLink = latestItem.Links.First();
+
+            string latestVersion = latestTagLink.Uri.OriginalString.Split('/').Last();
+            return latestVersion;
         }
 
         private static string GetCgminerDownloadUrl()
@@ -104,8 +118,9 @@ namespace MultiMiner.Xgminer
         private static string GetCgminerMacOSXDownloadUrl()
         {
             //hard-coded for now, dynamic in the future
+            string latestVersion = GetLatestXgminerVersion();
             string downloadRoot = GetMinerDownloadRoot(MinerBackend.Cgminer);
-            return String.Format("{0}/releases/download/{1}/cgminer-3.3.1-osx64.tar.gz", downloadRoot, xgminerOsxRelease);
+            return String.Format("{0}/releases/download/{1}/cgminer-3.3.1-osx64.tar.gz", downloadRoot, latestVersion);
         }
 
         private static string GetCgminerWindowsDownloadUrl()
