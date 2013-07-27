@@ -11,11 +11,14 @@ namespace MultiMiner.Win
     {
         private readonly List<CryptoCoin> knownCoins;
         private readonly StrategyConfiguration strategyConfiguration;
+        private readonly ApplicationConfiguration applicationConfiguration;
 
-        public StrategiesForm(StrategyConfiguration strategyConfiguration, List<CryptoCoin> knownCoins)
+        public StrategiesForm(StrategyConfiguration strategyConfiguration, List<CryptoCoin> knownCoins, 
+            ApplicationConfiguration applicationConfiguration)
         {
             InitializeComponent();
             this.strategyConfiguration = strategyConfiguration;
+            this.applicationConfiguration = applicationConfiguration;
             this.knownCoins = knownCoins;
         }
 
@@ -55,6 +58,8 @@ namespace MultiMiner.Win
                 exceptionEdit.Text = strategyConfiguration.MineMostProfitableOverridePercentage.ToString();
 
             proftabilityBasisCombo.SelectedIndex = (int)strategyConfiguration.ProfitabilityBasis;
+
+            intervalCombo.SelectedIndex = (int)applicationConfiguration.StrategyCheckInterval;
         }
 
         private void SaveSettings()
@@ -95,6 +100,8 @@ namespace MultiMiner.Win
             }
 
             strategyConfiguration.ProfitabilityBasis = (StrategyConfiguration.CoinProfitabilityBasis)proftabilityBasisCombo.SelectedIndex;
+
+            applicationConfiguration.StrategyCheckInterval = (ApplicationConfiguration.CoinStrategyCheckInterval)intervalCombo.SelectedIndex;
         }
 
         private void multiCoinRadio_CheckedChanged(object sender, EventArgs e)
@@ -107,6 +114,11 @@ namespace MultiMiner.Win
             exceptionEdit.Enabled = multiCoinRadio.Checked;
             exceptionLabel.Enabled = multiCoinRadio.Checked;
             exceptPercentLabel.Enabled = multiCoinRadio.Checked;
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+
         }
     }
 

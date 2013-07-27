@@ -48,6 +48,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.proftabilityBasisCombo = new System.Windows.Forms.ComboBox();
+            this.intervalCombo = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -58,10 +60,10 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 235);
+            this.panel1.Location = new System.Drawing.Point(0, 264);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(331, 47);
-            this.panel1.TabIndex = 2;
+            this.panel1.TabIndex = 4;
             // 
             // saveButton
             // 
@@ -155,10 +157,10 @@
             this.groupBox1.Controls.Add(this.minCoinCombo);
             this.groupBox1.Controls.Add(this.multiCoinRadio);
             this.groupBox1.Controls.Add(this.singleCoinRadio);
-            this.groupBox1.Location = new System.Drawing.Point(12, 62);
+            this.groupBox1.Location = new System.Drawing.Point(12, 90);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(307, 172);
-            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Strategies";
             // 
@@ -218,7 +220,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(27, 38);
+            this.label4.Location = new System.Drawing.Point(28, 65);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(87, 13);
             this.label4.TabIndex = 3;
@@ -232,16 +234,40 @@
             "Profitability Adjusted for Stales",
             "Average Profitability Past 7 Days",
             "Straight Profitability of BTC"});
-            this.proftabilityBasisCombo.Location = new System.Drawing.Point(120, 35);
+            this.proftabilityBasisCombo.Location = new System.Drawing.Point(124, 62);
             this.proftabilityBasisCombo.Name = "proftabilityBasisCombo";
-            this.proftabilityBasisCombo.Size = new System.Drawing.Size(180, 21);
-            this.proftabilityBasisCombo.TabIndex = 1;
+            this.proftabilityBasisCombo.Size = new System.Drawing.Size(176, 21);
+            this.proftabilityBasisCombo.TabIndex = 2;
+            // 
+            // intervalCombo
+            // 
+            this.intervalCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.intervalCombo.FormattingEnabled = true;
+            this.intervalCombo.Items.AddRange(new object[] {
+            "5 minutes",
+            "15 minutes",
+            "30 minutes"});
+            this.intervalCombo.Location = new System.Drawing.Point(124, 35);
+            this.intervalCombo.Name = "intervalCombo";
+            this.intervalCombo.Size = new System.Drawing.Size(176, 21);
+            this.intervalCombo.TabIndex = 1;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(28, 38);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(70, 13);
+            this.label5.TabIndex = 5;
+            this.label5.Text = "Check every:";
             // 
             // StrategiesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(331, 282);
+            this.ClientSize = new System.Drawing.Size(331, 311);
+            this.Controls.Add(this.intervalCombo);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.proftabilityBasisCombo);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.groupBox1);
@@ -284,5 +310,7 @@
         private System.Windows.Forms.Label exceptionLabel;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox proftabilityBasisCombo;
+        private System.Windows.Forms.ComboBox intervalCombo;
+        private System.Windows.Forms.Label label5;
     }
 }

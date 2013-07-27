@@ -51,9 +51,6 @@ namespace MultiMiner.Win
             const int mobileMinerInterval = 32; //seconds
             mobileMinerTimer.Interval = mobileMinerInterval * 1000;
 
-            coinStatsCountdownMinutes = 15;
-            coinStatsTimer.Interval = coinStatsCountdownMinutes * 60 * 1000; //15 minutes
-
             RefreshCoinStats();
             
             LoadSettings();
@@ -282,6 +279,8 @@ namespace MultiMiner.Win
             startupMiningPanel.Visible = applicationConfiguration.StartMiningOnStartup;
 
             crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
+
+            SetupCoinStatsTimer();
         }
 
         private void RefreshCountdownLabel()
@@ -1015,11 +1014,14 @@ namespace MultiMiner.Win
 
         private void ConfigureStrategies()
         {
-            StrategiesForm strategiesForm = new StrategiesForm(engineConfiguration.StrategyConfiguration, knownCoins);
+            StrategiesForm strategiesForm = new StrategiesForm(engineConfiguration.StrategyConfiguration, knownCoins, 
+                applicationConfiguration);
             DialogResult dialogResult = strategiesForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 engineConfiguration.SaveStrategyConfiguration();
+                applicationConfiguration.SaveApplicationConfiguration();
+                SetupCoinStatsTimer();
                 coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.MineProfitableCoins;
                 RefreshStrategiesLabel();
                 LoadGridValuesFromCoinStats();
@@ -1031,6 +1033,33 @@ namespace MultiMiner.Win
             {
                 engineConfiguration.LoadStrategyConfiguration();
             }
+        }
+
+        private void SetupCoinStatsTimer()
+        {
+            int coinStatsMinutes = 15;
+
+            switch (applicationConfiguration.StrategyCheckInterval)
+            {
+                case ApplicationConfiguration.CoinStrategyCheckInterval.FiveMinutes:
+                    coinStatsMinutes = 5;
+                    break;
+                case ApplicationConfiguration.CoinStrategyCheckInterval.ThirtyMinutes:
+                    coinStatsMinutes = 30;
+                    break;
+                default:
+                    coinStatsMinutes = 15;
+                    break;
+            }
+
+            coinStatsTimer.Enabled = false;
+            coinStatsCountdownTimer.Enabled = false;
+
+            coinStatsCountdownMinutes = coinStatsMinutes;
+            coinStatsTimer.Interval = coinStatsMinutes * 60 * 1000;
+
+            coinStatsTimer.Enabled = true;
+            coinStatsCountdownTimer.Enabled = true;
         }
 
         private void coinStatsCountdownTimer_Tick(object sender, EventArgs e)
