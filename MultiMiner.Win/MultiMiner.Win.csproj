@@ -176,6 +176,7 @@
     <None Include="Resources\computer-find.png" />
     <None Include="Resources\network_application.png" />
     <None Include="Resources\window_text.png" />
+    <None Include="Resources\info.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

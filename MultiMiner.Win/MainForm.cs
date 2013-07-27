@@ -1169,6 +1169,11 @@ namespace MultiMiner.Win
 
         private void SubmitMobileMinerStats()
         {
+            //are remote monitoring enabled?
+            if (!applicationConfiguration.MobileMinerMonitoring)
+                return;
+
+            //is MobileMiner configured?
             if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
                 string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
                 return;
@@ -1225,6 +1230,15 @@ namespace MultiMiner.Win
 
         private void CheckForMobileMinerCommands()
         {
+            //are remote commands enabled?
+            if (!applicationConfiguration.MobileMinerRemoteCommands)
+                return;
+
+            //is MobileMiner configured?
+            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
+                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
+                return;
+
             List<MobileMiner.Api.RemoteCommand> commands = new List<MobileMiner.Api.RemoteCommand>();
 
             try

@@ -57,5 +57,25 @@ namespace MultiMiner.Win
 
             disableGpuCheckbox.Checked = minerConfiguration.DisableGpu;
         }
+
+        private void remoteMonitoringCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateMobileMinerEdits();
+        }
+
+        private void remoteCommandsCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateMobileMinerEdits();
+        }
+        private void UpdateMobileMinerEdits()
+        {
+            emailAddressEdit.Enabled = remoteMonitoringCheck.Checked || remoteCommandsCheck.Checked;
+            appKeyEdit.Enabled = emailAddressEdit.Enabled;
+        }
+
+        private void mobileMinerInfoLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            MessageBox.Show("MobileMiner is a mobile app, available soon on the Apple App Store, that allows you to remotely monitor and command your mining rigs. \n\nRemote commands are limited to \"start\", \"stop\", and \"restart\" for security reasons.", "MobileMiner", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }
