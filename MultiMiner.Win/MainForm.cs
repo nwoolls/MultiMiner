@@ -1221,10 +1221,7 @@ namespace MultiMiner.Win
                 foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
                 {
                     MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics = new MobileMiner.Api.MiningStatistics();
-
-                    miningStatistics.ApplicationKey = applicationConfiguration.MobileMinerApplicationKey;
-                    miningStatistics.EmailAddress = applicationConfiguration.MobileMinerEmailAddress;
-
+                    
                     miningStatistics.MinerName = "MultiMiner";
                     miningStatistics.CoinName = GetCoinNameForApiContext(minerProcess.ApiContext);
                     CryptoCoin coin = knownCoins.Single(c => c.Name.Equals(miningStatistics.CoinName));
@@ -1235,8 +1232,6 @@ namespace MultiMiner.Win
                     else if (coin.Algorithm == CoinAlgorithm.SHA256)
                         miningStatistics.Algorithm = "SHA-256";
                     
-                    miningStatistics.MachineName = Environment.MachineName;
-
                     PopulateMiningStatsFromDeviceInfo(miningStatistics, deviceInformation);
 
                     statisticsList.Add(miningStatistics);
@@ -1247,7 +1242,9 @@ namespace MultiMiner.Win
             {
                 try
                 {
-                    MobileMiner.Api.ApiContext.SubmitMiningStatistics(mobileMinerUrl, mobileMinerApiKey, statisticsList);
+                    MobileMiner.Api.ApiContext.SubmitMiningStatistics(mobileMinerUrl, mobileMinerApiKey,
+                        applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                        Environment.MachineName, statisticsList);
                 }
                 catch (WebException ex)
                 {

@@ -7,11 +7,12 @@ namespace MultiMiner.MobileMiner.Api
 {
     public class ApiContext
     {
-        public static void SubmitMiningStatistics(string url, string apiKey, List<MiningStatistics> miningStatistics)
+        public static void SubmitMiningStatistics(string url, string apiKey, string emailAddress, string applicationKey, string machineName, List<MiningStatistics> miningStatistics)
         {
             if (!url.EndsWith("/"))
                 url = url + "/";
-            string fullUrl = String.Format("{0}api/MiningStatisticsInput?apiKey={1}", url, apiKey);
+            string fullUrl = String.Format("{0}api/MiningStatisticsInput?emailAddress={1}&applicationKey={2}&machineName={3}&apiKey={4}", 
+                url, emailAddress, applicationKey, machineName, apiKey);
             using (WebClient client = new WebClient())
             {
                 JavaScriptSerializer serializer = new JavaScriptSerializer();

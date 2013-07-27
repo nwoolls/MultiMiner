@@ -2,13 +2,6 @@ namespace MultiMiner.MobileMiner.Api
 {
     public class MiningStatistics
     {
-        //User
-        public virtual string EmailAddress { get; set; }
-        public virtual string ApplicationKey { get; set; }
-
-        //Machine
-        public virtual string MachineName { get; set; }
-
         //MiningStatistics
         public string MinerName { get; set; } //e.g. MultiMiner, Asteroid, etc.
         public string CoinSymbol { get; set; }
