@@ -47,7 +47,7 @@ namespace MultiMiner.Coinchoose.Api
             catch (InvalidCastException)
             {
                 //handle System.InvalidCastException: Null object cannot be converted to a value type.
-                //tried this but didn't work: if (jToken["currentBlocks"] != null)
+                //tried this but didn't work: if (jToken["minBlockTime"] != null)
                 MinimumBlockTime = 0;
             }
 
@@ -56,7 +56,21 @@ namespace MultiMiner.Coinchoose.Api
             Exchange = jToken.Value<string>("exchange");
             Profitability = jToken.Value<double>("ratio");
             AdjustedProfitability = jToken.Value<double>("adjustedratio");
-            AverageProfitability = jToken.Value<double>("avgProfit");
+
+
+            try
+            {
+                AverageProfitability = jToken.Value<double>("avgProfit"); //this one can be null too (?)
+            }
+            catch (InvalidCastException)
+            {
+                //handle System.InvalidCastException: Null object cannot be converted to a value type.
+                //tried this but didn't work: if (jToken["avgProfit"] != null)
+                AverageProfitability = 0;
+            }
+
+
+
             AverageHashRate = jToken.Value<double>("avgHash");
         }
     }
