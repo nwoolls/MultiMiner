@@ -25,6 +25,10 @@ MultiMiner also supports basic features such as relaunching crashed miners, star
 
 ![Settings](/Screenshots/Settings.png "Settings")
 
+Finally, MultiMiner supports [MobileMiner][14], an open API with mobile apps for remotely monitoring and controlling your rigs.
+
+![MobileMiner](/Screenshots/MobileMiner.png "MobileMiner")
+
 Binary Downloads
 ----------------
 Refer to the [Github Releases page][12] for source code and binary downloads.
@@ -95,3 +99,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [11]: https://www.dropbox.com/s/o08inghtw7ut1an/MultiMiner-1.0.7.exe
 [12]: https://github.com/nwoolls/MultiMiner/releases
 [13]: https://github.com/nwoolls/xgminer-osx
+[14]: http://www.mobileminerapp.com
