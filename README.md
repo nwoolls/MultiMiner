@@ -5,29 +5,29 @@ MultiMiner is a GUI front-end for [cgminer][1] and [bfgminer][2] that simplifies
 
 MultiMiner will automatically download and install either cgminer, bfgminer, or both.
 
-![No Miners Prompt](/Screenshots/No%20Miners%20Prompt.png "No Miners Prompt")
+![No Miners Prompt](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt.png "No Miners Prompt")
 
-![Downloading and Installing Cgminer](/Screenshots/Downloading%20and%20Installing%20Cgminer.png "Downloading and Installing Cgminer")
+![Downloading and Installing Cgminer](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Downloading%20and%20Installing%20Cgminer.png "Downloading and Installing Cgminer")
 
 MultiMiner uses the underlying mining engine (cgminer by default) to detect available mining devices.
 
-![Main Screen](/Screenshots/Main%20Screen.png "Main Screen")
+![Main Screen](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen.png "Main Screen")
 
 You can then use the UI to configure individual crypto-currencies and their pools, including support for load balancing.
 
-![Configure Coins](/Screenshots/Configure%20Coins.png "Configure Coins")
+![Configure Coins](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Configure%20Coins.png "Configure Coins")
 
 MultiMiner supports automatically mining the most profitable coins based on a set of configurable strategies.
 
-![Configure Strategies](/Screenshots/Configure%20Strategies.png "Configure Strategies")
+![Configure Strategies](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Configure%20Strategies.png "Configure Strategies")
 
 MultiMiner also supports basic features such as relaunching crashed miners, starting with Windows, minimizing to the notification area, and mining on startup.
 
-![Settings](/Screenshots/Settings.png "Settings")
+![Settings](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Settings.png "Settings")
 
 Finally, MultiMiner supports [MobileMiner][14], an open API with mobile apps for remotely monitoring and controlling your rigs.
 
-![MobileMiner](/Screenshots/MobileMiner.png "MobileMiner")
+![MobileMiner](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/MobileMiner.png "MobileMiner")
 
 Binary Downloads
 ----------------
@@ -49,11 +49,11 @@ OS X Installation
 3. Download and extract the __.app__.zip file at the above Binary Downloads link
 4. Launch MultiMiner.app to get started
 
-![No Miners Prompt - OS X](/Screenshots/No%20Miners%20Prompt%20-%20OS%20X.png "No Miners Prompt - OS X")
+![No Miners Prompt - OS X](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt%20-%20OS%20X.png "No Miners Prompt - OS X")
 
 MultiMiner will automatically download redistributable binaries of cgminer and bfgminer from the [xgminer-osx][13] project.
 
-![Main Screen - OS X](/Screenshots/Main%20Screen%20-%20OS%20X.png "Main Screen - OS X")
+![Main Screen - OS X](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen%20-%20OS%20X.png "Main Screen - OS X")
 
 Mono (OS X, Linux) Installation
 -------------------------------
