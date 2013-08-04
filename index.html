@@ -1,78 +1,158 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>MultiMiner by nwoolls</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
     <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
+    <title>MultiMiner by nwoolls</title>
   </head>
+
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/nwoolls/MultiMiner">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/nwoolls/MultiMiner/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/nwoolls/MultiMiner/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
+    <header>
+      <div class="inner">
+        <h1>MultiMiner</h1>
+        <h2>Your Coins. Your Pools. Your way.</h2>
+        <a href="https://github.com/nwoolls/MultiMiner" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
 
-    <div class="wrapper">
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="multiminer" class="anchor" href="#multiminer"><span class="octicon octicon-link"></span></a>MultiMiner</h1>
 
-      <section>
-        <div id="title">
-          <h1>MultiMiner</h1>
-          <p>Your Coins. Your Pools. Your way.</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/nwoolls">nwoolls</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
+<h3>
+<a name="your-coins-your-pools-your-way" class="anchor" href="#your-coins-your-pools-your-way"><span class="octicon octicon-link"></span></a>Your coins. Your pools. Your way.</h3>
 
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+<p>MultiMiner is a GUI front-end for <a href="https://github.com/ckolivas/cgminer">cgminer</a> and <a href="https://github.com/luke-jr/bfgminer">bfgminer</a> that simplifies switching individal devices - GPUs, ASICs, etc. - between crypto-currencies.</p>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>MultiMiner will automatically download and install either cgminer, bfgminer, or both.</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt.png" alt="No Miners Prompt" title="No Miners Prompt"></p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Downloading%20and%20Installing%20Cgminer.png" alt="Downloading and Installing Cgminer" title="Downloading and Installing Cgminer"></p>
+
+<p>MultiMiner uses the underlying mining engine (cgminer by default) to detect available mining devices.</p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen.png" alt="Main Screen" title="Main Screen"></p>
+
+<p>You can then use the UI to configure individual crypto-currencies and their pools, including support for load balancing.</p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Configure%20Coins.png" alt="Configure Coins" title="Configure Coins"></p>
+
+<p>MultiMiner supports automatically mining the most profitable coins based on a set of configurable strategies.</p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Configure%20Strategies.png" alt="Configure Strategies" title="Configure Strategies"></p>
+
+<p>MultiMiner also supports basic features such as relaunching crashed miners, starting with Windows, minimizing to the notification area, and mining on startup.</p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Settings.png" alt="Settings" title="Settings"></p>
+
+<p>Finally, MultiMiner supports <a href="http://www.mobileminerapp.com">MobileMiner</a>, an open API with mobile apps for remotely monitoring and controlling your rigs.</p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/MobileMiner.png" alt="MobileMiner" title="MobileMiner"></p>
+
+<h2>
+<a name="binary-downloads" class="anchor" href="#binary-downloads"><span class="octicon octicon-link"></span></a>Binary Downloads</h2>
+
+<p>Refer to the <a href="https://github.com/nwoolls/MultiMiner/releases">Github Releases page</a> for source code and binary downloads.</p>
+
+<h2>
+<a name="windows-installation" class="anchor" href="#windows-installation"><span class="octicon octicon-link"></span></a>Windows Installation</h2>
+
+<ol>
+<li>Download and run the installer at the above link and follow instructions</li>
+</ol><p>The installer runs without needing admin rights and does not install to Program Files so as not to be too intrusive. However, if you prefer you can use the zip file:</p>
+
+<ol>
+<li>Download and extract the zip file at the above link</li>
+<li>Launch MultiMiner.Win.exe to get started</li>
+</ol><h2>
+<a name="os-x-installation" class="anchor" href="#os-x-installation"><span class="octicon octicon-link"></span></a>OS X Installation</h2>
+
+<ol>
+<li>Install X11. Under OS X you should install Xquartz available <a href="http://xquartz.macosforge.org/">here</a>
+</li>
+<li>Install the latest version of <a href="http://www.mono-project.com/Main_Page">Mono</a>
+</li>
+<li>Download and extract the <strong>.app</strong>.zip file at the above Binary Downloads link</li>
+<li>Launch MultiMiner.app to get started</li>
+</ol><p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt%20-%20OS%20X.png" alt="No Miners Prompt - OS X" title="No Miners Prompt - OS X"></p>
+
+<p>MultiMiner will automatically download redistributable binaries of cgminer and bfgminer from the <a href="https://github.com/nwoolls/xgminer-osx">xgminer-osx</a> project.</p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen%20-%20OS%20X.png" alt="Main Screen - OS X" title="Main Screen - OS X"></p>
+
+<h2>
+<a name="mono-os-x-linux-installation" class="anchor" href="#mono-os-x-linux-installation"><span class="octicon octicon-link"></span></a>Mono (OS X, Linux) Installation</h2>
+
+<ol>
+<li>Download and extract the zip file at the above Binary Downloads link</li>
+<li>Install cgminer or bfgminer. For OS X, you can find packages and for doing so <a href="https://github.com/nwoolls/homebrew-cryptocoin">here</a> and instructions for using them <a href="http://blog.nwoolls.com/2013/04/24/bitcoin-mining-on-mac-os-x-cgminer-bfgminer/">here</a>.</li>
+<li>Install X11. Under OS X you should install Xquartz available <a href="http://xquartz.macosforge.org/">here</a>.</li>
+<li>Install the latest version of <a href="http://www.mono-project.com/Main_Page">Mono</a>.</li>
+<li>
+<p>Run MultiMiner.Win.exe using mono:</p>
+
+<pre><code>mono MultiMiner.Win.exe
 </code></pre>
+</li>
+</ol><h2>
+<a name="source-code" class="anchor" href="#source-code"><span class="octicon octicon-link"></span></a>Source Code</h2>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p>The source code is structured in such a way that it should be fairly easy to use and re-use for other projects:</p>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<ul>
+<li>
+<strong>MultiMiner.Xgminer</strong> is an assembly for controling either the cgminer or bfgminer executable - e.g. launching and enumerating devices</li>
+<li>
+<strong>MultiMiner.Xgminer.Api</strong> assists in communicating with the underlying miner via the RPC API</li>
+<li>
+<strong>MultiMiner.Coinchoose.Api</strong> assists in consuming the cypto-currency information available at <a href="http://coinchoose.com/">coinchoose.com</a>
+</li>
+<li>
+<strong>MultiMiner.Engine</strong> is an assembly that can be used to interact with all functionality found in MultiMiner, but without a UI - useful for creating front-ends for other OS's</li>
+<li>
+<strong>MultiMiner.Win</strong> is the Windows Forms application</li>
+</ul><h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>Copyright (C) 2013 Nathanial Woolls</p>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+        </section>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+        <aside id="sidebar">
+          <a href="https://github.com/nwoolls/MultiMiner/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/nwoolls/MultiMiner/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+          <p class="repo-owner"><a href="https://github.com/nwoolls/MultiMiner"></a> is maintained by <a href="https://github.com/nwoolls">nwoolls</a>.</p>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
+
+  
   </body>
 </html>
