@@ -16,7 +16,10 @@ namespace MultiMiner.Xgminer.Api.Parsers
                 if (deviceText == "\0")
                     continue;
 
-                var deviceAttributes = deviceText.Split(',');
+                //bfgminer may have multiple entries for the same key, e.g. Hardware Errors
+                //seen with customer data/hardware
+                //remove dupes using Distinct()
+                var deviceAttributes = deviceText.Split(',').ToList().Distinct();
 
                 Dictionary<string, string> keyValuePairs = deviceAttributes
                   .Where(value => value.Contains('='))
