@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>MultiMiner by nwoolls</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>MultiMiner</h1>
+        <p>Your Coins. Your Pools. Your way.</p>
+
+        <p class="view"><a href="https://github.com/nwoolls/MultiMiner">View the Project on GitHub <small>nwoolls/MultiMiner</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/nwoolls/MultiMiner/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/nwoolls/MultiMiner/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/nwoolls/MultiMiner">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>MultiMiner is a GUI front-end for <a href="https://github.com/ckolivas/cgminer">cgminer</a> and <a href="https://github.com/luke-jr/bfgminer">bfgminer</a> that simplifies switching individal devices - GPUs, ASICs, etc. - between crypto-currencies.</p>
+
+<p>MultiMiner will automatically download and install either cgminer, bfgminer, or both.</p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt.png" alt="No Miners Prompt" title="No Miners Prompt"></p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Downloading%20and%20Installing%20Cgminer.png" alt="Downloading and Installing Cgminer" title="Downloading and Installing Cgminer"></p>
+
+<p>MultiMiner uses the underlying mining engine (cgminer by default) to detect available mining devices.</p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen.png" alt="Main Screen" title="Main Screen"></p>
+
+<p>You can then use the UI to configure individual crypto-currencies and their pools, including support for load balancing.</p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Configure%20Coins.png" alt="Configure Coins" title="Configure Coins"></p>
+
+<p>MultiMiner supports automatically mining the most profitable coins based on a set of configurable strategies.</p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Configure%20Strategies.png" alt="Configure Strategies" title="Configure Strategies"></p>
+
+<p>MultiMiner also supports basic features such as relaunching crashed miners, starting with Windows, minimizing to the notification area, and mining on startup.</p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Settings.png" alt="Settings" title="Settings"></p>
+
+<p>Finally, MultiMiner supports <a href="http://www.mobileminerapp.com">MobileMiner</a>, an open API with mobile apps for remotely monitoring and controlling your rigs.</p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/MobileMiner.png" alt="MobileMiner" title="MobileMiner"></p>
+
+<h2>
+<a name="binary-downloads" class="anchor" href="#binary-downloads"><span class="octicon octicon-link"></span></a>Binary Downloads</h2>
+
+<p>Refer to the <a href="https://github.com/nwoolls/MultiMiner/releases">Github Releases page</a> for source code and binary downloads.</p>
+
+<h2>
+<a name="windows-installation" class="anchor" href="#windows-installation"><span class="octicon octicon-link"></span></a>Windows Installation</h2>
+
+<ol>
+<li>Download and run the installer at the above link and follow instructions</li>
+</ol><p>The installer runs without needing admin rights and does not install to Program Files so as not to be too intrusive. However, if you prefer you can use the zip file:</p>
+
+<ol>
+<li>Download and extract the zip file at the above link</li>
+<li>Launch MultiMiner.Win.exe to get started</li>
+</ol><h2>
+<a name="os-x-installation" class="anchor" href="#os-x-installation"><span class="octicon octicon-link"></span></a>OS X Installation</h2>
+
+<ol>
+<li>Install X11. Under OS X you should install Xquartz available <a href="http://xquartz.macosforge.org/">here</a>
+</li>
+<li>Install the latest version of <a href="http://www.mono-project.com/Main_Page">Mono</a>
+</li>
+<li>Download and extract the <strong>.app</strong>.zip file at the above Binary Downloads link</li>
+<li>Launch MultiMiner.app to get started</li>
+</ol><p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt%20-%20OS%20X.png" alt="No Miners Prompt - OS X" title="No Miners Prompt - OS X"></p>
+
+<p>MultiMiner will automatically download redistributable binaries of cgminer and bfgminer from the <a href="https://github.com/nwoolls/xgminer-osx">xgminer-osx</a> project.</p>
+
+<p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen%20-%20OS%20X.png" alt="Main Screen - OS X" title="Main Screen - OS X"></p>
+
+<h2>
+<a name="mono-os-x-linux-installation" class="anchor" href="#mono-os-x-linux-installation"><span class="octicon octicon-link"></span></a>Mono (OS X, Linux) Installation</h2>
+
+<ol>
+<li>Download and extract the zip file at the above Binary Downloads link</li>
+<li>Install cgminer or bfgminer. For OS X, you can find packages and for doing so <a href="https://github.com/nwoolls/homebrew-cryptocoin">here</a> and instructions for using them <a href="http://blog.nwoolls.com/2013/04/24/bitcoin-mining-on-mac-os-x-cgminer-bfgminer/">here</a>.</li>
+<li>Install X11. Under OS X you should install Xquartz available <a href="http://xquartz.macosforge.org/">here</a>.</li>
+<li>Install the latest version of <a href="http://www.mono-project.com/Main_Page">Mono</a>.</li>
+<li>
+<p>Run MultiMiner.Win.exe using mono:</p>
+
+<pre><code>mono MultiMiner.Win.exe
+</code></pre>
+</li>
+</ol><h2>
+<a name="source-code" class="anchor" href="#source-code"><span class="octicon octicon-link"></span></a>Source Code</h2>
+
+<p>The source code is structured in such a way that it should be fairly easy to use and re-use for other projects:</p>
+
+<ul>
+<li>
+<strong>MultiMiner.Xgminer</strong> is an assembly for controling either the cgminer or bfgminer executable - e.g. launching and enumerating devices</li>
+<li>
+<strong>MultiMiner.Xgminer.Api</strong> assists in communicating with the underlying miner via the RPC API</li>
+<li>
+<strong>MultiMiner.Coinchoose.Api</strong> assists in consuming the cypto-currency information available at <a href="http://coinchoose.com/">coinchoose.com</a>
+</li>
+<li>
+<strong>MultiMiner.Engine</strong> is an assembly that can be used to interact with all functionality found in MultiMiner, but without a UI - useful for creating front-ends for other OS's</li>
+<li>
+<strong>MultiMiner.Win</strong> is the Windows Forms application</li>
+</ul><h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Copyright (C) 2013 Nathanial Woolls</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/nwoolls">nwoolls</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-19559574-9");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
