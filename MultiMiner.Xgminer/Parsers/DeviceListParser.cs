@@ -3,12 +3,12 @@ using System.Text.RegularExpressions;
 
 namespace MultiMiner.Xgminer.Parsers
 {
-    class DeviceListParser
+    public class DeviceListParser
     {
         private const string DevicesHeaderPattern = @"\[.+ .+\] Devices detected:";
         private const string DevicesFooterPattern = @"\[.+ .+\] \d+ devices listed";
-        private const string DeviceFullPattern = @"\[.+ .+\].*\d+\. (.*) \d+ ?: (.*) \(driver: (.*)\)";
-        private const string DeviceBriefPattern = @"\[.+ .+\].*\d+\. (.*) \d+  ?\(driver: (.*)\)";
+        private const string DeviceFullPattern = @"\[.+ .+\].*\d+\. (.*) ?: (.*) \(driver: (.*)\)";
+        private const string DeviceBriefPattern = @"\[.+ .+\].*\d+\. (.*)  ?\(driver: (.*)\)";
 
         public static void ParseTextForDevices(List<string> text, List<Device> devices)
         {
@@ -28,7 +28,7 @@ namespace MultiMiner.Xgminer.Parsers
                     {
                         Device newDevice = new Device();
 
-                        newDevice.Identifier = match.Groups[1].Value.TrimEnd();
+                        newDevice.Identifier = match.Groups[1].Value.TrimEnd().Substring(0, 3);
                         newDevice.Name = match.Groups[2].Value.TrimEnd();
                         newDevice.Driver = match.Groups[3].Value.TrimEnd();
                         newDevice.Kind = DeviceIsGpu(newDevice) ? DeviceKind.GPU : DeviceKind.USB;
@@ -42,7 +42,7 @@ namespace MultiMiner.Xgminer.Parsers
                         {
                             Device newDevice = new Device();
 
-                            newDevice.Identifier = match.Groups[1].Value.TrimEnd();
+                            newDevice.Identifier = match.Groups[1].Value.TrimEnd().Substring(0, 3);
                             newDevice.Driver = match.Groups[2].Value.TrimEnd();
                             newDevice.Kind = DeviceIsGpu(newDevice) ? DeviceKind.GPU : DeviceKind.USB;
 

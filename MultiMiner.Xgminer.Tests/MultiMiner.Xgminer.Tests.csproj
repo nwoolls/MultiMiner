@@ -53,6 +53,7 @@
     <Compile Include="InstallerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MinerTests.cs" />
+    <Compile Include="DeviceListParserTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiMiner.Xgminer\MultiMiner.Xgminer.csproj">
