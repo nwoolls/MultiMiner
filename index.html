@@ -28,27 +28,29 @@
         </ul>
       </header>
       <section>
-        <p>MultiMiner is a GUI front-end for <a href="https://github.com/ckolivas/cgminer">cgminer</a> and <a href="https://github.com/luke-jr/bfgminer">bfgminer</a> that simplifies switching individal devices - GPUs, ASICs, FPGAs, etc. - between crypto-currencies.</p>
+        <p><strong>MultiMiner</strong> is a graphical application for crypto-coin mining. MultiMiner simplifies switching individal devices (GPUs, ASICs, FPGAs) between crypto-currencies such as Bitcoin and Litecoin.</p>
+
+<p>MultiMiner uses the underlying mining engine (<a href="https://github.com/ckolivas/cgminer">cgminer</a> by default) to detect available mining devices and then presents a user interface for selecting the coins you'd like to mine.</p>
 
 <p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen.png" alt="Main Screen" title="Main Screen"></p>
 
-<p>MultiMiner uses the underlying mining engine (cgminer by default) to detect available mining devices.</p>
+<p>MultiMiner will automatically download and install the latest version of either cgminer, <a href="https://github.com/luke-jr/bfgminer">bfgminer</a>, or both, making it simple for the new user to get started.</p>
 
 <p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt.png" alt="No Miners Prompt" title="No Miners Prompt"></p>
 
-<p>MultiMiner will automatically download and install either cgminer, bfgminer, or both.</p>
+<p>These command line miners are standard tools for crypto-coin mining and are downloaded from official sources.</p>
 
 <p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Downloading%20and%20Installing%20Cgminer.png" alt="Downloading and Installing Cgminer" title="Downloading and Installing Cgminer"></p>
 
-<p>You can then use the UI to configure individual crypto-currencies and their pools, including support for load balancing.</p>
+<p>You can then use the Configure Coins dialog to setup each coin that you would like to mine along with their pools, including support for load balancing.</p>
 
 <p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Configure%20Coins.png" alt="Configure Coins" title="Configure Coins"></p>
 
-<p>MultiMiner supports automatically mining the most profitable coins based on a set of configurable strategies.</p>
+<p>MultiMiner supports automatically mining the most profitable coins based on a set of configurable strategies. Profitability information is updated regularly from <a href="http://coinchoose.com/">CoinChoose.com</a>.</p>
 
 <p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Configure%20Strategies.png" alt="Configure Strategies" title="Configure Strategies"></p>
 
-<p>MultiMiner also supports basic features such as relaunching crashed miners, starting with Windows, minimizing to the notification area, and mining on startup.</p>
+<p>MultiMiner also supports features such as relaunching crashed miners, starting with Windows, minimizing to the notification area, and mining on startup.</p>
 
 <p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Settings.png" alt="Settings" title="Settings"></p>
 
@@ -56,20 +58,22 @@
 
 <p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/MobileMiner.png" alt="MobileMiner" title="MobileMiner"></p>
 
-<h2>
-<a name="binary-downloads" class="anchor" href="#binary-downloads"><span class="octicon octicon-link"></span></a>Binary Downloads</h2>
+<p>By entering your MobileMiner email address and application key in the Configure Settings dialog, you will be able to remotely monitor and control your rigs <em>without having to open any firewalls or forward any ports</em>.</p>
 
-<p>Refer to the <a href="https://github.com/nwoolls/MultiMiner/releases">Github Releases page</a> for source code and binary downloads.</p>
+<h2>
+<a name="downloads" class="anchor" href="#downloads"><span class="octicon octicon-link"></span></a>Downloads</h2>
+
+<p>You can download installers and zip files for Windows, OS X, and Mono on the <a href="https://github.com/nwoolls/MultiMiner/releases">GitHub Releases page</a>.</p>
 
 <h2>
 <a name="windows-installation" class="anchor" href="#windows-installation"><span class="octicon octicon-link"></span></a>Windows Installation</h2>
 
 <ol>
-<li>Download and run the installer at the above link and follow instructions</li>
-</ol><p>The installer runs without needing admin rights and does not install to Program Files so as not to be too intrusive. However, if you prefer you can use the zip file:</p>
+<li>Download and run the installer (.exe) file at the above link and follow instructions</li>
+</ol><p>The installer runs without needing admin rights and does not install to Program Files so as not to be intrusive. However, if you prefer you can use the zip file:</p>
 
 <ol>
-<li>Download and extract the zip file at the above link</li>
+<li>Download and extract the .zip file at the above link</li>
 <li>Launch MultiMiner.Win.exe to get started</li>
 </ol><h2>
 <a name="os-x-installation" class="anchor" href="#os-x-installation"><span class="octicon octicon-link"></span></a>OS X Installation</h2>
@@ -112,7 +116,7 @@
 <li>
 <strong>MultiMiner.Xgminer.Api</strong> assists in communicating with the underlying miner via the RPC API</li>
 <li>
-<strong>MultiMiner.Coinchoose.Api</strong> assists in consuming the cypto-currency information available at <a href="http://coinchoose.com/">coinchoose.com</a>
+<strong>MultiMiner.Coinchoose.Api</strong> assists in consuming the cypto-currency information available at <a href="http://coinchoose.com/">CoinChoose.com</a>
 </li>
 <li>
 <strong>MultiMiner.Engine</strong> is an assembly that can be used to interact with all functionality found in MultiMiner, but without a UI - useful for creating front-ends for other OS's</li>
