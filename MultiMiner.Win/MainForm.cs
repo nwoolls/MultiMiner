@@ -128,9 +128,7 @@ namespace MultiMiner.Win
         
         private static void InstallMiner(MinerBackend minerBackend)
         {
-            string minerName = "cgminer";
-            if (minerBackend == MinerBackend.Bfgminer)
-                minerName = "bfgminer";
+            string minerName = MinerPath.GetMinerName(minerBackend);
 
             ProgressForm progressForm = new ProgressForm("Downloading and installing " + minerName + " from " + Installer.GetMinerDownloadRoot(minerBackend));
             progressForm.Show();
@@ -555,6 +553,9 @@ namespace MultiMiner.Win
             if (miningEngine.Mining)
                 return;
 
+            if (!confFileHandled())
+                return;
+
             startButton.Enabled = false; //immediately disable, update after
             startMenuItem.Enabled = false;
 
@@ -572,6 +573,33 @@ namespace MultiMiner.Win
             LoadGridValuesFromCoinStats();
 
             UpdateMiningButtons();
+        }
+
+        private bool confFileHandled()
+        {
+            const string bakExtension = ".mmbak";
+
+            MinerBackend minerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
+            string minerName = MinerPath.GetMinerName(minerBackend);
+            string minerExecutablePath = MinerPath.GetPathToInstalledMiner(minerBackend);
+            string confFileFilePath = Path.ChangeExtension(minerExecutablePath, ".conf");
+
+            if (File.Exists(confFileFilePath))
+            {
+                string confFileName = Path.GetFileName(confFileFilePath);
+                string confBakFileName = confFileName + bakExtension;
+
+                DialogResult dialogResult = MessageBox.Show(String.Format("A {0} file has been detected in your miner directory. This file interferes with the arguments supplied by MultiMiner. Can MultiMiner rename this file to {1}?",
+                    confFileName, confBakFileName), "External Configuration Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (dialogResult == System.Windows.Forms.DialogResult.No)
+                    return false;
+
+                string confBakFileFilePath = confFileFilePath + bakExtension;
+                File.Delete(confBakFileFilePath);
+                File.Move(confFileFilePath, confBakFileFilePath);
+            }
+
+            return true;           
         }
 
         private void RefreshBackendLabel()
