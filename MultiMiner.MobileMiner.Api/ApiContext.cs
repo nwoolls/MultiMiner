@@ -11,7 +11,7 @@ namespace MultiMiner.MobileMiner.Api
         {
             if (!url.EndsWith("/"))
                 url = url + "/";
-            string fullUrl = String.Format("{0}api/MiningStatisticsInput?emailAddress={1}&applicationKey={2}&machineName={3}&apiKey={4}", 
+            string fullUrl = String.Format("{0}MiningStatisticsInput?emailAddress={1}&applicationKey={2}&machineName={3}&apiKey={4}", 
                 url, emailAddress, applicationKey, machineName, apiKey);
             using (WebClient client = new WebClient())
             {
@@ -26,7 +26,7 @@ namespace MultiMiner.MobileMiner.Api
         {
             if (!url.EndsWith("/"))
                 url = url + "/";
-            string fullUrl = String.Format("{0}api/RemoteCommands?emailAddress={1}&applicationKey={2}&machineName={3}&apiKey={4}", 
+            string fullUrl = String.Format("{0}RemoteCommands?emailAddress={1}&applicationKey={2}&machineName={3}&apiKey={4}", 
                 url, emailAddress, applicationKey, machineName, apiKey);
             using (WebClient client = new WebClient())
             {
@@ -40,7 +40,7 @@ namespace MultiMiner.MobileMiner.Api
         {
             if (!url.EndsWith("/"))
                 url = url + "/";
-            string fullUrl = String.Format("{0}api/RemoteCommands?emailAddress={1}&applicationKey={2}&machineName={3}&commandId={4}&apiKey={5}",
+            string fullUrl = String.Format("{0}RemoteCommands?emailAddress={1}&applicationKey={2}&machineName={3}&commandId={4}&apiKey={5}",
                 url, emailAddress, applicationKey, machineName, commandId, apiKey);
             using (WebClient client = new WebClient())
             {
