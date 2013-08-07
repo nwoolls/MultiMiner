@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiMiner.Xgminer;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,6 +20,20 @@ namespace MultiMiner.Engine.Configuration
         public List<CoinConfiguration> CoinConfigurations { get; set; }
         public XgminerConfiguration XgminerConfiguration { get; set; }
         public StrategyConfiguration StrategyConfiguration { get; set; }
+
+        public void RemoveBlankPoolConfigurations()
+        {
+            foreach (CoinConfiguration coinConfiguration in CoinConfigurations)
+            {
+                for (int i = coinConfiguration.Pools.Count - 1; i >= 0; i--)
+                {
+                    MiningPool pool = coinConfiguration.Pools[i];
+                    if (String.IsNullOrEmpty(pool.Host) &&
+                        String.IsNullOrEmpty(pool.Username))
+                        coinConfiguration.Pools.Remove(pool);
+                }
+            }
+        }
 
         private static string AppDataPath()
         {
@@ -66,6 +81,7 @@ namespace MultiMiner.Engine.Configuration
         {
             CoinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<CoinConfiguration>>(CoinConfigurationsFileName());
             RemoveIvalidCoinsFromDeviceConfigurations();
+            RemoveBlankPoolConfigurations();
         }
 
         private void RemoveDisabledCoinsFromDeviceConfigurations()
@@ -93,6 +109,7 @@ namespace MultiMiner.Engine.Configuration
 
         public void SaveCoinConfigurations()
         {
+            RemoveBlankPoolConfigurations();
             ConfigurationReaderWriter.WriteConfiguration(CoinConfigurations, CoinConfigurationsFileName());
             RemoveIvalidCoinsFromDeviceConfigurations();
         }
