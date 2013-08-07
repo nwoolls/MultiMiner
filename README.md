@@ -1,17 +1,17 @@
 MultiMiner
 ==========
 ### Your coins. Your pools. Your way.
-MultiMiner is a GUI front-end for [cgminer][1] and [bfgminer][2] that simplifies switching individal devices - GPUs, ASICs, etc. - between crypto-currencies.
+MultiMiner is a GUI front-end for [cgminer][1] and [bfgminer][2] that simplifies switching individal devices - GPUs, ASICs, FPGAs, etc. - between crypto-currencies.
 
-MultiMiner will automatically download and install either cgminer, bfgminer, or both.
-
-![No Miners Prompt](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt.png "No Miners Prompt")
-
-![Downloading and Installing Cgminer](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Downloading%20and%20Installing%20Cgminer.png "Downloading and Installing Cgminer")
+![Main Screen](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen.png "Main Screen")
 
 MultiMiner uses the underlying mining engine (cgminer by default) to detect available mining devices.
 
-![Main Screen](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen.png "Main Screen")
+![No Miners Prompt](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt.png "No Miners Prompt")
+
+MultiMiner will automatically download and install either cgminer, bfgminer, or both.
+
+![Downloading and Installing Cgminer](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Downloading%20and%20Installing%20Cgminer.png "Downloading and Installing Cgminer")
 
 You can then use the UI to configure individual crypto-currencies and their pools, including support for load balancing.
 
