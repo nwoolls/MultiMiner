@@ -1273,9 +1273,14 @@ namespace MultiMiner.Win
                     applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
                     Environment.MachineName);
             }
-            catch (WebException ex)
+            catch (Exception ex)
             {
-                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down    
+                if ((ex is WebException) || (ex is ArgumentException))
+                {
+                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+                    //could also be a json parsing error
+                }
+                throw;  
             }
 
             if (commands.Count > 0)
