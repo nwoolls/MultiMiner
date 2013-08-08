@@ -42,7 +42,7 @@ namespace MultiMiner.Win
             return Path.Combine(rootPath, "MultiMiner");
         }
 
-        private static string ApplicationConfigurationFileName()
+        public static string ApplicationConfigurationFileName()
         {
             return Path.Combine(AppDataPath(), "ApplicationConfiguration.xml");
         }

@@ -20,10 +20,10 @@ namespace MultiMiner.Win
     {
         private List<Coinchoose.Api.CoinInformation> coinInformation;
         private List<Device> devices;
-        private readonly EngineConfiguration engineConfiguration = new EngineConfiguration();
+        private EngineConfiguration engineConfiguration = new EngineConfiguration();
         private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
         private readonly MiningEngine miningEngine = new MiningEngine();
-        private readonly ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+        private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
         private int startupMiningCountdownSeconds = 0;
         private int coinStatsCountdownMinutes = 0;
         private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
@@ -81,6 +81,8 @@ namespace MultiMiner.Win
             mobileMinerTimer.Interval = mobileMinerInterval * 1000;
 
             RefreshCoinStats();
+
+            CheckAndShowGettingStarted();
             
             LoadSettings();
 
@@ -106,8 +108,6 @@ namespace MultiMiner.Win
             if (applicationConfiguration.DetectDisownedMiners)
                 CheckForDisownedMiners();
 
-            CheckAndShowGettingStarted();
-
             CheckAndDownloadMiners();
 
             RefreshDevices();
@@ -120,8 +120,25 @@ namespace MultiMiner.Win
 
         private void CheckAndShowGettingStarted()
         {
-            WizardForm wizardForm = new WizardForm();
-            wizardForm.ShowDialog();
+            //only show if there's no settings yet
+            if (File.Exists(ApplicationConfiguration.ApplicationConfigurationFileName()))
+                return;
+
+            WizardForm wizardForm = new WizardForm(this.knownCoins);
+            DialogResult dialogResult = wizardForm.ShowDialog();
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                EngineConfiguration newEngineConfiguration;
+                ApplicationConfiguration newApplicationConfiguration;
+                wizardForm.CreateConfigurations(out newEngineConfiguration, out newApplicationConfiguration);
+                
+                this.engineConfiguration = newEngineConfiguration;
+                this.applicationConfiguration = newApplicationConfiguration;
+
+                this.engineConfiguration.SaveCoinConfigurations();
+                this.engineConfiguration.SaveMinerConfiguration();
+                this.applicationConfiguration.SaveApplicationConfiguration();
+            }
         }
 
         private void CheckAndDownloadMiners()
@@ -270,9 +287,34 @@ namespace MultiMiner.Win
                 }
 
             }
+
+            if ((devices.Count > 0) && (engineConfiguration.DeviceConfigurations.Count == 0) &&
+                (engineConfiguration.CoinConfigurations.Count == 1))
+            {
+                //setup devices for a brand new user
+                ConfigureDevicesForNewUser();
+            }
+
             deviceBindingSource.DataSource = devices;
             LoadGridValuesFromConfiguration();
             CheckAndHideNameColumn();
+        }
+
+        private void ConfigureDevicesForNewUser()
+        {
+            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single();
+
+            for (int i = 0; i < devices.Count; i++)
+            {
+                DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
+                deviceConfiguration.DeviceIndex = i;
+                deviceConfiguration.Enabled = true;
+                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+            }
+
+            engineConfiguration.SaveDeviceConfigurations();
+            UpdateMiningButtons();
         }
 
         private void CheckAndHideNameColumn()

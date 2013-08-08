@@ -42,17 +42,18 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.configurePoolPage = new System.Windows.Forms.TabPage();
-            this.label10 = new System.Windows.Forms.Label();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.poolsLink = new System.Windows.Forms.LinkLabel();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.usernameEdit = new System.Windows.Forms.TextBox();
             this.hostEdit = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.portEdit = new System.Windows.Forms.TextBox();
+            this.passwordEdit = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.configureMobileMinerPage = new System.Windows.Forms.TabPage();
-            this.label14 = new System.Windows.Forms.Label();
             this.mobileMinerInfoLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.remoteCommandsCheck = new System.Windows.Forms.CheckBox();
@@ -61,27 +62,23 @@
             this.label11 = new System.Windows.Forms.Label();
             this.emailAddressEdit = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
             this.whatNextPage = new System.Windows.Forms.TabPage();
             this.label13 = new System.Windows.Forms.Label();
             this.buttonPanel = new System.Windows.Forms.Panel();
             this.closeButton = new System.Windows.Forms.Button();
             this.nextButton = new System.Windows.Forms.Button();
             this.backButton = new System.Windows.Forms.Button();
-            this.bitcoinPoolsLink = new System.Windows.Forms.LinkLabel();
-            this.litecoinPoolsLink = new System.Windows.Forms.LinkLabel();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.wizardTabControl.SuspendLayout();
             this.chooseMinerPage.SuspendLayout();
             this.downloadingMinerPage.SuspendLayout();
             this.chooseCoinPage.SuspendLayout();
             this.configurePoolPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.configureMobileMinerPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.whatNextPage.SuspendLayout();
             this.buttonPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
             // 
             // wizardTabControl
@@ -129,7 +126,7 @@
             this.minerComboBox.Items.AddRange(new object[] {
             "cgminer",
             "bfgminer"});
-            this.minerComboBox.Location = new System.Drawing.Point(200, 60);
+            this.minerComboBox.Location = new System.Drawing.Point(194, 60);
             this.minerComboBox.Name = "minerComboBox";
             this.minerComboBox.Size = new System.Drawing.Size(121, 21);
             this.minerComboBox.TabIndex = 2;
@@ -137,7 +134,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(110, 63);
+            this.label2.Location = new System.Drawing.Point(104, 63);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(76, 13);
             this.label2.TabIndex = 1;
@@ -196,15 +193,16 @@
             this.coinComboBox.Items.AddRange(new object[] {
             "Bitcoin",
             "Litecoin"});
-            this.coinComboBox.Location = new System.Drawing.Point(200, 97);
+            this.coinComboBox.Location = new System.Drawing.Point(194, 97);
             this.coinComboBox.Name = "coinComboBox";
             this.coinComboBox.Size = new System.Drawing.Size(121, 21);
             this.coinComboBox.TabIndex = 4;
+            this.coinComboBox.SelectedIndexChanged += new System.EventHandler(this.coinComboBox_SelectedIndexChanged);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(110, 100);
+            this.label5.Location = new System.Drawing.Point(104, 100);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(84, 13);
             this.label5.TabIndex = 3;
@@ -222,18 +220,16 @@
             // 
             // configurePoolPage
             // 
-            this.configurePoolPage.Controls.Add(this.pictureBox3);
             this.configurePoolPage.Controls.Add(this.pictureBox2);
-            this.configurePoolPage.Controls.Add(this.litecoinPoolsLink);
-            this.configurePoolPage.Controls.Add(this.bitcoinPoolsLink);
+            this.configurePoolPage.Controls.Add(this.poolsLink);
             this.configurePoolPage.Controls.Add(this.label6);
             this.configurePoolPage.Controls.Add(this.label7);
             this.configurePoolPage.Controls.Add(this.label8);
             this.configurePoolPage.Controls.Add(this.label9);
-            this.configurePoolPage.Controls.Add(this.textBox4);
+            this.configurePoolPage.Controls.Add(this.usernameEdit);
             this.configurePoolPage.Controls.Add(this.hostEdit);
-            this.configurePoolPage.Controls.Add(this.textBox2);
-            this.configurePoolPage.Controls.Add(this.textBox1);
+            this.configurePoolPage.Controls.Add(this.portEdit);
+            this.configurePoolPage.Controls.Add(this.passwordEdit);
             this.configurePoolPage.Controls.Add(this.label10);
             this.configurePoolPage.Location = new System.Drawing.Point(4, 22);
             this.configurePoolPage.Name = "configurePoolPage";
@@ -242,6 +238,93 @@
             this.configurePoolPage.TabIndex = 3;
             this.configurePoolPage.Text = "Configure Pool";
             this.configurePoolPage.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Image = global::MultiMiner.Win.Properties.Resources.info;
+            this.pictureBox2.Location = new System.Drawing.Point(36, 167);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(16, 16);
+            this.pictureBox2.TabIndex = 35;
+            this.pictureBox2.TabStop = false;
+            // 
+            // poolsLink
+            // 
+            this.poolsLink.AutoSize = true;
+            this.poolsLink.Location = new System.Drawing.Point(59, 167);
+            this.poolsLink.Name = "poolsLink";
+            this.poolsLink.Size = new System.Drawing.Size(100, 13);
+            this.poolsLink.TabIndex = 33;
+            this.poolsLink.TabStop = true;
+            this.poolsLink.Text = "Bitcoin mining pools";
+            this.poolsLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.bitcoinPoolsLink_LinkClicked);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(33, 76);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(32, 13);
+            this.label6.TabIndex = 31;
+            this.label6.Text = "Host:";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(33, 102);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(58, 13);
+            this.label7.TabIndex = 30;
+            this.label7.Text = "Username:";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(284, 76);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(29, 13);
+            this.label8.TabIndex = 29;
+            this.label8.Text = "Port:";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(33, 128);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(56, 13);
+            this.label9.TabIndex = 28;
+            this.label9.Text = "Password:";
+            // 
+            // usernameEdit
+            // 
+            this.usernameEdit.Location = new System.Drawing.Point(121, 99);
+            this.usernameEdit.Name = "usernameEdit";
+            this.usernameEdit.Size = new System.Drawing.Size(157, 20);
+            this.usernameEdit.TabIndex = 26;
+            this.usernameEdit.TextChanged += new System.EventHandler(this.hostEdit_TextChanged);
+            // 
+            // hostEdit
+            // 
+            this.hostEdit.Location = new System.Drawing.Point(121, 73);
+            this.hostEdit.Name = "hostEdit";
+            this.hostEdit.Size = new System.Drawing.Size(157, 20);
+            this.hostEdit.TabIndex = 24;
+            this.hostEdit.TextChanged += new System.EventHandler(this.hostEdit_TextChanged);
+            // 
+            // portEdit
+            // 
+            this.portEdit.Location = new System.Drawing.Point(319, 73);
+            this.portEdit.Name = "portEdit";
+            this.portEdit.Size = new System.Drawing.Size(70, 20);
+            this.portEdit.TabIndex = 25;
+            this.portEdit.TextChanged += new System.EventHandler(this.hostEdit_TextChanged);
+            // 
+            // passwordEdit
+            // 
+            this.passwordEdit.Location = new System.Drawing.Point(121, 125);
+            this.passwordEdit.Name = "passwordEdit";
+            this.passwordEdit.Size = new System.Drawing.Size(157, 20);
+            this.passwordEdit.TabIndex = 27;
             // 
             // label10
             // 
@@ -254,70 +337,6 @@
             this.label10.Text = "Now enter the connection and login information for your chosen mining pool. If yo" +
     "u have not yet chosen a mining pool for your crypto-currency, please consult Goo" +
     "gle to find a suitable provider.";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(33, 80);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(32, 13);
-            this.label6.TabIndex = 31;
-            this.label6.Text = "Host:";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(33, 106);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(58, 13);
-            this.label7.TabIndex = 30;
-            this.label7.Text = "Username:";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(284, 80);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(29, 13);
-            this.label8.TabIndex = 29;
-            this.label8.Text = "Port:";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(33, 132);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(56, 13);
-            this.label9.TabIndex = 28;
-            this.label9.Text = "Password:";
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(121, 103);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(157, 20);
-            this.textBox4.TabIndex = 26;
-            // 
-            // hostEdit
-            // 
-            this.hostEdit.Location = new System.Drawing.Point(121, 77);
-            this.hostEdit.Name = "hostEdit";
-            this.hostEdit.Size = new System.Drawing.Size(157, 20);
-            this.hostEdit.TabIndex = 24;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(319, 77);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(70, 20);
-            this.textBox2.TabIndex = 25;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(121, 129);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(157, 20);
-            this.textBox1.TabIndex = 27;
             // 
             // configureMobileMinerPage
             // 
@@ -339,21 +358,10 @@
             this.configureMobileMinerPage.UseVisualStyleBackColor = true;
             this.configureMobileMinerPage.Click += new System.EventHandler(this.configureMobileMinerPage_Click);
             // 
-            // label14
-            // 
-            this.label14.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label14.Location = new System.Drawing.Point(3, 3);
-            this.label14.Name = "label14";
-            this.label14.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label14.Size = new System.Drawing.Size(422, 68);
-            this.label14.TabIndex = 33;
-            this.label14.Text = "MobileMiner allows you to remotely monitor and control mining from your smartphon" +
-    "e. Enter your MobileMiner information below or click Next to skip this step.";
-            // 
             // mobileMinerInfoLink
             // 
             this.mobileMinerInfoLink.AutoSize = true;
-            this.mobileMinerInfoLink.Location = new System.Drawing.Point(59, 155);
+            this.mobileMinerInfoLink.Location = new System.Drawing.Point(59, 153);
             this.mobileMinerInfoLink.Name = "mobileMinerInfoLink";
             this.mobileMinerInfoLink.Size = new System.Drawing.Size(150, 13);
             this.mobileMinerInfoLink.TabIndex = 14;
@@ -364,7 +372,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.info;
-            this.pictureBox1.Location = new System.Drawing.Point(37, 153);
+            this.pictureBox1.Location = new System.Drawing.Point(37, 151);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(16, 16);
             this.pictureBox1.TabIndex = 13;
@@ -373,27 +381,29 @@
             // remoteCommandsCheck
             // 
             this.remoteCommandsCheck.AutoSize = true;
-            this.remoteCommandsCheck.Location = new System.Drawing.Point(241, 67);
+            this.remoteCommandsCheck.Location = new System.Drawing.Point(241, 65);
             this.remoteCommandsCheck.Name = "remoteCommandsCheck";
             this.remoteCommandsCheck.Size = new System.Drawing.Size(148, 17);
             this.remoteCommandsCheck.TabIndex = 9;
             this.remoteCommandsCheck.Text = "Enable remote commands";
             this.remoteCommandsCheck.UseVisualStyleBackColor = true;
+            this.remoteCommandsCheck.CheckedChanged += new System.EventHandler(this.remoteCommandsCheck_CheckedChanged);
             // 
             // remoteMonitoringCheck
             // 
             this.remoteMonitoringCheck.AutoSize = true;
-            this.remoteMonitoringCheck.Location = new System.Drawing.Point(37, 67);
+            this.remoteMonitoringCheck.Location = new System.Drawing.Point(37, 65);
             this.remoteMonitoringCheck.Name = "remoteMonitoringCheck";
             this.remoteMonitoringCheck.Size = new System.Drawing.Size(145, 17);
             this.remoteMonitoringCheck.TabIndex = 7;
             this.remoteMonitoringCheck.Text = "Enable remote monitoring";
             this.remoteMonitoringCheck.UseVisualStyleBackColor = true;
+            this.remoteMonitoringCheck.CheckedChanged += new System.EventHandler(this.remoteMonitoringCheck_CheckedChanged);
             // 
             // appKeyEdit
             // 
             this.appKeyEdit.Enabled = false;
-            this.appKeyEdit.Location = new System.Drawing.Point(121, 121);
+            this.appKeyEdit.Location = new System.Drawing.Point(121, 119);
             this.appKeyEdit.Name = "appKeyEdit";
             this.appKeyEdit.Size = new System.Drawing.Size(268, 20);
             this.appKeyEdit.TabIndex = 11;
@@ -401,7 +411,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(33, 98);
+            this.label11.Location = new System.Drawing.Point(33, 96);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(75, 13);
             this.label11.TabIndex = 12;
@@ -410,7 +420,7 @@
             // emailAddressEdit
             // 
             this.emailAddressEdit.Enabled = false;
-            this.emailAddressEdit.Location = new System.Drawing.Point(121, 95);
+            this.emailAddressEdit.Location = new System.Drawing.Point(121, 93);
             this.emailAddressEdit.Name = "emailAddressEdit";
             this.emailAddressEdit.Size = new System.Drawing.Size(268, 20);
             this.emailAddressEdit.TabIndex = 10;
@@ -418,11 +428,22 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(33, 124);
+            this.label12.Location = new System.Drawing.Point(33, 122);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(82, 13);
             this.label12.TabIndex = 8;
             this.label12.Text = "Application key:";
+            // 
+            // label14
+            // 
+            this.label14.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label14.Location = new System.Drawing.Point(3, 3);
+            this.label14.Name = "label14";
+            this.label14.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.label14.Size = new System.Drawing.Size(422, 68);
+            this.label14.TabIndex = 33;
+            this.label14.Text = "MobileMiner allows you to remotely monitor and control mining from your smartphon" +
+    "e. Enter your MobileMiner information below or click Next to skip this step.";
             // 
             // whatNextPage
             // 
@@ -488,46 +509,6 @@
             this.backButton.UseVisualStyleBackColor = true;
             this.backButton.Click += new System.EventHandler(this.backButton_Click);
             // 
-            // bitcoinPoolsLink
-            // 
-            this.bitcoinPoolsLink.AutoSize = true;
-            this.bitcoinPoolsLink.Location = new System.Drawing.Point(59, 171);
-            this.bitcoinPoolsLink.Name = "bitcoinPoolsLink";
-            this.bitcoinPoolsLink.Size = new System.Drawing.Size(100, 13);
-            this.bitcoinPoolsLink.TabIndex = 33;
-            this.bitcoinPoolsLink.TabStop = true;
-            this.bitcoinPoolsLink.Text = "Bitcoin mining pools";
-            this.bitcoinPoolsLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.bitcoinPoolsLink_LinkClicked);
-            // 
-            // litecoinPoolsLink
-            // 
-            this.litecoinPoolsLink.AutoSize = true;
-            this.litecoinPoolsLink.Location = new System.Drawing.Point(284, 171);
-            this.litecoinPoolsLink.Name = "litecoinPoolsLink";
-            this.litecoinPoolsLink.Size = new System.Drawing.Size(105, 13);
-            this.litecoinPoolsLink.TabIndex = 34;
-            this.litecoinPoolsLink.TabStop = true;
-            this.litecoinPoolsLink.Text = "Litecoin mining pools";
-            this.litecoinPoolsLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.litecoinPoolsLink_LinkClicked);
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Image = global::MultiMiner.Win.Properties.Resources.info;
-            this.pictureBox2.Location = new System.Drawing.Point(36, 171);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(16, 16);
-            this.pictureBox2.TabIndex = 35;
-            this.pictureBox2.TabStop = false;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.Image = global::MultiMiner.Win.Properties.Resources.info;
-            this.pictureBox3.Location = new System.Drawing.Point(262, 171);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(16, 16);
-            this.pictureBox3.TabIndex = 37;
-            this.pictureBox3.TabStop = false;
-            // 
             // WizardForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -551,13 +532,12 @@
             this.chooseCoinPage.PerformLayout();
             this.configurePoolPage.ResumeLayout(false);
             this.configurePoolPage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.configureMobileMinerPage.ResumeLayout(false);
             this.configureMobileMinerPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.whatNextPage.ResumeLayout(false);
             this.buttonPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -588,10 +568,10 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox usernameEdit;
         private System.Windows.Forms.TextBox hostEdit;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox portEdit;
+        private System.Windows.Forms.TextBox passwordEdit;
         private System.Windows.Forms.LinkLabel mobileMinerInfoLink;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.CheckBox remoteCommandsCheck;
@@ -602,9 +582,7 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.LinkLabel litecoinPoolsLink;
-        private System.Windows.Forms.LinkLabel bitcoinPoolsLink;
+        private System.Windows.Forms.LinkLabel poolsLink;
         private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.PictureBox pictureBox3;
     }
 }
