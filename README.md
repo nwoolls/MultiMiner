@@ -79,6 +79,14 @@ The source code is structured in such a way that it should be fairly easy to use
 * __MultiMiner.Engine__ is an assembly that can be used to interact with all functionality found in MultiMiner, but without a UI - useful for creating front-ends for other OS's
 * __MultiMiner.Win__ is the Windows Forms application
 
+Hardare Donations
+-----------------
+To those who may be considering making donations: instead of BTC or LTC I'd very much welcome __any sort of mining hardware__. I'm not talking nasty rigs and I absolutely __do not__ expect this. However, several bugs submitted by users have been due to hardware setups that I could not reproduce myself, such as FPGAs or having 10 devices in a single rig.
+
+So if you are thinking of donating but also have some old FPGA that isn't doing much for you with the current Bitcoin difficulty, or some Erupters, or really anything at all that would help me test different hardware setups that would rock. It's _way_ easier to fix issues when I can actually reproduce them myself so this is a _very_ good way to give back.
+
+Again this __not__ expected at all. The best thing you can do is let me know the details of any errors you have so I can fix them for everyone.
+
 License
 -------
 Copyright (C) 2013 Nathanial Woolls
