@@ -1,27 +1,29 @@
 MultiMiner
 ==========
 ### Your coins. Your pools. Your way.
-MultiMiner is a GUI front-end for [cgminer][1] and [bfgminer][2] that simplifies switching individal devices - GPUs, ASICs, etc. - between crypto-currencies.
+__MultiMiner__ is a graphical application for crypto-coin mining. MultiMiner simplifies switching individal devices (GPUs, ASICs, FPGAs) between crypto-currencies such as Bitcoin and Litecoin.
 
-MultiMiner will automatically download and install either cgminer, bfgminer, or both.
-
-![No Miners Prompt](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt.png "No Miners Prompt")
-
-![Downloading and Installing Cgminer](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Downloading%20and%20Installing%20Cgminer.png "Downloading and Installing Cgminer")
-
-MultiMiner uses the underlying mining engine (cgminer by default) to detect available mining devices.
+MultiMiner uses the underlying mining engine ([cgminer][1] by default) to detect available mining devices and then presents a user interface for selecting the coins you'd like to mine.
 
 ![Main Screen](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen.png "Main Screen")
 
-You can then use the UI to configure individual crypto-currencies and their pools, including support for load balancing.
+MultiMiner will automatically download and install the latest version of either cgminer, [bfgminer][2], or both, making it simple for the new user to get started.
+
+![No Miners Prompt](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt.png "No Miners Prompt")
+
+These command line miners are standard tools for crypto-coin mining and are downloaded from official sources.
+
+![Downloading and Installing Cgminer](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Downloading%20and%20Installing%20Cgminer.png "Downloading and Installing Cgminer")
+
+You can then use the Configure Coins dialog to setup each coin that you would like to mine along with their pools, including support for load balancing.
 
 ![Configure Coins](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Configure%20Coins.png "Configure Coins")
 
-MultiMiner supports automatically mining the most profitable coins based on a set of configurable strategies.
+MultiMiner supports automatically mining the most profitable coins based on a set of configurable strategies. Profitability information is updated regularly from [CoinChoose.com][9].
 
 ![Configure Strategies](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Configure%20Strategies.png "Configure Strategies")
 
-MultiMiner also supports basic features such as relaunching crashed miners, starting with Windows, minimizing to the notification area, and mining on startup.
+MultiMiner also supports features such as relaunching crashed miners, starting with Windows, minimizing to the notification area, and mining on startup.
 
 ![Settings](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Settings.png "Settings")
 
@@ -29,17 +31,19 @@ Finally, MultiMiner supports [MobileMiner][14], an open API with mobile apps for
 
 ![MobileMiner](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/MobileMiner.png "MobileMiner")
 
-Binary Downloads
+By entering your MobileMiner email address and application key in the Configure Settings dialog, you will be able to remotely monitor and control your rigs _without having to open any firewalls or forward any ports_.
+
+Downloads
 ----------------
-Refer to the [Github Releases page][12] for source code and binary downloads.
+You can download installers and zip files for Windows, OS X, and Mono on the [GitHub Releases page][12].
 
 Windows Installation
 --------------------
-1. Download and run the installer at the above link and follow instructions
+1. Download and run the installer (.exe) file at the above link and follow instructions
 
-The installer runs without needing admin rights and does not install to Program Files so as not to be too intrusive. However, if you prefer you can use the zip file:
+The installer runs without needing admin rights and does not install to Program Files so as not to be intrusive. However, if you prefer you can use the zip file:
 
-1. Download and extract the zip file at the above link
+1. Download and extract the .zip file at the above link
 2. Launch MultiMiner.Win.exe to get started
 
 OS X Installation
@@ -71,9 +75,17 @@ The source code is structured in such a way that it should be fairly easy to use
 
 * __MultiMiner.Xgminer__ is an assembly for controling either the cgminer or bfgminer executable - e.g. launching and enumerating devices
 * __MultiMiner.Xgminer.Api__ assists in communicating with the underlying miner via the RPC API
-* __MultiMiner.Coinchoose.Api__ assists in consuming the cypto-currency information available at [coinchoose.com][9]
+* __MultiMiner.Coinchoose.Api__ assists in consuming the cypto-currency information available at [CoinChoose.com][9]
 * __MultiMiner.Engine__ is an assembly that can be used to interact with all functionality found in MultiMiner, but without a UI - useful for creating front-ends for other OS's
 * __MultiMiner.Win__ is the Windows Forms application
+
+Hardare Donations
+-----------------
+To those who may be considering making donations: instead of BTC or LTC I'd very much welcome __any sort of mining hardware__. I'm not talking nasty rigs and I absolutely __do not__ expect this. However, several bugs submitted by users have been due to hardware setups that I could not reproduce myself, such as FPGAs or having 10 devices in a single rig.
+
+So if you are thinking of donating but also have some old FPGA that isn't doing much for you with the current Bitcoin difficulty, or some Erupters, or really anything at all that would help me test different hardware setups that would rock. It's _way_ easier to fix issues when I can actually reproduce them myself so this is a _very_ good way to give back.
+
+Again this __not__ expected at all. The best thing you can do is let me know the details of any errors you have so I can fix them for everyone.
 
 License
 -------
