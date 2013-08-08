@@ -88,6 +88,7 @@
     <Compile Include="StrategiesForm.Designer.cs">
       <DependentUpon>StrategiesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserAgent.cs" />
     <Compile Include="WindowsStartupShortcut.cs" />
     <Compile Include="WizardForm.cs">
       <SubType>Form</SubType>
