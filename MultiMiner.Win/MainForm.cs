@@ -36,7 +36,7 @@ namespace MultiMiner.Win
             InitializeComponent();
         }
 
-        private void LogMinerLaunch(object sender, LogLaunchArgs ea)
+        private void LogProcessLaunch(object sender, LogLaunchArgs ea)
         {
             logLaunchArgsBindingSource.Add(ea);
             logLaunchArgsBindingSource.Position = logLaunchArgsBindingSource.IndexOf(ea);
@@ -76,7 +76,7 @@ namespace MultiMiner.Win
             apiLogEntryBindingSource.DataSource = apiLogEntries;
 
             miningEngine.LogProcessClose += LogProcessClose;
-            miningEngine.LogLaunch += LogMinerLaunch;
+            miningEngine.LogProcessLaunch += LogProcessLaunch;
             logLaunchArgsBindingSource.DataSource = logLaunchEntries;
 
             saveButton.Enabled = false;
