@@ -131,6 +131,7 @@
             this.showAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mobileMinerTimer = new System.Windows.Forms.Timer(this.components);
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.startupMiningPanel.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -314,20 +315,20 @@
             // 
             this.detectDevicesButton.Image = global::MultiMiner.Win.Properties.Resources.computer_find;
             this.detectDevicesButton.Name = "detectDevicesButton";
-            this.detectDevicesButton.Size = new System.Drawing.Size(151, 22);
+            this.detectDevicesButton.Size = new System.Drawing.Size(152, 22);
             this.detectDevicesButton.Text = "Detect Devices";
             this.detectDevicesButton.Click += new System.EventHandler(this.detectDevicesButton_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(148, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
             // 
             // apiMonitorButton
             // 
             this.apiMonitorButton.Image = global::MultiMiner.Win.Properties.Resources.network_application;
             this.apiMonitorButton.Name = "apiMonitorButton";
-            this.apiMonitorButton.Size = new System.Drawing.Size(151, 22);
+            this.apiMonitorButton.Size = new System.Drawing.Size(152, 22);
             this.apiMonitorButton.Text = "API Monitor";
             this.apiMonitorButton.Click += new System.EventHandler(this.apiMonitorButton_Click);
             // 
@@ -335,7 +336,7 @@
             // 
             this.processLogButton.Image = global::MultiMiner.Win.Properties.Resources.window_text;
             this.processLogButton.Name = "processLogButton";
-            this.processLogButton.Size = new System.Drawing.Size(151, 22);
+            this.processLogButton.Size = new System.Drawing.Size(152, 22);
             this.processLogButton.Text = "Process Log";
             this.processLogButton.Click += new System.EventHandler(this.processLogButton_Click);
             // 
@@ -343,7 +344,7 @@
             // 
             this.historyButton.Image = global::MultiMiner.Win.Properties.Resources.history;
             this.historyButton.Name = "historyButton";
-            this.historyButton.Size = new System.Drawing.Size(151, 22);
+            this.historyButton.Size = new System.Drawing.Size(152, 22);
             this.historyButton.Text = "History";
             this.historyButton.Click += new System.EventHandler(this.historyButton_Click);
             // 
@@ -651,6 +652,7 @@
             this.advancedTabControl.Controls.Add(this.processLogPage);
             this.advancedTabControl.Controls.Add(this.historyPage);
             this.advancedTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.advancedTabControl.ImageList = this.imageList1;
             this.advancedTabControl.Location = new System.Drawing.Point(0, 28);
             this.advancedTabControl.Name = "advancedTabControl";
             this.advancedTabControl.SelectedIndex = 0;
@@ -660,10 +662,11 @@
             // apiMonitorPage
             // 
             this.apiMonitorPage.Controls.Add(this.apiLogGridView);
-            this.apiMonitorPage.Location = new System.Drawing.Point(4, 22);
+            this.apiMonitorPage.ImageIndex = 0;
+            this.apiMonitorPage.Location = new System.Drawing.Point(4, 23);
             this.apiMonitorPage.Name = "apiMonitorPage";
             this.apiMonitorPage.Padding = new System.Windows.Forms.Padding(3);
-            this.apiMonitorPage.Size = new System.Drawing.Size(1136, 76);
+            this.apiMonitorPage.Size = new System.Drawing.Size(1136, 75);
             this.apiMonitorPage.TabIndex = 0;
             this.apiMonitorPage.Text = "API Monitor";
             this.apiMonitorPage.UseVisualStyleBackColor = true;
@@ -686,7 +689,7 @@
             this.apiLogGridView.Location = new System.Drawing.Point(3, 3);
             this.apiLogGridView.Name = "apiLogGridView";
             this.apiLogGridView.RowHeadersVisible = false;
-            this.apiLogGridView.Size = new System.Drawing.Size(1130, 70);
+            this.apiLogGridView.Size = new System.Drawing.Size(1130, 69);
             this.apiLogGridView.TabIndex = 13;
             // 
             // dateTimeDataGridViewTextBoxColumn
@@ -727,10 +730,11 @@
             // processLogPage
             // 
             this.processLogPage.Controls.Add(this.dataGridView1);
-            this.processLogPage.Location = new System.Drawing.Point(4, 22);
+            this.processLogPage.ImageIndex = 1;
+            this.processLogPage.Location = new System.Drawing.Point(4, 23);
             this.processLogPage.Name = "processLogPage";
             this.processLogPage.Padding = new System.Windows.Forms.Padding(3);
-            this.processLogPage.Size = new System.Drawing.Size(1136, 76);
+            this.processLogPage.Size = new System.Drawing.Size(1136, 75);
             this.processLogPage.TabIndex = 1;
             this.processLogPage.Text = "Process Log";
             this.processLogPage.UseVisualStyleBackColor = true;
@@ -754,7 +758,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(1130, 70);
+            this.dataGridView1.Size = new System.Drawing.Size(1130, 69);
             this.dataGridView1.TabIndex = 14;
             // 
             // dateTimeDataGridViewTextBoxColumn1
@@ -795,10 +799,11 @@
             // historyPage
             // 
             this.historyPage.Controls.Add(this.historyGridView);
-            this.historyPage.Location = new System.Drawing.Point(4, 22);
+            this.historyPage.ImageIndex = 2;
+            this.historyPage.Location = new System.Drawing.Point(4, 23);
             this.historyPage.Name = "historyPage";
             this.historyPage.Padding = new System.Windows.Forms.Padding(3);
-            this.historyPage.Size = new System.Drawing.Size(1136, 76);
+            this.historyPage.Size = new System.Drawing.Size(1136, 75);
             this.historyPage.TabIndex = 2;
             this.historyPage.Text = "History";
             this.historyPage.UseVisualStyleBackColor = true;
@@ -826,7 +831,7 @@
             this.historyGridView.Name = "historyGridView";
             this.historyGridView.ReadOnly = true;
             this.historyGridView.RowHeadersVisible = false;
-            this.historyGridView.Size = new System.Drawing.Size(1130, 70);
+            this.historyGridView.Size = new System.Drawing.Size(1130, 69);
             this.historyGridView.TabIndex = 0;
             // 
             // startDateDataGridViewTextBoxColumn
@@ -977,6 +982,14 @@
             this.mobileMinerTimer.Interval = 15000;
             this.mobileMinerTimer.Tick += new System.EventHandler(this.mobileMinerTimer_Tick);
             // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "network_application.png");
+            this.imageList1.Images.SetKeyName(1, "window_text.png");
+            this.imageList1.Images.SetKeyName(2, "history.png");
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1117,6 +1130,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn startPriceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn endPriceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn devicesColumn;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }
 
