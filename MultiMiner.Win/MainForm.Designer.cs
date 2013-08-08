@@ -112,6 +112,14 @@
             this.logLaunchArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.historyPage = new System.Windows.Forms.TabPage();
             this.historyGridView = new System.Windows.Forms.DataGridView();
+            this.startDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.endDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.durationColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.coinNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.coinSymbolDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.startPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.endPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.devicesColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.logProcessCloseArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
             this.closeApiButton = new System.Windows.Forms.Button();
@@ -123,14 +131,6 @@
             this.showAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mobileMinerTimer = new System.Windows.Forms.Timer(this.components);
-            this.startDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.endDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.durationColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.coinNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.coinSymbolDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.startPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.endPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.devicesColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.startupMiningPanel.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -807,6 +807,7 @@
             // 
             this.historyGridView.AllowUserToAddRows = false;
             this.historyGridView.AllowUserToDeleteRows = false;
+            this.historyGridView.AllowUserToResizeRows = false;
             this.historyGridView.AutoGenerateColumns = false;
             this.historyGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.historyGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -827,6 +828,69 @@
             this.historyGridView.RowHeadersVisible = false;
             this.historyGridView.Size = new System.Drawing.Size(1130, 70);
             this.historyGridView.TabIndex = 0;
+            // 
+            // startDateDataGridViewTextBoxColumn
+            // 
+            this.startDateDataGridViewTextBoxColumn.DataPropertyName = "StartDate";
+            this.startDateDataGridViewTextBoxColumn.FillWeight = 120F;
+            this.startDateDataGridViewTextBoxColumn.HeaderText = "Start Date/Time";
+            this.startDateDataGridViewTextBoxColumn.Name = "startDateDataGridViewTextBoxColumn";
+            this.startDateDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // endDateDataGridViewTextBoxColumn
+            // 
+            this.endDateDataGridViewTextBoxColumn.DataPropertyName = "EndDate";
+            this.endDateDataGridViewTextBoxColumn.FillWeight = 120F;
+            this.endDateDataGridViewTextBoxColumn.HeaderText = "End Date/Time";
+            this.endDateDataGridViewTextBoxColumn.Name = "endDateDataGridViewTextBoxColumn";
+            this.endDateDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // durationColumn
+            // 
+            this.durationColumn.HeaderText = "Duration";
+            this.durationColumn.Name = "durationColumn";
+            this.durationColumn.ReadOnly = true;
+            // 
+            // coinNameDataGridViewTextBoxColumn
+            // 
+            this.coinNameDataGridViewTextBoxColumn.DataPropertyName = "CoinName";
+            this.coinNameDataGridViewTextBoxColumn.FillWeight = 120F;
+            this.coinNameDataGridViewTextBoxColumn.HeaderText = "Coin Name";
+            this.coinNameDataGridViewTextBoxColumn.Name = "coinNameDataGridViewTextBoxColumn";
+            this.coinNameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // coinSymbolDataGridViewTextBoxColumn
+            // 
+            this.coinSymbolDataGridViewTextBoxColumn.DataPropertyName = "CoinSymbol";
+            this.coinSymbolDataGridViewTextBoxColumn.FillWeight = 80F;
+            this.coinSymbolDataGridViewTextBoxColumn.HeaderText = "Coin Symbol";
+            this.coinSymbolDataGridViewTextBoxColumn.Name = "coinSymbolDataGridViewTextBoxColumn";
+            this.coinSymbolDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // startPriceDataGridViewTextBoxColumn
+            // 
+            this.startPriceDataGridViewTextBoxColumn.DataPropertyName = "StartPrice";
+            dataGridViewCellStyle9.Format = ".##########";
+            this.startPriceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle9;
+            this.startPriceDataGridViewTextBoxColumn.HeaderText = "Start Price";
+            this.startPriceDataGridViewTextBoxColumn.Name = "startPriceDataGridViewTextBoxColumn";
+            this.startPriceDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // endPriceDataGridViewTextBoxColumn
+            // 
+            this.endPriceDataGridViewTextBoxColumn.DataPropertyName = "EndPrice";
+            dataGridViewCellStyle10.Format = ".##########";
+            this.endPriceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle10;
+            this.endPriceDataGridViewTextBoxColumn.HeaderText = "End Price";
+            this.endPriceDataGridViewTextBoxColumn.Name = "endPriceDataGridViewTextBoxColumn";
+            this.endPriceDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // devicesColumn
+            // 
+            this.devicesColumn.FillWeight = 120F;
+            this.devicesColumn.HeaderText = "Devices";
+            this.devicesColumn.Name = "devicesColumn";
+            this.devicesColumn.ReadOnly = true;
             // 
             // logProcessCloseArgsBindingSource
             // 
@@ -912,69 +976,6 @@
             this.mobileMinerTimer.Enabled = true;
             this.mobileMinerTimer.Interval = 15000;
             this.mobileMinerTimer.Tick += new System.EventHandler(this.mobileMinerTimer_Tick);
-            // 
-            // startDateDataGridViewTextBoxColumn
-            // 
-            this.startDateDataGridViewTextBoxColumn.DataPropertyName = "StartDate";
-            this.startDateDataGridViewTextBoxColumn.FillWeight = 120F;
-            this.startDateDataGridViewTextBoxColumn.HeaderText = "Start Date/Time";
-            this.startDateDataGridViewTextBoxColumn.Name = "startDateDataGridViewTextBoxColumn";
-            this.startDateDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // endDateDataGridViewTextBoxColumn
-            // 
-            this.endDateDataGridViewTextBoxColumn.DataPropertyName = "EndDate";
-            this.endDateDataGridViewTextBoxColumn.FillWeight = 120F;
-            this.endDateDataGridViewTextBoxColumn.HeaderText = "End Date/Time";
-            this.endDateDataGridViewTextBoxColumn.Name = "endDateDataGridViewTextBoxColumn";
-            this.endDateDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // durationColumn
-            // 
-            this.durationColumn.HeaderText = "Duration";
-            this.durationColumn.Name = "durationColumn";
-            this.durationColumn.ReadOnly = true;
-            // 
-            // coinNameDataGridViewTextBoxColumn
-            // 
-            this.coinNameDataGridViewTextBoxColumn.DataPropertyName = "CoinName";
-            this.coinNameDataGridViewTextBoxColumn.FillWeight = 120F;
-            this.coinNameDataGridViewTextBoxColumn.HeaderText = "Coin Name";
-            this.coinNameDataGridViewTextBoxColumn.Name = "coinNameDataGridViewTextBoxColumn";
-            this.coinNameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // coinSymbolDataGridViewTextBoxColumn
-            // 
-            this.coinSymbolDataGridViewTextBoxColumn.DataPropertyName = "CoinSymbol";
-            this.coinSymbolDataGridViewTextBoxColumn.FillWeight = 80F;
-            this.coinSymbolDataGridViewTextBoxColumn.HeaderText = "Coin Symbol";
-            this.coinSymbolDataGridViewTextBoxColumn.Name = "coinSymbolDataGridViewTextBoxColumn";
-            this.coinSymbolDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // startPriceDataGridViewTextBoxColumn
-            // 
-            this.startPriceDataGridViewTextBoxColumn.DataPropertyName = "StartPrice";
-            dataGridViewCellStyle9.Format = ".##########";
-            this.startPriceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle9;
-            this.startPriceDataGridViewTextBoxColumn.HeaderText = "Start Price";
-            this.startPriceDataGridViewTextBoxColumn.Name = "startPriceDataGridViewTextBoxColumn";
-            this.startPriceDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // endPriceDataGridViewTextBoxColumn
-            // 
-            this.endPriceDataGridViewTextBoxColumn.DataPropertyName = "EndPrice";
-            dataGridViewCellStyle10.Format = ".##########";
-            this.endPriceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle10;
-            this.endPriceDataGridViewTextBoxColumn.HeaderText = "End Price";
-            this.endPriceDataGridViewTextBoxColumn.Name = "endPriceDataGridViewTextBoxColumn";
-            this.endPriceDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // devicesColumn
-            // 
-            this.devicesColumn.FillWeight = 120F;
-            this.devicesColumn.HeaderText = "Devices";
-            this.devicesColumn.Name = "devicesColumn";
-            this.devicesColumn.ReadOnly = true;
             // 
             // MainForm
             // 
