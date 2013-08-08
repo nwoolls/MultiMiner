@@ -143,8 +143,8 @@ namespace MultiMiner.Xgminer
                 LogLaunchArgs args = new LogLaunchArgs();
 
                 args.DateTime = DateTime.Now;
-                args.ExecutablePath = minerConfiguration.ExecutablePath;
-                args.Arguments = arguments;
+                args.ExecutablePath = startInfo.FileName;
+                args.Arguments = startInfo.Arguments;
                 args.Reason = reason;
 
                 LogLaunch(this, args);
