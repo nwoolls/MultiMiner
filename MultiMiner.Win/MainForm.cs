@@ -1356,6 +1356,19 @@ namespace MultiMiner.Win
                 catch (WebException ex)
                 {
                     //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down    
+                    HttpWebResponse response = ex.Response as HttpWebResponse;
+                    if (response != null)
+                    {
+                        if (response.StatusCode == HttpStatusCode.Forbidden)
+                        {
+                            this.applicationConfiguration.MobileMinerMonitoring = false;
+                            this.applicationConfiguration.SaveApplicationConfiguration();
+                            MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
+                                Environment.NewLine + Environment.NewLine +
+                                "MobileMiner remote monitoring will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            ShowApplicationSettings();
+                        }
+                    }
                 }
             }
 
@@ -1386,6 +1399,26 @@ namespace MultiMiner.Win
                 {
                     //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
                     //could also be a json parsing error
+                    if (ex is WebException)
+                    {
+                        WebException webException = (WebException)ex;
+
+                        HttpWebResponse response = webException.Response as HttpWebResponse;
+                        if (response != null)
+                        {
+                            if (response.StatusCode == HttpStatusCode.Forbidden)
+                            {
+                                this.applicationConfiguration.MobileMinerRemoteCommands = false;
+                                this.applicationConfiguration.SaveApplicationConfiguration();
+                                MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
+                                    Environment.NewLine + Environment.NewLine +
+                                    "MobileMiner remote commands will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                ShowApplicationSettings();
+                            }
+                        }
+                    }
+
+                    return;
                 }
                 throw;  
             }
