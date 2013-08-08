@@ -122,6 +122,7 @@
     <None Include="Properties\DataSources\MultiMiner.Engine.CoinConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.CoinConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.StrategyConfiguration.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Engine.LogProcessCloseArgs.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.MiningPool.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.LogEntry.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Device.datasource" />
@@ -182,6 +183,7 @@
     <None Include="Resources\remove.png" />
     <None Include="Resources\arrow_up.png" />
     <None Include="Resources\arrow_down.png" />
+    <None Include="Resources\history.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

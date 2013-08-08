@@ -201,12 +201,12 @@
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFZSURBVDhPY7Ct2HTaqXrLf1KwXcXGMwwwABJImrD3f3jH
-        TqIwSK1r7db/UO0QA0ASxAKQ2iFqwK9fvx7/+fPnUFjH9rtEG/D48eN/f//+3QrEy4FcDpD6+vp6Jpfa
+        TqIwSK1r7db/UO0QA0ASxAKQ2iFqwK9fvx7/+fPnUFjH9rtEG3D//v1/f//+3QrEy4FcDpD6+vp6Jpfa
         rcvBmkEAnwH//v3LgCpjCA0NZYuNjf0fHx9vzMDwnxEqDDEAazS27TwJkgdpio6OPgykV4HYMTEx+4C4
         CcQGG2BXsXkvEAMTBwbeADWgE6QYHQMNQSQmENCqX8UGw0DND43TzrDGxcUpAxXvgWo6kZaWxgXUeARq
         wDagt5ih2lGBddlaCxAN9C/cRrAEFMDE4OKgtI3mfLALkpOThYCKwC4AhsNWqOaNUM0noqKilBg8crex
         gzRN33bt/6/ffxH4199lIA0gp0I1oOMpIHkwwOKC/7Zlm7aD5ECKgYbMAuKTUPYRIN4HYoM1EwsSExNF
-        QZqAAccPFQICBgYA1QwacwJp3BAAAAAASUVORK5CYII=
+        QZqAAccPFQICBgYAt/waZ8sijtUAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="saveButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -279,6 +279,15 @@
   </metadata>
   <metadata name="logLaunchArgsBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>951, 56</value>
+  </metadata>
+  <metadata name="durationColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="devicesColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="logProcessCloseArgsBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 95</value>
   </metadata>
   <metadata name="notifyIcon1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>523, 56</value>

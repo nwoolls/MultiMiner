@@ -30,6 +30,7 @@ namespace MultiMiner.Win
         private bool formLoaded = false;
         private readonly List<LogLaunchArgs> logLaunchEntries = new List<LogLaunchArgs>();
         private readonly List<int> processedCommandIds = new List<int>();
+        private readonly List<LogProcessCloseArgs> logCloseEntries = new List<LogProcessCloseArgs>();
 
         public MainForm()
         {
@@ -54,11 +55,27 @@ namespace MultiMiner.Win
             string jsonData = serializer.Serialize(ea);
 
             File.AppendAllText(logFilePath, jsonData + Environment.NewLine);
+
+            logProcessCloseArgsBindingSource.Add(ea);
+            int index = logProcessCloseArgsBindingSource.IndexOf(ea);
+            logProcessCloseArgsBindingSource.Position = index;
+
+            string devices = String.Join(", ", ea.DeviceIndexes.Select(d => d.ToString()).ToArray());
+
+            historyGridView.Rows[index].Cells[devicesColumn.Index].Value = devices;
+
+            TimeSpan timeSpan = ea.EndDate - ea.StartDate;
+            historyGridView.Rows[index].Cells[durationColumn.Index].Value = String.Format("{0:0.##} minutes", timeSpan.TotalMinutes);
+
+            while (logProcessCloseArgsBindingSource.Count > 1000)
+                logProcessCloseArgsBindingSource.RemoveAt(0);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
             SetupGridColumns();
+
+            logLaunchArgsBindingSource.DataSource = logCloseEntries;
 
             const int mobileMinerInterval = 32; //seconds
             mobileMinerTimer.Interval = mobileMinerInterval * 1000;
@@ -1382,6 +1399,15 @@ namespace MultiMiner.Win
         {
             ShowAdvancedPanel();
             advancedTabControl.SelectedTab = processLogPage;
+
+            applicationConfiguration.LogAreaVisible = true;
+            applicationConfiguration.SaveApplicationConfiguration();
+        }
+
+        private void historyButton_Click(object sender, EventArgs e)
+        {
+            ShowAdvancedPanel();
+            advancedTabControl.SelectedTab = historyPage;
 
             applicationConfiguration.LogAreaVisible = true;
             applicationConfiguration.SaveApplicationConfiguration();
