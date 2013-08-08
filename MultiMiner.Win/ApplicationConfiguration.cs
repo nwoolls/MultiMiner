@@ -42,14 +42,14 @@ namespace MultiMiner.Win
             return Path.Combine(rootPath, "MultiMiner");
         }
 
-        private static string DeviceConfigurationsFileName()
+        private static string ApplicationConfigurationFileName()
         {
             return Path.Combine(AppDataPath(), "ApplicationConfiguration.xml");
         }
 
         public void SaveApplicationConfiguration()
         {
-            ConfigurationReaderWriter.WriteConfiguration(this, DeviceConfigurationsFileName());
+            ConfigurationReaderWriter.WriteConfiguration(this, ApplicationConfigurationFileName());
 
             if (OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix)
                 ApplyLaunchOnWindowsStartup();
@@ -66,7 +66,7 @@ namespace MultiMiner.Win
 
         public void LoadApplicationConfiguration()
         {
-            ApplicationConfiguration tmp = ConfigurationReaderWriter.ReadConfiguration<ApplicationConfiguration>(DeviceConfigurationsFileName());
+            ApplicationConfiguration tmp = ConfigurationReaderWriter.ReadConfiguration<ApplicationConfiguration>(ApplicationConfigurationFileName());
 
             this.LaunchOnWindowsLogin = tmp.LaunchOnWindowsLogin;
             this.StartMiningOnStartup = tmp.StartMiningOnStartup;
