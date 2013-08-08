@@ -11,7 +11,12 @@ namespace MultiMiner.Engine
 {
     public class MiningEngine
     {
-        // event declaration 
+        //events
+        //delegate declarations
+        public delegate void LogProcessCloseHandler(object sender, LogProcessCloseArgs ea);
+
+        //event declarations        
+        public event LogProcessCloseHandler LogProcessClose;
         public event Miner.LogLaunchHandler LogLaunch;
 
         private List<MinerProcess> minerProcesses = new List<MinerProcess>();
@@ -70,7 +75,10 @@ namespace MultiMiner.Engine
             try
             {
                 foreach (MinerProcess minerProcess in minerProcesses)
+                {
+                    logProcessClose(minerProcess);
                     minerProcess.StopMining();
+                }
 
                 minerProcesses.Clear();
 
@@ -91,19 +99,23 @@ namespace MultiMiner.Engine
             {
                 if (minerProcess.Process.HasExited)
                 {
+                    logProcessClose(minerProcess);
                     minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Process crashed");
+                    setupProcessStartInfo(minerProcess);
                 }
 
                 else if (minerProcess.HasDeadDevice)
                 {
                     minerProcess.StopMining();
                     minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Dead device");
+                    setupProcessStartInfo(minerProcess);
                 }
 
                 else if (minerProcess.HasSickDevice)
                 {
                     minerProcess.StopMining();
                     minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Sick device");
+                    setupProcessStartInfo(minerProcess);
                 }
 
                 else if (minerProcess.HasZeroHashrateDevice || minerProcess.HasFrozenDevice)
@@ -113,14 +125,60 @@ namespace MultiMiner.Engine
                     {
                         minerProcess.StopMining();
                         minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Zero hashrate");
+                        setupProcessStartInfo(minerProcess);
                     }
                 }
             }
         }
-        
+
+        private void setupProcessStartInfo(MinerProcess minerProcess)
+        {
+            string coinName = minerProcess.MinerConfiguration.CoinName;
+            string coinSymbol = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase)).Coin.Symbol;
+            CoinInformation processCoinInfo = coinInformation.Single(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+            minerProcess.CoinInformation = processCoinInfo;
+
+            minerProcess.StartDate = DateTime.Now;
+        }
+
+        private void logProcessClose(MinerProcess minerProcess)
+        {
+            DateTime startDate = minerProcess.StartDate;
+            DateTime endDate = DateTime.Now;
+            string coinName = minerProcess.MinerConfiguration.CoinName;
+            string coinSymbol = minerProcess.CoinInformation.Symbol;
+            double priceAtStart = minerProcess.CoinInformation.Price;
+            double priceAtEnd = coinInformation.Single(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase)).Price;
+            List<int> deviceIndexes = minerProcess.MinerConfiguration.DeviceIndexes;
+
+            logProcessClose(startDate, endDate, coinName, coinSymbol, priceAtStart, priceAtEnd, deviceIndexes);
+        }
+
+        private void logProcessClose(DateTime startDate, DateTime endDate, string coinName, string coinSymbol,
+            double priceAtStart, double priceAtEnd, List<int> deviceIndexes)
+        {
+            if (this.LogProcessClose != null)
+            {
+                LogProcessCloseArgs args = new LogProcessCloseArgs();
+                args.StartDate = startDate;
+                args.EndDate = endDate;
+                args.CoinName = coinName;
+                args.CoinSymbol = coinSymbol;
+                args.StartPrice = priceAtStart;
+                args.EndPrice = priceAtEnd;
+                args.DeviceIndexes = deviceIndexes;
+
+                this.LogProcessClose(this, args);
+            }
+        }
+
+        private List<CoinInformation> coinInformation;
         //update engineConfiguration.DeviceConfiguration based on mining strategy & coin info
         public void ApplyMiningStrategy(List<Device> devices, List<CoinInformation> coinInformation)
         {
+            //store this off so we can reference prices for logging
+            this.coinInformation = coinInformation;
+
             //make a copy as we'll be modifying individual coin properties (profitability)
             //if no copy is made this could lead to a compounding effect
             List<CoinInformation> coinInformationCopy = CopyCoinInformation(coinInformation);
@@ -411,6 +469,8 @@ namespace MultiMiner.Engine
                     minerProcess.Process = process;
                     minerProcess.ApiPort = port;
                     minerProcess.MinerConfiguration = minerConfiguration;
+
+                    setupProcessStartInfo(minerProcess);
 
                     minerProcesses.Add(minerProcess);
                 }

@@ -46,6 +46,7 @@
     <Compile Include="Configuration\DeviceConfiguration.cs" />
     <Compile Include="Configuration\EngineConfiguration.cs" />
     <Compile Include="Configuration\XgminerConfiguration.cs" />
+    <Compile Include="LogProcessCloseArgs.cs" />
     <Compile Include="MinerPath.cs" />
     <Compile Include="MinerProcess.cs" />
     <Compile Include="MiningEngine.cs" />

@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Api;
+using System;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
@@ -11,12 +12,13 @@ namespace MultiMiner.Engine
         public Process Process { get; set; }
         public int ApiPort { get; set; }
         public MinerConfiguration MinerConfiguration { get; set; } //for relaunching crashed miners
+        public DateTime StartDate { get; set; }
+        public Coinchoose.Api.CoinInformation CoinInformation { get; set; }
 
         public bool HasSickDevice { get; set; }
         public bool HasDeadDevice { get; set; }
         public bool HasZeroHashrateDevice { get; set; }
         public bool HasFrozenDevice { get; set; }
-
         private ApiContext apiContext;
         public ApiContext ApiContext 
         { 
