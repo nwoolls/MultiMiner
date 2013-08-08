@@ -1,6 +1,7 @@
 ﻿using MultiMiner.Engine.Configuration;
 using MultiMiner.Xgminer;
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace MultiMiner.Win
@@ -75,7 +76,7 @@ namespace MultiMiner.Win
 
         private void mobileMinerInfoLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            MessageBox.Show("MobileMiner is a mobile app, available soon on the Apple App Store, that allows you to remotely monitor and command your mining rigs. \n\nRemote commands are limited to \"start\", \"stop\", and \"restart\" for security reasons.", "MobileMiner", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Process.Start("http://mobileminerapp.com/");
         }
     }
 }

@@ -89,6 +89,12 @@
       <DependentUpon>StrategiesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="WindowsStartupShortcut.cs" />
+    <Compile Include="WizardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WizardForm.Designer.cs">
+      <DependentUpon>WizardForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="CoinsForm.resx">
       <DependentUpon>CoinsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -116,6 +122,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StrategiesForm.resx">
       <DependentUpon>StrategiesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WizardForm.resx">
+      <DependentUpon>WizardForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\DataSources\ApiLogEntry.datasource" />
     <None Include="Properties\DataSources\ApplicationConfiguration.datasource" />

@@ -106,6 +106,8 @@ namespace MultiMiner.Win
             if (applicationConfiguration.DetectDisownedMiners)
                 CheckForDisownedMiners();
 
+            CheckAndShowGettingStarted();
+
             CheckAndDownloadMiners();
 
             RefreshDevices();
@@ -114,6 +116,12 @@ namespace MultiMiner.Win
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
 
             formLoaded = true;
+        }
+
+        private void CheckAndShowGettingStarted()
+        {
+            WizardForm wizardForm = new WizardForm();
+            wizardForm.ShowDialog();
         }
 
         private void CheckAndDownloadMiners()
