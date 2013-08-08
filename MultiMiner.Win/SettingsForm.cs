@@ -2,6 +2,7 @@
 using MultiMiner.Xgminer;
 using System;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace MultiMiner.Win
@@ -21,9 +22,35 @@ namespace MultiMiner.Win
 
         private void saveButton_Click(object sender, EventArgs e)
         {
+            if (!ValidateInput())
+                return;
+
             SaveSettings();
+
+            DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
+        private bool ValidateInput()
+        {
+            if (emailAddressEdit.Enabled && !String.IsNullOrEmpty(emailAddressEdit.Text) &&
+                !InputValidation.IsValidEmailAddress(emailAddressEdit.Text))
+            {
+                emailAddressEdit.Focus();
+                MessageBox.Show("Please specify a valid email address. This must be the same address used to register MobileMiner.", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (appKeyEdit.Enabled && !String.IsNullOrEmpty(appKeyEdit.Text) &&
+                !InputValidation.IsValidApplicationKey(appKeyEdit.Text))
+            {
+                appKeyEdit.Focus();
+                MessageBox.Show("Please specify a valid application key. If you are unsure, copy and paste the application key from the email you received.", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            return true;
+        }
+        
         private void SaveSettings()
         {
             minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256] = sha256ParamsEdit.Text;

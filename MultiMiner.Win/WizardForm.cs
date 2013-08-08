@@ -74,6 +74,10 @@ namespace MultiMiner.Win
 
         private void nextButton_Click(object sender, EventArgs e)
         {
+            if (!ValidateInput())
+                return;
+
+
             if (wizardTabControl.SelectedIndex < wizardTabControl.TabPages.Count - 1)
                 wizardTabControl.SelectedIndex += 1;
             else
@@ -83,6 +87,30 @@ namespace MultiMiner.Win
             {
                 downloadChosenMiner();
             }
+        }
+
+        private bool ValidateInput()
+        {
+            if (wizardTabControl.SelectedTab == configureMobileMinerPage)
+            {
+                if (emailAddressEdit.Enabled && !String.IsNullOrEmpty(emailAddressEdit.Text) &&
+                    !InputValidation.IsValidEmailAddress(emailAddressEdit.Text))
+                {
+                    emailAddressEdit.Focus();
+                    MessageBox.Show("Please specify a valid email address. This must be the same address used to register MobileMiner.", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+
+                if (appKeyEdit.Enabled && !String.IsNullOrEmpty(appKeyEdit.Text) &&
+                    !InputValidation.IsValidApplicationKey(appKeyEdit.Text))
+                {
+                    appKeyEdit.Focus();
+                    MessageBox.Show("Please specify a valid application key. If you are unsure, copy and paste the application key from the email you received.", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private void backButton_Click(object sender, EventArgs e)

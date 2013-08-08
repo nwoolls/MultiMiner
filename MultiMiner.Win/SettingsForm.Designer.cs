@@ -35,6 +35,7 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.disableGpuCheckbox = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -52,21 +53,20 @@
             this.autoLaunchCheckBox = new System.Windows.Forms.CheckBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.mobileMinerInfoLink = new System.Windows.Forms.LinkLabel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.remoteCommandsCheck = new System.Windows.Forms.CheckBox();
+            this.remoteMonitoringCheck = new System.Windows.Forms.CheckBox();
             this.appKeyEdit = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.emailAddressEdit = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.remoteMonitoringCheck = new System.Windows.Forms.CheckBox();
-            this.remoteCommandsCheck = new System.Windows.Forms.CheckBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.mobileMinerInfoLink = new System.Windows.Forms.LinkLabel();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -82,7 +82,6 @@
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.saveButton.Location = new System.Drawing.Point(276, 12);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
@@ -132,6 +131,10 @@
             this.checkBox4.TabIndex = 6;
             this.checkBox4.Text = "Detect disowned miners (orphaned mining processes)";
             this.checkBox4.UseVisualStyleBackColor = true;
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
             // 
             // checkBox2
             // 
@@ -315,7 +318,50 @@
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "MobileMiner";
-            
+            // 
+            // mobileMinerInfoLink
+            // 
+            this.mobileMinerInfoLink.AutoSize = true;
+            this.mobileMinerInfoLink.Location = new System.Drawing.Point(34, 111);
+            this.mobileMinerInfoLink.Name = "mobileMinerInfoLink";
+            this.mobileMinerInfoLink.Size = new System.Drawing.Size(150, 13);
+            this.mobileMinerInfoLink.TabIndex = 6;
+            this.mobileMinerInfoLink.TabStop = true;
+            this.mobileMinerInfoLink.Text = "Learn more about MobileMiner";
+            this.mobileMinerInfoLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.mobileMinerInfoLink_LinkClicked);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.info;
+            this.pictureBox1.Location = new System.Drawing.Point(12, 109);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(16, 16);
+            this.pictureBox1.TabIndex = 5;
+            this.pictureBox1.TabStop = false;
+            // 
+            // remoteCommandsCheck
+            // 
+            this.remoteCommandsCheck.AutoSize = true;
+            this.remoteCommandsCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerRemoteCommands", true));
+            this.remoteCommandsCheck.Location = new System.Drawing.Point(239, 23);
+            this.remoteCommandsCheck.Name = "remoteCommandsCheck";
+            this.remoteCommandsCheck.Size = new System.Drawing.Size(148, 17);
+            this.remoteCommandsCheck.TabIndex = 1;
+            this.remoteCommandsCheck.Text = "Enable remote commands";
+            this.remoteCommandsCheck.UseVisualStyleBackColor = true;
+            this.remoteCommandsCheck.CheckedChanged += new System.EventHandler(this.remoteCommandsCheck_CheckedChanged);
+            // 
+            // remoteMonitoringCheck
+            // 
+            this.remoteMonitoringCheck.AutoSize = true;
+            this.remoteMonitoringCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerMonitoring", true));
+            this.remoteMonitoringCheck.Location = new System.Drawing.Point(12, 23);
+            this.remoteMonitoringCheck.Name = "remoteMonitoringCheck";
+            this.remoteMonitoringCheck.Size = new System.Drawing.Size(145, 17);
+            this.remoteMonitoringCheck.TabIndex = 0;
+            this.remoteMonitoringCheck.Text = "Enable remote monitoring";
+            this.remoteMonitoringCheck.UseVisualStyleBackColor = true;
+            this.remoteMonitoringCheck.CheckedChanged += new System.EventHandler(this.remoteMonitoringCheck_CheckedChanged);
             // 
             // appKeyEdit
             // 
@@ -353,54 +399,6 @@
             this.label6.TabIndex = 0;
             this.label6.Text = "Application key:";
             // 
-            // remoteMonitoringCheck
-            // 
-            this.remoteMonitoringCheck.AutoSize = true;
-            this.remoteMonitoringCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerMonitoring", true));
-            this.remoteMonitoringCheck.Location = new System.Drawing.Point(12, 23);
-            this.remoteMonitoringCheck.Name = "remoteMonitoringCheck";
-            this.remoteMonitoringCheck.Size = new System.Drawing.Size(145, 17);
-            this.remoteMonitoringCheck.TabIndex = 0;
-            this.remoteMonitoringCheck.Text = "Enable remote monitoring";
-            this.remoteMonitoringCheck.UseVisualStyleBackColor = true;
-            this.remoteMonitoringCheck.CheckedChanged += new System.EventHandler(this.remoteMonitoringCheck_CheckedChanged);
-            // 
-            // remoteCommandsCheck
-            // 
-            this.remoteCommandsCheck.AutoSize = true;
-            this.remoteCommandsCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerRemoteCommands", true));
-            this.remoteCommandsCheck.Location = new System.Drawing.Point(239, 23);
-            this.remoteCommandsCheck.Name = "remoteCommandsCheck";
-            this.remoteCommandsCheck.Size = new System.Drawing.Size(148, 17);
-            this.remoteCommandsCheck.TabIndex = 1;
-            this.remoteCommandsCheck.Text = "Enable remote commands";
-            this.remoteCommandsCheck.UseVisualStyleBackColor = true;
-            this.remoteCommandsCheck.CheckedChanged += new System.EventHandler(this.remoteCommandsCheck_CheckedChanged);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.info;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 109);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(16, 16);
-            this.pictureBox1.TabIndex = 5;
-            this.pictureBox1.TabStop = false;
-            // 
-            // mobileMinerInfoLink
-            // 
-            this.mobileMinerInfoLink.AutoSize = true;
-            this.mobileMinerInfoLink.Location = new System.Drawing.Point(34, 111);
-            this.mobileMinerInfoLink.Name = "mobileMinerInfoLink";
-            this.mobileMinerInfoLink.Size = new System.Drawing.Size(150, 13);
-            this.mobileMinerInfoLink.TabIndex = 6;
-            this.mobileMinerInfoLink.TabStop = true;
-            this.mobileMinerInfoLink.Text = "Learn more about MobileMiner";
-            this.mobileMinerInfoLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.mobileMinerInfoLink_LinkClicked);
-            // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -421,12 +419,12 @@
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
