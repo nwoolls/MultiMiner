@@ -38,6 +38,8 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.poolDownButton = new System.Windows.Forms.Button();
+            this.poolUpButton = new System.Windows.Forms.Button();
             this.addPoolButton = new System.Windows.Forms.Button();
             this.removePoolButton = new System.Windows.Forms.Button();
             this.poolListBox = new System.Windows.Forms.ListBox();
@@ -140,6 +142,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.poolDownButton);
+            this.groupBox1.Controls.Add(this.poolUpButton);
             this.groupBox1.Controls.Add(this.addPoolButton);
             this.groupBox1.Controls.Add(this.removePoolButton);
             this.groupBox1.Controls.Add(this.poolListBox);
@@ -158,23 +162,47 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pools";
             // 
+            // poolDownButton
+            // 
+            this.poolDownButton.Image = global::MultiMiner.Win.Properties.Resources.arrow_down;
+            this.poolDownButton.Location = new System.Drawing.Point(342, 50);
+            this.poolDownButton.Name = "poolDownButton";
+            this.poolDownButton.Size = new System.Drawing.Size(25, 25);
+            this.poolDownButton.TabIndex = 4;
+            this.poolDownButton.UseVisualStyleBackColor = true;
+            this.poolDownButton.Click += new System.EventHandler(this.poolDownButton_Click);
+            // 
+            // poolUpButton
+            // 
+            this.poolUpButton.Image = global::MultiMiner.Win.Properties.Resources.arrow_up;
+            this.poolUpButton.Location = new System.Drawing.Point(342, 19);
+            this.poolUpButton.Name = "poolUpButton";
+            this.poolUpButton.Size = new System.Drawing.Size(25, 25);
+            this.poolUpButton.TabIndex = 3;
+            this.poolUpButton.UseVisualStyleBackColor = true;
+            this.poolUpButton.Click += new System.EventHandler(this.poolUpButton_Click);
+            // 
             // addPoolButton
             // 
+            this.addPoolButton.Image = global::MultiMiner.Win.Properties.Resources.add;
             this.addPoolButton.Location = new System.Drawing.Point(265, 19);
             this.addPoolButton.Name = "addPoolButton";
-            this.addPoolButton.Size = new System.Drawing.Size(100, 23);
+            this.addPoolButton.Size = new System.Drawing.Size(71, 25);
             this.addPoolButton.TabIndex = 1;
-            this.addPoolButton.Text = "Add Pool";
+            this.addPoolButton.Text = "Add";
+            this.addPoolButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.addPoolButton.UseVisualStyleBackColor = true;
             this.addPoolButton.Click += new System.EventHandler(this.addPoolButton_Click);
             // 
             // removePoolButton
             // 
-            this.removePoolButton.Location = new System.Drawing.Point(265, 52);
+            this.removePoolButton.Image = global::MultiMiner.Win.Properties.Resources.remove;
+            this.removePoolButton.Location = new System.Drawing.Point(265, 50);
             this.removePoolButton.Name = "removePoolButton";
-            this.removePoolButton.Size = new System.Drawing.Size(100, 23);
+            this.removePoolButton.Size = new System.Drawing.Size(71, 25);
             this.removePoolButton.TabIndex = 2;
-            this.removePoolButton.Text = "Remove Pool";
+            this.removePoolButton.Text = "Remove";
+            this.removePoolButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.removePoolButton.UseVisualStyleBackColor = true;
             this.removePoolButton.Click += new System.EventHandler(this.removePoolButton_Click);
             // 
@@ -235,7 +263,7 @@
             this.textBox4.Location = new System.Drawing.Point(71, 121);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(188, 20);
-            this.textBox4.TabIndex = 5;
+            this.textBox4.TabIndex = 11;
             // 
             // hostEdit
             // 
@@ -243,15 +271,15 @@
             this.hostEdit.Location = new System.Drawing.Point(71, 95);
             this.hostEdit.Name = "hostEdit";
             this.hostEdit.Size = new System.Drawing.Size(188, 20);
-            this.hostEdit.TabIndex = 3;
+            this.hostEdit.TabIndex = 5;
             // 
             // textBox2
             // 
             this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Port", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox2.Location = new System.Drawing.Point(297, 95);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(68, 20);
-            this.textBox2.TabIndex = 4;
+            this.textBox2.Size = new System.Drawing.Size(70, 20);
+            this.textBox2.TabIndex = 10;
             // 
             // textBox1
             // 
@@ -259,14 +287,14 @@
             this.textBox1.Location = new System.Drawing.Point(71, 147);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(188, 20);
-            this.textBox1.TabIndex = 6;
+            this.textBox1.TabIndex = 12;
             // 
             // textBox3
             // 
             this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.coinConfigurationBindingSource, "MinerFlags", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox3.Location = new System.Drawing.Point(271, 245);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(261, 20);
+            this.textBox3.Size = new System.Drawing.Size(262, 20);
             this.textBox3.TabIndex = 4;
             // 
             // coinConfigurationBindingSource
@@ -327,7 +355,7 @@
             "Multiplication"});
             this.adjustProfitCombo.Location = new System.Drawing.Point(424, 271);
             this.adjustProfitCombo.Name = "adjustProfitCombo";
-            this.adjustProfitCombo.Size = new System.Drawing.Size(108, 21);
+            this.adjustProfitCombo.Size = new System.Drawing.Size(109, 21);
             this.adjustProfitCombo.TabIndex = 6;
             this.adjustProfitCombo.SelectedIndexChanged += new System.EventHandler(this.adjustProfitCombo_SelectedIndexChanged);
             // 
@@ -410,5 +438,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox adjustProfitCombo;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button poolDownButton;
+        private System.Windows.Forms.Button poolUpButton;
     }
 }

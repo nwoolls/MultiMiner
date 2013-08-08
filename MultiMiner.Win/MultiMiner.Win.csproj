@@ -177,6 +177,10 @@
     <None Include="Resources\network_application.png" />
     <None Include="Resources\window_text.png" />
     <None Include="Resources\info.png" />
+    <None Include="Resources\add.png" />
+    <None Include="Resources\remove.png" />
+    <None Include="Resources\arrow_up.png" />
+    <None Include="Resources\arrow_down.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

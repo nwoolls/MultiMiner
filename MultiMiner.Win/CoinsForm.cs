@@ -130,6 +130,8 @@ namespace MultiMiner.Win
             addPoolButton.Enabled = coinListBox.SelectedIndex >= 0;
             removePoolButton.Enabled = (coinListBox.SelectedIndex >= 0) && (poolListBox.SelectedIndex >= 0);
             removeCoinButton.Enabled = (coinListBox.SelectedIndex >= 0) && (coinListBox.SelectedIndex >= 0);
+            poolUpButton.Enabled = (poolListBox.SelectedIndex >= 1);
+            poolDownButton.Enabled = (poolListBox.SelectedIndex < poolListBox.Items.Count - 1);
         }
         
         private void poolListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -153,6 +155,27 @@ namespace MultiMiner.Win
 
             CoinConfiguration currentConfiguration = (CoinConfiguration)coinConfigurationBindingSource.Current;
             adjustProfitCombo.SelectedIndex = (int)currentConfiguration.ProfitabilityAdjustmentType;
+        }
+
+        private void poolUpButton_Click(object sender, EventArgs e)
+        {
+            MoveSelectedPool(-1);
+        }
+
+        private void poolDownButton_Click(object sender, EventArgs e)
+        {
+            MoveSelectedPool(1);
+        }
+
+        private void MoveSelectedPool(int offset)
+        {
+            Object currentObject = miningPoolBindingSource.Current;
+            int currentIndex = miningPoolBindingSource.IndexOf(currentObject);
+            int newIndex = currentIndex + offset;
+            miningPoolBindingSource.RemoveAt(currentIndex);
+            miningPoolBindingSource.Insert(newIndex, currentObject);
+            miningPoolBindingSource.Position = newIndex;
+            poolListBox.Focus();
         }
     }
 }
