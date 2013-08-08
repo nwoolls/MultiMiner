@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
+using System.Web.Script.Serialization;
 
 namespace MultiMiner.Win
 {
@@ -44,6 +45,17 @@ namespace MultiMiner.Win
                 logLaunchArgsBindingSource.RemoveAt(0);
         }
 
+        private void LogProcessClose(object sender, LogProcessCloseArgs ea)
+        {
+            const string logFileName = "MiningLog.json";
+            string logFilePath = Path.Combine(AppDataPath(), logFileName);
+
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            string jsonData = serializer.Serialize(ea);
+
+            File.AppendAllText(logFilePath, jsonData + Environment.NewLine);
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             SetupGridColumns();
@@ -63,6 +75,7 @@ namespace MultiMiner.Win
 
             apiLogEntryBindingSource.DataSource = apiLogEntries;
 
+            miningEngine.LogProcessClose += LogProcessClose;
             miningEngine.LogLaunch += LogMinerLaunch;
             logLaunchArgsBindingSource.DataSource = logLaunchEntries;
 
