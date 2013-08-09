@@ -11,9 +11,11 @@ namespace MultiMiner.Xgminer
         //events
         // delegate declaration 
         public delegate void LogLaunchHandler(object sender, LogLaunchArgs ea);
+        public delegate void LaunchFailedHandler(object sender, LaunchFailedArgs ea);
 
         // event declaration 
         public event LogLaunchHandler LogLaunch;
+        public event LaunchFailedHandler LaunchFailed;
 
         private readonly MinerConfiguration minerConfiguration;
 
@@ -150,7 +152,7 @@ namespace MultiMiner.Xgminer
                 LogLaunch(this, args);
             }
 
-            Process process = Process.Start(startInfo);
+            Process process = StartProcessAndCheckResponse(startInfo);
             
             if (ensureProcessStarts)
                 //store the returned process
@@ -159,7 +161,41 @@ namespace MultiMiner.Xgminer
             return process;
         }
 
-        private static Process EnsureProcessStarts(Process process, ProcessStartInfo startInfo)
+        private Process StartProcessAndCheckResponse(ProcessStartInfo startInfo)
+        {
+            bool userWillWatchOutput = startInfo.RedirectStandardOutput;
+
+            startInfo.RedirectStandardOutput = true;
+
+            Process process = new Process();
+            process.StartInfo = startInfo;
+
+            if (!userWillWatchOutput)
+                process.OutputDataReceived += HandleProcessOutput;
+
+            if (process.Start() && !userWillWatchOutput)
+                process.BeginOutputReadLine();
+
+            return process;
+        }
+
+        private void HandleProcessOutput(object sender, DataReceivedEventArgs e)
+        {
+            if (String.IsNullOrEmpty(e.Data))
+                return;
+
+            if (e.Data.Contains("auth failed") && (LaunchFailed != null))
+            {
+                LaunchFailedArgs args = new LaunchFailedArgs();
+                args.Reason = "Authentication failed for your pool. Verify your pool settings and try again.";
+                LaunchFailed(this, args);
+            }
+
+            if (e.Data.Contains("detected new block"))
+                ((Process)sender).CancelOutputRead();
+        }
+
+        private Process EnsureProcessStarts(Process process, ProcessStartInfo startInfo)
         {
             //any lower than this seems to have a decent chance of a USB ASIC miner process not
             //successfully stopping & restarting
@@ -181,7 +217,7 @@ namespace MultiMiner.Xgminer
                         retries, process.ExitCode, startInfo.FileName, startInfo.Arguments));
 
                 //ensure the new process is stored and returned
-                process = Process.Start(startInfo);
+                process = StartProcessAndCheckResponse(startInfo);
                 Thread.Sleep(timeout);
                 retries++;
             }
