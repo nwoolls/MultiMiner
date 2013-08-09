@@ -39,8 +39,7 @@ namespace MultiMiner.Win
 
         private void LogProcessLaunch(object sender, LogLaunchArgs ea)
         {
-            logLaunchArgsBindingSource.Add(ea);
-            logLaunchArgsBindingSource.Position = logLaunchArgsBindingSource.IndexOf(ea);
+            logLaunchArgsBindingSource.Position = logLaunchArgsBindingSource.Add(ea);
 
             while (logLaunchArgsBindingSource.Count > 1000)
                 logLaunchArgsBindingSource.RemoveAt(0);
@@ -55,9 +54,8 @@ namespace MultiMiner.Win
             string jsonData = serializer.Serialize(ea);
 
             File.AppendAllText(logFilePath, jsonData + Environment.NewLine);
-
-            logProcessCloseArgsBindingSource.Add(ea);
-            int index = logProcessCloseArgsBindingSource.IndexOf(ea);
+            
+            int index = logProcessCloseArgsBindingSource.Add(ea);
             logProcessCloseArgsBindingSource.Position = index;
 
             //convert from device indexes (0 based) to device #'s (more human readable)
@@ -806,8 +804,7 @@ namespace MultiMiner.Win
             logEntry.Response = eventArgs.Response;
             logEntry.CoinName = GetCoinNameForApiContext((Xgminer.Api.ApiContext)sender);
 
-            apiLogEntryBindingSource.Add(logEntry);
-            apiLogEntryBindingSource.Position = apiLogEntryBindingSource.IndexOf(logEntry);
+            apiLogEntryBindingSource.Position = apiLogEntryBindingSource.Add(logEntry);
 
             while (apiLogEntryBindingSource.Count > 1000)
                 apiLogEntryBindingSource.RemoveAt(0);
