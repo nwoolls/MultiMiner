@@ -7,6 +7,10 @@ MultiMiner uses the underlying mining engine ([cgminer][1] by default) to detect
 
 ![Main Screen](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen.png "Main Screen")
 
+For new users, MultiMiner includes a Getting Started wizard that walks you through selecting an engine, a coin, a pool, and configuring [MobileMiner][14].
+
+![Getting Started](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Getting%20Started.png "Getting Started")
+
 MultiMiner will automatically download and install the latest version of either cgminer, [bfgminer][2], or both, making it simple for the new user to get started.
 
 ![No Miners Prompt](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt.png "No Miners Prompt")
