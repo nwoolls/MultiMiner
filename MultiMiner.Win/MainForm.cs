@@ -752,6 +752,7 @@ namespace MultiMiner.Win
             row.Cells[acceptedColumn.Index].Value = null;
             row.Cells[rejectedColumn.Index].Value = null;
             row.Cells[errorsColumn.Index].Value = null;
+            row.Cells[utilityColumn.Index].Value = null;
             row.Cells[intensityColumn.Index].Value = null;
         }
 
