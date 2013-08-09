@@ -60,7 +60,11 @@ namespace MultiMiner.Win
             int index = logProcessCloseArgsBindingSource.IndexOf(ea);
             logProcessCloseArgsBindingSource.Position = index;
 
-            string devices = String.Join(", ", ea.DeviceIndexes.Select(d => d.ToString()).ToArray());
+            //convert from device indexes (0 based) to device #'s (more human readable)
+            List<string> deviceList = new List<string>();
+            foreach (int deviceIndex in ea.DeviceIndexes)
+                deviceList.Add(String.Format("#{0}", deviceIndex + 1));            
+            string devices = String.Join(", ", deviceList.ToArray());
 
             historyGridView.Rows[index].Cells[devicesColumn.Index].Value = devices;
 
