@@ -96,6 +96,7 @@ namespace MultiMiner.Win
 
             miningEngine.LogProcessClose += LogProcessClose;
             miningEngine.LogProcessLaunch += LogProcessLaunch;
+            miningEngine.ProcessLaunchFailed += ProcessLaunchFailed;
             logLaunchArgsBindingSource.DataSource = logLaunchEntries;
 
             saveButton.Enabled = false;
@@ -116,6 +117,16 @@ namespace MultiMiner.Win
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
 
             formLoaded = true;
+        }
+
+        private void ProcessLaunchFailed(object sender, LaunchFailedArgs ea)
+        {
+            this.BeginInvoke((Action)(() =>
+            {
+                //code to update UI
+                StopMining();
+                MessageBox.Show(ea.Reason, "Launching Miner Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }));
         }
 
         private void CheckAndShowGettingStarted()
