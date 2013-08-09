@@ -30,9 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -41,6 +44,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             this.deviceStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.startupMiningTimer = new System.Windows.Forms.Timer(this.components);
@@ -180,6 +184,7 @@
             // startupMiningPanel
             // 
             this.startupMiningPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.startupMiningPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.startupMiningPanel.Controls.Add(this.cancelStartupMiningButton);
             this.startupMiningPanel.Controls.Add(this.countdownLabel);
             this.startupMiningPanel.Location = new System.Drawing.Point(413, 226);
@@ -190,7 +195,7 @@
             // 
             // cancelStartupMiningButton
             // 
-            this.cancelStartupMiningButton.Location = new System.Drawing.Point(229, 8);
+            this.cancelStartupMiningButton.Location = new System.Drawing.Point(231, 6);
             this.cancelStartupMiningButton.Name = "cancelStartupMiningButton";
             this.cancelStartupMiningButton.Size = new System.Drawing.Size(75, 23);
             this.cancelStartupMiningButton.TabIndex = 5;
@@ -201,7 +206,7 @@
             // countdownLabel
             // 
             this.countdownLabel.AutoSize = true;
-            this.countdownLabel.Location = new System.Drawing.Point(3, 13);
+            this.countdownLabel.Location = new System.Drawing.Point(5, 11);
             this.countdownLabel.Name = "countdownLabel";
             this.countdownLabel.Size = new System.Drawing.Size(220, 13);
             this.countdownLabel.TabIndex = 0;
@@ -229,6 +234,7 @@
             this.cancelButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.toolStrip1.Size = new System.Drawing.Size(1144, 25);
             this.toolStrip1.TabIndex = 7;
             this.toolStrip1.Text = "toolStrip1";
@@ -506,8 +512,12 @@
             this.deviceGridView.AllowUserToAddRows = false;
             this.deviceGridView.AllowUserToDeleteRows = false;
             this.deviceGridView.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.deviceGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.deviceGridView.AutoGenerateColumns = false;
             this.deviceGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.deviceGridView.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.deviceGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.deviceGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.deviceGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.enabledColumn,
@@ -570,7 +580,11 @@
             this.apiLogGridView.AllowUserToDeleteRows = false;
             this.apiLogGridView.AllowUserToOrderColumns = true;
             this.apiLogGridView.AllowUserToResizeRows = false;
+            dataGridViewCellStyle11.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle11;
             this.apiLogGridView.AutoGenerateColumns = false;
+            this.apiLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.apiLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.apiLogGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.apiLogGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dateTimeDataGridViewTextBoxColumn,
@@ -638,7 +652,11 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToOrderColumns = true;
             this.dataGridView1.AllowUserToResizeRows = false;
+            dataGridViewCellStyle12.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle12;
             this.dataGridView1.AutoGenerateColumns = false;
+            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.dataGridView1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dateTimeDataGridViewTextBoxColumn1,
@@ -706,8 +724,12 @@
             this.historyGridView.AllowUserToAddRows = false;
             this.historyGridView.AllowUserToDeleteRows = false;
             this.historyGridView.AllowUserToResizeRows = false;
+            dataGridViewCellStyle13.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle13;
             this.historyGridView.AutoGenerateColumns = false;
             this.historyGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.historyGridView.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.historyGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.historyGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.historyGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.startDateDataGridViewTextBoxColumn,
@@ -762,8 +784,8 @@
             // startPriceDataGridViewTextBoxColumn
             // 
             this.startPriceDataGridViewTextBoxColumn.DataPropertyName = "StartPrice";
-            dataGridViewCellStyle10.Format = ".##########";
-            this.startPriceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle14.Format = ".##########";
+            this.startPriceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle14;
             this.startPriceDataGridViewTextBoxColumn.HeaderText = "Start Price";
             this.startPriceDataGridViewTextBoxColumn.Name = "startPriceDataGridViewTextBoxColumn";
             this.startPriceDataGridViewTextBoxColumn.ReadOnly = true;
@@ -771,8 +793,8 @@
             // endPriceDataGridViewTextBoxColumn
             // 
             this.endPriceDataGridViewTextBoxColumn.DataPropertyName = "EndPrice";
-            dataGridViewCellStyle11.Format = ".##########";
-            this.endPriceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle15.Format = ".##########";
+            this.endPriceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle15;
             this.endPriceDataGridViewTextBoxColumn.HeaderText = "End Price";
             this.endPriceDataGridViewTextBoxColumn.Name = "endPriceDataGridViewTextBoxColumn";
             this.endPriceDataGridViewTextBoxColumn.ReadOnly = true;
@@ -838,6 +860,7 @@
             this.showAppMenuItem,
             this.quitAppMenuItem});
             this.notifyIconMenuStrip.Name = "contextMenuStrip1";
+            this.notifyIconMenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.notifyIconMenuStrip.Size = new System.Drawing.Size(104, 98);
             // 
             // startMenuItem
@@ -924,64 +947,65 @@
             // 
             // difficultyColumn
             // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.difficultyColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.difficultyColumn.DefaultCellStyle = dataGridViewCellStyle2;
             this.difficultyColumn.HeaderText = "Difficulty";
             this.difficultyColumn.Name = "difficultyColumn";
             this.difficultyColumn.ReadOnly = true;
             // 
             // priceColumn
             // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.priceColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.priceColumn.DefaultCellStyle = dataGridViewCellStyle3;
             this.priceColumn.HeaderText = "Price";
             this.priceColumn.Name = "priceColumn";
             this.priceColumn.ReadOnly = true;
             // 
             // profitabilityColumn
             // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.profitabilityColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.profitabilityColumn.DefaultCellStyle = dataGridViewCellStyle4;
             this.profitabilityColumn.HeaderText = "Profitability";
             this.profitabilityColumn.Name = "profitabilityColumn";
             this.profitabilityColumn.ReadOnly = true;
             // 
             // temperatureColumn
             // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.temperatureColumn.DefaultCellStyle = dataGridViewCellStyle4;
-            this.temperatureColumn.HeaderText = "Temperature";
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.temperatureColumn.DefaultCellStyle = dataGridViewCellStyle5;
+            this.temperatureColumn.FillWeight = 70F;
+            this.temperatureColumn.HeaderText = "Temp";
             this.temperatureColumn.Name = "temperatureColumn";
             this.temperatureColumn.ReadOnly = true;
             // 
             // hashRateColumn
             // 
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.hashRateColumn.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.hashRateColumn.DefaultCellStyle = dataGridViewCellStyle6;
             this.hashRateColumn.HeaderText = "Hashrate";
             this.hashRateColumn.Name = "hashRateColumn";
             this.hashRateColumn.ReadOnly = true;
             // 
             // acceptedColumn
             // 
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.acceptedColumn.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.acceptedColumn.DefaultCellStyle = dataGridViewCellStyle7;
             this.acceptedColumn.HeaderText = "Accepted";
             this.acceptedColumn.Name = "acceptedColumn";
             this.acceptedColumn.ReadOnly = true;
             // 
             // rejectedColumn
             // 
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.rejectedColumn.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.rejectedColumn.DefaultCellStyle = dataGridViewCellStyle8;
             this.rejectedColumn.HeaderText = "Rejected";
             this.rejectedColumn.Name = "rejectedColumn";
             this.rejectedColumn.ReadOnly = true;
             // 
             // errorsColumn
             // 
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.errorsColumn.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.errorsColumn.DefaultCellStyle = dataGridViewCellStyle9;
             this.errorsColumn.FillWeight = 75F;
             this.errorsColumn.HeaderText = "Errors";
             this.errorsColumn.Name = "errorsColumn";
@@ -989,8 +1013,8 @@
             // 
             // utilityColumn
             // 
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.utilityColumn.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.utilityColumn.DefaultCellStyle = dataGridViewCellStyle10;
             this.utilityColumn.FillWeight = 75F;
             this.utilityColumn.HeaderText = "Utility";
             this.utilityColumn.Name = "utilityColumn";
