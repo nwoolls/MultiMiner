@@ -762,6 +762,7 @@ namespace MultiMiner.Win
             row.Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
             row.Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
             row.Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
+            row.Cells[utilityColumn.Index].Value = deviceInformation.Utility;
             row.Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
         }
 
