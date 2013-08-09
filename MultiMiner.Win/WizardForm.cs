@@ -159,6 +159,7 @@ namespace MultiMiner.Win
 
             if (wizardTabControl.SelectedTab == chooseCoinPage)
             {
+                backButtonEnabled = false; //can't go back to downloading miner
                 nextButtonEnabled = coinComboBox.Text != "-";
             }
             else if (wizardTabControl.SelectedTab == configurePoolPage)
