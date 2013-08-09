@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace MultiMiner.Xgminer
 {
@@ -7,6 +8,7 @@ namespace MultiMiner.Xgminer
         public MinerConfiguration()
         {
             this.DeviceIndexes = new List<int>();
+            this.Priority = ProcessPriorityClass.Normal;
         }
 
         public MinerBackend MinerBackend { get; set; }
@@ -19,5 +21,6 @@ namespace MultiMiner.Xgminer
         public string Arguments { get; set; }
         public string CoinName { get; set; }
         public bool DisableGpu { get; set; }
+        public ProcessPriorityClass Priority { get; set; }
     }
 }

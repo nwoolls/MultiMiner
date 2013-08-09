@@ -122,7 +122,7 @@ namespace MultiMiner.Xgminer
             bool ensureProcessStarts = false, string reason = "")
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
-
+            
             startInfo.FileName = minerConfiguration.ExecutablePath;
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
@@ -157,6 +157,8 @@ namespace MultiMiner.Xgminer
             if (ensureProcessStarts)
                 //store the returned process
                 process = EnsureProcessStarts(process, startInfo);
+
+            process.PriorityClass = minerConfiguration.Priority;
 
             return process;
         }

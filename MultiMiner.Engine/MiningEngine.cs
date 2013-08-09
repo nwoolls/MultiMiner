@@ -484,6 +484,7 @@ namespace MultiMiner.Engine
 
         private Process LaunchMinerProcess(MinerConfiguration minerConfiguration, string reason)
         {
+            minerConfiguration.Priority = this.engineConfiguration.XgminerConfiguration.Priority;
             Miner miner = new Miner(minerConfiguration);
             miner.LogLaunch += this.LogProcessLaunch;
             miner.LaunchFailed += this.ProcessLaunchFailed;
