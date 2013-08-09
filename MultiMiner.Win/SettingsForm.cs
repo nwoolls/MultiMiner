@@ -56,19 +56,28 @@ namespace MultiMiner.Win
             minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256] = sha256ParamsEdit.Text;
             minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt] = scryptParamsEdit.Text;
 
-            if (cgminerRadio.Checked)
+            if (minerCombo.SelectedIndex == 0)
                 minerConfiguration.MinerBackend = MinerBackend.Cgminer;
             else
                 minerConfiguration.MinerBackend = MinerBackend.Bfgminer;
 
             minerConfiguration.DisableGpu = disableGpuCheckbox.Checked;
+
+            minerConfiguration.Priority = (ProcessPriorityClass)priorityCombo.SelectedItem;
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
+            PopulatePriorities(); //populate before loading settings
             LoadSettings();
-
             autoLaunchCheckBox.Visible = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
+        }
+
+        private void PopulatePriorities()
+        {
+            Array possibleProprties = Enum.GetValues(typeof(ProcessPriorityClass));
+            priorityCombo.DataSource = possibleProprties;
+            priorityCombo.SelectedItem = ProcessPriorityClass.Normal;
         }
 
         private void LoadSettings()
@@ -80,10 +89,14 @@ namespace MultiMiner.Win
 
             applicationConfigurationBindingSource.DataSource = this.applicationConfiguration;
 
-            cgminerRadio.Checked = minerConfiguration.MinerBackend == MinerBackend.Cgminer;
-            bfgminerRadio.Checked = minerConfiguration.MinerBackend == MinerBackend.Bfgminer;
+            if (minerConfiguration.MinerBackend == MinerBackend.Cgminer)
+                minerCombo.SelectedIndex = 0;
+            else
+                minerCombo.SelectedIndex = 1;
 
             disableGpuCheckbox.Checked = minerConfiguration.DisableGpu;
+
+            priorityCombo.SelectedItem = minerConfiguration.Priority;
         }
 
         private void remoteMonitoringCheck_CheckedChanged(object sender, EventArgs e)
