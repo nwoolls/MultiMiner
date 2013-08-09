@@ -18,6 +18,7 @@ namespace MultiMiner.Engine
         //event declarations        
         public event LogProcessCloseHandler LogProcessClose;
         public event Miner.LogLaunchHandler LogProcessLaunch;
+        public event Miner.LaunchFailedHandler ProcessLaunchFailed;
 
         private List<MinerProcess> minerProcesses = new List<MinerProcess>();
         private EngineConfiguration engineConfiguration;
@@ -485,10 +486,11 @@ namespace MultiMiner.Engine
         {
             Miner miner = new Miner(minerConfiguration);
             miner.LogLaunch += this.LogProcessLaunch;
+            miner.LaunchFailed += this.ProcessLaunchFailed;
             Process process = miner.Launch(reason);
             return process;
         }
-        
+
         private MinerConfiguration CreateMinerConfiguration(int port, string coinSymbol)
         {
             CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(coinSymbol));
