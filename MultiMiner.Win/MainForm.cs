@@ -65,6 +65,9 @@ namespace MultiMiner.Win
         {
             SetupGridColumns();
 
+            //something in the VS IDE keeps moving this
+            enabledColumn.DisplayIndex = 0;            
+
             logLaunchArgsBindingSource.DataSource = logCloseEntries;
 
             const int mobileMinerInterval = 32; //seconds
