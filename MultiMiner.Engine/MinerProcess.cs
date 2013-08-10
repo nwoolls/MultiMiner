@@ -52,9 +52,16 @@ namespace MultiMiner.Engine
         {
             //do NOT call process.CloseMainWindow();
             //can leave zombie cgminer processes
-            process.Kill();
-            process.WaitForExit();
-            process.Close();
+            try
+            {
+                process.Kill();
+                process.WaitForExit();
+                process.Close();
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                //already closed
+            }
         }
 
         private ApiContext GetApiContext()
