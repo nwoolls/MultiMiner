@@ -28,7 +28,7 @@
         </ul>
       </header>
       <section>
-        <p><strong>MultiMiner</strong> is a graphical application for crypto-coin mining. MultiMiner simplifies switching individal devices (GPUs, ASICs, FPGAs) between crypto-currencies such as Bitcoin and Litecoin.</p>
+        <p><strong>MultiMiner</strong> is a graphical application for crypto-coin mining on Windows, OS X and Linux. MultiMiner simplifies switching individal devices (GPUs, ASICs, FPGAs) between crypto-currencies such as Bitcoin and Litecoin.</p>
 
 <p>MultiMiner uses the underlying mining engine (<a href="https://github.com/ckolivas/cgminer">cgminer</a> by default) to detect available mining devices and then presents a user interface for selecting the coins you'd like to mine.</p>
 
@@ -83,7 +83,7 @@
 <a name="os-x-installation" class="anchor" href="#os-x-installation"><span class="octicon octicon-link"></span></a>OS X Installation</h2>
 
 <ol>
-<li>Install X11. Under OS X you should install Xquartz available <a href="http://xquartz.macosforge.org/">here</a>
+<li>Install Xquartz available <a href="http://xquartz.macosforge.org/">here</a>
 </li>
 <li>Install the latest version of <a href="http://www.mono-project.com/Main_Page">Mono</a>
 </li>
@@ -96,7 +96,34 @@
 <p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen%20-%20OS%20X.png" alt="Main Screen - OS X" title="Main Screen - OS X"></p>
 
 <h2>
-<a name="mono-os-x-linux-installation" class="anchor" href="#mono-os-x-linux-installation"><span class="octicon octicon-link"></span></a>Mono (OS X, Linux) Installation</h2>
+<a name="linux-installation-debian-based" class="anchor" href="#linux-installation-debian-based"><span class="octicon octicon-link"></span></a>Linux Installation (Debian-Based)</h2>
+
+<ol>
+<li>
+<p>Install the latest version of <a href="http://www.mono-project.com/Main_Page">Mono</a></p>
+
+<pre><code>sudo apt get install mono-complete
+</code></pre>
+</li>
+<li>
+<p>Install your chosen mining engine</p>
+
+<pre><code>sudo add-apt-repository ppa:unit3/bfgminer
+sudo apt-get update
+sudo apt-get install bfgminer
+</code></pre>
+</li>
+<li><p>Download and extract the .zip file at the above Binary Downloads link</p></li>
+<li>
+<p>Run MultiMiner.Win.exe using mono:</p>
+
+<pre><code>mono MultiMiner.Win.exe
+</code></pre>
+</li>
+</ol><p><img src="https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen%20-%20Linux.png" alt="Main Screen - Linux" title="Main Screen - Linux"></p>
+
+<h2>
+<a name="generic-mono-installation" class="anchor" href="#generic-mono-installation"><span class="octicon octicon-link"></span></a>Generic Mono Installation</h2>
 
 <ol>
 <li>Download and extract the zip file at the above Binary Downloads link</li>
