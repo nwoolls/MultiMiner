@@ -1330,7 +1330,7 @@ namespace MultiMiner.Win
 
         private const string mobileMinerApiKey = "P3mVX95iP7xfoI";
         private const string mobileMinerUrl = "https://api.mobileminerapp.com";
-
+        
         private void SubmitMobileMinerStats()
         {
             //are remote monitoring enabled?
