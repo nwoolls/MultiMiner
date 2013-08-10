@@ -76,24 +76,10 @@ namespace MultiMiner.Xgminer
         
         private static string GetBfgminerMacOSXDownloadUrl()
         {
-            string latestVersion = GetLatestXgminerVersion();
             string downloadRoot = GetMinerDownloadRoot(MinerBackend.Bfgminer);
-            return String.Format("{0}/releases/download/{1}/bfgminer-3.1.3-osx64.tar.gz", downloadRoot, latestVersion);
+            return String.Format("{0}/releases/download/v1.0.2/bfgminer-3.1.4-osx64.tar.gz", downloadRoot);
         }
-
-        private static string GetLatestXgminerVersion()
-        {
-            Atom10FeedFormatter formatter = new Atom10FeedFormatter();
-            using (XmlReader reader = XmlReader.Create("http://github.com/nwoolls/xgminer-osx/tags.atom"))
-                formatter.ReadFrom(reader);
-
-            SyndicationItem latestItem = formatter.Feed.Items.First();
-            SyndicationLink latestTagLink = latestItem.Links.First();
-
-            string latestVersion = latestTagLink.Uri.OriginalString.Split('/').Last();
-            return latestVersion;
-        }
-
+        
         private static string GetCgminerDownloadUrl()
         {
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
@@ -118,9 +104,8 @@ namespace MultiMiner.Xgminer
         private static string GetCgminerMacOSXDownloadUrl()
         {
             //hard-coded for now, dynamic in the future
-            string latestVersion = GetLatestXgminerVersion();
             string downloadRoot = GetMinerDownloadRoot(MinerBackend.Cgminer);
-            return String.Format("{0}/releases/download/{1}/cgminer-3.3.1-osx64.tar.gz", downloadRoot, latestVersion);
+            return String.Format("{0}/releases/download/v1.0.2/cgminer-3.3.1-osx64.tar.gz", downloadRoot);
         }
 
         private static string GetCgminerWindowsDownloadUrl()
