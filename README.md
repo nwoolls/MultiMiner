@@ -39,7 +39,7 @@ By entering your MobileMiner email address and application key in the Configure 
 
 Downloads
 ----------------
-You can download installers and zip files for Windows, OS X, and Mono on the [GitHub Releases page][12].
+You can download installers and zip files for Windows, OS X, Linux and Mono on the [GitHub Releases page][12].
 
 Windows Installation
 --------------------
