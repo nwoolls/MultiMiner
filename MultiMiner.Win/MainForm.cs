@@ -54,20 +54,8 @@ namespace MultiMiner.Win
             string jsonData = serializer.Serialize(ea);
 
             File.AppendAllText(logFilePath, jsonData + Environment.NewLine);
-            
-            int index = logProcessCloseArgsBindingSource.Add(ea);
-            logProcessCloseArgsBindingSource.Position = index;
 
-            //convert from device indexes (0 based) to device #'s (more human readable)
-            List<string> deviceList = new List<string>();
-            foreach (int deviceIndex in ea.DeviceIndexes)
-                deviceList.Add(String.Format("#{0}", deviceIndex + 1));            
-            string devices = String.Join(", ", deviceList.ToArray());
-
-            historyGridView.Rows[index].Cells[devicesColumn.Index].Value = devices;
-
-            TimeSpan timeSpan = ea.EndDate - ea.StartDate;
-            historyGridView.Rows[index].Cells[durationColumn.Index].Value = String.Format("{0:0.##} minutes", timeSpan.TotalMinutes);
+            logProcessCloseArgsBindingSource.Position = logProcessCloseArgsBindingSource.Add(ea);
 
             while (logProcessCloseArgsBindingSource.Count > 1000)
                 logProcessCloseArgsBindingSource.RemoveAt(0);
@@ -100,6 +88,7 @@ namespace MultiMiner.Win
             miningEngine.LogProcessLaunch += LogProcessLaunch;
             miningEngine.ProcessLaunchFailed += ProcessLaunchFailed;
             logLaunchArgsBindingSource.DataSource = logLaunchEntries;
+            logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
 
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
@@ -1526,6 +1515,31 @@ namespace MultiMiner.Win
 
             applicationConfiguration.LogAreaVisible = true;
             applicationConfiguration.SaveApplicationConfiguration();
+        }
+
+        private void historyGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            //do unbound data in RowsAdded or it won't show until the DataGridView has been on-screen
+            for (int i = 0; i < e.RowCount; i++)
+            {
+                int index = e.RowIndex + i;
+
+                DataGridViewRow row = apiLogGridView.Rows[index];
+
+                //convert from device indexes (0 based) to device #'s (more human readable)
+                List<string> deviceList = new List<string>();
+
+                LogProcessCloseArgs ea = this.logCloseEntries[index];
+
+                foreach (int deviceIndex in ea.DeviceIndexes)
+                    deviceList.Add(String.Format("#{0}", deviceIndex + 1));
+                string devices = String.Join(", ", deviceList.ToArray());
+
+                historyGridView.Rows[index].Cells[devicesColumn.Index].Value = devices;
+
+                TimeSpan timeSpan = ea.EndDate - ea.StartDate;
+                historyGridView.Rows[index].Cells[durationColumn.Index].Value = String.Format("{0:0.##} minutes", timeSpan.TotalMinutes);
+            }
         }
     }
 }
