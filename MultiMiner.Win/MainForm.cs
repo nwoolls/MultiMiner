@@ -156,6 +156,9 @@ namespace MultiMiner.Win
 
         private void CheckAndDownloadMiners()
         {
+            if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
+                return; //can't auto download binaries on Linux
+
             bool hasMiners = HasMinersInstalled();
 
             if (!hasMiners)
@@ -255,8 +258,8 @@ namespace MultiMiner.Win
 
         private void SetupGridColumns()
         {
-            //customized FillWeight doesn't behave properly under Mono
-            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+            //customized FillWeight doesn't behave properly under Mono on OS X
+            if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
                 foreach (DataGridViewColumn column in deviceGridView.Columns)
                     column.FillWeight = 100;
         }
@@ -279,6 +282,27 @@ namespace MultiMiner.Win
                 //miner not installed/not launched
                 devices = new List<Device>(); //dummy empty device list
 
+                ShowNotInstalledMinerWarning();
+            }
+
+            if ((devices.Count > 0) && (engineConfiguration.DeviceConfigurations.Count == 0) &&
+                (engineConfiguration.CoinConfigurations.Count == 1))
+            {
+                //setup devices for a brand new user
+                ConfigureDevicesForNewUser();
+            }
+
+            deviceBindingSource.DataSource = devices;
+            LoadGridValuesFromConfiguration();
+            CheckAndHideNameColumn();
+        }
+
+        private void ShowNotInstalledMinerWarning()
+        {
+            bool showWarning = true;
+
+            if (OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix)
+            {
                 MinerBackend minerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
                 string minerName = MinerPath.GetMinerName(minerBackend);
 
@@ -292,25 +316,15 @@ namespace MultiMiner.Win
                 {
                     InstallMiner(minerBackend);
                     RefreshDevices();
+                    showWarning = false;
                 }
-                else
-                {
-                    MessageBox.Show("The miner specified in your settings was not found. Please go to https://github.com/nwoolls/multiminer for instructions on installing either cgminer or bfgminer.",
-                        "Miner Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-
             }
 
-            if ((devices.Count > 0) && (engineConfiguration.DeviceConfigurations.Count == 0) &&
-                (engineConfiguration.CoinConfigurations.Count == 1))
-            {
-                //setup devices for a brand new user
-                ConfigureDevicesForNewUser();
+            if (showWarning)
+            {                
+                MessageBox.Show("The miner specified in your settings was not found. Please go to https://github.com/nwoolls/multiminer for instructions on installing either cgminer or bfgminer.",
+                    "Miner Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
-            deviceBindingSource.DataSource = devices;
-            LoadGridValuesFromConfiguration();
-            CheckAndHideNameColumn();
         }
 
         private void ConfigureDevicesForNewUser()

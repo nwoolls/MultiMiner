@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WizardForm));
             this.wizardTabControl = new System.Windows.Forms.TabControl();
             this.chooseMinerPage = new System.Windows.Forms.TabPage();
-            this.label3 = new System.Windows.Forms.Label();
+            this.minerStepsLabel = new System.Windows.Forms.Label();
             this.minerComboBox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -99,7 +99,7 @@
             // 
             // chooseMinerPage
             // 
-            this.chooseMinerPage.Controls.Add(this.label3);
+            this.chooseMinerPage.Controls.Add(this.minerStepsLabel);
             this.chooseMinerPage.Controls.Add(this.minerComboBox);
             this.chooseMinerPage.Controls.Add(this.label2);
             this.chooseMinerPage.Controls.Add(this.label1);
@@ -111,13 +111,13 @@
             this.chooseMinerPage.Text = "Choose Miner";
             this.chooseMinerPage.UseVisualStyleBackColor = true;
             // 
-            // label3
+            // minerStepsLabel
             // 
-            this.label3.Location = new System.Drawing.Point(3, 104);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(424, 109);
-            this.label3.TabIndex = 3;
-            this.label3.Text = resources.GetString("label3.Text");
+            this.minerStepsLabel.Location = new System.Drawing.Point(3, 104);
+            this.minerStepsLabel.Name = "minerStepsLabel";
+            this.minerStepsLabel.Size = new System.Drawing.Size(424, 109);
+            this.minerStepsLabel.TabIndex = 3;
+            this.minerStepsLabel.Text = resources.GetString("minerStepsLabel.Text");
             // 
             // minerComboBox
             // 
@@ -555,7 +555,7 @@
         private System.Windows.Forms.Button closeButton;
         private System.Windows.Forms.Button nextButton;
         private System.Windows.Forms.Button backButton;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label minerStepsLabel;
         private System.Windows.Forms.ComboBox minerComboBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;

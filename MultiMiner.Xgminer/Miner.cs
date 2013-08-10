@@ -132,9 +132,14 @@ namespace MultiMiner.Xgminer
             {
                 startInfo.Arguments = startInfo.Arguments + " --disable-gpu";
 
-                if ((OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix) && (minerConfiguration.MinerBackend == MinerBackend.Cgminer))
+                if (minerConfiguration.MinerBackend == MinerBackend.Cgminer)
+                {
                     //otherwise it still requires OpenCL.dll - not an issue with bfgminer
-                    startInfo.FileName = minerConfiguration.ExecutablePath.Replace("cgminer.exe", "cgminer-nogpu.exe");
+                    if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
+                        startInfo.FileName = startInfo.FileName + "-nogpu";
+                    else
+                        startInfo.FileName = minerConfiguration.ExecutablePath.Replace("cgminer.exe", "cgminer-nogpu.exe");
+                }
             }
 
             startInfo.UseShellExecute = false;

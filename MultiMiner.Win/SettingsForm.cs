@@ -70,7 +70,8 @@ namespace MultiMiner.Win
         {
             PopulatePriorities(); //populate before loading settings
             LoadSettings();
-            autoLaunchCheckBox.Visible = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
+            autoLaunchCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
+            sysTrayCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
         }
 
         private void PopulatePriorities()

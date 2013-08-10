@@ -38,7 +38,7 @@ namespace MultiMiner.Win
             minerComboBox.SelectedIndex = 0;
             coinComboBox.SelectedIndex = 0;
         }
-
+        
         private void PopulateCoins()
         {
             coinComboBox.Items.Clear();
@@ -77,7 +77,6 @@ namespace MultiMiner.Win
             if (!ValidateInput())
                 return;
 
-
             if (wizardTabControl.SelectedIndex < wizardTabControl.TabPages.Count - 1)
                 wizardTabControl.SelectedIndex += 1;
             else
@@ -85,8 +84,19 @@ namespace MultiMiner.Win
             
             if (wizardTabControl.SelectedTab == downloadingMinerPage)
             {
-                downloadChosenMiner();
+                if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
+                    showLinuxInstallationInstructions();
+                else
+                    downloadChosenMiner();
             }
+        }
+
+        private void showLinuxInstallationInstructions()
+        {
+            downloadingMinerLabel.Text =
+@"Unfortunately, prebuilt binaries of bfgminer are not available for Linux at this time. Additionally, only 64-bit binaries are avilable for cgminer.
+
+To install cgminer and/or bfgminer on Linux, please consult the websites for each miner. There are repositories for many popular Linux distributions.";
         }
 
         private bool ValidateInput()
@@ -172,9 +182,13 @@ namespace MultiMiner.Win
             }
             else if (wizardTabControl.SelectedTab == downloadingMinerPage)
             {
-                nextButtonEnabled = false;
-                backButtonEnabled = false;
-                closeButtonEnabled = false;
+                //no downloading miners under Linux
+                if (OSVersionPlatform.GetConcretePlatform() != PlatformID.Unix)
+                {
+                    nextButtonEnabled = false;
+                    backButtonEnabled = false;
+                    closeButtonEnabled = false;
+                }
             }
 
             nextButton.Enabled = nextButtonEnabled;

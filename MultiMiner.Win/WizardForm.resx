@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label3.Text" xml:space="preserve">
-    <value>Afterwards, click Next and MultiMiner will automatically download and install your chosen mining engine.
+  <data name="minerStepsLabel.Text" xml:space="preserve">
+    <value>Afterwards, click Next and MultiMiner will automatically download and install your chosen mining engine (if available).
 
 
 If you are comfortable with configuring things yourself, click Close below and use the program's toolbar buttons to get started.</value>

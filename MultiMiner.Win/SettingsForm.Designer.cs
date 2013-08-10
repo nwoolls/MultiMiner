@@ -34,7 +34,11 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.priorityCombo = new System.Windows.Forms.ComboBox();
+            this.minerCombo = new System.Windows.Forms.ComboBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.disableGpuCheckbox = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -43,7 +47,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.sysTrayCheckBox = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -58,16 +62,12 @@
             this.label8 = new System.Windows.Forms.Label();
             this.emailAddressEdit = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.minerCombo = new System.Windows.Forms.ComboBox();
-            this.priorityCombo = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -122,6 +122,39 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Miner";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(236, 20);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(41, 13);
+            this.label7.TabIndex = 17;
+            this.label7.Text = "Priority:";
+            // 
+            // priorityCombo
+            // 
+            this.priorityCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.priorityCombo.FormattingEnabled = true;
+            this.priorityCombo.Items.AddRange(new object[] {
+            "cgminer",
+            "bfgminer"});
+            this.priorityCombo.Location = new System.Drawing.Point(283, 17);
+            this.priorityCombo.Name = "priorityCombo";
+            this.priorityCombo.Size = new System.Drawing.Size(120, 21);
+            this.priorityCombo.TabIndex = 1;
+            // 
+            // minerCombo
+            // 
+            this.minerCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.minerCombo.FormattingEnabled = true;
+            this.minerCombo.Items.AddRange(new object[] {
+            "cgminer",
+            "bfgminer"});
+            this.minerCombo.Location = new System.Drawing.Point(116, 17);
+            this.minerCombo.Name = "minerCombo";
+            this.minerCombo.Size = new System.Drawing.Size(94, 21);
+            this.minerCombo.TabIndex = 0;
+            // 
             // checkBox4
             // 
             this.checkBox4.Checked = true;
@@ -133,6 +166,10 @@
             this.checkBox4.TabIndex = 6;
             this.checkBox4.Text = "Detect disowned miners (orphaned mining processes)";
             this.checkBox4.UseVisualStyleBackColor = true;
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
             // 
             // checkBox2
             // 
@@ -200,7 +237,7 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.checkBox1);
+            this.groupBox2.Controls.Add(this.sysTrayCheckBox);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.checkBox3);
             this.groupBox2.Controls.Add(this.label3);
@@ -213,17 +250,17 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Application";
             // 
-            // checkBox1
+            // sysTrayCheckBox
             // 
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MinimizeToNotificationArea", true));
-            this.checkBox1.Location = new System.Drawing.Point(239, 25);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(174, 17);
-            this.checkBox1.TabIndex = 3;
-            this.checkBox1.Text = "Minimize to the notification area (system tray)";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.sysTrayCheckBox.Checked = true;
+            this.sysTrayCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.sysTrayCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MinimizeToNotificationArea", true));
+            this.sysTrayCheckBox.Location = new System.Drawing.Point(239, 25);
+            this.sysTrayCheckBox.Name = "sysTrayCheckBox";
+            this.sysTrayCheckBox.Size = new System.Drawing.Size(174, 17);
+            this.sysTrayCheckBox.TabIndex = 3;
+            this.sysTrayCheckBox.Text = "Minimize to the notification area (system tray)";
+            this.sysTrayCheckBox.UseVisualStyleBackColor = true;
             // 
             // label4
             // 
@@ -375,43 +412,6 @@
             this.label6.TabIndex = 0;
             this.label6.Text = "Application key:";
             // 
-            // minerCombo
-            // 
-            this.minerCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.minerCombo.FormattingEnabled = true;
-            this.minerCombo.Items.AddRange(new object[] {
-            "cgminer",
-            "bfgminer"});
-            this.minerCombo.Location = new System.Drawing.Point(116, 17);
-            this.minerCombo.Name = "minerCombo";
-            this.minerCombo.Size = new System.Drawing.Size(94, 21);
-            this.minerCombo.TabIndex = 0;
-            // 
-            // priorityCombo
-            // 
-            this.priorityCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.priorityCombo.FormattingEnabled = true;
-            this.priorityCombo.Items.AddRange(new object[] {
-            "cgminer",
-            "bfgminer"});
-            this.priorityCombo.Location = new System.Drawing.Point(283, 17);
-            this.priorityCombo.Name = "priorityCombo";
-            this.priorityCombo.Size = new System.Drawing.Size(120, 21);
-            this.priorityCombo.TabIndex = 1;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(236, 20);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(41, 13);
-            this.label7.TabIndex = 17;
-            this.label7.Text = "Priority:";
-            // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -432,12 +432,12 @@
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -458,7 +458,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox checkBox4;
         private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox sysTrayCheckBox;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.Label label3;
