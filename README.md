@@ -1,7 +1,7 @@
 MultiMiner
 ==========
 ### Your coins. Your pools. Your way.
-__MultiMiner__ is a graphical application for crypto-coin mining. MultiMiner simplifies switching individal devices (GPUs, ASICs, FPGAs) between crypto-currencies such as Bitcoin and Litecoin.
+__MultiMiner__ is a graphical application for crypto-coin mining on Windows, OS X and Linux. MultiMiner simplifies switching individal devices (GPUs, ASICs, FPGAs) between crypto-currencies such as Bitcoin and Litecoin.
 
 MultiMiner uses the underlying mining engine ([cgminer][1] by default) to detect available mining devices and then presents a user interface for selecting the coins you'd like to mine.
 
@@ -52,7 +52,7 @@ The installer runs without needing admin rights and does not install to Program 
 
 OS X Installation
 -----------------
-1. Install X11. Under OS X you should install Xquartz available [here][7]
+1. Install Xquartz available [here][7]
 2. Install the latest version of [Mono][8]
 3. Download and extract the __.app__.zip file at the above Binary Downloads link
 4. Launch MultiMiner.app to get started
@@ -63,7 +63,26 @@ MultiMiner will automatically download redistributable binaries of cgminer and b
 
 ![Main Screen - OS X](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen%20-%20OS%20X.png "Main Screen - OS X")
 
-Mono (OS X, Linux) Installation
+Linux Installation (Debian-Based)
+---------------------------------
+1. Install the latest version of [Mono][8]
+
+        sudo apt get install mono-complete
+        
+2. Install your chosen mining engine
+
+        sudo add-apt-repository ppa:unit3/bfgminer
+        sudo apt-get update
+        sudo apt-get install bfgminer
+        
+3. Download and extract the .zip file at the above Binary Downloads link
+4. Run MultiMiner.Win.exe using mono:
+
+        mono MultiMiner.Win.exe
+        
+![Main Screen - Linux](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen%20-%20Linux.png "Main Screen - Linux")
+        
+Generic Mono Installation
 -------------------------------
 1. Download and extract the zip file at the above Binary Downloads link
 2. Install cgminer or bfgminer. For OS X, you can find packages and for doing so [here][5] and instructions for using them [here][6].
