@@ -1441,7 +1441,12 @@ namespace MultiMiner.Win
                                 MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
                                     Environment.NewLine + Environment.NewLine +
                                     "MobileMiner remote commands will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                ShowApplicationSettings();
+
+                                //check to make sure there are no modal windows already
+                                if (this.Visible && this.CanFocus)
+                                {
+                                    ShowApplicationSettings();
+                                }
                             }
                         }
                     }
