@@ -91,7 +91,8 @@ namespace MultiMiner.Xgminer
 
             foreach (MiningPool pool in minerConfiguration.Pools)
             {
-                string argument = string.Format("-o {0}:{1} -u {2}", pool.Host, pool.Port, pool.Username);
+                //trim Host to ensure proper formatting
+                string argument = string.Format("-o {0}:{1} -u {2}", pool.Host.Trim(), pool.Port, pool.Username);
 
                 //some pools do not require a password
                 //but the miners require some password
