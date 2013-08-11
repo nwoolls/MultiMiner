@@ -149,7 +149,13 @@ namespace MultiMiner.Engine
             string coinName = minerProcess.MinerConfiguration.CoinName;
             string coinSymbol = minerProcess.CoinInformation.Symbol;
             double priceAtStart = minerProcess.CoinInformation.Price;
-            double priceAtEnd = coinInformation.Single(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase)).Price;
+            double priceAtEnd = priceAtStart;
+
+            //can't use Single here - coin info may be gone now and we crash
+            CoinInformation coinInfo = coinInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+            if (coinInfo != null)
+                priceAtEnd = coinInfo.Price;
+
             List<int> deviceIndexes = minerProcess.MinerConfiguration.DeviceIndexes;
 
             logProcessClose(startDate, endDate, coinName, coinSymbol, priceAtStart, priceAtEnd, deviceIndexes);
