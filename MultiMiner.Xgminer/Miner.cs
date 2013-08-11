@@ -175,6 +175,7 @@ namespace MultiMiner.Xgminer
             bool userWillWatchOutput = startInfo.RedirectStandardOutput;
 
             startInfo.RedirectStandardOutput = true;
+            startInfo.RedirectStandardError = true;
 
             Process process = new Process();
             process.StartInfo = startInfo;
@@ -220,10 +221,14 @@ namespace MultiMiner.Xgminer
             while (process.HasExited)
             {
                 if (retries >= maxRetries)
+                {
+                    string errors = ReadErrorsFromProcess(process);
+
                     throw new Exception(
                         string.Format("Miner keeps exiting after launching - retried {0} times. Exit code {1}.\n" +
-                        "Executable: {2}\nArguments: {3}", 
-                        retries, process.ExitCode, startInfo.FileName, startInfo.Arguments));
+                        "Error: {4}\nExecutable: {2}\nArguments: {3}",
+                        retries, process.ExitCode, startInfo.FileName, startInfo.Arguments, errors));
+                }
 
                 //ensure the new process is stored and returned
                 process = StartProcessAndCheckResponse(startInfo);
@@ -232,6 +237,22 @@ namespace MultiMiner.Xgminer
             }
 
             return process;
+        }
+
+        private static string ReadErrorsFromProcess(Process process)
+        {
+            string errors = String.Empty;
+            List<string> output = new List<string>();
+            while (!process.StandardError.EndOfStream)
+            {
+                string line = process.StandardError.ReadLine();
+                output.Add(line);
+            }
+
+            if (output.Count > 0)
+                errors = String.Join(Environment.NewLine, output.ToArray());
+
+            return errors;
         }
     }
 }
