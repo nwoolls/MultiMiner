@@ -164,7 +164,8 @@ namespace MultiMiner.Xgminer
                 //store the returned process
                 process = EnsureProcessStarts(process, startInfo);
 
-            process.PriorityClass = minerConfiguration.Priority;
+            if (!process.HasExited)
+                process.PriorityClass = minerConfiguration.Priority;
 
             return process;
         }
