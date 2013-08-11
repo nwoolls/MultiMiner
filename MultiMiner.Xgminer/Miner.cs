@@ -154,6 +154,7 @@ namespace MultiMiner.Xgminer
                 args.ExecutablePath = startInfo.FileName;
                 args.Arguments = startInfo.Arguments;
                 args.Reason = reason;
+                args.CoinName = minerConfiguration.CoinName;
 
                 LogLaunch(this, args);
             }

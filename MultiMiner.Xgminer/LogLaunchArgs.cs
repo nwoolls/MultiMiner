@@ -8,5 +8,6 @@ namespace MultiMiner.Xgminer
         public string ExecutablePath { get; set; }
         public string Arguments { get; set; }
         public string Reason { get; set; }
+        public string CoinName { get; set; }
     }
 }
