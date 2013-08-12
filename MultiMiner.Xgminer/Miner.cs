@@ -184,9 +184,13 @@ namespace MultiMiner.Xgminer
 
             if (!userWillWatchOutput)
                 process.OutputDataReceived += HandleProcessOutput;
-
+            process.ErrorDataReceived += HandleProcessError;
+            
             if (process.Start() && !userWillWatchOutput)
+            {
                 process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+            }
 
             return process;
         }
@@ -204,7 +208,19 @@ namespace MultiMiner.Xgminer
             }
 
             if (e.Data.Contains("detected new block"))
+            {
                 ((Process)sender).CancelOutputRead();
+                ((Process)sender).CancelErrorRead();
+            }
+        }
+
+        private string processLaunchError = string.Empty;
+        private void HandleProcessError(object sender, DataReceivedEventArgs e)
+        {
+            if (String.IsNullOrEmpty(e.Data))
+                return;
+
+            processLaunchError = e.Data;
         }
 
         private Process EnsureProcessStarts(Process process, ProcessStartInfo startInfo)
@@ -224,7 +240,7 @@ namespace MultiMiner.Xgminer
             {
                 if (retries >= maxRetries)
                 {
-                    string errors = ReadErrorsFromProcess(process);
+                    string errors = processLaunchError;
 
                     throw new Exception(
                         string.Format("Miner keeps exiting after launching - retried {0} times. Exit code {1}.\n" +
@@ -239,22 +255,6 @@ namespace MultiMiner.Xgminer
             }
 
             return process;
-        }
-
-        private static string ReadErrorsFromProcess(Process process)
-        {
-            string errors = String.Empty;
-            List<string> output = new List<string>();
-            while (!process.StandardError.EndOfStream)
-            {
-                string line = process.StandardError.ReadLine();
-                output.Add(line);
-            }
-
-            if (output.Count > 0)
-                errors = String.Join(Environment.NewLine, output.ToArray());
-
-            return errors;
         }
     }
 }
