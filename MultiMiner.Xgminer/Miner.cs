@@ -109,7 +109,8 @@ namespace MultiMiner.Xgminer
                 arguments = string.Format("{0} -d {1}", arguments, deviceIndex);
 
             if (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
-                arguments = arguments + " --scrypt";
+                //the --scrypt param must come before the --intensity params to use over 13 in latest cgminer
+                arguments = "--scrypt " + arguments;
 
             if (minerConfiguration.ApiListen)
                 arguments = string.Format("{0} --api-listen --api-port {1} --api-allow W:127.0.0.1", arguments, minerConfiguration.ApiPort);
