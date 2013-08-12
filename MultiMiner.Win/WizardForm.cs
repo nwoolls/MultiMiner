@@ -72,22 +72,44 @@ namespace MultiMiner.Win
             }
         }
 
+        private static bool MinerIsInstalled(MinerBackend minerBackend)
+        {
+            string path = MinerPath.GetPathToInstalledMiner(minerBackend);
+            return File.Exists(path);
+        }
+
         private void nextButton_Click(object sender, EventArgs e)
         {
             if (!ValidateInput())
                 return;
 
-            if (wizardTabControl.SelectedIndex < wizardTabControl.TabPages.Count - 1)
-                wizardTabControl.SelectedIndex += 1;
+            if (wizardTabControl.SelectedTab == chooseMinerPage)
+            {
+                MinerBackend minerBackend = GetSelectedMinerBackend();
+                if (MinerIsInstalled(minerBackend))
+                {
+                    wizardTabControl.SelectedIndex += 2;
+                }
+                else
+                {
+                    wizardTabControl.SelectedIndex += 1;
+                }
+            }
             else
-                DialogResult = System.Windows.Forms.DialogResult.OK;
+            {
+                if (wizardTabControl.SelectedIndex < wizardTabControl.TabPages.Count - 1)
+                    wizardTabControl.SelectedIndex += 1;
+                else
+                    DialogResult = System.Windows.Forms.DialogResult.OK;
+            }
+
             
             if (wizardTabControl.SelectedTab == downloadingMinerPage)
             {
                 if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
                     showLinuxInstallationInstructions();
                 else
-                    downloadChosenMiner();
+                    DownloadChosenMiner();
             }
         }
 
@@ -125,8 +147,16 @@ To install cgminer and/or bfgminer on Linux, please consult the websites for eac
 
         private void backButton_Click(object sender, EventArgs e)
         {
-            if (wizardTabControl.SelectedIndex > 0)
-                wizardTabControl.SelectedIndex -= 1;
+            if (wizardTabControl.SelectedTab == chooseCoinPage)
+            {
+                //skip the downloading page
+                wizardTabControl.SelectedIndex -= 2;
+            }
+            else
+            {
+                if (wizardTabControl.SelectedIndex > 0)
+                    wizardTabControl.SelectedIndex -= 1;
+            }
         }
 
         private void wizardTabControl_SelectedIndexChanged(object sender, EventArgs e)
@@ -134,11 +164,9 @@ To install cgminer and/or bfgminer on Linux, please consult the websites for eac
             UpdateButtons();
         }
 
-        private void downloadChosenMiner()
+        private void DownloadChosenMiner()
         {
-            MinerBackend minerBackend = MinerBackend.Cgminer;
-            if (minerComboBox.SelectedIndex == 1)
-                minerBackend = MinerBackend.Bfgminer;
+            MinerBackend minerBackend = GetSelectedMinerBackend();
 
             string minerName = MinerPath.GetMinerName(minerBackend);
             string minerPath = Path.Combine("Miners", minerName);
@@ -152,6 +180,14 @@ To install cgminer and/or bfgminer on Linux, please consult the websites for eac
             Cursor = Cursors.Default;
 
             wizardTabControl.SelectedTab = chooseCoinPage;
+        }
+
+        private MinerBackend GetSelectedMinerBackend()
+        {
+            MinerBackend minerBackend = MinerBackend.Cgminer;
+            if (minerComboBox.SelectedIndex == 1)
+                minerBackend = MinerBackend.Bfgminer;
+            return minerBackend;
         }
 
         private void UpdateButtons()
@@ -169,7 +205,6 @@ To install cgminer and/or bfgminer on Linux, please consult the websites for eac
 
             if (wizardTabControl.SelectedTab == chooseCoinPage)
             {
-                backButtonEnabled = false; //can't go back to downloading miner
                 nextButtonEnabled = coinComboBox.Text != "-";
             }
             else if (wizardTabControl.SelectedTab == configurePoolPage)
