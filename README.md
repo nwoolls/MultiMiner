@@ -1,7 +1,7 @@
 MultiMiner
 ==========
 ### Your coins. Your pools. Your way.
-__MultiMiner__ is a graphical application for crypto-coin mining on Windows, OS X and Linux. MultiMiner simplifies switching individal devices (GPUs, ASICs, FPGAs) between crypto-currencies such as Bitcoin and Litecoin.
+__MultiMiner__ is a graphical application for crypto-coin mining on Windows, OS X and Linux. MultiMiner simplifies switching individual devices (GPUs, ASICs, FPGAs) between crypto-currencies such as Bitcoin and Litecoin.
 
 MultiMiner uses the underlying mining engine ([cgminer][1] by default) to detect available mining devices and then presents a user interface for selecting the coins you'd like to mine.
 
