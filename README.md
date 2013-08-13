@@ -92,6 +92,10 @@ Generic Mono Installation
 
         mono MultiMiner.Win.exe
         
+Support
+-------
+The official forum thread for MultiMiner can be found [here][15].
+        
 Source Code
 -----------
 The source code is structured in such a way that it should be fairly easy to use and re-use for other projects:
@@ -135,3 +139,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [12]: https://github.com/nwoolls/MultiMiner/releases
 [13]: https://github.com/nwoolls/xgminer-osx
 [14]: http://www.mobileminerapp.com
+[15]: http://thread.multiminerapp.com
