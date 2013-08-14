@@ -115,6 +115,10 @@ namespace MultiMiner.Xgminer
             if (minerConfiguration.ApiListen)
                 arguments = string.Format("{0} --api-listen --api-port {1} --api-allow W:127.0.0.1", arguments, minerConfiguration.ApiPort);
 
+            //required to run from inside an .app package on OS X
+            //also required under Windows to avoid "initscr(): Unable to create SP"
+            arguments = arguments + " -T";
+
             Process process = StartMinerProcess(arguments, redirectOutput, ensureProcessStarts, reason);
 
             return process;

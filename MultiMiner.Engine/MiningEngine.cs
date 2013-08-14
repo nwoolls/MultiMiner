@@ -532,10 +532,7 @@ namespace MultiMiner.Engine
 
             if (engineConfiguration.XgminerConfiguration.DesktopMode)
                 arguments = arguments + " -I D";
-
-            //required to run from inside an .app package on OS X
-            arguments = arguments + " -T";
-
+            
             minerConfiguration.Arguments = arguments;
 
             return minerConfiguration;
