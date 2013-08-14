@@ -111,7 +111,9 @@ The source code is structured in such a way that it should be fairly easy to use
 
 Source Code Example
 -------------
-This simple example shows how to use MultiMiner.Xgminer.dll and MultiMiner.Xgminer.Api.dll to install bfgminer, iterate through available mining devices, and launch the miner. Afterwards the bfgminer RPC API is used to output the miner hashrate for a minute before the mining process is stopped. You can try this code out yourself in the MultiMiner.Api.Example project.
+This simple example shows how to use [MultiMiner.Xgminer.dll][16] and [MultiMiner.Xgminer.Api.dll][17] to install bfgminer, iterate through available mining devices, and launch the miner.
+
+Afterwards the bfgminer [RPC API][18] is used to output the miner hashrate for a minute before the mining process is stopped. You can try this code out yourself in the [MultiMiner.Api.Example][19] project.
 
 ```csharp
 //examples of using MultiMiner.Xgminer.dll and MultiMiner.Xgminer.Api.dll
@@ -265,3 +267,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [13]: https://github.com/nwoolls/xgminer-osx
 [14]: http://www.mobileminerapp.com
 [15]: http://thread.multiminerapp.com
+[16]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Xgminer
+[17]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Xgminer.Api
+[18]: https://github.com/luke-jr/bfgminer/blob/bfgminer/README.RPC
+[19]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Api.Example
