@@ -157,10 +157,136 @@ sudo apt-get install bfgminer
 <strong>MultiMiner.Coinchoose.Api</strong> assists in consuming the cypto-currency information available at <a href="http://coinchoose.com/">CoinChoose.com</a>
 </li>
 <li>
+<strong>MultiMiner.MobileMiner.Api</strong> facilitates communicating with the <a href="http://www.mobileminerapp.com">MobileMiner</a> REST API</li>
+<li>
 <strong>MultiMiner.Engine</strong> is an assembly that can be used to interact with all functionality found in MultiMiner, but without a UI - useful for creating front-ends for other OS's</li>
 <li>
 <strong>MultiMiner.Win</strong> is the Windows Forms application</li>
 </ul><h2>
+<a name="source-code-example" class="anchor" href="#source-code-example"><span class="octicon octicon-link"></span></a>Source Code Example</h2>
+
+<p>This simple example shows how to use <a href="https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Xgminer">MultiMiner.Xgminer.dll</a> and <a href="https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Xgminer.Api">MultiMiner.Xgminer.Api.dll</a> to install bfgminer, iterate through available mining devices, and launch the miner.</p>
+
+<p>Afterwards the bfgminer <a href="https://github.com/luke-jr/bfgminer/blob/bfgminer/README.RPC">RPC API</a> is used to output the miner hashrate for a minute before the mining process is stopped. You can try this code out yourself in the <a href="https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Api.Example">MultiMiner.Api.Example</a> project.</p>
+
+<div class="highlight"><pre><span class="c1">//examples of using MultiMiner.Xgminer.dll and MultiMiner.Xgminer.Api.dll</span>
+
+<span class="c1">//download and install the latest version of bfgminer</span>
+<span class="k">const</span> <span class="kt">string</span> <span class="n">executablePath</span> <span class="p">=</span> <span class="s">@"D:\bfgminer\"</span><span class="p">;</span>
+<span class="k">const</span> <span class="kt">string</span> <span class="n">executableName</span> <span class="p">=</span> <span class="s">"bfgminer.exe"</span><span class="p">;</span>            
+<span class="n">MinerBackend</span> <span class="n">minerBackend</span> <span class="p">=</span> <span class="n">MinerBackend</span><span class="p">.</span><span class="n">Bfgminer</span><span class="p">;</span>
+
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Downloading and installing {0} from {1} to the directory {2}"</span><span class="p">,</span>
+    <span class="n">executableName</span><span class="p">,</span> <span class="n">Xgminer</span><span class="p">.</span><span class="n">Installer</span><span class="p">.</span><span class="n">GetMinerDownloadRoot</span><span class="p">(</span><span class="n">minerBackend</span><span class="p">),</span> <span class="n">executablePath</span><span class="p">);</span>
+
+<span class="c1">//download and install bfgminer from the official website</span>
+<span class="n">Xgminer</span><span class="p">.</span><span class="n">Installer</span><span class="p">.</span><span class="n">InstallMiner</span><span class="p">(</span><span class="n">minerBackend</span><span class="p">,</span> <span class="n">executablePath</span><span class="p">);</span>
+<span class="k">try</span>
+<span class="p">{</span>
+    <span class="c1">//create an instance of Miner with the downloaded executable</span>
+    <span class="n">MinerConfiguration</span> <span class="n">minerConfiguration</span> <span class="p">=</span> <span class="k">new</span> <span class="n">MinerConfiguration</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">MinerBackend</span> <span class="p">=</span> <span class="n">minerBackend</span><span class="p">,</span>
+        <span class="n">ExecutablePath</span> <span class="p">=</span> <span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">executablePath</span><span class="p">,</span> <span class="n">executableName</span><span class="p">)</span>
+    <span class="p">};</span>
+    <span class="n">Miner</span> <span class="n">miner</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Miner</span><span class="p">(</span><span class="n">minerConfiguration</span><span class="p">);</span>
+
+    <span class="c1">//use it to iterate through devices</span>
+    <span class="n">List</span><span class="p">&lt;</span><span class="n">Device</span><span class="p">&gt;</span> <span class="n">deviceList</span> <span class="p">=</span> <span class="n">miner</span><span class="p">.</span><span class="n">DeviceList</span><span class="p">();</span>
+
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Using {0} to list available mining devices"</span><span class="p">,</span> <span class="n">executableName</span><span class="p">);</span>
+
+    <span class="c1">//output devices</span>
+    <span class="k">foreach</span> <span class="p">(</span><span class="n">Device</span> <span class="n">device</span> <span class="k">in</span> <span class="n">deviceList</span><span class="p">)</span>
+        <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Device detected: {0}\t{1}\t{2}"</span><span class="p">,</span> <span class="n">device</span><span class="p">.</span><span class="n">Kind</span><span class="p">,</span> <span class="n">device</span><span class="p">.</span><span class="n">Driver</span><span class="p">,</span> <span class="n">device</span><span class="p">.</span><span class="n">Identifier</span><span class="p">);</span>
+
+    <span class="c1">//start mining if there are devices</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">deviceList</span><span class="p">.</span><span class="n">Count</span> <span class="p">&gt;</span> <span class="m">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"{0} device(s) detected, mining Bitcoin on Bitminter using all devices"</span><span class="p">,</span> <span class="n">deviceList</span><span class="p">.</span><span class="n">Count</span><span class="p">);</span>
+
+        <span class="c1">//setup a pool</span>
+        <span class="n">MiningPool</span> <span class="n">pool</span> <span class="p">=</span> <span class="k">new</span> <span class="n">MiningPool</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="n">Host</span> <span class="p">=</span> <span class="s">"mint.bitminter.com"</span><span class="p">,</span>
+            <span class="n">Port</span> <span class="p">=</span> <span class="m">3333</span><span class="p">,</span>
+            <span class="n">Username</span> <span class="p">=</span> <span class="s">"nwoolls_deepcore"</span><span class="p">,</span>
+            <span class="n">Password</span> <span class="p">=</span> <span class="s">"deepcore"</span>
+        <span class="p">};</span>
+        <span class="n">minerConfiguration</span><span class="p">.</span><span class="n">Pools</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">pool</span><span class="p">);</span>
+
+        <span class="c1">//specify algorithm</span>
+        <span class="n">minerConfiguration</span><span class="p">.</span><span class="n">Algorithm</span> <span class="p">=</span> <span class="n">CoinAlgorithm</span><span class="p">.</span><span class="n">SHA256</span><span class="p">;</span>
+
+        <span class="c1">//disable GPU mining</span>
+        <span class="n">minerConfiguration</span><span class="p">.</span><span class="n">DisableGpu</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+
+        <span class="c1">//specify device indexes to use</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">deviceList</span><span class="p">.</span><span class="n">Count</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
+            <span class="n">minerConfiguration</span><span class="p">.</span><span class="n">DeviceIndexes</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+
+        <span class="c1">//enable RPC API</span>
+        <span class="n">minerConfiguration</span><span class="p">.</span><span class="n">ApiListen</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+        <span class="n">minerConfiguration</span><span class="p">.</span><span class="n">ApiPort</span> <span class="p">=</span> <span class="m">4028</span><span class="p">;</span>
+
+        <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Launching {0}"</span><span class="p">,</span> <span class="n">executableName</span><span class="p">);</span>
+
+        <span class="c1">//start mining</span>
+        <span class="n">miner</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Miner</span><span class="p">(</span><span class="n">minerConfiguration</span><span class="p">);</span>
+        <span class="n">System</span><span class="p">.</span><span class="n">Diagnostics</span><span class="p">.</span><span class="n">Process</span> <span class="n">minerProcess</span> <span class="p">=</span> <span class="n">miner</span><span class="p">.</span><span class="n">Launch</span><span class="p">();</span>
+
+        <span class="c1">//get an API context</span>
+        <span class="n">Xgminer</span><span class="p">.</span><span class="n">Api</span><span class="p">.</span><span class="n">ApiContext</span> <span class="n">apiContext</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Xgminer</span><span class="p">.</span><span class="n">Api</span><span class="p">.</span><span class="n">ApiContext</span><span class="p">(</span><span class="n">minerConfiguration</span><span class="p">.</span><span class="n">ApiPort</span><span class="p">);</span>
+
+        <span class="c1">//mine for one minute, monitoring hashrate via the API</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="m">6</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
+        <span class="p">{</span>
+            <span class="n">Thread</span><span class="p">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">1000</span> <span class="p">*</span> <span class="m">10</span><span class="p">);</span> <span class="c1">//sleep 10s</span>
+
+            <span class="c1">//query the miner process via its RPC API for device information</span>
+            <span class="n">List</span><span class="p">&lt;</span><span class="n">Xgminer</span><span class="p">.</span><span class="n">Api</span><span class="p">.</span><span class="n">DeviceInformation</span><span class="p">&gt;</span> <span class="n">deviceInformation</span> <span class="p">=</span> <span class="n">apiContext</span><span class="p">.</span><span class="n">GetDeviceInformation</span><span class="p">();</span>
+
+            <span class="c1">//output device information</span>
+            <span class="k">foreach</span> <span class="p">(</span><span class="n">Xgminer</span><span class="p">.</span><span class="n">Api</span><span class="p">.</span><span class="n">DeviceInformation</span> <span class="n">item</span> <span class="k">in</span> <span class="n">deviceInformation</span><span class="p">)</span>
+                <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Hasrate for device {0}: {1} current, {2} average"</span><span class="p">,</span> <span class="n">item</span><span class="p">.</span><span class="n">Index</span><span class="p">,</span>
+                        <span class="n">item</span><span class="p">.</span><span class="n">CurrentHashrate</span><span class="p">,</span> <span class="n">item</span><span class="p">.</span><span class="n">AverageHashrate</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Quitting mining via the RPC API"</span><span class="p">);</span>
+
+        <span class="c1">//stop mining, try the API first</span>
+        <span class="n">apiContext</span><span class="p">.</span><span class="n">QuitMining</span><span class="p">();</span>
+
+        <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Killing any remaining process"</span><span class="p">);</span>
+
+        <span class="c1">//then kill the process</span>
+        <span class="k">try</span>
+        <span class="p">{</span>
+            <span class="n">minerProcess</span><span class="p">.</span><span class="n">Kill</span><span class="p">();</span>
+            <span class="n">minerProcess</span><span class="p">.</span><span class="n">WaitForExit</span><span class="p">();</span>
+            <span class="n">minerProcess</span><span class="p">.</span><span class="n">Close</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="k">catch</span> <span class="p">(</span><span class="n">InvalidOperationException</span> <span class="n">ex</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="c1">//already closed</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"No devices capable of mining detected"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">finally</span>
+<span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Cleaning up, deleting directory {0}"</span><span class="p">,</span> <span class="n">executablePath</span><span class="p">);</span>
+    <span class="n">Directory</span><span class="p">.</span><span class="n">Delete</span><span class="p">(</span><span class="n">executablePath</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Press any key to exit"</span><span class="p">);</span>
+<span class="n">Console</span><span class="p">.</span><span class="n">ReadKey</span><span class="p">();</span>
+</pre></div>
+
+<h2>
 <a name="hardware-donations" class="anchor" href="#hardware-donations"><span class="octicon octicon-link"></span></a>Hardware Donations</h2>
 
 <p>To those who may be considering making donations: instead of BTC or LTC I'd very much welcome <strong>any sort of mining hardware</strong>. I'm not talking nasty rigs and I absolutely <strong>do not</strong> expect this. However, several bugs submitted by users have been due to hardware setups that I could not reproduce myself, such as FPGAs or having 10 devices in a single rig.</p>
