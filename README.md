@@ -1,7 +1,7 @@
 MultiMiner
 ==========
 ### Your coins. Your pools. Your way.
-__MultiMiner__ is a graphical application for crypto-coin mining on Windows, OS X and Linux. MultiMiner simplifies switching individal devices (GPUs, ASICs, FPGAs) between crypto-currencies such as Bitcoin and Litecoin.
+__MultiMiner__ is a graphical application for crypto-coin mining on Windows, OS X and Linux. MultiMiner simplifies switching individual devices (GPUs, ASICs, FPGAs) between crypto-currencies such as Bitcoin and Litecoin.
 
 MultiMiner uses the underlying mining engine ([cgminer][1] by default) to detect available mining devices and then presents a user interface for selecting the coins you'd like to mine.
 
@@ -34,6 +34,8 @@ MultiMiner also supports features such as relaunching crashed miners, starting w
 Finally, MultiMiner supports [MobileMiner][14], an open API with mobile apps for remotely monitoring and controlling your rigs.
 
 ![MobileMiner](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/MobileMiner.png "MobileMiner")
+
+![MobileMiner - Android](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/MobileMiner%20-%20Android.png "MobileMiner - Android")
 
 By entering your MobileMiner email address and application key in the Configure Settings dialog, you will be able to remotely monitor and control your rigs _without having to open any firewalls or forward any ports_.
 
@@ -103,6 +105,7 @@ The source code is structured in such a way that it should be fairly easy to use
 * __MultiMiner.Xgminer__ is an assembly for controling either the cgminer or bfgminer executable - e.g. launching and enumerating devices
 * __MultiMiner.Xgminer.Api__ assists in communicating with the underlying miner via the RPC API
 * __MultiMiner.Coinchoose.Api__ assists in consuming the cypto-currency information available at [CoinChoose.com][9]
+* __MultiMiner.MobileMiner.Api__ facilitates communicating with the [MobileMiner][14] REST API
 * __MultiMiner.Engine__ is an assembly that can be used to interact with all functionality found in MultiMiner, but without a UI - useful for creating front-ends for other OS's
 * __MultiMiner.Win__ is the Windows Forms application
 
