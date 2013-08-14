@@ -9,6 +9,7 @@ namespace MultiMiner.Xgminer
         {
             this.DeviceIndexes = new List<int>();
             this.Priority = ProcessPriorityClass.Normal;
+            this.Pools = new List<MiningPool>();
         }
 
         public MinerBackend MinerBackend { get; set; }
