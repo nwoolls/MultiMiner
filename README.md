@@ -115,6 +115,8 @@ This simple example shows how to use [MultiMiner.Xgminer.dll][16] and [MultiMine
 
 Afterwards the bfgminer [RPC API][18] is used to output the miner hashrate for a minute before the mining process is stopped. You can try this code out yourself in the [MultiMiner.Api.Example][19] project.
 
+![MultiMiner.Api.Example](https://raw.github.com/nwoolls/MultiMiner/master/Screenshots/MultiMiner.Api.Example.png "MultiMiner.Api.Example")
+
 ```csharp
 //examples of using MultiMiner.Xgminer.dll and MultiMiner.Xgminer.Api.dll
 
