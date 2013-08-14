@@ -75,41 +75,49 @@ namespace MultiMiner.Api.Example
                     //start mining
                     miner = new Miner(minerConfiguration);
                     System.Diagnostics.Process minerProcess = miner.Launch();
-
-                    //get an API context
-                    Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(minerConfiguration.ApiPort);
-
-                    //mine for one minute, monitoring hashrate via the API
-                    for (int i = 0; i < 6; i++)
-                    {
-                        Thread.Sleep(1000 * 10); //sleep 10s
-
-                        //query the miner process via its RPC API for device information
-                        List<Xgminer.Api.DeviceInformation> deviceInformation = apiContext.GetDeviceInformation();
-
-                        //output device information
-                        foreach (Xgminer.Api.DeviceInformation item in deviceInformation)
-                            Console.WriteLine("Hasrate for device {0}: {1} current, {2} average", item.Index,
-                                    item.CurrentHashrate, item.AverageHashrate);
-                    }
-
-                    Console.WriteLine("Quitting mining via the RPC API");
-
-                    //stop mining, try the API first
-                    apiContext.QuitMining();
-
-                    Console.WriteLine("Killing any remaining process");
-
-                    //then kill the process
                     try
                     {
-                        minerProcess.Kill();
-                        minerProcess.WaitForExit();
-                        minerProcess.Close();
+                        //get an API context
+                        Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(minerConfiguration.ApiPort);
+                        try
+                        {
+                            //mine for one minute, monitoring hashrate via the API
+                            for (int i = 0; i < 6; i++)
+                            {
+                                Thread.Sleep(1000 * 10); //sleep 10s
+
+                                //query the miner process via its RPC API for device information
+                                List<Xgminer.Api.DeviceInformation> deviceInformation = apiContext.GetDeviceInformation();
+
+                                //output device information
+                                foreach (Xgminer.Api.DeviceInformation item in deviceInformation)
+                                    Console.WriteLine("Hasrate for device {0}: {1} current, {2} average", item.Index,
+                                            item.CurrentHashrate, item.AverageHashrate);
+                            }
+                        }
+                        finally
+                        {
+                            Console.WriteLine("Quitting mining via the RPC API");
+
+                            //stop mining, try the API first
+                            apiContext.QuitMining();
+                        }
                     }
-                    catch (InvalidOperationException ex)
+                    finally
                     {
-                        //already closed
+                        Console.WriteLine("Killing any remaining process");
+
+                        //then kill the process
+                        try
+                        {
+                            minerProcess.Kill();
+                            minerProcess.WaitForExit();
+                            minerProcess.Close();
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            //already closed
+                        }
                     }
                 }
                 else
