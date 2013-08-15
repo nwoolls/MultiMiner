@@ -31,6 +31,11 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -40,11 +45,6 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
             this.deviceStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.startupMiningTimer = new System.Windows.Forms.Timer(this.components);
@@ -85,21 +85,6 @@
             this.coinChoosePrefixLabel = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.deviceGridView = new System.Windows.Forms.DataGridView();
-            this.enabledColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.coinColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.difficultyColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.priceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.profitabilityColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.temperatureColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hashRateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.acceptedColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.rejectedColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.errorsColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.utilityColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.intensityColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.advancedTabControl = new System.Windows.Forms.TabControl();
             this.apiMonitorPage = new System.Windows.Forms.TabPage();
@@ -139,6 +124,21 @@
             this.requestDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.responseDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.apiLogEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.enabledColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.coinColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.difficultyColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.priceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.profitabilityColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.temperatureColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hashRateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.acceptedColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.rejectedColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.errorsColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.utilityColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.intensityColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.startupMiningPanel.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -331,7 +331,7 @@
             // 
             this.detectDevicesButton.Image = global::MultiMiner.Win.Properties.Resources.computer_find;
             this.detectDevicesButton.Name = "detectDevicesButton";
-            this.detectDevicesButton.Size = new System.Drawing.Size(152, 22);
+            this.detectDevicesButton.Size = new System.Drawing.Size(151, 22);
             this.detectDevicesButton.Text = "Detect Devices";
             this.detectDevicesButton.ToolTipText = "Scan for mining capable devices";
             this.detectDevicesButton.Click += new System.EventHandler(this.detectDevicesButton_Click);
@@ -339,13 +339,13 @@
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(148, 6);
             // 
             // apiMonitorButton
             // 
             this.apiMonitorButton.Image = global::MultiMiner.Win.Properties.Resources.network_application;
             this.apiMonitorButton.Name = "apiMonitorButton";
-            this.apiMonitorButton.Size = new System.Drawing.Size(152, 22);
+            this.apiMonitorButton.Size = new System.Drawing.Size(151, 22);
             this.apiMonitorButton.Text = "API Monitor";
             this.apiMonitorButton.ToolTipText = "Display a log of RPC API calls";
             this.apiMonitorButton.Click += new System.EventHandler(this.apiMonitorButton_Click);
@@ -354,7 +354,7 @@
             // 
             this.processLogButton.Image = global::MultiMiner.Win.Properties.Resources.window_text;
             this.processLogButton.Name = "processLogButton";
-            this.processLogButton.Size = new System.Drawing.Size(152, 22);
+            this.processLogButton.Size = new System.Drawing.Size(151, 22);
             this.processLogButton.Text = "Process Log";
             this.processLogButton.ToolTipText = "Display a log of processes launched";
             this.processLogButton.Click += new System.EventHandler(this.processLogButton_Click);
@@ -363,7 +363,7 @@
             // 
             this.historyButton.Image = global::MultiMiner.Win.Properties.Resources.history;
             this.historyButton.Name = "historyButton";
-            this.historyButton.Size = new System.Drawing.Size(152, 22);
+            this.historyButton.Size = new System.Drawing.Size(151, 22);
             this.historyButton.Text = "History";
             this.historyButton.ToolTipText = "Display a history of coins mined";
             this.historyButton.Click += new System.EventHandler(this.historyButton_Click);
@@ -534,10 +534,10 @@
             this.deviceGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.deviceGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.deviceGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.enabledColumn,
             this.kindDataGridViewTextBoxColumn,
             this.nameColumn,
             this.descriptionDataGridViewTextBoxColumn,
-            this.enabledColumn,
             this.coinColumn,
             this.difficultyColumn,
             this.priceColumn,
@@ -558,126 +558,6 @@
             this.deviceGridView.TabIndex = 1;
             this.deviceGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.deviceGridView_CellValueChanged);
             this.deviceGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.deviceGridView_CurrentCellDirtyStateChanged);
-            // 
-            // enabledColumn
-            // 
-            this.enabledColumn.FillWeight = 75F;
-            this.enabledColumn.HeaderText = "Enabled";
-            this.enabledColumn.Name = "enabledColumn";
-            // 
-            // kindDataGridViewTextBoxColumn
-            // 
-            this.kindDataGridViewTextBoxColumn.DataPropertyName = "Identifier";
-            this.kindDataGridViewTextBoxColumn.HeaderText = "Identifier";
-            this.kindDataGridViewTextBoxColumn.Name = "kindDataGridViewTextBoxColumn";
-            this.kindDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // nameColumn
-            // 
-            this.nameColumn.DataPropertyName = "Name";
-            this.nameColumn.FillWeight = 200F;
-            this.nameColumn.HeaderText = "Name";
-            this.nameColumn.MinimumWidth = 85;
-            this.nameColumn.Name = "nameColumn";
-            this.nameColumn.ReadOnly = true;
-            // 
-            // descriptionDataGridViewTextBoxColumn
-            // 
-            this.descriptionDataGridViewTextBoxColumn.DataPropertyName = "Driver";
-            this.descriptionDataGridViewTextBoxColumn.HeaderText = "Driver";
-            this.descriptionDataGridViewTextBoxColumn.MinimumWidth = 50;
-            this.descriptionDataGridViewTextBoxColumn.Name = "descriptionDataGridViewTextBoxColumn";
-            this.descriptionDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // coinColumn
-            // 
-            this.coinColumn.FillWeight = 150F;
-            this.coinColumn.HeaderText = "Coin";
-            this.coinColumn.Items.AddRange(new object[] {
-            "Configure Coins"});
-            this.coinColumn.MinimumWidth = 85;
-            this.coinColumn.Name = "coinColumn";
-            // 
-            // difficultyColumn
-            // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.difficultyColumn.DefaultCellStyle = dataGridViewCellStyle2;
-            this.difficultyColumn.HeaderText = "Difficulty";
-            this.difficultyColumn.Name = "difficultyColumn";
-            this.difficultyColumn.ReadOnly = true;
-            // 
-            // priceColumn
-            // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.priceColumn.DefaultCellStyle = dataGridViewCellStyle3;
-            this.priceColumn.HeaderText = "Price";
-            this.priceColumn.Name = "priceColumn";
-            this.priceColumn.ReadOnly = true;
-            // 
-            // profitabilityColumn
-            // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.profitabilityColumn.DefaultCellStyle = dataGridViewCellStyle4;
-            this.profitabilityColumn.HeaderText = "Profitability";
-            this.profitabilityColumn.Name = "profitabilityColumn";
-            this.profitabilityColumn.ReadOnly = true;
-            // 
-            // temperatureColumn
-            // 
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.temperatureColumn.DefaultCellStyle = dataGridViewCellStyle5;
-            this.temperatureColumn.FillWeight = 70F;
-            this.temperatureColumn.HeaderText = "Temp";
-            this.temperatureColumn.Name = "temperatureColumn";
-            this.temperatureColumn.ReadOnly = true;
-            // 
-            // hashRateColumn
-            // 
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.hashRateColumn.DefaultCellStyle = dataGridViewCellStyle6;
-            this.hashRateColumn.HeaderText = "Hashrate";
-            this.hashRateColumn.Name = "hashRateColumn";
-            this.hashRateColumn.ReadOnly = true;
-            // 
-            // acceptedColumn
-            // 
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.acceptedColumn.DefaultCellStyle = dataGridViewCellStyle7;
-            this.acceptedColumn.HeaderText = "Accepted";
-            this.acceptedColumn.Name = "acceptedColumn";
-            this.acceptedColumn.ReadOnly = true;
-            // 
-            // rejectedColumn
-            // 
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.rejectedColumn.DefaultCellStyle = dataGridViewCellStyle8;
-            this.rejectedColumn.HeaderText = "Rejected";
-            this.rejectedColumn.Name = "rejectedColumn";
-            this.rejectedColumn.ReadOnly = true;
-            // 
-            // errorsColumn
-            // 
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.errorsColumn.DefaultCellStyle = dataGridViewCellStyle9;
-            this.errorsColumn.FillWeight = 75F;
-            this.errorsColumn.HeaderText = "Errors";
-            this.errorsColumn.Name = "errorsColumn";
-            this.errorsColumn.ReadOnly = true;
-            // 
-            // utilityColumn
-            // 
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.utilityColumn.DefaultCellStyle = dataGridViewCellStyle10;
-            this.utilityColumn.FillWeight = 75F;
-            this.utilityColumn.HeaderText = "Utility";
-            this.utilityColumn.Name = "utilityColumn";
-            this.utilityColumn.ReadOnly = true;
-            // 
-            // intensityColumn
-            // 
-            this.intensityColumn.HeaderText = "Intensity";
-            this.intensityColumn.Name = "intensityColumn";
-            this.intensityColumn.ReadOnly = true;
             // 
             // deviceBindingSource
             // 
@@ -1048,6 +928,141 @@
             // apiLogEntryBindingSource
             // 
             this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.ApiLogEntry);
+            // 
+            // enabledColumn
+            // 
+            this.enabledColumn.FillWeight = 75F;
+            this.enabledColumn.HeaderText = "Enabled";
+            this.enabledColumn.Name = "enabledColumn";
+            this.enabledColumn.ToolTipText = "Toggle mining for device";
+            // 
+            // kindDataGridViewTextBoxColumn
+            // 
+            this.kindDataGridViewTextBoxColumn.DataPropertyName = "Identifier";
+            this.kindDataGridViewTextBoxColumn.HeaderText = "Identifier";
+            this.kindDataGridViewTextBoxColumn.Name = "kindDataGridViewTextBoxColumn";
+            this.kindDataGridViewTextBoxColumn.ReadOnly = true;
+            this.kindDataGridViewTextBoxColumn.ToolTipText = "Device identifier";
+            // 
+            // nameColumn
+            // 
+            this.nameColumn.DataPropertyName = "Name";
+            this.nameColumn.FillWeight = 200F;
+            this.nameColumn.HeaderText = "Name";
+            this.nameColumn.MinimumWidth = 85;
+            this.nameColumn.Name = "nameColumn";
+            this.nameColumn.ReadOnly = true;
+            this.nameColumn.ToolTipText = "Device name";
+            // 
+            // descriptionDataGridViewTextBoxColumn
+            // 
+            this.descriptionDataGridViewTextBoxColumn.DataPropertyName = "Driver";
+            this.descriptionDataGridViewTextBoxColumn.HeaderText = "Driver";
+            this.descriptionDataGridViewTextBoxColumn.MinimumWidth = 50;
+            this.descriptionDataGridViewTextBoxColumn.Name = "descriptionDataGridViewTextBoxColumn";
+            this.descriptionDataGridViewTextBoxColumn.ReadOnly = true;
+            this.descriptionDataGridViewTextBoxColumn.ToolTipText = "Device driver";
+            // 
+            // coinColumn
+            // 
+            this.coinColumn.FillWeight = 150F;
+            this.coinColumn.HeaderText = "Coin";
+            this.coinColumn.Items.AddRange(new object[] {
+            "Configure Coins"});
+            this.coinColumn.MinimumWidth = 85;
+            this.coinColumn.Name = "coinColumn";
+            this.coinColumn.ToolTipText = "Current coin";
+            // 
+            // difficultyColumn
+            // 
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.difficultyColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            this.difficultyColumn.HeaderText = "Difficulty";
+            this.difficultyColumn.Name = "difficultyColumn";
+            this.difficultyColumn.ReadOnly = true;
+            this.difficultyColumn.ToolTipText = "Difficulty returned by CoinChoose.com";
+            // 
+            // priceColumn
+            // 
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.priceColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            this.priceColumn.HeaderText = "Price";
+            this.priceColumn.Name = "priceColumn";
+            this.priceColumn.ReadOnly = true;
+            this.priceColumn.ToolTipText = "Price returned by CoinChoose.com";
+            // 
+            // profitabilityColumn
+            // 
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle4.Format = "0\'%\'";
+            this.profitabilityColumn.DefaultCellStyle = dataGridViewCellStyle4;
+            this.profitabilityColumn.HeaderText = "Profitability";
+            this.profitabilityColumn.Name = "profitabilityColumn";
+            this.profitabilityColumn.ReadOnly = true;
+            this.profitabilityColumn.ToolTipText = "Profitability of coin compared to Bitcoin";
+            // 
+            // temperatureColumn
+            // 
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.temperatureColumn.DefaultCellStyle = dataGridViewCellStyle5;
+            this.temperatureColumn.FillWeight = 70F;
+            this.temperatureColumn.HeaderText = "Temp";
+            this.temperatureColumn.Name = "temperatureColumn";
+            this.temperatureColumn.ReadOnly = true;
+            // 
+            // hashRateColumn
+            // 
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.hashRateColumn.DefaultCellStyle = dataGridViewCellStyle6;
+            this.hashRateColumn.HeaderText = "Hashrate";
+            this.hashRateColumn.Name = "hashRateColumn";
+            this.hashRateColumn.ReadOnly = true;
+            this.hashRateColumn.ToolTipText = "Average device hashrate";
+            // 
+            // acceptedColumn
+            // 
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.acceptedColumn.DefaultCellStyle = dataGridViewCellStyle7;
+            this.acceptedColumn.HeaderText = "Accepted";
+            this.acceptedColumn.Name = "acceptedColumn";
+            this.acceptedColumn.ReadOnly = true;
+            this.acceptedColumn.ToolTipText = "Accepted shares";
+            // 
+            // rejectedColumn
+            // 
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.rejectedColumn.DefaultCellStyle = dataGridViewCellStyle8;
+            this.rejectedColumn.HeaderText = "Rejected";
+            this.rejectedColumn.Name = "rejectedColumn";
+            this.rejectedColumn.ReadOnly = true;
+            this.rejectedColumn.ToolTipText = "Rejected shares";
+            // 
+            // errorsColumn
+            // 
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.errorsColumn.DefaultCellStyle = dataGridViewCellStyle9;
+            this.errorsColumn.FillWeight = 75F;
+            this.errorsColumn.HeaderText = "Errors";
+            this.errorsColumn.Name = "errorsColumn";
+            this.errorsColumn.ReadOnly = true;
+            this.errorsColumn.ToolTipText = "Hardware errors";
+            // 
+            // utilityColumn
+            // 
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.utilityColumn.DefaultCellStyle = dataGridViewCellStyle10;
+            this.utilityColumn.FillWeight = 75F;
+            this.utilityColumn.HeaderText = "Utility";
+            this.utilityColumn.Name = "utilityColumn";
+            this.utilityColumn.ReadOnly = true;
+            this.utilityColumn.ToolTipText = "Ratio of accepted and rejected shares per minute";
+            // 
+            // intensityColumn
+            // 
+            this.intensityColumn.HeaderText = "Intensity";
+            this.intensityColumn.Name = "intensityColumn";
+            this.intensityColumn.ReadOnly = true;
+            this.intensityColumn.ToolTipText = "Device intensity";
             // 
             // MainForm
             // 
