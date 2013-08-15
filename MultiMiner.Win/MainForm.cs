@@ -1527,8 +1527,6 @@ namespace MultiMiner.Win
             {
                 int index = e.RowIndex + i;
 
-                DataGridViewRow row = apiLogGridView.Rows[index];
-
                 //convert from device indexes (0 based) to device #'s (more human readable)
                 List<string> deviceList = new List<string>();
 
