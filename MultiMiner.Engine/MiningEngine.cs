@@ -136,9 +136,12 @@ namespace MultiMiner.Engine
         {
             string coinName = minerProcess.MinerConfiguration.CoinName;
             string coinSymbol = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase)).Coin.Symbol;
-            CoinInformation processCoinInfo = coinInformation.Single(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
-            minerProcess.CoinInformation = processCoinInfo;
-
+            CoinInformation processCoinInfo = coinInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+            
+            //coin may not be in CoinChoose.com
+            if (coinInformation != null)
+                minerProcess.CoinInformation = processCoinInfo;
+            
             minerProcess.StartDate = DateTime.Now;
         }
 
