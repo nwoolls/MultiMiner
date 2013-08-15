@@ -957,7 +957,9 @@ namespace MultiMiner.Win
         {
             RefreshCoinStats();
 
-            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.MineProfitableCoins)
+            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.MineProfitableCoins &&
+                //ensure the user isn't editing settings
+                !ShowingModalDialog())
             {
                 miningEngine.ApplyMiningStrategy(devices, coinInformation);
                 //save any changes made by the engine
@@ -1394,6 +1396,15 @@ namespace MultiMiner.Win
 
         }
 
+        private bool ShowingModalDialog()
+        {
+            foreach (Form f in Application.OpenForms)
+                if (f.Modal)
+                    return true;
+
+            return false;
+        }
+
         private void CheckForMobileMinerCommands()
         {
             //are remote commands enabled?
@@ -1435,10 +1446,8 @@ namespace MultiMiner.Win
                                     "MobileMiner remote commands will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                                 //check to make sure there are no modal windows already
-                                if (this.Visible && this.CanFocus)
-                                {
+                                if (!ShowingModalDialog())
                                     ShowApplicationSettings();
-                                }
                             }
                         }
                     }
