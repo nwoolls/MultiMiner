@@ -150,8 +150,16 @@ namespace MultiMiner.Engine
             DateTime startDate = minerProcess.StartDate;
             DateTime endDate = DateTime.Now;
             string coinName = minerProcess.MinerConfiguration.CoinName;
-            string coinSymbol = minerProcess.CoinInformation.Symbol;
-            double priceAtStart = minerProcess.CoinInformation.Price;
+
+            double priceAtStart = 0;
+            string coinSymbol = String.Empty;
+            //coin may not be in CoinChoose.com
+            if (minerProcess.CoinInformation != null)
+            {
+                coinSymbol = minerProcess.CoinInformation.Symbol;
+                priceAtStart = minerProcess.CoinInformation.Price;
+            }
+
             double priceAtEnd = priceAtStart;
 
             //can't use Single here - coin info may be gone now and we crash
