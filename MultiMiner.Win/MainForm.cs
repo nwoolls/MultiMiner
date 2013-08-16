@@ -349,6 +349,8 @@ namespace MultiMiner.Win
             engineConfiguration.LoadStrategyConfiguration();
 
             coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.MineProfitableCoins;
+            coinColumn.DisplayStyle = coinColumn.ReadOnly ? DataGridViewComboBoxDisplayStyle.Nothing : DataGridViewComboBoxDisplayStyle.DropDownButton;
+
             RefreshStrategiesLabel();
             RefreshStrategiesCountdown();
 
@@ -1151,7 +1153,10 @@ namespace MultiMiner.Win
                 engineConfiguration.SaveStrategyConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
                 SetupCoinStatsTimer();
+                
                 coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.MineProfitableCoins;
+                coinColumn.DisplayStyle = coinColumn.ReadOnly ? DataGridViewComboBoxDisplayStyle.Nothing : DataGridViewComboBoxDisplayStyle.DropDownButton;
+
                 RefreshStrategiesLabel();
                 LoadGridValuesFromCoinStats();
                 UpdateMiningButtons();
