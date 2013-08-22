@@ -266,7 +266,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [10]: http://luke.dashjr.org/programs/bitcoin/files/bfgminer/
 [11]: https://www.dropbox.com/s/o08inghtw7ut1an/MultiMiner-1.0.7.exe
 [12]: https://github.com/nwoolls/MultiMiner/releases
-[13]: https://github.com/nwoolls/xgminer-osx
+[13]: http://xgminer.com
 [14]: http://www.mobileminerapp.com
 [15]: http://thread.multiminerapp.com
 [16]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Xgminer
