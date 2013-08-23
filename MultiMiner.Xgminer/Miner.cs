@@ -139,7 +139,7 @@ namespace MultiMiner.Xgminer
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
 
-            startInfo.Arguments = arguments;
+            startInfo.Arguments = arguments.Trim();
             if (minerConfiguration.DisableGpu)
             {
                 startInfo.Arguments = startInfo.Arguments + " --disable-gpu";
