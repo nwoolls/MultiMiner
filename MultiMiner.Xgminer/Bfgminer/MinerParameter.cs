@@ -2,6 +2,6 @@
 {
     public static class MinerParameter
     {
-        public const string ScanSerialAll = "--scan-serial erupter:all";
+        public const string ScanSerialAll = "--scan-serial all";
     }
 }
