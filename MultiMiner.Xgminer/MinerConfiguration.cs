@@ -23,5 +23,6 @@ namespace MultiMiner.Xgminer
         public string CoinName { get; set; }
         public bool DisableGpu { get; set; }
         public ProcessPriorityClass Priority { get; set; }
+        public bool ErupterDriver { get; set; }
     }
 }

@@ -38,7 +38,6 @@
             this.priorityCombo = new System.Windows.Forms.ComboBox();
             this.minerCombo = new System.Windows.Forms.ComboBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.disableGpuCheckbox = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -62,12 +61,14 @@
             this.label8 = new System.Windows.Forms.Label();
             this.emailAddressEdit = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.erupterCheckBox = new System.Windows.Forms.CheckBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -104,6 +105,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.erupterCheckBox);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.priorityCombo);
             this.groupBox1.Controls.Add(this.minerCombo);
@@ -154,6 +156,7 @@
             this.minerCombo.Name = "minerCombo";
             this.minerCombo.Size = new System.Drawing.Size(94, 21);
             this.minerCombo.TabIndex = 0;
+            this.minerCombo.SelectedIndexChanged += new System.EventHandler(this.minerCombo_SelectedIndexChanged);
             // 
             // checkBox4
             // 
@@ -162,14 +165,10 @@
             this.checkBox4.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "DetectDisownedMiners", true));
             this.checkBox4.Location = new System.Drawing.Point(239, 107);
             this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(174, 31);
+            this.checkBox4.Size = new System.Drawing.Size(174, 17);
             this.checkBox4.TabIndex = 6;
-            this.checkBox4.Text = "Detect disowned miners (orphaned mining processes)";
+            this.checkBox4.Text = "Detect orphaned miners";
             this.checkBox4.UseVisualStyleBackColor = true;
-            // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
             // 
             // checkBox2
             // 
@@ -412,6 +411,21 @@
             this.label6.TabIndex = 0;
             this.label6.Text = "Application key:";
             // 
+            // erupterCheckBox
+            // 
+            this.erupterCheckBox.Checked = true;
+            this.erupterCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.erupterCheckBox.Location = new System.Drawing.Point(239, 130);
+            this.erupterCheckBox.Name = "erupterCheckBox";
+            this.erupterCheckBox.Size = new System.Drawing.Size(174, 17);
+            this.erupterCheckBox.TabIndex = 18;
+            this.erupterCheckBox.Text = "Erupter driver";
+            this.erupterCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -432,12 +446,12 @@
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -476,5 +490,6 @@
         private System.Windows.Forms.ComboBox minerCombo;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox priorityCombo;
+        private System.Windows.Forms.CheckBox erupterCheckBox;
     }
 }

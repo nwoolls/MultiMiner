@@ -16,5 +16,6 @@ namespace MultiMiner.Engine.Configuration
         public bool DesktopMode { get; set; }
         public bool DisableGpu { get; set; }
         public ProcessPriorityClass Priority { get; set; }
+        public bool ErupterDriver { get; set; }
     }
 }

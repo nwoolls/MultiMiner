@@ -53,7 +53,10 @@ namespace MultiMiner.Xgminer
             bool redirectOutput = true;
 
             if (minerConfiguration.MinerBackend == MinerBackend.Bfgminer)
-                arguments = String.Format("{0} {1}", arguments, Bfgminer.MinerParameter.ScanSerialAll);
+            {
+                string serialArg = minerConfiguration.ErupterDriver ? Bfgminer.MinerParameter.ScanSerialErupterAll : Bfgminer.MinerParameter.ScanSerialAll;
+                arguments = String.Format("{0} {1}", arguments, serialArg);
+            }
 
             Process minerProcess = StartMinerProcess(arguments, redirectOutput);
 
@@ -87,7 +90,10 @@ namespace MultiMiner.Xgminer
             string arguments = minerConfiguration.Arguments;
 
             if (minerConfiguration.MinerBackend == MinerBackend.Bfgminer)
-                arguments = String.Format("{0} {1}", arguments, Bfgminer.MinerParameter.ScanSerialAll);
+            {
+                string serialArg = minerConfiguration.ErupterDriver ? Bfgminer.MinerParameter.ScanSerialErupterAll : Bfgminer.MinerParameter.ScanSerialAll;
+                arguments = String.Format("{0} {1}", arguments, serialArg);
+            }
 
             foreach (MiningPool pool in minerConfiguration.Pools)
             {

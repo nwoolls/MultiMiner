@@ -50,20 +50,24 @@ namespace MultiMiner.Win
 
             return true;
         }
+
+        private MinerBackend SelectedMinerBackend()
+        {
+            if (minerCombo.SelectedIndex == 0)
+                return MinerBackend.Cgminer;
+            else
+                return MinerBackend.Bfgminer;
+        }
         
         private void SaveSettings()
         {
             minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256] = sha256ParamsEdit.Text;
             minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt] = scryptParamsEdit.Text;
 
-            if (minerCombo.SelectedIndex == 0)
-                minerConfiguration.MinerBackend = MinerBackend.Cgminer;
-            else
-                minerConfiguration.MinerBackend = MinerBackend.Bfgminer;
-
+            minerConfiguration.MinerBackend = SelectedMinerBackend();
             minerConfiguration.DisableGpu = disableGpuCheckbox.Checked;
-
             minerConfiguration.Priority = (ProcessPriorityClass)priorityCombo.SelectedItem;
+            minerConfiguration.ErupterDriver = erupterCheckBox.Checked;
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -98,6 +102,7 @@ namespace MultiMiner.Win
             disableGpuCheckbox.Checked = minerConfiguration.DisableGpu;
 
             priorityCombo.SelectedItem = minerConfiguration.Priority;
+            erupterCheckBox.Checked = minerConfiguration.ErupterDriver;
         }
 
         private void remoteMonitoringCheck_CheckedChanged(object sender, EventArgs e)
@@ -118,6 +123,11 @@ namespace MultiMiner.Win
         private void mobileMinerInfoLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("http://mobileminerapp.com/");
+        }
+
+        private void minerCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            erupterCheckBox.Enabled = SelectedMinerBackend() == MinerBackend.Bfgminer;
         }
     }
 }
