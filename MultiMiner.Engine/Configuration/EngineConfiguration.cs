@@ -88,7 +88,7 @@ namespace MultiMiner.Engine.Configuration
         {
             foreach (CoinConfiguration coinConfiguration in CoinConfigurations.Where(c => !c.Enabled))
             {
-                IEnumerable<DeviceConfiguration> coinDeviceConfigurations = DeviceConfigurations.Where(c => c.CoinSymbol.Equals(coinConfiguration.Coin.Symbol));
+                IEnumerable<DeviceConfiguration> coinDeviceConfigurations = DeviceConfigurations.Where(c => !String.IsNullOrEmpty(c.CoinSymbol) && c.CoinSymbol.Equals(coinConfiguration.Coin.Symbol));
                 foreach (DeviceConfiguration coinDeviceConfiguration in coinDeviceConfigurations)
                     coinDeviceConfiguration.CoinSymbol = string.Empty;
             }
