@@ -568,6 +568,11 @@ namespace MultiMiner.Win
                 cancelButton.Enabled = saveEnabled;
             }
 
+            //leaving the enabledColumn focused can cause an artifact where it looks unchecked
+            //but isn't
+            if (deviceGridView.RowCount > 0)
+                deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
+
             RefreshGridColorsFromConfiguration();
         }
 
