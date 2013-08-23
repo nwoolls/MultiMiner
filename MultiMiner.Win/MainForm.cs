@@ -1330,6 +1330,13 @@ namespace MultiMiner.Win
         private const string mobileMinerApiKey = "P3mVX95iP7xfoI";
         private const string mobileMinerUrl = "https://api.mobileminerapp.com";
         
+        //require 2 403s in a row before disabling MobileMiner and throwing up a
+        //MessageBox. it's not ideal but there have been two reports now of this
+        //being triggered by someone who has valid credentials
+        private int forbiddenCommandCount = 0;
+        private int forbiddenStatsCount = 0;
+        private const int maxForbiddenCount = 2;
+
         private void SubmitMobileMinerStats()
         {
             //are remote monitoring enabled?
@@ -1379,6 +1386,7 @@ namespace MultiMiner.Win
                     MobileMiner.Api.ApiContext.SubmitMiningStatistics(mobileMinerUrl, mobileMinerApiKey,
                         applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
                         Environment.MachineName, statisticsList);
+                    forbiddenStatsCount = 0;
                 }
                 catch (WebException ex)
                 {
@@ -1388,12 +1396,21 @@ namespace MultiMiner.Win
                     {
                         if (response.StatusCode == HttpStatusCode.Forbidden)
                         {
-                            this.applicationConfiguration.MobileMinerMonitoring = false;
-                            this.applicationConfiguration.SaveApplicationConfiguration();
-                            MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
-                                Environment.NewLine + Environment.NewLine +
-                                "MobileMiner remote monitoring will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            ShowApplicationSettings();
+                            forbiddenStatsCount++;
+                            if (forbiddenStatsCount >= maxForbiddenCount)
+                            {
+                                forbiddenStatsCount = 0;
+
+                                this.applicationConfiguration.MobileMinerMonitoring = false;
+                                this.applicationConfiguration.SaveApplicationConfiguration();
+                                MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
+                                    Environment.NewLine + Environment.NewLine +
+                                    "MobileMiner remote monitoring will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                                //check to make sure there are no modal windows already
+                                if (!ShowingModalDialog())
+                                    ShowApplicationSettings();
+                            }
                         }
                     }
                 }
@@ -1428,6 +1445,7 @@ namespace MultiMiner.Win
                 commands = MobileMiner.Api.ApiContext.GetCommands(mobileMinerUrl, mobileMinerApiKey,
                     applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
                     Environment.MachineName);
+                forbiddenCommandCount = 0;
             }
             catch (Exception ex)
             {
@@ -1444,15 +1462,21 @@ namespace MultiMiner.Win
                         {
                             if (response.StatusCode == HttpStatusCode.Forbidden)
                             {
-                                this.applicationConfiguration.MobileMinerRemoteCommands = false;
-                                this.applicationConfiguration.SaveApplicationConfiguration();
-                                MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
-                                    Environment.NewLine + Environment.NewLine +
-                                    "MobileMiner remote commands will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                forbiddenCommandCount++;
+                                if (forbiddenCommandCount >= maxForbiddenCount)
+                                {
+                                    forbiddenCommandCount = 0;
 
-                                //check to make sure there are no modal windows already
-                                if (!ShowingModalDialog())
-                                    ShowApplicationSettings();
+                                    this.applicationConfiguration.MobileMinerRemoteCommands = false;
+                                    this.applicationConfiguration.SaveApplicationConfiguration();
+                                    MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
+                                        Environment.NewLine + Environment.NewLine +
+                                        "MobileMiner remote commands will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                                    //check to make sure there are no modal windows already
+                                    if (!ShowingModalDialog())
+                                        ShowApplicationSettings();
+                                }
                             }
                         }
                     }
