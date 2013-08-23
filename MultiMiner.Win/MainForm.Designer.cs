@@ -142,6 +142,7 @@
             this.showAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mobileMinerTimer = new System.Windows.Forms.Timer(this.components);
+            this.updateCheckTimer = new System.Windows.Forms.Timer(this.components);
             this.startupMiningPanel.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -434,7 +435,7 @@
             // backendLabel
             // 
             this.backendLabel.AutoSize = false;
-            
+            this.backendLabel.Name = "backendLabel";
             this.backendLabel.Size = new System.Drawing.Size(150, 17);
             this.backendLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -1097,6 +1098,11 @@
             this.mobileMinerTimer.Interval = 15000;
             this.mobileMinerTimer.Tick += new System.EventHandler(this.mobileMinerTimer_Tick);
             // 
+            // updateCheckTimer
+            // 
+            this.updateCheckTimer.Interval = 3600000;
+            this.updateCheckTimer.Tick += new System.EventHandler(this.updateCheckTimer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1243,6 +1249,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn intensityColumn;
         private System.Windows.Forms.ToolStripMenuItem dummyToolStripMenuItem;
         private MultiMiner.Win.Notifications.NotificationsControl notificationsControl1;
+        private System.Windows.Forms.Timer updateCheckTimer;
     }
 }
 

@@ -34,6 +34,53 @@ namespace MultiMiner.Xgminer
             }
         }
 
+        public static string GetAvailableMinerVerison(MinerBackend minerBackend)
+        {
+            string version = String.Empty;
+
+            string minerDownloadUrl = GetMinerDownloadUrl(minerBackend);            
+            const string pattern = @".+/.+-(.+)-.+\..+$";
+            Match match = Regex.Match(minerDownloadUrl, pattern);
+            if (match.Success)
+                version = match.Groups[1].Value;
+
+            return version;
+        }
+
+        public static string GetInstalledMinerVerison(MinerBackend minerBackend, string executablePath)
+        {
+            string version = String.Empty;
+
+            ProcessStartInfo startInfo = new ProcessStartInfo(executablePath, "--version");
+
+            startInfo.UseShellExecute = false;
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.CreateNoWindow = true;
+            startInfo.RedirectStandardOutput = true;
+
+            startInfo.Arguments = startInfo.Arguments + " --disable-gpu";
+
+            if (minerBackend == MinerBackend.Cgminer)
+            {
+                //otherwise it still requires OpenCL.dll - not an issue with bfgminer
+                if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
+                    startInfo.FileName = startInfo.FileName + "-nogpu";
+                else
+                    startInfo.FileName = executablePath.Replace("cgminer.exe", "cgminer-nogpu.exe");
+            }
+
+            Process process = Process.Start(startInfo);
+
+            string processOutput = process.StandardOutput.ReadToEnd();
+
+            const string pattern = @"^.+ (.+\..+)\r\n";
+            Match match = Regex.Match(processOutput, pattern);
+            if (match.Success)
+                version = match.Groups[1].Value;
+
+            return version;
+        }
+
         private static string GetMinerDownloadUrl(MinerBackend minerBackend)
         {
             string result = String.Empty;
@@ -109,7 +156,7 @@ namespace MultiMiner.Xgminer
             else
             {
                 if (minerBackend == MinerBackend.Bfgminer)
-                    return "http://luke.dashjr.org";
+                    return "http://eligius.st/~luke-jr";
                 else
                     return "http://ck.kolivas.org";
             }

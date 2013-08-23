@@ -200,13 +200,13 @@
   <data name="advancedMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFZSURBVDhPY7Ct2HTaqXrLf1KwXcXGMwwwABJImrD3f3jH
-        TqIwSK1r7db/UO0QA0ASxAKQ2iFqwK9fvx7/+fPnUFjH9rtEGzBhwoR/f//+3QrEy4FcDpD6+vp6Jpfa
-        rcvBmkEAnwH//v3LgCpjCA0NZYuNjf0fHx9vzMDwnxEqDDEAazS27TwJkgdpio6OPgykV4HYMTEx+4C4
-        CcQGG2BXsXkvEAMTBwbeADWgE6QYHQMNQSQmENCqX8UGw0DND43TzrDGxcUpAxXvgWo6kZaWxgXUeARq
-        wDagt5ih2lGBddlaCxAN9C/cRrAEFMDE4OKgtI3mfLALkpOThYCKwC4AhsNWqOaNUM0noqKilBg8crex
-        gzRN33bt/6/ffxH4199lIA0gp0I1oOMpIHkwwOKC/7Zlm7aD5ECKgYbMAuKTUPYRIN4HYoM1EwsSExNF
-        QZqAAccPFQICBgYAeeIZep+S7ssAAAAASUVORK5CYII=
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFYSURBVDhPY7Ct2HTaqXrLf1KwXcXGMwwwABJImrD3f3jH
+        TqIwSK1r7db/UO0QA0ASxAKQ2iFqwK9fvx7/+fPnUFjH9rtEG1BfX//v79+/W4F4OZDLAVIPFGNyqd26
+        HKwZBPAZ8O/fvwyoMobQ0FC22NjY//Hx8cYMDP8ZocIQA7BGY9vOkyB5kKbo6OjDQHoViB0TE7MPiJtA
+        bLABdhWb9wIxMHFg4A1QAzpBitEx0BBEYgIBrfpVbDAM1PzQOO0Ma1xcnDJQ8R6ophNpaWlcQI1HoAZs
+        A3qLGaodFViXrbUA0UD/wm0ES0ABTAwuDkrbaM4HuyA5OVkIqAjsAmA4bIVq3gjVfCIqKkqJwSN3GztI
+        0/Rt1/7/+v0XgX/9XQbSAHIqVAM6ngKSBwMsLvhvW7ZpO0gOpBhoyCwgPgllHwHifSA2WDOxIDExURSk
+        CRhw/FAhIGBgAAD+TxlHNljZlgAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="saveButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -303,7 +303,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0yLjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAAAO
-        CQAAAk1TRnQBSQFMAgEBAwEAAXABAgFwAQIBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
+        CQAAAk1TRnQBSQFMAgEBAwEAAaABAwGgAQMBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
         AwABQAMAARADAAEBAQABCAYAAQQYAAGAAgABgAMAAoABAAGAAwABgAEAAYABAAKAAgADwAEAAcAB3AHA
         AQAB8AHKAaYBAAEzBQABMwEAATMBAAEzAQACMwIAAxYBAAMcAQADIgEAAykBAANVAQADTQEAA0IBAAM5
         AQABgAF8Af8BAAJQAf8BAAGTAQAB1gEAAf8B7AHMAQABxgHWAe8BAAHWAucBAAGQAakBrQIAAf8BMwMA
@@ -1074,8 +1074,11 @@
   <metadata name="mobileMinerTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>799, 56</value>
   </metadata>
+  <metadata name="updateCheckTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>370, 95</value>
+  </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>117</value>
+    <value>205</value>
   </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

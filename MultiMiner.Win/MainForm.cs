@@ -105,6 +105,10 @@ namespace MultiMiner.Win
 
             CheckAndDownloadMiners();
 
+            updateCheckTimer.Interval = 3600000; //1h
+            updateCheckTimer.Enabled = true;
+            CheckForUpdates();
+
             RefreshDevices();
 
             if (devices.Count > 0)
@@ -1673,6 +1677,60 @@ namespace MultiMiner.Win
         private void notificationsControl1_NotificationsChanged(object sender)
         {
             notificationsControl1.Visible = notificationsControl1.NotificationCount() > 0;
+        }
+
+        private void updateCheckTimer_Tick(object sender, EventArgs e)
+        {
+            CheckForUpdates();
+        }
+        
+        private void CheckForUpdates()
+        {
+            MinerBackend minerBackend = MinerBackend.Cgminer;
+            CheckForMinerUpdates(minerBackend);
+
+            minerBackend = MinerBackend.Bfgminer;
+            CheckForMinerUpdates(minerBackend);
+        }
+
+        private const int BfgminerNotificationId = 100;
+        private const int CgminerNotificationId = 101;
+        private const int MultiMinerNotificationId = 102;
+
+        private void CheckForMinerUpdates(MinerBackend minerBackend)
+        {
+            string minerName = MinerPath.GetMinerName(minerBackend);
+
+            if (MinerIsInstalled(minerBackend))
+            {
+                string availableMinerVersion = String.Empty;
+                try
+                {
+                    availableMinerVersion = Installer.GetAvailableMinerVerison(minerBackend);
+                }
+                catch (WebException ex)
+                {
+                    //downloads website is down
+                    return;
+                }
+                
+                string installedMinerVersion = Installer.GetInstalledMinerVerison(minerBackend, MinerPath.GetPathToInstalledMiner(minerBackend));
+                if (!availableMinerVersion.Equals(installedMinerVersion))
+                {
+                    int notificationId = minerBackend == MinerBackend.Bfgminer ? BfgminerNotificationId : CgminerNotificationId;
+
+                    notificationsControl1.AddNotification(notificationId,
+                        String.Format("{0} version {1} is available ({2} installed)", 
+                            minerName, availableMinerVersion, installedMinerVersion), () =>
+                        {
+                            bool wasMining = miningEngine.Mining;
+                            StopMining();
+                            InstallMiner(minerBackend);
+                            if (wasMining)
+                                StartMining();
+                        });
+                }
+            }
         }
     }
 }
