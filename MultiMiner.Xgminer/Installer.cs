@@ -2,10 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
-using System.Xml;
-using System.Linq;
 
 namespace MultiMiner.Xgminer
 {
@@ -76,10 +73,27 @@ namespace MultiMiner.Xgminer
         
         private static string GetBfgminerMacOSXDownloadUrl()
         {
-            string downloadRoot = GetMinerDownloadRoot(MinerBackend.Bfgminer);
-            return String.Format("{0}/releases/download/v1.0.2/bfgminer-3.1.4-osx64.tar.gz", downloadRoot);
+            return GetXgminerDownloadUrl("bfgminer");
         }
-        
+
+        private static string GetXgminerDownloadUrl(string minerName)
+        {
+            string downloadUrl = String.Empty;
+
+            string downloadRoot = GetMinerDownloadRoot(MinerBackend.Bfgminer);
+            const string downloadPath = "/releases/";
+            string availableDownloadsHtml = new WebClient().DownloadString(String.Format("{0}{1}", downloadRoot, downloadPath));
+            string pattern = String.Format(@".*<a href="".+/xgminer-osx/releases/(.+/{0}-.+?-osx64.tar.gz)", minerName);
+            Match match = Regex.Match(availableDownloadsHtml, pattern);
+            if (match.Success)
+            {
+                string minerFileName = match.Groups[1].Value;
+                downloadUrl = String.Format("{0}{1}{2}", downloadRoot, downloadPath, minerFileName);
+            }
+
+            return downloadUrl;
+        }
+
         private static string GetCgminerDownloadUrl()
         {
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
@@ -103,9 +117,7 @@ namespace MultiMiner.Xgminer
 
         private static string GetCgminerMacOSXDownloadUrl()
         {
-            //hard-coded for now, dynamic in the future
-            string downloadRoot = GetMinerDownloadRoot(MinerBackend.Cgminer);
-            return String.Format("{0}/releases/download/v1.0.2/cgminer-3.3.1-osx64.tar.gz", downloadRoot);
+            return GetXgminerDownloadUrl("cgminer");
         }
 
         private static string GetCgminerWindowsDownloadUrl()
