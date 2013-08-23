@@ -195,6 +195,7 @@
     <None Include="Resources\arrow_up.png" />
     <None Include="Resources\arrow_down.png" />
     <None Include="Resources\history.png" />
+    <None Include="Resources\list-arrow_right.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

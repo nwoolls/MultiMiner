@@ -1586,5 +1586,81 @@ namespace MultiMiner.Win
                 historyGridView.Rows[index].Cells[durationColumn.Index].Value = String.Format("{0:0.##} minutes", timeSpan.TotalMinutes);
             }
         }
+
+        private void quickSwitchItem_DropDownOpening(object sender, EventArgs e)
+        {
+            PopulateQuickSwitchMenu();
+        }
+
+        private void PopulateQuickSwitchMenu()
+        {
+            quickSwitchItem.DropDownItems.Clear();
+            foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations)
+            {
+                ToolStripMenuItem coinSwitchItem = new ToolStripMenuItem();
+
+                coinSwitchItem.Text = coinConfiguration.Coin.Name;
+                coinSwitchItem.Tag = coinConfiguration.Coin.Symbol;
+                coinSwitchItem.Click += HandleQuickSwitchClick;
+
+                quickSwitchItem.DropDownItems.Add(coinSwitchItem);
+            }
+        }
+
+        private void HandleQuickSwitchClick(object sender, EventArgs e)
+        {
+            bool wasMining = miningEngine.Mining;
+            StopMining();
+
+            deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+
+            string coinSymbol = (string)((ToolStripMenuItem)sender).Tag;
+            CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(coinSymbol));
+
+            SetAllDevicesToCoin(coin);
+
+            engineConfiguration.StrategyConfiguration.MineProfitableCoins = false;
+
+            engineConfiguration.SaveDeviceConfigurations();
+            engineConfiguration.SaveStrategyConfiguration();
+
+            if (wasMining)
+                StartMining();
+        }
+
+        private void SetAllDevicesToCoin(CryptoCoin coin)
+        {
+            engineConfiguration.DeviceConfigurations.Clear();
+
+            for (int i = 0; i < devices.Count; i++)
+            {
+                DataGridViewRow gridRow = deviceGridView.Rows[i];
+                Device device = devices[i];
+
+                DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+
+                deviceConfiguration.DeviceIndex = i;
+
+                if (coin.Algorithm == CoinAlgorithm.Scrypt)
+                {
+                    if (device.Kind == DeviceKind.GPU)
+                        deviceConfiguration.CoinSymbol = coin.Symbol;
+                }
+                else
+                {
+                    deviceConfiguration.CoinSymbol = coin.Symbol;
+                }
+
+                object cellValue = gridRow.Cells[enabledColumn.Index].Value;
+                deviceConfiguration.Enabled = cellValue == null ? true : (bool)cellValue;
+
+                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+            }
+        }
+
+        private void advancedMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            quickSwitchItem.Enabled = engineConfiguration.CoinConfigurations.Count > 1;
+        }
     }
 }
