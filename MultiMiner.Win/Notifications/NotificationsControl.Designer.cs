@@ -38,13 +38,12 @@
             // 
             // panel1
             // 
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(394, 28);
+            this.panel1.Size = new System.Drawing.Size(392, 28);
             this.panel1.TabIndex = 0;
             // 
             // pictureBox1
@@ -55,7 +54,6 @@
             this.pictureBox1.Size = new System.Drawing.Size(16, 16);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
-            
             // 
             // label1
             // 
@@ -69,20 +67,22 @@
             // containerPanel
             // 
             this.containerPanel.AutoScroll = true;
+            this.containerPanel.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.containerPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.containerPanel.Location = new System.Drawing.Point(0, 28);
             this.containerPanel.Name = "containerPanel";
-            this.containerPanel.Size = new System.Drawing.Size(394, 202);
+            this.containerPanel.Size = new System.Drawing.Size(392, 200);
             this.containerPanel.TabIndex = 1;
             // 
             // NotificationsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.containerPanel);
             this.Controls.Add(this.panel1);
             this.Name = "NotificationsControl";
-            this.Size = new System.Drawing.Size(394, 230);
+            this.Size = new System.Drawing.Size(392, 228);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
