@@ -1595,7 +1595,7 @@ namespace MultiMiner.Win
         private void PopulateQuickSwitchMenu()
         {
             quickSwitchItem.DropDownItems.Clear();
-            foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations)
+            foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
             {
                 ToolStripMenuItem coinSwitchItem = new ToolStripMenuItem();
 
@@ -1667,7 +1667,7 @@ namespace MultiMiner.Win
 
         private void advancedMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            quickSwitchItem.Enabled = engineConfiguration.CoinConfigurations.Count > 1;
+            quickSwitchItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 1;
         }
     }
 }
