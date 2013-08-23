@@ -73,7 +73,7 @@ namespace MultiMiner.Xgminer
 
             string processOutput = process.StandardOutput.ReadToEnd();
 
-            const string pattern = @"^.+ (.+\..+)$";
+            string pattern = String.Format(@"^.+ (.+\..+){0}", Environment.NewLine);
             Match match = Regex.Match(processOutput, pattern);
             if (match.Success)
                 version = match.Groups[1].Value;
