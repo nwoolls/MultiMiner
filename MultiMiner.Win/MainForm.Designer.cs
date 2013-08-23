@@ -86,6 +86,7 @@
             this.coinChooseLinkLabel = new System.Windows.Forms.LinkLabel();
             this.coinChoosePrefixLabel = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.notificationsControl1 = new MultiMiner.Win.Notifications.NotificationsControl();
             this.deviceGridView = new System.Windows.Forms.DataGridView();
             this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -335,7 +336,7 @@
             // 
             this.detectDevicesButton.Image = global::MultiMiner.Win.Properties.Resources.computer_find;
             this.detectDevicesButton.Name = "detectDevicesButton";
-            this.detectDevicesButton.Size = new System.Drawing.Size(152, 22);
+            this.detectDevicesButton.Size = new System.Drawing.Size(151, 22);
             this.detectDevicesButton.Text = "Detect Devices";
             this.detectDevicesButton.ToolTipText = "Scan for mining capable devices";
             this.detectDevicesButton.Click += new System.EventHandler(this.detectDevicesButton_Click);
@@ -346,7 +347,7 @@
             this.dummyToolStripMenuItem});
             this.quickSwitchItem.Image = global::MultiMiner.Win.Properties.Resources.list_arrow_right;
             this.quickSwitchItem.Name = "quickSwitchItem";
-            this.quickSwitchItem.Size = new System.Drawing.Size(152, 22);
+            this.quickSwitchItem.Size = new System.Drawing.Size(151, 22);
             this.quickSwitchItem.Text = "Quick Switch";
             this.quickSwitchItem.ToolTipText = "Switch all devices to a coin";
             this.quickSwitchItem.DropDownOpening += new System.EventHandler(this.quickSwitchItem_DropDownOpening);
@@ -354,19 +355,19 @@
             // dummyToolStripMenuItem
             // 
             this.dummyToolStripMenuItem.Name = "dummyToolStripMenuItem";
-            this.dummyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.dummyToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.dummyToolStripMenuItem.Text = "Dummy";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(148, 6);
             // 
             // apiMonitorButton
             // 
             this.apiMonitorButton.Image = global::MultiMiner.Win.Properties.Resources.network_application;
             this.apiMonitorButton.Name = "apiMonitorButton";
-            this.apiMonitorButton.Size = new System.Drawing.Size(152, 22);
+            this.apiMonitorButton.Size = new System.Drawing.Size(151, 22);
             this.apiMonitorButton.Text = "API Monitor";
             this.apiMonitorButton.ToolTipText = "Display a log of RPC API calls";
             this.apiMonitorButton.Click += new System.EventHandler(this.apiMonitorButton_Click);
@@ -375,7 +376,7 @@
             // 
             this.processLogButton.Image = global::MultiMiner.Win.Properties.Resources.window_text;
             this.processLogButton.Name = "processLogButton";
-            this.processLogButton.Size = new System.Drawing.Size(152, 22);
+            this.processLogButton.Size = new System.Drawing.Size(151, 22);
             this.processLogButton.Text = "Process Log";
             this.processLogButton.ToolTipText = "Display a log of processes launched";
             this.processLogButton.Click += new System.EventHandler(this.processLogButton_Click);
@@ -384,7 +385,7 @@
             // 
             this.historyButton.Image = global::MultiMiner.Win.Properties.Resources.history;
             this.historyButton.Name = "historyButton";
-            this.historyButton.Size = new System.Drawing.Size(152, 22);
+            this.historyButton.Size = new System.Drawing.Size(151, 22);
             this.historyButton.Text = "History";
             this.historyButton.ToolTipText = "Display a history of coins mined";
             this.historyButton.Click += new System.EventHandler(this.historyButton_Click);
@@ -433,7 +434,7 @@
             // backendLabel
             // 
             this.backendLabel.AutoSize = false;
-            this.backendLabel.Name = "backendLabel";
+            
             this.backendLabel.Size = new System.Drawing.Size(150, 17);
             this.backendLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -532,6 +533,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.notificationsControl1);
             this.splitContainer1.Panel1.Controls.Add(this.deviceGridView);
             // 
             // splitContainer1.Panel2
@@ -541,6 +543,16 @@
             this.splitContainer1.Size = new System.Drawing.Size(1144, 404);
             this.splitContainer1.SplitterDistance = 270;
             this.splitContainer1.TabIndex = 10;
+            // 
+            // notificationsControl1
+            // 
+            this.notificationsControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.notificationsControl1.Location = new System.Drawing.Point(848, 120);
+            this.notificationsControl1.Name = "notificationsControl1";
+            this.notificationsControl1.Size = new System.Drawing.Size(293, 147);
+            this.notificationsControl1.TabIndex = 3;
+            this.notificationsControl1.Visible = false;
+            this.notificationsControl1.NotificationsChanged += new MultiMiner.Win.Notifications.NotificationsControl.NotificationsChangedHandler(this.notificationsControl1_NotificationsChanged);
             // 
             // deviceGridView
             // 
@@ -1015,7 +1027,7 @@
             // closeApiButton
             // 
             this.closeApiButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.closeApiButton.Location = new System.Drawing.Point(1116, 3);
+            this.closeApiButton.Location = new System.Drawing.Point(1116, 1);
             this.closeApiButton.Name = "closeApiButton";
             this.closeApiButton.Size = new System.Drawing.Size(25, 23);
             this.closeApiButton.TabIndex = 0;
@@ -1230,6 +1242,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn utilityColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn intensityColumn;
         private System.Windows.Forms.ToolStripMenuItem dummyToolStripMenuItem;
+        private MultiMiner.Win.Notifications.NotificationsControl notificationsControl1;
     }
 }
 

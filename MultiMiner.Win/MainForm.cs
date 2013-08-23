@@ -1669,5 +1669,10 @@ namespace MultiMiner.Win
         {
             quickSwitchItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 1;
         }
+
+        private void notificationsControl1_NotificationsChanged(object sender)
+        {
+            notificationsControl1.Visible = notificationsControl1.NotificationCount() > 0;
+        }
     }
 }
