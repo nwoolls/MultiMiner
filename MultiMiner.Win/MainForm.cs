@@ -1619,10 +1619,14 @@ namespace MultiMiner.Win
 
             SetAllDevicesToCoin(coin);
 
-            engineConfiguration.StrategyConfiguration.MineProfitableCoins = false;
+            engineConfiguration.StrategyConfiguration.MineProfitableCoins = false; 
+            coinColumn.ReadOnly = false;
+            coinColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.DropDownButton;
 
             engineConfiguration.SaveDeviceConfigurations();
             engineConfiguration.SaveStrategyConfiguration();
+
+            LoadGridValuesFromConfiguration();
 
             if (wasMining)
                 StartMining();
