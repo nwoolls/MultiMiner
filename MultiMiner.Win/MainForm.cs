@@ -1640,6 +1640,7 @@ namespace MultiMiner.Win
             {
                 DataGridViewRow gridRow = deviceGridView.Rows[i];
                 Device device = devices[i];
+                CryptoCoin currentCoin = knownCoins.SingleOrDefault(c => c.Name.Equals(gridRow.Cells[coinColumn.Index].Value));
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
@@ -1649,6 +1650,8 @@ namespace MultiMiner.Win
                 {
                     if (device.Kind == DeviceKind.GPU)
                         deviceConfiguration.CoinSymbol = coin.Symbol;
+                    else
+                        deviceConfiguration.CoinSymbol = currentCoin == null ? String.Empty : currentCoin.Symbol;
                 }
                 else
                 {
