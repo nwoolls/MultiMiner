@@ -84,12 +84,13 @@ zip.compress("Output/MultiMiner-Debug-" + appVersion + ".zip", "PF/", "*.*", tru
 folder.remove("PF", true);
 
 //create Mac .app package (requires Mono, X11 to run)
-folder.remove("Output/MultiMiner-" + appVersion + ".app", true);
+folder.remove("Output/MultiMiner.app", true);
+folder.remove("Output/MultiMiner.Win.app", true);
 var macPackPath = "C:/Program Files/Mono-2.10.9/lib/mono/4.0/macpack.exe";
 shell.exec(macPackPath, 
 
 "-o Output \
--n MultiMiner-" + appVersion + " \
+-n MultiMiner.Win \
 -m winforms \
 -r \
 ../MultiMiner.Win/bin/Release/Interop.IWshRuntimeLibrary.dll,\
@@ -105,8 +106,10 @@ Miners \
 -i ../MultiMiner.Win/window_sel.icns \
 ../MultiMiner.Win/bin/Release/MultiMiner.Win.exe");
 
+folder.move("Output/MultiMiner.Win.app", "Output/MultiMiner.app");
+
 //zip the .app package up
-zip.compress("Output/MultiMiner-" + appVersion + ".app.zip", "Output/", "MultiMiner-" + appVersion + ".app/", true);
+zip.compress("Output/MultiMiner-" + appVersion + ".app.zip", "Output/", "MultiMiner.app/", true);
 
 //remove the .app package
-folder.remove("Output/MultiMiner-" + appVersion + ".app", true);
+folder.remove("Output/MultiMiner.app", true);
