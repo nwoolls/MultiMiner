@@ -6,6 +6,7 @@ var appVersion = versionInfoIni.getValue("VersionInfo", "AppVersion", "1.0");
 msbuild.updateAssemblyVersion("../MultiMiner.Coinchoose.Api/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Engine/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Win/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.Update/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Xgminer/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Xgminer.Api/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.MobileMiner.Api/Properties/AssemblyInfo.cs", appVersion);
@@ -14,6 +15,7 @@ msbuild.updateAssemblyVersion("../MultiMiner.MobileMiner.Api/Properties/Assembly
 msbuild.rebuild("../MultiMiner.Coinchoose.Api/MultiMiner.Coinchoose.Api.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Engine/MultiMiner.Engine.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Win/MultiMiner.Win.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.Update/MultiMiner.Update.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Xgminer/MultiMiner.Xgminer.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Xgminer.Api/MultiMiner.Xgminer.Api.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.MobileMiner.Api/MultiMiner.MobileMiner.Api.csproj", { configuration: "Release" });
@@ -25,10 +27,12 @@ export("MM_AppVersion", appVersion);
 inno.build("Installer.iss", { });
 
 //create a regular Zip release
+//only this contains the Update.exe as this is the only update package
 folder.remove("PF", true);
 folder.create("PF/Miners/bfgminer");
 folder.create("PF/Miners/cgminer");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Win.exe", "PF/");
+file.copy("../MultiMiner.Update/bin/Release/MultiMiner.Update.exe", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Interop.IWshRuntimeLibrary.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Interop.Shell32.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Coinchoose.Api.dll", "PF/");
