@@ -298,7 +298,7 @@ namespace MultiMiner.Win
         {
             bool showWarning = true;
 
-            if (OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix)
+            if (OSVersionPlatform.GetConcretePlatform() != PlatformID.Unix)
             {
                 MinerBackend minerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
                 string minerName = MinerPath.GetMinerName(minerBackend);
