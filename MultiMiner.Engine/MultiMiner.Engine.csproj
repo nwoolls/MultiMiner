@@ -40,7 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\CoinConfiguration.cs" />
-    <Compile Include="Configuration\ConfigurationReaderWriter.cs" />
     <Compile Include="Configuration\StrategyConfiguration.cs" />
     <Compile Include="CryptoCoin.cs" />
     <Compile Include="Configuration\DeviceConfiguration.cs" />
@@ -52,7 +51,6 @@
     <Compile Include="MinerProcess.cs" />
     <Compile Include="MiningEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SerializableDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiMiner.Coinchoose.Api\MultiMiner.Coinchoose.Api.csproj">

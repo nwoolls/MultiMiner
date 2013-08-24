@@ -39,8 +39,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurationReaderWriter.cs" />
     <Compile Include="OSVersionPlatform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SerializableDictionary.cs" />
     <Compile Include="Unzipper.cs" />
   </ItemGroup>
   <ItemGroup>

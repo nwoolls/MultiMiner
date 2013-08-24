@@ -2,7 +2,7 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace MultiMiner.Engine.Configuration
+namespace MultiMiner.Utility
 {
     public static class ConfigurationReaderWriter
     {
