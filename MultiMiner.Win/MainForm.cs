@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Web.Script.Serialization;
+using MultiMiner.Utility;
 
 namespace MultiMiner.Win
 {

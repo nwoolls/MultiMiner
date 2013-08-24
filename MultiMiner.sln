@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Api.Example", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Update", "MultiMiner.Update\MultiMiner.Update.csproj", "{C647E4FB-B5CF-43AC-9884-6ABF9F02E045}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Utility", "MultiMiner.Utility\MultiMiner.Utility.csproj", "{99B0F266-EFF7-4416-8C36-8356396A11CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

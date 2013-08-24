@@ -182,6 +182,10 @@
       <Project>{70622816-5853-4470-9432-9acda2e96089}</Project>
       <Name>MultiMiner.MobileMiner.Api</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
+      <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
+      <Name>MultiMiner.Utility</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj">
       <Project>{5b43ad9d-8b67-4aa8-b76d-aa83caf9d29f}</Project>
       <Name>MultiMiner.Xgminer.Api</Name>

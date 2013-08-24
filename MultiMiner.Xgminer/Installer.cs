@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiMiner.Utility;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -25,7 +26,7 @@ namespace MultiMiner.Xgminer
                 new WebClient().DownloadFile(new Uri(minerUrl), minerDownloadFile);
                 try
                 {
-                    UnzipFileToFolder(minerDownloadFile, destinationFolder);
+                    Unzipper.UnzipFileToFolder(minerDownloadFile, destinationFolder);
                 }
                 finally
                 {
@@ -182,57 +183,6 @@ namespace MultiMiner.Xgminer
             }
 
             return "";
-        }
-
-        private static void UnzipFileToFolder(string zipFilePath, string destionationFolder)
-        {
-            Directory.CreateDirectory(destionationFolder);
-
-            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
-                UnzipFileToFolderUnix(zipFilePath, destionationFolder);
-            else
-                UnzipFileToFolderWindows(zipFilePath, destionationFolder);
-        }
-
-        private static void UnzipFileToFolderUnix(string zipFilePath, string destionationFolder)
-        {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.CreateNoWindow = true;
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.FileName = "tar";
-            startInfo.Arguments = String.Format("-xzvf \"{0}\" -C \"{1}\" --strip-components=1", zipFilePath, destionationFolder);
-            
-            Process process = Process.Start(startInfo);
-            process.WaitForExit();
-        }
-
-        private static void UnzipFileToFolderWindows(string zipFilePath, string destionationFolder)
-        {
-            const bool showProgress = false;
-            const bool yesToAll = true;
-
-            Shell32.Folder sourceFolder = GetShell32NameSpace(zipFilePath);
-            Directory.CreateDirectory(destionationFolder);
-            Shell32.Folder destinationFolder = GetShell32NameSpace(destionationFolder);
-            Shell32.FolderItems sourceFolderItems = sourceFolder.Items();
-            Shell32.FolderItem rootItem = sourceFolderItems.Item(0);
-
-            int options = 0;
-            if (!showProgress)
-                options += 4;
-            if (yesToAll)
-                options += 16;
-
-            destinationFolder.CopyHere(((Shell32.Folder)rootItem.GetFolder).Items(), options);
-        }
-
-        //used instead of shellClass.NameSpace() for compatibility with various Windows OS's
-        //http://techitongue.blogspot.com/2012/06/shell32-code-compiled-on-windows-7.html
-        public static Shell32.Folder GetShell32NameSpace(Object folder)
-        {
-            Type shellAppType = Type.GetTypeFromProgID("Shell.Application");
-            Object shell = Activator.CreateInstance(shellAppType);
-            return (Shell32.Folder)shellAppType.InvokeMember("NameSpace", System.Reflection.BindingFlags.InvokeMethod, null, shell, new object[] { folder });
         }
     }
 }

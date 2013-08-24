@@ -1,4 +1,5 @@
-﻿using MultiMiner.Xgminer.Parsers;
+﻿using MultiMiner.Utility;
+using MultiMiner.Xgminer.Parsers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

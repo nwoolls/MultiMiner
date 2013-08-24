@@ -1,4 +1,5 @@
-﻿using MultiMiner.Xgminer;
+﻿using MultiMiner.Utility;
+using MultiMiner.Xgminer;
 using System;
 using System.Net;
 using System.Net.Security;

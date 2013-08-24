@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Linq;
+using MultiMiner.Utility;
 
 namespace MultiMiner.Win
 {
