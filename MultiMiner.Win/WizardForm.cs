@@ -173,11 +173,11 @@ To install cgminer and/or bfgminer on Linux, please consult the websites for eac
             string minerPath = Path.Combine("Miners", minerName);
             string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
 
-            downloadingMinerLabel.Text = String.Format("Please wait while {0} is downloaded from {2} and installed into the folder {1}", minerName, destinationFolder, Installer.GetMinerDownloadRoot(minerBackend));
+            downloadingMinerLabel.Text = String.Format("Please wait while {0} is downloaded from {2} and installed into the folder {1}", minerName, destinationFolder, Xgminer.Installer.GetMinerDownloadRoot(minerBackend));
             Application.DoEvents();
 
             Cursor = Cursors.WaitCursor;
-            Installer.InstallMiner(minerBackend, destinationFolder);
+            Xgminer.Installer.InstallMiner(minerBackend, destinationFolder);
             Cursor = Cursors.Default;
 
             wizardTabControl.SelectedTab = chooseCoinPage;

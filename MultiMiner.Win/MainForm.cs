@@ -198,7 +198,7 @@ namespace MultiMiner.Win
         {
             string minerName = MinerPath.GetMinerName(minerBackend);
 
-            ProgressForm progressForm = new ProgressForm("Downloading and installing " + minerName + " from " + Installer.GetMinerDownloadRoot(minerBackend));
+            ProgressForm progressForm = new ProgressForm("Downloading and installing " + minerName + " from " + Xgminer.Installer.GetMinerDownloadRoot(minerBackend));
             progressForm.Show();
 
             //for Mono - show the UI
@@ -1707,15 +1707,15 @@ namespace MultiMiner.Win
                 string availableMinerVersion = String.Empty;
                 try
                 {
-                    availableMinerVersion = Installer.GetAvailableMinerVerison(minerBackend);
+                    availableMinerVersion = Xgminer.Installer.GetAvailableMinerVerison(minerBackend);
                 }
                 catch (WebException ex)
                 {
                     //downloads website is down
                     return;
                 }
-                
-                string installedMinerVersion = Installer.GetInstalledMinerVerison(minerBackend, MinerPath.GetPathToInstalledMiner(minerBackend));
+
+                string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVerison(minerBackend, MinerPath.GetPathToInstalledMiner(minerBackend));
                 if (!availableMinerVersion.Equals(installedMinerVersion))
                 {
                     int notificationId = minerBackend == MinerBackend.Bfgminer ? BfgminerNotificationId : CgminerNotificationId;
