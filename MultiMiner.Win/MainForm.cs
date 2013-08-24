@@ -1687,16 +1687,55 @@ namespace MultiMiner.Win
         
         private void CheckForUpdates()
         {
-            MinerBackend minerBackend = MinerBackend.Cgminer;
-            CheckForMinerUpdates(minerBackend);
+            PlatformID concretePlatform = OSVersionPlatform.GetConcretePlatform();
 
-            minerBackend = MinerBackend.Bfgminer;
-            CheckForMinerUpdates(minerBackend);
+            //we cannot auto update the .app file (yet)
+            if (concretePlatform != PlatformID.MacOSX)
+                CheckForMultiMinerUpdates();
+
+            //we cannot auto install miners on Unix (yet)
+            if (concretePlatform != PlatformID.Unix)
+            {
+                MinerBackend minerBackend = MinerBackend.Cgminer;
+                CheckForMinerUpdates(minerBackend);
+
+                minerBackend = MinerBackend.Bfgminer;
+                CheckForMinerUpdates(minerBackend);
+            }
         }
 
         private const int BfgminerNotificationId = 100;
         private const int CgminerNotificationId = 101;
         private const int MultiMinerNotificationId = 102;
+
+        private void CheckForMultiMinerUpdates()
+        {
+            string availableMinerVersion = String.Empty;
+            try
+            {
+                availableMinerVersion = Engine.Installer.GetAvailableMinerVersion();
+            }
+            catch (WebException ex)
+            {
+                //downloads website is down
+                return;
+            }
+
+            string installedMinerVersion = Engine.Installer.GetInstalledMinerVersion();
+            if (!availableMinerVersion.Equals(installedMinerVersion))
+            {
+                notificationsControl1.AddNotification(MultiMinerNotificationId,
+                    String.Format("MultiMiner version {0} is available ({1} installed)",
+                        availableMinerVersion, installedMinerVersion), () =>
+                        {
+                            bool wasMining = miningEngine.Mining;
+                            StopMining();
+                            InstallMultiMiner();
+                            if (wasMining)
+                                StartMining();
+                        });
+            }
+        }
 
         private void CheckForMinerUpdates(MinerBackend minerBackend)
         {
@@ -1731,6 +1770,25 @@ namespace MultiMiner.Win
                                 StartMining();
                         });
                 }
+            }
+        }
+
+        private static void InstallMultiMiner()
+        {
+            ProgressForm progressForm = new ProgressForm("Downloading and installing MultiMiner from " + Engine.Installer.GetMinerDownloadRoot());
+            progressForm.Show();
+
+            //for Mono - show the UI
+            Application.DoEvents();
+            Thread.Sleep(25);
+            Application.DoEvents();
+            try
+            {
+                MultiMiner.Engine.Installer.InstallMiner(Path.GetDirectoryName(Application.ExecutablePath));
+            }
+            finally
+            {
+                progressForm.Close();
             }
         }
     }
