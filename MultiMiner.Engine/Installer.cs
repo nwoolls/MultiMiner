@@ -46,12 +46,15 @@ namespace MultiMiner.Engine
                 new WebClient().DownloadFile(new Uri(minerUrl), minerDownloadFile);
                 try
                 {
-                    //if the executing assembling is in "destionationFolder" then
-                    string executingPath = Path.GetDirectoryName(typeof(Program).Assembly.FullName);
+                    //if the executing assembly is in "destinationFolder" then
+                    string executingPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
                     if (destinationFolder.ToLower().Contains(executingPath.ToLower()))
                     {
                         //extract MultiMiner.Update.exe from the zip file, run it, and exit
                         string temporaryFolder = Path.Combine(Path.GetTempPath(), "miner");
+                        if (Directory.Exists(temporaryFolder))
+                            Directory.Delete(temporaryFolder, true);
+
                         Unzipper.UnzipFileToFolder(minerDownloadFile, temporaryFolder);
                         string updaterFilePath = Path.Combine(temporaryFolder, "MultiMiner.Update.exe");
                         string updaterArguments = String.Format("\"{0}\" \"{1}\"", minerDownloadFile, Assembly.GetEntryAssembly().Location);
