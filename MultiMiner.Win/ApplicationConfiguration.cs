@@ -1,6 +1,4 @@
-﻿using MultiMiner.Engine.Configuration;
-using MultiMiner.Utility;
-using MultiMiner.Xgminer;
+﻿using MultiMiner.Utility;
 using System;
 using System.IO;
 

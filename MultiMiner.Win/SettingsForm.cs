@@ -3,7 +3,6 @@ using MultiMiner.Utility;
 using MultiMiner.Xgminer;
 using System;
 using System.Diagnostics;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace MultiMiner.Win

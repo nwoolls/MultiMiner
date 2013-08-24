@@ -1,13 +1,9 @@
 ﻿using MultiMiner.Utility;
-using MultiMiner.Xgminer;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace MultiMiner.Engine
