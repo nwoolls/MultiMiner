@@ -42,7 +42,7 @@ namespace MultiMiner.Utility
 
             //if the zip file contains a single directory, extract that directory's contents
             if ((sourceFolderItems.Count == 1) &&
-                (sourceFolderItems.Item(0) is Shell32.Folder))
+                (sourceFolderItems.Item(0).GetFolder is Shell32.Folder))
             {
                 Shell32.FolderItem rootItem = sourceFolderItems.Item(0);
                 itemsToExtract = ((Shell32.Folder)rootItem.GetFolder).Items();
