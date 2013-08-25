@@ -16,16 +16,47 @@ namespace MultiMiner.Utility
                 UnzipFileToFolderWindows(zipFilePath, destionationFolder);
         }
 
-        private static void UnzipFileToFolderUnix(string zipFilePath, string destionationFolder)
+        private static void UnzipFileToFolderUnix(string zipFilePath, string destinationFolder)
         {
+
+            string temporaryPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(temporaryPath);
+            
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.CreateNoWindow = true;
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.FileName = "tar";
-            startInfo.Arguments = String.Format("-xzvf \"{0}\" -C \"{1}\" --strip-components=1", zipFilePath, destionationFolder);
-
+            startInfo.Arguments = String.Format("-xzvf \"{0}\" -C \"{1}\"", zipFilePath, temporaryPath);
+            
             Process process = Process.Start(startInfo);
             process.WaitForExit();
+
+            DirectoryInfo directoryInfo = new DirectoryInfo(temporaryPath);
+            FileInfo[] files = directoryInfo.GetFiles();
+            DirectoryInfo[] directories = directoryInfo.GetDirectories();
+
+            //if the zip file contains a single directory, extract that directory's contents
+            if ((files.Length == 0) && (directories.Length == 1))
+            {
+                CopyDirectoryContents(directories[0].FullName, destinationFolder);
+            }
+            else
+            {
+                CopyDirectoryContents(temporaryPath, destinationFolder);
+            }
+            
+            Directory.Delete(temporaryPath, true);
+        }
+
+        private static void CopyDirectoryContents(string sourceDir, string targetDir)
+        {
+            Directory.CreateDirectory(targetDir);
+
+            foreach (var file in Directory.GetFiles(sourceDir))
+                File.Copy(file, Path.Combine(targetDir, Path.GetFileName(file)), true);
+
+            foreach (var directory in Directory.GetDirectories(sourceDir))
+                CopyDirectoryContents(directory, Path.Combine(targetDir, Path.GetFileName(directory)));
         }
 
         private static void UnzipFileToFolderWindows(string zipFilePath, string destinationFolder)
