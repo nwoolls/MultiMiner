@@ -1216,7 +1216,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Reason;
         private System.Windows.Forms.ToolStripMenuItem quickSwitchItem;
         private System.Windows.Forms.ToolStripMenuItem dummyToolStripMenuItem;
-        private MultiMiner.Win.Notifications.NotificationsControl notificationsControl1;
         private System.Windows.Forms.Timer updateCheckTimer;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;

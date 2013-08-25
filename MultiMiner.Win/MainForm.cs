@@ -14,6 +14,7 @@ using System.Drawing;
 using System.Threading;
 using System.Web.Script.Serialization;
 using MultiMiner.Utility;
+using MultiMiner.Win.Notifications;
 
 namespace MultiMiner.Win
 {
@@ -32,6 +33,7 @@ namespace MultiMiner.Win
         private readonly List<LogLaunchArgs> logLaunchEntries = new List<LogLaunchArgs>();
         private readonly List<int> processedCommandIds = new List<int>();
         private readonly List<LogProcessCloseArgs> logCloseEntries = new List<LogProcessCloseArgs>();
+        private NotificationsControl notificationsControl;
 
         public MainForm()
         {
@@ -106,9 +108,9 @@ namespace MultiMiner.Win
 
             CheckAndDownloadMiners();
 
-            updateCheckTimer.Interval = 3600000; //1h
-            updateCheckTimer.Enabled = true;
-            CheckForUpdates();
+            SetupNotificationsControl();
+
+            SetupAutoUpdates();
 
             RefreshDevices();
 
@@ -116,10 +118,31 @@ namespace MultiMiner.Win
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
 
             formLoaded = true;
+        }
+
+        private void SetupAutoUpdates()
+        {
+            updateCheckTimer.Interval = 3600000; //1h
+            updateCheckTimer.Enabled = true;
+            CheckForUpdates();
+        }
+
+        private void SetupNotificationsControl()
+        {
+            notificationsControl = new NotificationsControl();
+            notificationsControl.Visible = false;
+            notificationsControl.Height = 150;
+            notificationsControl.Width = 300;
+            notificationsControl.NotificationsChanged += notificationsControl1_NotificationsChanged;
+            notificationsControl.Parent = splitContainer1.Panel1;
+            const int offset = 2;
+            notificationsControl.Left = notificationsControl.Parent.Width - notificationsControl.Width - offset;
+            notificationsControl.Top = notificationsControl.Parent.Height - notificationsControl.Height - offset;
+            notificationsControl.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
 
             if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
                 //adjust for different metrics/layout under OS X/Unix
-                notificationsControl1.Width += 50;
+                notificationsControl.Width += 50;
         }
 
         private void ProcessLaunchFailed(object sender, LaunchFailedArgs ea)
@@ -1681,7 +1704,9 @@ namespace MultiMiner.Win
 
         private void notificationsControl1_NotificationsChanged(object sender)
         {
-            notificationsControl1.Visible = notificationsControl1.NotificationCount() > 0;
+            notificationsControl.Visible = notificationsControl.NotificationCount() > 0;
+            if (notificationsControl.Visible)
+                notificationsControl.BringToFront();
         }
 
         private void updateCheckTimer_Tick(object sender, EventArgs e)
@@ -1727,7 +1752,7 @@ namespace MultiMiner.Win
             string installedMinerVersion = Engine.Installer.GetInstalledMinerVersion();
             if (!availableMinerVersion.Equals(installedMinerVersion))
             {
-                notificationsControl1.AddNotification(MultiMinerNotificationId,
+                notificationsControl.AddNotification(MultiMinerNotificationId,
                     String.Format("MultiMiner version {0} is available ({1} installed)",
                         availableMinerVersion, installedMinerVersion), () =>
                         {
@@ -1762,7 +1787,7 @@ namespace MultiMiner.Win
                 {
                     int notificationId = minerBackend == MinerBackend.Bfgminer ? BfgminerNotificationId : CgminerNotificationId;
 
-                    notificationsControl1.AddNotification(notificationId,
+                    notificationsControl.AddNotification(notificationId,
                         String.Format("{0} version {1} is available ({2} installed)", 
                             minerName, availableMinerVersion, installedMinerVersion), () =>
                         {
