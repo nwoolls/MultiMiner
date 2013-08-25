@@ -35,7 +35,7 @@ namespace MultiMiner.Xgminer
             }
         }
 
-        public static string GetAvailableMinerVerison(MinerBackend minerBackend)
+        public static string GetAvailableMinerVersion(MinerBackend minerBackend)
         {
             string version = String.Empty;
 
@@ -48,7 +48,7 @@ namespace MultiMiner.Xgminer
             return version;
         }
 
-        public static string GetInstalledMinerVerison(MinerBackend minerBackend, string executablePath)
+        public static string GetInstalledMinerVersion(MinerBackend minerBackend, string executablePath)
         {
             string version = String.Empty;
 

@@ -1746,7 +1746,7 @@ namespace MultiMiner.Win
                 string availableMinerVersion = String.Empty;
                 try
                 {
-                    availableMinerVersion = Xgminer.Installer.GetAvailableMinerVerison(minerBackend);
+                    availableMinerVersion = Xgminer.Installer.GetAvailableMinerVersion(minerBackend);
                 }
                 catch (WebException ex)
                 {
@@ -1754,7 +1754,7 @@ namespace MultiMiner.Win
                     return;
                 }
 
-                string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVerison(minerBackend, MinerPath.GetPathToInstalledMiner(minerBackend));
+                string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVersion(minerBackend, MinerPath.GetPathToInstalledMiner(minerBackend));
                 if (!availableMinerVersion.Equals(installedMinerVersion))
                 {
                     int notificationId = minerBackend == MinerBackend.Bfgminer ? BfgminerNotificationId : CgminerNotificationId;
