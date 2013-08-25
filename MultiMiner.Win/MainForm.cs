@@ -116,6 +116,10 @@ namespace MultiMiner.Win
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
 
             formLoaded = true;
+
+            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+                //adjust for different metrics/layout under OS X/Unix
+                notificationsControl1.Width += 50;
         }
 
         private void ProcessLaunchFailed(object sender, LaunchFailedArgs ea)
@@ -1690,8 +1694,7 @@ namespace MultiMiner.Win
             PlatformID concretePlatform = OSVersionPlatform.GetConcretePlatform();
 
             //we cannot auto update the .app file (yet)
-            if (concretePlatform != PlatformID.MacOSX)
-                CheckForMultiMinerUpdates();
+            CheckForMultiMinerUpdates();
 
             //we cannot auto install miners on Unix (yet)
             if (concretePlatform != PlatformID.Unix)

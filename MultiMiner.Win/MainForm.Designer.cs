@@ -86,7 +86,6 @@
             this.coinChooseLinkLabel = new System.Windows.Forms.LinkLabel();
             this.coinChoosePrefixLabel = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.notificationsControl1 = new MultiMiner.Win.Notifications.NotificationsControl();
             this.deviceGridView = new System.Windows.Forms.DataGridView();
             this.enabledColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -534,7 +533,6 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.notificationsControl1);
             this.splitContainer1.Panel1.Controls.Add(this.deviceGridView);
             // 
             // splitContainer1.Panel2
@@ -544,17 +542,6 @@
             this.splitContainer1.Size = new System.Drawing.Size(1144, 404);
             this.splitContainer1.SplitterDistance = 270;
             this.splitContainer1.TabIndex = 10;
-            // 
-            // notificationsControl1
-            // 
-            this.notificationsControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.notificationsControl1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.notificationsControl1.Location = new System.Drawing.Point(848, 120);
-            this.notificationsControl1.Name = "notificationsControl1";
-            this.notificationsControl1.Size = new System.Drawing.Size(293, 147);
-            this.notificationsControl1.TabIndex = 3;
-            this.notificationsControl1.Visible = false;
-            this.notificationsControl1.NotificationsChanged += new MultiMiner.Win.Notifications.NotificationsControl.NotificationsChangedHandler(this.notificationsControl1_NotificationsChanged);
             // 
             // deviceGridView
             // 
@@ -1124,7 +1111,7 @@
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.panel1.ResumeLayout(false);
+            
             this.panel1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
