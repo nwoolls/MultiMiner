@@ -48,5 +48,13 @@ namespace MultiMiner.Utility
             }
             return false;
         }
+
+        public static string GetHomeDirectoryPath()
+        {
+            string result = (GetGenericPlatform() == PlatformID.Unix)
+                    ? Environment.GetEnvironmentVariable("HOME")
+                    : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
+            return result;
+        }
     }
 }
