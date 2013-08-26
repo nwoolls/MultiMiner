@@ -65,9 +65,7 @@ namespace MultiMiner.Win
             minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt] = scryptParamsEdit.Text;
 
             minerConfiguration.MinerBackend = SelectedMinerBackend();
-            minerConfiguration.DisableGpu = disableGpuCheckbox.Checked;
             minerConfiguration.Priority = (ProcessPriorityClass)priorityCombo.SelectedItem;
-            minerConfiguration.ErupterDriver = erupterCheckBox.Checked;
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -99,10 +97,7 @@ namespace MultiMiner.Win
             else
                 minerCombo.SelectedIndex = 1;
 
-            disableGpuCheckbox.Checked = minerConfiguration.DisableGpu;
-
             priorityCombo.SelectedItem = minerConfiguration.Priority;
-            erupterCheckBox.Checked = minerConfiguration.ErupterDriver;
         }
 
         private void remoteMonitoringCheck_CheckedChanged(object sender, EventArgs e)
@@ -127,7 +122,14 @@ namespace MultiMiner.Win
 
         private void minerCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            erupterCheckBox.Enabled = SelectedMinerBackend() == MinerBackend.Bfgminer;
+            //so advanced settings are reflected
+            minerConfiguration.MinerBackend = SelectedMinerBackend();
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            AdvancedSettingsForm advancedSettingsForm = new AdvancedSettingsForm(minerConfiguration);
+            advancedSettingsForm.ShowDialog();
         }
     }
 }
