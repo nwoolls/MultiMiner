@@ -472,7 +472,7 @@ namespace MultiMiner.Engine
                 .Select(c => c.CoinSymbol)
                 .Distinct();
 
-            int port = 4028;
+            int port = engineConfiguration.XgminerConfiguration.StartingApiPort;
 
             foreach (string coinSymbol in coinSymbols)
             {

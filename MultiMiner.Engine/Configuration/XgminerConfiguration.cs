@@ -10,6 +10,7 @@ namespace MultiMiner.Engine.Configuration
         {
             AlgorithmFlags = new SerializableDictionary<CoinAlgorithm, string>();
             Priority = ProcessPriorityClass.Normal;
+            StartingApiPort = 4028;
         }
 
         public SerializableDictionary<CoinAlgorithm, string> AlgorithmFlags { get; set; }
@@ -18,5 +19,6 @@ namespace MultiMiner.Engine.Configuration
         public bool DisableGpu { get; set; }
         public ProcessPriorityClass Priority { get; set; }
         public bool ErupterDriver { get; set; }
+        public int StartingApiPort { get; set; }
     }
 }
