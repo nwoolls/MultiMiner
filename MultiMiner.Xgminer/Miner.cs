@@ -122,7 +122,13 @@ namespace MultiMiner.Xgminer
             if (minerConfiguration.ApiListen)
             {
                 const string localIp = "127.0.0.1";
-                string allowedApiIps = minerConfiguration.AllowedApiIps.Replace(" ", "");
+                string allowedApiIps = minerConfiguration.AllowedApiIps;
+
+                if (String.IsNullOrEmpty(allowedApiIps))
+                    allowedApiIps = String.Empty;
+                else
+                    allowedApiIps = allowedApiIps.Replace(" ", "");
+
                 if (!allowedApiIps.Contains(localIp))
                     allowedApiIps = String.Format("{0},{1}", localIp, allowedApiIps);
                 arguments = string.Format("{0} --api-listen --api-port {1} --api-allow W:{2}", arguments,
