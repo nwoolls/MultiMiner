@@ -136,13 +136,14 @@ namespace MultiMiner.Win
             notificationsControl.NotificationsChanged += notificationsControl1_NotificationsChanged;
             notificationsControl.Parent = splitContainer1.Panel1;
             const int offset = 2;
-            notificationsControl.Left = notificationsControl.Parent.Width - notificationsControl.Width - offset;
-            notificationsControl.Top = notificationsControl.Parent.Height - notificationsControl.Height - offset;
-            notificationsControl.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
 
             if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
                 //adjust for different metrics/layout under OS X/Unix
                 notificationsControl.Width += 50;
+
+            notificationsControl.Left = notificationsControl.Parent.Width - notificationsControl.Width - offset;
+            notificationsControl.Top = notificationsControl.Parent.Height - notificationsControl.Height - offset;
+            notificationsControl.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
         }
 
         private void ProcessLaunchFailed(object sender, LaunchFailedArgs ea)
