@@ -692,7 +692,7 @@ namespace MultiMiner.Win
             if (miningEngine.Mining)
                 return;
 
-            if (!confFileHandled())
+            if (!ConfigFileHandled())
                 return;
 
             startButton.Enabled = false; //immediately disable, update after
@@ -714,14 +714,25 @@ namespace MultiMiner.Win
             UpdateMiningButtons();
         }
 
-        private bool confFileHandled()
+        private bool ConfigFileHandled()
         {
             const string bakExtension = ".mmbak";
 
             MinerBackend minerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
             string minerName = MinerPath.GetMinerName(minerBackend);
             string minerExecutablePath = MinerPath.GetPathToInstalledMiner(minerBackend);
-            string confFileFilePath = Path.ChangeExtension(minerExecutablePath, ".conf");
+            string confFileFilePath = String.Empty;
+
+            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+            {
+                string minerFolderName = "." + minerName;
+                string minerFileName = minerName + ".conf";
+                confFileFilePath = Path.Combine(Path.Combine(OSVersionPlatform.GetHomeDirectoryPath(), minerFolderName), minerFileName);
+            }
+            else
+            {
+                confFileFilePath = Path.ChangeExtension(minerExecutablePath, ".conf");
+            }
 
             if (File.Exists(confFileFilePath))
             {
