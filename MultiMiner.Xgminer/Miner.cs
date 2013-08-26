@@ -120,7 +120,14 @@ namespace MultiMiner.Xgminer
                 arguments = "--scrypt " + arguments;
 
             if (minerConfiguration.ApiListen)
-                arguments = string.Format("{0} --api-listen --api-port {1} --api-allow W:127.0.0.1", arguments, minerConfiguration.ApiPort);
+            {
+                const string localIp = "127.0.0.1";
+                string allowedApiIps = minerConfiguration.AllowedApiIps.Replace(" ", "");
+                if (!allowedApiIps.Contains(localIp))
+                    allowedApiIps = String.Format("{0},{1}", localIp, allowedApiIps);
+                arguments = string.Format("{0} --api-listen --api-port {1} --api-allow W:{2}", arguments,
+                    minerConfiguration.ApiPort, allowedApiIps);
+            }
 
             //required to run from inside an .app package on OS X
             //also required under Windows to avoid "initscr(): Unable to create SP"

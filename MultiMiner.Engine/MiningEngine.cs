@@ -525,6 +525,7 @@ namespace MultiMiner.Engine
             minerConfiguration.Algorithm = coinConfiguration.Coin.Algorithm;
             minerConfiguration.ApiPort = port;
             minerConfiguration.ApiListen = true;
+            minerConfiguration.AllowedApiIps = engineConfiguration.XgminerConfiguration.AllowedApiIps;
             minerConfiguration.CoinName = coinConfiguration.Coin.Name;
             minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
 

@@ -18,6 +18,7 @@ namespace MultiMiner.Xgminer
         public CoinAlgorithm Algorithm { get; set; }
         public int ApiPort { get; set; }
         public bool ApiListen { get; set; }
+        public string AllowedApiIps { get; set; }
         public List<int> DeviceIndexes { get; set; }
         public string Arguments { get; set; }
         public string CoinName { get; set; }

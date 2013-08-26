@@ -20,5 +20,6 @@ namespace MultiMiner.Engine.Configuration
         public ProcessPriorityClass Priority { get; set; }
         public bool ErupterDriver { get; set; }
         public int StartingApiPort { get; set; }
+        public string AllowedApiIps { get; set; }
     }
 }
