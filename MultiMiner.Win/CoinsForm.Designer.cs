@@ -180,26 +180,29 @@
             // 
             // poolDownButton
             // 
+            this.poolDownButton.BackColor = System.Drawing.SystemColors.Control;
             this.poolDownButton.Image = global::MultiMiner.Win.Properties.Resources.arrow_down;
             this.poolDownButton.Location = new System.Drawing.Point(342, 50);
             this.poolDownButton.Name = "poolDownButton";
             this.poolDownButton.Size = new System.Drawing.Size(25, 25);
             this.poolDownButton.TabIndex = 4;
-            this.poolDownButton.UseVisualStyleBackColor = true;
+            this.poolDownButton.UseVisualStyleBackColor = false;
             this.poolDownButton.Click += new System.EventHandler(this.poolDownButton_Click);
             // 
             // poolUpButton
             // 
+            this.poolUpButton.BackColor = System.Drawing.SystemColors.Control;
             this.poolUpButton.Image = global::MultiMiner.Win.Properties.Resources.arrow_up;
             this.poolUpButton.Location = new System.Drawing.Point(342, 19);
             this.poolUpButton.Name = "poolUpButton";
             this.poolUpButton.Size = new System.Drawing.Size(25, 25);
             this.poolUpButton.TabIndex = 3;
-            this.poolUpButton.UseVisualStyleBackColor = true;
+            this.poolUpButton.UseVisualStyleBackColor = false;
             this.poolUpButton.Click += new System.EventHandler(this.poolUpButton_Click);
             // 
             // addPoolButton
             // 
+            this.addPoolButton.BackColor = System.Drawing.SystemColors.Control;
             this.addPoolButton.Image = global::MultiMiner.Win.Properties.Resources.add;
             this.addPoolButton.Location = new System.Drawing.Point(265, 19);
             this.addPoolButton.Name = "addPoolButton";
@@ -207,11 +210,12 @@
             this.addPoolButton.TabIndex = 1;
             this.addPoolButton.Text = "Add";
             this.addPoolButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.addPoolButton.UseVisualStyleBackColor = true;
+            this.addPoolButton.UseVisualStyleBackColor = false;
             this.addPoolButton.Click += new System.EventHandler(this.addPoolButton_Click);
             // 
             // removePoolButton
             // 
+            this.removePoolButton.BackColor = System.Drawing.SystemColors.Control;
             this.removePoolButton.Image = global::MultiMiner.Win.Properties.Resources.remove;
             this.removePoolButton.Location = new System.Drawing.Point(265, 50);
             this.removePoolButton.Name = "removePoolButton";
@@ -219,7 +223,7 @@
             this.removePoolButton.TabIndex = 2;
             this.removePoolButton.Text = "Remove";
             this.removePoolButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.removePoolButton.UseVisualStyleBackColor = true;
+            this.removePoolButton.UseVisualStyleBackColor = false;
             this.removePoolButton.Click += new System.EventHandler(this.removePoolButton_Click);
             // 
             // poolListBox
