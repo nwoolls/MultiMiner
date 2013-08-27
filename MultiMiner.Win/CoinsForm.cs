@@ -33,7 +33,7 @@ namespace MultiMiner.Win
             {
                 ToolStripButton coinButton = new ToolStripButton(coin.Name);
                 coinButton.Tag = coin.Symbol;
-                addCoinButton.DropDownItems.Add(coinButton);
+                addCoinDropDown.DropDownItems.Add(coinButton);
                 coinButton.Click += HandleCoinButtonClick;
             }
         }
@@ -71,7 +71,12 @@ namespace MultiMiner.Win
         private void HandleCoinButtonClick(object sender, EventArgs e)
         {
             string clickedSymbol = (string)((ToolStripButton)sender).Tag;
-            CoinConfiguration configuration = configurations.SingleOrDefault(c => c.Coin.Symbol.Equals(clickedSymbol));
+            AddCoinConfiguration(clickedSymbol);          
+        }
+
+        private void AddCoinConfiguration(string coinSymbol)
+        {
+            CoinConfiguration configuration = configurations.SingleOrDefault(c => c.Coin.Symbol.Equals(coinSymbol));
             if (configuration != null)
             {
                 coinListBox.SelectedIndex = configurations.IndexOf(configuration);
@@ -80,7 +85,7 @@ namespace MultiMiner.Win
             {
                 configuration = new CoinConfiguration();
 
-                configuration.Coin = knownCoins.Single(c => c.Symbol.Equals(clickedSymbol));
+                configuration.Coin = knownCoins.Single(c => c.Symbol.Equals(coinSymbol));
                 configuration.Pools.Add(new MiningPool());
 
                 configurations.Add(configuration);
@@ -89,9 +94,8 @@ namespace MultiMiner.Win
                 coinListBox.SelectedIndex = configurations.IndexOf(configuration);
             }
 
-            hostEdit.Focus();            
+            hostEdit.Focus();
         }
-
         private void coinListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (coinListBox.SelectedIndex >= 0)
@@ -176,6 +180,17 @@ namespace MultiMiner.Win
             miningPoolBindingSource.Insert(newIndex, currentObject);
             miningPoolBindingSource.Position = newIndex;
             poolListBox.Focus();
+        }
+
+        private void addCoinButton_Click(object sender, EventArgs e)
+        {
+            CoinChooseForm coinChooseForm = new CoinChooseForm(knownCoins);
+            DialogResult dialogResult = coinChooseForm.ShowDialog();
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                string symbolToAdd = coinChooseForm.SelectedSymbol;
+                AddCoinConfiguration(symbolToAdd);
+            }
         }
     }
 }

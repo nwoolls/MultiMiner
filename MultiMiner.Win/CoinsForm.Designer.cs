@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CoinsForm));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.addCoinButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.addCoinDropDown = new System.Windows.Forms.ToolStripDropDownButton();
             this.removeCoinButton = new System.Windows.Forms.ToolStripButton();
             this.coinListBox = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -61,6 +61,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.adjustProfitCombo = new System.Windows.Forms.ComboBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addCoinButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -72,6 +74,7 @@
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addCoinButton,
+            this.addCoinDropDown,
             this.removeCoinButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
@@ -80,14 +83,15 @@
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // addCoinButton
+            // addCoinDropDown
             // 
-            this.addCoinButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.addCoinButton.Image = ((System.Drawing.Image)(resources.GetObject("addCoinButton.Image")));
-            this.addCoinButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addCoinButton.Name = "addCoinButton";
-            this.addCoinButton.Size = new System.Drawing.Size(70, 22);
-            this.addCoinButton.Text = "Add Coin";
+            this.addCoinDropDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.addCoinDropDown.Image = ((System.Drawing.Image)(resources.GetObject("addCoinDropDown.Image")));
+            this.addCoinDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addCoinDropDown.Name = "addCoinDropDown";
+            this.addCoinDropDown.Size = new System.Drawing.Size(70, 22);
+            this.addCoinDropDown.Text = "Add Coin";
+            this.addCoinDropDown.Visible = false;
             // 
             // removeCoinButton
             // 
@@ -371,6 +375,21 @@
             this.checkBox1.Text = "Coin configuration enabled";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // addCoinButton
+            // 
+            this.addCoinButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.addCoinButton.Image = ((System.Drawing.Image)(resources.GetObject("addCoinButton.Image")));
+            this.addCoinButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addCoinButton.Name = "addCoinButton";
+            this.addCoinButton.Size = new System.Drawing.Size(61, 22);
+            this.addCoinButton.Text = "Add Coin";
+            this.addCoinButton.Click += new System.EventHandler(this.addCoinButton_Click);
+            // 
             // CoinsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -411,7 +430,7 @@
         #endregion
 
         private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripDropDownButton addCoinButton;
+        private System.Windows.Forms.ToolStripDropDownButton addCoinDropDown;
         private System.Windows.Forms.ListBox coinListBox;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button saveButton;
@@ -441,5 +460,7 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button poolDownButton;
         private System.Windows.Forms.Button poolUpButton;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripButton addCoinButton;
     }
 }

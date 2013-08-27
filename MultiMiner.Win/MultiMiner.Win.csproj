@@ -61,6 +61,12 @@
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ApplicationConfiguration.cs" />
+    <Compile Include="CoinChooseForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CoinChooseForm.Designer.cs">
+      <DependentUpon>CoinChooseForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CoinsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,6 +132,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AdvancedSettingsForm.resx">
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CoinChooseForm.resx">
+      <DependentUpon>CoinChooseForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CoinsForm.resx">
       <DependentUpon>CoinsForm.cs</DependentUpon>
