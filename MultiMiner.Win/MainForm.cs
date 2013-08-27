@@ -99,6 +99,8 @@ namespace MultiMiner.Win
             saveButton.Enabled = false;
             cancelButton.Enabled = false;
 
+            PositionCoinStatsLabel();
+
             if (!HasMinersInstalled())
                 CancelMiningOnStartup();
 
@@ -118,6 +120,14 @@ namespace MultiMiner.Win
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
 
             formLoaded = true;
+        }
+
+        private void PositionCoinStatsLabel()
+        {
+            //manually position - IDE has screwed this up repeatedly
+            const int padding = 4;
+            coinStatsLabel.Location = new Point(footerPanel.Width - coinStatsLabel.Size.Width - padding, coinChoosePrefixLabel.Location.Y);
+            coinStatsLabel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
         }
 
         private void SetupAutoUpdates()
