@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -41,7 +42,10 @@ namespace MultiMiner.Win
         {
             string xgminerName = MinerPath.GetMinerName(minerBackend);
             string xgminerPath = MinerPath.GetPathToInstalledMiner(minerBackend);
-            string xgminerVersion = Xgminer.Installer.GetInstalledMinerVersion(minerBackend, xgminerPath);
+            string xgminerVersion = String.Empty;
+
+            if (File.Exists(xgminerPath))
+                xgminerVersion = Xgminer.Installer.GetInstalledMinerVersion(minerBackend, xgminerPath);
 
             if (string.IsNullOrEmpty(xgminerVersion))
                 targetLabel.Text = String.Format("{0} not installed", xgminerName);
