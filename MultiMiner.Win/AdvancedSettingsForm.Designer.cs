@@ -49,10 +49,11 @@
             // 
             // panel1
             // 
+            this.panel1.BackColor = System.Drawing.SystemColors.Control;
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 173);
+            this.panel1.Location = new System.Drawing.Point(0, 178);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(392, 47);
             this.panel1.TabIndex = 4;
@@ -78,7 +79,6 @@
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
-            
             // 
             // erupterCheckBox
             // 
@@ -117,7 +117,7 @@
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Location = new System.Drawing.Point(12, 62);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(368, 111);
+            this.groupBox1.Size = new System.Drawing.Size(368, 103);
             this.groupBox1.TabIndex = 24;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "API Settings";
@@ -170,7 +170,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(392, 220);
+            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.ClientSize = new System.Drawing.Size(392, 225);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.erupterCheckBox);
             this.Controls.Add(this.disableGpuCheckbox);

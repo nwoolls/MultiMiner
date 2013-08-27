@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CoinsForm));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.addCoinButton = new System.Windows.Forms.ToolStripButton();
             this.addCoinDropDown = new System.Windows.Forms.ToolStripDropDownButton();
             this.removeCoinButton = new System.Windows.Forms.ToolStripButton();
             this.coinListBox = new System.Windows.Forms.ListBox();
@@ -62,7 +63,6 @@
             this.adjustProfitCombo = new System.Windows.Forms.ComboBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.addCoinButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -82,6 +82,16 @@
             this.toolStrip1.Size = new System.Drawing.Size(558, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // addCoinButton
+            // 
+            this.addCoinButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.addCoinButton.Image = ((System.Drawing.Image)(resources.GetObject("addCoinButton.Image")));
+            this.addCoinButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addCoinButton.Name = "addCoinButton";
+            this.addCoinButton.Size = new System.Drawing.Size(61, 22);
+            this.addCoinButton.Text = "Add Coin";
+            this.addCoinButton.Click += new System.EventHandler(this.addCoinButton_Click);
             // 
             // addCoinDropDown
             // 
@@ -115,6 +125,7 @@
             // 
             // panel1
             // 
+            this.panel1.BackColor = System.Drawing.SystemColors.Control;
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -380,20 +391,11 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // addCoinButton
-            // 
-            this.addCoinButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.addCoinButton.Image = ((System.Drawing.Image)(resources.GetObject("addCoinButton.Image")));
-            this.addCoinButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addCoinButton.Name = "addCoinButton";
-            this.addCoinButton.Size = new System.Drawing.Size(61, 22);
-            this.addCoinButton.Text = "Add Coin";
-            this.addCoinButton.Click += new System.EventHandler(this.addCoinButton_Click);
-            // 
             // CoinsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(558, 358);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.adjustProfitCombo);

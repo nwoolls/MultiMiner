@@ -57,10 +57,11 @@
             // 
             // panel1
             // 
+            this.panel1.BackColor = System.Drawing.SystemColors.Control;
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 264);
+            this.panel1.Location = new System.Drawing.Point(0, 270);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(331, 47);
             this.panel1.TabIndex = 4;
@@ -265,7 +266,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(331, 311);
+            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.ClientSize = new System.Drawing.Size(331, 317);
             this.Controls.Add(this.intervalCombo);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.proftabilityBasisCombo);

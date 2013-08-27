@@ -8,6 +8,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Linq;
 using MultiMiner.Utility;
+using System.Drawing;
 
 namespace MultiMiner.Win
 {
@@ -69,7 +70,10 @@ namespace MultiMiner.Win
             foreach (TabPage tabPage in wizardTabControl.TabPages)
             {
                 tabPage.Padding = new Padding(6, tabPage.Padding.Left, 6, tabPage.Padding.Right);
+                tabPage.BackColor = SystemColors.ControlLightLight;
             }
+
+            buttonPanel.BringToFront();
         }
 
         private static bool MinerIsInstalled(MinerBackend minerBackend)

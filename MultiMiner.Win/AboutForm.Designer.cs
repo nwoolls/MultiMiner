@@ -56,6 +56,7 @@
             // bfgminerLabel
             // 
             this.bfgminerLabel.AutoSize = true;
+            this.bfgminerLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.bfgminerLabel.Location = new System.Drawing.Point(97, 63);
             this.bfgminerLabel.Name = "bfgminerLabel";
             this.bfgminerLabel.Size = new System.Drawing.Size(111, 13);
@@ -65,6 +66,7 @@
             // cgminerLabel
             // 
             this.cgminerLabel.AutoSize = true;
+            this.cgminerLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.cgminerLabel.Location = new System.Drawing.Point(97, 50);
             this.cgminerLabel.Name = "cgminerLabel";
             this.cgminerLabel.Size = new System.Drawing.Size(111, 13);
@@ -84,9 +86,10 @@
             // 
             // panel1
             // 
+            this.panel1.BackColor = System.Drawing.SystemColors.Control;
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 338);
+            this.panel1.Location = new System.Drawing.Point(0, 346);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(469, 47);
             this.panel1.TabIndex = 6;
@@ -134,7 +137,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(469, 385);
+            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.ClientSize = new System.Drawing.Size(469, 393);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.multiMinerLink);

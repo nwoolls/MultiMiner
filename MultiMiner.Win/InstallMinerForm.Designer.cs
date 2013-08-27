@@ -42,25 +42,27 @@
             // yesButton
             // 
             this.yesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.yesButton.BackColor = System.Drawing.SystemColors.Control;
             this.yesButton.DialogResult = System.Windows.Forms.DialogResult.Yes;
             this.yesButton.Location = new System.Drawing.Point(226, 134);
             this.yesButton.Name = "yesButton";
             this.yesButton.Size = new System.Drawing.Size(75, 23);
             this.yesButton.TabIndex = 0;
             this.yesButton.Text = "Yes";
-            this.yesButton.UseVisualStyleBackColor = true;
+            this.yesButton.UseVisualStyleBackColor = false;
             this.yesButton.Click += new System.EventHandler(this.yesButton_Click);
             // 
             // noButton
             // 
             this.noButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.noButton.BackColor = System.Drawing.SystemColors.Control;
             this.noButton.DialogResult = System.Windows.Forms.DialogResult.No;
             this.noButton.Location = new System.Drawing.Point(307, 134);
             this.noButton.Name = "noButton";
             this.noButton.Size = new System.Drawing.Size(75, 23);
             this.noButton.TabIndex = 1;
             this.noButton.Text = "No";
-            this.noButton.UseVisualStyleBackColor = true;
+            this.noButton.UseVisualStyleBackColor = false;
             // 
             // cgminerButton
             // 
