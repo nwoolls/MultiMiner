@@ -35,6 +35,7 @@
             this.bothButton = new System.Windows.Forms.RadioButton();
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.panel1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -42,7 +43,7 @@
             // 
             this.yesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.yesButton.DialogResult = System.Windows.Forms.DialogResult.Yes;
-            this.yesButton.Location = new System.Drawing.Point(226, 127);
+            this.yesButton.Location = new System.Drawing.Point(226, 134);
             this.yesButton.Name = "yesButton";
             this.yesButton.Size = new System.Drawing.Size(75, 23);
             this.yesButton.TabIndex = 0;
@@ -54,7 +55,7 @@
             // 
             this.noButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.noButton.DialogResult = System.Windows.Forms.DialogResult.No;
-            this.noButton.Location = new System.Drawing.Point(307, 127);
+            this.noButton.Location = new System.Drawing.Point(307, 134);
             this.noButton.Name = "noButton";
             this.noButton.Size = new System.Drawing.Size(75, 23);
             this.noButton.TabIndex = 1;
@@ -97,6 +98,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.label1.Location = new System.Drawing.Point(50, 12);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(332, 32);
@@ -112,14 +114,24 @@
             this.pictureBox1.TabIndex = 8;
             this.pictureBox1.TabStop = false;
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 123);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(394, 46);
+            this.panel1.TabIndex = 9;
+            // 
             // InstallMinerForm
             // 
             this.AcceptButton = this.yesButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.CancelButton = this.noButton;
-            this.ClientSize = new System.Drawing.Size(394, 162);
+            this.ClientSize = new System.Drawing.Size(394, 169);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.bothButton);
@@ -127,6 +139,7 @@
             this.Controls.Add(this.cgminerButton);
             this.Controls.Add(this.noButton);
             this.Controls.Add(this.yesButton);
+            this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -149,6 +162,7 @@
         private System.Windows.Forms.RadioButton bothButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Panel panel1;
 
     }
 }
