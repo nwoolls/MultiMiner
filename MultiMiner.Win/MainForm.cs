@@ -1831,5 +1831,11 @@ namespace MultiMiner.Win
                 progressForm.Close();
             }
         }
+
+        private void aboutButton_Click(object sender, EventArgs e)
+        {
+            AboutForm aboutForm = new AboutForm();
+            aboutForm.ShowDialog();
+        }
     }
 }

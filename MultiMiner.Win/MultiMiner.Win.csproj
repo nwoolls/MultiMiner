@@ -48,6 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="AdvancedSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -115,6 +121,9 @@
     <Compile Include="WizardForm.Designer.cs">
       <DependentUpon>WizardForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AdvancedSettingsForm.resx">
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -230,6 +239,8 @@
     <None Include="Resources\list-arrow_right.png" />
     <None Include="Resources\application-gear.png" />
     <None Include="Resources\view_options.png" />
+    <None Include="Resources\window_sel.png" />
+    <None Include="Resources\application-info.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>
