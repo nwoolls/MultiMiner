@@ -1398,13 +1398,11 @@ namespace MultiMiner.Win
         private const string mobileMinerApiKey = "P3mVX95iP7xfoI";
         private const string mobileMinerUrl = "https://api.mobileminerapp.com";
         
-        //require 2 403s in a row before disabling MobileMiner and throwing up a
-        //MessageBox. it's not ideal but there have been two reports now of this
-        //being triggered by someone who has valid credentials
-        private int forbiddenCommandCount = 0;
-        private int forbiddenStatsCount = 0;
-        private const int maxForbiddenCount = 2;
-
+        //don't show a dialog for a 403 after successful submissions.
+        //it's not ideal but there have been two reports now of this
+        //being triggered by someone who has valid credentials, and
+        //i've seen it myself as well
+        private bool mobileMinerSuccess = false;
         private void SubmitMobileMinerStats()
         {
             //are remote monitoring enabled?
@@ -1454,7 +1452,7 @@ namespace MultiMiner.Win
                     MobileMiner.Api.ApiContext.SubmitMiningStatistics(mobileMinerUrl, mobileMinerApiKey,
                         applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
                         Environment.MachineName, statisticsList);
-                    forbiddenStatsCount = 0;
+                    mobileMinerSuccess = true;
                 }
                 catch (WebException ex)
                 {
@@ -1464,11 +1462,8 @@ namespace MultiMiner.Win
                     {
                         if (response.StatusCode == HttpStatusCode.Forbidden)
                         {
-                            forbiddenStatsCount++;
-                            if (forbiddenStatsCount >= maxForbiddenCount)
+                            if (!mobileMinerSuccess)
                             {
-                                forbiddenStatsCount = 0;
-
                                 this.applicationConfiguration.MobileMinerMonitoring = false;
                                 this.applicationConfiguration.SaveApplicationConfiguration();
                                 MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
@@ -1483,7 +1478,6 @@ namespace MultiMiner.Win
                     }
                 }
             }
-
         }
 
         private bool ShowingModalDialog()
@@ -1513,7 +1507,7 @@ namespace MultiMiner.Win
                 commands = MobileMiner.Api.ApiContext.GetCommands(mobileMinerUrl, mobileMinerApiKey,
                     applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
                     Environment.MachineName);
-                forbiddenCommandCount = 0;
+                mobileMinerSuccess = true;
             }
             catch (Exception ex)
             {
@@ -1530,11 +1524,8 @@ namespace MultiMiner.Win
                         {
                             if (response.StatusCode == HttpStatusCode.Forbidden)
                             {
-                                forbiddenCommandCount++;
-                                if (forbiddenCommandCount >= maxForbiddenCount)
+                                if (!mobileMinerSuccess)
                                 {
-                                    forbiddenCommandCount = 0;
-
                                     this.applicationConfiguration.MobileMinerRemoteCommands = false;
                                     this.applicationConfiguration.SaveApplicationConfiguration();
                                     MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
