@@ -58,6 +58,7 @@ namespace MultiMiner.Win
                 exceptionEdit.Text = strategyConfiguration.MineMostProfitableOverridePercentage.ToString();
 
             proftabilityBasisCombo.SelectedIndex = (int)strategyConfiguration.ProfitabilityBasis;
+            baseCoinCombo.SelectedIndex = (int)strategyConfiguration.BaseCoin;
 
             intervalCombo.SelectedIndex = (int)applicationConfiguration.StrategyCheckInterval;
         }
@@ -100,6 +101,7 @@ namespace MultiMiner.Win
             }
 
             strategyConfiguration.ProfitabilityBasis = (StrategyConfiguration.CoinProfitabilityBasis)proftabilityBasisCombo.SelectedIndex;
+            strategyConfiguration.BaseCoin = (Coinchoose.Api.BaseCoin)baseCoinCombo.SelectedIndex;
 
             applicationConfiguration.StrategyCheckInterval = (ApplicationConfiguration.CoinStrategyCheckInterval)intervalCombo.SelectedIndex;
         }

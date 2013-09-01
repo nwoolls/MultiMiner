@@ -21,5 +21,6 @@
         public double? MinimumProfitabilityPercentage { get; set; }
         public double? MineMostProfitableOverridePercentage { get; set; }
         public CoinProfitabilityBasis ProfitabilityBasis { get; set; }
+        public Coinchoose.Api.BaseCoin BaseCoin { get; set; }
     }
 }

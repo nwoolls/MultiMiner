@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace MultiMiner.Coinchoose.Api.Tests
 {
@@ -10,7 +11,7 @@ namespace MultiMiner.Coinchoose.Api.Tests
         public void GetCoinInformation_ReturnsCoinInformation()
         {
             //act
-            System.Collections.Generic.List<CoinInformation> coinInformation = ApiContext.GetCoinInformation();
+            List<CoinInformation> coinInformation = ApiContext.GetCoinInformation();
 
             //assert
             Assert.IsTrue(coinInformation.Count > 0);
@@ -21,6 +22,32 @@ namespace MultiMiner.Coinchoose.Api.Tests
             Assert.IsTrue(coinInformation.Count(c => c.Difficulty > 0.00) > 0);
             Assert.IsTrue(coinInformation.Count(c => c.Algorithm.Equals("scrypt")) > 0);
             Assert.IsTrue(coinInformation.Count(c => c.Algorithm.Equals("SHA-256")) > 0);
+        }
+
+        [TestMethod]
+        public void GetCoinInformation_BitcoinBasis_IsBasedOnBitcoin()
+        {
+            //act
+            List<CoinInformation> coinInformation = ApiContext.GetCoinInformation();
+
+            //assert
+            CoinInformation coin = coinInformation.Single(c => c.Symbol.Equals("BTC"));
+            Assert.AreEqual(coin.Profitability, 100);
+            coin = coinInformation.Single(c => c.Symbol.Equals("LTC"));
+            Assert.AreNotEqual(coin.Profitability, 100);
+        }
+
+        [TestMethod]
+        public void GetCoinInformation_BitcoinBasis_IsBasedOnLitecoin()
+        {
+            //act
+            List<CoinInformation> coinInformation = ApiContext.GetCoinInformation("", BaseCoin.Litecoin);
+
+            //assert
+            CoinInformation coin = coinInformation.Single(c => c.Symbol.Equals("LTC"));
+            Assert.AreEqual(coin.Profitability, 100);
+            coin = coinInformation.Single(c => c.Symbol.Equals("BTC"));
+            Assert.AreNotEqual(coin.Profitability, 100);
         }
     }
 }

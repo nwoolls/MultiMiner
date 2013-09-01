@@ -50,6 +50,8 @@
             this.proftabilityBasisCombo = new System.Windows.Forms.ComboBox();
             this.intervalCombo = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.baseCoinCombo = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -61,7 +63,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 270);
+            this.panel1.Location = new System.Drawing.Point(0, 298);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(331, 47);
             this.panel1.TabIndex = 4;
@@ -158,7 +160,7 @@
             this.groupBox1.Controls.Add(this.minCoinCombo);
             this.groupBox1.Controls.Add(this.multiCoinRadio);
             this.groupBox1.Controls.Add(this.singleCoinRadio);
-            this.groupBox1.Location = new System.Drawing.Point(12, 90);
+            this.groupBox1.Location = new System.Drawing.Point(12, 119);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(307, 172);
             this.groupBox1.TabIndex = 3;
@@ -234,7 +236,7 @@
             this.proftabilityBasisCombo.Items.AddRange(new object[] {
             "Profitability Adjusted for Stales",
             "Average Profitability Past 7 Days",
-            "Straight Profitability of BTC"});
+            "Straight Profitability"});
             this.proftabilityBasisCombo.Location = new System.Drawing.Point(124, 62);
             this.proftabilityBasisCombo.Name = "proftabilityBasisCombo";
             this.proftabilityBasisCombo.Size = new System.Drawing.Size(176, 21);
@@ -262,12 +264,35 @@
             this.label5.TabIndex = 5;
             this.label5.Text = "Check every:";
             // 
+            // baseCoinCombo
+            // 
+            this.baseCoinCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.baseCoinCombo.FormattingEnabled = true;
+            this.baseCoinCombo.Items.AddRange(new object[] {
+            "Bitcoin",
+            "Litecoin"});
+            this.baseCoinCombo.Location = new System.Drawing.Point(124, 89);
+            this.baseCoinCombo.Name = "baseCoinCombo";
+            this.baseCoinCombo.Size = new System.Drawing.Size(176, 21);
+            this.baseCoinCombo.TabIndex = 3;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(28, 92);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(57, 13);
+            this.label6.TabIndex = 7;
+            this.label6.Text = "Base coin:";
+            // 
             // StrategiesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(331, 317);
+            this.ClientSize = new System.Drawing.Size(331, 345);
+            this.Controls.Add(this.baseCoinCombo);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.intervalCombo);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.proftabilityBasisCombo);
@@ -314,5 +339,7 @@
         private System.Windows.Forms.ComboBox proftabilityBasisCombo;
         private System.Windows.Forms.ComboBox intervalCombo;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox baseCoinCombo;
+        private System.Windows.Forms.Label label6;
     }
 }

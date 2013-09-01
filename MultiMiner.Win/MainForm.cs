@@ -76,6 +76,7 @@ namespace MultiMiner.Win
             const int mobileMinerInterval = 32; //seconds
             mobileMinerTimer.Interval = mobileMinerInterval * 1000;
 
+            engineConfiguration.LoadStrategyConfiguration(); //needed before refreshing coins
             RefreshCoinStats();
 
             CheckAndShowGettingStarted();
@@ -1041,7 +1042,8 @@ namespace MultiMiner.Win
 
             try
             {
-                coinInformation = Coinchoose.Api.ApiContext.GetCoinInformation(UserAgent.AgentString);
+                coinInformation = Coinchoose.Api.ApiContext.GetCoinInformation(UserAgent.AgentString, 
+                    engineConfiguration.StrategyConfiguration.BaseCoin);
             }
             catch (Exception ex)
             {
@@ -1216,6 +1218,9 @@ namespace MultiMiner.Win
                 
                 coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.MineProfitableCoins;
                 coinColumn.DisplayStyle = coinColumn.ReadOnly ? DataGridViewComboBoxDisplayStyle.Nothing : DataGridViewComboBoxDisplayStyle.DropDownButton;
+
+                //so updated profitability is shown
+                RefreshCoinStats();
 
                 RefreshStrategiesLabel();
                 LoadGridValuesFromCoinStats();

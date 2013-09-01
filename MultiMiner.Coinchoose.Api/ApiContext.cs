@@ -6,13 +6,18 @@ namespace MultiMiner.Coinchoose.Api
 {
     public static class ApiContext
     {
-        public static List<CoinInformation> GetCoinInformation(string userAgent = "")
+        public static List<CoinInformation> GetCoinInformation(string userAgent = "",
+            BaseCoin profitabilityBasis = BaseCoin.Bitcoin)
         {
             WebClient client = new WebClient();
             if (!string.IsNullOrEmpty(userAgent))
                 client.Headers.Add("user-agent", userAgent);
 
-            string jsonString = client.DownloadString("http://www.coinchoose.com/api.php");
+            string apiUrl = "http://www.coinchoose.com/api.php";
+            if (profitabilityBasis == BaseCoin.Litecoin)
+                apiUrl = apiUrl + "?base=LTC";
+
+            string jsonString = client.DownloadString(apiUrl);
             JArray jsonArray = JArray.Parse(jsonString);
 
             List<CoinInformation> result = new List<CoinInformation>();
