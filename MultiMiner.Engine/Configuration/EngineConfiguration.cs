@@ -54,7 +54,18 @@ namespace MultiMiner.Engine.Configuration
 
         public void LoadStrategyConfiguration()
         {
-            StrategyConfiguration = ConfigurationReaderWriter.ReadConfiguration<StrategyConfiguration>(StrategyConfigurationsFileName());
+            try
+            {
+                StrategyConfiguration = ConfigurationReaderWriter.ReadConfiguration<StrategyConfiguration>(StrategyConfigurationsFileName());
+            }
+            catch (InvalidOperationException ex)
+            {
+                //legacy settings
+                Obsolete.StrategyConfiguration obsoleteSettings = ConfigurationReaderWriter.ReadConfiguration<Obsolete.StrategyConfiguration>(StrategyConfigurationsFileName());
+                StrategyConfiguration = new StrategyConfiguration();
+                obsoleteSettings.StoreTo(StrategyConfiguration);
+                SaveStrategyConfiguration();
+            }
         }
 
         private static string DeviceConfigurationsFileName()
