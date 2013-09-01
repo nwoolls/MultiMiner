@@ -331,6 +331,7 @@ namespace MultiMiner.Win
             deviceBindingSource.DataSource = devices;
             LoadGridValuesFromConfiguration();
             CheckAndHideNameColumn();
+            deviceTotalLabel.Text = String.Format("{0} device(s)", devices.Count);
         }
 
         private void ShowNotInstalledMinerWarning()
