@@ -1030,6 +1030,8 @@ namespace MultiMiner.Win
                 engineConfiguration.SaveDeviceConfigurations();
                 //to get changes from strategy config
                 LoadGridValuesFromConfiguration();
+                //to refresh coin stats due to changed coin selections
+                LoadGridValuesFromCoinStats();
             }
 
             coinStatsCountdownMinutes = coinStatsTimer.Interval / 1000 / 60;
