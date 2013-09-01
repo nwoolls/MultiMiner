@@ -1128,15 +1128,15 @@ namespace MultiMiner.Win
             row.Cells[difficultyColumn.Index].Value = coin.Difficulty.ToString(".##########");
             row.Cells[priceColumn.Index].Value = coin.Price.ToString(".##########");
 
-            switch (engineConfiguration.StrategyConfiguration.ProfitabilityBasis)
+            switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
             {
-                case StrategyConfiguration.CoinProfitabilityBasis.AdjustedProfitability:
+                case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
                     row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AdjustedProfitability, 2);
                     break;
-                case StrategyConfiguration.CoinProfitabilityBasis.AverageProfitability:
+                case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
                     row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AverageProfitability, 2);
                     break;
-                case StrategyConfiguration.CoinProfitabilityBasis.StraightProfitability:
+                case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
                     row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.Profitability, 2);
                     break;
             }

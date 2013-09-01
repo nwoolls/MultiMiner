@@ -16,12 +16,12 @@
         public double? MineSingleMostOverrideValue { get; set; }
 
         //all specific to profitability
-        public enum CoinProfitabilityBasis
+        public enum CoinProfitabilityKind
         {
             AdjustedProfitability = 0,
             AverageProfitability = 1,
             StraightProfitability = 2
         }
-        public CoinProfitabilityBasis ProfitabilityBasis { get; set; }
+        public CoinProfitabilityKind ProfitabilityKind { get; set; }
     }
 }

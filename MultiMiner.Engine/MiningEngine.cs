@@ -263,15 +263,15 @@ namespace MultiMiner.Engine
         {
             List<CoinInformation> orderedProfitableCoins = configuredProfitableCoins.ToList();
 
-            switch (engineConfiguration.StrategyConfiguration.ProfitabilityBasis)
+            switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
             {
-                case StrategyConfiguration.CoinProfitabilityBasis.AdjustedProfitability:
+                case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
                     orderedProfitableCoins = orderedProfitableCoins.OrderByDescending(c => c.AdjustedProfitability).ToList();
                     break;
-                case StrategyConfiguration.CoinProfitabilityBasis.AverageProfitability:
+                case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
                     orderedProfitableCoins = orderedProfitableCoins.OrderByDescending(c => c.AverageProfitability).ToList();
                     break;
-                case StrategyConfiguration.CoinProfitabilityBasis.StraightProfitability:
+                case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
                     orderedProfitableCoins = orderedProfitableCoins.OrderByDescending(c => c.Profitability).ToList();
                     break;
             }
@@ -390,15 +390,15 @@ namespace MultiMiner.Engine
 
             if (!mineSingle && engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue.HasValue)
             {
-                switch (engineConfiguration.StrategyConfiguration.ProfitabilityBasis)
+                switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
                 {
-                    case StrategyConfiguration.CoinProfitabilityBasis.AdjustedProfitability:
+                    case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
                         mineSingle = coinList.First().AdjustedProfitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
                         break;
-                    case StrategyConfiguration.CoinProfitabilityBasis.AverageProfitability:
+                    case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
                         mineSingle = coinList.First().AverageProfitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
                         break;
-                    case StrategyConfiguration.CoinProfitabilityBasis.StraightProfitability:
+                    case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
                         mineSingle = coinList.First().Profitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
                         break;
                 }
@@ -428,15 +428,15 @@ namespace MultiMiner.Engine
             {
                 double minimumValue = engineConfiguration.StrategyConfiguration.MinimumThresholdValue.Value;
 
-                switch (engineConfiguration.StrategyConfiguration.ProfitabilityBasis)
+                switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
                 {
-                    case Configuration.StrategyConfiguration.CoinProfitabilityBasis.AdjustedProfitability:
+                    case Configuration.StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
                         filteredProfitableCoins = filteredProfitableCoins.Where(c => c.AdjustedProfitability > minimumValue).ToList();
                         break;
-                    case Configuration.StrategyConfiguration.CoinProfitabilityBasis.AverageProfitability:
+                    case Configuration.StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
                         filteredProfitableCoins = filteredProfitableCoins.Where(c => c.AverageProfitability > minimumValue).ToList();
                         break;
-                    case Configuration.StrategyConfiguration.CoinProfitabilityBasis.StraightProfitability:
+                    case Configuration.StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
                         filteredProfitableCoins = filteredProfitableCoins.Where(c => c.Profitability > minimumValue).ToList();
                         break;
                 }
