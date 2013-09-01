@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\CoinConfiguration.cs" />
+    <Compile Include="Configuration\Obsolete\StrategyConfiguration.cs" />
     <Compile Include="Configuration\StrategyConfiguration.cs" />
     <Compile Include="CryptoCoin.cs" />
     <Compile Include="Configuration\DeviceConfiguration.cs" />

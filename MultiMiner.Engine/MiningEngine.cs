@@ -201,7 +201,7 @@ namespace MultiMiner.Engine
             //if no copy is made this could lead to a compounding effect
             List<CoinInformation> coinInformationCopy = CopyCoinInformation(coinInformation);
 
-            if (engineConfiguration.StrategyConfiguration.MineProfitableCoins)
+            if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
             {
                 //get a list of the coins that are configured
                 IEnumerable<string> configuredSymbols = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Select(c => c.Coin.Symbol);
@@ -386,20 +386,20 @@ namespace MultiMiner.Engine
         {
             CoinInformation profitableCoin;
 
-            bool mineSingle = engineConfiguration.StrategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.SingleMostProfitable;
+            bool mineSingle = engineConfiguration.StrategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.SingleMost;
 
-            if (!mineSingle && engineConfiguration.StrategyConfiguration.MineMostProfitableOverridePercentage.HasValue)
+            if (!mineSingle && engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue.HasValue)
             {
                 switch (engineConfiguration.StrategyConfiguration.ProfitabilityBasis)
                 {
                     case StrategyConfiguration.CoinProfitabilityBasis.AdjustedProfitability:
-                        mineSingle = coinList.First().AdjustedProfitability > engineConfiguration.StrategyConfiguration.MineMostProfitableOverridePercentage;
+                        mineSingle = coinList.First().AdjustedProfitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
                         break;
                     case StrategyConfiguration.CoinProfitabilityBasis.AverageProfitability:
-                        mineSingle = coinList.First().AverageProfitability > engineConfiguration.StrategyConfiguration.MineMostProfitableOverridePercentage;
+                        mineSingle = coinList.First().AverageProfitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
                         break;
                     case StrategyConfiguration.CoinProfitabilityBasis.StraightProfitability:
-                        mineSingle = coinList.First().Profitability > engineConfiguration.StrategyConfiguration.MineMostProfitableOverridePercentage;
+                        mineSingle = coinList.First().Profitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
                         break;
                 }
             }
@@ -416,17 +416,17 @@ namespace MultiMiner.Engine
         {
             List<CoinInformation> filteredProfitableCoins = unfilteredProfitableCoins.ToList(); //call ToList to get a copy
 
-            if (!string.IsNullOrEmpty(engineConfiguration.StrategyConfiguration.MinimumProfitabilitySymbol))
+            if (!string.IsNullOrEmpty(engineConfiguration.StrategyConfiguration.MinimumThresholdSymbol))
             {
-                CoinInformation minimumCoin = filteredProfitableCoins.SingleOrDefault(c => c.Symbol.Equals(engineConfiguration.StrategyConfiguration.MinimumProfitabilitySymbol));
+                CoinInformation minimumCoin = filteredProfitableCoins.SingleOrDefault(c => c.Symbol.Equals(engineConfiguration.StrategyConfiguration.MinimumThresholdSymbol));
                 int index = filteredProfitableCoins.IndexOf(minimumCoin);
                 index++;
                 filteredProfitableCoins.RemoveRange(index, filteredProfitableCoins.Count - index);
             }
 
-            if (engineConfiguration.StrategyConfiguration.MinimumProfitabilityPercentage.HasValue)
+            if (engineConfiguration.StrategyConfiguration.MinimumThresholdValue.HasValue)
             {
-                double minimumValue = engineConfiguration.StrategyConfiguration.MinimumProfitabilityPercentage.Value;
+                double minimumValue = engineConfiguration.StrategyConfiguration.MinimumThresholdValue.Value;
 
                 switch (engineConfiguration.StrategyConfiguration.ProfitabilityBasis)
                 {

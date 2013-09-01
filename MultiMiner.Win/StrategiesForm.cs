@@ -45,17 +45,17 @@ namespace MultiMiner.Win
 
         private void LoadSettings()
         {
-            CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(this.strategyConfiguration.MinimumProfitabilitySymbol));
+            CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(this.strategyConfiguration.MinimumThresholdSymbol));
             if (coin != null)
                 minCoinCombo.Text = coin.Name;
             
-            singleCoinRadio.Checked = strategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.SingleMostProfitable;
-            multiCoinRadio.Checked = strategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.AllMostProfitable;
+            singleCoinRadio.Checked = strategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.SingleMost;
+            multiCoinRadio.Checked = strategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.AllMost;
 
-            minPercentageEdit.Text = strategyConfiguration.MinimumProfitabilityPercentage.ToString();
+            minPercentageEdit.Text = strategyConfiguration.MinimumThresholdValue.ToString();
 
             if (multiCoinRadio.Checked)
-                exceptionEdit.Text = strategyConfiguration.MineMostProfitableOverridePercentage.ToString();
+                exceptionEdit.Text = strategyConfiguration.MineSingleMostOverrideValue.ToString();
 
             proftabilityBasisCombo.SelectedIndex = (int)strategyConfiguration.ProfitabilityBasis;
             baseCoinCombo.SelectedIndex = (int)strategyConfiguration.BaseCoin;
@@ -66,37 +66,37 @@ namespace MultiMiner.Win
         private void SaveSettings()
         {
             if (string.IsNullOrEmpty(minCoinCombo.Text))
-                this.strategyConfiguration.MinimumProfitabilitySymbol = string.Empty;
+                this.strategyConfiguration.MinimumThresholdSymbol = string.Empty;
             else
             {
                 CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Name.Equals(minCoinCombo.Text));
                 if (coin != null)
-                    this.strategyConfiguration.MinimumProfitabilitySymbol = coin.Symbol;
+                    this.strategyConfiguration.MinimumThresholdSymbol = coin.Symbol;
             }
 
             if (singleCoinRadio.Checked)
-                strategyConfiguration.SwitchStrategy = StrategyConfiguration.CoinSwitchStrategy.SingleMostProfitable;
+                strategyConfiguration.SwitchStrategy = StrategyConfiguration.CoinSwitchStrategy.SingleMost;
             else
-                strategyConfiguration.SwitchStrategy = StrategyConfiguration.CoinSwitchStrategy.AllMostProfitable;
+                strategyConfiguration.SwitchStrategy = StrategyConfiguration.CoinSwitchStrategy.AllMost;
 
             if (string.IsNullOrEmpty(minPercentageEdit.Text))
-                this.strategyConfiguration.MinimumProfitabilityPercentage = null;
+                this.strategyConfiguration.MinimumThresholdValue = null;
             else
             {
                 double percentage;
                 if (double.TryParse(minPercentageEdit.Text, out percentage))
-                    strategyConfiguration.MinimumProfitabilityPercentage = percentage;
+                    strategyConfiguration.MinimumThresholdValue = percentage;
             }
 
             if (multiCoinRadio.Checked)
             {
                 if (string.IsNullOrEmpty(exceptionEdit.Text))
-                    this.strategyConfiguration.MineMostProfitableOverridePercentage = null;
+                    this.strategyConfiguration.MineSingleMostOverrideValue = null;
                 else
                 {
                     double percentage;
                     if (double.TryParse(exceptionEdit.Text, out percentage))
-                        strategyConfiguration.MineMostProfitableOverridePercentage = percentage;
+                        strategyConfiguration.MineSingleMostOverrideValue = percentage;
                 }
             }
 

@@ -392,7 +392,7 @@ namespace MultiMiner.Win
             engineConfiguration.LoadMinerConfiguration();
             engineConfiguration.LoadStrategyConfiguration();
 
-            coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.MineProfitableCoins;
+            coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
             coinColumn.DisplayStyle = coinColumn.ReadOnly ? DataGridViewComboBoxDisplayStyle.Nothing : DataGridViewComboBoxDisplayStyle.DropDownButton;
 
             RefreshStrategiesLabel();
@@ -665,7 +665,7 @@ namespace MultiMiner.Win
                 c => c.Enabled && !string.IsNullOrEmpty(c.CoinSymbol)) > 0;
             if (!miningConfigurationValid)
             {
-                miningConfigurationValid = engineConfiguration.StrategyConfiguration.MineProfitableCoins &&
+                miningConfigurationValid = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
                     (engineConfiguration.CoinConfigurations.Count(c => c.Enabled) > 0) &&
                     (engineConfiguration.DeviceConfigurations.Count(c => c.Enabled) > 0);
             }
@@ -1020,7 +1020,7 @@ namespace MultiMiner.Win
         {
             RefreshCoinStats();
 
-            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.MineProfitableCoins &&
+            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
                 //ensure the user isn't editing settings
                 !ShowingModalDialog())
             {
@@ -1190,7 +1190,7 @@ namespace MultiMiner.Win
 
         private void RefreshStrategiesLabel()
         {
-            if (engineConfiguration.StrategyConfiguration.MineProfitableCoins)
+            if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
                 strategiesLabel.Text = "Strategies: enabled";
             else
                 strategiesLabel.Text = "Strategies: disabled";
@@ -1199,7 +1199,7 @@ namespace MultiMiner.Win
         private void RefreshStrategiesCountdown()
         {
             //Time until strategy check: 60s
-            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.MineProfitableCoins)
+            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
                 strategyCountdownLabel.Text = string.Format("Time until strategy check: {0}m", coinStatsCountdownMinutes);
             else
                 strategyCountdownLabel.Text = "";
@@ -1216,7 +1216,7 @@ namespace MultiMiner.Win
                 applicationConfiguration.SaveApplicationConfiguration();
                 SetupCoinStatsTimer();
                 
-                coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.MineProfitableCoins;
+                coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
                 coinColumn.DisplayStyle = coinColumn.ReadOnly ? DataGridViewComboBoxDisplayStyle.Nothing : DataGridViewComboBoxDisplayStyle.DropDownButton;
 
                 //so updated profitability is shown
@@ -1678,7 +1678,7 @@ namespace MultiMiner.Win
 
             SetAllDevicesToCoin(coin);
 
-            engineConfiguration.StrategyConfiguration.MineProfitableCoins = false; 
+            engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false; 
             coinColumn.ReadOnly = false;
             coinColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.DropDownButton;
 

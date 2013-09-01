@@ -2,25 +2,26 @@
 {
     public class StrategyConfiguration
     {
+        //generic
+        public Coinchoose.Api.BaseCoin BaseCoin { get; set; }
+        public bool AutomaticallyMineCoins { get; set; }
         public enum CoinSwitchStrategy
         {
-            SingleMostProfitable = 0,
-            AllMostProfitable = 1
+            SingleMost = 0,
+            AllMost = 1
         }
+        public CoinSwitchStrategy SwitchStrategy { get; set; }
+        public string MinimumThresholdSymbol { get; set; }
+        public double? MinimumThresholdValue { get; set; }
+        public double? MineSingleMostOverrideValue { get; set; }
 
+        //all specific to profitability
         public enum CoinProfitabilityBasis
         {
             AdjustedProfitability = 0,
             AverageProfitability = 1,
             StraightProfitability = 2
         }
-
-        public bool MineProfitableCoins { get; set; }
-        public CoinSwitchStrategy SwitchStrategy { get; set; }
-        public string MinimumProfitabilitySymbol { get; set; }
-        public double? MinimumProfitabilityPercentage { get; set; }
-        public double? MineMostProfitableOverridePercentage { get; set; }
         public CoinProfitabilityBasis ProfitabilityBasis { get; set; }
-        public Coinchoose.Api.BaseCoin BaseCoin { get; set; }
     }
 }
