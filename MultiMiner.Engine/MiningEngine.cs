@@ -208,16 +208,16 @@ namespace MultiMiner.Engine
 
                 //filter the coin info by that list
                 //use the copy here
-                IEnumerable<CoinInformation> configuredProfitableCoins = coinInformationCopy.Where(c => configuredSymbols.Contains(c.Symbol));
+                IEnumerable<CoinInformation> filteredCoinInformation = coinInformationCopy.Where(c => configuredSymbols.Contains(c.Symbol));
 
-                if (configuredProfitableCoins.Count() > 0)
+                if (filteredCoinInformation.Count() > 0)
                 {
                     //adjust profitabilities based on config adjustments
-                    ApplyProfitabilityAdjustments(configuredProfitableCoins);
+                    ApplyProfitabilityAdjustments(filteredCoinInformation);
 
-                    List<CoinInformation> orderedProfitableCoins = GetCoinsOrderedByProfitability(configuredProfitableCoins);
+                    List<CoinInformation> orderedCoinInformation = GetCoinInformationOrderedByMiningBasis(filteredCoinInformation);
 
-                    List<DeviceConfiguration> newConfiguration = CreateAutomaticDeviceConfiguration(devices, orderedProfitableCoins);
+                    List<DeviceConfiguration> newConfiguration = CreateAutomaticDeviceConfiguration(devices, orderedCoinInformation);
 
                     //compare newConfiguration to engineConfiguration.DeviceConfiguration
                     //store if different
@@ -259,29 +259,40 @@ namespace MultiMiner.Engine
             }
         }
 
-        private List<CoinInformation> GetCoinsOrderedByProfitability(IEnumerable<CoinInformation> configuredProfitableCoins)
+        private List<CoinInformation> GetCoinInformationOrderedByMiningBasis(IEnumerable<CoinInformation> configuredCoins)
         {
-            List<CoinInformation> orderedProfitableCoins = configuredProfitableCoins.ToList();
+            List<CoinInformation> orderedCoins = configuredCoins.ToList();
 
-            switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+            switch (engineConfiguration.StrategyConfiguration.MiningBasis)
             {
-                case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
-                    orderedProfitableCoins = orderedProfitableCoins.OrderByDescending(c => c.AdjustedProfitability).ToList();
+                case StrategyConfiguration.CoinMiningBasis.Profitability:
+                    switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+                    {
+                        case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
+                            orderedCoins = orderedCoins.OrderByDescending(c => c.AdjustedProfitability).ToList();
+                            break;
+                        case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
+                            orderedCoins = orderedCoins.OrderByDescending(c => c.AverageProfitability).ToList();
+                            break;
+                        case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
+                            orderedCoins = orderedCoins.OrderByDescending(c => c.Profitability).ToList();
+                            break;
+                    }
                     break;
-                case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
-                    orderedProfitableCoins = orderedProfitableCoins.OrderByDescending(c => c.AverageProfitability).ToList();
+                case StrategyConfiguration.CoinMiningBasis.Difficulty:
+                    orderedCoins = orderedCoins.OrderBy(c => c.Difficulty).ToList();
                     break;
-                case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
-                    orderedProfitableCoins = orderedProfitableCoins.OrderByDescending(c => c.Profitability).ToList();
+                case StrategyConfiguration.CoinMiningBasis.Price:
+                    orderedCoins = orderedCoins.OrderByDescending(c => c.Price).ToList();
                     break;
             }
 
-            return orderedProfitableCoins;
+            return orderedCoins;
         }
 
-        private void ApplyProfitabilityAdjustments(IEnumerable<CoinInformation> configuredProfitableCoins)
+        private void ApplyProfitabilityAdjustments(IEnumerable<CoinInformation> coinInformation)
         {
-            foreach (CoinInformation configuredProfitableCoin in configuredProfitableCoins)
+            foreach (CoinInformation configuredProfitableCoin in coinInformation)
             {
                 CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(configuredProfitableCoin.Symbol));
 
@@ -300,27 +311,27 @@ namespace MultiMiner.Engine
             }
         }
 
-        private List<DeviceConfiguration> CreateAutomaticDeviceConfiguration(List<Device> devices, IEnumerable<CoinInformation> unfilteredProfitableCoins)
+        private List<DeviceConfiguration> CreateAutomaticDeviceConfiguration(List<Device> devices, IEnumerable<CoinInformation> orderedCoinInformation)
         {
             //order by adjusted profitability
-            List<CoinInformation> filteredProfitableCoins = GetFilteredProfitableCoins(unfilteredProfitableCoins);
+            List<CoinInformation> filteredCoinInformation = GetFilteredCoinInformation(orderedCoinInformation);
 
             //get sha256 only options
-            List<CoinInformation> sha256ProfitableCoins = filteredProfitableCoins.Where(c => c.Algorithm.Equals("SHA-256")).ToList();
+            List<CoinInformation> sha256ProfitableCoins = filteredCoinInformation.Where(c => c.Algorithm.Equals("SHA-256")).ToList();
 
             //ABM - always be mining
-            if (filteredProfitableCoins.Count == 0)
-                filteredProfitableCoins.Add(unfilteredProfitableCoins.First());
+            if (filteredCoinInformation.Count == 0)
+                filteredCoinInformation.Add(orderedCoinInformation.First());
 
             if (sha256ProfitableCoins.Count == 0)
             {
-                CoinInformation sha256Info = unfilteredProfitableCoins.Where(c => c.Algorithm.Equals("SHA-256")).FirstOrDefault();
+                CoinInformation sha256Info = orderedCoinInformation.Where(c => c.Algorithm.Equals("SHA-256")).FirstOrDefault();
                 if (sha256Info != null)
                     sha256ProfitableCoins.Add(sha256Info);
             }
             //end ABM
 
-            return CreateDeviceConfigurationForProfitableCoins(devices, filteredProfitableCoins, sha256ProfitableCoins);
+            return CreateDeviceConfigurationForProfitableCoins(devices, filteredCoinInformation, sha256ProfitableCoins);
         }
 
         private List<DeviceConfiguration> CreateDeviceConfigurationForProfitableCoins(List<Device> devices, List<CoinInformation> allProfitableCoins, List<CoinInformation> sha256ProfitableCoins)
@@ -344,7 +355,7 @@ namespace MultiMiner.Engine
                     if (device.Kind == DeviceKind.GPU)
                     {
                         //sha256 or scrypt
-                        profitableCoin = GetProfitableCoinFromList(allProfitableCoins, gpuIterator);
+                        profitableCoin = ChooseCoinFromList(allProfitableCoins, gpuIterator);
 
                         gpuIterator++;
                         if (gpuIterator >= allProfitableCoins.Count())
@@ -353,7 +364,7 @@ namespace MultiMiner.Engine
                     else if (sha256ProfitableCoins.Count > 0)
                     {
                         //sha256 only
-                        profitableCoin = GetProfitableCoinFromList(sha256ProfitableCoins, amuIterator);
+                        profitableCoin = ChooseCoinFromList(sha256ProfitableCoins, amuIterator);
 
                         amuIterator++;
                         if (amuIterator >= sha256ProfitableCoins.Count())
@@ -382,7 +393,7 @@ namespace MultiMiner.Engine
             return newConfiguration;
         }
 
-        private CoinInformation GetProfitableCoinFromList(List<CoinInformation> coinList, int deviceIterator)
+        private CoinInformation ChooseCoinFromList(List<CoinInformation> coinList, int deviceIterator)
         {
             CoinInformation profitableCoin;
 
@@ -390,18 +401,29 @@ namespace MultiMiner.Engine
 
             if (!mineSingle && engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue.HasValue)
             {
-                switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+                switch (engineConfiguration.StrategyConfiguration.MiningBasis)
                 {
-                    case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
-                        mineSingle = coinList.First().AdjustedProfitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
+                    case StrategyConfiguration.CoinMiningBasis.Profitability:
+                        switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+                        {
+                            case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
+                                mineSingle = coinList.First().AdjustedProfitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
+                                break;
+                            case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
+                                mineSingle = coinList.First().AverageProfitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
+                                break;
+                            case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
+                                mineSingle = coinList.First().Profitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
+                                break;
+                        }
                         break;
-                    case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
-                        mineSingle = coinList.First().AverageProfitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
+                    case StrategyConfiguration.CoinMiningBasis.Difficulty:
+                        mineSingle = coinList.First().Difficulty < engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
                         break;
-                    case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
-                        mineSingle = coinList.First().Profitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
+                    case StrategyConfiguration.CoinMiningBasis.Price:
+                        mineSingle = coinList.First().Price > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
                         break;
-                }
+                }                
             }
 
             if (mineSingle)
@@ -412,37 +434,49 @@ namespace MultiMiner.Engine
             return profitableCoin;
         }
 
-        private List<CoinInformation> GetFilteredProfitableCoins(IEnumerable<CoinInformation> unfilteredProfitableCoins)
+        //filter the coin information list by MinimumThresholdValue and MinimumThresholdSymbol
+        private List<CoinInformation> GetFilteredCoinInformation(IEnumerable<CoinInformation> unfilteredCoinInformation)
         {
-            List<CoinInformation> filteredProfitableCoins = unfilteredProfitableCoins.ToList(); //call ToList to get a copy
+            List<CoinInformation> filteredCoinInformation = unfilteredCoinInformation.ToList(); //call ToList to get a copy
 
             if (!string.IsNullOrEmpty(engineConfiguration.StrategyConfiguration.MinimumThresholdSymbol))
             {
-                CoinInformation minimumCoin = filteredProfitableCoins.SingleOrDefault(c => c.Symbol.Equals(engineConfiguration.StrategyConfiguration.MinimumThresholdSymbol));
-                int index = filteredProfitableCoins.IndexOf(minimumCoin);
+                CoinInformation minimumCoin = filteredCoinInformation.SingleOrDefault(c => c.Symbol.Equals(engineConfiguration.StrategyConfiguration.MinimumThresholdSymbol));
+                int index = filteredCoinInformation.IndexOf(minimumCoin);
                 index++;
-                filteredProfitableCoins.RemoveRange(index, filteredProfitableCoins.Count - index);
+                filteredCoinInformation.RemoveRange(index, filteredCoinInformation.Count - index);
             }
 
             if (engineConfiguration.StrategyConfiguration.MinimumThresholdValue.HasValue)
             {
                 double minimumValue = engineConfiguration.StrategyConfiguration.MinimumThresholdValue.Value;
 
-                switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+                switch (engineConfiguration.StrategyConfiguration.MiningBasis)
                 {
-                    case Configuration.StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
-                        filteredProfitableCoins = filteredProfitableCoins.Where(c => c.AdjustedProfitability > minimumValue).ToList();
+                    case Configuration.StrategyConfiguration.CoinMiningBasis.Profitability:
+                        switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+                        {
+                            case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
+                                filteredCoinInformation = filteredCoinInformation.Where(c => c.AdjustedProfitability > minimumValue).ToList();
+                                break;
+                            case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
+                                filteredCoinInformation = filteredCoinInformation.Where(c => c.AverageProfitability > minimumValue).ToList();
+                                break;
+                            case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
+                                filteredCoinInformation = filteredCoinInformation.Where(c => c.Profitability > minimumValue).ToList();
+                                break;
+                        }
                         break;
-                    case Configuration.StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
-                        filteredProfitableCoins = filteredProfitableCoins.Where(c => c.AverageProfitability > minimumValue).ToList();
+                    case Configuration.StrategyConfiguration.CoinMiningBasis.Difficulty:
+                        filteredCoinInformation = filteredCoinInformation.Where(c => c.Difficulty < minimumValue).ToList();
                         break;
-                    case Configuration.StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
-                        filteredProfitableCoins = filteredProfitableCoins.Where(c => c.Profitability > minimumValue).ToList();
+                    case Configuration.StrategyConfiguration.CoinMiningBasis.Price:
+                        filteredCoinInformation = filteredCoinInformation.Where(c => c.Price > minimumValue).ToList();
                         break;
                 }
             }
 
-            return filteredProfitableCoins;
+            return filteredCoinInformation;
         }
 
         private static bool DeviceConfigurationsDiffer(List<DeviceConfiguration> configuration1, List<DeviceConfiguration> configuration2)

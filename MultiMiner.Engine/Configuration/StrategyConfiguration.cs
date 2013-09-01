@@ -5,6 +5,13 @@
         //generic
         public Coinchoose.Api.BaseCoin BaseCoin { get; set; }
         public bool AutomaticallyMineCoins { get; set; }
+        public enum CoinMiningBasis
+        {
+            Profitability = 0,
+            Difficulty = 1,
+            Price = 2
+        }
+        public CoinMiningBasis MiningBasis { get; set; }
         public enum CoinSwitchStrategy
         {
             SingleMost = 0,
