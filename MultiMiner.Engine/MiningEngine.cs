@@ -140,10 +140,10 @@ namespace MultiMiner.Engine
 
             CoinInformation processCoinInfo = null;
             if (coinInformation != null) //null if no network connection
-                coinInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+                processCoinInfo = coinInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             
             //coin may not be in CoinChoose.com
-            if (coinInformation != null)
+            if (processCoinInfo != null)
                 minerProcess.CoinInformation = processCoinInfo;
             
             minerProcess.StartDate = DateTime.Now;
