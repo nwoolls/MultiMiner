@@ -413,8 +413,9 @@ namespace MultiMiner.Win
 
             if (applicationConfiguration.StartMiningOnStartup)
             {
-                startupMiningTimer.Interval = 1000 * applicationConfiguration.StartupMiningDelay;
-                startupMiningCountdownSeconds = applicationConfiguration.StartupMiningDelay;
+                //minimum 1s delay for mining on startup - 0 not allowed
+                startupMiningCountdownSeconds = Math.Max(1, applicationConfiguration.StartupMiningDelay);
+                startupMiningTimer.Interval = 1000 * startupMiningCountdownSeconds;
                 startupMiningTimer.Enabled = true;
                 startupMiningCountdownTimer.Enabled = true;
                 RefreshCountdownLabel();
