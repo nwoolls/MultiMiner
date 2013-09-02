@@ -47,7 +47,7 @@
             // 
             this.multiMinerLabel.AutoSize = true;
             this.multiMinerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.multiMinerLabel.Location = new System.Drawing.Point(97, 12);
+            this.multiMinerLabel.Location = new System.Drawing.Point(91, 12);
             this.multiMinerLabel.Name = "multiMinerLabel";
             this.multiMinerLabel.Size = new System.Drawing.Size(114, 16);
             this.multiMinerLabel.TabIndex = 1;
@@ -57,7 +57,7 @@
             // 
             this.bfgminerLabel.AutoSize = true;
             this.bfgminerLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.bfgminerLabel.Location = new System.Drawing.Point(97, 63);
+            this.bfgminerLabel.Location = new System.Drawing.Point(91, 63);
             this.bfgminerLabel.Name = "bfgminerLabel";
             this.bfgminerLabel.Size = new System.Drawing.Size(111, 13);
             this.bfgminerLabel.TabIndex = 3;
@@ -67,7 +67,7 @@
             // 
             this.cgminerLabel.AutoSize = true;
             this.cgminerLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.cgminerLabel.Location = new System.Drawing.Point(97, 50);
+            this.cgminerLabel.Location = new System.Drawing.Point(91, 50);
             this.cgminerLabel.Name = "cgminerLabel";
             this.cgminerLabel.Size = new System.Drawing.Size(111, 13);
             this.cgminerLabel.TabIndex = 4;
@@ -76,7 +76,7 @@
             // multiMinerLink
             // 
             this.multiMinerLink.AutoSize = true;
-            this.multiMinerLink.Location = new System.Drawing.Point(97, 28);
+            this.multiMinerLink.Location = new System.Drawing.Point(91, 28);
             this.multiMinerLink.Name = "multiMinerLink";
             this.multiMinerLink.Size = new System.Drawing.Size(94, 13);
             this.multiMinerLink.TabIndex = 5;
@@ -89,7 +89,7 @@
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 346);
+            this.panel1.Location = new System.Drawing.Point(0, 356);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(469, 47);
             this.panel1.TabIndex = 6;
@@ -115,12 +115,12 @@
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(12, 82);
+            this.textBox1.Location = new System.Drawing.Point(12, 88);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(443, 254);
+            this.textBox1.Size = new System.Drawing.Size(443, 255);
             this.textBox1.TabIndex = 8;
             this.textBox1.Text = resources.GetString("textBox1.Text");
             // 
@@ -138,7 +138,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(469, 393);
+            this.ClientSize = new System.Drawing.Size(469, 403);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.multiMinerLink);
