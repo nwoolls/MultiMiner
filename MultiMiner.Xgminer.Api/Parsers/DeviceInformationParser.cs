@@ -65,8 +65,11 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     else if (keyValuePairs.ContainsKey("MHS 1s"))
                         newDevice.CurrentHashrate = double.Parse(keyValuePairs["MHS 1s"], CultureInfo.InvariantCulture) * 1000;
 
-                    newDevice.AcceptedShares = int.Parse(keyValuePairs["Accepted"], CultureInfo.InvariantCulture);
-                    newDevice.RejectedShares = int.Parse(keyValuePairs["Rejected"], CultureInfo.InvariantCulture);
+                    if (keyValuePairs.ContainsKey("Accepted")) //check required for bfgminer
+                        newDevice.AcceptedShares = int.Parse(keyValuePairs["Accepted"], CultureInfo.InvariantCulture);
+
+                    if (keyValuePairs.ContainsKey("Rejected")) //check required for bfgminer
+                        newDevice.RejectedShares = int.Parse(keyValuePairs["Rejected"], CultureInfo.InvariantCulture);
                     
                     if (keyValuePairs.ContainsKey("Hardware Errors")) //check required for bfgminer
                         newDevice.HardwareErrors = int.Parse(keyValuePairs["Hardware Errors"], CultureInfo.InvariantCulture);
