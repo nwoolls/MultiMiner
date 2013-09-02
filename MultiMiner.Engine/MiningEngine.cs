@@ -56,7 +56,8 @@ namespace MultiMiner.Engine
             {
                 this.engineConfiguration = engineConfiguration;
 
-                ApplyMiningStrategy(devices, coinInformation);
+                if (coinInformation != null) //null if no network connection
+                    ApplyMiningStrategy(devices, coinInformation);
 
                 if (!mining) //above call to ApplyMiningStrategy may have started mining due to config change
                     StartMining();
@@ -199,14 +200,16 @@ namespace MultiMiner.Engine
         //update engineConfiguration.DeviceConfiguration based on mining strategy & coin info
         public void ApplyMiningStrategy(List<Device> devices, List<CoinInformation> coinInformation)
         {
+            if (coinInformation == null) //null if no network connection
+                return;
+
+
             //store this off so we can reference prices for logging
             this.coinInformation = coinInformation;
 
             //make a copy as we'll be modifying individual coin properties (profitability)
             //if no copy is made this could lead to a compounding effect
-            List<CoinInformation> coinInformationCopy = null;
-            if (coinInformation != null) //null if no network connection
-                CopyCoinInformation(coinInformation);
+            List<CoinInformation> coinInformationCopy = CopyCoinInformation(coinInformation);
 
             if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
             {
