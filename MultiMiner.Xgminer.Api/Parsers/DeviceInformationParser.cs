@@ -7,7 +7,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
     public class DeviceInformationParser
     {
         public static void ParseTextForDeviceInformation(string text, List<DeviceInformation> deviceInformation)
-        {            
+        {
             List<string> deviceBlob = text.Split('|').ToList();
             deviceBlob.RemoveAt(0);
 
@@ -57,8 +57,9 @@ namespace MultiMiner.Xgminer.Api.Parsers
                         newDevice.Intensity = keyValuePairs["Intensity"];
                     }
 
-                    newDevice.AverageHashrate = double.Parse(keyValuePairs["MHS av"], CultureInfo.InvariantCulture) * 1000;
-                    
+                    if (keyValuePairs.ContainsKey("MHS av")) //check required for bfgminer
+                        newDevice.AverageHashrate = double.Parse(keyValuePairs["MHS av"], CultureInfo.InvariantCulture) * 1000;
+
                     //seen both MHS 5s and MHS 1s
                     if (keyValuePairs.ContainsKey("MHS 5s"))
                         newDevice.CurrentHashrate = double.Parse(keyValuePairs["MHS 5s"], CultureInfo.InvariantCulture) * 1000;
@@ -70,12 +71,18 @@ namespace MultiMiner.Xgminer.Api.Parsers
 
                     if (keyValuePairs.ContainsKey("Rejected")) //check required for bfgminer
                         newDevice.RejectedShares = int.Parse(keyValuePairs["Rejected"], CultureInfo.InvariantCulture);
-                    
+
                     if (keyValuePairs.ContainsKey("Hardware Errors")) //check required for bfgminer
                         newDevice.HardwareErrors = int.Parse(keyValuePairs["Hardware Errors"], CultureInfo.InvariantCulture);
-                    
+
                     if (keyValuePairs.ContainsKey("Utility")) //check required for bfgminer
-                        newDevice.Utility = double.Parse(keyValuePairs["Utility"], CultureInfo.InvariantCulture);
+                    {
+                        //personally seen this need extra handling with a user
+                        string stringValue = keyValuePairs["Utility"];
+                        double doubleValue = 0.00;
+                        if (double.TryParse(stringValue, out doubleValue))
+                            newDevice.Utility = doubleValue;
+                    }
 
                     deviceInformation.Add(newDevice);
                 }
