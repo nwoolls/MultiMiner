@@ -1720,7 +1720,8 @@ namespace MultiMiner.Win
 
         private void advancedMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            quickSwitchItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 1;
+            //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
+            quickSwitchItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
         }
 
         private void notificationsControl1_NotificationsChanged(object sender)
