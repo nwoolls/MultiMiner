@@ -1773,7 +1773,7 @@ namespace MultiMiner.Win
             }
 
             string installedMinerVersion = Engine.Installer.GetInstalledMinerVersion();
-            if (!availableMinerVersion.Equals(installedMinerVersion))
+            if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
             {
                 notificationsControl.AddNotification(MultiMinerNotificationId,
                     String.Format("MultiMiner version {0} is available ({1} installed)",
@@ -1786,6 +1786,14 @@ namespace MultiMiner.Win
                                 StartMining();
                         }, "http://releases.multiminerapp.com");
             }
+        }
+
+        private bool ThisVersionGreater(string thisVersion, string thatVersion)
+        {
+            Version thisVersionObj = new Version(thisVersion);
+            Version thatVersionObj = new Version(thatVersion);
+
+            return thisVersionObj > thatVersionObj;
         }
 
         private void CheckForMinerUpdates(MinerBackend minerBackend)
@@ -1806,7 +1814,7 @@ namespace MultiMiner.Win
                 }
 
                 string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVersion(minerBackend, MinerPath.GetPathToInstalledMiner(minerBackend));
-                if (!availableMinerVersion.Equals(installedMinerVersion))
+                if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
                 {
                     int notificationId = minerBackend == MinerBackend.Bfgminer ? BfgminerNotificationId : CgminerNotificationId;
 
