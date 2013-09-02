@@ -58,16 +58,27 @@ namespace MultiMiner.Xgminer
                 string serialArg = minerConfiguration.ErupterDriver ? Bfgminer.MinerParameter.ScanSerialErupterAll : Bfgminer.MinerParameter.ScanSerialAll;
                 arguments = String.Format("{0} {1}", arguments, serialArg);
             }
-
-            Process minerProcess = StartMinerProcess(arguments, redirectOutput);
-
+            
+            //this must be done async, with 70+ devices doing this synchronous
+            //locks up the process
+            Process minerProcess = StartMinerProcess(arguments, redirectOutput, false, "", false);
             List<string> output = new List<string>();
-
-            while (!minerProcess.StandardOutput.EndOfStream)
+            minerProcess.OutputDataReceived += (sender, e) =>
             {
-                string line = minerProcess.StandardOutput.ReadLine();
-                output.Add(line);
-            }
+                if (e.Data != null)
+                {
+                    string s = e.Data;
+                    output.Add(s);
+                }
+            };
+
+            minerProcess.Start();
+
+            minerProcess.BeginOutputReadLine();
+            //calling BeginErrorReadLine here is *required* on at least one user's machine
+            minerProcess.BeginErrorReadLine();
+
+            minerProcess.WaitForExit(60 * 1000);
 
             List<Device> result = new List<Device>();
             DeviceListParser.ParseTextForDevices(output, result);
@@ -145,7 +156,7 @@ namespace MultiMiner.Xgminer
         }
 
         private Process StartMinerProcess(string arguments, bool redirectOutput, 
-            bool ensureProcessStarts = false, string reason = "")
+            bool ensureProcessStarts = false, string reason = "", bool startProcess = true)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
             
@@ -183,20 +194,24 @@ namespace MultiMiner.Xgminer
 
                 LogLaunch(this, args);
             }
-
-            Process process = StartProcessAndCheckResponse(startInfo);
             
-            if (ensureProcessStarts)
-                //store the returned process
-                process = EnsureProcessStarts(process, startInfo);
-
-            if (!process.HasExited)
-                process.PriorityClass = minerConfiguration.Priority;
+            Process process = StartProcessAndCheckResponse(startInfo, startProcess);
+            
+            if (startProcess)
+            {
+                if (ensureProcessStarts)
+                    //store the returned process
+                    process = EnsureProcessStarts(process, startInfo);
+                
+                if (!process.HasExited)
+                    process.PriorityClass = minerConfiguration.Priority;
+            }
 
             return process;
         }
 
-        private Process StartProcessAndCheckResponse(ProcessStartInfo startInfo)
+        private Process StartProcessAndCheckResponse(ProcessStartInfo startInfo,
+            bool startProcess = true)
         {
             bool userWillWatchOutput = startInfo.RedirectStandardOutput;
 
@@ -209,11 +224,14 @@ namespace MultiMiner.Xgminer
             if (!userWillWatchOutput)
                 process.OutputDataReceived += HandleProcessOutput;
             process.ErrorDataReceived += HandleProcessError;
-            
-            if (process.Start() && !userWillWatchOutput)
+
+            if (startProcess)
             {
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
+                if (process.Start() && !userWillWatchOutput)
+                {
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+                }
             }
 
             return process;
