@@ -1120,10 +1120,11 @@ namespace MultiMiner.Win
             //there may be coins configured that are no longer returned in the stats
             ClearAllCoinStats();
 
-            foreach (Coinchoose.Api.CoinInformation coin in coinInformation)
-                foreach (DataGridViewRow row in deviceGridView.Rows)
-                    if (coin.Name.Equals((string)row.Cells[coinColumn.Index].Value, StringComparison.CurrentCultureIgnoreCase))
-                        PopulateCoinStatsForRow(coin, row);
+            if (coinInformation != null) //null if no network connection
+                foreach (Coinchoose.Api.CoinInformation coin in coinInformation)
+                    foreach (DataGridViewRow row in deviceGridView.Rows)
+                        if (coin.Name.Equals((string)row.Cells[coinColumn.Index].Value, StringComparison.CurrentCultureIgnoreCase))
+                            PopulateCoinStatsForRow(coin, row);
         }
 
         private void PopulateCoinStatsForRow(Coinchoose.Api.CoinInformation coin, DataGridViewRow row)

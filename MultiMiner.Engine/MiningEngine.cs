@@ -136,7 +136,10 @@ namespace MultiMiner.Engine
         {
             string coinName = minerProcess.MinerConfiguration.CoinName;
             string coinSymbol = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase)).Coin.Symbol;
-            CoinInformation processCoinInfo = coinInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+
+            CoinInformation processCoinInfo = null;
+            if (coinInformation != null) //null if no network connection
+                coinInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             
             //coin may not be in CoinChoose.com
             if (coinInformation != null)
@@ -163,7 +166,9 @@ namespace MultiMiner.Engine
             double priceAtEnd = priceAtStart;
 
             //can't use Single here - coin info may be gone now and we crash
-            CoinInformation coinInfo = coinInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+            CoinInformation coinInfo = null;
+            if (coinInformation != null) //null if no internet connection
+                coinInfo = coinInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             if (coinInfo != null)
                 priceAtEnd = coinInfo.Price;
 
@@ -199,7 +204,9 @@ namespace MultiMiner.Engine
 
             //make a copy as we'll be modifying individual coin properties (profitability)
             //if no copy is made this could lead to a compounding effect
-            List<CoinInformation> coinInformationCopy = CopyCoinInformation(coinInformation);
+            List<CoinInformation> coinInformationCopy = null;
+            if (coinInformation != null) //null if no network connection
+                CopyCoinInformation(coinInformation);
 
             if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
             {
