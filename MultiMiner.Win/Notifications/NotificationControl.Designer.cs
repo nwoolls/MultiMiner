@@ -30,6 +30,8 @@
         {
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.button3 = new System.Windows.Forms.Button();
+            this.infoPicture = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.infoPicture)).BeginInit();
             this.SuspendLayout();
             // 
             // linkLabel1
@@ -56,15 +58,30 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // infoPicture
+            // 
+            this.infoPicture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.infoPicture.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.infoPicture.Image = global::MultiMiner.Win.Properties.Resources.internet_browse;
+            this.infoPicture.Location = new System.Drawing.Point(242, 5);
+            this.infoPicture.Name = "infoPicture";
+            this.infoPicture.Size = new System.Drawing.Size(16, 16);
+            this.infoPicture.TabIndex = 4;
+            this.infoPicture.TabStop = false;
+            this.infoPicture.Click += new System.EventHandler(this.infoPicture_Click);
+            // 
             // NotificationControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Controls.Add(this.infoPicture);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.linkLabel1);
             this.Name = "NotificationControl";
             this.Size = new System.Drawing.Size(288, 58);
+            this.Load += new System.EventHandler(this.NotificationControl_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.infoPicture)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -74,5 +91,6 @@
 
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.PictureBox infoPicture;
     }
 }

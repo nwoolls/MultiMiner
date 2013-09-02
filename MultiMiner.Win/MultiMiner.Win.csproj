@@ -250,6 +250,7 @@
     <None Include="Resources\view_options.png" />
     <None Include="Resources\window_sel.png" />
     <None Include="Resources\application-info.png" />
+    <None Include="Resources\internet_browse.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

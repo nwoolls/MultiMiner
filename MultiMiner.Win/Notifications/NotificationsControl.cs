@@ -17,7 +17,7 @@ namespace MultiMiner.Win.Notifications
             InitializeComponent();
         }
 
-        public void AddNotification(int id, string text, Action clickHandler)
+        public void AddNotification(int id, string text, Action clickHandler, string informationUrl = "")
         {
             NotificationControl notificationControl;
 
@@ -32,7 +32,7 @@ namespace MultiMiner.Win.Notifications
                 nc.Parent = null;
                 if (NotificationsChanged != null)
                     NotificationsChanged(this);
-            });
+            }, informationUrl);
 
             notificationControl.Height = 28;
             notificationControl.Parent = containerPanel;

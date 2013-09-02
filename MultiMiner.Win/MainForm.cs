@@ -143,7 +143,7 @@ namespace MultiMiner.Win
             notificationsControl = new NotificationsControl();
             notificationsControl.Visible = false;
             notificationsControl.Height = 150;
-            notificationsControl.Width = 300;
+            notificationsControl.Width = 320;
             notificationsControl.NotificationsChanged += notificationsControl1_NotificationsChanged;
             notificationsControl.Parent = splitContainer1.Panel1;
             const int offset = 2;
@@ -1784,7 +1784,7 @@ namespace MultiMiner.Win
                             InstallMultiMiner();
                             if (wasMining)
                                 StartMining();
-                        });
+                        }, "http://releases.multiminerapp.com");
             }
         }
 
@@ -1810,6 +1810,10 @@ namespace MultiMiner.Win
                 {
                     int notificationId = minerBackend == MinerBackend.Bfgminer ? BfgminerNotificationId : CgminerNotificationId;
 
+                    string informationUrl = "https://github.com/ckolivas/cgminer/blob/master/NEWS";
+                    if (minerBackend == MinerBackend.Bfgminer)
+                        informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
+
                     notificationsControl.AddNotification(notificationId,
                         String.Format("{0} version {1} is available ({2} installed)", 
                             minerName, availableMinerVersion, installedMinerVersion), () =>
@@ -1819,7 +1823,7 @@ namespace MultiMiner.Win
                             InstallMiner(minerBackend);
                             if (wasMining)
                                 StartMining();
-                        });
+                        }, informationUrl);
                 }
             }
         }
