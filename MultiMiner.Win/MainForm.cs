@@ -1874,6 +1874,9 @@ namespace MultiMiner.Win
 
         private void idleTimer_Tick(object sender, EventArgs e)
         {
+            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+                return; //idle detection code uses User32.dll
+
             if (applicationConfiguration.AutoSetDesktopMode && miningEngine.Mining)
             {
                 TimeSpan idleTimeSpan = TimeSpan.FromMilliseconds(Environment.TickCount - IdleTimeFinder.GetLastInputTime());
@@ -1884,17 +1887,13 @@ namespace MultiMiner.Win
                 if (idleTimeSpan.TotalMinutes > idleMinutesForDesktopMode)
                 {
                     if (engineConfiguration.XgminerConfiguration.DesktopMode)
-                    {
-                        EnableDesktopMode(false);
-                    }
+                    EnableDesktopMode(false);
                 }
                 //else if idle for less than the idleTimer interval, enable Desktop Mode
-                else if (idleTimeSpan.TotalSeconds < (idleTimer.Interval / 1000))
+                else if (idleTimeSpan.TotalMilliseconds <= idleTimer.Interval)
                 {
                     if (!engineConfiguration.XgminerConfiguration.DesktopMode)
-                    {
-                        EnableDesktopMode(true);
-                    }
+                    EnableDesktopMode(true);
                 }
             }
         }

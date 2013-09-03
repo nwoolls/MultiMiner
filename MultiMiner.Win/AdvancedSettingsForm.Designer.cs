@@ -42,7 +42,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.autoDesktopCheckBox = new System.Windows.Forms.CheckBox();
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).BeginInit();
@@ -169,15 +169,15 @@
             this.textBox1.Size = new System.Drawing.Size(94, 20);
             this.textBox1.TabIndex = 0;
             // 
-            // checkBox1
+            // autoDesktopCheckBox
             // 
-            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "AutoSetDesktopMode", true));
-            this.checkBox1.Location = new System.Drawing.Point(224, 8);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(163, 44);
-            this.checkBox1.TabIndex = 2;
-            this.checkBox1.Text = "Automatically set Desktop Mode based on computer use";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.autoDesktopCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "AutoSetDesktopMode", true));
+            this.autoDesktopCheckBox.Location = new System.Drawing.Point(224, 8);
+            this.autoDesktopCheckBox.Name = "autoDesktopCheckBox";
+            this.autoDesktopCheckBox.Size = new System.Drawing.Size(163, 44);
+            this.autoDesktopCheckBox.TabIndex = 2;
+            this.autoDesktopCheckBox.Text = "Automatically set Desktop Mode based on computer use";
+            this.autoDesktopCheckBox.UseVisualStyleBackColor = true;
             // 
             // applicationConfigurationBindingSource
             // 
@@ -189,7 +189,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(392, 225);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.autoDesktopCheckBox);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.erupterCheckBox);
             this.Controls.Add(this.disableGpuCheckbox);
@@ -225,7 +225,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox autoDesktopCheckBox;
         private System.Windows.Forms.BindingSource applicationConfigurationBindingSource;
     }
 }

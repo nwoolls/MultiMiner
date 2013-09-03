@@ -28,6 +28,7 @@ namespace MultiMiner.Win
             xgminerConfigurationBindingSource.DataSource = workingMinerConfiguration;
             applicationConfigurationBindingSource.DataSource = workingApplicationConfiguration;
             erupterCheckBox.Enabled = minerConfiguration.MinerBackend == Xgminer.MinerBackend.Bfgminer;
+            autoDesktopCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
