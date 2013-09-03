@@ -83,6 +83,7 @@ namespace MultiMiner.Win
             mobileMinerTimer.Interval = mobileMinerInterval * 1000;
 
             engineConfiguration.LoadStrategyConfiguration(); //needed before refreshing coins
+            SetupNotificationsControl(); //needed before refreshing coins
             RefreshCoinStats();
 
             CheckAndShowGettingStarted();
@@ -116,13 +117,11 @@ namespace MultiMiner.Win
                 CheckForDisownedMiners();
 
             CheckAndDownloadMiners();
-
-            SetupNotificationsControl();
-
+            
             SetupAutoUpdates();
 
             RefreshDevices();
-
+            
             if (devices.Count > 0)
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
 
@@ -148,7 +147,7 @@ namespace MultiMiner.Win
         {
             notificationsControl = new NotificationsControl();
             notificationsControl.Visible = false;
-            notificationsControl.Height = 150;
+            notificationsControl.Height = 143;
             notificationsControl.Width = 320;
             notificationsControl.NotificationsChanged += notificationsControl1_NotificationsChanged;
             notificationsControl.Parent = splitContainer1.Panel1;
@@ -1079,6 +1078,65 @@ namespace MultiMiner.Win
             LoadGridValuesFromCoinStats();
             LoadKnownCoinsFromCoinStats();
             RefreshCoinStatsLabel();
+            SuggestCoinsToMine();
+        }
+
+        private void SuggestCoinsToMine()
+        {
+            if (!engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+                return;
+            if (coinInformation == null) //no network connection
+                return;
+
+            const string exchange = "cry";
+
+            IEnumerable<Coinchoose.Api.CoinInformation> orderedCoins = coinInformation.OrderByDescending(c => c.AverageProfitability);
+            switch (engineConfiguration.StrategyConfiguration.MiningBasis)
+            {
+                case StrategyConfiguration.CoinMiningBasis.Difficulty:
+                    orderedCoins = coinInformation.OrderBy(c => c.Difficulty);
+                    break;
+                case StrategyConfiguration.CoinMiningBasis.Price:
+                    orderedCoins = coinInformation.OrderByDescending(c => c.Price);
+                    break;
+            }
+
+            IEnumerable<Coinchoose.Api.CoinInformation> unconfiguredCoins = orderedCoins.Where(coin => !engineConfiguration.CoinConfigurations.Any(config => config.Coin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase)));
+            IEnumerable<Coinchoose.Api.CoinInformation> viableCoins = unconfiguredCoins.Where(coin => coin.Exchange.Equals(exchange, StringComparison.OrdinalIgnoreCase));
+            IEnumerable<Coinchoose.Api.CoinInformation> coinsToMine = viableCoins.Take(3);
+
+            foreach (Coinchoose.Api.CoinInformation coin in coinsToMine)
+                NotifyCoinToMine(coin);
+        }
+
+        private void NotifyCoinToMine(MultiMiner.Coinchoose.Api.CoinInformation coin)
+        {
+            string value = coin.AverageProfitability.ToString(".#") + "%";
+            string noun = "average profitability";
+
+            switch (engineConfiguration.StrategyConfiguration.MiningBasis)
+            {
+                case StrategyConfiguration.CoinMiningBasis.Difficulty:
+                    value = coin.Difficulty.ToString(".####");
+                    noun = "difficulty";
+                    break;
+                case StrategyConfiguration.CoinMiningBasis.Price:
+                    value = coin.Price.ToString(".########");
+                    noun = "price";
+                    break;
+            }
+
+            string infoUrl = "http://coinchoose.com/index.php";
+            if (engineConfiguration.StrategyConfiguration.BaseCoin == Coinchoose.Api.BaseCoin.Litecoin)
+                infoUrl = "http://coinchoose.com/litecoin.php";
+
+            notificationsControl.AddNotification(coin.Symbol,
+                String.Format("Consider mining {0} ({1} {2})",
+                    coin.Symbol, value, noun), () =>
+                    {
+                        Process.Start(String.Format("https://www.google.com/search?q={0}+{1}+mining+pools",
+                            coin.Symbol, coin.Name));
+                    }, infoUrl);
         }
 
         private void RefreshCoinStatsLabel()
@@ -1777,9 +1835,9 @@ namespace MultiMiner.Win
             }
         }
 
-        private const int BfgminerNotificationId = 100;
-        private const int CgminerNotificationId = 101;
-        private const int MultiMinerNotificationId = 102;
+        private const int bfgminerNotificationId = 100;
+        private const int cgminerNotificationId = 101;
+        private const int multiMinerNotificationId = 102;
 
         private void CheckForMultiMinerUpdates()
         {
@@ -1797,7 +1855,7 @@ namespace MultiMiner.Win
             string installedMinerVersion = Engine.Installer.GetInstalledMinerVersion();
             if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
             {
-                notificationsControl.AddNotification(MultiMinerNotificationId,
+                notificationsControl.AddNotification(multiMinerNotificationId.ToString(),
                     String.Format("MultiMiner version {0} is available ({1} installed)",
                         availableMinerVersion, installedMinerVersion), () =>
                         {
@@ -1838,13 +1896,13 @@ namespace MultiMiner.Win
                 string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVersion(minerBackend, MinerPath.GetPathToInstalledMiner(minerBackend));
                 if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
                 {
-                    int notificationId = minerBackend == MinerBackend.Bfgminer ? BfgminerNotificationId : CgminerNotificationId;
+                    int notificationId = minerBackend == MinerBackend.Bfgminer ? bfgminerNotificationId : cgminerNotificationId;
 
                     string informationUrl = "https://github.com/ckolivas/cgminer/blob/master/NEWS";
                     if (minerBackend == MinerBackend.Bfgminer)
                         informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
 
-                    notificationsControl.AddNotification(notificationId,
+                    notificationsControl.AddNotification(notificationId.ToString(),
                         String.Format("{0} version {1} is available ({2} installed)", 
                             minerName, availableMinerVersion, installedMinerVersion), () =>
                         {
