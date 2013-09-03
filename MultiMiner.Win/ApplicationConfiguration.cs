@@ -67,20 +67,7 @@ namespace MultiMiner.Win
         {
             ApplicationConfiguration tmp = ConfigurationReaderWriter.ReadConfiguration<ApplicationConfiguration>(ApplicationConfigurationFileName());
 
-            this.LaunchOnWindowsLogin = tmp.LaunchOnWindowsLogin;
-            this.StartMiningOnStartup = tmp.StartMiningOnStartup;
-            this.StartupMiningDelay = tmp.StartupMiningDelay;
-            this.RestartCrashedMiners = tmp.RestartCrashedMiners;
-            this.MinimizeToNotificationArea = tmp.MinimizeToNotificationArea;
-            this.DetectDisownedMiners = tmp.DetectDisownedMiners;
-            this.Maximized = tmp.Maximized;
-            this.LogAreaVisible = tmp.LogAreaVisible;
-            this.StrategyCheckInterval = tmp.StrategyCheckInterval;
-
-            this.MobileMinerMonitoring = tmp.MobileMinerMonitoring;
-            this.MobileMinerRemoteCommands = tmp.MobileMinerRemoteCommands;
-            this.MobileMinerEmailAddress = tmp.MobileMinerEmailAddress;
-            this.MobileMinerApplicationKey = tmp.MobileMinerApplicationKey;
+            ObjectCopier.CopyObject(tmp, this);
         }
     }
 }
