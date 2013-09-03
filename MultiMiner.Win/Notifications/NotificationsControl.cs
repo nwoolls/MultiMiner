@@ -17,14 +17,14 @@ namespace MultiMiner.Win.Notifications
             InitializeComponent();
         }
 
-        public void AddNotification(int id, string text, Action clickHandler, string informationUrl = "")
+        public void AddNotification(string id, string text, Action clickHandler, string informationUrl = "")
         {
             NotificationControl notificationControl;
 
             foreach (Control control in containerPanel.Controls)
             {
                 notificationControl = (NotificationControl)control;
-                if ((int)notificationControl.Tag == id)
+                if ((string)notificationControl.Tag == id)
                     return;
             }
 
