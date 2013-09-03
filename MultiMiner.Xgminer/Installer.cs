@@ -157,7 +157,7 @@ namespace MultiMiner.Xgminer
             else
             {
                 if (minerBackend == MinerBackend.Bfgminer)
-                    return "http://eligius.st/~luke-jr";
+                    return "http://luke.dashjr.org";
                 else
                     return "http://ck.kolivas.org";
             }
