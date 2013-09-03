@@ -8,7 +8,7 @@ namespace MultiMiner.Win
 {
     public partial class CoinChooseForm : Form
     {
-        public string SelectedSymbol { get; set; }
+        public CryptoCoin SelectedCoin { get; set; }
 
         private List<CryptoCoin> sortedCoins;
 
@@ -34,7 +34,25 @@ namespace MultiMiner.Win
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            SelectedSymbol = this.sortedCoins[coinCombo.SelectedIndex].Symbol;
+            string coinName = coinCombo.Text;
+            CryptoCoin knownCoin = sortedCoins.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+
+            if (knownCoin == null)
+            {
+                CryptoCoin newCoin = new CryptoCoin();
+                newCoin.Name = coinName;
+                newCoin.Algorithm = Xgminer.CoinAlgorithm.SHA256;
+
+                CoinEditForm coinEditForm = new CoinEditForm(newCoin);
+                if (coinEditForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    SelectedCoin = newCoin;
+                else
+                    DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            }
+            else
+            {
+                SelectedCoin = knownCoin;
+            }
         }
     }
 }

@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CoinsForm));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.addCoinButton = new System.Windows.Forms.ToolStripButton();
-            this.addCoinDropDown = new System.Windows.Forms.ToolStripDropDownButton();
             this.removeCoinButton = new System.Windows.Forms.ToolStripButton();
             this.coinListBox = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -74,7 +73,6 @@
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addCoinButton,
-            this.addCoinDropDown,
             this.removeCoinButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
@@ -92,16 +90,6 @@
             this.addCoinButton.Size = new System.Drawing.Size(61, 22);
             this.addCoinButton.Text = "Add Coin";
             this.addCoinButton.Click += new System.EventHandler(this.addCoinButton_Click);
-            // 
-            // addCoinDropDown
-            // 
-            this.addCoinDropDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.addCoinDropDown.Image = ((System.Drawing.Image)(resources.GetObject("addCoinDropDown.Image")));
-            this.addCoinDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addCoinDropDown.Name = "addCoinDropDown";
-            this.addCoinDropDown.Size = new System.Drawing.Size(70, 22);
-            this.addCoinDropDown.Text = "Add Coin";
-            this.addCoinDropDown.Visible = false;
             // 
             // removeCoinButton
             // 
@@ -437,7 +425,6 @@
         #endregion
 
         private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripDropDownButton addCoinDropDown;
         private System.Windows.Forms.ListBox coinListBox;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button saveButton;

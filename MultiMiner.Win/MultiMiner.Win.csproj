@@ -67,6 +67,12 @@
     <Compile Include="CoinChooseForm.Designer.cs">
       <DependentUpon>CoinChooseForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CoinEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CoinEditForm.Designer.cs">
+      <DependentUpon>CoinEditForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CoinsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -136,6 +142,9 @@
     <EmbeddedResource Include="CoinChooseForm.resx">
       <DependentUpon>CoinChooseForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CoinEditForm.resx">
+      <DependentUpon>CoinEditForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CoinsForm.resx">
       <DependentUpon>CoinsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -179,6 +188,7 @@
     <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.CoinConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.StrategyConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.XgminerConfiguration.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Engine.CryptoCoin.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.LogProcessCloseArgs.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.MiningPool.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.LogEntry.datasource" />

@@ -22,22 +22,10 @@ namespace MultiMiner.Win
 
         private void CoinsForm_Load(object sender, EventArgs e)
         {
-            PopulateKnownCoins();
             PopulateConfigurations();
             UpdateButtonStates();
         }
-
-        private void PopulateKnownCoins()
-        {
-            foreach (CryptoCoin coin in knownCoins)
-            {
-                ToolStripButton coinButton = new ToolStripButton(coin.Name);
-                coinButton.Tag = coin.Symbol;
-                addCoinDropDown.DropDownItems.Add(coinButton);
-                coinButton.Click += HandleCoinButtonClick;
-            }
-        }
-
+        
         private void removeCoinButton_Click(object sender, EventArgs e)
         {
             DialogResult promptResult = MessageBox.Show("Remove the selected coin configuration?", "Confirm", MessageBoxButtons.YesNo);
@@ -67,16 +55,10 @@ namespace MultiMiner.Win
             if (configurations.Count > 0)
                 coinListBox.SelectedIndex = 0;
         }
-
-        private void HandleCoinButtonClick(object sender, EventArgs e)
+        
+        private void AddCoinConfiguration(CryptoCoin cryptoCoin)
         {
-            string clickedSymbol = (string)((ToolStripButton)sender).Tag;
-            AddCoinConfiguration(clickedSymbol);          
-        }
-
-        private void AddCoinConfiguration(string coinSymbol)
-        {
-            CoinConfiguration configuration = configurations.SingleOrDefault(c => c.Coin.Symbol.Equals(coinSymbol));
+            CoinConfiguration configuration = configurations.SingleOrDefault(c => c.Coin.Symbol.Equals(cryptoCoin.Symbol));
             if (configuration != null)
             {
                 coinListBox.SelectedIndex = configurations.IndexOf(configuration);
@@ -85,7 +67,16 @@ namespace MultiMiner.Win
             {
                 configuration = new CoinConfiguration();
 
-                configuration.Coin = knownCoins.Single(c => c.Symbol.Equals(coinSymbol));
+                configuration.Coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(cryptoCoin));
+
+                //user may have manually entered a coin
+                if (configuration.Coin == null)
+                {
+                    configuration.Coin = new CryptoCoin();
+                    configuration.Coin.Name = cryptoCoin.Name;
+                    configuration.Coin.Symbol = cryptoCoin.Symbol;
+                }
+
                 configuration.Pools.Add(new MiningPool());
 
                 configurations.Add(configuration);
@@ -96,6 +87,7 @@ namespace MultiMiner.Win
 
             hostEdit.Focus();
         }
+
         private void coinListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (coinListBox.SelectedIndex >= 0)
@@ -187,10 +179,7 @@ namespace MultiMiner.Win
             CoinChooseForm coinChooseForm = new CoinChooseForm(knownCoins);
             DialogResult dialogResult = coinChooseForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
-            {
-                string symbolToAdd = coinChooseForm.SelectedSymbol;
-                AddCoinConfiguration(symbolToAdd);
-            }
+                AddCoinConfiguration(coinChooseForm.SelectedCoin);
         }
 
         private void textBox4_Validating(object sender, System.ComponentModel.CancelEventArgs e)

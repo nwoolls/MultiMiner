@@ -557,13 +557,15 @@ namespace MultiMiner.Win
         private void SaveGridValuesToConfiguration()
         {
             deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
-            
+
             engineConfiguration.DeviceConfigurations.Clear();
 
             for (int i = 0; i < devices.Count; i++)
-            {                
+            {
                 DataGridViewRow gridRow = deviceGridView.Rows[i];
-                CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Name.Equals(gridRow.Cells[coinColumn.Index].Value));
+
+                //pull this from coin configurations, not known coins, may not be in CoinChoose
+                CryptoCoin coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(gridRow.Cells[coinColumn.Index].Value)).Coin;
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
@@ -591,16 +593,13 @@ namespace MultiMiner.Win
 
                     if (deviceConfiguration != null)
                     {
-                        CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(deviceConfiguration.CoinSymbol));
-                        if (coin != null)
-                        {
-                            //ensure the coin configuration still exists
-                            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(coin.Symbol));
-                            if (coinConfiguration != null)
-                                gridRow.Cells[coinColumn.Index].Value = coin.Name;
-                            else
-                                gridRow.Cells[coinColumn.Index].Value = string.Empty;
-                        }
+                        //ensure the coin configuration still exists
+                        CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(deviceConfiguration.CoinSymbol));
+                        if (coinConfiguration != null)
+                            gridRow.Cells[coinColumn.Index].Value = coinConfiguration.Coin.Name;
+                        else
+                            gridRow.Cells[coinColumn.Index].Value = string.Empty;
+
                         gridRow.Cells[enabledColumn.Index].Value = deviceConfiguration.Enabled;
                     }
                     else
@@ -1134,8 +1133,12 @@ namespace MultiMiner.Win
             if (coinInformation != null) //null if no network connection
                 foreach (Coinchoose.Api.CoinInformation coin in coinInformation)
                     foreach (DataGridViewRow row in deviceGridView.Rows)
-                        if (coin.Name.Equals((string)row.Cells[coinColumn.Index].Value, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        string rowCoinName = (string)row.Cells[coinColumn.Index].Value;
+                        CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(rowCoinName));
+                        if (coin.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase))
                             PopulateCoinStatsForRow(coin, row);
+                    }
         }
 
         private void PopulateCoinStatsForRow(Coinchoose.Api.CoinInformation coin, DataGridViewRow row)
@@ -1443,7 +1446,7 @@ namespace MultiMiner.Win
                     
                     miningStatistics.MinerName = "MultiMiner";
                     miningStatistics.CoinName = GetCoinNameForApiContext(minerProcess.ApiContext);
-                    CryptoCoin coin = knownCoins.Single(c => c.Name.Equals(miningStatistics.CoinName));
+                    CryptoCoin coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(miningStatistics.CoinName)).Coin;
                     miningStatistics.CoinSymbol = coin.Symbol;
 
                     if (coin.Algorithm == CoinAlgorithm.Scrypt)
