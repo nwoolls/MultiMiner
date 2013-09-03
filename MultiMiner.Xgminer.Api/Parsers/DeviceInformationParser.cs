@@ -70,7 +70,13 @@ namespace MultiMiner.Xgminer.Api.Parsers
                         newDevice.AcceptedShares = int.Parse(keyValuePairs["Accepted"], CultureInfo.InvariantCulture);
 
                     if (keyValuePairs.ContainsKey("Rejected")) //check required for bfgminer
-                        newDevice.RejectedShares = int.Parse(keyValuePairs["Rejected"], CultureInfo.InvariantCulture);
+                    {
+                        //personally seen this need extra handling with a user
+                        string stringValue = keyValuePairs["Rejected"];
+                        int intValue = 0;
+                        if (int.TryParse(stringValue, out intValue))
+                            newDevice.RejectedShares = intValue;
+                    }
 
                     if (keyValuePairs.ContainsKey("Hardware Errors")) //check required for bfgminer
                         newDevice.HardwareErrors = int.Parse(keyValuePairs["Hardware Errors"], CultureInfo.InvariantCulture);
