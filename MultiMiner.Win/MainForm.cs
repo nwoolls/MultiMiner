@@ -1135,8 +1135,8 @@ namespace MultiMiner.Win
                     foreach (DataGridViewRow row in deviceGridView.Rows)
                     {
                         string rowCoinName = (string)row.Cells[coinColumn.Index].Value;
-                        CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(rowCoinName));
-                        if (coin.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase))
+                        CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(rowCoinName, StringComparison.OrdinalIgnoreCase));
+                        if ((coinConfiguration != null) &&  coin.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase))
                             PopulateCoinStatsForRow(coin, row);
                     }
         }
