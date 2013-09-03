@@ -7,25 +7,33 @@ namespace MultiMiner.Win
 {
     public partial class AdvancedSettingsForm : Form
     {
-        readonly XgminerConfiguration minerConfiguration;
-        readonly XgminerConfiguration workingConfiguration;
+        private readonly XgminerConfiguration minerConfiguration;
+        private readonly XgminerConfiguration workingMinerConfiguration;
 
-        public AdvancedSettingsForm(XgminerConfiguration minerConfiguration)
+        private readonly ApplicationConfiguration applicationConfiguration;
+        private readonly ApplicationConfiguration workingApplicationConfiguration;
+
+        public AdvancedSettingsForm(XgminerConfiguration minerConfiguration, ApplicationConfiguration applicationConfiguration)
         {
             InitializeComponent();
             this.minerConfiguration = minerConfiguration;
-            this.workingConfiguration = ObjectCopier.CloneObject<XgminerConfiguration, XgminerConfiguration>(minerConfiguration);
+            this.workingMinerConfiguration = ObjectCopier.CloneObject<XgminerConfiguration, XgminerConfiguration>(minerConfiguration);
+
+            this.applicationConfiguration = applicationConfiguration;
+            this.workingApplicationConfiguration = ObjectCopier.CloneObject<ApplicationConfiguration, ApplicationConfiguration>(applicationConfiguration);
         }
 
         private void AdvancedSettingsForm_Load(object sender, EventArgs e)
         {
-            xgminerConfigurationBindingSource.DataSource = workingConfiguration;
+            xgminerConfigurationBindingSource.DataSource = workingMinerConfiguration;
+            applicationConfigurationBindingSource.DataSource = workingApplicationConfiguration;
             erupterCheckBox.Enabled = minerConfiguration.MinerBackend == Xgminer.MinerBackend.Bfgminer;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            ObjectCopier.CopyObject(workingConfiguration, minerConfiguration);
+            ObjectCopier.CopyObject(workingMinerConfiguration, minerConfiguration);
+            ObjectCopier.CopyObject(workingApplicationConfiguration, applicationConfiguration);
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }
     }

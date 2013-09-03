@@ -27,6 +27,7 @@ namespace MultiMiner.Win
         public bool DetectDisownedMiners { get; set; }
         public bool Maximized { get; set; }
         public bool LogAreaVisible { get; set; }
+        public bool AutoSetDesktopMode { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }

@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigurationReaderWriter.cs" />
+    <Compile Include="IdleTimeFinder.cs" />
     <Compile Include="ObjectCopier.cs" />
     <Compile Include="OSVersionPlatform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

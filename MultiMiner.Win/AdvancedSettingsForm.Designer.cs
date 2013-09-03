@@ -42,9 +42,12 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).BeginInit();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -89,7 +92,7 @@
             this.erupterCheckBox.Location = new System.Drawing.Point(12, 35);
             this.erupterCheckBox.Name = "erupterCheckBox";
             this.erupterCheckBox.Size = new System.Drawing.Size(199, 17);
-            this.erupterCheckBox.TabIndex = 21;
+            this.erupterCheckBox.TabIndex = 1;
             this.erupterCheckBox.Text = "Erupter-specific driver (bfgminer only)";
             this.erupterCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -104,7 +107,7 @@
             this.disableGpuCheckbox.Location = new System.Drawing.Point(12, 12);
             this.disableGpuCheckbox.Name = "disableGpuCheckbox";
             this.disableGpuCheckbox.Size = new System.Drawing.Size(120, 17);
-            this.disableGpuCheckbox.TabIndex = 19;
+            this.disableGpuCheckbox.TabIndex = 0;
             this.disableGpuCheckbox.Text = "Disable GPU mining";
             this.disableGpuCheckbox.UseVisualStyleBackColor = true;
             // 
@@ -147,7 +150,7 @@
             this.textBox2.Location = new System.Drawing.Point(105, 48);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(245, 20);
-            this.textBox2.TabIndex = 26;
+            this.textBox2.TabIndex = 1;
             // 
             // label1
             // 
@@ -164,7 +167,21 @@
             this.textBox1.Location = new System.Drawing.Point(105, 22);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(94, 20);
-            this.textBox1.TabIndex = 24;
+            this.textBox1.TabIndex = 0;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "AutoSetDesktopMode", true));
+            this.checkBox1.Location = new System.Drawing.Point(224, 8);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(163, 44);
+            this.checkBox1.TabIndex = 2;
+            this.checkBox1.Text = "Automatically set Desktop Mode based on computer use";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
             // 
             // AdvancedSettingsForm
             // 
@@ -172,6 +189,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(392, 225);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.erupterCheckBox);
             this.Controls.Add(this.disableGpuCheckbox);
@@ -187,6 +205,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -206,5 +225,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.BindingSource applicationConfigurationBindingSource;
     }
 }

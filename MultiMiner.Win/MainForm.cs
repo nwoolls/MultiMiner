@@ -426,6 +426,9 @@ namespace MultiMiner.Win
             crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
 
             SetupCoinStatsTimer();
+
+            idleTimer.Interval = 10 * 1000;
+            idleTimer.Enabled = true;
         }
 
         private void RefreshCountdownLabel()
@@ -698,6 +701,9 @@ namespace MultiMiner.Win
 
         private void startButton_Click(object sender, EventArgs e)
         {
+            if (applicationConfiguration.AutoSetDesktopMode)
+                EnableDesktopMode(true);
+
             SaveChanges();
             StartMining();
         }
@@ -1864,6 +1870,41 @@ namespace MultiMiner.Win
         {
             AboutForm aboutForm = new AboutForm();
             aboutForm.ShowDialog();
+        }
+
+        private void idleTimer_Tick(object sender, EventArgs e)
+        {
+            if (applicationConfiguration.AutoSetDesktopMode && miningEngine.Mining)
+            {
+                TimeSpan idleTimeSpan = TimeSpan.FromMilliseconds(Environment.TickCount - IdleTimeFinder.GetLastInputTime());
+
+                const int idleMinutesForDesktopMode = 2;
+
+                //if idle for more than 1 minute, disable Desktop Mode
+                if (idleTimeSpan.TotalMinutes > idleMinutesForDesktopMode)
+                {
+                    if (engineConfiguration.XgminerConfiguration.DesktopMode)
+                    {
+                        EnableDesktopMode(false);
+                    }
+                }
+                //else if idle for less than the idleTimer interval, enable Desktop Mode
+                else if (idleTimeSpan.TotalSeconds < (idleTimer.Interval / 1000))
+                {
+                    if (!engineConfiguration.XgminerConfiguration.DesktopMode)
+                    {
+                        EnableDesktopMode(true);
+                    }
+                }
+            }
+        }
+
+        private void EnableDesktopMode(bool enabled)
+        {
+            engineConfiguration.XgminerConfiguration.DesktopMode = enabled;
+            desktopModeButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
+            RestartMiningIfMining();
+            engineConfiguration.SaveMinerConfiguration();
         }
     }
 }
