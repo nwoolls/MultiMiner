@@ -34,6 +34,7 @@ namespace MultiMiner.Win
         private readonly List<int> processedCommandIds = new List<int>();
         private readonly List<LogProcessCloseArgs> logCloseEntries = new List<LogProcessCloseArgs>();
         private NotificationsControl notificationsControl;
+        private Dictionary<int, int> lastAcceptedShares = new Dictionary<int,int>();
 
         public MainForm()
         {
@@ -50,6 +51,11 @@ namespace MultiMiner.Win
 
         private void LogProcessClose(object sender, LogProcessCloseArgs ea)
         {
+            int acceptedShares = 0;
+            foreach (int deviceIndex in ea.DeviceIndexes)
+                acceptedShares += lastAcceptedShares[deviceIndex];
+            ea.AcceptedShares = acceptedShares;
+
             const string logFileName = "MiningLog.json";
             string logFilePath = Path.Combine(AppDataPath(), logFileName);
 
@@ -955,6 +961,8 @@ namespace MultiMiner.Win
 
                         if (!string.IsNullOrEmpty(deviceInformation.Intensity))
                             hasIntensityValue = true;
+
+                        lastAcceptedShares[rowIndex] = deviceInformation.AcceptedShares;
                     }
                 }
             }
