@@ -427,7 +427,7 @@ namespace MultiMiner.Win
 
             SetupCoinStatsTimer();
 
-            idleTimer.Interval = 10 * 1000;
+            idleTimer.Interval = 15 * 1000; //check every 15s
             idleTimer.Enabled = true;
         }
 
