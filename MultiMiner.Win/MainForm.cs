@@ -927,10 +927,27 @@ namespace MultiMiner.Win
         {
             string logFilePath = Path.Combine(AppDataPath(), fileName);
 
+            RollOverLogFile(logFilePath);
+
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             string jsonData = serializer.Serialize(objectToLog);
 
             File.AppendAllText(logFilePath, jsonData + Environment.NewLine);
+        }
+
+        private static void RollOverLogFile(string logFilePath)
+        {
+            if (File.Exists(logFilePath))
+            {
+                FileInfo fileInfo = new FileInfo(logFilePath);
+                if (fileInfo.Length > 1000 * 1000)
+                {
+                    string backupFilePath = Path.ChangeExtension(logFilePath, "old");
+                    if (File.Exists(backupFilePath))
+                        File.Delete(backupFilePath);
+                    File.Move(logFilePath, backupFilePath);
+                }
+            }
         }
 
         private string GetCoinNameForApiContext(Xgminer.Api.ApiContext apiContext)
