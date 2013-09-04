@@ -574,7 +574,10 @@ namespace MultiMiner.Win
                 DataGridViewRow gridRow = deviceGridView.Rows[i];
 
                 //pull this from coin configurations, not known coins, may not be in CoinChoose
-                CryptoCoin coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(gridRow.Cells[coinColumn.Index].Value)).Coin;
+                string gridRowValue = (string)gridRow.Cells[coinColumn.Index].Value;
+                CryptoCoin coin = null;
+                if (!String.IsNullOrEmpty(gridRowValue))
+                    coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(gridRowValue)).Coin;
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
