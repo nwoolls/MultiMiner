@@ -30,6 +30,15 @@ namespace MultiMiner.Engine
                 assemblyVersion.Build);
         }
 
+        private static bool IsDebugRelease()
+        { 
+#if DEBUG
+            return true;
+#else
+            return false;
+#endif
+        }
+
         public static void InstallMiner(string destinationFolder)
         {
             string minerUrl = GetMinerDownloadUrl();
@@ -82,7 +91,12 @@ namespace MultiMiner.Engine
             string downloadRoot = GetMinerDownloadRoot();
             const string downloadPath = "/releases/";
             string availableDownloadsHtml = new WebClient().DownloadString(String.Format("{0}{1}", downloadRoot, downloadPath));
-            string pattern = @".*<a href="".+/MultiMiner/releases/(.+/MultiMiner-\d+\.\d+\.\d+\.zip)";
+
+            string filePrefix = "MultiMiner";
+            if (IsDebugRelease())
+                filePrefix = filePrefix + "-Debug";
+
+            string pattern = String.Format(@".*<a href="".+/MultiMiner/releases/(.+/{0}-\d+\.\d+\.\d+\.zip)", filePrefix);
             Match match = Regex.Match(availableDownloadsHtml, pattern);
             if (match.Success)
             {
