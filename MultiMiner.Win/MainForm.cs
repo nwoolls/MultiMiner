@@ -47,9 +47,29 @@ namespace MultiMiner.Win
 
             while (logLaunchArgsBindingSource.Count > 1000)
                 logLaunchArgsBindingSource.RemoveAt(0);
+
+            LogProcessLaunchToFile(ea);
+        }
+
+        private static void LogProcessLaunchToFile(LogLaunchArgs ea)
+        {
+            const string logFileName = "ProcessLog.json";
+            LogObjectToFile(ea, logFileName);
         }
 
         private void LogProcessClose(object sender, LogProcessCloseArgs ea)
+        {
+            CalculateAcceptedSharesForProcess(ea);
+
+            logProcessCloseArgsBindingSource.Position = logProcessCloseArgsBindingSource.Add(ea);
+
+            while (logProcessCloseArgsBindingSource.Count > 1000)
+                logProcessCloseArgsBindingSource.RemoveAt(0);
+
+            LogProcessCloseToFile(ea);
+        }
+
+        private void CalculateAcceptedSharesForProcess(LogProcessCloseArgs ea)
         {
             int acceptedShares = 0;
             foreach (int deviceIndex in ea.DeviceIndexes)
@@ -59,19 +79,12 @@ namespace MultiMiner.Win
                     acceptedShares += lastAcceptedShares[deviceIndex];
             }
             ea.AcceptedShares = acceptedShares;
+        }
 
+        private static void LogProcessCloseToFile(LogProcessCloseArgs ea)
+        {
             const string logFileName = "MiningLog.json";
-            string logFilePath = Path.Combine(AppDataPath(), logFileName);
-
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            string jsonData = serializer.Serialize(ea);
-
-            File.AppendAllText(logFilePath, jsonData + Environment.NewLine);
-
-            logProcessCloseArgsBindingSource.Position = logProcessCloseArgsBindingSource.Add(ea);
-
-            while (logProcessCloseArgsBindingSource.Count > 1000)
-                logProcessCloseArgsBindingSource.RemoveAt(0);
+            LogObjectToFile(ea, logFileName);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -900,6 +913,24 @@ namespace MultiMiner.Win
 
             while (apiLogEntryBindingSource.Count > 1000)
                 apiLogEntryBindingSource.RemoveAt(0);
+
+            LogApiEventToFile(logEntry);
+        }
+
+        private static void LogApiEventToFile(ApiLogEntry logEntry)
+        {
+            const string logFileName = "ApiLog.json";
+            LogObjectToFile(logEntry, logFileName);
+        }
+
+        private static void LogObjectToFile(Object objectToLog, string fileName)
+        {
+            string logFilePath = Path.Combine(AppDataPath(), fileName);
+
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            string jsonData = serializer.Serialize(objectToLog);
+
+            File.AppendAllText(logFilePath, jsonData + Environment.NewLine);
         }
 
         private string GetCoinNameForApiContext(Xgminer.Api.ApiContext apiContext)
