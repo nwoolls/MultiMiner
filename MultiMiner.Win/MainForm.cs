@@ -53,7 +53,11 @@ namespace MultiMiner.Win
         {
             int acceptedShares = 0;
             foreach (int deviceIndex in ea.DeviceIndexes)
-                acceptedShares += lastAcceptedShares[deviceIndex];
+            {
+                //key won't be there if process is stopped before it starts accepting shares
+                if (lastAcceptedShares.ContainsKey(deviceIndex))
+                    acceptedShares += lastAcceptedShares[deviceIndex];
+            }
             ea.AcceptedShares = acceptedShares;
 
             const string logFileName = "MiningLog.json";
