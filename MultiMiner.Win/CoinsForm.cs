@@ -67,7 +67,7 @@ namespace MultiMiner.Win
             {
                 configuration = new CoinConfiguration();
 
-                configuration.Coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(cryptoCoin));
+                configuration.Coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(cryptoCoin.Symbol, StringComparison.OrdinalIgnoreCase));
 
                 //user may have manually entered a coin
                 if (configuration.Coin == null)
