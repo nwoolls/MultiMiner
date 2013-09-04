@@ -53,6 +53,7 @@ msbuild.rebuild("../MultiMiner.Coinchoose.Api/MultiMiner.Coinchoose.Api.csproj",
 msbuild.rebuild("../MultiMiner.Engine/MultiMiner.Engine.csproj", { configuration: "Debug" });
 msbuild.rebuild("../MultiMiner.Utility/MultiMiner.Utility.csproj", { configuration: "Debug" });
 msbuild.rebuild("../MultiMiner.Win/MultiMiner.Win.csproj", { configuration: "Debug" });
+msbuild.rebuild("../MultiMiner.Update/MultiMiner.Update.csproj", { configuration: "Debug" });
 msbuild.rebuild("../MultiMiner.Xgminer/MultiMiner.Xgminer.csproj", { configuration: "Debug" });
 msbuild.rebuild("../MultiMiner.Xgminer.Api/MultiMiner.Xgminer.Api.csproj", { configuration: "Debug" });
 msbuild.rebuild("../MultiMiner.MobileMiner.Api/MultiMiner.MobileMiner.Api.csproj", { configuration: "Debug" });
@@ -63,6 +64,8 @@ folder.create("PF/Miners/bfgminer");
 folder.create("PF/Miners/cgminer");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Win.exe", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Win.pdb", "PF/");
+file.copy("../MultiMiner.Update/bin/Debug/MultiMiner.Update.exe", "PF/");
+file.copy("../MultiMiner.Update/bin/Debug/MultiMiner.Update.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/Interop.IWshRuntimeLibrary.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/Interop.Shell32.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Coinchoose.Api.dll", "PF/");
