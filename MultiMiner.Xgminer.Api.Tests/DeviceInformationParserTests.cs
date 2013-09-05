@@ -48,5 +48,38 @@ namespace MultiMiner.Xgminer.Api.Tests
             Assert.IsTrue(deviceInformation.Count(d => d.AcceptedShares > 0.00) > 0);
             Assert.IsTrue(deviceInformation.Count(d => d.Temperature > 0.00) > 0);
         }
+
+        //one device has duplicate keys for Hardware Errors, duplicating a bfgminer bug
+        [TestMethod]
+        public void ParseText_LogFiles_Succeeds()
+        {
+            //arrange
+            ParseText_LogFile_Succeeds(@"d:\data\apilog.json");
+            ParseText_LogFile_Succeeds(@"d:\data\apilog.old");
+        }
+
+        private static void ParseText_LogFile_Succeeds(string apiLogFileName)
+        {
+            string line;
+            System.IO.StreamReader file = new System.IO.StreamReader(apiLogFileName);
+            while ((line = file.ReadLine()) != null)
+            {
+                if (line.Contains("\"devs\""))
+                {
+                    string apiText = line;
+                    List<DeviceInformation> deviceInformation = new List<DeviceInformation>();
+
+                    //act
+                    DeviceInformationParser.ParseTextForDeviceInformation(apiText, deviceInformation);
+
+                    //assert
+                    Assert.IsTrue(deviceInformation.Count > 0);
+                    Assert.IsTrue(deviceInformation.Count(d => d.AverageHashrate > 0.00) > 0);
+                    Assert.IsTrue(deviceInformation.Count(d => d.CurrentHashrate > 0.00) > 0);
+                    Assert.IsTrue(deviceInformation.Count(d => d.AcceptedShares > 0.00) > 0);
+                    Assert.IsTrue(deviceInformation.Count(d => d.Temperature > 0.00) > 0);
+                }
+            }
+        }
     }
 }
