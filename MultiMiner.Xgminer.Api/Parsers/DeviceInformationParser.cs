@@ -67,7 +67,13 @@ namespace MultiMiner.Xgminer.Api.Parsers
                         newDevice.CurrentHashrate = double.Parse(keyValuePairs["MHS 1s"], CultureInfo.InvariantCulture) * 1000;
 
                     if (keyValuePairs.ContainsKey("Accepted")) //check required for bfgminer
-                        newDevice.AcceptedShares = int.Parse(keyValuePairs["Accepted"], CultureInfo.InvariantCulture);
+                    {
+                        //personally seen this need extra handling with a user
+                        string stringValue = keyValuePairs["Accepted"];
+                        int intValue = 0;
+                        if (int.TryParse(stringValue, out intValue))
+                            newDevice.AcceptedShares = intValue;
+                    }
 
                     if (keyValuePairs.ContainsKey("Rejected")) //check required for bfgminer
                     {
