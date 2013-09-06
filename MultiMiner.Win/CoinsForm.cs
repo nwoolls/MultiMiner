@@ -224,14 +224,19 @@ namespace MultiMiner.Win
                 if (File.Exists(destinationFileName))
                     File.Delete(destinationFileName);
                 File.Copy(sourceFileName, destinationFileName);
-                
-                List<CoinConfiguration> coinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<CoinConfiguration>>(destinationFileName);
-                configurations.Clear();
-                foreach (CoinConfiguration coinConfiguration in coinConfigurations)
-                    configurations.Add(coinConfiguration);
+
+                LoadConfigurationsFromFile(destinationFileName);
 
                 PopulateConfigurations();
             }
+        }
+
+        private void LoadConfigurationsFromFile(string configurationsFileName)
+        {
+            List<CoinConfiguration> coinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<CoinConfiguration>>(configurationsFileName);
+            configurations.Clear();
+            foreach (CoinConfiguration coinConfiguration in coinConfigurations)
+                configurations.Add(coinConfiguration);
         }
 
         private void exportButton_Click(object sender, EventArgs e)
