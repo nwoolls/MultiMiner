@@ -33,10 +33,15 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.addCoinButton = new System.Windows.Forms.ToolStripButton();
             this.removeCoinButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.importButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.exportButton = new System.Windows.Forms.ToolStripMenuItem();
             this.coinListBox = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.poolDownButton = new System.Windows.Forms.Button();
             this.poolUpButton = new System.Windows.Forms.Button();
@@ -62,8 +67,11 @@
             this.adjustProfitCombo = new System.Windows.Forms.ComboBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.contextMenuStrip2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.miningPoolBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.coinConfigurationBindingSource)).BeginInit();
@@ -73,7 +81,9 @@
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addCoinButton,
-            this.removeCoinButton});
+            this.removeCoinButton,
+            this.toolStripSeparator1,
+            this.importButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
@@ -100,6 +110,32 @@
             this.removeCoinButton.Size = new System.Drawing.Size(82, 22);
             this.removeCoinButton.Text = "Remove Coin";
             this.removeCoinButton.Click += new System.EventHandler(this.removeCoinButton_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // importButton
+            // 
+            this.importButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportButton});
+            this.importButton.Image = global::MultiMiner.Win.Properties.Resources.list_import;
+            this.importButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.importButton.Name = "importButton";
+            this.importButton.Size = new System.Drawing.Size(75, 22);
+            this.importButton.Text = "Import";
+            this.importButton.ToolTipText = "Import coin and pool configurations";
+            this.importButton.ButtonClick += new System.EventHandler(this.toolStripSplitButton1_ButtonClick);
+            // 
+            // exportButton
+            // 
+            this.exportButton.Image = global::MultiMiner.Win.Properties.Resources.list_export;
+            this.exportButton.Name = "exportButton";
+            this.exportButton.Size = new System.Drawing.Size(152, 22);
+            this.exportButton.Text = "Export";
+            this.exportButton.ToolTipText = "Export coin and pool configurations";
+            this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
             // 
             // coinListBox
             // 
@@ -143,6 +179,21 @@
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
+            // 
+            // contextMenuStrip2
+            // 
+            this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportToolStripMenuItem});
+            this.contextMenuStrip2.Name = "contextMenuStrip2";
+            this.contextMenuStrip2.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.contextMenuStrip2.Size = new System.Drawing.Size(108, 26);
+            
+            // 
+            // exportToolStripMenuItem
+            // 
+            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.exportToolStripMenuItem.Text = "Export";
             // 
             // groupBox1
             // 
@@ -382,7 +433,12 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // CoinsForm
             // 
@@ -413,6 +469,7 @@
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.contextMenuStrip2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.miningPoolBindingSource)).EndInit();
@@ -456,5 +513,12 @@
         private System.Windows.Forms.Button poolUpButton;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripButton addCoinButton;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
+        private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSplitButton importButton;
+        private System.Windows.Forms.ToolStripMenuItem exportButton;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }

@@ -84,7 +84,7 @@ namespace MultiMiner.Engine.Configuration
             RemoveIvalidCoinsFromDeviceConfigurations();
         }
 
-        private static string CoinConfigurationsFileName()
+        public static string CoinConfigurationsFileName()
         {
             return Path.Combine(AppDataPath(), "CoinConfigurations.xml");
         }

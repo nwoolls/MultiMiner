@@ -1,8 +1,10 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Engine.Configuration;
+using MultiMiner.Utility;
 using MultiMiner.Xgminer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -47,10 +49,10 @@ namespace MultiMiner.Win
 
         private void PopulateConfigurations()
         {
+            coinListBox.Items.Clear();
+
             foreach (CoinConfiguration configuration in configurations)
-            {
                 coinListBox.Items.Add(configuration.Coin.Name);
-            }
 
             if (configurations.Count > 0)
                 coinListBox.SelectedIndex = 0;
@@ -196,6 +198,57 @@ namespace MultiMiner.Win
             else
             {
                 userNameEdit.Focus();
+            }
+        }
+
+        private void toolStripSplitButton1_ButtonClick(object sender, EventArgs e)
+        {
+            if (configurations.Count > 0)
+            {
+                DialogResult warningResult = MessageBox.Show("Importing will overwrite your existing coin and pool configurations. Do you want to continue?",
+                                    "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (warningResult == System.Windows.Forms.DialogResult.No)
+                    return;
+            }
+
+            openFileDialog1.FileName = "CoinConfigurations.xml";
+            openFileDialog1.Title = "Import CoinConfigurations.xml";
+            openFileDialog1.Filter = "XML files|*.xml";
+            openFileDialog1.DefaultExt = ".xml";
+
+            DialogResult dialogResult = openFileDialog1.ShowDialog();
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                string sourceFileName = openFileDialog1.FileName;
+                string destinationFileName = EngineConfiguration.CoinConfigurationsFileName();
+                if (File.Exists(destinationFileName))
+                    File.Delete(destinationFileName);
+                File.Copy(sourceFileName, destinationFileName);
+                
+                List<CoinConfiguration> coinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<CoinConfiguration>>(destinationFileName);
+                configurations.Clear();
+                foreach (CoinConfiguration coinConfiguration in coinConfigurations)
+                    configurations.Add(coinConfiguration);
+
+                PopulateConfigurations();
+            }
+        }
+
+        private void exportButton_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.FileName = "CoinConfigurations.xml";
+            saveFileDialog1.Title = "Export CoinConfigurations.xml";
+            saveFileDialog1.Filter = "XML files|*.xml";
+            saveFileDialog1.DefaultExt = ".xml";
+
+            DialogResult dialogResult = saveFileDialog1.ShowDialog();
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                string sourceFileName = EngineConfiguration.CoinConfigurationsFileName();
+                string destinationFileName = saveFileDialog1.FileName;
+                if (File.Exists(destinationFileName))
+                    File.Delete(destinationFileName);
+                File.Copy(sourceFileName, destinationFileName);
             }
         }
     }

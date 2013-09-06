@@ -260,6 +260,8 @@
     <None Include="Resources\window_sel.png" />
     <None Include="Resources\application-info.png" />
     <None Include="Resources\internet_browse.png" />
+    <None Include="Resources\list-import.png" />
+    <None Include="Resources\list-export.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>
