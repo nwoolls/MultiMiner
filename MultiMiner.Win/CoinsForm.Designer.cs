@@ -118,6 +118,7 @@
             // 
             // importButton
             // 
+            this.importButton.BackColor = System.Drawing.SystemColors.Control;
             this.importButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportButton});
             this.importButton.Image = global::MultiMiner.Win.Properties.Resources.list_import;
@@ -187,7 +188,6 @@
             this.contextMenuStrip2.Name = "contextMenuStrip2";
             this.contextMenuStrip2.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.contextMenuStrip2.Size = new System.Drawing.Size(108, 26);
-            
             // 
             // exportToolStripMenuItem
             // 
