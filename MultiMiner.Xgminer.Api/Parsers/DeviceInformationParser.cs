@@ -33,7 +33,10 @@ namespace MultiMiner.Xgminer.Api.Parsers
 
                     newDevice.Kind = keyValuePairs.ElementAt(0).Key;
                     newDevice.Index = int.Parse(keyValuePairs[newDevice.Kind]);
-                    newDevice.Enabled = keyValuePairs["Enabled"].Equals("Y");
+
+                    if (keyValuePairs.ContainsKey("Enabled")) //seen this needed with a user
+                        newDevice.Enabled = keyValuePairs["Enabled"].Equals("Y");
+
                     newDevice.Status = keyValuePairs["Status"];
 
                     //the RPC API returns numbers formatted en-US, e.g. 1,000.00
