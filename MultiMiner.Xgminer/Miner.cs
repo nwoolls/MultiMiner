@@ -3,6 +3,7 @@ using MultiMiner.Xgminer.Parsers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 
 namespace MultiMiner.Xgminer
@@ -264,7 +265,7 @@ namespace MultiMiner.Xgminer
 
             processLaunchError = e.Data;
         }
-
+        
         private Process EnsureProcessStarts(Process process, ProcessStartInfo startInfo)
         {
             //any lower than this seems to have a decent chance of a USB ASIC miner process not
@@ -276,7 +277,7 @@ namespace MultiMiner.Xgminer
             Thread.Sleep(timeout);
 
             int retries = 0;
-            const int maxRetries = 5;
+            const int maxRetries = 2;
 
             while (process.HasExited)
             {
