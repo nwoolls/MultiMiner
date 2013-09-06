@@ -356,12 +356,29 @@ namespace MultiMiner.Win
                 ConfigureDevicesForNewUser();
             }
 
+            //there needs to be a device config for each device
+            AddMissingDeviceConfigurations();
+
             deviceBindingSource.DataSource = devices;
             LoadGridValuesFromConfiguration();
             CheckAndHideNameColumn();
             deviceTotalLabel.Text = String.Format("{0} device(s)", devices.Count);
         }
 
+        //each device needs to have a DeviceConfiguration
+        //this will add any missing ones after populating devices
+        //for instance if the user starts up the app with a new device
+        private void AddMissingDeviceConfigurations()
+        {
+            for (int i = engineConfiguration.DeviceConfigurations.Count; i < devices.Count; i++)
+            {
+                DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+                deviceConfiguration.DeviceIndex = i;
+                deviceConfiguration.Enabled = true;
+                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+            }
+        }
+        
         private void ShowNotInstalledMinerWarning()
         {
             bool showWarning = true;
