@@ -49,6 +49,7 @@
     <Compile Include="LaunchFailedArgs.cs" />
     <Compile Include="LogLaunchArgs.cs" />
     <Compile Include="MinerBackend.cs" />
+    <Compile Include="MinerLaunchException.cs" />
     <Compile Include="MiningPool.cs" />
     <Compile Include="Parsers\DeviceListParser.cs" />
     <Compile Include="Parsers\EnumerateDevicesParser.cs" />

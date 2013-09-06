@@ -284,10 +284,11 @@ namespace MultiMiner.Xgminer
                 {
                     string errors = processLaunchError;
 
-                    throw new Exception(
-                        string.Format("Miner keeps exiting after launching - retried {0} times. Exit code {1}.\n" +
-                        "Error: {4}\nExecutable: {2}\nArguments: {3}",
-                        retries, process.ExitCode, startInfo.FileName, startInfo.Arguments, errors));
+                    throw new MinerLaunchException(
+                        string.Format("{5} is exiting after launching with exit code {1}.\n\n" +
+                        "Details: {4}\n\nExecutable: {2}\nArguments: {3}",
+                        retries, process.ExitCode, startInfo.FileName, startInfo.Arguments, errors, 
+                        Path.GetFileNameWithoutExtension(startInfo.FileName)));
                 }
 
                 //ensure the new process is stored and returned

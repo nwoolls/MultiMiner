@@ -752,7 +752,15 @@ namespace MultiMiner.Win
             startButton.Enabled = false; //immediately disable, update after
             startMenuItem.Enabled = false;
 
-            miningEngine.StartMining(engineConfiguration, devices, coinInformation);
+            try
+            {
+                miningEngine.StartMining(engineConfiguration, devices, coinInformation);
+            }
+            catch (MinerLaunchException ex)
+            {
+                MessageBox.Show(ex.Message, "Error Launching Miner", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
 
