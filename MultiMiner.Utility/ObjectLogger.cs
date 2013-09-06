@@ -6,7 +6,7 @@ namespace MultiMiner.Utility
 {
     public class ObjectLogger
     {
-        private const int maxFileSize = 1 * 1000 * 100; //1mb
+        private const int maxFileSize = 1 * 1000 * 1000; //1mb
         private readonly bool rollOverFiles;
         private readonly int oldFileSets;
 
