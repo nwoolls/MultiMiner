@@ -460,8 +460,6 @@ namespace MultiMiner.Win
             {
                 //minimum 1s delay for mining on startup - 0 not allowed
                 startupMiningCountdownSeconds = Math.Max(1, applicationConfiguration.StartupMiningDelay);
-                startupMiningTimer.Interval = 1000 * startupMiningCountdownSeconds;
-                startupMiningTimer.Enabled = true;
                 startupMiningCountdownTimer.Enabled = true;
                 RefreshCountdownLabel();
             }
@@ -1285,21 +1283,18 @@ namespace MultiMiner.Win
             }
         }
 
-        private void startupMiningTimer_Tick(object sender, EventArgs e)
-        {
-            startupMiningPanel.Visible = false;
-            startupMiningTimer.Enabled = false;
-            startupMiningCountdownTimer.Enabled = false;
-
-            Application.DoEvents();
-
-            StartMining();
-        }
-
         private void countdownTimer_Tick(object sender, EventArgs e)
         {
             startupMiningCountdownSeconds--;
             RefreshCountdownLabel();
+            if (startupMiningCountdownSeconds == 0)
+            {
+                startupMiningPanel.Visible = false;
+                startupMiningCountdownTimer.Enabled = false;
+                Application.DoEvents();
+
+                StartMining();
+            }
         }
 
         private void cancelStartupMiningButton_Click(object sender, EventArgs e)
@@ -1309,7 +1304,6 @@ namespace MultiMiner.Win
 
         private void CancelMiningOnStartup()
         {
-            startupMiningTimer.Enabled = false;
             startupMiningCountdownTimer.Enabled = false;
             startupMiningPanel.Visible = false;
             countdownLabel.Visible = false; //or remains visible under Mono
