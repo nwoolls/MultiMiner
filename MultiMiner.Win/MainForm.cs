@@ -12,7 +12,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
-using System.Web.Script.Serialization;
 using MultiMiner.Utility;
 using MultiMiner.Win.Notifications;
 
@@ -51,10 +50,17 @@ namespace MultiMiner.Win
             LogProcessLaunchToFile(ea);
         }
 
-        private static void LogProcessLaunchToFile(LogLaunchArgs ea)
+        private void LogProcessLaunchToFile(LogLaunchArgs ea)
         {
             const string logFileName = "ProcessLog.json";
             LogObjectToFile(ea, logFileName);
+        }
+
+        private void LogObjectToFile(object objectToLog, string logFileName)
+        {
+            string logFilePath = Path.Combine(AppDataPath(), logFileName);
+            ObjectLogger logger = new ObjectLogger(applicationConfiguration.RollOverLogFiles, applicationConfiguration.OldLogFileSets);
+            logger.LogObjectToFile(objectToLog, logFilePath);
         }
 
         private void LogProcessClose(object sender, LogProcessCloseArgs ea)
@@ -81,7 +87,7 @@ namespace MultiMiner.Win
             ea.AcceptedShares = acceptedShares;
         }
 
-        private static void LogProcessCloseToFile(LogProcessCloseArgs ea)
+        private void LogProcessCloseToFile(LogProcessCloseArgs ea)
         {
             const string logFileName = "MiningLog.json";
             LogObjectToFile(ea, logFileName);
@@ -917,39 +923,12 @@ namespace MultiMiner.Win
             LogApiEventToFile(logEntry);
         }
 
-        private static void LogApiEventToFile(ApiLogEntry logEntry)
+        private void LogApiEventToFile(ApiLogEntry logEntry)
         {
             const string logFileName = "ApiLog.json";
             LogObjectToFile(logEntry, logFileName);
         }
-
-        private static void LogObjectToFile(Object objectToLog, string fileName)
-        {
-            string logFilePath = Path.Combine(AppDataPath(), fileName);
-
-            RollOverLogFile(logFilePath);
-
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            string jsonData = serializer.Serialize(objectToLog);
-
-            File.AppendAllText(logFilePath, jsonData + Environment.NewLine);
-        }
-
-        private static void RollOverLogFile(string logFilePath)
-        {
-            if (File.Exists(logFilePath))
-            {
-                FileInfo fileInfo = new FileInfo(logFilePath);
-                if (fileInfo.Length > 1000 * 1000)
-                {
-                    string backupFilePath = Path.ChangeExtension(logFilePath, "old");
-                    if (File.Exists(backupFilePath))
-                        File.Delete(backupFilePath);
-                    File.Move(logFilePath, backupFilePath);
-                }
-            }
-        }
-
+        
         private string GetCoinNameForApiContext(Xgminer.Api.ApiContext apiContext)
         {
             string coinName = string.Empty;
