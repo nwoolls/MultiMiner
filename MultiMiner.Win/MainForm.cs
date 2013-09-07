@@ -1158,8 +1158,10 @@ namespace MultiMiner.Win
                     break;
             }
 
-            IEnumerable<Coinchoose.Api.CoinInformation> unconfiguredCoins = orderedCoins.Where(coin => !engineConfiguration.CoinConfigurations.Any(config => config.Coin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase)));
-            IEnumerable<Coinchoose.Api.CoinInformation> viableCoins = unconfiguredCoins.Where(coin => coin.Exchange.Equals(exchange, StringComparison.OrdinalIgnoreCase));
+            //added checks for coin.Symbol and coin.Exchange
+            //user was getting a Null ref error here
+            IEnumerable<Coinchoose.Api.CoinInformation> unconfiguredCoins = orderedCoins.Where(coin => !String.IsNullOrEmpty(coin.Symbol) && !engineConfiguration.CoinConfigurations.Any(config => config.Coin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase)));
+            IEnumerable<Coinchoose.Api.CoinInformation> viableCoins = unconfiguredCoins.Where(coin => !String.IsNullOrEmpty(coin.Exchange) && coin.Exchange.Equals(exchange, StringComparison.OrdinalIgnoreCase));
             IEnumerable<Coinchoose.Api.CoinInformation> coinsToMine = viableCoins.Take(3);
 
             foreach (Coinchoose.Api.CoinInformation coin in coinsToMine)
