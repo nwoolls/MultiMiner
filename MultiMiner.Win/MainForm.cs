@@ -1159,9 +1159,9 @@ namespace MultiMiner.Win
             }
 
             //added checks for coin.Symbol and coin.Exchange
-            //user was getting a Null ref error here
+            //current CoinChoose.com feed for LTC profitability has a NULL exchange for Litecoin
             IEnumerable<Coinchoose.Api.CoinInformation> unconfiguredCoins = orderedCoins.Where(coin => !String.IsNullOrEmpty(coin.Symbol) && !engineConfiguration.CoinConfigurations.Any(config => config.Coin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase)));
-            IEnumerable<Coinchoose.Api.CoinInformation> viableCoins = unconfiguredCoins.Where(coin => !String.IsNullOrEmpty(coin.Exchange) && coin.Exchange.Equals(exchange, StringComparison.OrdinalIgnoreCase));
+            IEnumerable<Coinchoose.Api.CoinInformation> viableCoins = unconfiguredCoins.Where(coin => !String.IsNullOrEmpty(coin.Exchange) && coin.Exchange.StartsWith(exchange, StringComparison.OrdinalIgnoreCase));
             IEnumerable<Coinchoose.Api.CoinInformation> coinsToMine = viableCoins.Take(3);
 
             foreach (Coinchoose.Api.CoinInformation coin in coinsToMine)
