@@ -4,6 +4,7 @@ using MultiMiner.Xgminer.Api.Parsers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.IO;
 
 namespace MultiMiner.Xgminer.Api.Tests
 {
@@ -53,15 +54,15 @@ namespace MultiMiner.Xgminer.Api.Tests
         [TestMethod]
         public void ParseText_LogFiles_Succeeds()
         {
-            //arrange
-            ParseText_LogFile_Succeeds(@"d:\data\apilog.json");
-            ParseText_LogFile_Succeeds(@"d:\data\apilog.old");
+            string[] files = Directory.GetFiles("App_Data", "ApiLog.*", SearchOption.AllDirectories);
+            foreach (string file in files)
+                ParseText_LogFile_Succeeds(file);
         }
 
         private static void ParseText_LogFile_Succeeds(string apiLogFileName)
         {
             string line;
-            System.IO.StreamReader file = new System.IO.StreamReader(apiLogFileName);
+            StreamReader file = new StreamReader(apiLogFileName);
             while ((line = file.ReadLine()) != null)
             {
                 if (line.Contains("\"devs\""))
@@ -74,10 +75,6 @@ namespace MultiMiner.Xgminer.Api.Tests
 
                     //assert
                     Assert.IsTrue(deviceInformation.Count > 0);
-                    Assert.IsTrue(deviceInformation.Count(d => d.AverageHashrate > 0.00) > 0);
-                    Assert.IsTrue(deviceInformation.Count(d => d.CurrentHashrate > 0.00) > 0);
-                    Assert.IsTrue(deviceInformation.Count(d => d.AcceptedShares > 0.00) > 0);
-                    Assert.IsTrue(deviceInformation.Count(d => d.Temperature > 0.00) > 0);
                 }
             }
         }

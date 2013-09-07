@@ -31,3 +31,4 @@ WebsiteTmp/
 *.lnk
 Thumbs.db
 Installer/Output/
+*/App_Data/ApiLog.*
