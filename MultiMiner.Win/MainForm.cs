@@ -707,10 +707,6 @@ namespace MultiMiner.Win
 
             startMenuItem.Visible = startMenuItem.Enabled;
             stopMenuItem.Visible = stopMenuItem.Enabled;
-
-            saveButton.Visible = !engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
-            cancelButton.Visible = saveButton.Visible;
-            saveSeparator.Visible = saveButton.Visible;
         }
 
         private bool MiningConfigurationValid()
