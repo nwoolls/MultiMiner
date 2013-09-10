@@ -978,13 +978,13 @@ namespace MultiMiner.Win
                 minerProcess.HasDeadDevice = false;
                 minerProcess.HasSickDevice = false;
                 minerProcess.HasZeroHashrateDevice = false;
-                minerProcess.HasFrozenDevice = false;
+                minerProcess.MinerIsFrozen = false;
 
                 List<MultiMiner.Xgminer.Api.DeviceInformation> deviceInformationList = GetDeviceInformationFromMinerProcess(minerProcess);
 
                 if (deviceInformationList == null) //handled failure getting API info
                 {
-                    minerProcess.HasFrozenDevice = true;
+                    minerProcess.MinerIsFrozen = true;
                     continue;
                 }
 

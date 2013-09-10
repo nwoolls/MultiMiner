@@ -19,7 +19,8 @@ namespace MultiMiner.Engine
         public bool HasSickDevice { get; set; }
         public bool HasDeadDevice { get; set; }
         public bool HasZeroHashrateDevice { get; set; }
-        public bool HasFrozenDevice { get; set; }
+        public bool MinerIsFrozen { get; set; }
+
         private ApiContext apiContext;
         public ApiContext ApiContext 
         { 

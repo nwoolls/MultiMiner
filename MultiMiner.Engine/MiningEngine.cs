@@ -120,7 +120,7 @@ namespace MultiMiner.Engine
                     setupProcessStartInfo(minerProcess);
                 }
 
-                else if (minerProcess.HasZeroHashrateDevice || minerProcess.HasFrozenDevice)
+                else if (minerProcess.HasZeroHashrateDevice || minerProcess.MinerIsFrozen)
                 {
                     TimeSpan processAge = DateTime.Now - minerProcess.Process.StartTime;
                     if (processAge.TotalSeconds > 60)
