@@ -34,6 +34,7 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.strategyConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.singleCoinRadio = new System.Windows.Forms.RadioButton();
             this.multiCoinRadio = new System.Windows.Forms.RadioButton();
             this.thresholdSymbolCombo = new System.Windows.Forms.ComboBox();
@@ -50,10 +51,9 @@
             this.baseCoinCombo = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.miningBasisCombo = new System.Windows.Forms.ComboBox();
-            this.strategyConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -100,6 +100,10 @@
             this.checkBox1.TabIndex = 0;
             this.checkBox1.Text = "Automatically mine coin(s) based on";
             this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // strategyConfigurationBindingSource
+            // 
+            this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.StrategyConfiguration);
             // 
             // singleCoinRadio
             // 
@@ -158,7 +162,7 @@
             this.groupBox1.Size = new System.Drawing.Size(306, 172);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Strategies";
+            this.groupBox1.Text = "Strategies (optional)";
             // 
             // exceptionEdit
             // 
@@ -281,10 +285,6 @@
             this.miningBasisCombo.TabIndex = 8;
             this.miningBasisCombo.SelectedIndexChanged += new System.EventHandler(this.miningBasisCombo_SelectedIndexChanged);
             // 
-            // strategyConfigurationBindingSource
-            // 
-            this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.StrategyConfiguration);
-            // 
             // StrategiesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -310,9 +310,9 @@
             this.Text = "Configure Strategies";
             this.Load += new System.EventHandler(this.StrategiesForm_Load);
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
