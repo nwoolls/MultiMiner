@@ -1237,7 +1237,18 @@ namespace MultiMiner.Win
         {
             string knownCoinsFileName = KnownCoinsFileName();
             if (File.Exists(knownCoinsFileName))
+            {
                 knownCoins = ConfigurationReaderWriter.ReadConfiguration<List<CryptoCoin>>(knownCoinsFileName);
+                RemoveBunkCoins(knownCoins);
+            }
+        }
+
+        private void RemoveBunkCoins(List<CryptoCoin> knownCoins)
+        {
+            //CoinChoose.com served up ButterFlyCoin as BOC, and then later as BFC
+            CryptoCoin badCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals("BOC", StringComparison.OrdinalIgnoreCase));
+            if (badCoin != null)
+                knownCoins.Remove(badCoin);
         }
 
         private void SaveKnownCoinsToFile()
