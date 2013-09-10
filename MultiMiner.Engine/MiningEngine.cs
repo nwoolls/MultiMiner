@@ -126,7 +126,8 @@ namespace MultiMiner.Engine
                     if (processAge.TotalSeconds > 60)
                     {
                         minerProcess.StopMining();
-                        minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Zero hashrate");
+                        string reason = minerProcess.HasZeroHashrateDevice ? "Zero hashrate" : "Frozen miner";
+                        minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, reason);
                         setupProcessStartInfo(minerProcess);
                     }
                 }
