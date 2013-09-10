@@ -19,6 +19,7 @@ namespace MultiMiner.Engine
         public event LogProcessCloseHandler LogProcessClose;
         public event Miner.LogLaunchHandler LogProcessLaunch;
         public event Miner.LaunchFailedHandler ProcessLaunchFailed;
+        public event Miner.AuthenticationFailedHandler ProcessAuthenticationFailed;
 
         private List<MinerProcess> minerProcesses = new List<MinerProcess>();
         private EngineConfiguration engineConfiguration;
@@ -550,6 +551,7 @@ namespace MultiMiner.Engine
             Miner miner = new Miner(minerConfiguration);
             miner.LogLaunch += this.LogProcessLaunch;
             miner.LaunchFailed += this.ProcessLaunchFailed;
+            miner.AuthenticationFailed += this.ProcessAuthenticationFailed;
             Process process = miner.Launch(reason);
             return process;
         }

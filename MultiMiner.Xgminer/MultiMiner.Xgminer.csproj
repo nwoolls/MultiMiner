@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthenticationFailedArgs.cs" />
     <Compile Include="Bfgminer\MinerParameter.cs" />
     <Compile Include="CoinAlgorithm.cs" />
     <Compile Include="Device.cs" />

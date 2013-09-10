@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace MultiMiner.Xgminer
@@ -14,10 +15,12 @@ namespace MultiMiner.Xgminer
         // delegate declaration 
         public delegate void LogLaunchHandler(object sender, LogLaunchArgs ea);
         public delegate void LaunchFailedHandler(object sender, LaunchFailedArgs ea);
+        public delegate void AuthenticationFailedHandler(object sender, AuthenticationFailedArgs ea);
 
         // event declaration 
         public event LogLaunchHandler LogLaunch;
         public event LaunchFailedHandler LaunchFailed;
+        public event AuthenticationFailedHandler AuthenticationFailed;
 
         private readonly MinerConfiguration minerConfiguration;
 
@@ -243,14 +246,27 @@ namespace MultiMiner.Xgminer
             if (String.IsNullOrEmpty(e.Data))
                 return;
 
-            if (e.Data.Contains("auth failed") && (LaunchFailed != null))
+            if ((e.Data.IndexOf("auth failed", StringComparison.OrdinalIgnoreCase) >= 0) && (AuthenticationFailed != null))
+            {
+                AuthenticationFailedArgs args = new AuthenticationFailedArgs();
+                Match match = Regex.Match(e.Data, @" pool (\d) ");
+                string poolIndex = "??";
+                if (match.Success)
+                    poolIndex = match.Groups[1].Value;
+                args.Reason = String.Format("Authentication failed ({0} pool {1})",
+                    minerConfiguration.CoinName, poolIndex);
+                AuthenticationFailed(this, args);
+            }
+
+            if ((e.Data.IndexOf("No servers could be used", StringComparison.OrdinalIgnoreCase) >= 0) && (LaunchFailed != null))
             {
                 LaunchFailedArgs args = new LaunchFailedArgs();
-                args.Reason = "Authentication failed for your pool. Verify your pool settings and try again.";
+                args.Reason = String.Format("None of the pools configured for {0} could be used. Verify your pool settings and try again.",
+                    minerConfiguration.CoinName);
                 LaunchFailed(this, args);
             }
 
-            if (e.Data.Contains("detected new block"))
+            if (e.Data.IndexOf("detected new block", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 ((Process)sender).CancelOutputRead();
                 ((Process)sender).CancelErrorRead();

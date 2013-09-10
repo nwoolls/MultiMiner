@@ -124,6 +124,7 @@ namespace MultiMiner.Win
             miningEngine.LogProcessClose += LogProcessClose;
             miningEngine.LogProcessLaunch += LogProcessLaunch;
             miningEngine.ProcessLaunchFailed += ProcessLaunchFailed;
+            miningEngine.ProcessAuthenticationFailed += ProcessAuthenticationFailed;
             logLaunchArgsBindingSource.DataSource = logLaunchEntries;
             logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
 
@@ -192,6 +193,19 @@ namespace MultiMiner.Win
                 //code to update UI
                 StopMining();
                 MessageBox.Show(ea.Reason, "Launching Miner Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }));
+        }
+
+        private void ProcessAuthenticationFailed(object sender, AuthenticationFailedArgs ea)
+        {
+            this.BeginInvoke((Action)(() =>
+            {
+                //code to update UI
+                const string id = "pool-auth-failed";
+                notificationsControl.AddNotification(ea.Reason, ea.Reason, () =>
+                        {
+                            ConfigureCoins();
+                        }, "");
             }));
         }
 
