@@ -1,6 +1,7 @@
 ﻿using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Api;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
@@ -58,9 +59,14 @@ namespace MultiMiner.Engine
                 process.WaitForExit();
                 process.Close();
             }
-            catch (System.InvalidOperationException ex)
+            catch (Exception ex)
             {
-                //already closed
+                if (ex is InvalidOperationException || ex is Win32Exception)
+                {
+                    //already closed
+                    return;
+                }
+                throw;
             }
         }
 
