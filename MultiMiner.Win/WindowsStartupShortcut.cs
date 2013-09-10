@@ -1,6 +1,7 @@
 ﻿using IWshRuntimeLibrary;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace MultiMiner.Win
@@ -31,7 +32,15 @@ namespace MultiMiner.Win
             Shell32.FolderItem folderItem = folder.ParseName(filenameOnly);
             if (folderItem != null)
             {
-                Shell32.ShellLinkObject link = (Shell32.ShellLinkObject)folderItem.GetLink;
+                Shell32.ShellLinkObject link = null;
+                try
+                {
+                    link = (Shell32.ShellLinkObject)folderItem.GetLink;
+                }
+                catch (COMException ex)
+                {
+                    return String.Empty; // reported by user
+                }
                 return link.Path;
             }
 
