@@ -106,6 +106,7 @@ namespace MultiMiner.Win
             mobileMinerTimer.Interval = mobileMinerInterval * 1000;
 
             engineConfiguration.LoadStrategyConfiguration(); //needed before refreshing coins
+            engineConfiguration.LoadCoinConfigurations(); //needed before refreshing coins
             SetupNotificationsControl(); //needed before refreshing coins
             RefreshCoinStats();
 
