@@ -1137,6 +1137,11 @@ namespace MultiMiner.Win
                 //don't crash if website cannot be resolved or JSON cannot be parsed
                 if ((ex is WebException) || (ex is InvalidCastException))
                 {
+                    notificationsControl.AddNotification(ex.Message, 
+                        "Error parsing the CoinChoose.com JSON API", () =>
+                    {
+                        Process.Start(MultiMiner.Coinchoose.Api.ApiContext.GetApiUrl(engineConfiguration.StrategyConfiguration.BaseCoin));
+                    }, "http://coinchoose.com/");
                     return;
                 }
                 throw;
