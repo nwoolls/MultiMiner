@@ -202,7 +202,6 @@ namespace MultiMiner.Win
             this.BeginInvoke((Action)(() =>
             {
                 //code to update UI
-                const string id = "pool-auth-failed";
                 notificationsControl.AddNotification(ea.Reason, ea.Reason, () =>
                         {
                             ConfigureCoins();
