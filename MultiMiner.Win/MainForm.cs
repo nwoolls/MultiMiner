@@ -1135,7 +1135,7 @@ namespace MultiMiner.Win
             catch (Exception ex)
             {
                 //don't crash if website cannot be resolved or JSON cannot be parsed
-                if (ex is WebException)
+                if ((ex is WebException) || (ex is InvalidCastException))
                 {
                     return;
                 }
