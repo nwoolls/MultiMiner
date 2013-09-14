@@ -73,7 +73,7 @@ Linux Installation (Debian-Based)
 ---------------------------------
 1. Install the latest version of [Mono][8]
 
-        sudo apt get install mono-complete
+        sudo apt-get install mono-complete
         
 2. Install your chosen mining engine
 
