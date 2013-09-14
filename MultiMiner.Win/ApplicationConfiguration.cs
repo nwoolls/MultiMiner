@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Utility;
 using System;
+using System.Drawing;
 using System.IO;
 
 namespace MultiMiner.Win
@@ -30,6 +31,7 @@ namespace MultiMiner.Win
         public bool Maximized { get; set; }
         public bool LogAreaVisible { get; set; }
         public bool AutoSetDesktopMode { get; set; }
+        public Rectangle AppPosition { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }

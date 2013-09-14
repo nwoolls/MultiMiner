@@ -462,6 +462,14 @@ namespace MultiMiner.Win
 
             applicationConfiguration.LoadApplicationConfiguration();
 
+            if ((applicationConfiguration.AppPosition != null) &&
+                (applicationConfiguration.AppPosition.Height > 0) &&
+                (applicationConfiguration.AppPosition.Width > 9))
+            {
+                this.Location = new Point(applicationConfiguration.AppPosition.Left, applicationConfiguration.AppPosition.Top);
+                this.Size = new Size(applicationConfiguration.AppPosition.Width, applicationConfiguration.AppPosition.Height);                
+            }
+
             if (applicationConfiguration.Maximized)
                 this.WindowState = FormWindowState.Maximized;
 
@@ -486,6 +494,9 @@ namespace MultiMiner.Win
 
             idleTimer.Interval = 15 * 1000; //check every 15s
             idleTimer.Enabled = true;
+
+            //allow resize/maximize/etc to render
+            Application.DoEvents();
         }
 
         private void RefreshCountdownLabel()
@@ -1098,7 +1109,15 @@ namespace MultiMiner.Win
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            SavePosition();
+            this.applicationConfiguration.SaveApplicationConfiguration();
             StopMining();
+        }
+
+        private void SavePosition()
+        {
+            if (this.WindowState == FormWindowState.Normal)
+                this.applicationConfiguration.AppPosition = new Rectangle(this.Location, this.Size);
         }
 
         private void coinStatsTimer_Tick(object sender, EventArgs e)
@@ -1146,7 +1165,7 @@ namespace MultiMiner.Win
                 }
                 throw;
             }
-
+            
             LoadGridValuesFromCoinStats();
             LoadKnownCoinsFromCoinStats();
             RefreshCoinStatsLabel();
@@ -1488,7 +1507,7 @@ namespace MultiMiner.Win
                     notifyIcon1.Visible = true;
                     this.Hide();
                 }
-                else if (FormWindowState.Normal == this.WindowState)
+                else if (this.WindowState == FormWindowState.Normal)
                 {
                     notifyIcon1.Visible = false;
                 }
@@ -1500,7 +1519,7 @@ namespace MultiMiner.Win
                 if (this.WindowState == FormWindowState.Normal) //don't set to false for minimizing
                     applicationConfiguration.Maximized = false;
 
-                applicationConfiguration.SaveApplicationConfiguration();
+                SavePosition();
             }
         }
 
