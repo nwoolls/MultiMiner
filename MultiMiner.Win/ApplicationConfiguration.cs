@@ -31,6 +31,7 @@ namespace MultiMiner.Win
         public bool DetectDisownedMiners { get; set; }
         public bool Maximized { get; set; }
         public bool LogAreaVisible { get; set; }
+        public int LogAreaTabIndex { get; set; }
         public bool AutoSetDesktopMode { get; set; }
         public Rectangle AppPosition { get; set; }
 

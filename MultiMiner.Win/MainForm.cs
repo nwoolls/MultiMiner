@@ -475,7 +475,12 @@ namespace MultiMiner.Win
                 this.WindowState = FormWindowState.Maximized;
 
             if (applicationConfiguration.LogAreaVisible)
+            {
                 ShowApiMonitor();
+                if ((applicationConfiguration.LogAreaTabIndex >= 0) &&
+                    (applicationConfiguration.LogAreaTabIndex < advancedTabControl.TabCount))
+                    advancedTabControl.SelectedIndex = applicationConfiguration.LogAreaTabIndex;
+            }
             else
                 HideAdvancedPanel();
 
@@ -1110,9 +1115,15 @@ namespace MultiMiner.Win
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            SaveSettings();
+            StopMining();
+        }
+
+        private void SaveSettings()
+        {
+            applicationConfiguration.LogAreaTabIndex = advancedTabControl.SelectedIndex;
             SavePosition();
             this.applicationConfiguration.SaveApplicationConfiguration();
-            StopMining();
         }
 
         private void SavePosition()
