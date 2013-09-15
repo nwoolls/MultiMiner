@@ -107,6 +107,7 @@ namespace MultiMiner.Win
 
             engineConfiguration.LoadStrategyConfiguration(); //needed before refreshing coins
             engineConfiguration.LoadCoinConfigurations(); //needed before refreshing coins
+            applicationConfiguration.LoadApplicationConfiguration(); //needed before refreshing coins
             SetupNotificationsControl(); //needed before refreshing coins
             RefreshCoinStats();
 
@@ -1174,7 +1175,7 @@ namespace MultiMiner.Win
 
         private void SuggestCoinsToMine()
         {
-            if (!engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+            if (!applicationConfiguration.SuggestCoinsToMine)
                 return;
             if (coinInformation == null) //no network connection
                 return;
@@ -1412,6 +1413,7 @@ namespace MultiMiner.Win
             else
             {
                 engineConfiguration.LoadStrategyConfiguration();
+                applicationConfiguration.LoadApplicationConfiguration();
             }
         }
 

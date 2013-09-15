@@ -25,6 +25,7 @@ namespace MultiMiner.Win
         private void StrategiesForm_Load(object sender, EventArgs e)
         {
             strategyConfigurationBindingSource.DataSource = this.strategyConfiguration;
+            applicationConfigurationBindingSource.DataSource = this.applicationConfiguration;
             PopulateKnownCoins();
             LoadSettings();
         }

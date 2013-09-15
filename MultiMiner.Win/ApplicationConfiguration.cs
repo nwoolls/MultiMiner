@@ -20,6 +20,7 @@ namespace MultiMiner.Win
             this.StrategyCheckInterval = CoinStrategyCheckInterval.FifteenMinutes;
             this.RollOverLogFiles = true;
             this.OldLogFileSets = 1;
+            this.SuggestCoinsToMine = true;
         }
 
         public bool LaunchOnWindowsLogin { get; set; }
@@ -39,6 +40,7 @@ namespace MultiMiner.Win
         public string MobileMinerApplicationKey { get; set; }
 
         public CoinStrategyCheckInterval StrategyCheckInterval { get; set; }
+        public bool SuggestCoinsToMine { get; set; }
 
         public bool RollOverLogFiles { get; set; }
         public int OldLogFileSets { get; set; }
