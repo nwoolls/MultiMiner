@@ -34,6 +34,7 @@ namespace MultiMiner.Win
         private readonly List<LogProcessCloseArgs> logCloseEntries = new List<LogProcessCloseArgs>();
         private NotificationsControl notificationsControl;
         private Dictionary<int, int> lastAcceptedShares = new Dictionary<int,int>();
+        private bool settingsLoaded = false;
 
         public MainForm()
         {
@@ -176,7 +177,7 @@ namespace MultiMiner.Win
             notificationsControl.Height = 143;
             notificationsControl.Width = 320;
             notificationsControl.NotificationsChanged += notificationsControl1_NotificationsChanged;
-            notificationsControl.Parent = splitContainer1.Panel1;
+            notificationsControl.Parent = advancedAreaContainer.Panel1;
             const int offset = 2;
 
             if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
@@ -480,6 +481,8 @@ namespace MultiMiner.Win
                 if ((applicationConfiguration.LogAreaTabIndex >= 0) &&
                     (applicationConfiguration.LogAreaTabIndex < advancedTabControl.TabCount))
                     advancedTabControl.SelectedIndex = applicationConfiguration.LogAreaTabIndex;
+                if (applicationConfiguration.LogAreaDistance > 0)
+                    advancedAreaContainer.SplitterDistance = applicationConfiguration.LogAreaDistance;
             }
             else
                 HideAdvancedPanel();
@@ -503,6 +506,8 @@ namespace MultiMiner.Win
 
             //allow resize/maximize/etc to render
             Application.DoEvents();
+
+            this.settingsLoaded = true;
         }
 
         private void RefreshCountdownLabel()
@@ -1478,8 +1483,8 @@ namespace MultiMiner.Win
 
         private void HideAdvancedPanel()
         {
-            splitContainer1.Panel2.Hide();
-            splitContainer1.Panel2Collapsed = true;
+            advancedAreaContainer.Panel2.Hide();
+            advancedAreaContainer.Panel2Collapsed = true;
             //hide all controls or they will show/flicker under OS X/mono
             closeApiButton.Visible = false;
             apiLogGridView.Visible = false;
@@ -1492,8 +1497,8 @@ namespace MultiMiner.Win
         {
             closeApiButton.Visible = true;
             apiLogGridView.Visible = true;
-            splitContainer1.Panel2Collapsed = false;
-            splitContainer1.Panel2.Show();
+            advancedAreaContainer.Panel2Collapsed = false;
+            advancedAreaContainer.Panel2.Show();
         }
 
         private void ShowApiMonitor()
@@ -2083,6 +2088,12 @@ namespace MultiMiner.Win
             desktopModeButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
             RestartMiningIfMining();
             engineConfiguration.SaveMinerConfiguration();
+        }
+
+        private void advancedAreaContainer_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            if (settingsLoaded)
+                applicationConfiguration.LogAreaDistance = e.SplitY;
         }
     }
 }
