@@ -50,8 +50,8 @@
             this.baseCoinCombo = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.miningBasisCombo = new System.Windows.Forms.ComboBox();
-            this.strategyConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.strategyConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -65,7 +65,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 329);
+            this.panel1.Location = new System.Drawing.Point(0, 335);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(330, 47);
             this.panel1.TabIndex = 7;
@@ -156,7 +156,7 @@
             this.groupBox1.Controls.Add(this.thresholdSymbolCombo);
             this.groupBox1.Controls.Add(this.multiCoinRadio);
             this.groupBox1.Controls.Add(this.singleCoinRadio);
-            this.groupBox1.Location = new System.Drawing.Point(12, 145);
+            this.groupBox1.Location = new System.Drawing.Point(12, 149);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(306, 172);
             this.groupBox1.TabIndex = 6;
@@ -284,10 +284,6 @@
             this.miningBasisCombo.TabIndex = 1;
             this.miningBasisCombo.SelectedIndexChanged += new System.EventHandler(this.miningBasisCombo_SelectedIndexChanged);
             // 
-            // strategyConfigurationBindingSource
-            // 
-            this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.StrategyConfiguration);
-            // 
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
@@ -299,6 +295,10 @@
             this.checkBox2.Text = "Suggest coins to mine based on CoinChoose data";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
+            // strategyConfigurationBindingSource
+            // 
+            this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.StrategyConfiguration);
+            // 
             // applicationConfigurationBindingSource
             // 
             this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
@@ -308,7 +308,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(330, 376);
+            this.ClientSize = new System.Drawing.Size(330, 382);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.miningBasisCombo);
             this.Controls.Add(this.baseCoinCombo);
