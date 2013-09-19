@@ -262,6 +262,8 @@
     <None Include="Resources\internet_browse.png" />
     <None Include="Resources\list-import.png" />
     <None Include="Resources\list-export.png" />
+    <None Include="Resources\application-option.png" />
+    <None Include="Resources\settings_options.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

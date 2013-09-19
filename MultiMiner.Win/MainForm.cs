@@ -869,11 +869,6 @@ namespace MultiMiner.Win
                 backendLabel.Text = "Backend: cgminer";
         }
 
-        private void settingsButton_Click(object sender, EventArgs e)
-        {
-            ShowApplicationSettings();
-        }
-
         private void ShowApplicationSettings()
         {
             SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration);
@@ -1381,11 +1376,6 @@ namespace MultiMiner.Win
             RefreshDevices();
         }
 
-        private void strategiesButton_Click(object sender, EventArgs e)
-        {
-            ConfigureStrategies();
-        }
-
         private void RefreshStrategiesLabel()
         {
             if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
@@ -1469,11 +1459,6 @@ namespace MultiMiner.Win
         private void coinChooseLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("http://coinchoose.com/");
-        }
-
-        private void coinsButton_Click(object sender, EventArgs e)
-        {
-            ConfigureCoins();
         }
 
         private void closeApiButton_Click(object sender, EventArgs e)
@@ -2094,6 +2079,21 @@ namespace MultiMiner.Win
         {
             if (settingsLoaded)
                 applicationConfiguration.LogAreaDistance = e.SplitY;
+        }
+
+        private void settingsButton_ButtonClick(object sender, EventArgs e)
+        {
+            ShowApplicationSettings();
+        }
+
+        private void coinsButton_Click_1(object sender, EventArgs e)
+        {
+            ConfigureCoins();
+        }
+
+        private void strategiesButton_Click_1(object sender, EventArgs e)
+        {
+            ConfigureStrategies();
         }
     }
 }
