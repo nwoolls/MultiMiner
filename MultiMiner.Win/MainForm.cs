@@ -131,8 +131,7 @@ namespace MultiMiner.Win
             logLaunchArgsBindingSource.DataSource = logLaunchEntries;
             logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
 
-            saveButton.Enabled = false;
-            cancelButton.Enabled = false;
+            UpdateChangesButtons(false);
 
             PositionCoinStatsLabel();
 
@@ -152,7 +151,19 @@ namespace MultiMiner.Win
             if (devices.Count > 0)
                 deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
 
+            UpdateMiningButtons();
+
             formLoaded = true;
+        }
+
+        private void UpdateChangesButtons(bool hasChanges)
+        {
+            saveButton.Visible = hasChanges;
+            cancelButton.Visible = hasChanges;
+            saveSeparator.Visible = hasChanges;
+
+            saveButton.Enabled = hasChanges;
+            cancelButton.Enabled = hasChanges;
         }
 
         private void PositionCoinStatsLabel()
@@ -601,8 +612,7 @@ namespace MultiMiner.Win
             engineConfiguration.SaveDeviceConfigurations();
             LoadGridValuesFromConfiguration();
 
-            saveButton.Enabled = false;
-            cancelButton.Enabled = false;
+            UpdateChangesButtons(false);
 
             RestartMiningIfMining();
 
@@ -615,16 +625,14 @@ namespace MultiMiner.Win
             engineConfiguration.LoadDeviceConfigurations();
             LoadGridValuesFromConfiguration();
 
-            saveButton.Enabled = false;
-            cancelButton.Enabled = false;
+            UpdateChangesButtons(false);
         }
 
         private void deviceGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (!deviceGridView.Columns[e.ColumnIndex].ReadOnly)
             {
-                saveButton.Enabled = true;
-                cancelButton.Enabled = true;
+                UpdateChangesButtons(true);
 
                 if (this.coinInformation != null)
                     LoadGridValuesFromCoinStats();
@@ -694,8 +702,7 @@ namespace MultiMiner.Win
             finally
             {
                 //restore button states after
-                saveButton.Enabled = saveEnabled;
-                cancelButton.Enabled = saveEnabled;
+                UpdateChangesButtons(saveEnabled);
             }
 
             //leaving the enabledColumn focused can cause an artifact where it looks unchecked
