@@ -1171,7 +1171,7 @@ namespace MultiMiner.Win
             catch (Exception ex)
             {
                 //don't crash if website cannot be resolved or JSON cannot be parsed
-                if ((ex is WebException) || (ex is InvalidCastException))
+                if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException))
                 {
                     notificationsControl.AddNotification(ex.Message, 
                         "Error parsing the CoinChoose.com JSON API", () =>
