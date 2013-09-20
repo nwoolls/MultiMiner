@@ -1856,9 +1856,10 @@ namespace MultiMiner.Win
             deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
 
             string coinSymbol = (string)((ToolStripMenuItem)sender).Tag;
-            CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(coinSymbol));
 
-            SetAllDevicesToCoin(coin);
+            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(coinSymbol));
+
+            SetAllDevicesToCoin(coinConfiguration);
 
             engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false; 
             coinColumn.ReadOnly = false;
@@ -1873,7 +1874,7 @@ namespace MultiMiner.Win
                 StartMining();
         }
 
-        private void SetAllDevicesToCoin(CryptoCoin coin)
+        private void SetAllDevicesToCoin(CoinConfiguration coinConfiguration)
         {
             engineConfiguration.DeviceConfigurations.Clear();
 
@@ -1887,16 +1888,16 @@ namespace MultiMiner.Win
 
                 deviceConfiguration.DeviceIndex = i;
 
-                if (coin.Algorithm == CoinAlgorithm.Scrypt)
+                if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
                 {
                     if (device.Kind == DeviceKind.GPU)
-                        deviceConfiguration.CoinSymbol = coin.Symbol;
+                        deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
                     else
                         deviceConfiguration.CoinSymbol = currentCoin == null ? String.Empty : currentCoin.Symbol;
                 }
                 else
                 {
-                    deviceConfiguration.CoinSymbol = coin.Symbol;
+                    deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
                 }
 
                 object cellValue = gridRow.Cells[enabledColumn.Index].Value;
