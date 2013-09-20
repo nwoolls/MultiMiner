@@ -36,8 +36,19 @@ namespace MultiMiner.Coinchoose.Api
                 //tried this but didn't work: if (jToken["currentBlocks"] != null)
                 CurrentBlocks = 0;
             }
-            
-            Difficulty = jToken.Value<double>("difficulty");
+
+            //difficulty may be NULL, e.g. for Terracoin when the block explorer is down
+            try
+            {
+                Difficulty = jToken.Value<double>("difficulty");
+            }
+            catch (InvalidCastException)
+            {
+                //handle System.InvalidCastException: Null object cannot be converted to a value type.
+                //tried this but didn't work: if (jToken["difficulty"] != null)
+                Difficulty = 0;
+            }
+
             Reward = jToken.Value<double>("reward");
 
             try

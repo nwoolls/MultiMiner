@@ -24,7 +24,10 @@ namespace MultiMiner.Coinchoose.Api
             {
                 CoinInformation coinInformation = new CoinInformation();
                 coinInformation.PopulateFromJson(jToken);
-                result.Add(coinInformation);
+                if (coinInformation.Difficulty > 0)
+                    //only add coins with valid info since the user may be basing
+                    //strategies on Difficulty
+                    result.Add(coinInformation);
             }
 
             return result;
