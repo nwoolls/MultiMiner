@@ -77,6 +77,7 @@ namespace MultiMiner.Win
                     configuration.Coin = new CryptoCoin();
                     configuration.Coin.Name = cryptoCoin.Name;
                     configuration.Coin.Symbol = cryptoCoin.Symbol;
+                    configuration.Coin.Algorithm = cryptoCoin.Algorithm;
                 }
 
                 configuration.Pools.Add(new MiningPool());
