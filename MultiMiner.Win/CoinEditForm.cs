@@ -27,7 +27,22 @@ namespace MultiMiner.Win
 
         private void saveButton_Click(object sender, EventArgs e)
         {
+            if (!ValidateInput())
+                return;
+
             SaveSettings();
+            DialogResult = System.Windows.Forms.DialogResult.OK;
+        }
+
+        private bool ValidateInput()
+        {
+            //require a symbol be specified, symbol is used throughout the app
+            if (String.IsNullOrEmpty(cryptoCoin.Symbol))
+            {
+                symbolEdit.Focus();
+                return false;
+            }
+            return true;
         }
 
         private void LoadSettings()

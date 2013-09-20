@@ -35,11 +35,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.sha256RadioButton = new System.Windows.Forms.RadioButton();
             this.scryptRadioButton = new System.Windows.Forms.RadioButton();
+            this.sha256RadioButton = new System.Windows.Forms.RadioButton();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.cryptoCoinBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.symbolEdit = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
@@ -59,7 +59,6 @@
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.saveButton.Location = new System.Drawing.Point(69, 8);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
@@ -108,17 +107,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Algorithm";
             // 
-            // sha256RadioButton
-            // 
-            this.sha256RadioButton.AutoSize = true;
-            this.sha256RadioButton.Location = new System.Drawing.Point(14, 23);
-            this.sha256RadioButton.Name = "sha256RadioButton";
-            this.sha256RadioButton.Size = new System.Drawing.Size(68, 17);
-            this.sha256RadioButton.TabIndex = 0;
-            this.sha256RadioButton.TabStop = true;
-            this.sha256RadioButton.Text = "SHA-256";
-            this.sha256RadioButton.UseVisualStyleBackColor = true;
-            // 
             // scryptRadioButton
             // 
             this.scryptRadioButton.AutoSize = true;
@@ -130,6 +118,17 @@
             this.scryptRadioButton.Text = "Scrypt";
             this.scryptRadioButton.UseVisualStyleBackColor = true;
             // 
+            // sha256RadioButton
+            // 
+            this.sha256RadioButton.AutoSize = true;
+            this.sha256RadioButton.Location = new System.Drawing.Point(14, 23);
+            this.sha256RadioButton.Name = "sha256RadioButton";
+            this.sha256RadioButton.Size = new System.Drawing.Size(68, 17);
+            this.sha256RadioButton.TabIndex = 0;
+            this.sha256RadioButton.TabStop = true;
+            this.sha256RadioButton.Text = "SHA-256";
+            this.sha256RadioButton.UseVisualStyleBackColor = true;
+            // 
             // textBox1
             // 
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Name", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -138,17 +137,17 @@
             this.textBox1.Size = new System.Drawing.Size(108, 20);
             this.textBox1.TabIndex = 0;
             // 
-            // textBox2
-            // 
-            this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Symbol", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox2.Location = new System.Drawing.Point(111, 40);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(108, 20);
-            this.textBox2.TabIndex = 1;
-            // 
             // cryptoCoinBindingSource
             // 
             this.cryptoCoinBindingSource.DataSource = typeof(MultiMiner.Engine.CryptoCoin);
+            // 
+            // symbolEdit
+            // 
+            this.symbolEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Symbol", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.symbolEdit.Location = new System.Drawing.Point(111, 40);
+            this.symbolEdit.Name = "symbolEdit";
+            this.symbolEdit.Size = new System.Drawing.Size(108, 20);
+            this.symbolEdit.TabIndex = 1;
             // 
             // CoinEditForm
             // 
@@ -156,7 +155,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(233, 183);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.symbolEdit);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label2);
@@ -190,7 +189,7 @@
         private System.Windows.Forms.RadioButton scryptRadioButton;
         private System.Windows.Forms.RadioButton sha256RadioButton;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox symbolEdit;
         private System.Windows.Forms.BindingSource cryptoCoinBindingSource;
     }
 }
