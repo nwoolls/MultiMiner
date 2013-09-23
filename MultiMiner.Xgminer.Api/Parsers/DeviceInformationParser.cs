@@ -37,7 +37,8 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     if (keyValuePairs.ContainsKey("Enabled")) //seen this needed with a user
                         newDevice.Enabled = keyValuePairs["Enabled"].Equals("Y");
 
-                    newDevice.Status = keyValuePairs["Status"];
+                    if (keyValuePairs.ContainsKey("Status")) //check required for bfgminer
+                        newDevice.Status = keyValuePairs["Status"];
 
                     //the RPC API returns numbers formatted en-US, e.g. 1,000.00
                     //specify CultureInfo.InvariantCulture for parsing or unhandled exceptions will
