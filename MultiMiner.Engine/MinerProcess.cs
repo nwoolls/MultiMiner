@@ -57,7 +57,7 @@ namespace MultiMiner.Engine
             try
             {
                 process.Kill();
-                process.WaitForExit();
+                //process.WaitForExit(); causes potential lockups closing bfgminer
                 process.Close();
             }
             catch (Exception ex)
