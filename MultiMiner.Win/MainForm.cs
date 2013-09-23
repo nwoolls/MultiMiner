@@ -956,6 +956,7 @@ namespace MultiMiner.Win
             row.Cells[errorsColumn.Index].Value = null;
             row.Cells[utilityColumn.Index].Value = null;
             row.Cells[intensityColumn.Index].Value = null;
+            row.Cells[poolColumn.Index].Value = null;
         }
 
         private void PopulateMinerStatsForRow(MultiMiner.Xgminer.Api.DeviceInformation deviceInformation, DataGridViewRow row)
