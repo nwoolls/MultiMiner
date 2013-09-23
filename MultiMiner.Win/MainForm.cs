@@ -975,12 +975,8 @@ namespace MultiMiner.Win
         {
             if (poolIndex >= 0)
             {
-                string rowCoinName = (string)row.Cells[coinColumn.Index].Value;
-                CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(rowCoinName, StringComparison.OrdinalIgnoreCase));
-                
+                CoinConfiguration coinConfiguration = CoinConfigurationForRow(row);
                 string poolHost = coinConfiguration.Pools[poolIndex].Host;
-                string poolName = String.Empty;
-
                 string poolDomain = GetDomainNameFromHost(poolHost);
                 row.Cells[poolColumn.Index].Value = poolDomain;
             }
@@ -990,8 +986,14 @@ namespace MultiMiner.Win
             }
         }
 
+        private CoinConfiguration CoinConfigurationForRow(DataGridViewRow row)
         private static string GetDomainNameFromHost(string poolHost)
         {
+            string rowCoinName = (string)row.Cells[coinColumn.Index].Value;
+            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(rowCoinName, StringComparison.OrdinalIgnoreCase));
+            return coinConfiguration;
+        }
+
             string domainName;
 
             if (!poolHost.Contains(":"))
@@ -1397,8 +1399,7 @@ namespace MultiMiner.Win
                 foreach (Coinchoose.Api.CoinInformation coin in coinInformation)
                     foreach (DataGridViewRow row in deviceGridView.Rows)
                     {
-                        string rowCoinName = (string)row.Cells[coinColumn.Index].Value;
-                        CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(rowCoinName, StringComparison.OrdinalIgnoreCase));
+                        CoinConfiguration coinConfiguration = CoinConfigurationForRow(row);
                         if ((coinConfiguration != null) &&  coin.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase))
                             PopulateCoinStatsForRow(coin, row);
                     }
