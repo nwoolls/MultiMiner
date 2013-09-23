@@ -990,7 +990,7 @@ namespace MultiMiner.Win
         private CoinConfiguration CoinConfigurationForRow(DataGridViewRow row)
         {
             string rowCoinName = (string)row.Cells[coinColumn.Index].Value;
-            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(rowCoinName, StringComparison.OrdinalIgnoreCase));
+            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(rowCoinName, StringComparison.OrdinalIgnoreCase));
             return coinConfiguration;
         }
 
