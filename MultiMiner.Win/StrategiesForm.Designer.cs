@@ -34,6 +34,7 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.strategyConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.singleCoinRadio = new System.Windows.Forms.RadioButton();
             this.multiCoinRadio = new System.Windows.Forms.RadioButton();
             this.thresholdSymbolCombo = new System.Windows.Forms.ComboBox();
@@ -51,11 +52,10 @@
             this.label6 = new System.Windows.Forms.Label();
             this.miningBasisCombo = new System.Windows.Forms.ComboBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.strategyConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).BeginInit();
+            this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -67,14 +67,14 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 335);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(330, 47);
+            this.panel1.Size = new System.Drawing.Size(355, 47);
             this.panel1.TabIndex = 7;
             // 
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.saveButton.Location = new System.Drawing.Point(162, 12);
+            this.saveButton.Location = new System.Drawing.Point(187, 12);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
             this.saveButton.TabIndex = 0;
@@ -86,7 +86,7 @@
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(243, 12);
+            this.cancelButton.Location = new System.Drawing.Point(268, 12);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 1;
@@ -103,6 +103,10 @@
             this.checkBox1.TabIndex = 0;
             this.checkBox1.Text = "Automatically mine coin(s) based on";
             this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // strategyConfigurationBindingSource
+            // 
+            this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.StrategyConfiguration);
             // 
             // singleCoinRadio
             // 
@@ -129,10 +133,12 @@
             // 
             // thresholdSymbolCombo
             // 
+            this.thresholdSymbolCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.thresholdSymbolCombo.FormattingEnabled = true;
             this.thresholdSymbolCombo.Location = new System.Drawing.Point(202, 25);
             this.thresholdSymbolCombo.Name = "thresholdSymbolCombo";
-            this.thresholdSymbolCombo.Size = new System.Drawing.Size(86, 21);
+            this.thresholdSymbolCombo.Size = new System.Drawing.Size(111, 21);
             this.thresholdSymbolCombo.TabIndex = 0;
             // 
             // thresholdSymbolLabel
@@ -158,17 +164,19 @@
             this.groupBox1.Controls.Add(this.singleCoinRadio);
             this.groupBox1.Location = new System.Drawing.Point(12, 149);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(306, 172);
+            this.groupBox1.Size = new System.Drawing.Size(331, 172);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Strategies (optional)";
             // 
             // exceptionEdit
             // 
+            this.exceptionEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.exceptionEdit.Enabled = false;
             this.exceptionEdit.Location = new System.Drawing.Point(202, 136);
             this.exceptionEdit.Name = "exceptionEdit";
-            this.exceptionEdit.Size = new System.Drawing.Size(86, 20);
+            this.exceptionEdit.Size = new System.Drawing.Size(111, 20);
             this.exceptionEdit.TabIndex = 5;
             // 
             // mineSingleOverrideLabel
@@ -183,9 +191,11 @@
             // 
             // thresholdValueEdit
             // 
+            this.thresholdValueEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.thresholdValueEdit.Location = new System.Drawing.Point(202, 55);
             this.thresholdValueEdit.Name = "thresholdValueEdit";
-            this.thresholdValueEdit.Size = new System.Drawing.Size(86, 20);
+            this.thresholdValueEdit.Size = new System.Drawing.Size(111, 20);
             this.thresholdValueEdit.TabIndex = 1;
             // 
             // thresholdValueLabel
@@ -218,7 +228,7 @@
             "Straight Profitability"});
             this.profitabilityKindCombo.Location = new System.Drawing.Point(124, 37);
             this.profitabilityKindCombo.Name = "profitabilityKindCombo";
-            this.profitabilityKindCombo.Size = new System.Drawing.Size(176, 21);
+            this.profitabilityKindCombo.Size = new System.Drawing.Size(201, 21);
             this.profitabilityKindCombo.TabIndex = 2;
             // 
             // intervalCombo
@@ -233,7 +243,7 @@
             "30 minutes"});
             this.intervalCombo.Location = new System.Drawing.Point(124, 64);
             this.intervalCombo.Name = "intervalCombo";
-            this.intervalCombo.Size = new System.Drawing.Size(176, 21);
+            this.intervalCombo.Size = new System.Drawing.Size(201, 21);
             this.intervalCombo.TabIndex = 3;
             // 
             // label5
@@ -256,7 +266,7 @@
             "Litecoin"});
             this.baseCoinCombo.Location = new System.Drawing.Point(124, 91);
             this.baseCoinCombo.Name = "baseCoinCombo";
-            this.baseCoinCombo.Size = new System.Drawing.Size(176, 21);
+            this.baseCoinCombo.Size = new System.Drawing.Size(201, 21);
             this.baseCoinCombo.TabIndex = 4;
             // 
             // label6
@@ -280,12 +290,14 @@
             "Price"});
             this.miningBasisCombo.Location = new System.Drawing.Point(210, 10);
             this.miningBasisCombo.Name = "miningBasisCombo";
-            this.miningBasisCombo.Size = new System.Drawing.Size(90, 21);
+            this.miningBasisCombo.Size = new System.Drawing.Size(115, 21);
             this.miningBasisCombo.TabIndex = 1;
             this.miningBasisCombo.SelectedIndexChanged += new System.EventHandler(this.miningBasisCombo_SelectedIndexChanged);
             // 
             // checkBox2
             // 
+            this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox2.AutoSize = true;
             this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "SuggestCoinsToMine", true));
             this.checkBox2.Location = new System.Drawing.Point(31, 120);
@@ -294,10 +306,6 @@
             this.checkBox2.TabIndex = 5;
             this.checkBox2.Text = "Suggest coins to mine based on CoinChoose data";
             this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // strategyConfigurationBindingSource
-            // 
-            this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.StrategyConfiguration);
             // 
             // applicationConfigurationBindingSource
             // 
@@ -308,7 +316,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(330, 382);
+            this.ClientSize = new System.Drawing.Size(355, 382);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.miningBasisCombo);
             this.Controls.Add(this.baseCoinCombo);
@@ -329,9 +337,9 @@
             this.Text = "Configure Strategies";
             this.Load += new System.EventHandler(this.StrategiesForm_Load);
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
