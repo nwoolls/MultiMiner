@@ -32,7 +32,14 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     DeviceInformation newDevice = new DeviceInformation();
 
                     newDevice.Kind = keyValuePairs.ElementAt(0).Key;
-                    newDevice.Index = int.Parse(keyValuePairs[newDevice.Kind]);
+                                        
+                    //personally seen this need extra handling with a user
+                    string stringValue = keyValuePairs[newDevice.Kind];
+                    int intValue = 0;
+                    if (int.TryParse(stringValue, out intValue))
+                        newDevice.Index = intValue;
+                    else
+                        continue; //no valid device index - no valid info
 
                     if (keyValuePairs.ContainsKey("Enabled")) //seen this needed with a user
                         newDevice.Enabled = keyValuePairs["Enabled"].Equals("Y");
@@ -73,8 +80,8 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     if (keyValuePairs.ContainsKey("Accepted")) //check required for bfgminer
                     {
                         //personally seen this need extra handling with a user
-                        string stringValue = keyValuePairs["Accepted"];
-                        int intValue = 0;
+                        stringValue = keyValuePairs["Accepted"];
+                        intValue = 0;
                         if (int.TryParse(stringValue, out intValue))
                             newDevice.AcceptedShares = intValue;
                     }
@@ -82,8 +89,8 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     if (keyValuePairs.ContainsKey("Rejected")) //check required for bfgminer
                     {
                         //personally seen this need extra handling with a user
-                        string stringValue = keyValuePairs["Rejected"];
-                        int intValue = 0;
+                        stringValue = keyValuePairs["Rejected"];
+                        intValue = 0;
                         if (int.TryParse(stringValue, out intValue))
                             newDevice.RejectedShares = intValue;
                     }
@@ -91,8 +98,8 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     if (keyValuePairs.ContainsKey("Hardware Errors")) //check required for bfgminer
                     {
                         //personally seen this need extra handling with a user
-                        string stringValue = keyValuePairs["Hardware Errors"];
-                        int intValue = 0;
+                        stringValue = keyValuePairs["Hardware Errors"];
+                        intValue = 0;
                         if (int.TryParse(stringValue, out intValue))
                             newDevice.HardwareErrors = intValue;
                     }
@@ -100,7 +107,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     if (keyValuePairs.ContainsKey("Utility")) //check required for bfgminer
                     {
                         //personally seen this need extra handling with a user
-                        string stringValue = keyValuePairs["Utility"];
+                        stringValue = keyValuePairs["Utility"];
                         double doubleValue = 0.00;
                         if (double.TryParse(stringValue, out doubleValue))
                             newDevice.Utility = doubleValue;
