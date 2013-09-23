@@ -204,9 +204,34 @@ namespace MultiMiner.Win
         {
             this.BeginInvoke((Action)(() =>
             {
-                //code to update UI
-                StopMining();
-                MessageBox.Show(ea.Reason, "Launching Miner Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+                {
+                    //if auto mining is enabled, disable the coin configuration and display a notification
+                    CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(config => config.Coin.Name.Equals(ea.CoinName, StringComparison.OrdinalIgnoreCase));
+                    coinConfiguration.Enabled = false;
+                    engineConfiguration.SaveCoinConfigurations();
+
+                    //if no enabled configurations, stop mining
+                    int enabledConfigurations = engineConfiguration.CoinConfigurations.Count(config => config.Enabled);
+                    if (enabledConfigurations == 0)
+                        StopMining();
+                    else
+                        //if there are enabled configurations, apply mining strategy
+                        CheckAndApplyMiningStrategy();
+
+                    string notificationReason = String.Format("Configuration for {0} disabled - all pools down", ea.CoinName);
+
+                    notificationsControl.AddNotification(notificationReason, notificationReason, () =>
+                    {
+                        ConfigureCoins();
+                    }, "");
+                }
+                else
+                {
+                    //if auto mining is disabled, stop mining and display a dialog
+                    StopMining();
+                    MessageBox.Show(ea.Reason, "Launching Miner Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }));
         }
 
@@ -1143,6 +1168,13 @@ namespace MultiMiner.Win
         {
             RefreshCoinStats();
 
+            CheckAndApplyMiningStrategy();
+
+            coinStatsCountdownMinutes = coinStatsTimer.Interval / 1000 / 60;
+        }
+
+        private void CheckAndApplyMiningStrategy()
+        {
             if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
                 //ensure the user isn't editing settings
                 !ShowingModalDialog())
@@ -1155,8 +1187,6 @@ namespace MultiMiner.Win
                 //to refresh coin stats due to changed coin selections
                 LoadGridValuesFromCoinStats();
             }
-
-            coinStatsCountdownMinutes = coinStatsTimer.Interval / 1000 / 60;
         }
 
         private void RefreshCoinStats()

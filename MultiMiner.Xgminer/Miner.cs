@@ -258,11 +258,14 @@ namespace MultiMiner.Xgminer
                 AuthenticationFailed(this, args);
             }
 
-            if ((e.Data.IndexOf("No servers could be used", StringComparison.OrdinalIgnoreCase) >= 0) && (LaunchFailed != null))
+            if (((e.Data.IndexOf("No servers could be used", StringComparison.OrdinalIgnoreCase) >= 0) ||
+                (e.Data.IndexOf("No servers were found", StringComparison.OrdinalIgnoreCase) >= 0))
+                && (LaunchFailed != null))
             {
                 LaunchFailedArgs args = new LaunchFailedArgs();
                 args.Reason = String.Format("None of the pools configured for {0} could be used. Verify your pool settings and try again.",
                     minerConfiguration.CoinName);
+                args.CoinName = minerConfiguration.CoinName;
                 LaunchFailed(this, args);
             }
 
