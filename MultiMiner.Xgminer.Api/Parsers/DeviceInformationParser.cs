@@ -89,7 +89,13 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     }
 
                     if (keyValuePairs.ContainsKey("Hardware Errors")) //check required for bfgminer
-                        newDevice.HardwareErrors = int.Parse(keyValuePairs["Hardware Errors"], CultureInfo.InvariantCulture);
+                    {
+                        //personally seen this need extra handling with a user
+                        string stringValue = keyValuePairs["Hardware Errors"];
+                        int intValue = 0;
+                        if (int.TryParse(stringValue, out intValue))
+                            newDevice.HardwareErrors = intValue;
+                    }
 
                     if (keyValuePairs.ContainsKey("Utility")) //check required for bfgminer
                     {
