@@ -35,6 +35,7 @@ namespace MultiMiner.Win
         private NotificationsControl notificationsControl;
         private Dictionary<int, int> lastAcceptedShares = new Dictionary<int,int>();
         private bool settingsLoaded = false;
+        private Dictionary<string, string> hostDomainNames = new Dictionary<string, string>();
 
         public MainForm()
         {
@@ -987,12 +988,16 @@ namespace MultiMiner.Win
         }
 
         private CoinConfiguration CoinConfigurationForRow(DataGridViewRow row)
-        private static string GetDomainNameFromHost(string poolHost)
         {
             string rowCoinName = (string)row.Cells[coinColumn.Index].Value;
             CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(rowCoinName, StringComparison.OrdinalIgnoreCase));
             return coinConfiguration;
         }
+
+        private string GetDomainNameFromHost(string poolHost)
+        {
+            if (hostDomainNames.ContainsKey(poolHost))
+                return hostDomainNames[poolHost];
 
             string domainName;
 
@@ -1008,6 +1013,9 @@ namespace MultiMiner.Win
                 int index = domainName.IndexOf(".") + 1;
                 domainName = domainName.Substring(index, domainName.Length - index);
             }
+
+            hostDomainNames[poolHost] = domainName;
+
             return domainName;
         }
 
