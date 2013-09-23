@@ -240,7 +240,11 @@
             this.intervalCombo.Items.AddRange(new object[] {
             "5 minutes",
             "15 minutes",
-            "30 minutes"});
+            "30 minutes",
+            "1 hour",
+            "3 hours",
+            "6 hours",
+            "12 hours"});
             this.intervalCombo.Location = new System.Drawing.Point(124, 64);
             this.intervalCombo.Name = "intervalCombo";
             this.intervalCombo.Size = new System.Drawing.Size(201, 21);

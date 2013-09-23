@@ -1472,6 +1472,18 @@ namespace MultiMiner.Win
                 case ApplicationConfiguration.CoinStrategyCheckInterval.ThirtyMinutes:
                     coinStatsMinutes = 30;
                     break;
+                case ApplicationConfiguration.CoinStrategyCheckInterval.OneHour:
+                    coinStatsMinutes = 1 * 60;
+                    break;
+                case ApplicationConfiguration.CoinStrategyCheckInterval.ThreeHours:
+                    coinStatsMinutes = 3 * 60;
+                    break;
+                case ApplicationConfiguration.CoinStrategyCheckInterval.SixHours:
+                    coinStatsMinutes = 6 * 60;
+                    break;
+                case ApplicationConfiguration.CoinStrategyCheckInterval.TwelveHours:
+                    coinStatsMinutes = 12 * 60;
+                    break;
                 default:
                     coinStatsMinutes = 15;
                     break;

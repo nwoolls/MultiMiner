@@ -11,7 +11,11 @@ namespace MultiMiner.Win
         {
             FiveMinutes = 0,
             FifteenMinutes = 1,
-            ThirtyMinutes = 2
+            ThirtyMinutes = 2,
+            OneHour = 3,
+            ThreeHours = 4,
+            SixHours = 5,
+            TwelveHours = 6
         }
 
         public ApplicationConfiguration()
