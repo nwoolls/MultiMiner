@@ -1,7 +1,13 @@
-﻿namespace MultiMiner.Xgminer.Api
+﻿using System;
+namespace MultiMiner.Xgminer.Api
 {
     public class DeviceInformation
     {
+        public DeviceInformation()
+        {
+            Status = String.Empty;
+        }
+
         public string Kind { get; set; }
         public int Index { get; set; }
         public bool Enabled { get; set; }
