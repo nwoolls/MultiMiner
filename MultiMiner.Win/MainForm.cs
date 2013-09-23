@@ -1634,9 +1634,13 @@ namespace MultiMiner.Win
 
         private void mobileMinerTimer_Tick(object sender, EventArgs e)
         {
-            //check for commands first so we can report mining activity after
-            CheckForMobileMinerCommands();
-            SubmitMobileMinerStats();
+            //if we do this with the Settings dialog open the user may have partially entered credentials
+            if (!ShowingModalDialog())
+            {
+                //check for commands first so we can report mining activity after
+                CheckForMobileMinerCommands();
+                SubmitMobileMinerStats();
+            }
         }
 
         private const string mobileMinerApiKey = "P3mVX95iP7xfoI";
