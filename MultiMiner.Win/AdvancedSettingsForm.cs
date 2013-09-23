@@ -29,13 +29,25 @@ namespace MultiMiner.Win
             applicationConfigurationBindingSource.DataSource = workingApplicationConfiguration;
             erupterCheckBox.Enabled = minerConfiguration.MinerBackend == Xgminer.MinerBackend.Bfgminer;
             autoDesktopCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
+            LoadSettings();
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
+            SaveSettings();
             ObjectCopier.CopyObject(workingMinerConfiguration, minerConfiguration);
             ObjectCopier.CopyObject(workingApplicationConfiguration, applicationConfiguration);
             DialogResult = System.Windows.Forms.DialogResult.OK;
+        }
+
+        private void LoadSettings()
+        {
+            intervalCombo.SelectedIndex = (int)workingApplicationConfiguration.ScheduledRestartMiningInterval;
+        }
+
+        private void SaveSettings()
+        {
+            workingApplicationConfiguration.ScheduledRestartMiningInterval = (ApplicationConfiguration.TimerInterval)intervalCombo.SelectedIndex;
         }
     }
 }

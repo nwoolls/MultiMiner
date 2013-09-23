@@ -43,6 +43,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.autoDesktopCheckBox = new System.Windows.Forms.CheckBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.intervalCombo = new System.Windows.Forms.ComboBox();
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).BeginInit();
@@ -56,15 +58,15 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 178);
+            this.panel1.Location = new System.Drawing.Point(0, 204);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(392, 47);
-            this.panel1.TabIndex = 4;
+            this.panel1.Size = new System.Drawing.Size(407, 47);
+            this.panel1.TabIndex = 6;
             // 
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveButton.Location = new System.Drawing.Point(224, 12);
+            this.saveButton.Location = new System.Drawing.Point(239, 12);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
             this.saveButton.TabIndex = 0;
@@ -76,7 +78,7 @@
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(305, 12);
+            this.cancelButton.Location = new System.Drawing.Point(320, 12);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 1;
@@ -113,15 +115,17 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.textBox2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 62);
+            this.groupBox1.Location = new System.Drawing.Point(12, 90);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(368, 103);
-            this.groupBox1.TabIndex = 24;
+            this.groupBox1.Size = new System.Drawing.Size(382, 103);
+            this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "API Settings";
             // 
@@ -146,10 +150,12 @@
             // 
             // textBox2
             // 
+            this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "AllowedApiIps", true));
             this.textBox2.Location = new System.Drawing.Point(105, 48);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(245, 20);
+            this.textBox2.Size = new System.Drawing.Size(259, 20);
             this.textBox2.TabIndex = 1;
             // 
             // label1
@@ -163,21 +169,56 @@
             // 
             // textBox1
             // 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "StartingApiPort", true));
             this.textBox1.Location = new System.Drawing.Point(105, 22);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(94, 20);
+            this.textBox1.Size = new System.Drawing.Size(108, 20);
             this.textBox1.TabIndex = 0;
             // 
             // autoDesktopCheckBox
             // 
+            this.autoDesktopCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.autoDesktopCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "AutoSetDesktopMode", true));
-            this.autoDesktopCheckBox.Location = new System.Drawing.Point(224, 8);
+            this.autoDesktopCheckBox.Location = new System.Drawing.Point(238, 8);
             this.autoDesktopCheckBox.Name = "autoDesktopCheckBox";
             this.autoDesktopCheckBox.Size = new System.Drawing.Size(163, 44);
             this.autoDesktopCheckBox.TabIndex = 2;
             this.autoDesktopCheckBox.Text = "Automatically set Desktop Mode based on computer use";
             this.autoDesktopCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "ScheduledRestartMining", true));
+            this.checkBox1.Location = new System.Drawing.Point(12, 60);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(125, 17);
+            this.checkBox1.TabIndex = 3;
+            this.checkBox1.Text = "Restart miners every:";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // intervalCombo
+            // 
+            this.intervalCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.intervalCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.intervalCombo.FormattingEnabled = true;
+            this.intervalCombo.Items.AddRange(new object[] {
+            "5 minutes",
+            "15 minutes",
+            "30 minutes",
+            "1 hour",
+            "3 hours",
+            "6 hours",
+            "12 hours"});
+            this.intervalCombo.Location = new System.Drawing.Point(143, 58);
+            this.intervalCombo.Name = "intervalCombo";
+            this.intervalCombo.Size = new System.Drawing.Size(83, 21);
+            this.intervalCombo.TabIndex = 4;
             // 
             // applicationConfigurationBindingSource
             // 
@@ -188,7 +229,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(392, 225);
+            this.ClientSize = new System.Drawing.Size(407, 251);
+            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.intervalCombo);
             this.Controls.Add(this.autoDesktopCheckBox);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.erupterCheckBox);
@@ -227,5 +270,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox autoDesktopCheckBox;
         private System.Windows.Forms.BindingSource applicationConfigurationBindingSource;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.ComboBox intervalCombo;
     }
 }

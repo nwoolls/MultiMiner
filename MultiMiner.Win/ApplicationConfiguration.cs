@@ -7,7 +7,7 @@ namespace MultiMiner.Win
 {
     public class ApplicationConfiguration
     {
-        public enum CoinStrategyCheckInterval
+        public enum TimerInterval
         {
             FiveMinutes = 0,
             FifteenMinutes = 1,
@@ -21,7 +21,7 @@ namespace MultiMiner.Win
         public ApplicationConfiguration()
         {
             this.StartupMiningDelay = 45;
-            this.StrategyCheckInterval = CoinStrategyCheckInterval.FifteenMinutes;
+            this.StrategyCheckInterval = TimerInterval.FifteenMinutes;
             this.RollOverLogFiles = true;
             this.OldLogFileSets = 1;
             this.SuggestCoinsToMine = false;
@@ -45,11 +45,14 @@ namespace MultiMiner.Win
         public string MobileMinerEmailAddress { get; set; }
         public string MobileMinerApplicationKey { get; set; }
 
-        public CoinStrategyCheckInterval StrategyCheckInterval { get; set; }
+        public TimerInterval StrategyCheckInterval { get; set; }
         public bool SuggestCoinsToMine { get; set; }
 
         public bool RollOverLogFiles { get; set; }
         public int OldLogFileSets { get; set; }
+
+        public bool ScheduledRestartMining { get; set; }
+        public TimerInterval ScheduledRestartMiningInterval { get; set; }
 
         private static string AppDataPath()
         {

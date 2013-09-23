@@ -914,6 +914,7 @@ namespace MultiMiner.Win
                 RefreshDevices();
                 RefreshBackendLabel();
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
+                SetupRestartTimer();
                 if (wasMining)
                     StartMining();
             }
@@ -923,7 +924,13 @@ namespace MultiMiner.Win
                 applicationConfiguration.LoadApplicationConfiguration();
             }
         }
-        
+
+        private void SetupRestartTimer()
+        {
+            restartTimer.Interval = TimerIntervalToMinutes(applicationConfiguration.ScheduledRestartMiningInterval) * 60 * 1000;
+            restartTimer.Enabled = applicationConfiguration.ScheduledRestartMining;
+        }
+
         private void statsTimer_Tick(object sender, EventArgs e)
         {
             ClearMinerStatsForDisabledCoins();
@@ -1463,31 +1470,9 @@ namespace MultiMiner.Win
         private void SetupCoinStatsTimer()
         {
             int coinStatsMinutes = 15;
+            ApplicationConfiguration.TimerInterval timerInterval = applicationConfiguration.StrategyCheckInterval;
 
-            switch (applicationConfiguration.StrategyCheckInterval)
-            {
-                case ApplicationConfiguration.CoinStrategyCheckInterval.FiveMinutes:
-                    coinStatsMinutes = 5;
-                    break;
-                case ApplicationConfiguration.CoinStrategyCheckInterval.ThirtyMinutes:
-                    coinStatsMinutes = 30;
-                    break;
-                case ApplicationConfiguration.CoinStrategyCheckInterval.OneHour:
-                    coinStatsMinutes = 1 * 60;
-                    break;
-                case ApplicationConfiguration.CoinStrategyCheckInterval.ThreeHours:
-                    coinStatsMinutes = 3 * 60;
-                    break;
-                case ApplicationConfiguration.CoinStrategyCheckInterval.SixHours:
-                    coinStatsMinutes = 6 * 60;
-                    break;
-                case ApplicationConfiguration.CoinStrategyCheckInterval.TwelveHours:
-                    coinStatsMinutes = 12 * 60;
-                    break;
-                default:
-                    coinStatsMinutes = 15;
-                    break;
-            }
+            coinStatsMinutes = TimerIntervalToMinutes(timerInterval);
 
             coinStatsTimer.Enabled = false;
             coinStatsCountdownTimer.Enabled = false;
@@ -1499,6 +1484,35 @@ namespace MultiMiner.Win
             coinStatsCountdownTimer.Enabled = true;
         }
 
+        private static int TimerIntervalToMinutes(ApplicationConfiguration.TimerInterval timerInterval)
+        {
+            int coinStatsMinutes;
+            switch (timerInterval)
+            {
+                case ApplicationConfiguration.TimerInterval.FiveMinutes:
+                    coinStatsMinutes = 5;
+                    break;
+                case ApplicationConfiguration.TimerInterval.ThirtyMinutes:
+                    coinStatsMinutes = 30;
+                    break;
+                case ApplicationConfiguration.TimerInterval.OneHour:
+                    coinStatsMinutes = 1 * 60;
+                    break;
+                case ApplicationConfiguration.TimerInterval.ThreeHours:
+                    coinStatsMinutes = 3 * 60;
+                    break;
+                case ApplicationConfiguration.TimerInterval.SixHours:
+                    coinStatsMinutes = 6 * 60;
+                    break;
+                case ApplicationConfiguration.TimerInterval.TwelveHours:
+                    coinStatsMinutes = 12 * 60;
+                    break;
+                default:
+                    coinStatsMinutes = 15;
+                    break;
+            }
+            return coinStatsMinutes;
+        }
         private void coinStatsCountdownTimer_Tick(object sender, EventArgs e)
         {
             coinStatsCountdownMinutes--;
@@ -2144,6 +2158,11 @@ namespace MultiMiner.Win
         private void strategiesButton_Click_1(object sender, EventArgs e)
         {
             ConfigureStrategies();
+        }
+
+        private void restartTimer_Tick(object sender, EventArgs e)
+        {
+            RestartMiningIfMining();
         }
     }
 }

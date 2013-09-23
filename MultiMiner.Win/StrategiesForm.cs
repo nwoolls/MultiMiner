@@ -106,7 +106,7 @@ namespace MultiMiner.Win
             strategyConfiguration.BaseCoin = (Coinchoose.Api.BaseCoin)baseCoinCombo.SelectedIndex;
             strategyConfiguration.MiningBasis = (StrategyConfiguration.CoinMiningBasis)miningBasisCombo.SelectedIndex;
 
-            applicationConfiguration.StrategyCheckInterval = (ApplicationConfiguration.CoinStrategyCheckInterval)intervalCombo.SelectedIndex;
+            applicationConfiguration.StrategyCheckInterval = (ApplicationConfiguration.TimerInterval)intervalCombo.SelectedIndex;
         }
 
         private void multiCoinRadio_CheckedChanged(object sender, EventArgs e)
