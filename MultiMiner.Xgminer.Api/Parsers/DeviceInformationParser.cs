@@ -36,7 +36,8 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     //personally seen this need extra handling with a user
                     string stringValue = keyValuePairs[newDevice.Kind];
                     int intValue = 0;
-                    if (int.TryParse(stringValue, out intValue))
+                    if (int.TryParse(stringValue, NumberStyles.Number,
+                             CultureInfo.InvariantCulture, out intValue))
                         newDevice.Index = intValue;
                     else
                         continue; //no valid device index - no valid info
@@ -82,7 +83,8 @@ namespace MultiMiner.Xgminer.Api.Parsers
                         //personally seen this need extra handling with a user
                         stringValue = keyValuePairs["Accepted"];
                         intValue = 0;
-                        if (int.TryParse(stringValue, out intValue))
+                        if (int.TryParse(stringValue, NumberStyles.Number,
+                             CultureInfo.InvariantCulture, out intValue))
                             newDevice.AcceptedShares = intValue;
                     }
 
@@ -91,7 +93,8 @@ namespace MultiMiner.Xgminer.Api.Parsers
                         //personally seen this need extra handling with a user
                         stringValue = keyValuePairs["Rejected"];
                         intValue = 0;
-                        if (int.TryParse(stringValue, out intValue))
+                        if (int.TryParse(stringValue, NumberStyles.Number,
+                             CultureInfo.InvariantCulture, out intValue))
                             newDevice.RejectedShares = intValue;
                     }
 
@@ -100,7 +103,8 @@ namespace MultiMiner.Xgminer.Api.Parsers
                         //personally seen this need extra handling with a user
                         stringValue = keyValuePairs["Hardware Errors"];
                         intValue = 0;
-                        if (int.TryParse(stringValue, out intValue))
+                        if (int.TryParse(stringValue, NumberStyles.Number,
+                             CultureInfo.InvariantCulture, out intValue))
                             newDevice.HardwareErrors = intValue;
                     }
 
@@ -109,7 +113,8 @@ namespace MultiMiner.Xgminer.Api.Parsers
                         //personally seen this need extra handling with a user
                         stringValue = keyValuePairs["Utility"];
                         double doubleValue = 0.00;
-                        if (double.TryParse(stringValue, out doubleValue))
+                        if (double.TryParse(stringValue, NumberStyles.Number,
+                             CultureInfo.InvariantCulture, out doubleValue))
                             newDevice.Utility = doubleValue;
                     }
 
