@@ -100,6 +100,10 @@ namespace MultiMiner.Xgminer.Api.Parsers
                             newDevice.Utility = doubleValue;
                     }
 
+                    newDevice.PoolIndex = -1;
+                    if (keyValuePairs.ContainsKey("Last Share Pool")) //check required for bfgminer
+                        newDevice.PoolIndex = int.Parse(keyValuePairs["Last Share Pool"], CultureInfo.InvariantCulture);
+
                     deviceInformation.Add(newDevice);
                 }
             }

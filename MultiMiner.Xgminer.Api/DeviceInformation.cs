@@ -21,5 +21,6 @@
         public int HardwareErrors { get; set; }
         public double Utility { get; set; }
         public string Intensity { get; set; } //string, might be D
+        public int PoolIndex { get; set; }
     }
 }

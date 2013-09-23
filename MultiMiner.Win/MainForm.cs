@@ -967,6 +967,45 @@ namespace MultiMiner.Win
             row.Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
             row.Cells[utilityColumn.Index].Value = deviceInformation.Utility;
             row.Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
+            PopulatePoolForRow(deviceInformation.PoolIndex, row);
+        }
+
+        private void PopulatePoolForRow(int poolIndex, DataGridViewRow row)
+        {
+            if (poolIndex >= 0)
+            {
+                string rowCoinName = (string)row.Cells[coinColumn.Index].Value;
+                CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(rowCoinName, StringComparison.OrdinalIgnoreCase));
+                
+                string poolHost = coinConfiguration.Pools[poolIndex].Host;
+                string poolName = String.Empty;
+
+                string poolDomain = GetDomainNameFromHost(poolHost);
+                row.Cells[poolColumn.Index].Value = poolDomain;
+            }
+            else
+            {
+                row.Cells[poolColumn.Index].Value = String.Empty;
+            }
+        }
+
+        private static string GetDomainNameFromHost(string poolHost)
+        {
+            string domainName;
+
+            if (!poolHost.Contains(":"))
+                poolHost = "http://" + poolHost;
+
+            Uri uri = new Uri(poolHost);
+
+            domainName = uri.Host;
+
+            if (domainName.Split('.').Length > 1)
+            {
+                int index = domainName.IndexOf(".") + 1;
+                domainName = domainName.Substring(index, domainName.Length - index);
+            }
+            return domainName;
         }
 
         private void ClearAllMinerStats()
