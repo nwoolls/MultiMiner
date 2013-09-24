@@ -24,13 +24,24 @@ namespace MultiMiner.Win
             {
                 if (value == Application.UseWaitCursor) return;
                 Application.UseWaitCursor = value;
-                Form f = Form.ActiveForm;
-                if (f != null && f.Handle != null
-                    && (OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix))  
-                    // Send WM_SETCURSOR
-                    SendMessage(f.Handle, 0x20, f.Handle, (IntPtr)1);
+                Form activeForm = Form.ActiveForm;
+                if (activeForm != null)
+                {
+                    if (activeForm.InvokeRequired)
+                        activeForm.BeginInvoke((Action)(() => { CheckAndShowCursor(activeForm); }));
+                    else
+                        CheckAndShowCursor(activeForm);
+                }
                 Application.DoEvents();
             }
+        }
+
+        private static void CheckAndShowCursor(Form activeForm)
+        {
+            if (activeForm.Handle != null
+                                    && (OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix))
+                // Send WM_SETCURSOR
+                SendMessage(activeForm.Handle, 0x20, activeForm.Handle, (IntPtr)1);
         }
 
         [DllImport("user32.dll")]
