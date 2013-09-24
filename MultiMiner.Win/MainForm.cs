@@ -573,8 +573,11 @@ namespace MultiMiner.Win
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
+                Application.DoEvents();
+
                 engineConfiguration.SaveCoinConfigurations();
                 RefreshCoinComboBox();
+
                 //SaveChanges() will restart mining if needed
                 SaveChanges();
             }
@@ -639,6 +642,8 @@ namespace MultiMiner.Win
             LoadGridValuesFromConfiguration();
 
             UpdateChangesButtons(false);
+
+            Application.DoEvents();
 
             RestartMiningIfMining();
 
@@ -908,6 +913,8 @@ namespace MultiMiner.Win
             DialogResult dialogResult = settingsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
+                Application.DoEvents();
+
                 bool wasMining = miningEngine.Mining;
                 StopMining(); // or USB devices may be in use for RefreshDevices() call below
                 engineConfiguration.SaveMinerConfiguration();
@@ -916,6 +923,9 @@ namespace MultiMiner.Win
                 RefreshBackendLabel();
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
                 SetupRestartTimer();
+                
+                Application.DoEvents();
+
                 if (wasMining)
                     StartMining();
             }
@@ -1493,6 +1503,8 @@ namespace MultiMiner.Win
             DialogResult dialogResult = strategiesForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
+                Application.DoEvents();
+
                 engineConfiguration.SaveStrategyConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
                 SetupCoinStatsTimer();
@@ -1506,6 +1518,8 @@ namespace MultiMiner.Win
                 RefreshStrategiesLabel();
                 LoadGridValuesFromCoinStats();
                 UpdateMiningButtons();
+
+                Application.DoEvents();
 
                 RestartMiningIfMining();
             }
