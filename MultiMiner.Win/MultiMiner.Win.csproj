@@ -79,6 +79,7 @@
       <DependentUpon>CoinsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ApiLogEntry.cs" />
+    <Compile Include="HourGlass.cs" />
     <Compile Include="InputValidation.cs" />
     <Compile Include="InstallMinerForm.cs">
       <SubType>Form</SubType>

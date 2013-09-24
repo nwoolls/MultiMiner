@@ -392,7 +392,17 @@ namespace MultiMiner.Win
         {
             try
             {
-                devices = GetDevices();
+                using (new HourGlass())
+                {
+                    try
+                    {
+                        devices = GetDevices();
+                    }
+                    finally
+                    {
+                        Application.UseWaitCursor = false;
+                    }
+                }
             }
             catch (Win32Exception ex)
             {
@@ -803,7 +813,11 @@ namespace MultiMiner.Win
 
         private void StopMining()
         {
-            miningEngine.StopMining();
+            using (new HourGlass())
+            {
+                miningEngine.StopMining();
+            }
+
             deviceStatsTimer.Enabled = false;
             coinStatsCountdownTimer.Enabled = false;
             RefreshStrategiesCountdown();
@@ -839,7 +853,10 @@ namespace MultiMiner.Win
 
             try
             {
-                miningEngine.StartMining(engineConfiguration, devices, coinInformation);
+                using (new HourGlass())
+                {
+                    miningEngine.StartMining(engineConfiguration, devices, coinInformation);
+                }
             }
             catch (MinerLaunchException ex)
             {
