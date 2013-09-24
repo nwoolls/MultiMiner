@@ -2217,5 +2217,12 @@ namespace MultiMiner.Win
         {
             RestartMiningIfMining();
         }
+
+        private void deviceGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            //don't show 0 temps
+            if ((e.ColumnIndex == temperatureColumn.Index) && (e.Value != null) && ((double)e.Value == 0))
+                e.Value = null;
+        }
     }
 }
