@@ -56,5 +56,11 @@ namespace MultiMiner.Utility
                     : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
             return result;
         }
+
+        public static bool IsWindowsVistaOrHigher()
+        {
+            OperatingSystem OS = Environment.OSVersion;
+            return (OS.Platform == PlatformID.Win32NT) && (OS.Version.Major >= 6);
+        }
     }
 }
