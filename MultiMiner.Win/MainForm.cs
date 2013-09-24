@@ -1694,6 +1694,7 @@ namespace MultiMiner.Win
 
         private const string mobileMinerApiKey = "P3mVX95iP7xfoI";
         private const string mobileMinerUrl = "https://api.mobileminerapp.com";
+        private const bool mobileMinerAsync = true;
         
         //don't show a dialog for a 403 after successful submissions.
         //it's not ideal but there have been two reports now of this
@@ -1744,33 +1745,50 @@ namespace MultiMiner.Win
 
             if (statisticsList.Count > 0)
             {
-                try
+                if (mobileMinerAsync)
                 {
-                    MobileMiner.Api.ApiContext.SubmitMiningStatistics(mobileMinerUrl, mobileMinerApiKey,
-                        applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                        Environment.MachineName, statisticsList);
-                    mobileMinerSuccess = true;
-                }
-                catch (WebException ex)
-                {
-                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down    
-                    HttpWebResponse response = ex.Response as HttpWebResponse;
-                    if (response != null)
-                    {
-                        if (response.StatusCode == HttpStatusCode.Forbidden)
-                        {
-                            if (!mobileMinerSuccess)
-                            {
-                                this.applicationConfiguration.MobileMinerMonitoring = false;
-                                this.applicationConfiguration.SaveApplicationConfiguration();
-                                MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
-                                    Environment.NewLine + Environment.NewLine +
-                                    "MobileMiner remote monitoring will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    if (submitMiningStatisticsDelegate == null)
+                        submitMiningStatisticsDelegate = SubmitMiningStatistics;
 
-                                //check to make sure there are no modal windows already
-                                if (!ShowingModalDialog())
-                                    ShowApplicationSettings();
-                            }
+                    submitMiningStatisticsDelegate.BeginInvoke(statisticsList, null, null);
+                }
+                else
+                {
+                    SubmitMiningStatistics(statisticsList);
+                }
+            }
+        }
+
+        private Action<List<MultiMiner.MobileMiner.Api.MiningStatistics>> submitMiningStatisticsDelegate;
+
+        private void SubmitMiningStatistics(List<MultiMiner.MobileMiner.Api.MiningStatistics> statisticsList)
+        {
+            try
+            {
+                MobileMiner.Api.ApiContext.SubmitMiningStatistics(mobileMinerUrl, mobileMinerApiKey,
+                    applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                    Environment.MachineName, statisticsList);
+                mobileMinerSuccess = true;
+            }
+            catch (WebException ex)
+            {
+                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+                HttpWebResponse response = ex.Response as HttpWebResponse;
+                if (response != null)
+                {
+                    if (response.StatusCode == HttpStatusCode.Forbidden)
+                    {
+                        if (!mobileMinerSuccess)
+                        {
+                            applicationConfiguration.MobileMinerMonitoring = false;
+                            applicationConfiguration.SaveApplicationConfiguration();
+                            MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
+                                Environment.NewLine + Environment.NewLine +
+                                "MobileMiner remote monitoring will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                            //check to make sure there are no modal windows already
+                            if (!ShowingModalDialog())
+                                ShowApplicationSettings();
                         }
                     }
                 }
@@ -1797,6 +1815,23 @@ namespace MultiMiner.Win
                 string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
                 return;
 
+            if (mobileMinerAsync)
+            {
+                if (checkForRemoteCommandsDelegate == null)
+                    checkForRemoteCommandsDelegate = GetRemoteCommands;
+
+                checkForRemoteCommandsDelegate.BeginInvoke(null, null);
+            }
+            else
+            {
+                GetRemoteCommands();
+            }
+        }
+
+        private Action checkForRemoteCommandsDelegate;
+
+        private void GetRemoteCommands()
+        {
             List<MobileMiner.Api.RemoteCommand> commands = new List<MobileMiner.Api.RemoteCommand>();
 
             try
@@ -1839,9 +1874,17 @@ namespace MultiMiner.Win
 
                     return;
                 }
-                throw;  
+                throw;
             }
 
+            if (InvokeRequired)
+                BeginInvoke((Action<List<MobileMiner.Api.RemoteCommand>>)((c) => ProcessRemoteCommands(c)), commands);
+            else
+                ProcessRemoteCommands(commands);
+        }
+
+        private void ProcessRemoteCommands(List<MobileMiner.Api.RemoteCommand> commands)
+        {
             if (commands.Count > 0)
             {
                 MobileMiner.Api.RemoteCommand command = commands.First();
@@ -1851,6 +1894,7 @@ namespace MultiMiner.Win
                 //if we check for commands again in that time, we don't want to process it again
                 if (processedCommandIds.Contains(command.Id))
                     return;
+
                 processedCommandIds.Add(command.Id);
 
                 if (command.CommandText.Equals("START", StringComparison.OrdinalIgnoreCase))
@@ -1867,13 +1911,30 @@ namespace MultiMiner.Win
                     StartMining();
                 }
 
-                MobileMiner.Api.ApiContext.DeleteCommand(mobileMinerUrl, mobileMinerApiKey,
-                    applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                    Environment.MachineName, command.Id);
+                if (mobileMinerAsync)
+                {
+                    if (deleteRemoteCommandDelegate == null)
+                        deleteRemoteCommandDelegate = DeleteRemoteCommand;
+
+                    deleteRemoteCommandDelegate.BeginInvoke(command, null, null);
+                }
+                else
+                {
+                    DeleteRemoteCommand(command);
+                }
             }
         }
 
-        private static void PopulateMiningStatsFromDeviceInfo(MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics, MultiMiner.Xgminer.Api.DeviceInformation deviceInformation)
+        private Action<MobileMiner.Api.RemoteCommand> deleteRemoteCommandDelegate;
+
+        private void DeleteRemoteCommand(MobileMiner.Api.RemoteCommand command)
+        {
+            MobileMiner.Api.ApiContext.DeleteCommand(mobileMinerUrl, mobileMinerApiKey,
+                                applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                                Environment.MachineName, command.Id);
+        }
+
+        private static void PopulateMiningStatsFromDeviceInfo(MobileMiner.Api.MiningStatistics miningStatistics, Xgminer.Api.DeviceInformation deviceInformation)
         {
             miningStatistics.AcceptedShares = deviceInformation.AcceptedShares;
             miningStatistics.AverageHashrate = deviceInformation.AverageHashrate;
