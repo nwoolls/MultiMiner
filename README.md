@@ -41,6 +41,8 @@ Finally, MultiMiner supports [MobileMiner][14], an open API with mobile apps for
 
 ![MobileMiner - Android](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/MobileMiner%20-%20Android.png "MobileMiner - Android")
 
+![MobileMiner - Windows Phone](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/MobileMiner%20-%20Windows%20Phone.png "MobileMiner - Windows Phone")
+
 By entering your MobileMiner email address and application key in the Configure Settings dialog, you will be able to remotely monitor and control your rigs _without having to open any firewalls or forward any ports_.
 
 Downloads
