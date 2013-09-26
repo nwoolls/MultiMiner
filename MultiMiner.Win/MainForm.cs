@@ -375,6 +375,10 @@ namespace MultiMiner.Win
 
         private void SetupGridColumns()
         {
+            //format prices in the History grid
+            startPriceColumn.DefaultCellStyle.Format = ".########";
+            endPriceColumn.DefaultCellStyle.Format = ".########";
+
             //customized FillWeight doesn't behave properly under Mono on OS X
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
                 foreach (DataGridViewColumn column in deviceGridView.Columns)

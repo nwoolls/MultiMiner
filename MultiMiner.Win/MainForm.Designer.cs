@@ -139,8 +139,8 @@
             this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.startPriceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.endPriceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AcceptedShares = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.durationColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.devicesColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -939,8 +939,8 @@
             this.dataGridViewTextBoxColumn9,
             this.dataGridViewTextBoxColumn10,
             this.dataGridViewTextBoxColumn11,
-            this.dataGridViewTextBoxColumn12,
-            this.dataGridViewTextBoxColumn13,
+            this.startPriceColumn,
+            this.endPriceColumn,
             this.AcceptedShares,
             this.durationColumn,
             this.devicesColumn});
@@ -1091,19 +1091,19 @@
             this.dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
             this.dataGridViewTextBoxColumn11.ReadOnly = true;
             // 
-            // dataGridViewTextBoxColumn12
+            // startPriceColumn
             // 
-            this.dataGridViewTextBoxColumn12.DataPropertyName = "StartPrice";
-            this.dataGridViewTextBoxColumn12.HeaderText = "Start Price";
-            this.dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
-            this.dataGridViewTextBoxColumn12.ReadOnly = true;
+            this.startPriceColumn.DataPropertyName = "StartPrice";
+            this.startPriceColumn.HeaderText = "Start Price";
+            this.startPriceColumn.Name = "startPriceColumn";
+            this.startPriceColumn.ReadOnly = true;
             // 
-            // dataGridViewTextBoxColumn13
+            // endPriceColumn
             // 
-            this.dataGridViewTextBoxColumn13.DataPropertyName = "EndPrice";
-            this.dataGridViewTextBoxColumn13.HeaderText = "End Price";
-            this.dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
-            this.dataGridViewTextBoxColumn13.ReadOnly = true;
+            this.endPriceColumn.DataPropertyName = "EndPrice";
+            this.endPriceColumn.HeaderText = "End Price";
+            this.endPriceColumn.Name = "endPriceColumn";
+            this.endPriceColumn.ReadOnly = true;
             // 
             // AcceptedShares
             // 
@@ -1283,8 +1283,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
+        private System.Windows.Forms.DataGridViewTextBoxColumn startPriceColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn endPriceColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn AcceptedShares;
         private System.Windows.Forms.DataGridViewTextBoxColumn durationColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn devicesColumn;
