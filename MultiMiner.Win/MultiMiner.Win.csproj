@@ -265,6 +265,7 @@
     <None Include="Resources\list-export.png" />
     <None Include="Resources\application-option.png" />
     <None Include="Resources\settings_options.png" />
+    <None Include="Resources\sort.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

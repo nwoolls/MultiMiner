@@ -4,6 +4,7 @@ using MultiMiner.Utility;
 using MultiMiner.Xgminer;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -24,6 +25,7 @@ namespace MultiMiner.Win
 
         private void CoinsForm_Load(object sender, EventArgs e)
         {
+            coinListBox.AllowDrop = true;
             PopulateConfigurations();
             UpdateButtonStates();
         }
@@ -256,6 +258,56 @@ namespace MultiMiner.Win
                     File.Delete(destinationFileName);
                 File.Copy(sourceFileName, destinationFileName);
             }
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            SortConfigurations();
+        }
+
+        private void SortConfigurations()
+        {
+            configurations.Sort((config1, config2) => config1.Coin.Name.CompareTo(config2.Coin.Name));
+            PopulateConfigurations();
+        }
+
+        private void coinListBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                if (coinListBox.SelectedItem == null) return;
+                coinListBox.DoDragDrop(coinListBox.SelectedItem, DragDropEffects.Move);
+            }
+        }
+
+        private void coinListBox_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void coinListBox_DragDrop(object sender, DragEventArgs e)
+        {
+            Point point = coinListBox.PointToClient(new Point(e.X, e.Y));
+            int index = coinListBox.IndexFromPoint(point);
+            if (index < 0) index = coinListBox.Items.Count - 1;
+
+            string coinName = (string)e.Data.GetData(typeof(string));
+
+            MoveCoinToIndex(coinName, index);
+        }
+
+        private void MoveCoinToIndex(string coinName, int index)
+        {
+            CoinConfiguration configuration = configurations.Single(
+                config => config.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+
+            configurations.Remove(configuration);
+            configurations.Insert(index, configuration);
+
+            coinListBox.Items.Remove(coinName);
+            coinListBox.Items.Insert(index, coinName);
+
+            coinListBox.SelectedIndex = index;
         }
     }
 }

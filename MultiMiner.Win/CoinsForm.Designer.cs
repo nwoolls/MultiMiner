@@ -36,6 +36,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.importButton = new System.Windows.Forms.ToolStripSplitButton();
             this.exportButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.coinListBox = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.saveButton = new System.Windows.Forms.Button();
@@ -69,6 +70,7 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
@@ -82,6 +84,8 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addCoinButton,
             this.removeCoinButton,
+            this.toolStripSeparator2,
+            this.toolStripButton1,
             this.toolStripSeparator1,
             this.importButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
@@ -99,6 +103,7 @@
             this.addCoinButton.Name = "addCoinButton";
             this.addCoinButton.Size = new System.Drawing.Size(61, 22);
             this.addCoinButton.Text = "Add Coin";
+            this.addCoinButton.ToolTipText = "Add a coin configuration";
             this.addCoinButton.Click += new System.EventHandler(this.addCoinButton_Click);
             // 
             // removeCoinButton
@@ -109,6 +114,7 @@
             this.removeCoinButton.Name = "removeCoinButton";
             this.removeCoinButton.Size = new System.Drawing.Size(82, 22);
             this.removeCoinButton.Text = "Remove Coin";
+            this.removeCoinButton.ToolTipText = "Remove a configuration";
             this.removeCoinButton.Click += new System.EventHandler(this.removeCoinButton_Click);
             // 
             // toolStripSeparator1
@@ -138,6 +144,16 @@
             this.exportButton.ToolTipText = "Export coin and pool configurations";
             this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
             // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.Image = global::MultiMiner.Win.Properties.Resources.sort;
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(48, 22);
+            this.toolStripButton1.Text = "Sort";
+            this.toolStripButton1.ToolTipText = "Alphabetize coin configurations";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
             // coinListBox
             // 
             this.coinListBox.Dock = System.Windows.Forms.DockStyle.Left;
@@ -147,6 +163,10 @@
             this.coinListBox.Size = new System.Drawing.Size(160, 286);
             this.coinListBox.TabIndex = 1;
             this.coinListBox.SelectedIndexChanged += new System.EventHandler(this.coinListBox_SelectedIndexChanged);
+            this.coinListBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.coinListBox_DragDrop);
+            this.coinListBox.DragOver += new System.Windows.Forms.DragEventHandler(this.coinListBox_DragOver);
+            
+            this.coinListBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.coinListBox_MouseMove);
             // 
             // panel1
             // 
@@ -440,6 +460,11 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
             // CoinsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -520,5 +545,7 @@
         private System.Windows.Forms.ToolStripMenuItem exportButton;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
