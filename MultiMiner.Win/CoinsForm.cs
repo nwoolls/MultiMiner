@@ -25,7 +25,9 @@ namespace MultiMiner.Win
 
         private void CoinsForm_Load(object sender, EventArgs e)
         {
-            coinListBox.AllowDrop = true;
+            //not supported on mono
+            if (OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix)
+                coinListBox.AllowDrop = true;
             PopulateConfigurations();
             UpdateButtonStates();
         }
@@ -273,6 +275,10 @@ namespace MultiMiner.Win
 
         private void coinListBox_MouseMove(object sender, MouseEventArgs e)
         {
+            //not supported on mono
+            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+                return;
+
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
                 if (coinListBox.SelectedItem == null) return;
