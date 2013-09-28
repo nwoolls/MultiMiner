@@ -25,6 +25,7 @@ namespace MultiMiner.Win
             this.RollOverLogFiles = true;
             this.OldLogFileSets = 1;
             this.SuggestCoinsToMine = false;
+            this.MobileMinerUsesHttps = true;
         }
 
         public bool LaunchOnWindowsLogin { get; set; }
@@ -44,6 +45,7 @@ namespace MultiMiner.Win
         public bool MobileMinerRemoteCommands { get; set; }
         public string MobileMinerEmailAddress { get; set; }
         public string MobileMinerApplicationKey { get; set; }
+        public bool MobileMinerUsesHttps { get; set; }
 
         public TimerInterval StrategyCheckInterval { get; set; }
         public bool SuggestCoinsToMine { get; set; }

@@ -1729,11 +1729,15 @@ namespace MultiMiner.Win
         
         private string GetMobileMinerUrl()
         {
-            string result = "https://api.mobileminerapp.com";
+            string prefix = "https://";
+            if (!applicationConfiguration.MobileMinerUsesHttps)
+                prefix = "http://";
+
+            string result = prefix + "api.mobileminerapp.com";
 
             if (!OSVersionPlatform.IsWindowsVistaOrHigher())
                 //SNI SSL not supported on XP
-                result = "https://mobileminer.azurewebsites.net/api";
+                result = prefix + "mobileminer.azurewebsites.net/api";
 
             return result;
         }
