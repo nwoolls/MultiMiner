@@ -1130,6 +1130,7 @@ namespace MultiMiner.Win
                 minerProcess.HasSickDevice = false;
                 minerProcess.HasZeroHashrateDevice = false;
                 minerProcess.MinerIsFrozen = false;
+                minerProcess.HasPoorPerformingDevice = false;
 
                 List<MultiMiner.Xgminer.Api.DeviceInformation> deviceInformationList = GetDeviceInformationFromMinerProcess(minerProcess);
 
@@ -1147,6 +1148,14 @@ namespace MultiMiner.Win
                         minerProcess.HasDeadDevice = true;
                     if (deviceInformation.CurrentHashrate == 0)
                         minerProcess.HasZeroHashrateDevice = true;
+
+                    //avoid div by 0
+                    if (deviceInformation.AverageHashrate > 0)
+                    {
+                        double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
+                        if (performanceRatio <= 0.50)
+                            minerProcess.HasPoorPerformingDevice = true;
+                    }
 
                     int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
 

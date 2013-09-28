@@ -121,13 +121,13 @@ namespace MultiMiner.Engine
                     setupProcessStartInfo(minerProcess);
                 }
 
-                else if (minerProcess.HasZeroHashrateDevice || minerProcess.MinerIsFrozen)
+                else if (minerProcess.HasZeroHashrateDevice || minerProcess.MinerIsFrozen || minerProcess.HasPoorPerformingDevice)
                 {
                     TimeSpan processAge = DateTime.Now - minerProcess.Process.StartTime;
                     if (processAge.TotalSeconds > 60)
                     {
                         minerProcess.StopMining();
-                        string reason = minerProcess.HasZeroHashrateDevice ? "Zero hashrate" : "Frozen miner";
+                        string reason = minerProcess.HasZeroHashrateDevice ? "Zero hashrate" : minerProcess.HasPoorPerformingDevice ? "Subpar hashrate" : "Frozen miner";
                         minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, reason);
                         setupProcessStartInfo(minerProcess);
                     }
