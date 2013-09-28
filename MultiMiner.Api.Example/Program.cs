@@ -33,7 +33,7 @@ namespace MultiMiner.Api.Example
                 Miner miner = new Miner(minerConfiguration);
 
                 //use it to iterate through devices
-                List<Device> deviceList = miner.DeviceList();
+                List<Device> deviceList = miner.ListDevices();
 
                 Console.WriteLine("Using {0} to list available mining devices", executableName);
 

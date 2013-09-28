@@ -66,7 +66,7 @@ namespace MultiMiner.Xgminer.Tests
             Miner miner = new Miner(minerConfiguration);
 
             //act
-            List<Device> devices = miner.DeviceList();
+            List<Device> devices = miner.ListDevices();
 
             //assert
             Assert.IsTrue(devices.Count > 0);

@@ -577,7 +577,7 @@ namespace MultiMiner.Win
             minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
 
             Miner miner = new Miner(minerConfiguration);
-            return miner.DeviceList();
+            return miner.ListDevices();
         }
 
         private void ConfigureCoins()

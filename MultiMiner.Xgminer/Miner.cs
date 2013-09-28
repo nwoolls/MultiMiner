@@ -52,7 +52,7 @@ namespace MultiMiner.Xgminer
         }
 
         //uses -d?, returns driver information
-        public List<Device> DeviceList()
+        public List<Device> ListDevices()
         {
             string arguments = MinerParameter.DeviceList;
             bool redirectOutput = true;
@@ -88,6 +88,12 @@ namespace MultiMiner.Xgminer
             DeviceListParser.ParseTextForDevices(output, result);
 
             return result;
+        }
+
+        [Obsolete("DeviceList is deprecated, please use ListDevices instead.")]
+        public List<Device> DeviceList()
+        {
+            return ListDevices();
         }
 
         public Process Launch(string reason = "")
