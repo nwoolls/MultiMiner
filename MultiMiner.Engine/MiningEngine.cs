@@ -124,7 +124,8 @@ namespace MultiMiner.Engine
                 else if (minerProcess.HasZeroHashrateDevice || minerProcess.MinerIsFrozen || minerProcess.HasPoorPerformingDevice)
                 {
                     TimeSpan processAge = DateTime.Now - minerProcess.Process.StartTime;
-                    if (processAge.TotalSeconds > 60)
+                    //this needs to give the devices long enough to spin up
+                    if (processAge.TotalSeconds > 120)
                     {
                         minerProcess.StopMining();
                         string reason = minerProcess.HasZeroHashrateDevice ? "Zero hashrate" : minerProcess.HasPoorPerformingDevice ? "Subpar hashrate" : "Frozen miner";
