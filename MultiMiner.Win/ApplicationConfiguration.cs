@@ -46,6 +46,7 @@ namespace MultiMiner.Win
         public string MobileMinerEmailAddress { get; set; }
         public string MobileMinerApplicationKey { get; set; }
         public bool MobileMinerUsesHttps { get; set; }
+        public bool MobileMinerPushNotifications { get; set; }
 
         public TimerInterval StrategyCheckInterval { get; set; }
         public bool SuggestCoinsToMine { get; set; }

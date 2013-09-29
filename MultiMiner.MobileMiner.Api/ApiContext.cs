@@ -35,6 +35,21 @@ namespace MultiMiner.MobileMiner.Api
             }
         }
 
+        public static void SubmitNotifications(string url, string apiKey, string emailAddress, string applicationKey, List<string> notifications)
+        {
+            if (!url.EndsWith("/"))
+                url = url + "/";
+            string fullUrl = String.Format("{0}NotificationsInput?emailAddress={1}&applicationKey={2}&apiKey={3}",
+                url, emailAddress, applicationKey, apiKey);
+            using (WebClient client = new ApiWebClient())
+            {
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                string jsonData = serializer.Serialize(notifications);
+                client.Headers[HttpRequestHeader.ContentType] = "application/json";
+                string response = client.UploadString(fullUrl, jsonData);
+            }
+        }
+
         public static List<RemoteCommand> GetCommands(string url, string apiKey, string emailAddress, string applicationKey, string machineName)
         {
             if (!url.EndsWith("/"))

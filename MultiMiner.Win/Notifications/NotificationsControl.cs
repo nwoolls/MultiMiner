@@ -8,9 +8,11 @@ namespace MultiMiner.Win.Notifications
         //events
         //delegate declarations
         public delegate void NotificationsChangedHandler(object sender);
+        public delegate void NotificationAddedHandler(string text);
 
         //event declarations        
         public event NotificationsChangedHandler NotificationsChanged;
+        public event NotificationAddedHandler NotificationAdded;
 
         public NotificationsControl()
         {
@@ -44,6 +46,9 @@ namespace MultiMiner.Win.Notifications
             notificationControl.Dock = DockStyle.Top;
 
             containerPanel.ScrollControlIntoView(notificationControl);
+
+            if (NotificationAdded != null)
+                NotificationAdded(text);
 
             if (NotificationsChanged != null)
                 NotificationsChanged(this);           

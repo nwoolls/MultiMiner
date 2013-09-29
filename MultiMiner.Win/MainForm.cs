@@ -189,6 +189,7 @@ namespace MultiMiner.Win
             notificationsControl.Height = 143;
             notificationsControl.Width = 320;
             notificationsControl.NotificationsChanged += notificationsControl1_NotificationsChanged;
+            notificationsControl.NotificationAdded += notificationsControl1_NotificationAdded;
             notificationsControl.Parent = advancedAreaContainer.Panel1;
             const int offset = 2;
 
@@ -199,6 +200,11 @@ namespace MultiMiner.Win
             notificationsControl.Left = notificationsControl.Parent.Width - notificationsControl.Width - offset;
             notificationsControl.Top = notificationsControl.Parent.Height - notificationsControl.Height - offset;
             notificationsControl.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
+        }
+
+        private void notificationsControl1_NotificationAdded(string text)
+        {
+            SubmitMobileMinerNotification(text);
         }
 
         private void ProcessLaunchFailed(object sender, LaunchFailedArgs ea)
@@ -1850,6 +1856,52 @@ namespace MultiMiner.Win
                         }
                     }
                 }
+            }
+        }
+
+        private void SubmitMobileMinerNotification(string text)
+        {
+            //are remote notifications enabled?
+            if (!applicationConfiguration.MobileMinerPushNotifications)
+                return;
+
+            //is MobileMiner configured?
+            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
+                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
+                return;
+
+            if (mobileMinerAsync)
+            {
+                if (submitNotificationDelegate == null)
+                    submitNotificationDelegate = SubmitNotification;
+
+                submitNotificationDelegate.BeginInvoke(text, null, null);
+            }
+            else
+            {
+                SubmitNotification(text);
+            }
+        }
+
+        private Action<string> submitNotificationDelegate;
+
+        private void SubmitNotification(string text)
+        {
+            try
+            {
+                MobileMiner.Api.ApiContext.SubmitNotifications(GetMobileMinerUrl(), mobileMinerApiKey,
+                        applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                        new List<string> { text });
+            }
+            catch (Exception ex)
+            {
+                if ((ex is WebException) || (ex is ArgumentException))
+                {
+                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+                    //could also be a json parsing error
+                    return;
+                }
+                throw;
             }
         }
 
