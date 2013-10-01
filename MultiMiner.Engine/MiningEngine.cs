@@ -205,8 +205,7 @@ namespace MultiMiner.Engine
         {
             if (coinInformation == null) //null if no network connection
                 return;
-
-
+            
             //store this off so we can reference prices for logging
             this.coinInformation = coinInformation;
 
@@ -216,8 +215,8 @@ namespace MultiMiner.Engine
 
             if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
             {
-                //get a list of the coins that are configured
-                IEnumerable<string> configuredSymbols = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Select(c => c.Coin.Symbol);
+                //get a list of the coins that are enabled and have at least one pool
+                IEnumerable<string> configuredSymbols = engineConfiguration.CoinConfigurations.Where(c => c.Enabled && (c.Pools.Count > 0)).Select(c => c.Coin.Symbol);
 
                 //filter the coin info by that list
                 //use the copy here
