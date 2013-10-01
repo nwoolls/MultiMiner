@@ -40,7 +40,7 @@ namespace MultiMiner.Engine
                 try
                 {
                     ApiContext.QuitMining();
-                    Thread.Sleep(250);
+                    Thread.Sleep(500);
                 }
                 catch (SocketException ex)
                 {
