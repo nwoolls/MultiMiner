@@ -1328,10 +1328,18 @@ namespace MultiMiner.Win
         {
             if (!applicationConfiguration.SuggestCoinsToMine)
                 return;
+            if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.None)
+                return;
             if (coinInformation == null) //no network connection
                 return;
-            
-            IEnumerable<Coinchoose.Api.CoinInformation> orderedCoins = coinInformation.OrderByDescending(c => c.AverageProfitability);
+
+            IEnumerable<Coinchoose.Api.CoinInformation> filteredCoins = coinInformation;
+            if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256)
+                filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("SHA-256", StringComparison.OrdinalIgnoreCase));
+            else if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt)
+                filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("Scrypt", StringComparison.OrdinalIgnoreCase));
+
+            IEnumerable<Coinchoose.Api.CoinInformation> orderedCoins = filteredCoins.OrderByDescending(c => c.AverageProfitability);
             switch (engineConfiguration.StrategyConfiguration.MiningBasis)
             {
                 case StrategyConfiguration.CoinMiningBasis.Difficulty:

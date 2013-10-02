@@ -51,8 +51,9 @@
             this.baseCoinCombo = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.miningBasisCombo = new System.Windows.Forms.ComboBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.suggestionsCombo = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -298,22 +299,34 @@
             this.miningBasisCombo.TabIndex = 1;
             this.miningBasisCombo.SelectedIndexChanged += new System.EventHandler(this.miningBasisCombo_SelectedIndexChanged);
             // 
-            // checkBox2
-            // 
-            this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "SuggestCoinsToMine", true));
-            this.checkBox2.Location = new System.Drawing.Point(31, 120);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(261, 17);
-            this.checkBox2.TabIndex = 5;
-            this.checkBox2.Text = "Suggest coins to mine based on CoinChoose data";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
             // applicationConfigurationBindingSource
             // 
             this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
+            // 
+            // suggestionsCombo
+            // 
+            this.suggestionsCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.suggestionsCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.suggestionsCombo.FormattingEnabled = true;
+            this.suggestionsCombo.Items.AddRange(new object[] {
+            "None",
+            "SHA-256",
+            "Scrypt",
+            "Both"});
+            this.suggestionsCombo.Location = new System.Drawing.Point(124, 118);
+            this.suggestionsCombo.Name = "suggestionsCombo";
+            this.suggestionsCombo.Size = new System.Drawing.Size(201, 21);
+            this.suggestionsCombo.TabIndex = 5;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(28, 121);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(77, 13);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Suggest coins:";
             // 
             // StrategiesForm
             // 
@@ -321,7 +334,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(355, 382);
-            this.Controls.Add(this.checkBox2);
+            this.Controls.Add(this.suggestionsCombo);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.miningBasisCombo);
             this.Controls.Add(this.baseCoinCombo);
             this.Controls.Add(this.label6);
@@ -373,7 +387,8 @@
         private System.Windows.Forms.ComboBox baseCoinCombo;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox miningBasisCombo;
-        private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.BindingSource applicationConfigurationBindingSource;
+        private System.Windows.Forms.ComboBox suggestionsCombo;
+        private System.Windows.Forms.Label label1;
     }
 }

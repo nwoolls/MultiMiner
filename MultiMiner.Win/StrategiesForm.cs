@@ -63,6 +63,22 @@ namespace MultiMiner.Win
             miningBasisCombo.SelectedIndex = (int)strategyConfiguration.MiningBasis;
 
             intervalCombo.SelectedIndex = (int)applicationConfiguration.StrategyCheckInterval;
+
+            if (applicationConfiguration.SuggestCoinsToMine)
+            {
+                if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256)
+                    suggestionsCombo.SelectedIndex = 1;
+                else if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt)
+                    suggestionsCombo.SelectedIndex = 2;
+                else if (applicationConfiguration.SuggestionsAlgorithm == (ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256 | ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt))
+                    suggestionsCombo.SelectedIndex = 3;
+                else
+                    suggestionsCombo.SelectedIndex = 0;
+            }
+            else
+            {
+                suggestionsCombo.SelectedIndex = 0;
+            }
         }
 
         private void SaveSettings()
@@ -107,6 +123,25 @@ namespace MultiMiner.Win
             strategyConfiguration.MiningBasis = (StrategyConfiguration.CoinMiningBasis)miningBasisCombo.SelectedIndex;
 
             applicationConfiguration.StrategyCheckInterval = (ApplicationConfiguration.TimerInterval)intervalCombo.SelectedIndex;
+
+            switch (suggestionsCombo.SelectedIndex)
+            {
+                case 1:
+                    applicationConfiguration.SuggestCoinsToMine = true;
+                    applicationConfiguration.SuggestionsAlgorithm = ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256;
+                    break;
+                case 2:
+                    applicationConfiguration.SuggestCoinsToMine = true;
+                    applicationConfiguration.SuggestionsAlgorithm = ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt;
+                    break;
+                case 3:
+                    applicationConfiguration.SuggestCoinsToMine = true;
+                    applicationConfiguration.SuggestionsAlgorithm = ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256 | ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt;
+                    break;
+                default:
+                    applicationConfiguration.SuggestCoinsToMine = false;
+                    break;
+            }
         }
 
         private void multiCoinRadio_CheckedChanged(object sender, EventArgs e)

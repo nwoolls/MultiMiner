@@ -18,6 +18,14 @@ namespace MultiMiner.Win
             TwelveHours = 6
         }
 
+        [Flags]
+        public enum CoinSuggestionsAlgorithm
+        {
+            None = 0x0,
+            SHA256 = 0x1,
+            Scrypt = 0x2
+        }
+
         public ApplicationConfiguration()
         {
             this.StartupMiningDelay = 45;
@@ -26,6 +34,7 @@ namespace MultiMiner.Win
             this.OldLogFileSets = 1;
             this.SuggestCoinsToMine = false;
             this.MobileMinerUsesHttps = true;
+            this.SuggestionsAlgorithm = CoinSuggestionsAlgorithm.SHA256 | CoinSuggestionsAlgorithm.Scrypt;
         }
 
         public bool LaunchOnWindowsLogin { get; set; }
@@ -49,7 +58,9 @@ namespace MultiMiner.Win
         public bool MobileMinerPushNotifications { get; set; }
 
         public TimerInterval StrategyCheckInterval { get; set; }
+        
         public bool SuggestCoinsToMine { get; set; }
+        public CoinSuggestionsAlgorithm SuggestionsAlgorithm { get; set; }
 
         public bool RollOverLogFiles { get; set; }
         public int OldLogFileSets { get; set; }
