@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Forms;
 
 namespace MultiMiner.Engine
 {
@@ -596,7 +595,7 @@ namespace MultiMiner.Engine
                     minerConfiguration.StratumProxyPort = engineConfiguration.XgminerConfiguration.StratumProxyPort;
                 }
             }
-            
+                        
             string arguments = string.Empty;
 
             //apply algorithm-specific parameters
