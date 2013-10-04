@@ -113,8 +113,12 @@ namespace MultiMiner.Xgminer
 
             if (minerConfiguration.MinerBackend == MinerBackend.Bfgminer)
             {
-                string serialArg = minerConfiguration.ErupterDriver ? Bfgminer.MinerParameter.ScanSerialErupterAll : Bfgminer.MinerParameter.ScanSerialAll;
-                arguments = String.Format("{0} {1}", arguments, serialArg);
+                //don't add the serial argument if this is solely a stratum instance
+                if (!minerConfiguration.StratumProxy || (minerConfiguration.DeviceIndexes.Count > 0))
+                {
+                    string serialArg = minerConfiguration.ErupterDriver ? Bfgminer.MinerParameter.ScanSerialErupterAll : Bfgminer.MinerParameter.ScanSerialAll;
+                    arguments = String.Format("{0} {1}", arguments, serialArg);
+                }
 
                 if (minerConfiguration.StratumProxy && (minerConfiguration.StratumProxyPort > 0))
                 {
@@ -160,6 +164,10 @@ namespace MultiMiner.Xgminer
                 arguments = string.Format("{0} --api-listen --api-port {1} --api-allow W:{2}", arguments,
                     minerConfiguration.ApiPort, allowedApiIps);
             }
+
+            //don't mine with GPUs if this is solely a stratum instance
+            if (minerConfiguration.StratumProxy && (minerConfiguration.DeviceIndexes.Count == 0))
+                minerConfiguration.DisableGpu = true;
 
             //required to run from inside an .app package on OS X
             //also required under Windows to avoid "initscr(): Unable to create SP"
