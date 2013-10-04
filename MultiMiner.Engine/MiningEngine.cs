@@ -180,11 +180,11 @@ namespace MultiMiner.Engine
 
             List<int> deviceIndexes = minerProcess.MinerConfiguration.DeviceIndexes;
 
-            logProcessClose(startDate, endDate, coinName, coinSymbol, priceAtStart, priceAtEnd, deviceIndexes);
+            logProcessClose(startDate, endDate, coinName, coinSymbol, priceAtStart, priceAtEnd, deviceIndexes, minerProcess.MinerConfiguration);
         }
 
         private void logProcessClose(DateTime startDate, DateTime endDate, string coinName, string coinSymbol,
-            double priceAtStart, double priceAtEnd, List<int> deviceIndexes)
+            double priceAtStart, double priceAtEnd, List<int> deviceIndexes, MinerConfiguration minerConfiguration)
         {
             if (this.LogProcessClose != null)
             {
@@ -196,6 +196,7 @@ namespace MultiMiner.Engine
                 args.StartPrice = priceAtStart;
                 args.EndPrice = priceAtEnd;
                 args.DeviceIndexes = deviceIndexes;
+                args.MinerConfiguration = minerConfiguration;
 
                 this.LogProcessClose(this, args);
             }

@@ -86,6 +86,19 @@ namespace MultiMiner.Win
                 if (lastAcceptedShares.ContainsKey(deviceIndex))
                     acceptedShares += lastAcceptedShares[deviceIndex];
             }
+
+            //check and include accepted shared from the stratum proxy "device"
+            if (ea.MinerConfiguration.StratumProxy)
+            {
+                Device lastDevice = devices.LastOrDefault();
+                if ((lastDevice != null) && (lastDevice.Kind == DeviceKind.SGW))
+                {
+                    int deviceIndex = devices.Count - 1;
+                    if (lastAcceptedShares.ContainsKey(deviceIndex))
+                        acceptedShares += lastAcceptedShares[deviceIndex];
+                }
+            }
+
             ea.AcceptedShares = acceptedShares;
         }
 
