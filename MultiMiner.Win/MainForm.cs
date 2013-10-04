@@ -1249,8 +1249,8 @@ namespace MultiMiner.Win
             for (int i = 0; i < devices.Count; i++)
             {
                 if ((deviceInformation.Kind.Equals("GPU") && (devices[i].Kind == DeviceKind.GPU))
-                    || (deviceInformation.Kind.Equals("SGW") && (devices[i].Kind == DeviceKind.SGW))
-                    || (!deviceInformation.Kind.Equals("GPU") && !deviceInformation.Kind.Equals("SGW") && (devices[i].Kind != DeviceKind.GPU)))
+                    || (deviceInformation.Name.Equals("SGW") && (devices[i].Kind == DeviceKind.SGW))
+                    || (!deviceInformation.Kind.Equals("GPU") && !deviceInformation.Name.Equals("SGW") && (devices[i].Kind != DeviceKind.GPU) && (devices[i].Kind != DeviceKind.GPU)))
                 {
                     if ((index == deviceInformation.Index)
                         //for now all proxy devices will show under a single SGW device in MultiMiner

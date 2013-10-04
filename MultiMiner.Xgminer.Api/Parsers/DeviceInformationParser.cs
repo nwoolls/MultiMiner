@@ -43,6 +43,8 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     if (keyValuePairs.ContainsKey("Status")) //check required for bfgminer
                         newDevice.Status = keyValuePairs["Status"];
 
+                    if (keyValuePairs.ContainsKey("Name"))
+                        newDevice.Name = keyValuePairs["Name"];
 
                     if (newDevice.Kind.Equals("GPU"))
                     {
