@@ -579,11 +579,26 @@ namespace MultiMiner.Win
             minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
             minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner(minerConfiguration.MinerBackend);
             minerConfiguration.ErupterDriver = engineConfiguration.XgminerConfiguration.ErupterDriver;
-            
+
             minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
 
             Miner miner = new Miner(minerConfiguration);
-            return miner.ListDevices();
+
+
+            List<Device> detectedDevices = miner.ListDevices();
+
+            if ((engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Bfgminer) &&
+                engineConfiguration.XgminerConfiguration.StratumProxy)
+            {
+                Device proxyDevice = new Device();
+                proxyDevice.Kind = DeviceKind.SGW;
+                proxyDevice.Driver = "proxy";
+                proxyDevice.Name = "Stratum Proxy";
+                proxyDevice.Identifier = "SGW";
+                detectedDevices.Add(proxyDevice);
+            }
+
+            return detectedDevices;
         }
 
         private void ConfigureCoins()
@@ -1234,9 +1249,12 @@ namespace MultiMiner.Win
             for (int i = 0; i < devices.Count; i++)
             {
                 if ((deviceInformation.Kind.Equals("GPU") && (devices[i].Kind == DeviceKind.GPU))
-                    || (!deviceInformation.Kind.Equals("GPU") && (devices[i].Kind != DeviceKind.GPU)))
+                    || (deviceInformation.Kind.Equals("SGW") && (devices[i].Kind == DeviceKind.SGW))
+                    || (!deviceInformation.Kind.Equals("GPU") && !deviceInformation.Kind.Equals("SGW") && (devices[i].Kind != DeviceKind.GPU)))
                 {
-                    if (index == deviceInformation.Index)
+                    if ((index == deviceInformation.Index)
+                        //for now all proxy devices will show under a single SGW device in MultiMiner
+                        || (devices[i].Kind == DeviceKind.SGW))
                     {
                         rowIndex = i;
                         break;
@@ -1282,7 +1300,7 @@ namespace MultiMiner.Win
                 //ensure the user isn't editing settings
                 !ShowingModalDialog())
             {
-                miningEngine.ApplyMiningStrategy(devices, coinInformation);
+                miningEngine.ApplyMiningStrategy(coinInformation);
                 //save any changes made by the engine
                 engineConfiguration.SaveDeviceConfigurations();
                 //to get changes from strategy config

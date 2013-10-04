@@ -11,6 +11,7 @@ namespace MultiMiner.Engine.Configuration
             AlgorithmFlags = new SerializableDictionary<CoinAlgorithm, string>();
             Priority = ProcessPriorityClass.Normal;
             StartingApiPort = 4028;
+            StratumProxyPort = 8332;
         }
 
         public SerializableDictionary<CoinAlgorithm, string> AlgorithmFlags { get; set; }
@@ -21,5 +22,7 @@ namespace MultiMiner.Engine.Configuration
         public bool ErupterDriver { get; set; }
         public int StartingApiPort { get; set; }
         public string AllowedApiIps { get; set; }
+        public bool StratumProxy { get; set; }
+        public int StratumProxyPort { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace MultiMiner.Engine
 {
@@ -23,6 +24,7 @@ namespace MultiMiner.Engine
 
         private List<MinerProcess> minerProcesses = new List<MinerProcess>();
         private EngineConfiguration engineConfiguration;
+        private List<Device> devices;
 
         public List<MinerProcess> MinerProcesses
         {
@@ -56,9 +58,10 @@ namespace MultiMiner.Engine
             try
             {
                 this.engineConfiguration = engineConfiguration;
+                this.devices = devices;
 
                 if (coinInformation != null) //null if no network connection
-                    ApplyMiningStrategy(devices, coinInformation);
+                    ApplyMiningStrategy(coinInformation);
 
                 if (!mining) //above call to ApplyMiningStrategy may have started mining due to config change
                     StartMining();
@@ -201,7 +204,7 @@ namespace MultiMiner.Engine
 
         private List<CoinInformation> coinInformation;
         //update engineConfiguration.DeviceConfiguration based on mining strategy & coin info
-        public void ApplyMiningStrategy(List<Device> devices, List<CoinInformation> coinInformation)
+        public void ApplyMiningStrategy(List<CoinInformation> coinInformation)
         {
             if (coinInformation == null) //null if no network connection
                 return;
@@ -229,7 +232,7 @@ namespace MultiMiner.Engine
 
                     List<CoinInformation> orderedCoinInformation = GetCoinInformationOrderedByMiningBasis(filteredCoinInformation);
 
-                    List<DeviceConfiguration> newConfiguration = CreateAutomaticDeviceConfiguration(devices, orderedCoinInformation);
+                    List<DeviceConfiguration> newConfiguration = CreateAutomaticDeviceConfiguration(orderedCoinInformation);
 
                     //compare newConfiguration to engineConfiguration.DeviceConfiguration
                     //store if different
@@ -323,7 +326,7 @@ namespace MultiMiner.Engine
             }
         }
 
-        private List<DeviceConfiguration> CreateAutomaticDeviceConfiguration(List<Device> devices, IEnumerable<CoinInformation> orderedCoinInformation)
+        private List<DeviceConfiguration> CreateAutomaticDeviceConfiguration(IEnumerable<CoinInformation> orderedCoinInformation)
         {
             //order by adjusted profitability
             List<CoinInformation> filteredCoinInformation = GetFilteredCoinInformation(orderedCoinInformation);
@@ -343,10 +346,10 @@ namespace MultiMiner.Engine
             }
             //end ABM
 
-            return CreateDeviceConfigurationForProfitableCoins(devices, filteredCoinInformation, sha256ProfitableCoins);
+            return CreateDeviceConfigurationForProfitableCoins(filteredCoinInformation, sha256ProfitableCoins);
         }
 
-        private List<DeviceConfiguration> CreateDeviceConfigurationForProfitableCoins(List<Device> devices, List<CoinInformation> allProfitableCoins, List<CoinInformation> sha256ProfitableCoins)
+        private List<DeviceConfiguration> CreateDeviceConfigurationForProfitableCoins(List<CoinInformation> allProfitableCoins, List<CoinInformation> sha256ProfitableCoins)
         {
             List<DeviceConfiguration> newConfiguration = new List<DeviceConfiguration>();
             CoinInformation profitableCoin = null;
@@ -357,6 +360,7 @@ namespace MultiMiner.Engine
             for (int i = 0; i < devices.Count; i++)
             {
                 Device device = devices[i];
+
                 //there should be a 1-to-1 relationship of devices and device configurations
                 DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations[i];
 
@@ -560,12 +564,13 @@ namespace MultiMiner.Engine
         {
             CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(coinSymbol));
 
-            IEnumerable<DeviceConfiguration> coinGpuConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol));
+            IList<DeviceConfiguration> enabledConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol)).ToList();
 
             MinerConfiguration minerConfiguration = new MinerConfiguration();
             
             minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
             minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner(minerConfiguration.MinerBackend);
+
             minerConfiguration.ErupterDriver = engineConfiguration.XgminerConfiguration.ErupterDriver;
             
             minerConfiguration.Pools = coinConfiguration.Pools;
@@ -576,9 +581,22 @@ namespace MultiMiner.Engine
             minerConfiguration.CoinName = coinConfiguration.Coin.Name;
             minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
 
-            foreach (DeviceConfiguration coinGpuConfiguration in coinGpuConfigurations)
-                minerConfiguration.DeviceIndexes.Add(coinGpuConfiguration.DeviceIndex);
-
+            for (int i = 0; i < enabledConfigurations.Count; i++)
+            {
+                DeviceConfiguration enabledConfiguration = enabledConfigurations[i];
+                //don't actually add stratum device as a device index
+                if (devices[enabledConfiguration.DeviceIndex].Kind != DeviceKind.SGW)
+                {
+                    minerConfiguration.DeviceIndexes.Add(enabledConfiguration.DeviceIndex);
+                }
+                else
+                {
+                    //only enable the stratum proxy if these devices contain the SGW device
+                    minerConfiguration.StratumProxy = engineConfiguration.XgminerConfiguration.StratumProxy;
+                    minerConfiguration.StratumProxyPort = engineConfiguration.XgminerConfiguration.StratumProxyPort;
+                }
+            }
+            
             string arguments = string.Empty;
 
             //apply algorithm-specific parameters

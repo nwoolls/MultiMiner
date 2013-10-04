@@ -115,6 +115,11 @@ namespace MultiMiner.Xgminer
             {
                 string serialArg = minerConfiguration.ErupterDriver ? Bfgminer.MinerParameter.ScanSerialErupterAll : Bfgminer.MinerParameter.ScanSerialAll;
                 arguments = String.Format("{0} {1}", arguments, serialArg);
+
+                if (minerConfiguration.StratumProxy && (minerConfiguration.StratumProxyPort > 0))
+                {
+                    arguments = String.Format("{0} --http-port {1}", arguments, minerConfiguration.StratumProxyPort);
+                }
             }
 
             foreach (MiningPool pool in minerConfiguration.Pools)
