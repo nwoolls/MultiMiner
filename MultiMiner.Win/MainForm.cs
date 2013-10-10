@@ -230,20 +230,34 @@ namespace MultiMiner.Win
             {
                 if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
                 {
-                    //if auto mining is enabled, disable the coin configuration and display a notification
-                    CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(config => config.Coin.Name.Equals(ea.CoinName, StringComparison.OrdinalIgnoreCase));
-                    coinConfiguration.Enabled = false;
-                    engineConfiguration.SaveCoinConfigurations();
+                    string notificationReason = String.Empty;
 
-                    //if no enabled configurations, stop mining
-                    int enabledConfigurations = engineConfiguration.CoinConfigurations.Count(config => config.Enabled);
-                    if (enabledConfigurations == 0)
-                        StopMining();
+                    int enabledConfigurationCount = engineConfiguration.CoinConfigurations.Count(c => c.Enabled);
+                    
+                    //only disble the configuration if there are others enabled - otherwise left idling
+                    if (enabledConfigurationCount > 1)
+                    {
+
+                        //if auto mining is enabled, disable the coin configuration and display a notification
+                        CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(config => config.Coin.Name.Equals(ea.CoinName, StringComparison.OrdinalIgnoreCase));
+                        coinConfiguration.Enabled = false;
+                        engineConfiguration.SaveCoinConfigurations();
+
+                        //if no enabled configurations, stop mining
+                        int enabledConfigurations = engineConfiguration.CoinConfigurations.Count(config => config.Enabled);
+                        if (enabledConfigurations == 0)
+                            StopMining();
+                        else
+                            //if there are enabled configurations, apply mining strategy
+                            CheckAndApplyMiningStrategy();
+
+                        notificationReason = String.Format("Configuration for {0} disabled - all pools down", ea.CoinName);
+                    }
                     else
-                        //if there are enabled configurations, apply mining strategy
-                        CheckAndApplyMiningStrategy();
-
-                    string notificationReason = String.Format("Configuration for {0} disabled - all pools down", ea.CoinName);
+                    {
+                        //otherwise just notify - relaunching option will take care of the rest
+                        notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
+                    }
 
                     notificationsControl.AddNotification(notificationReason, notificationReason, () =>
                     {
