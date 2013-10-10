@@ -67,6 +67,8 @@ namespace MultiMiner.Win
 
         private void LogProcessClose(object sender, LogProcessCloseArgs ea)
         {
+            CheckAndAddStratumDeviceIndex(ea);
+
             CalculateAcceptedSharesForProcess(ea);
 
             logProcessCloseArgsBindingSource.Position = logProcessCloseArgsBindingSource.Add(ea);
@@ -75,6 +77,20 @@ namespace MultiMiner.Win
                 logProcessCloseArgsBindingSource.RemoveAt(0);
 
             LogProcessCloseToFile(ea);
+        }
+
+        private void CheckAndAddStratumDeviceIndex(LogProcessCloseArgs ea)
+        {
+            //check and include the index of the virtual stratum proxy "device"
+            if (ea.MinerConfiguration.StratumProxy)
+            {
+                Device lastDevice = devices.LastOrDefault();
+                if ((lastDevice != null) && (lastDevice.Kind == DeviceKind.SGW))
+                {
+                    int deviceIndex = devices.Count - 1;
+                    ea.DeviceIndexes.Add(deviceIndex);
+                }
+            }
         }
 
         private void CalculateAcceptedSharesForProcess(LogProcessCloseArgs ea)
@@ -86,19 +102,7 @@ namespace MultiMiner.Win
                 if (lastAcceptedShares.ContainsKey(deviceIndex))
                     acceptedShares += lastAcceptedShares[deviceIndex];
             }
-
-            //check and include accepted shared from the stratum proxy "device"
-            if (ea.MinerConfiguration.StratumProxy)
-            {
-                Device lastDevice = devices.LastOrDefault();
-                if ((lastDevice != null) && (lastDevice.Kind == DeviceKind.SGW))
-                {
-                    int deviceIndex = devices.Count - 1;
-                    if (lastAcceptedShares.ContainsKey(deviceIndex))
-                        acceptedShares += lastAcceptedShares[deviceIndex];
-                }
-            }
-
+            
             ea.AcceptedShares = acceptedShares;
         }
 
