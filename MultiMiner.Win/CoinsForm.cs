@@ -208,14 +208,6 @@ namespace MultiMiner.Win
 
         private void toolStripSplitButton1_ButtonClick(object sender, EventArgs e)
         {
-            if (configurations.Count > 0)
-            {
-                DialogResult warningResult = MessageBox.Show("Importing will overwrite your existing coin and pool configurations. Do you want to continue?",
-                                    "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (warningResult == System.Windows.Forms.DialogResult.No)
-                    return;
-            }
-
             openFileDialog1.FileName = "CoinConfigurations.xml";
             openFileDialog1.Title = "Import CoinConfigurations.xml";
             openFileDialog1.Filter = "XML files|*.xml";
@@ -225,23 +217,26 @@ namespace MultiMiner.Win
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 string sourceFileName = openFileDialog1.FileName;
-                string destinationFileName = EngineConfiguration.CoinConfigurationsFileName();
-                if (File.Exists(destinationFileName))
-                    File.Delete(destinationFileName);
-                File.Copy(sourceFileName, destinationFileName);
 
-                LoadConfigurationsFromFile(destinationFileName);
+                MergeConfigurationsFromFile(sourceFileName);
 
                 PopulateConfigurations();
             }
         }
 
-        private void LoadConfigurationsFromFile(string configurationsFileName)
+        private void MergeConfigurationsFromFile(string configurationsFileName)
         {
-            List<CoinConfiguration> coinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<CoinConfiguration>>(configurationsFileName);
-            configurations.Clear();
-            foreach (CoinConfiguration coinConfiguration in coinConfigurations)
-                configurations.Add(coinConfiguration);
+            List<CoinConfiguration> sourceConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<CoinConfiguration>>(configurationsFileName);
+            List<CoinConfiguration> destinationConfigurations = configurations;
+
+            foreach (CoinConfiguration sourceConfiguration in sourceConfigurations)
+            {
+                int existingIndex = destinationConfigurations.FindIndex(c => c.Coin.Symbol.Equals(sourceConfiguration.Coin.Symbol));
+                if (existingIndex == -1)
+                    destinationConfigurations.Add(sourceConfiguration);
+                else
+                    destinationConfigurations[existingIndex] = sourceConfiguration;
+            }
         }
 
         private void exportButton_Click(object sender, EventArgs e)
