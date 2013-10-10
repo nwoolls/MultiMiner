@@ -178,7 +178,9 @@ namespace MultiMiner.Engine
             if (coinInfo != null)
                 priceAtEnd = coinInfo.Price;
 
-            List<int> deviceIndexes = minerProcess.MinerConfiguration.DeviceIndexes;
+            //get a copy using ToList() so we can change the list in the event handler without
+            //affecting relaunching processes
+            List<int> deviceIndexes = minerProcess.MinerConfiguration.DeviceIndexes.ToList();
 
             logProcessClose(startDate, endDate, coinName, coinSymbol, priceAtStart, priceAtEnd, deviceIndexes, minerProcess.MinerConfiguration);
         }
