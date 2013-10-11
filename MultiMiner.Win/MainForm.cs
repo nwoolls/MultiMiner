@@ -1045,12 +1045,25 @@ namespace MultiMiner.Win
 
         private void PopulateMinerStatsForRow(MultiMiner.Xgminer.Api.DeviceInformation deviceInformation, DataGridViewRow row)
         {
+            //stratum devices get lumped together, so we sum those
+            if (deviceInformation.Name.Equals("SGW", StringComparison.OrdinalIgnoreCase))
+            {
+                row.Cells[hashRateColumn.Index].Value = (double)(row.Cells[hashRateColumn.Index].Value ?? 0.00) + deviceInformation.AverageHashrate;
+                row.Cells[acceptedColumn.Index].Value = (int)(row.Cells[acceptedColumn.Index].Value ?? 0) + deviceInformation.AcceptedShares;
+                row.Cells[rejectedColumn.Index].Value = (int)(row.Cells[rejectedColumn.Index].Value ?? 0) + deviceInformation.RejectedShares;
+                row.Cells[errorsColumn.Index].Value = (int)(row.Cells[errorsColumn.Index].Value ?? 0) + deviceInformation.HardwareErrors;
+                row.Cells[utilityColumn.Index].Value = (double)(row.Cells[utilityColumn.Index].Value ?? 0.00) + deviceInformation.Utility;
+            }
+            else
+            {
+                row.Cells[hashRateColumn.Index].Value = deviceInformation.AverageHashrate;
+                row.Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
+                row.Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
+                row.Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
+                row.Cells[utilityColumn.Index].Value = deviceInformation.Utility;
+            }
+
             row.Cells[temperatureColumn.Index].Value = deviceInformation.Temperature;
-            row.Cells[hashRateColumn.Index].Value = deviceInformation.AverageHashrate;
-            row.Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
-            row.Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
-            row.Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
-            row.Cells[utilityColumn.Index].Value = deviceInformation.Utility;
             row.Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
             PopulatePoolForRow(deviceInformation.PoolIndex, row);
         }
@@ -1190,6 +1203,14 @@ namespace MultiMiner.Win
                 {
                     minerProcess.MinerIsFrozen = true;
                     continue;
+                }
+
+                //first clear stats for each row
+                //this is because the SWG row stats get summed                
+                foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
+                {
+                    int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
+                    ClearMinerStatsForRow(deviceGridView.Rows[rowIndex]);
                 }
 
                 foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
