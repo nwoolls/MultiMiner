@@ -1186,72 +1186,28 @@ namespace MultiMiner.Win
 
         private void PopulateSummaryInfoFromProcesses()
         {
-            //foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
-            //{
-            //    List<Xgminer.Api.DeviceInformation> deviceInformationList = GetSummaryInfoFromProcess(minerProcess);
+            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+            {
+                SummaryInformationResponse summaryInformation = GetSummaryInfoFromProcess(minerProcess);
 
-            //    if (deviceInformationList == null) //handled failure getting API info
-            //    {
-            //        minerProcess.MinerIsFrozen = true;
-            //        continue;
-            //    }
+                if (summaryInformation == null) //handled failure getting API info
+                {
+                    minerProcess.MinerIsFrozen = true;
+                    continue;
+                }
 
-            //    //first clear stats for each row
-            //    //this is because the SWG row stats get summed                
-            //    foreach (Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
-            //    {
-            //        int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
-            //        ClearDeviceInfoForRow(deviceGridView.Rows[rowIndex]);
-            //    }
+                if (summaryInformation.FoundBlocks > minerProcess.FoundBlocks)
+                {
+                    minerProcess.FoundBlocks = summaryInformation.FoundBlocks;
 
-            //    foreach (Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
-            //    {
-            //        if (deviceInformation.Status.ToLower().Contains("sick"))
-            //            minerProcess.HasSickDevice = true;
-            //        if (deviceInformation.Status.ToLower().Contains("dead"))
-            //            minerProcess.HasDeadDevice = true;
-            //        if (deviceInformation.CurrentHashrate == 0)
-            //            minerProcess.HasZeroHashrateDevice = true;
+                    string notificationReason = String.Format("Block found for {0} ({1} total)", 
+                        minerProcess.CoinInformation.Name, minerProcess.FoundBlocks);
 
-            //        //avoid div by 0
-            //        if (deviceInformation.AverageHashrate > 0)
-            //        {
-            //            double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
-            //            if (performanceRatio <= 0.50)
-            //                minerProcess.HasPoorPerformingDevice = true;
-            //        }
-
-            //        int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
-
-            //        if (rowIndex >= 0)
-            //        {
-            //            if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
-            //                totalScryptRate += deviceInformation.AverageHashrate;
-            //            else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
-            //                totalSha256Rate += deviceInformation.AverageHashrate;
-
-            //            PopulateDeviceInfoForRow(deviceInformation, deviceGridView.Rows[rowIndex]);
-
-            //            if (deviceInformation.Temperature > 0)
-            //                hasTempValue = true;
-
-            //            if (!string.IsNullOrEmpty(deviceInformation.Intensity))
-            //                hasIntensityValue = true;
-
-            //            lastAcceptedShares[rowIndex] = deviceInformation.AcceptedShares;
-            //        }
-            //    }
-            //}
-
-            //scryptRateLabel.Text = string.Format("Scrypt: {0} Kh/s", totalScryptRate);
-            //sha256RateLabel.Text = string.Format("SHA256: {0} Mh/s", totalSha256Rate / 1000); //Mh not mh, mh is milli
-            //notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
-
-            ////hide the temperature column if there are no tempts returned (USBs, OS X, etc)
-            //temperatureColumn.Visible = hasTempValue;
-
-            ////hide the intensity column if there are no intensities returned (USBs)
-            //intensityColumn.Visible = hasIntensityValue;
+                    notificationsControl.AddNotification(notificationReason, notificationReason, () =>
+                    {
+                    }, "");
+                }
+            }
         }
 
         private void PopulateDeviceInfoFromProcesses()
