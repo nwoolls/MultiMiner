@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MultiMiner.Xgminer.Api
+namespace MultiMiner.Xgminer.Api.Responses
 {
-    public class SummaryInformation
+    public class SummaryInformationResponse
     {
     }
 }

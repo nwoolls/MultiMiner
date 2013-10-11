@@ -7,7 +7,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
 {
     class SummaryInformationParser
     {
-        public static void ParseTextForSummaryInformation(string text, Xgminer.Api.SummaryInformation summaryInformation)
+        public static void ParseTextForSummaryInformation(string text, Xgminer.Api.Responses.SummaryInformationResponse summaryInformation)
         {
             
         }

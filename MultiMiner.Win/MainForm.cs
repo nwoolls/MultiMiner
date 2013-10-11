@@ -14,6 +14,7 @@ using System.Drawing;
 using System.Threading;
 using MultiMiner.Utility;
 using MultiMiner.Win.Notifications;
+using MultiMiner.Xgminer.Api.Responses;
 
 namespace MultiMiner.Win
 {
@@ -1045,7 +1046,7 @@ namespace MultiMiner.Win
             row.Cells[poolColumn.Index].Value = null;
         }
 
-        private void PopulateDeviceInfoForRow(Xgminer.Api.DeviceInformation deviceInformation, DataGridViewRow row)
+        private void PopulateDeviceInfoForRow(DeviceInformationResponse deviceInformation, DataGridViewRow row)
         {
             //stratum devices get lumped together, so we sum those
             if (deviceInformation.Name.Equals("SGW", StringComparison.OrdinalIgnoreCase))
@@ -1269,7 +1270,7 @@ namespace MultiMiner.Win
                 minerProcess.MinerIsFrozen = false;
                 minerProcess.HasPoorPerformingDevice = false;
 
-                List<Xgminer.Api.DeviceInformation> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
+                List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
 
                 if (deviceInformationList == null) //handled failure getting API info
                 {
@@ -1279,13 +1280,13 @@ namespace MultiMiner.Win
 
                 //first clear stats for each row
                 //this is because the SWG row stats get summed                
-                foreach (Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
+                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                 {
                     int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
                     ClearDeviceInfoForRow(deviceGridView.Rows[rowIndex]);
                 }
 
-                foreach (Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
+                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                 {
                     if (deviceInformation.Status.ToLower().Contains("sick"))
                         minerProcess.HasSickDevice = true;
@@ -1335,7 +1336,7 @@ namespace MultiMiner.Win
             intensityColumn.Visible = hasIntensityValue;
         }
 
-        private List<Xgminer.Api.DeviceInformation> GetDeviceInfoFromProcess(MinerProcess minerProcess)
+        private List<DeviceInformationResponse> GetDeviceInfoFromProcess(MinerProcess minerProcess)
         {
             Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
 
@@ -1343,7 +1344,7 @@ namespace MultiMiner.Win
             apiContext.LogEvent -= LogApiEvent;
             apiContext.LogEvent += LogApiEvent;
 
-            List<Xgminer.Api.DeviceInformation> deviceInformationList = null;
+            List<DeviceInformationResponse> deviceInformationList = null;
             try
             {
                 try
@@ -1365,7 +1366,7 @@ namespace MultiMiner.Win
             return deviceInformationList;
         }
 
-        private Xgminer.Api.SummaryInformation GetSummaryInfoFromProcess(MinerProcess minerProcess)
+        private SummaryInformationResponse GetSummaryInfoFromProcess(MinerProcess minerProcess)
         {
             Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
 
@@ -1373,7 +1374,7 @@ namespace MultiMiner.Win
             apiContext.LogEvent -= LogApiEvent;
             apiContext.LogEvent += LogApiEvent;
 
-            Xgminer.Api.SummaryInformation summaryInformation = null;
+            SummaryInformationResponse summaryInformation = null;
             try
             {
                 try
@@ -1395,7 +1396,7 @@ namespace MultiMiner.Win
             return summaryInformation;
         }
 
-        private int GetRowIndexForDeviceInformation(Xgminer.Api.DeviceInformation deviceInformation)
+        private int GetRowIndexForDeviceInformation(DeviceInformationResponse deviceInformation)
         {
             int index = 0;
             int rowIndex = -1;
@@ -1960,17 +1961,17 @@ namespace MultiMiner.Win
 
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
-                List<Xgminer.Api.DeviceInformation> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
+                List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
 
                 if (deviceInformationList == null) //handled failure getting API info
                 {
                     continue;
                 }
 
-                foreach (Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
+                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                 {
                     MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics = new MobileMiner.Api.MiningStatistics();
-                    
+
                     miningStatistics.MinerName = "MultiMiner";
                     miningStatistics.CoinName = GetCoinNameForApiContext(minerProcess.ApiContext);
                     CryptoCoin coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(miningStatistics.CoinName)).Coin;
@@ -1980,7 +1981,7 @@ namespace MultiMiner.Win
                         miningStatistics.Algorithm = "scrypt";
                     else if (coin.Algorithm == CoinAlgorithm.SHA256)
                         miningStatistics.Algorithm = "SHA-256";
-                    
+
                     PopulateMiningStatsFromDeviceInfo(miningStatistics, deviceInformation);
 
                     statisticsList.Add(miningStatistics);
@@ -2224,7 +2225,7 @@ namespace MultiMiner.Win
                                 Environment.MachineName, command.Id);
         }
 
-        private static void PopulateMiningStatsFromDeviceInfo(MobileMiner.Api.MiningStatistics miningStatistics, Xgminer.Api.DeviceInformation deviceInformation)
+        private static void PopulateMiningStatsFromDeviceInfo(MobileMiner.Api.MiningStatistics miningStatistics, DeviceInformationResponse deviceInformation)
         {
             miningStatistics.AcceptedShares = deviceInformation.AcceptedShares;
             miningStatistics.AverageHashrate = deviceInformation.AverageHashrate;

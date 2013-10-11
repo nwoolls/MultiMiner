@@ -40,13 +40,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiContext.cs" />
-    <Compile Include="DeviceInformation.cs" />
+    <Compile Include="Responses\DeviceInformationResponse.cs" />
     <Compile Include="LogEventArgs.cs" />
     <Compile Include="Parsers\DeviceInformationParser.cs" />
     <Compile Include="Parsers\SummaryInformationParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ApiVerb.cs" />
-    <Compile Include="SummaryInformation.cs" />
+    <Compile Include="Responses\SummaryInformationResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

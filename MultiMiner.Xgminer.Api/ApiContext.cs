@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Xgminer.Api.Parsers;
+using MultiMiner.Xgminer.Api.Responses;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -21,18 +22,18 @@ namespace MultiMiner.Xgminer.Api
             this.port = port;
         }
 
-        public List<DeviceInformation> GetDeviceInformation()
+        public List<DeviceInformationResponse> GetDeviceInformation()
         {
             string textResponse = GetResponse(ApiVerb.Devs);
-            List<DeviceInformation> result = new List<DeviceInformation>();
+            List<DeviceInformationResponse> result = new List<DeviceInformationResponse>();
             DeviceInformationParser.ParseTextForDeviceInformation(textResponse, result);
             return result;
         }
 
-        public SummaryInformation GetSummaryInformation()
+        public SummaryInformationResponse GetSummaryInformation()
         {
             string textResponse = GetResponse(ApiVerb.Summary);
-            SummaryInformation result = new SummaryInformation();
+            SummaryInformationResponse result = new SummaryInformationResponse();
             SummaryInformationParser.ParseTextForSummaryInformation(textResponse, result);
             return result;
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MultiMiner.Xgminer.Api.Responses;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
 {
     public class DeviceInformationParser
     {
-        public static void ParseTextForDeviceInformation(string text, List<DeviceInformation> deviceInformation)
+        public static void ParseTextForDeviceInformation(string text, List<DeviceInformationResponse> deviceInformation)
         {
             List<string> deviceBlob = text.Split('|').ToList();
             deviceBlob.RemoveAt(0);
@@ -29,7 +30,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
                 //seen Count == 0 with user API logs
                 if (keyValuePairs.Count > 0)
                 {
-                    DeviceInformation newDevice = new DeviceInformation();
+                    DeviceInformationResponse newDevice = new DeviceInformationResponse();
 
                     newDevice.Kind = keyValuePairs.ElementAt(0).Key;
 

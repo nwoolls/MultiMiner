@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace MultiMiner.Xgminer.Api
+namespace MultiMiner.Xgminer.Api.Responses
 {
-    public class DeviceInformation
+    public class DeviceInformationResponse
     {
-        public DeviceInformation()
+        public DeviceInformationResponse()
         {
             Status = String.Empty;
             Name = String.Empty; //cgminer may / does not return this
