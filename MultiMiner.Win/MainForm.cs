@@ -875,6 +875,7 @@ namespace MultiMiner.Win
             }
 
             deviceStatsTimer.Enabled = false;
+            minerSummaryTimer.Enabled = false;
             coinStatsCountdownTimer.Enabled = false;
             RefreshStrategiesCountdown();
             scryptRateLabel.Text = string.Empty;
@@ -923,6 +924,7 @@ namespace MultiMiner.Win
             engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
 
             deviceStatsTimer.Enabled = true;
+            minerSummaryTimer.Enabled = true;
             coinStatsCountdownTimer.Enabled = true;
             RefreshStrategiesCountdown();
 
@@ -1018,7 +1020,7 @@ namespace MultiMiner.Win
         private void statsTimer_Tick(object sender, EventArgs e)
         {
             ClearMinerStatsForDisabledCoins();
-            PopulateStatsFromMinerProcesses();
+            PopulateDeviceInfoFromProcesses();
         }
 
         private void ClearMinerStatsForDisabledCoins()
@@ -1028,10 +1030,10 @@ namespace MultiMiner.Win
 
             foreach (DataGridViewRow row in deviceGridView.Rows)
                 if (row.Cells[coinColumn.Index].Value == null)
-                    ClearMinerStatsForRow(row);
+                    ClearDeviceInfoForRow(row);
         }
 
-        private void ClearMinerStatsForRow(DataGridViewRow row)
+        private void ClearDeviceInfoForRow(DataGridViewRow row)
         {
             row.Cells[temperatureColumn.Index].Value = null;
             row.Cells[hashRateColumn.Index].Value = null;
@@ -1043,7 +1045,7 @@ namespace MultiMiner.Win
             row.Cells[poolColumn.Index].Value = null;
         }
 
-        private void PopulateMinerStatsForRow(MultiMiner.Xgminer.Api.DeviceInformation deviceInformation, DataGridViewRow row)
+        private void PopulateDeviceInfoForRow(Xgminer.Api.DeviceInformation deviceInformation, DataGridViewRow row)
         {
             //stratum devices get lumped together, so we sum those
             if (deviceInformation.Name.Equals("SGW", StringComparison.OrdinalIgnoreCase))
@@ -1118,7 +1120,7 @@ namespace MultiMiner.Win
         private void ClearAllMinerStats()
         {
             foreach (DataGridViewRow row in deviceGridView.Rows)
-                ClearMinerStatsForRow(row);
+                ClearDeviceInfoForRow(row);
         }
 
         private void ClearAllCoinStats()
@@ -1170,7 +1172,7 @@ namespace MultiMiner.Win
 
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
-                MultiMiner.Xgminer.Api.ApiContext loopContext = minerProcess.ApiContext;
+                Xgminer.Api.ApiContext loopContext = minerProcess.ApiContext;
                 if (loopContext == apiContext)
                 {
                     coinName = minerProcess.MinerConfiguration.CoinName;
@@ -1181,7 +1183,77 @@ namespace MultiMiner.Win
             return coinName;
         }
 
-        private void PopulateStatsFromMinerProcesses()
+        private void PopulateSummaryInfoFromProcesses()
+        {
+            //foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+            //{
+            //    List<Xgminer.Api.DeviceInformation> deviceInformationList = GetSummaryInfoFromProcess(minerProcess);
+
+            //    if (deviceInformationList == null) //handled failure getting API info
+            //    {
+            //        minerProcess.MinerIsFrozen = true;
+            //        continue;
+            //    }
+
+            //    //first clear stats for each row
+            //    //this is because the SWG row stats get summed                
+            //    foreach (Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
+            //    {
+            //        int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
+            //        ClearDeviceInfoForRow(deviceGridView.Rows[rowIndex]);
+            //    }
+
+            //    foreach (Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
+            //    {
+            //        if (deviceInformation.Status.ToLower().Contains("sick"))
+            //            minerProcess.HasSickDevice = true;
+            //        if (deviceInformation.Status.ToLower().Contains("dead"))
+            //            minerProcess.HasDeadDevice = true;
+            //        if (deviceInformation.CurrentHashrate == 0)
+            //            minerProcess.HasZeroHashrateDevice = true;
+
+            //        //avoid div by 0
+            //        if (deviceInformation.AverageHashrate > 0)
+            //        {
+            //            double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
+            //            if (performanceRatio <= 0.50)
+            //                minerProcess.HasPoorPerformingDevice = true;
+            //        }
+
+            //        int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
+
+            //        if (rowIndex >= 0)
+            //        {
+            //            if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
+            //                totalScryptRate += deviceInformation.AverageHashrate;
+            //            else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
+            //                totalSha256Rate += deviceInformation.AverageHashrate;
+
+            //            PopulateDeviceInfoForRow(deviceInformation, deviceGridView.Rows[rowIndex]);
+
+            //            if (deviceInformation.Temperature > 0)
+            //                hasTempValue = true;
+
+            //            if (!string.IsNullOrEmpty(deviceInformation.Intensity))
+            //                hasIntensityValue = true;
+
+            //            lastAcceptedShares[rowIndex] = deviceInformation.AcceptedShares;
+            //        }
+            //    }
+            //}
+
+            //scryptRateLabel.Text = string.Format("Scrypt: {0} Kh/s", totalScryptRate);
+            //sha256RateLabel.Text = string.Format("SHA256: {0} Mh/s", totalSha256Rate / 1000); //Mh not mh, mh is milli
+            //notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
+
+            ////hide the temperature column if there are no tempts returned (USBs, OS X, etc)
+            //temperatureColumn.Visible = hasTempValue;
+
+            ////hide the intensity column if there are no intensities returned (USBs)
+            //intensityColumn.Visible = hasIntensityValue;
+        }
+
+        private void PopulateDeviceInfoFromProcesses()
         {
             double totalScryptRate = 0;
             double totalSha256Rate = 0;
@@ -1197,7 +1269,7 @@ namespace MultiMiner.Win
                 minerProcess.MinerIsFrozen = false;
                 minerProcess.HasPoorPerformingDevice = false;
 
-                List<MultiMiner.Xgminer.Api.DeviceInformation> deviceInformationList = GetDeviceInformationFromMinerProcess(minerProcess);
+                List<Xgminer.Api.DeviceInformation> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
 
                 if (deviceInformationList == null) //handled failure getting API info
                 {
@@ -1207,13 +1279,13 @@ namespace MultiMiner.Win
 
                 //first clear stats for each row
                 //this is because the SWG row stats get summed                
-                foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
+                foreach (Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
                 {
                     int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
-                    ClearMinerStatsForRow(deviceGridView.Rows[rowIndex]);
+                    ClearDeviceInfoForRow(deviceGridView.Rows[rowIndex]);
                 }
 
-                foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
+                foreach (Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
                 {
                     if (deviceInformation.Status.ToLower().Contains("sick"))
                         minerProcess.HasSickDevice = true;
@@ -1239,7 +1311,7 @@ namespace MultiMiner.Win
                         else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
                             totalSha256Rate += deviceInformation.AverageHashrate;
 
-                        PopulateMinerStatsForRow(deviceInformation, deviceGridView.Rows[rowIndex]);
+                        PopulateDeviceInfoForRow(deviceInformation, deviceGridView.Rows[rowIndex]);
 
                         if (deviceInformation.Temperature > 0)
                             hasTempValue = true;
@@ -1263,15 +1335,15 @@ namespace MultiMiner.Win
             intensityColumn.Visible = hasIntensityValue;
         }
 
-        private List<MultiMiner.Xgminer.Api.DeviceInformation> GetDeviceInformationFromMinerProcess(MinerProcess minerProcess)
+        private List<Xgminer.Api.DeviceInformation> GetDeviceInfoFromProcess(MinerProcess minerProcess)
         {
-            MultiMiner.Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
 
             //setup logging
             apiContext.LogEvent -= LogApiEvent;
             apiContext.LogEvent += LogApiEvent;
 
-            List<MultiMiner.Xgminer.Api.DeviceInformation> deviceInformationList = null;
+            List<Xgminer.Api.DeviceInformation> deviceInformationList = null;
             try
             {
                 try
@@ -1293,7 +1365,37 @@ namespace MultiMiner.Win
             return deviceInformationList;
         }
 
-        private int GetRowIndexForDeviceInformation(MultiMiner.Xgminer.Api.DeviceInformation deviceInformation)
+        private Xgminer.Api.SummaryInformation GetSummaryInfoFromProcess(MinerProcess minerProcess)
+        {
+            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            Xgminer.Api.SummaryInformation summaryInformation = null;
+            try
+            {
+                try
+                {
+                    summaryInformation = apiContext.GetSummaryInformation();
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    summaryInformation = null;
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
+                summaryInformation = null;
+            }
+
+            return summaryInformation;
+        }
+
+        private int GetRowIndexForDeviceInformation(Xgminer.Api.DeviceInformation deviceInformation)
         {
             int index = 0;
             int rowIndex = -1;
@@ -1858,14 +1960,14 @@ namespace MultiMiner.Win
 
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
-                List<MultiMiner.Xgminer.Api.DeviceInformation> deviceInformationList = GetDeviceInformationFromMinerProcess(minerProcess);
+                List<Xgminer.Api.DeviceInformation> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
 
                 if (deviceInformationList == null) //handled failure getting API info
                 {
                     continue;
                 }
 
-                foreach (MultiMiner.Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
+                foreach (Xgminer.Api.DeviceInformation deviceInformation in deviceInformationList)
                 {
                     MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics = new MobileMiner.Api.MiningStatistics();
                     
@@ -2472,6 +2574,11 @@ namespace MultiMiner.Win
             //don't show 0 temps
             if ((e.ColumnIndex == temperatureColumn.Index) && (e.Value != null) && ((double)e.Value == 0))
                 e.Value = null;
+        }
+
+        private void minerSummaryTimer_Tick(object sender, EventArgs e)
+        {
+            PopulateSummaryInfoFromProcesses();
         }
     }
 }

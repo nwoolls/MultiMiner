@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace MultiMiner.Xgminer.Api
 {
     public class DeviceInformation
