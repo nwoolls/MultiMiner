@@ -34,14 +34,21 @@ PrivilegesRequired=lowest
 
 [Files]
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Win.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Win.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\Interop.IWshRuntimeLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\Interop.Shell32.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Coinchoose.Api.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Coinchoose.Api.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MobileMiner.Api.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MobileMiner.Api.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Engine.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Engine.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Utility.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Utility.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Xgminer.Api.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Xgminer.Api.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Xgminer.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Xgminer.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\Miners\bfgminer\Extract bfgminer here.txt"; DestDir: "{app}\Miners\bfgminer\"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\Miners\cgminer\Extract cgminer here.txt"; DestDir: "{app}\Miners\cgminer\"; Flags: ignoreversion

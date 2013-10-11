@@ -33,15 +33,23 @@ folder.remove("PF", true);
 folder.create("PF/Miners/bfgminer");
 folder.create("PF/Miners/cgminer");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Win.exe", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Win.pdb", "PF/");
 file.copy("../MultiMiner.Update/bin/Release/MultiMiner.Update.exe", "PF/");
+file.copy("../MultiMiner.Update/bin/Release/MultiMiner.Update.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Interop.IWshRuntimeLibrary.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Interop.Shell32.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Coinchoose.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Coinchoose.Api.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Engine.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Engine.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Utility.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Utility.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Api.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Api.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Miners/bfgminer/Extract bfgminer here.txt", "PF/Miners/bfgminer");
 file.copy("../MultiMiner.Win/bin/Release/Miners/cgminer/Extract cgminer here.txt", "PF/Miners/cgminer");
@@ -96,14 +104,21 @@ shell.exec(macPackPath,
 -n MultiMiner.Win \
 -m winforms \
 -r \
+../MultiMiner.Win/bin/Release/MultiMiner.Win.pdb,\
 ../MultiMiner.Win/bin/Release/Interop.IWshRuntimeLibrary.dll,\
 ../MultiMiner.Win/bin/Release/Interop.Shell32.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Coinchoose.Api.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.Coinchoose.Api.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Engine.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.Engine.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Utility.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.Utility.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Api.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Api.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Api.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Api.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.pdb,\
 ../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll,\
 Miners \
 -i ../MultiMiner.Win/window_sel.icns \
