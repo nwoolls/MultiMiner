@@ -6,6 +6,7 @@ namespace MultiMiner.Xgminer.Api
         public DeviceInformation()
         {
             Status = String.Empty;
+            Name = String.Empty; //cgminer may / does not return this
         }
 
         public string Kind { get; set; }
