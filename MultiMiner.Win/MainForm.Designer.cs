@@ -105,11 +105,7 @@
             this.advancedTabControl = new System.Windows.Forms.TabControl();
             this.apiMonitorPage = new System.Windows.Forms.TabPage();
             this.apiLogGridView = new System.Windows.Forms.DataGridView();
-            this.dateTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CoinName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.requestDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.responseDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.apiLogEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.processLogPage = new System.Windows.Forms.TabPage();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.dateTimeDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -120,6 +116,15 @@
             this.logLaunchArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.historyPage = new System.Windows.Forms.TabPage();
             this.historyGridView = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.startPriceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.endPriceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.AcceptedShares = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.durationColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.devicesColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.logProcessCloseArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
@@ -135,15 +140,11 @@
             this.updateCheckTimer = new System.Windows.Forms.Timer(this.components);
             this.idleTimer = new System.Windows.Forms.Timer(this.components);
             this.restartTimer = new System.Windows.Forms.Timer(this.components);
-            this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.startPriceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.endPriceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.AcceptedShares = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.durationColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.devicesColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.minerSummaryTimer = new System.Windows.Forms.Timer(this.components);
+            this.dateTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.requestDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.responseDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.apiLogEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.startupMiningPanel.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -156,7 +157,6 @@
             this.advancedTabControl.SuspendLayout();
             this.apiMonitorPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).BeginInit();
             this.processLogPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).BeginInit();
@@ -165,6 +165,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).BeginInit();
             this.panel2.SuspendLayout();
             this.notifyIconMenuStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // deviceStatsTimer
@@ -567,10 +568,10 @@
             this.deviceGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.deviceGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.deviceGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.enabledColumn,
             this.kindDataGridViewTextBoxColumn,
             this.nameColumn,
             this.descriptionDataGridViewTextBoxColumn,
+            this.enabledColumn,
             this.coinColumn,
             this.difficultyColumn,
             this.priceColumn,
@@ -742,7 +743,7 @@
             // 
             // deviceBindingSource
             // 
-            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
+            this.deviceBindingSource.DataSource = typeof(Xgminer.Device);
             // 
             // advancedTabControl
             // 
@@ -794,40 +795,12 @@
             this.apiLogGridView.Size = new System.Drawing.Size(1073, 69);
             this.apiLogGridView.TabIndex = 13;
             // 
-            // dateTimeDataGridViewTextBoxColumn
-            // 
-            this.dateTimeDataGridViewTextBoxColumn.DataPropertyName = "DateTime";
-            this.dateTimeDataGridViewTextBoxColumn.HeaderText = "Date/Time";
-            this.dateTimeDataGridViewTextBoxColumn.Name = "dateTimeDataGridViewTextBoxColumn";
-            this.dateTimeDataGridViewTextBoxColumn.ReadOnly = true;
-            this.dateTimeDataGridViewTextBoxColumn.Width = 125;
-            // 
             // CoinName
             // 
             this.CoinName.DataPropertyName = "CoinName";
             this.CoinName.HeaderText = "Coin Name";
             this.CoinName.Name = "CoinName";
             this.CoinName.ReadOnly = true;
-            // 
-            // requestDataGridViewTextBoxColumn
-            // 
-            this.requestDataGridViewTextBoxColumn.DataPropertyName = "Request";
-            this.requestDataGridViewTextBoxColumn.HeaderText = "Request";
-            this.requestDataGridViewTextBoxColumn.Name = "requestDataGridViewTextBoxColumn";
-            this.requestDataGridViewTextBoxColumn.ReadOnly = true;
-            this.requestDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // responseDataGridViewTextBoxColumn
-            // 
-            this.responseDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.responseDataGridViewTextBoxColumn.DataPropertyName = "Response";
-            this.responseDataGridViewTextBoxColumn.HeaderText = "Response";
-            this.responseDataGridViewTextBoxColumn.Name = "responseDataGridViewTextBoxColumn";
-            this.responseDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // apiLogEntryBindingSource
-            // 
-            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.ApiLogEntry);
             // 
             // processLogPage
             // 
@@ -908,7 +881,7 @@
             // 
             // logLaunchArgsBindingSource
             // 
-            this.logLaunchArgsBindingSource.DataSource = typeof(MultiMiner.Xgminer.LogLaunchArgs);
+            this.logLaunchArgsBindingSource.DataSource = typeof(Xgminer.LogLaunchArgs);
             // 
             // historyPage
             // 
@@ -953,6 +926,70 @@
             this.historyGridView.Size = new System.Drawing.Size(1073, 69);
             this.historyGridView.TabIndex = 0;
             this.historyGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.historyGridView_RowsAdded);
+            // 
+            // dataGridViewTextBoxColumn8
+            // 
+            this.dataGridViewTextBoxColumn8.DataPropertyName = "StartDate";
+            this.dataGridViewTextBoxColumn8.HeaderText = "Start Date/Time";
+            this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
+            this.dataGridViewTextBoxColumn8.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn9
+            // 
+            this.dataGridViewTextBoxColumn9.DataPropertyName = "EndDate";
+            this.dataGridViewTextBoxColumn9.HeaderText = "End Date/Time";
+            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
+            this.dataGridViewTextBoxColumn9.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn10
+            // 
+            this.dataGridViewTextBoxColumn10.DataPropertyName = "CoinName";
+            this.dataGridViewTextBoxColumn10.HeaderText = "Coin Name";
+            this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
+            this.dataGridViewTextBoxColumn10.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn11
+            // 
+            this.dataGridViewTextBoxColumn11.DataPropertyName = "CoinSymbol";
+            this.dataGridViewTextBoxColumn11.FillWeight = 80F;
+            this.dataGridViewTextBoxColumn11.HeaderText = "Coin Symbol";
+            this.dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
+            this.dataGridViewTextBoxColumn11.ReadOnly = true;
+            // 
+            // startPriceColumn
+            // 
+            this.startPriceColumn.DataPropertyName = "StartPrice";
+            this.startPriceColumn.HeaderText = "Start Price";
+            this.startPriceColumn.Name = "startPriceColumn";
+            this.startPriceColumn.ReadOnly = true;
+            // 
+            // endPriceColumn
+            // 
+            this.endPriceColumn.DataPropertyName = "EndPrice";
+            this.endPriceColumn.HeaderText = "End Price";
+            this.endPriceColumn.Name = "endPriceColumn";
+            this.endPriceColumn.ReadOnly = true;
+            // 
+            // AcceptedShares
+            // 
+            this.AcceptedShares.DataPropertyName = "AcceptedShares";
+            this.AcceptedShares.FillWeight = 85F;
+            this.AcceptedShares.HeaderText = "Accepted Shares";
+            this.AcceptedShares.Name = "AcceptedShares";
+            this.AcceptedShares.ReadOnly = true;
+            // 
+            // durationColumn
+            // 
+            this.durationColumn.HeaderText = "Duration";
+            this.durationColumn.Name = "durationColumn";
+            this.durationColumn.ReadOnly = true;
+            // 
+            // devicesColumn
+            // 
+            this.devicesColumn.FillWeight = 120F;
+            this.devicesColumn.HeaderText = "Devices";
+            this.devicesColumn.Name = "devicesColumn";
+            this.devicesColumn.ReadOnly = true;
             // 
             // logProcessCloseArgsBindingSource
             // 
@@ -1062,69 +1099,38 @@
             // 
             this.restartTimer.Tick += new System.EventHandler(this.restartTimer_Tick);
             // 
-            // dataGridViewTextBoxColumn8
+            // minerSummaryTimer
             // 
-            this.dataGridViewTextBoxColumn8.DataPropertyName = "StartDate";
-            this.dataGridViewTextBoxColumn8.HeaderText = "Start Date/Time";
-            this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
-            this.dataGridViewTextBoxColumn8.ReadOnly = true;
+            this.minerSummaryTimer.Interval = 60000;
+            this.minerSummaryTimer.Tick += new System.EventHandler(this.minerSummaryTimer_Tick);
             // 
-            // dataGridViewTextBoxColumn9
+            // dateTimeDataGridViewTextBoxColumn
             // 
-            this.dataGridViewTextBoxColumn9.DataPropertyName = "EndDate";
-            this.dataGridViewTextBoxColumn9.HeaderText = "End Date/Time";
-            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
-            this.dataGridViewTextBoxColumn9.ReadOnly = true;
+            this.dateTimeDataGridViewTextBoxColumn.DataPropertyName = "DateTime";
+            this.dateTimeDataGridViewTextBoxColumn.HeaderText = "Date/Time";
+            this.dateTimeDataGridViewTextBoxColumn.Name = "dateTimeDataGridViewTextBoxColumn";
+            this.dateTimeDataGridViewTextBoxColumn.ReadOnly = true;
+            this.dateTimeDataGridViewTextBoxColumn.Width = 125;
             // 
-            // dataGridViewTextBoxColumn10
+            // requestDataGridViewTextBoxColumn
             // 
-            this.dataGridViewTextBoxColumn10.DataPropertyName = "CoinName";
-            this.dataGridViewTextBoxColumn10.HeaderText = "Coin Name";
-            this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
-            this.dataGridViewTextBoxColumn10.ReadOnly = true;
+            this.requestDataGridViewTextBoxColumn.DataPropertyName = "Request";
+            this.requestDataGridViewTextBoxColumn.HeaderText = "Request";
+            this.requestDataGridViewTextBoxColumn.Name = "requestDataGridViewTextBoxColumn";
+            this.requestDataGridViewTextBoxColumn.ReadOnly = true;
+            this.requestDataGridViewTextBoxColumn.Width = 125;
             // 
-            // dataGridViewTextBoxColumn11
+            // responseDataGridViewTextBoxColumn
             // 
-            this.dataGridViewTextBoxColumn11.DataPropertyName = "CoinSymbol";
-            this.dataGridViewTextBoxColumn11.FillWeight = 80F;
-            this.dataGridViewTextBoxColumn11.HeaderText = "Coin Symbol";
-            this.dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
-            this.dataGridViewTextBoxColumn11.ReadOnly = true;
+            this.responseDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.responseDataGridViewTextBoxColumn.DataPropertyName = "Response";
+            this.responseDataGridViewTextBoxColumn.HeaderText = "Response";
+            this.responseDataGridViewTextBoxColumn.Name = "responseDataGridViewTextBoxColumn";
+            this.responseDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // startPriceColumn
+            // apiLogEntryBindingSource
             // 
-            this.startPriceColumn.DataPropertyName = "StartPrice";
-            this.startPriceColumn.HeaderText = "Start Price";
-            this.startPriceColumn.Name = "startPriceColumn";
-            this.startPriceColumn.ReadOnly = true;
-            // 
-            // endPriceColumn
-            // 
-            this.endPriceColumn.DataPropertyName = "EndPrice";
-            this.endPriceColumn.HeaderText = "End Price";
-            this.endPriceColumn.Name = "endPriceColumn";
-            this.endPriceColumn.ReadOnly = true;
-            // 
-            // AcceptedShares
-            // 
-            this.AcceptedShares.DataPropertyName = "AcceptedShares";
-            this.AcceptedShares.FillWeight = 85F;
-            this.AcceptedShares.HeaderText = "Accepted Shares";
-            this.AcceptedShares.Name = "AcceptedShares";
-            this.AcceptedShares.ReadOnly = true;
-            // 
-            // durationColumn
-            // 
-            this.durationColumn.HeaderText = "Duration";
-            this.durationColumn.Name = "durationColumn";
-            this.durationColumn.ReadOnly = true;
-            // 
-            // devicesColumn
-            // 
-            this.devicesColumn.FillWeight = 120F;
-            this.devicesColumn.HeaderText = "Devices";
-            this.devicesColumn.Name = "devicesColumn";
-            this.devicesColumn.ReadOnly = true;
+            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.ApiLogEntry);
             // 
             // MainForm
             // 
@@ -1159,7 +1165,6 @@
             this.advancedTabControl.ResumeLayout(false);
             this.apiMonitorPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).EndInit();
             this.processLogPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).EndInit();
@@ -1168,6 +1173,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).EndInit();
             this.panel2.ResumeLayout(false);
             this.notifyIconMenuStrip.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1288,6 +1294,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn AcceptedShares;
         private System.Windows.Forms.DataGridViewTextBoxColumn durationColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn devicesColumn;
+        private System.Windows.Forms.Timer minerSummaryTimer;
     }
 }
 

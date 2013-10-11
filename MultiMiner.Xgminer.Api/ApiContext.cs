@@ -29,6 +29,14 @@ namespace MultiMiner.Xgminer.Api
             return result;
         }
 
+        public SummaryInformation GetSummaryInformation()
+        {
+            string textResponse = GetResponse(ApiVerb.Summary);
+            SummaryInformation result = new SummaryInformation();
+            SummaryInformationParser.ParseTextForSummaryInformation(textResponse, result);
+            return result;
+        }
+
         public void QuitMining()
         {
             GetResponse(ApiVerb.Quit);
