@@ -628,6 +628,18 @@ namespace MultiMiner.Win
                 detectedDevices.Add(proxyDevice);
             }
 
+            //sort GPUs first - the output of -d? changed with bfgminer 3.3.0
+            detectedDevices.Sort((d1, d2) =>
+                {
+                    int result = 0;
+
+                    result = d1.Kind.CompareTo(d2.Kind);
+                    if (result == 0)
+                        result = d1.DeviceIndex.CompareTo(d2.DeviceIndex);
+
+                    return result;
+                });
+
             return detectedDevices;
         }
 
