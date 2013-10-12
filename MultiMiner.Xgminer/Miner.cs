@@ -60,6 +60,8 @@ namespace MultiMiner.Xgminer
             if (minerConfiguration.MinerBackend == MinerBackend.Bfgminer)
             {
                 string serialArg = minerConfiguration.ErupterDriver ? Bfgminer.MinerParameter.ScanSerialErupterAll : Bfgminer.MinerParameter.ScanSerialAll;
+                //openCL disabled by default in bfgminer 3.3.0+
+                serialArg = String.Format("{0} {1}", serialArg, Bfgminer.MinerParameter.ScanSerialOpenCL);
                 arguments = String.Format("{0} {1}", arguments, serialArg);
             }
             
@@ -117,6 +119,8 @@ namespace MultiMiner.Xgminer
                 if (!minerConfiguration.StratumProxy || (minerConfiguration.DeviceIndexes.Count > 0))
                 {
                     string serialArg = minerConfiguration.ErupterDriver ? Bfgminer.MinerParameter.ScanSerialErupterAll : Bfgminer.MinerParameter.ScanSerialAll;
+                    //openCL disabled by default in bfgminer 3.3.0+
+                    serialArg = String.Format("{0} {1}", serialArg, Bfgminer.MinerParameter.ScanSerialOpenCL);
                     arguments = String.Format("{0} {1}", arguments, serialArg);
                 }
 
