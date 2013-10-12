@@ -55,6 +55,7 @@ namespace MultiMiner.Xgminer.Parsers
                         device.Name = currentUsbProduct;
                         device.Description = string.Empty;
                         device.Kind = DeviceKind.USB;
+                        device.DeviceIndex = devices.Count;
 
                         devices.Add(device);
                     }

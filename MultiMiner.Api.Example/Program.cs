@@ -64,7 +64,7 @@ namespace MultiMiner.Api.Example
 
                     //specify device indexes to use
                     for (int i = 0; i < deviceList.Count; i++)
-                        minerConfiguration.DeviceIndexes.Add(i);
+                        minerConfiguration.DeviceIndexes.Add(deviceList[i].DeviceIndex);
 
                     //enable RPC API
                     minerConfiguration.ApiListen = true;

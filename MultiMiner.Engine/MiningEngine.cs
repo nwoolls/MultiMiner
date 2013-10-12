@@ -391,7 +391,7 @@ namespace MultiMiner.Engine
 
                     DeviceConfiguration configEntry = new DeviceConfiguration();
 
-                    configEntry.DeviceIndex = i;
+                    configEntry.DeviceIndex = device.DeviceIndex;
                     configEntry.CoinSymbol = profitableCoin == null ? string.Empty : profitableCoin.Symbol;
                     
                     newConfiguration.Add(configEntry);
@@ -400,7 +400,7 @@ namespace MultiMiner.Engine
                 {
                     DeviceConfiguration configEntry = new DeviceConfiguration();
 
-                    configEntry.DeviceIndex = i;
+                    configEntry.DeviceIndex = device.DeviceIndex;
                     configEntry.CoinSymbol = existingConfiguration.CoinSymbol;
                     configEntry.Enabled = false;
 
@@ -586,7 +586,7 @@ namespace MultiMiner.Engine
             Device firstGpu = devices.Find(d => d.Kind == DeviceKind.GPU);
             int firstGpuIndex = 0;
             if (firstGpu != null)
-                firstGpuIndex = devices.IndexOf(firstGpu);
+                firstGpuIndex = firstGpu.DeviceIndex;
 
             for (int i = 0; i < enabledConfigurations.Count; i++)
             {

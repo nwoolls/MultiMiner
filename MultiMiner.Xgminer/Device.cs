@@ -13,5 +13,6 @@
         public string Description { get; set; }
         public DevicePlatform Platform { get; set; }
         public string Driver { get; set; }
+        public int DeviceIndex { get; set; }
     }
 }

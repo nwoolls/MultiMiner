@@ -87,10 +87,7 @@ namespace MultiMiner.Win
             {
                 Device lastDevice = devices.LastOrDefault();
                 if ((lastDevice != null) && (lastDevice.Kind == DeviceKind.SGW))
-                {
-                    int deviceIndex = devices.Count - 1;
-                    ea.DeviceIndexes.Add(deviceIndex);
-                }
+                    ea.DeviceIndexes.Add(lastDevice.DeviceIndex);
             }
         }
 
@@ -478,7 +475,7 @@ namespace MultiMiner.Win
             for (int i = engineConfiguration.DeviceConfigurations.Count; i < devices.Count; i++)
             {
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
-                deviceConfiguration.DeviceIndex = i;
+                deviceConfiguration.DeviceIndex = devices[i].DeviceIndex;
                 deviceConfiguration.Enabled = true;
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
@@ -522,7 +519,7 @@ namespace MultiMiner.Win
             {
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                 deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
-                deviceConfiguration.DeviceIndex = i;
+                deviceConfiguration.DeviceIndex = devices[i].DeviceIndex;
                 deviceConfiguration.Enabled = true;
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
@@ -627,6 +624,7 @@ namespace MultiMiner.Win
                 proxyDevice.Driver = "proxy";
                 proxyDevice.Name = "Stratum Proxy";
                 proxyDevice.Identifier = "SGW";
+                proxyDevice.DeviceIndex = detectedDevices.Count;
                 detectedDevices.Add(proxyDevice);
             }
 
@@ -757,7 +755,7 @@ namespace MultiMiner.Win
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
-                deviceConfiguration.DeviceIndex = i;
+                deviceConfiguration.DeviceIndex = devices[i].DeviceIndex;
                 deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
                 object cellValue = gridRow.Cells[enabledColumn.Index].Value;
                 deviceConfiguration.Enabled = cellValue == null ? true : (bool)cellValue;
@@ -777,7 +775,7 @@ namespace MultiMiner.Win
                     DataGridViewRow gridRow = deviceGridView.Rows[i];
 
                     DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
-                        c => (c.DeviceIndex == i));
+                        c => (c.DeviceIndex == devices[i].DeviceIndex));
 
                     if (deviceConfiguration != null)
                     {
@@ -817,7 +815,7 @@ namespace MultiMiner.Win
             {
                 DataGridViewRow gridRow = deviceGridView.Rows[i];
                 DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
-                    c => (c.DeviceIndex == i));
+                    c => (c.DeviceIndex == devices[i].DeviceIndex));
 
                 foreach (DataGridViewCell gridCell in gridRow.Cells)
                 {
@@ -2303,7 +2301,7 @@ namespace MultiMiner.Win
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
-                deviceConfiguration.DeviceIndex = i;
+                deviceConfiguration.DeviceIndex = device.DeviceIndex;
 
                 if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
                 {

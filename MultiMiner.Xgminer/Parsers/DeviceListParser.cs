@@ -26,27 +26,29 @@ namespace MultiMiner.Xgminer.Parsers
                     Match match = Regex.Match(line, DeviceFullPattern);
                     if (match.Success)
                     {
-                        Device newDevice = new Device();
+                        Device device = new Device();
 
-                        newDevice.Identifier = match.Groups[1].Value.TrimEnd().Substring(0, 3);
-                        newDevice.Name = match.Groups[2].Value.TrimEnd();
-                        newDevice.Driver = match.Groups[3].Value.TrimEnd();
-                        newDevice.Kind = DeviceIsGpu(newDevice) ? DeviceKind.GPU : DeviceKind.USB;
+                        device.Identifier = match.Groups[1].Value.TrimEnd().Substring(0, 3);
+                        device.Name = match.Groups[2].Value.TrimEnd();
+                        device.Driver = match.Groups[3].Value.TrimEnd();
+                        device.Kind = DeviceIsGpu(device) ? DeviceKind.GPU : DeviceKind.USB;
+                        device.DeviceIndex = devices.Count;
 
-                        devices.Add(newDevice);
+                        devices.Add(device);
                     }
                     else
                     {
                         match = Regex.Match(line, DeviceBriefPattern);
                         if (match.Success)
                         {
-                            Device newDevice = new Device();
+                            Device device = new Device();
 
-                            newDevice.Identifier = match.Groups[1].Value.TrimEnd().Substring(0, 3);
-                            newDevice.Driver = match.Groups[2].Value.TrimEnd();
-                            newDevice.Kind = DeviceIsGpu(newDevice) ? DeviceKind.GPU : DeviceKind.USB;
+                            device.Identifier = match.Groups[1].Value.TrimEnd().Substring(0, 3);
+                            device.Driver = match.Groups[2].Value.TrimEnd();
+                            device.Kind = DeviceIsGpu(device) ? DeviceKind.GPU : DeviceKind.USB;
+                            device.DeviceIndex = devices.Count;
 
-                            devices.Add(newDevice);
+                            devices.Add(device);
                         }
                     }
                 }
