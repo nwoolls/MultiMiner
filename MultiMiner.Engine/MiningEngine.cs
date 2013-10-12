@@ -583,13 +583,29 @@ namespace MultiMiner.Engine
             minerConfiguration.CoinName = coinConfiguration.Coin.Name;
             minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
 
+            Device firstGpu = devices.Find(d => d.Kind == DeviceKind.GPU);
+            int firstGpuIndex = 0;
+            if (firstGpu != null)
+                firstGpuIndex = devices.IndexOf(firstGpu);
+
             for (int i = 0; i < enabledConfigurations.Count; i++)
             {
                 DeviceConfiguration enabledConfiguration = enabledConfigurations[i];
+
                 //don't actually add stratum device as a device index
                 if (devices[enabledConfiguration.DeviceIndex].Kind != DeviceKind.SGW)
                 {
-                    minerConfiguration.DeviceIndexes.Add(enabledConfiguration.DeviceIndex);
+                    int deviceIndex = enabledConfiguration.DeviceIndex;
+                    
+                    if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
+                    {
+                        //launching bfgminer with --scrypt makes it ignore all USB devices
+                        //this wasn't an issue until 3.3.0 where -d? started returning GPUs last
+                        //offset the device index by the number of non-GPU devices before this one
+                        deviceIndex = deviceIndex - firstGpuIndex;
+                    }
+
+                    minerConfiguration.DeviceIndexes.Add(deviceIndex);
                 }
                 else
                 {
