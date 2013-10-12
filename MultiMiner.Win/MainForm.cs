@@ -86,7 +86,7 @@ namespace MultiMiner.Win
             if (ea.MinerConfiguration.StratumProxy)
             {
                 Device lastDevice = devices.LastOrDefault();
-                if ((lastDevice != null) && (lastDevice.Kind == DeviceKind.SGW))
+                if ((lastDevice != null) && (lastDevice.Kind == DeviceKind.PXY))
                     ea.DeviceIndexes.Add(lastDevice.DeviceIndex);
             }
         }
@@ -620,10 +620,10 @@ namespace MultiMiner.Win
                 engineConfiguration.XgminerConfiguration.StratumProxy)
             {
                 Device proxyDevice = new Device();
-                proxyDevice.Kind = DeviceKind.SGW;
+                proxyDevice.Kind = DeviceKind.PXY;
                 proxyDevice.Driver = "proxy";
                 proxyDevice.Name = "Stratum Proxy";
-                proxyDevice.Identifier = "SGW";
+                proxyDevice.Identifier = "PXY";
                 proxyDevice.DeviceIndex = detectedDevices.Count;
                 detectedDevices.Add(proxyDevice);
             }
@@ -1059,7 +1059,7 @@ namespace MultiMiner.Win
         private void PopulateDeviceInfoForRow(DeviceInformationResponse deviceInformation, DataGridViewRow row)
         {
             //stratum devices get lumped together, so we sum those
-            if (deviceInformation.Name.Equals("SGW", StringComparison.OrdinalIgnoreCase))
+            if (deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
             {
                 row.Cells[hashRateColumn.Index].Value = (double)(row.Cells[hashRateColumn.Index].Value ?? 0.00) + deviceInformation.AverageHashrate;
                 row.Cells[acceptedColumn.Index].Value = (int)(row.Cells[acceptedColumn.Index].Value ?? 0) + deviceInformation.AcceptedShares;
@@ -1245,7 +1245,7 @@ namespace MultiMiner.Win
                 }
 
                 //first clear stats for each row
-                //this is because the SWG row stats get summed                
+                //this is because the PXY row stats get summed                
                 foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                 {
                     int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
@@ -1370,12 +1370,12 @@ namespace MultiMiner.Win
             for (int i = 0; i < devices.Count; i++)
             {
                 if ((deviceInformation.Kind.Equals("GPU") && (devices[i].Kind == DeviceKind.GPU))
-                    || (deviceInformation.Name.Equals("SGW") && (devices[i].Kind == DeviceKind.SGW))
-                    || (!deviceInformation.Kind.Equals("GPU") && !deviceInformation.Name.Equals("SGW") && (devices[i].Kind != DeviceKind.GPU) && (devices[i].Kind != DeviceKind.GPU)))
+                    || (deviceInformation.Name.Equals("PXY") && (devices[i].Kind == DeviceKind.PXY))
+                    || (!deviceInformation.Kind.Equals("GPU") && !deviceInformation.Name.Equals("PXY") && (devices[i].Kind != DeviceKind.GPU) && (devices[i].Kind != DeviceKind.GPU)))
                 {
                     if ((index == deviceInformation.Index)
-                        //for now all proxy devices will show under a single SGW device in MultiMiner
-                        || (devices[i].Kind == DeviceKind.SGW))
+                        //for now all proxy devices will show under a single PXY device in MultiMiner
+                        || (devices[i].Kind == DeviceKind.PXY))
                     {
                         rowIndex = i;
                         break;

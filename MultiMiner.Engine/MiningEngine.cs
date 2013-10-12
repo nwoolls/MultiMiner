@@ -593,7 +593,7 @@ namespace MultiMiner.Engine
                 DeviceConfiguration enabledConfiguration = enabledConfigurations[i];
 
                 //don't actually add stratum device as a device index
-                if (devices[enabledConfiguration.DeviceIndex].Kind != DeviceKind.SGW)
+                if (devices[enabledConfiguration.DeviceIndex].Kind != DeviceKind.PXY)
                 {
                     int deviceIndex = enabledConfiguration.DeviceIndex;
                     
@@ -609,7 +609,7 @@ namespace MultiMiner.Engine
                 }
                 else
                 {
-                    //only enable the stratum proxy if these devices contain the SGW device
+                    //only enable the stratum proxy if these devices contain the PXY device
                     minerConfiguration.StratumProxy = engineConfiguration.XgminerConfiguration.StratumProxy;
                     minerConfiguration.StratumProxyPort = engineConfiguration.XgminerConfiguration.StratumProxyPort;
                 }
