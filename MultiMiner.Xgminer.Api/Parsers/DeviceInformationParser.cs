@@ -56,7 +56,8 @@ namespace MultiMiner.Xgminer.Api.Parsers
                         newDevice.GpuVoltage = TryToParseDouble(keyValuePairs, "GPU Voltage", 0.00);
                         newDevice.GpuActivity = TryToParseInt(keyValuePairs, "GPU Activity", 0);
                         newDevice.PowerTune = TryToParseInt(keyValuePairs, "Powertune", 0);
-                        newDevice.Intensity = keyValuePairs["Intensity"];
+                        if (keyValuePairs.ContainsKey("Intensity")) //check required for bfgminer 3.3.0
+                            newDevice.Intensity = keyValuePairs["Intensity"];
                     }
 
                     newDevice.AverageHashrate = TryToParseDouble(keyValuePairs, "MHS av", 0.00) * 1000;
