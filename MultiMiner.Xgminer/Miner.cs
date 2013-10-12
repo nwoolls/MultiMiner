@@ -177,6 +177,9 @@ namespace MultiMiner.Xgminer
             //also required under Windows to avoid "initscr(): Unable to create SP"
             arguments = arguments + " -T";
 
+            //required so launching GPUs doesn't lock USBs
+            arguments = arguments + " --remove-disabled";
+
             Process process = StartMinerProcess(arguments, redirectOutput, ensureProcessStarts, reason);
 
             return process;
