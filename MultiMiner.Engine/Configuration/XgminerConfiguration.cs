@@ -12,6 +12,7 @@ namespace MultiMiner.Engine.Configuration
             Priority = ProcessPriorityClass.Normal;
             StartingApiPort = 4028;
             StratumProxyPort = 8332;
+            StratumProxyStratumPort = 3333;
         }
 
         public SerializableDictionary<CoinAlgorithm, string> AlgorithmFlags { get; set; }
@@ -24,5 +25,6 @@ namespace MultiMiner.Engine.Configuration
         public string AllowedApiIps { get; set; }
         public bool StratumProxy { get; set; }
         public int StratumProxyPort { get; set; }
+        public int StratumProxyStratumPort { get; set; }
     }
 }

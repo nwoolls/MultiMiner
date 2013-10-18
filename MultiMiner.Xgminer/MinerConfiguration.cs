@@ -11,6 +11,7 @@ namespace MultiMiner.Xgminer
             this.Priority = ProcessPriorityClass.Normal;
             this.Pools = new List<MiningPool>();
             this.StratumProxyPort = 8332;
+            this.StratumProxyStratumPort = 3333;
         }
 
         public MinerBackend MinerBackend { get; set; }
@@ -28,5 +29,6 @@ namespace MultiMiner.Xgminer
         public bool ErupterDriver { get; set; }
         public bool StratumProxy { get; set; }
         public int StratumProxyPort { get; set; }
+        public int StratumProxyStratumPort { get; set; }
     }
 }

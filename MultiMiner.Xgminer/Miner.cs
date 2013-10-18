@@ -124,9 +124,12 @@ namespace MultiMiner.Xgminer
                     arguments = String.Format("{0} {1}", arguments, serialArg);
                 }
 
-                if (minerConfiguration.StratumProxy && (minerConfiguration.StratumProxyPort > 0))
+                if (minerConfiguration.StratumProxy)
                 {
-                    arguments = String.Format("{0} --http-port {1}", arguments, minerConfiguration.StratumProxyPort);
+                    if (minerConfiguration.StratumProxyPort > 0)
+                        arguments = String.Format("{0} --http-port {1}", arguments, minerConfiguration.StratumProxyPort);
+                    if (minerConfiguration.StratumProxyStratumPort > 0)
+                        arguments = String.Format("{0} --stratum-port {1}", arguments, minerConfiguration.StratumProxyStratumPort);
                 }
             }
 
