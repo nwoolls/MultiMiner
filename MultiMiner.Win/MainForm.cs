@@ -1210,8 +1210,11 @@ namespace MultiMiner.Win
                 {
                     minerProcess.FoundBlocks = summaryInformation.FoundBlocks;
 
-                    string notificationReason = String.Format("Block found for {0} ({1} total)", 
-                        minerProcess.CoinInformation.Name, minerProcess.FoundBlocks);
+                    MultiMiner.Coinchoose.Api.CoinInformation coinInformation = minerProcess.CoinInformation;
+                    string coinName = coinInformation.Name;
+
+                    string notificationReason = String.Format("Block found for {0} (block {1})",
+                        coinName, minerProcess.FoundBlocks);
 
                     notificationsControl.AddNotification(notificationReason, notificationReason, () =>
                     {
