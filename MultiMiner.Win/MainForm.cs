@@ -2039,9 +2039,10 @@ namespace MultiMiner.Win
         {
             try
             {
+                string notificationText = String.Format("{0}: {1}", Environment.MachineName, text);
                 MobileMiner.Api.ApiContext.SubmitNotifications(GetMobileMinerUrl(), mobileMinerApiKey,
                         applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                        new List<string> { text });
+                        new List<string> { notificationText });
             }
             catch (Exception ex)
             {
