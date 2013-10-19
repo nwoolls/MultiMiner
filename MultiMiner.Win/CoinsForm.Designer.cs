@@ -33,10 +33,11 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.addCoinButton = new System.Windows.Forms.ToolStripButton();
             this.removeCoinButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.importButton = new System.Windows.Forms.ToolStripSplitButton();
             this.exportButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.coinListBox = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.saveButton = new System.Windows.Forms.Button();
@@ -70,7 +71,8 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.checkBox8 = new System.Windows.Forms.CheckBox();
+            this.checkBox7 = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
@@ -117,6 +119,21 @@
             this.removeCoinButton.ToolTipText = "Remove a configuration";
             this.removeCoinButton.Click += new System.EventHandler(this.removeCoinButton_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.Image = global::MultiMiner.Win.Properties.Resources.sort;
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(48, 22);
+            this.toolStripButton1.Text = "Sort";
+            this.toolStripButton1.ToolTipText = "Alphabetize coin configurations";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -139,20 +156,10 @@
             // 
             this.exportButton.Image = global::MultiMiner.Win.Properties.Resources.list_export;
             this.exportButton.Name = "exportButton";
-            this.exportButton.Size = new System.Drawing.Size(152, 22);
+            this.exportButton.Size = new System.Drawing.Size(107, 22);
             this.exportButton.Text = "Export";
             this.exportButton.ToolTipText = "Export coin and pool configurations";
             this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.Image = global::MultiMiner.Win.Properties.Resources.sort;
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(48, 22);
-            this.toolStripButton1.Text = "Sort";
-            this.toolStripButton1.ToolTipText = "Alphabetize coin configurations";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // coinListBox
             // 
@@ -160,12 +167,11 @@
             this.coinListBox.FormattingEnabled = true;
             this.coinListBox.Location = new System.Drawing.Point(0, 25);
             this.coinListBox.Name = "coinListBox";
-            this.coinListBox.Size = new System.Drawing.Size(160, 286);
+            this.coinListBox.Size = new System.Drawing.Size(160, 312);
             this.coinListBox.TabIndex = 1;
             this.coinListBox.SelectedIndexChanged += new System.EventHandler(this.coinListBox_SelectedIndexChanged);
             this.coinListBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.coinListBox_DragDrop);
             this.coinListBox.DragOver += new System.Windows.Forms.DragEventHandler(this.coinListBox_DragOver);
-            
             this.coinListBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.coinListBox_MouseMove);
             // 
             // panel1
@@ -174,10 +180,10 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 311);
+            this.panel1.Location = new System.Drawing.Point(0, 337);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(558, 47);
-            this.panel1.TabIndex = 7;
+            this.panel1.TabIndex = 9;
             // 
             // saveButton
             // 
@@ -230,7 +236,7 @@
             this.groupBox1.Controls.Add(this.hostEdit);
             this.groupBox1.Controls.Add(this.textBox2);
             this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Location = new System.Drawing.Point(166, 51);
+            this.groupBox1.Location = new System.Drawing.Point(168, 55);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(380, 182);
             this.groupBox1.TabIndex = 3;
@@ -372,7 +378,7 @@
             // textBox3
             // 
             this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.coinConfigurationBindingSource, "MinerFlags", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox3.Location = new System.Drawing.Point(271, 245);
+            this.textBox3.Location = new System.Drawing.Point(273, 249);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(262, 20);
             this.textBox3.TabIndex = 4;
@@ -385,7 +391,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(173, 248);
+            this.label5.Location = new System.Drawing.Point(175, 252);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(91, 13);
             this.label5.TabIndex = 18;
@@ -394,7 +400,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(174, 274);
+            this.label6.Location = new System.Drawing.Point(176, 278);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(91, 13);
             this.label6.TabIndex = 20;
@@ -403,7 +409,7 @@
             // textBox5
             // 
             this.textBox5.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.coinConfigurationBindingSource, "ProfitabilityAdjustment", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox5.Location = new System.Drawing.Point(271, 271);
+            this.textBox5.Location = new System.Drawing.Point(273, 275);
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(67, 20);
             this.textBox5.TabIndex = 5;
@@ -411,7 +417,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(344, 274);
+            this.label7.Location = new System.Drawing.Point(346, 278);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(15, 13);
             this.label7.TabIndex = 21;
@@ -420,7 +426,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(365, 274);
+            this.label8.Location = new System.Drawing.Point(367, 278);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(53, 13);
             this.label8.TabIndex = 22;
@@ -433,7 +439,7 @@
             this.adjustProfitCombo.Items.AddRange(new object[] {
             "Addition",
             "Multiplication"});
-            this.adjustProfitCombo.Location = new System.Drawing.Point(424, 271);
+            this.adjustProfitCombo.Location = new System.Drawing.Point(426, 275);
             this.adjustProfitCombo.Name = "adjustProfitCombo";
             this.adjustProfitCombo.Size = new System.Drawing.Size(109, 21);
             this.adjustProfitCombo.TabIndex = 6;
@@ -443,7 +449,7 @@
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.coinConfigurationBindingSource, "Enabled", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox1.Location = new System.Drawing.Point(166, 28);
+            this.checkBox1.Location = new System.Drawing.Point(168, 32);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(152, 17);
             this.checkBox1.TabIndex = 2;
@@ -460,17 +466,36 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // toolStripSeparator2
+            // checkBox8
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.checkBox8.AutoSize = true;
+            this.checkBox8.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.coinConfigurationBindingSource, "NotifyOnShareAccepted", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBox8.Location = new System.Drawing.Point(370, 307);
+            this.checkBox8.Name = "checkBox8";
+            this.checkBox8.Size = new System.Drawing.Size(145, 17);
+            this.checkBox8.TabIndex = 8;
+            this.checkBox8.Text = "Notify on share accepted";
+            this.checkBox8.UseVisualStyleBackColor = true;
+            // 
+            // checkBox7
+            // 
+            this.checkBox7.AutoSize = true;
+            this.checkBox7.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.coinConfigurationBindingSource, "NotifyOnBlockFound", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBox7.Location = new System.Drawing.Point(179, 307);
+            this.checkBox7.Name = "checkBox7";
+            this.checkBox7.Size = new System.Drawing.Size(127, 17);
+            this.checkBox7.TabIndex = 7;
+            this.checkBox7.Text = "Notify on block found";
+            this.checkBox7.UseVisualStyleBackColor = true;
             // 
             // CoinsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(558, 358);
+            this.ClientSize = new System.Drawing.Size(558, 384);
+            this.Controls.Add(this.checkBox8);
+            this.Controls.Add(this.checkBox7);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.adjustProfitCombo);
             this.Controls.Add(this.label8);
@@ -547,5 +572,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.CheckBox checkBox8;
+        private System.Windows.Forms.CheckBox checkBox7;
     }
 }

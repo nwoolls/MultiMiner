@@ -1214,14 +1214,18 @@ namespace MultiMiner.Win
 
         private void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
         {
-            if (applicationConfiguration.NotifyOnBlockFound && (foundBlocks > minerProcess.FoundBlocks))
+            CoinConfiguration configuration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(minerProcess.CoinInformation.Symbol, StringComparison.OrdinalIgnoreCase));
+            if (configuration == null)
+                return;
+
+            if (configuration.NotifyOnBlockFound && (foundBlocks > minerProcess.FoundBlocks))
             {
                 minerProcess.FoundBlocks = foundBlocks;
 
                 MultiMiner.Coinchoose.Api.CoinInformation coinInformation = minerProcess.CoinInformation;
                 string coinName = coinInformation.Name;
 
-                string notificationReason = String.Format("Block found for {0} (block {1})",
+                string notificationReason = String.Format("Block(s) found for {0} (block {1})",
                     coinName, minerProcess.FoundBlocks);
 
                 notificationsControl.AddNotification(notificationReason, notificationReason, () =>
@@ -1232,14 +1236,18 @@ namespace MultiMiner.Win
 
         private void CheckAndNotifyAcceptedShares(MinerProcess minerProcess, long acceptedShares)
         {
-            if (applicationConfiguration.NotifyOnShareAccepted && (acceptedShares > minerProcess.AcceptedShares))
+            CoinConfiguration configuration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(minerProcess.CoinInformation.Symbol, StringComparison.OrdinalIgnoreCase));
+            if (configuration == null)
+                return;
+
+            if (configuration.NotifyOnShareAccepted && (acceptedShares > minerProcess.AcceptedShares))
             {
                 minerProcess.AcceptedShares = acceptedShares;
 
                 MultiMiner.Coinchoose.Api.CoinInformation coinInformation = minerProcess.CoinInformation;
                 string coinName = coinInformation.Name;
 
-                string notificationReason = String.Format("Share accepted for {0} (share {1})",
+                string notificationReason = String.Format("Share(s) accepted for {0} (share {1})",
                     coinName, minerProcess.AcceptedShares);
 
                 notificationsControl.AddNotification(notificationReason, notificationReason, () =>

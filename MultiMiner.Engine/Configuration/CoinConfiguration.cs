@@ -23,5 +23,8 @@ namespace MultiMiner.Engine.Configuration
         public double ProfitabilityAdjustment { get; set; }
         public AdjustmentType ProfitabilityAdjustmentType { get; set; }
         public bool Enabled { get; set; }
+
+        public bool NotifyOnBlockFound { get; set; }
+        public bool NotifyOnShareAccepted { get; set; }
     }
 }

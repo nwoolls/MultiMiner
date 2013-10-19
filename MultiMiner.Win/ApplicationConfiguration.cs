@@ -50,9 +50,6 @@ namespace MultiMiner.Win
         public bool AutoSetDesktopMode { get; set; }
         public Rectangle AppPosition { get; set; }
 
-        public bool NotifyOnBlockFound { get; set; }
-        public bool NotifyOnShareAccepted { get; set; }
-
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }
         public string MobileMinerEmailAddress { get; set; }
