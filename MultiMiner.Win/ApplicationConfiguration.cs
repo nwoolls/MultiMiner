@@ -51,6 +51,7 @@ namespace MultiMiner.Win
         public Rectangle AppPosition { get; set; }
 
         public bool NotifyOnBlockFound { get; set; }
+        public bool NotifyOnShareAccepted { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }

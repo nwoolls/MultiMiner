@@ -22,6 +22,7 @@ namespace MultiMiner.Engine
         public bool MinerIsFrozen { get; set; }
         public bool HasPoorPerformingDevice { get; set; }
         public long FoundBlocks { get; set; }
+        public long AcceptedShares { get; set; }
 
         private ApiContext apiContext;
         public ApiContext ApiContext 
