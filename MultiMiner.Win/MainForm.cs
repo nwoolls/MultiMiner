@@ -1206,7 +1206,7 @@ namespace MultiMiner.Win
                     continue;
                 }
 
-                if (summaryInformation.FoundBlocks > minerProcess.FoundBlocks)
+                if (applicationConfiguration.NotifyOnBlockFound && (summaryInformation.FoundBlocks > minerProcess.FoundBlocks))
                 {
                     minerProcess.FoundBlocks = summaryInformation.FoundBlocks;
 
