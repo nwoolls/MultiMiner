@@ -1214,17 +1214,15 @@ namespace MultiMiner.Win
 
         private void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
         {
-            CoinConfiguration configuration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(minerProcess.CoinInformation.Symbol, StringComparison.OrdinalIgnoreCase));
+            string coinName = minerProcess.MinerConfiguration.CoinName;
+            CoinConfiguration configuration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
             if (configuration == null)
                 return;
 
             if (configuration.NotifyOnBlockFound && (foundBlocks > minerProcess.FoundBlocks))
             {
                 minerProcess.FoundBlocks = foundBlocks;
-
-                MultiMiner.Coinchoose.Api.CoinInformation coinInformation = minerProcess.CoinInformation;
-                string coinName = coinInformation.Name;
-
+                
                 string notificationReason = String.Format("Block(s) found for {0} (block {1})",
                     coinName, minerProcess.FoundBlocks);
 
@@ -1236,16 +1234,14 @@ namespace MultiMiner.Win
 
         private void CheckAndNotifyAcceptedShares(MinerProcess minerProcess, long acceptedShares)
         {
-            CoinConfiguration configuration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(minerProcess.CoinInformation.Symbol, StringComparison.OrdinalIgnoreCase));
+            string coinName = minerProcess.MinerConfiguration.CoinName;
+            CoinConfiguration configuration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
             if (configuration == null)
                 return;
 
             if (configuration.NotifyOnShareAccepted && (acceptedShares > minerProcess.AcceptedShares))
             {
                 minerProcess.AcceptedShares = acceptedShares;
-
-                MultiMiner.Coinchoose.Api.CoinInformation coinInformation = minerProcess.CoinInformation;
-                string coinName = coinInformation.Name;
 
                 string notificationReason = String.Format("Share(s) accepted for {0} (share {1})",
                     coinName, minerProcess.AcceptedShares);
