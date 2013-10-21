@@ -69,8 +69,6 @@ namespace MultiMiner.Win
         {
             CheckAndAddStratumDeviceIndex(ea);
 
-            CalculateAcceptedSharesForProcess(ea);
-
             logProcessCloseArgsBindingSource.Position = logProcessCloseArgsBindingSource.Add(ea);
 
             while (logProcessCloseArgsBindingSource.Count > 1000)
