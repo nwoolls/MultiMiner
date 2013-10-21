@@ -34,7 +34,6 @@ namespace MultiMiner.Win
         private readonly List<int> processedCommandIds = new List<int>();
         private readonly List<LogProcessCloseArgs> logCloseEntries = new List<LogProcessCloseArgs>();
         private NotificationsControl notificationsControl;
-        private Dictionary<int, int> lastAcceptedShares = new Dictionary<int,int>();
         private bool settingsLoaded = false;
         private Dictionary<string, string> hostDomainNames = new Dictionary<string, string>();
 
@@ -89,19 +88,6 @@ namespace MultiMiner.Win
                 if ((lastDevice != null) && (lastDevice.Kind == DeviceKind.PXY))
                     ea.DeviceIndexes.Add(lastDevice.DeviceIndex);
             }
-        }
-
-        private void CalculateAcceptedSharesForProcess(LogProcessCloseArgs ea)
-        {
-            int acceptedShares = 0;
-            foreach (int deviceIndex in ea.DeviceIndexes)
-            {
-                //key won't be there if process is stopped before it starts accepting shares
-                if (lastAcceptedShares.ContainsKey(deviceIndex))
-                    acceptedShares += lastAcceptedShares[deviceIndex];
-            }
-            
-            ea.AcceptedShares = acceptedShares;
         }
 
         private void LogProcessCloseToFile(LogProcessCloseArgs ea)
@@ -1284,6 +1270,9 @@ namespace MultiMiner.Win
                     ClearDeviceInfoForRow(deviceGridView.Rows[rowIndex]);
                 }
 
+                //clear accepted shares as we'll be summing that as well
+                minerProcess.AcceptedShares = 0;
+
                 foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                 {
                     if (deviceInformation.Status.ToLower().Contains("sick"))
@@ -1318,7 +1307,7 @@ namespace MultiMiner.Win
                         if (!string.IsNullOrEmpty(deviceInformation.Intensity))
                             hasIntensityValue = true;
 
-                        lastAcceptedShares[rowIndex] = deviceInformation.AcceptedShares;
+                        minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
                     }
                 }
             }

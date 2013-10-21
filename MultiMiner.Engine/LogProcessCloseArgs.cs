@@ -12,7 +12,7 @@ namespace MultiMiner.Engine
         public string CoinSymbol { get; set; }
         public double StartPrice { get; set; }
         public double EndPrice { get; set; }
-        public int AcceptedShares { get; set; }
+        public long AcceptedShares { get; set; }
         public List<int> DeviceIndexes { get; set; }
         public MinerConfiguration MinerConfiguration { get; set; }
     }

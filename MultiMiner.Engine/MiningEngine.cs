@@ -156,6 +156,9 @@ namespace MultiMiner.Engine
 
         private void logProcessClose(MinerProcess minerProcess)
         {
+            if (this.LogProcessClose == null)
+                return;
+
             DateTime startDate = minerProcess.StartDate;
             DateTime endDate = DateTime.Now;
             string coinName = minerProcess.MinerConfiguration.CoinName;
@@ -182,26 +185,17 @@ namespace MultiMiner.Engine
             //affecting relaunching processes
             List<int> deviceIndexes = minerProcess.MinerConfiguration.DeviceIndexes.ToList();
 
-            logProcessClose(startDate, endDate, coinName, coinSymbol, priceAtStart, priceAtEnd, deviceIndexes, minerProcess.MinerConfiguration);
-        }
-
-        private void logProcessClose(DateTime startDate, DateTime endDate, string coinName, string coinSymbol,
-            double priceAtStart, double priceAtEnd, List<int> deviceIndexes, MinerConfiguration minerConfiguration)
-        {
-            if (this.LogProcessClose != null)
-            {
-                LogProcessCloseArgs args = new LogProcessCloseArgs();
-                args.StartDate = startDate;
-                args.EndDate = endDate;
-                args.CoinName = coinName;
-                args.CoinSymbol = coinSymbol;
-                args.StartPrice = priceAtStart;
-                args.EndPrice = priceAtEnd;
-                args.DeviceIndexes = deviceIndexes;
-                args.MinerConfiguration = minerConfiguration;
-
-                this.LogProcessClose(this, args);
-            }
+            LogProcessCloseArgs args = new LogProcessCloseArgs();
+            args.StartDate = startDate;
+            args.EndDate = endDate;
+            args.CoinName = coinName;
+            args.CoinSymbol = coinSymbol;
+            args.StartPrice = priceAtStart;
+            args.EndPrice = priceAtEnd;
+            args.DeviceIndexes = deviceIndexes;
+            args.MinerConfiguration = minerProcess.MinerConfiguration;
+            args.AcceptedShares = minerProcess.AcceptedShares;
+            this.LogProcessClose(this, args);
         }
 
         private List<CoinInformation> coinInformation;
