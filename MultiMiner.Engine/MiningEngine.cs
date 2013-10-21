@@ -111,6 +111,7 @@ namespace MultiMiner.Engine
 
                 else if (minerProcess.HasDeadDevice)
                 {
+                    logProcessClose(minerProcess);
                     minerProcess.StopMining();
                     minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Dead device");
                     setupProcessStartInfo(minerProcess);
@@ -118,6 +119,7 @@ namespace MultiMiner.Engine
 
                 else if (minerProcess.HasSickDevice)
                 {
+                    logProcessClose(minerProcess);
                     minerProcess.StopMining();
                     minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Sick device");
                     setupProcessStartInfo(minerProcess);
@@ -129,6 +131,7 @@ namespace MultiMiner.Engine
                     //this needs to give the devices long enough to spin up
                     if (processAge.TotalSeconds > 120)
                     {
+                        logProcessClose(minerProcess);
                         minerProcess.StopMining();
                         string reason = minerProcess.HasZeroHashrateDevice ? "Zero hashrate" : minerProcess.HasPoorPerformingDevice ? "Subpar hashrate" : "Frozen miner";
                         minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, reason);
