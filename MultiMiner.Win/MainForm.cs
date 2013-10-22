@@ -456,12 +456,17 @@ namespace MultiMiner.Win
         //for instance if the user starts up the app with a new device
         private void AddMissingDeviceConfigurations()
         {
-            for (int i = engineConfiguration.DeviceConfigurations.Count; i < devices.Count; i++)
+            foreach (Device device in devices)
             {
-                DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
-                deviceConfiguration.DeviceIndex = devices[i].DeviceIndex;
-                deviceConfiguration.Enabled = true;
-                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+                DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
+                    c => (c.DeviceIndex == device.DeviceIndex));
+                if (existingConfiguration == null)
+                {
+                    DeviceConfiguration newConfiguration = new DeviceConfiguration();
+                    newConfiguration.DeviceIndex = device.DeviceIndex;
+                    newConfiguration.Enabled = true;
+                    engineConfiguration.DeviceConfigurations.Add(newConfiguration);
+                }
             }
         }
         
