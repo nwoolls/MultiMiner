@@ -188,6 +188,9 @@ namespace MultiMiner.Engine
             //affecting relaunching processes
             List<int> deviceIndexes = minerProcess.MinerConfiguration.DeviceIndexes.ToList();
 
+            //we need to rebase GPUs here so that they match the rebasing done in CreateMinerConfiguration()
+            RebaseGpuDeviceIndexes(minerProcess, deviceIndexes);
+
             LogProcessCloseArgs args = new LogProcessCloseArgs();
             args.StartDate = startDate;
             args.EndDate = endDate;
@@ -199,6 +202,27 @@ namespace MultiMiner.Engine
             args.MinerConfiguration = minerProcess.MinerConfiguration;
             args.AcceptedShares = minerProcess.AcceptedShares;
             this.LogProcessClose(this, args);
+        }
+
+        private void RebaseGpuDeviceIndexes(MinerProcess minerProcess, List<int> deviceIndexes)
+        {
+            //we need to rebase GPUs here so that they match the rebasing done in CreateMinerConfiguration()
+            if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
+            {
+                int firstGpuIndex = GetIndexOfFirstGpu();
+
+                for (int i = 0; i < deviceIndexes.Count; i++)
+                    deviceIndexes[i] += firstGpuIndex;
+            }
+        }
+        
+        private int GetIndexOfFirstGpu()
+        {
+            Device firstGpu = devices.Find(d => d.Kind == DeviceKind.GPU);
+            int firstGpuIndex = 0;
+            if (firstGpu != null)
+                firstGpuIndex = firstGpu.DeviceIndex;
+            return firstGpuIndex;
         }
 
         private List<CoinInformation> coinInformation;
@@ -580,10 +604,7 @@ namespace MultiMiner.Engine
             minerConfiguration.CoinName = coinConfiguration.Coin.Name;
             minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
 
-            Device firstGpu = devices.Find(d => d.Kind == DeviceKind.GPU);
-            int firstGpuIndex = 0;
-            if (firstGpu != null)
-                firstGpuIndex = firstGpu.DeviceIndex;
+            int firstGpuIndex = GetIndexOfFirstGpu();
 
             for (int i = 0; i < enabledConfigurations.Count; i++)
             {
@@ -598,7 +619,7 @@ namespace MultiMiner.Engine
                     {
                         //launching bfgminer with --scrypt makes it ignore all USB devices
                         //this wasn't an issue until 3.3.0 where -d? started returning GPUs last
-                        //offset the device index by the number of non-GPU devices before this one
+                        //rebase the device index by the number of non-GPU devices before this one
                         deviceIndex = deviceIndex - firstGpuIndex;
                     }
 
