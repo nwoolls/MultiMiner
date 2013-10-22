@@ -2258,21 +2258,39 @@ namespace MultiMiner.Win
             for (int i = 0; i < e.RowCount; i++)
             {
                 int index = e.RowIndex + i;
-
-                //convert from device indexes (0 based) to device #'s (more human readable)
-                List<string> deviceList = new List<string>();
-
+                
                 LogProcessCloseArgs ea = this.logCloseEntries[index];
 
-                foreach (int deviceIndex in ea.DeviceIndexes)
-                    deviceList.Add(String.Format("#{0}", deviceIndex + 1));
-                string devices = String.Join(", ", deviceList.ToArray());
-
-                historyGridView.Rows[index].Cells[devicesColumn.Index].Value = devices;
+                //convert from device indexes (0 based) to device #'s (more human readable)
+                string devicesString = GetFormattedDevicesString(ea.DeviceIndexes);
+                
+                historyGridView.Rows[index].Cells[devicesColumn.Index].Value = devicesString;
 
                 TimeSpan timeSpan = ea.EndDate - ea.StartDate;
                 historyGridView.Rows[index].Cells[durationColumn.Index].Value = String.Format("{0:0.##} minutes", timeSpan.TotalMinutes);
             }
+        }
+
+        private string GetFormattedDevicesString(List<int> deviceIndexes)
+        {
+            List<string> deviceList = new List<string>();
+
+            foreach (int deviceIndex in deviceIndexes)
+            {
+                //get the Row Index from the Device Index since GetDevices() sorts devices
+                int rowIndex = GetRowIndexForDeviceIndex(deviceIndex);
+                deviceList.Add(String.Format("#{0}", rowIndex + 1));
+            }
+
+            return String.Join(", ", deviceList.ToArray());
+        }
+
+        //get the index of a device in the grid based on the absolute DeviceIndex returned by the miner
+        private int GetRowIndexForDeviceIndex(int deviceIndex)
+        {
+            Device device = this.devices.Single(d => d.DeviceIndex == deviceIndex);
+            int rowIndex = this.devices.IndexOf(device);
+            return rowIndex;
         }
 
         private void quickSwitchItem_DropDownOpening(object sender, EventArgs e)
