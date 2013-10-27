@@ -2406,10 +2406,25 @@ namespace MultiMiner.Win
             if (concretePlatform != PlatformID.Unix)
             {
                 MinerBackend minerBackend = MinerBackend.Cgminer;
-                CheckForMinerUpdates(minerBackend);
+                TryToCheckForMinerUpdates(minerBackend);
 
                 minerBackend = MinerBackend.Bfgminer;
+                TryToCheckForMinerUpdates(minerBackend);
+            }
+        }
+
+        private void TryToCheckForMinerUpdates(MinerBackend minerBackend)
+        {
+            try
+            {
                 CheckForMinerUpdates(minerBackend);
+            }
+            catch (ArgumentException ex)
+            {
+                string error = String.Format("Error checking for {0} updates", minerBackend.ToString().ToLower());
+                notificationsControl.AddNotification(error, error, () =>
+                {
+                }, "");
             }
         }
 
