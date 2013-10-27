@@ -40,7 +40,7 @@ namespace MultiMiner.Xgminer
             string version = String.Empty;
 
             string minerDownloadUrl = GetMinerDownloadUrl(minerBackend);            
-            const string pattern = @".+/.+-(.+)-.+\..+$";
+            const string pattern = @".+/.+?-(.+?)-.+\..+$";
             Match match = Regex.Match(minerDownloadUrl, pattern);
             if (match.Success)
                 version = match.Groups[1].Value;
