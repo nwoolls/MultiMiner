@@ -36,7 +36,7 @@ namespace MultiMiner.Win
         {
             SetupWizardTabControl();
             PopulateCoins();
-            minerComboBox.SelectedIndex = 0;
+            minerComboBox.SelectedIndex = 1;
             coinComboBox.SelectedIndex = 0;
         }
         
