@@ -35,6 +35,7 @@ namespace MultiMiner.Win
             this.SuggestCoinsToMine = false;
             this.MobileMinerUsesHttps = true;
             this.SuggestionsAlgorithm = CoinSuggestionsAlgorithm.SHA256 | CoinSuggestionsAlgorithm.Scrypt;
+            this.CheckForMinerUpdates = true;
         }
 
         public bool LaunchOnWindowsLogin { get; set; }
@@ -49,6 +50,7 @@ namespace MultiMiner.Win
         public int LogAreaDistance { get; set; }
         public bool AutoSetDesktopMode { get; set; }
         public Rectangle AppPosition { get; set; }
+        public bool CheckForMinerUpdates { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }

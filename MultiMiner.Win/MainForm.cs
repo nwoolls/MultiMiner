@@ -998,6 +998,7 @@ namespace MultiMiner.Win
                 RefreshBackendLabel();
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
                 SetupRestartTimer();
+                CheckForUpdates();
                 
                 Application.DoEvents();
 
@@ -2403,7 +2404,7 @@ namespace MultiMiner.Win
             CheckForMultiMinerUpdates();
 
             //we cannot auto install miners on Unix (yet)
-            if (concretePlatform != PlatformID.Unix)
+            if (applicationConfiguration.CheckForMinerUpdates && (concretePlatform != PlatformID.Unix))
             {
                 MinerBackend minerBackend = MinerBackend.Cgminer;
                 TryToCheckForMinerUpdates(minerBackend);
