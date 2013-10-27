@@ -2500,9 +2500,15 @@ namespace MultiMiner.Win
                             minerName, availableMinerVersion, installedMinerVersion), () =>
                         {
                             bool wasMining = miningEngine.Mining;
-                            StopMining();
+
+                            //only stop mining if this is the engine being used
+                            if (wasMining && (engineConfiguration.XgminerConfiguration.MinerBackend == minerBackend))
+                                StopMining();
+
                             InstallMiner(minerBackend);
-                            if (wasMining)
+
+                            //only start mining if we stopped mining
+                            if (wasMining && (engineConfiguration.XgminerConfiguration.MinerBackend == minerBackend))
                                 StartMining();
                         }, informationUrl);
                 }
