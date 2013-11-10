@@ -81,11 +81,18 @@ namespace MultiMiner.Xgminer
 
             if (minerBackend == MinerBackend.Cgminer)
             {
+                string noGpuFilePath;
+
                 //otherwise it still requires OpenCL.dll - not an issue with bfgminer
                 if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
-                    startInfo.FileName = startInfo.FileName + "-nogpu";
+                    noGpuFilePath = startInfo.FileName + "-nogpu";
                 else
-                    startInfo.FileName = executablePath.Replace("cgminer.exe", "cgminer-nogpu.exe");
+                    noGpuFilePath = executablePath.Replace("cgminer.exe", "cgminer-nogpu.exe");
+                
+                //first make sure the exe exists. this became necessary with cgminer 3.8.0 because
+                //ck stopped shipping cgminer-nogpu.exe, as cgminer.exe has no GPU support in 3.8
+                if (File.Exists(noGpuFilePath))
+                    startInfo.FileName = noGpuFilePath;
             }
 
             Process process = Process.Start(startInfo);
