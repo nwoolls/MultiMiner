@@ -9,7 +9,6 @@ namespace MultiMiner.Xgminer
 {
     public static class Installer
     {
-
         public static void InstallMiner(MinerBackend minerBackend, string destinationFolder)
         {
             //support Windows and OS X for now, we'll go for Linux in the future
@@ -26,12 +25,31 @@ namespace MultiMiner.Xgminer
                 new WebClient().DownloadFile(new Uri(minerUrl), minerDownloadFile);
                 try
                 {
+                    //first delete the folder contents. this became necessary with cgminer 3.8.0 because
+                    //ck stopped shipping cgminer-nogpu.exe, which would leave an old executable behind
+                    //and gum up the works later (running an older exe to find the installed version)
+                    DeleteFolderContents(destinationFolder);
+
                     Unzipper.UnzipFileToFolder(minerDownloadFile, destinationFolder);
                 }
                 finally
                 {
                     File.Delete(minerDownloadFile);
                 }
+            }
+        }
+
+        private static void DeleteFolderContents(string folderPath)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
+
+            foreach (FileInfo fileInfo in directoryInfo.GetFiles())
+                fileInfo.Delete();
+
+            foreach (DirectoryInfo di in directoryInfo.GetDirectories())
+            {
+                DeleteFolderContents(di.FullName);
+                di.Delete();
             }
         }
 
