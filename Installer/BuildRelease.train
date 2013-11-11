@@ -97,7 +97,7 @@ folder.remove("PF", true);
 //create Mac .app package (requires Mono, X11 to run)
 folder.remove("Output/MultiMiner.app", true);
 folder.remove("Output/MultiMiner.Win.app", true);
-var macPackPath = "C:/Program Files/Mono-2.10.9/lib/mono/4.0/macpack.exe";
+var macPackPath = "C:/Program Files (x86)/Mono-3.2.3/lib/mono/4.5/macpack.exe";
 shell.exec(macPackPath, 
 
 "-o Output \
