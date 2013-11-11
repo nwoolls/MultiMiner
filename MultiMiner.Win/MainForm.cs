@@ -1494,6 +1494,16 @@ namespace MultiMiner.Win
                 "http://coinchoose.com/");
         }
 
+        private void ShowMobileMinerApiErrorNotification(WebException ex)
+        {
+            notificationsControl.AddNotification(ex.Message,
+                String.Format("Error accessing the MobileMiner API ({0})",  (int)((HttpWebResponse)ex.Response).StatusCode), () =>
+                {
+                    Process.Start("http://mobileminerapp.com");
+                },
+                "");
+        }
+
         private void SuggestCoinsToMine()
         {
             if (!applicationConfiguration.SuggestCoinsToMine)
@@ -2033,6 +2043,17 @@ namespace MultiMiner.Win
                                 ShowApplicationSettings();
                         }
                     }
+                    else
+                    {
+                        if (InvokeRequired)
+                            BeginInvoke((Action)(() =>
+                            {
+                                //code to update UI
+                                ShowMobileMinerApiErrorNotification(ex);
+                            }));
+                        else
+                            ShowMobileMinerApiErrorNotification(ex);
+                    }
                 }
             }
         }
@@ -2157,6 +2178,17 @@ namespace MultiMiner.Win
                                     if (!ShowingModalDialog())
                                         ShowApplicationSettings();
                                 }
+                            }
+                            else
+                            {
+                                if (InvokeRequired)
+                                    BeginInvoke((Action)(() =>
+                                    {
+                                        //code to update UI
+                                        ShowMobileMinerApiErrorNotification(webException);
+                                    }));
+                                else
+                                    ShowMobileMinerApiErrorNotification(webException);
                             }
                         }
                     }
