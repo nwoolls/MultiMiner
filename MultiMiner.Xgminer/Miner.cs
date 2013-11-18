@@ -64,6 +64,10 @@ namespace MultiMiner.Xgminer
                 serialArg = String.Format("{0} {1}", serialArg, Bfgminer.MinerParameter.ScanSerialOpenCL);
                 arguments = String.Format("{0} {1}", arguments, serialArg);
             }
+
+            //ADL mismatch with OCL can cause an error / exception, disable ADL when enumerating devices
+            //user can then disable for mining in-app using settings
+            arguments = arguments + " --no-adl";
             
             //this must be done async, with 70+ devices doing this synchronous
             //locks up the process
