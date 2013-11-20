@@ -24,6 +24,7 @@ namespace MultiMiner.Engine
         private List<MinerProcess> minerProcesses = new List<MinerProcess>();
         private EngineConfiguration engineConfiguration;
         private List<Device> devices;
+        private Version backendVersion;
 
         public List<MinerProcess> MinerProcesses
         {
@@ -58,6 +59,8 @@ namespace MultiMiner.Engine
             {
                 this.engineConfiguration = engineConfiguration;
                 this.devices = devices;
+                this.backendVersion = new Version(Xgminer.Installer.GetInstalledMinerVersion(engineConfiguration.XgminerConfiguration.MinerBackend,
+                    MinerPath.GetPathToInstalledMiner(engineConfiguration.XgminerConfiguration.MinerBackend)));
 
                 if (coinInformation != null) //null if no network connection
                     ApplyMiningStrategy(coinInformation);
@@ -645,7 +648,12 @@ namespace MultiMiner.Engine
                 arguments = string.Format("{0} {1}", arguments, coinConfiguration.MinerFlags);
 
             if (engineConfiguration.XgminerConfiguration.DesktopMode)
-                arguments = arguments + " -I D";
+            {
+                //there is no -I argument anymore in cgminer after version 3.8
+                if ((engineConfiguration.XgminerConfiguration.MinerBackend != MinerBackend.Cgminer) ||
+                    (this.backendVersion < new Version(3, 8)))
+                    arguments = arguments + " -I D";
+            }
             
             minerConfiguration.Arguments = arguments;
 
