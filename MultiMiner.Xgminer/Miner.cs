@@ -206,10 +206,15 @@ namespace MultiMiner.Xgminer
             startInfo.Arguments = arguments.Trim();
             if (minerConfiguration.DisableGpu)
             {
-                startInfo.Arguments = startInfo.Arguments + " --disable-gpu";
-
                 if (minerConfiguration.MinerBackend == MinerBackend.Cgminer)
                 {
+                    Version version = new Version(Installer.GetInstalledMinerVersion(minerConfiguration.MinerBackend, minerConfiguration.ExecutablePath));
+                    Version v380 = new Version(3, 8);
+                    //starting with cgminer 3.8 there is no GPU support and no GPU parameters
+                    if (version < v380)
+                        startInfo.Arguments = startInfo.Arguments + " --disable-gpu";
+
+                    //cgminer for Windows and OS X were distributed with a -nogpu build until 3.8.0
                     string noGpuFilePath;
 
                     //otherwise it still requires OpenCL.dll - not an issue with bfgminer
@@ -222,6 +227,10 @@ namespace MultiMiner.Xgminer
                     //ck stopped shipping cgminer-nogpu.exe, as cgminer.exe has no GPU support in 3.8
                     if (File.Exists(noGpuFilePath))
                         startInfo.FileName = noGpuFilePath;
+                }
+                else
+                {
+                    startInfo.Arguments = startInfo.Arguments + " --disable-gpu";
                 }
             }
 
