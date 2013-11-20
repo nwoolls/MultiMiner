@@ -444,11 +444,21 @@ namespace MultiMiner.Win
 
             //there needs to be a device config for each device
             AddMissingDeviceConfigurations();
+            //but no configurations for devices that have gone missing
+            RemoveExcessDeviceConfigurations();
 
             deviceBindingSource.DataSource = devices;
             LoadGridValuesFromConfiguration();
             CheckAndHideNameColumn();
             deviceTotalLabel.Text = String.Format("{0} device(s)", devices.Count);
+        }
+
+        //each device needs to have a DeviceConfiguration
+        //this will remove any access ones after populating devices
+        //for instance if the user starts up the app with missing devices
+        private void RemoveExcessDeviceConfigurations()
+        {
+            engineConfiguration.DeviceConfigurations.RemoveAll(c => !devices.Exists(d => d.DeviceIndex == c.DeviceIndex));
         }
 
         //each device needs to have a DeviceConfiguration
