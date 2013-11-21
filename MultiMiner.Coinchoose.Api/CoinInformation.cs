@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 
-namespace MultiMiner.Coinchoose.Api
+namespace MultiMiner.CoinChoose.Api
 {
     public class CoinInformation
     {

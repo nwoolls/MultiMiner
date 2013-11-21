@@ -20,7 +20,7 @@ namespace MultiMiner.Win
 {
     public partial class MainForm : Form
     {
-        private List<Coinchoose.Api.CoinInformation> coinInformation;
+        private List<CoinChoose.Api.CoinInformation> coinInformation;
         private List<Device> devices;
         private EngineConfiguration engineConfiguration = new EngineConfiguration();
         private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
@@ -120,7 +120,7 @@ namespace MultiMiner.Win
 
             RefreshCoinComboBox();
 
-            PositionCoinchooseLabels();
+            PositionCoinChooseLabels();
 
             apiLogEntryBindingSource.DataSource = apiLogEntries;
 
@@ -404,7 +404,7 @@ namespace MultiMiner.Win
                     column.FillWeight = 100;
         }
 
-        private void PositionCoinchooseLabels()
+        private void PositionCoinChooseLabels()
         {
             //so things align correctly under Mono
             coinChooseLinkLabel.Left = coinChoosePrefixLabel.Left + coinChoosePrefixLabel.Width;
@@ -1480,7 +1480,7 @@ namespace MultiMiner.Win
 
             try
             {
-                coinInformation = Coinchoose.Api.ApiContext.GetCoinInformation(UserAgent.AgentString, 
+                coinInformation = CoinChoose.Api.ApiContext.GetCoinInformation(UserAgent.AgentString, 
                     engineConfiguration.StrategyConfiguration.BaseCoin);
             }
             catch (Exception ex)
@@ -1488,7 +1488,7 @@ namespace MultiMiner.Win
                 //don't crash if website cannot be resolved or JSON cannot be parsed
                 if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException))
                 {
-                    ShowCoinchooseApiErrorNotification(ex);
+                    ShowCoinChooseApiErrorNotification(ex);
                     return;
                 }
                 throw;
@@ -1500,12 +1500,12 @@ namespace MultiMiner.Win
             SuggestCoinsToMine();
         }
 
-        private void ShowCoinchooseApiErrorNotification(Exception ex)
+        private void ShowCoinChooseApiErrorNotification(Exception ex)
         {
             notificationsControl.AddNotification(ex.Message,
                 "Error parsing the CoinChoose.com JSON API", () =>
                 {
-                    Process.Start(MultiMiner.Coinchoose.Api.ApiContext.GetApiUrl(engineConfiguration.StrategyConfiguration.BaseCoin));
+                    Process.Start(MultiMiner.CoinChoose.Api.ApiContext.GetApiUrl(engineConfiguration.StrategyConfiguration.BaseCoin));
                 }, 
                 "http://coinchoose.com/");
         }
@@ -1529,13 +1529,13 @@ namespace MultiMiner.Win
             if (coinInformation == null) //no network connection
                 return;
 
-            IEnumerable<Coinchoose.Api.CoinInformation> filteredCoins = coinInformation;
+            IEnumerable<CoinChoose.Api.CoinInformation> filteredCoins = coinInformation;
             if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256)
                 filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("SHA-256", StringComparison.OrdinalIgnoreCase));
             else if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt)
                 filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("Scrypt", StringComparison.OrdinalIgnoreCase));
 
-            IEnumerable<Coinchoose.Api.CoinInformation> orderedCoins = filteredCoins.OrderByDescending(c => c.AverageProfitability);
+            IEnumerable<CoinChoose.Api.CoinInformation> orderedCoins = filteredCoins.OrderByDescending(c => c.AverageProfitability);
             switch (engineConfiguration.StrategyConfiguration.MiningBasis)
             {
                 case StrategyConfiguration.CoinMiningBasis.Difficulty:
@@ -1548,14 +1548,14 @@ namespace MultiMiner.Win
 
             //added checks for coin.Symbol and coin.Exchange
             //current CoinChoose.com feed for LTC profitability has a NULL exchange for Litecoin
-            IEnumerable<Coinchoose.Api.CoinInformation> unconfiguredCoins = orderedCoins.Where(coin => !String.IsNullOrEmpty(coin.Symbol) && !engineConfiguration.CoinConfigurations.Any(config => config.Coin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase)));
-            IEnumerable<Coinchoose.Api.CoinInformation> coinsToMine = unconfiguredCoins.Take(3);
+            IEnumerable<CoinChoose.Api.CoinInformation> unconfiguredCoins = orderedCoins.Where(coin => !String.IsNullOrEmpty(coin.Symbol) && !engineConfiguration.CoinConfigurations.Any(config => config.Coin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase)));
+            IEnumerable<CoinChoose.Api.CoinInformation> coinsToMine = unconfiguredCoins.Take(3);
 
-            foreach (Coinchoose.Api.CoinInformation coin in coinsToMine)
+            foreach (CoinChoose.Api.CoinInformation coin in coinsToMine)
                 NotifyCoinToMine(coin);
         }
 
-        private void NotifyCoinToMine(MultiMiner.Coinchoose.Api.CoinInformation coin)
+        private void NotifyCoinToMine(MultiMiner.CoinChoose.Api.CoinInformation coin)
         {
             string value = coin.AverageProfitability.ToString(".#") + "%";
             string noun = "average profitability";
@@ -1573,7 +1573,7 @@ namespace MultiMiner.Win
             }
 
             string infoUrl = "http://coinchoose.com/index.php";
-            if (engineConfiguration.StrategyConfiguration.BaseCoin == Coinchoose.Api.BaseCoin.Litecoin)
+            if (engineConfiguration.StrategyConfiguration.BaseCoin == CoinChoose.Api.BaseCoin.Litecoin)
                 infoUrl = "http://coinchoose.com/litecoin.php";
 
             notificationsControl.AddNotification(coin.Symbol,
@@ -1592,7 +1592,7 @@ namespace MultiMiner.Win
 
         private void LoadKnownCoinsFromCoinStats()
         {
-            foreach (Coinchoose.Api.CoinInformation item in coinInformation)
+            foreach (CoinChoose.Api.CoinInformation item in coinInformation)
             {
                 //find existing known coin or create a knew one
                 CryptoCoin knownCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(item.Symbol));
@@ -1654,7 +1654,7 @@ namespace MultiMiner.Win
             ClearAllCoinStats();
 
             if (coinInformation != null) //null if no network connection
-                foreach (Coinchoose.Api.CoinInformation coin in coinInformation)
+                foreach (CoinChoose.Api.CoinInformation coin in coinInformation)
                     foreach (DataGridViewRow row in deviceGridView.Rows)
                     {
                         CoinConfiguration coinConfiguration = CoinConfigurationForRow(row);
@@ -1663,7 +1663,7 @@ namespace MultiMiner.Win
                     }
         }
 
-        private void PopulateCoinStatsForRow(Coinchoose.Api.CoinInformation coin, DataGridViewRow row)
+        private void PopulateCoinStatsForRow(CoinChoose.Api.CoinInformation coin, DataGridViewRow row)
         {
             row.Cells[difficultyColumn.Index].Value = coin.Difficulty.ToString(".##########");
             row.Cells[priceColumn.Index].Value = coin.Price.ToString(".##########");

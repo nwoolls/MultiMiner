@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer", "MultiMiner.Xgminer\MultiMiner.Xgminer.csproj", "{0DBEF993-1B34-4D80-AB6A-F662604325DC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Engine", "MultiMiner.Engine\MultiMiner.Engine.csproj", "{845687BB-EC47-46D3-AC9D-6FCFB63DE8F5}"
@@ -9,13 +11,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Win", "MultiMine
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Api", "MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj", "{5B43AD9D-8B67-4AA8-B76D-AA83CAF9D29F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Coinchoose.Api", "MultiMiner.Coinchoose.Api\MultiMiner.Coinchoose.Api.csproj", "{D9B3F627-CB7A-454C-AF8F-70C8FB584553}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.CoinChoose.Api", "MultiMiner.Coinchoose.Api\MultiMiner.CoinChoose.Api.csproj", "{D9B3F627-CB7A-454C-AF8F-70C8FB584553}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Tests", "MultiMiner.Xgminer.Tests\MultiMiner.Xgminer.Tests.csproj", "{E0A458B9-121F-486F-8F26-988A8D4DCD47}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Api.Tests", "MultiMiner.Xgminer.Api.Tests\MultiMiner.Xgminer.Api.Tests.csproj", "{E9C9606A-2281-4127-B25C-7449B979421B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Coinchoose.Api.Tests", "MultiMiner.Coinchoose.Api.Tests\MultiMiner.Coinchoose.Api.Tests.csproj", "{09B979B4-36E9-408D-807E-30020A35E859}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.CoinChoose.Api.Tests", "MultiMiner.Coinchoose.Api.Tests\MultiMiner.CoinChoose.Api.Tests.csproj", "{09B979B4-36E9-408D-807E-30020A35E859}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.MobileMiner.Api", "MultiMiner.MobileMiner.Api\MultiMiner.MobileMiner.Api.csproj", "{70622816-5853-4470-9432-9ACDA2E96089}"
 EndProject

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 
-namespace MultiMiner.Coinchoose.Api
+namespace MultiMiner.CoinChoose.Api
 {
     public static class ApiContext
     {

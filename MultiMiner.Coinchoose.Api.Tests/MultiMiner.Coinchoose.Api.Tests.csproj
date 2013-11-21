@@ -6,8 +6,8 @@
     <ProjectGuid>{09B979B4-36E9-408D-807E-30020A35E859}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MultiMiner.Coinchoose.Api.Tests</RootNamespace>
-    <AssemblyName>MultiMiner.Coinchoose.Api.Tests</AssemblyName>
+    <RootNamespace>MultiMiner.CoinChoose.Api.Tests</RootNamespace>
+    <AssemblyName>MultiMiner.CoinChoose.Api.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -54,9 +54,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MultiMiner.Coinchoose.Api\MultiMiner.Coinchoose.Api.csproj">
+    <ProjectReference Include="..\MultiMiner.Coinchoose.Api\MultiMiner.CoinChoose.Api.csproj">
       <Project>{d9b3f627-cb7a-454c-af8f-70c8fb584553}</Project>
-      <Name>MultiMiner.Coinchoose.Api</Name>
+      <Name>MultiMiner.CoinChoose.Api</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

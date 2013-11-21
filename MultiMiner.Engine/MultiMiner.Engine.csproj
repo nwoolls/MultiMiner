@@ -54,9 +54,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MultiMiner.Coinchoose.Api\MultiMiner.Coinchoose.Api.csproj">
+    <ProjectReference Include="..\MultiMiner.Coinchoose.Api\MultiMiner.CoinChoose.Api.csproj">
       <Project>{d9b3f627-cb7a-454c-af8f-70c8fb584553}</Project>
-      <Name>MultiMiner.Coinchoose.Api</Name>
+      <Name>MultiMiner.CoinChoose.Api</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
       <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>

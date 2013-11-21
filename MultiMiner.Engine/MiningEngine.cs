@@ -1,4 +1,4 @@
-﻿using MultiMiner.Coinchoose.Api;
+﻿using MultiMiner.CoinChoose.Api;
 using MultiMiner.Engine.Configuration;
 using MultiMiner.Xgminer;
 using System;

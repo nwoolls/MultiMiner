@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace MultiMiner.Coinchoose.Api.Tests
+namespace MultiMiner.CoinChoose.Api.Tests
 {
     [TestClass]
     public class ApiContextTests

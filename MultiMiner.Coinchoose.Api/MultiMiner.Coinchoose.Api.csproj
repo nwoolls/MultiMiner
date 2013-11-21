@@ -7,8 +7,8 @@
     <ProjectGuid>{D9B3F627-CB7A-454C-AF8F-70C8FB584553}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MultiMiner.Coinchoose.Api</RootNamespace>
-    <AssemblyName>MultiMiner.Coinchoose.Api</AssemblyName>
+    <RootNamespace>MultiMiner.CoinChoose.Api</RootNamespace>
+    <AssemblyName>MultiMiner.CoinChoose.Api</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
