@@ -1282,7 +1282,9 @@ namespace MultiMiner.Win
                 foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                 {
                     int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
-                    ClearDeviceInfoForRow(deviceGridView.Rows[rowIndex]);
+                    if (rowIndex >= 0)
+                        //could legitimately be -1 if the API is returning a device we don't know about
+                        ClearDeviceInfoForRow(deviceGridView.Rows[rowIndex]);
                 }
 
                 //clear accepted shares as we'll be summing that as well
