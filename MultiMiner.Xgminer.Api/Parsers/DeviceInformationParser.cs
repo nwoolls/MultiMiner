@@ -45,7 +45,12 @@ namespace MultiMiner.Xgminer.Api.Parsers
 
                     if (keyValuePairs.ContainsKey("Name"))
                         newDevice.Name = keyValuePairs["Name"];
+                    else
+                        //default to Kind for older RPC API versions
+                        newDevice.Name = newDevice.Kind;
 
+                    //default to Index for older RPC API versions
+                    newDevice.ID = newDevice.Index;
                     if (keyValuePairs.ContainsKey("ID"))
                         newDevice.ID = TryToParseInt(keyValuePairs, "ID", newDevice.Index);
 

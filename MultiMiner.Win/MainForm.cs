@@ -1411,7 +1411,7 @@ namespace MultiMiner.Win
                 {
                     if ((index == deviceInformation.ID)
                         //for now all proxy devices will show under a single PXY device in MultiMiner
-                        || (devices[i].Kind == DeviceKind.PXY))                
+                        || (device.Kind == DeviceKind.PXY))                
                     {
                         rowIndex = i;
                         break;
