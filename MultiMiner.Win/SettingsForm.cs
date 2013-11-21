@@ -66,6 +66,8 @@ namespace MultiMiner.Win
 
             minerConfiguration.MinerBackend = SelectedMinerBackend();
             minerConfiguration.Priority = (ProcessPriorityClass)priorityCombo.SelectedItem;
+
+            applicationConfiguration.UseCoinWarzApi = coinApiCombo.SelectedIndex == 1;
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -74,6 +76,8 @@ namespace MultiMiner.Win
             LoadSettings();
             autoLaunchCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
             sysTrayCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
+
+            coinApiCombo.SelectedIndex = applicationConfiguration.UseCoinWarzApi ? 1 : 0;
         }
 
         private void PopulatePriorities()
@@ -130,6 +134,17 @@ namespace MultiMiner.Win
         {
             AdvancedSettingsForm advancedSettingsForm = new AdvancedSettingsForm(minerConfiguration, applicationConfiguration);
             advancedSettingsForm.ShowDialog();
+        }
+
+        private void apiKeyLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("http://www.coinwarz.com/v1/api/documentation");
+        }
+
+        private void coinApiCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            apiKeyEdit.Enabled = coinApiCombo.SelectedIndex == 1;
+            apiKeyLabel.Enabled = apiKeyEdit.Enabled;
         }
     }
 }

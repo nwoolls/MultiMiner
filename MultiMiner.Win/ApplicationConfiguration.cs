@@ -59,6 +59,9 @@ namespace MultiMiner.Win
         public bool MobileMinerUsesHttps { get; set; }
         public bool MobileMinerPushNotifications { get; set; }
 
+        public bool UseCoinWarzApi { get; set; }
+        public string CoinWarzApiKey { get; set; }
+
         public TimerInterval StrategyCheckInterval { get; set; }
         
         public bool SuggestCoinsToMine { get; set; }
