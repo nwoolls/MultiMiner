@@ -2520,59 +2520,73 @@ namespace MultiMiner.Win
 
         private void CheckForMinerUpdates(MinerBackend minerBackend)
         {
+            if (!MinerIsInstalled(minerBackend))
+                return;
+
+            string availableMinerVersion = GetAvailableBackendVersion(minerBackend);
+            if (String.IsNullOrEmpty(availableMinerVersion))
+                return;
+
+            //don't automatically update to bfgminer 3.7 - its a big breaking change
+            if (!BackendVersionIsCompatible(minerBackend, availableMinerVersion))
+                return;
+
+            string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVersion(minerBackend, MinerPath.GetPathToInstalledMiner(minerBackend));
+            if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
+                DisplayMinerUpdateNotification(minerBackend, availableMinerVersion, installedMinerVersion);
+        }
+
+        private void DisplayMinerUpdateNotification(MinerBackend minerBackend, string availableMinerVersion, string installedMinerVersion)
+        {
+            int notificationId = minerBackend == MinerBackend.Bfgminer ? bfgminerNotificationId : cgminerNotificationId;
+
+            string informationUrl = "https://github.com/ckolivas/cgminer/blob/master/NEWS";
+            if (minerBackend == MinerBackend.Bfgminer)
+                informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
+
             string minerName = MinerPath.GetMinerName(minerBackend);
+            notificationsControl.AddNotification(notificationId.ToString(),
+                String.Format("{0} version {1} is available ({2} installed)",
+                    minerName, availableMinerVersion, installedMinerVersion), () =>
+                {
+                    bool wasMining = miningEngine.Mining;
 
-            if (MinerIsInstalled(minerBackend))
+                    //only stop mining if this is the engine being used
+                    if (wasMining && (engineConfiguration.XgminerConfiguration.MinerBackend == minerBackend))
+                        StopMining();
+
+                    InstallMiner(minerBackend);
+
+                    //only start mining if we stopped mining
+                    if (wasMining && (engineConfiguration.XgminerConfiguration.MinerBackend == minerBackend))
+                        StartMining();
+                }, informationUrl);
+        }
+
+        private static string GetAvailableBackendVersion(MinerBackend minerBackend)
+        {
+            string result = String.Empty;
+            try
             {
-                string availableMinerVersion = String.Empty;
-                try
-                {
-                    availableMinerVersion = Xgminer.Installer.GetAvailableMinerVersion(minerBackend);
-                }
-                catch (WebException ex)
-                {
-                    //downloads website is down
-                    return;
-                }
-
-                //don't automatically update to bfgminer 3.7 - its a big breaking change
-                if (minerBackend == MinerBackend.Bfgminer)
-                {
-                    Version maxVersion = new Version(3, 7);
-                    if (new Version(availableMinerVersion) >= maxVersion)
-                    {
-                        //incompatible
-                        return;
-                    }
-                }
-
-                string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVersion(minerBackend, MinerPath.GetPathToInstalledMiner(minerBackend));
-                if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
-                {
-                    int notificationId = minerBackend == MinerBackend.Bfgminer ? bfgminerNotificationId : cgminerNotificationId;
-
-                    string informationUrl = "https://github.com/ckolivas/cgminer/blob/master/NEWS";
-                    if (minerBackend == MinerBackend.Bfgminer)
-                        informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
-
-                    notificationsControl.AddNotification(notificationId.ToString(),
-                        String.Format("{0} version {1} is available ({2} installed)", 
-                            minerName, availableMinerVersion, installedMinerVersion), () =>
-                        {
-                            bool wasMining = miningEngine.Mining;
-
-                            //only stop mining if this is the engine being used
-                            if (wasMining && (engineConfiguration.XgminerConfiguration.MinerBackend == minerBackend))
-                                StopMining();
-
-                            InstallMiner(minerBackend);
-
-                            //only start mining if we stopped mining
-                            if (wasMining && (engineConfiguration.XgminerConfiguration.MinerBackend == minerBackend))
-                                StartMining();
-                        }, informationUrl);
-                }
+                result = Xgminer.Installer.GetAvailableMinerVersion(minerBackend);
             }
+            catch (WebException ex)
+            {
+                //downloads website is down
+            }
+            return result;
+        }
+
+        private static bool BackendVersionIsCompatible(MinerBackend minerBackend, string version)
+        {
+            bool result = true;
+            if (minerBackend == MinerBackend.Bfgminer)
+            {
+                //don't automatically update to bfgminer 3.7 - its a big breaking change
+                Version maxVersion = new Version(3, 7);
+                result = new Version(version) < maxVersion;
+            }
+            return result;
         }
 
         private static void InstallMultiMiner()
