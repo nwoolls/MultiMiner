@@ -26,9 +26,12 @@ namespace MultiMiner.Xgminer
         public string CoinName { get; set; }
         public bool DisableGpu { get; set; }
         public ProcessPriorityClass Priority { get; set; }
+
+        //bfgminer-specific
         public bool ErupterDriver { get; set; }
         public bool StratumProxy { get; set; }
         public int StratumProxyPort { get; set; }
         public int StratumProxyStratumPort { get; set; }
+        public bool BitfuryCompatibility { get; set; }
     }
 }

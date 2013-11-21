@@ -607,6 +607,7 @@ namespace MultiMiner.Win
             minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
             minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner(minerConfiguration.MinerBackend);
             minerConfiguration.ErupterDriver = engineConfiguration.XgminerConfiguration.ErupterDriver;
+            minerConfiguration.BitfuryCompatibility = engineConfiguration.XgminerConfiguration.BitfuryCompatibility;
 
             minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
 

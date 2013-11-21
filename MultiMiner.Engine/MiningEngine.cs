@@ -598,6 +598,7 @@ namespace MultiMiner.Engine
             minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner(minerConfiguration.MinerBackend);
 
             minerConfiguration.ErupterDriver = engineConfiguration.XgminerConfiguration.ErupterDriver;
+            minerConfiguration.BitfuryCompatibility = engineConfiguration.XgminerConfiguration.BitfuryCompatibility;
             
             minerConfiguration.Pools = coinConfiguration.Pools;
             minerConfiguration.Algorithm = coinConfiguration.Coin.Algorithm;

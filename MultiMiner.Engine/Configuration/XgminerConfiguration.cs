@@ -20,11 +20,42 @@ namespace MultiMiner.Engine.Configuration
         public bool DesktopMode { get; set; }
         public bool DisableGpu { get; set; }
         public ProcessPriorityClass Priority { get; set; }
-        public bool ErupterDriver { get; set; }
         public int StartingApiPort { get; set; }
         public string AllowedApiIps { get; set; }
+
+        //bfgminer-specific
         public bool StratumProxy { get; set; }
         public int StratumProxyPort { get; set; }
         public int StratumProxyStratumPort { get; set; }
+
+        private bool bitfuryCompatibility;
+        public bool BitfuryCompatibility
+        {
+            get
+            {
+                return bitfuryCompatibility;
+            }
+            set
+            {
+                bitfuryCompatibility = value;
+                if (value)
+                    ErupterDriver = false;
+            }
+        }
+
+        private bool erupterDriver;
+        public bool ErupterDriver
+        {
+            get
+            {
+                return erupterDriver;
+            }
+            set
+            {
+                erupterDriver = value;
+                if (value)
+                    BitfuryCompatibility = false;
+            }
+        }
     }
 }
