@@ -13,6 +13,7 @@ namespace MultiMiner.Xgminer.Api.Responses
         public string Kind { get; set; }
         public string Name { get; set; }
         public int Index { get; set; }
+        public int ID { get; set; }
         public bool Enabled { get; set; }
         public string Status { get; set; }
         public double Temperature { get; set; }

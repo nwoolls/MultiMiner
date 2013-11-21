@@ -46,6 +46,9 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     if (keyValuePairs.ContainsKey("Name"))
                         newDevice.Name = keyValuePairs["Name"];
 
+                    if (keyValuePairs.ContainsKey("ID"))
+                        newDevice.ID = TryToParseInt(keyValuePairs, "ID", newDevice.Index);
+
                     if (newDevice.Kind.Equals("GPU"))
                     {
                         newDevice.Temperature = TryToParseDouble(keyValuePairs, "Temperature", 0.00);
