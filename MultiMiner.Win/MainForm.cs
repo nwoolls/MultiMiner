@@ -1405,18 +1405,23 @@ namespace MultiMiner.Win
 
             for (int i = 0; i < devices.Count; i++)
             {
-                if ((deviceInformation.Kind.Equals("GPU") && (devices[i].Kind == DeviceKind.GPU))
-                    || (deviceInformation.Name.Equals("PXY") && (devices[i].Kind == DeviceKind.PXY))
-                    || (!deviceInformation.Kind.Equals("GPU") && !deviceInformation.Name.Equals("PXY") && (devices[i].Kind != DeviceKind.GPU) && (devices[i].Kind != DeviceKind.GPU)))
+                Device device = devices[i];
+                
+                if (device.Identifier.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase))
                 {
-                    if ((index == deviceInformation.Index)
+                    if ((index == deviceInformation.ID)
                         //for now all proxy devices will show under a single PXY device in MultiMiner
-                        || (devices[i].Kind == DeviceKind.PXY))
+                        || (devices[i].Kind == DeviceKind.PXY))                
                     {
                         rowIndex = i;
                         break;
                     }
                     index++;
+                }
+                else
+                {
+                    //reset index
+                    index = 0;
                 }
             }
 
