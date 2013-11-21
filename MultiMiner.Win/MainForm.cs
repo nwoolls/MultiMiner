@@ -2535,6 +2535,17 @@ namespace MultiMiner.Win
                     return;
                 }
 
+                //don't automatically update to bfgminer 3.7 - its a big breaking change
+                if (minerBackend == MinerBackend.Bfgminer)
+                {
+                    Version maxVersion = new Version(3, 7);
+                    if (new Version(availableMinerVersion) >= maxVersion)
+                    {
+                        //incompatible
+                        return;
+                    }
+                }
+
                 string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVersion(minerBackend, MinerPath.GetPathToInstalledMiner(minerBackend));
                 if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
                 {
