@@ -27,6 +27,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Update", "MultiM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Utility", "MultiMiner.Utility\MultiMiner.Utility.csproj", "{99B0F266-EFF7-4416-8C36-8356396A11CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.CoinWarz.Api", "MultiMiner.CoinWarz.Api\MultiMiner.CoinWarz.Api.csproj", "{5B2B2592-689A-4DE2-815C-259427A3D101}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Coin.Api", "MultiMiner.Coin.Api\MultiMiner.Coin.Api.csproj", "{9E86F77A-68B9-4D72-82D2-855878BA8CB1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +85,14 @@ Global
 		{99B0F266-EFF7-4416-8C36-8356396A11CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99B0F266-EFF7-4416-8C36-8356396A11CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99B0F266-EFF7-4416-8C36-8356396A11CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B2B2592-689A-4DE2-815C-259427A3D101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B2B2592-689A-4DE2-815C-259427A3D101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B2B2592-689A-4DE2-815C-259427A3D101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B2B2592-689A-4DE2-815C-259427A3D101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E86F77A-68B9-4D72-82D2-855878BA8CB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E86F77A-68B9-4D72-82D2-855878BA8CB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E86F77A-68B9-4D72-82D2-855878BA8CB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E86F77A-68B9-4D72-82D2-855878BA8CB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

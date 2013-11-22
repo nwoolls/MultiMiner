@@ -22,7 +22,7 @@
         public double? MinimumProfitabilityPercentage { get; set; }
         public double? MineMostProfitableOverridePercentage { get; set; }
         public CoinProfitabilityBasis ProfitabilityBasis { get; set; }
-        public CoinChoose.Api.BaseCoin BaseCoin { get; set; }
+        public Coin.Api.BaseCoin BaseCoin { get; set; }
 
         public void StoreTo(MultiMiner.Engine.Configuration.StrategyConfiguration newConfiguration)
         {

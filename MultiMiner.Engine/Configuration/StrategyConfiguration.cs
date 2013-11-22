@@ -3,7 +3,7 @@
     public class StrategyConfiguration
     {
         //generic
-        public CoinChoose.Api.BaseCoin BaseCoin { get; set; }
+        public Coin.Api.BaseCoin BaseCoin { get; set; }
         public bool AutomaticallyMineCoins { get; set; }
         public enum CoinMiningBasis
         {

@@ -1,12 +1,13 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using MultiMiner.Coin.Api;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Net;
 
 namespace MultiMiner.CoinChoose.Api
 {
-    public static class ApiContext
+    public class ApiContext : IApiContext
     {
-        public static List<CoinInformation> GetCoinInformation(string userAgent = "",
+        public IEnumerable<CoinInformation> GetCoinInformation(string userAgent = "",
             BaseCoin profitabilityBasis = BaseCoin.Bitcoin)
         {
             WebClient client = new WebClient();

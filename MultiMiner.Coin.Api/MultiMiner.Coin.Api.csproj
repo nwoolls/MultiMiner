@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{845687BB-EC47-46D3-AC9D-6FCFB63DE8F5}</ProjectGuid>
+    <ProjectGuid>{9E86F77A-68B9-4D72-82D2-855878BA8CB1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MultiMiner.Engine</RootNamespace>
-    <AssemblyName>MultiMiner.Engine</AssemblyName>
+    <RootNamespace>MultiMiner.Coin.Api</RootNamespace>
+    <AssemblyName>MultiMiner.Coin.Api</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -35,41 +35,15 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\CoinConfiguration.cs" />
-    <Compile Include="Configuration\Obsolete\StrategyConfiguration.cs" />
-    <Compile Include="Configuration\StrategyConfiguration.cs" />
-    <Compile Include="CryptoCoin.cs" />
-    <Compile Include="Configuration\DeviceConfiguration.cs" />
-    <Compile Include="Configuration\EngineConfiguration.cs" />
-    <Compile Include="Configuration\XgminerConfiguration.cs" />
-    <Compile Include="Installer.cs" />
-    <Compile Include="LogProcessCloseArgs.cs" />
-    <Compile Include="MinerPath.cs" />
-    <Compile Include="MinerProcess.cs" />
-    <Compile Include="MiningEngine.cs" />
+    <Compile Include="BaseCoin.cs" />
+    <Compile Include="CoinInformation.cs" />
+    <Compile Include="IApiContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MultiMiner.Coin.Api\MultiMiner.Coin.Api.csproj">
-      <Project>{9e86f77a-68b9-4d72-82d2-855878ba8cb1}</Project>
-      <Name>MultiMiner.Coin.Api</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
-      <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
-      <Name>MultiMiner.Utility</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj">
-      <Project>{5b43ad9d-8b67-4aa8-b76d-aa83caf9d29f}</Project>
-      <Name>MultiMiner.Xgminer.Api</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MultiMiner.Xgminer\MultiMiner.Xgminer.csproj">
-      <Project>{0dbef993-1b34-4d80-ab6a-f662604325dc}</Project>
-      <Name>MultiMiner.Xgminer</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

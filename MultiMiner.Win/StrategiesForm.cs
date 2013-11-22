@@ -119,7 +119,7 @@ namespace MultiMiner.Win
             }
 
             strategyConfiguration.ProfitabilityKind = (StrategyConfiguration.CoinProfitabilityKind)profitabilityKindCombo.SelectedIndex;
-            strategyConfiguration.BaseCoin = (CoinChoose.Api.BaseCoin)baseCoinCombo.SelectedIndex;
+            strategyConfiguration.BaseCoin = (Coin.Api.BaseCoin)baseCoinCombo.SelectedIndex;
             strategyConfiguration.MiningBasis = (StrategyConfiguration.CoinMiningBasis)miningBasisCombo.SelectedIndex;
 
             applicationConfiguration.StrategyCheckInterval = (ApplicationConfiguration.TimerInterval)intervalCombo.SelectedIndex;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Collections.Generic;
+using MultiMiner.Coin.Api;
 
 namespace MultiMiner.CoinChoose.Api.Tests
 {
@@ -11,7 +12,7 @@ namespace MultiMiner.CoinChoose.Api.Tests
         public void GetCoinInformation_ReturnsCoinInformation()
         {
             //act
-            List<CoinInformation> coinInformation = ApiContext.GetCoinInformation();
+            List<CoinInformation> coinInformation = new ApiContext().GetCoinInformation().ToList();
 
             //assert
             Assert.IsTrue(coinInformation.Count > 0);
@@ -28,7 +29,7 @@ namespace MultiMiner.CoinChoose.Api.Tests
         public void GetCoinInformation_BitcoinBasis_IsBasedOnBitcoin()
         {
             //act
-            List<CoinInformation> coinInformation = ApiContext.GetCoinInformation();
+            List<CoinInformation> coinInformation = new ApiContext().GetCoinInformation().ToList();
 
             //assert
             CoinInformation coin = coinInformation.Single(c => c.Symbol.Equals("BTC"));
@@ -41,7 +42,7 @@ namespace MultiMiner.CoinChoose.Api.Tests
         public void GetCoinInformation_BitcoinBasis_IsBasedOnLitecoin()
         {
             //act
-            List<CoinInformation> coinInformation = ApiContext.GetCoinInformation("", BaseCoin.Litecoin);
+            List<CoinInformation> coinInformation = new ApiContext().GetCoinInformation("", BaseCoin.Litecoin).ToList();
 
             //assert
             CoinInformation coin = coinInformation.Single(c => c.Symbol.Equals("LTC"));

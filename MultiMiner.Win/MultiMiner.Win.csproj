@@ -208,6 +208,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MultiMiner.Coin.Api\MultiMiner.Coin.Api.csproj">
+      <Project>{9e86f77a-68b9-4d72-82d2-855878ba8cb1}</Project>
+      <Name>MultiMiner.Coin.Api</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Coinchoose.Api\MultiMiner.CoinChoose.Api.csproj">
       <Project>{d9b3f627-cb7a-454c-af8f-70c8fb584553}</Project>
       <Name>MultiMiner.CoinChoose.Api</Name>
