@@ -1010,6 +1010,7 @@ namespace MultiMiner.Win
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
                 SetupRestartTimer();
                 CheckForUpdates();
+                RefreshCoinStats();
                 
                 Application.DoEvents();
 
