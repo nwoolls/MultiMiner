@@ -3,7 +3,9 @@ var versionInfoIni = ini.fromFile("VersionInfo.ini");
 var appVersion = versionInfoIni.getValue("VersionInfo", "AppVersion", "1.0");
 
 //update the assembly versions for each .NET project using the above version info
-msbuild.updateAssemblyVersion("../MultiMiner.Coinchoose.Api/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.Coin.Api/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.CoinChoose.Api/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.CoinWarz.Api/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Engine/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Win/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Update/Properties/AssemblyInfo.cs", appVersion);
@@ -12,7 +14,9 @@ msbuild.updateAssemblyVersion("../MultiMiner.Xgminer.Api/Properties/AssemblyInfo
 msbuild.updateAssemblyVersion("../MultiMiner.MobileMiner.Api/Properties/AssemblyInfo.cs", appVersion);
 
 //rebuild each .NET project - Release configurations
-msbuild.rebuild("../MultiMiner.Coinchoose.Api/MultiMiner.Coinchoose.Api.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.Coin.Api/MultiMiner.Coin.Api.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.CoinChoose.Api/MultiMiner.CoinChoose.Api.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.CoinWarz.Api/MultiMiner.CoinWarz.Api.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Engine/MultiMiner.Engine.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Utility/MultiMiner.Utility.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Win/MultiMiner.Win.csproj", { configuration: "Release" });
@@ -38,8 +42,12 @@ file.copy("../MultiMiner.Update/bin/Release/MultiMiner.Update.exe", "PF/");
 file.copy("../MultiMiner.Update/bin/Release/MultiMiner.Update.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Interop.IWshRuntimeLibrary.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Interop.Shell32.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Coinchoose.Api.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Coinchoose.Api.pdb", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Coin.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Coin.Api.pdb", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.CoinChoose.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.CoinChoose.Api.pdb", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.CoinWarz.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.CoinWarz.Api.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Engine.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Engine.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Utility.dll", "PF/");
@@ -57,7 +65,9 @@ zip.compress("Output/MultiMiner-" + appVersion + ".zip", "PF/", "*.*", true);
 folder.remove("PF", true);
 
 //rebuild each .NET project - Debug configurations
-msbuild.rebuild("../MultiMiner.Coinchoose.Api/MultiMiner.Coinchoose.Api.csproj", { configuration: "Debug" });
+msbuild.rebuild("../MultiMiner.Coin.Api/MultiMiner.Coin.Api.csproj", { configuration: "Debug" });
+msbuild.rebuild("../MultiMiner.CoinChoose.Api/MultiMiner.CoinChoose.Api.csproj", { configuration: "Debug" });
+msbuild.rebuild("../MultiMiner.CoinWarz.Api/MultiMiner.CoinWarz.Api.csproj", { configuration: "Debug" });
 msbuild.rebuild("../MultiMiner.Engine/MultiMiner.Engine.csproj", { configuration: "Debug" });
 msbuild.rebuild("../MultiMiner.Utility/MultiMiner.Utility.csproj", { configuration: "Debug" });
 msbuild.rebuild("../MultiMiner.Win/MultiMiner.Win.csproj", { configuration: "Debug" });
@@ -76,8 +86,12 @@ file.copy("../MultiMiner.Update/bin/Debug/MultiMiner.Update.exe", "PF/");
 file.copy("../MultiMiner.Update/bin/Debug/MultiMiner.Update.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/Interop.IWshRuntimeLibrary.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/Interop.Shell32.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Coinchoose.Api.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Coinchoose.Api.pdb", "PF/");
+file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Coin.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Coin.Api.pdb", "PF/");
+file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.CoinChoose.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.CoinChoose.Api.pdb", "PF/");
+file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.CoinWarz.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.CoinWarz.Api.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Engine.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Engine.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Utility.dll", "PF/");
@@ -107,8 +121,12 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.Win.pdb,\
 ../MultiMiner.Win/bin/Release/Interop.IWshRuntimeLibrary.dll,\
 ../MultiMiner.Win/bin/Release/Interop.Shell32.dll,\
-../MultiMiner.Win/bin/Release/MultiMiner.Coinchoose.Api.dll,\
-../MultiMiner.Win/bin/Release/MultiMiner.Coinchoose.Api.pdb,\
+../MultiMiner.Win/bin/Release/MultiMiner.Coin.Api.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.Coin.Api.pdb,\
+../MultiMiner.Win/bin/Release/MultiMiner.CoinChoose.Api.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.CoinChoose.Api.pdb,\
+../MultiMiner.Win/bin/Release/MultiMiner.CoinWarz.Api.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.CoinWarz.Api.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Engine.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Engine.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Utility.dll,\

@@ -37,8 +37,12 @@ Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Win.exe"; DestDir: "{app}"; Fl
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Win.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\Interop.IWshRuntimeLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\Interop.Shell32.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Coinchoose.Api.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Coinchoose.Api.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Coin.Api.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Coin.Api.pdb"; DestDir: "{app}"; Flags: ignoreversion    
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinChoose.Api.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinChoose.Api.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinWarz.Api.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinWarz.Api.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MobileMiner.Api.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MobileMiner.Api.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Engine.dll"; DestDir: "{app}"; Flags: ignoreversion
