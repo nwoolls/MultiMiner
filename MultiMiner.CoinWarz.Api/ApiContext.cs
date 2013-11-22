@@ -27,6 +27,11 @@ namespace MultiMiner.CoinWarz.Api
 
             JObject jsonObject = JObject.Parse(jsonString);
             
+            if (!jsonObject.Value<bool>("Success"))
+            {
+                throw new CoinApiException(jsonObject.Value<string>("Message"));
+            }
+
             JArray jsonArray = jsonObject.Value<JArray>("Data");
 
             List<CoinInformation> result = new List<CoinInformation>();

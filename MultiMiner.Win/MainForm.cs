@@ -1497,7 +1497,7 @@ namespace MultiMiner.Win
             catch (Exception ex)
             {
                 //don't crash if website cannot be resolved or JSON cannot be parsed
-                if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException))
+                if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is Coin.Api.CoinApiException))
                 {
                     ShowCoinApiErrorNotification(ex);
                     return;
