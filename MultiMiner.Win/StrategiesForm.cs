@@ -59,7 +59,17 @@ namespace MultiMiner.Win
                 exceptionEdit.Text = strategyConfiguration.MineSingleMostOverrideValue.ToString();
 
             profitabilityKindCombo.SelectedIndex = (int)strategyConfiguration.ProfitabilityKind;
-            baseCoinCombo.SelectedIndex = (int)strategyConfiguration.BaseCoin;
+
+            if (applicationConfiguration.UseCoinWarzApi)
+            {
+                baseCoinCombo.SelectedIndex = 0;
+                baseCoinCombo.Enabled = false;
+            }
+            else
+            {
+                baseCoinCombo.SelectedIndex = (int)strategyConfiguration.BaseCoin;
+            }
+            
             miningBasisCombo.SelectedIndex = (int)strategyConfiguration.MiningBasis;
 
             intervalCombo.SelectedIndex = (int)applicationConfiguration.StrategyCheckInterval;
