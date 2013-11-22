@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace MultiMiner.Xgminer.Parsers
 {
@@ -7,12 +8,12 @@ namespace MultiMiner.Xgminer.Parsers
     {
         private const string DevicesHeaderPattern = @"\[.+ .+\] Devices detected:";
         private const string DevicesFooterPattern = @"\[.+ .+\] \d+ devices listed";
-        private const string DeviceFullPattern = @"\[.+ .+\].*\d+\. (.*) ?: (.*) \(driver: (.*)\)";
-        private const string DeviceBriefPattern = @"\[.+ .+\].*\d+\. (.*)  ?\(driver: (.*)\)";
+        private const string DeviceFullPattern = @"\[.+ .+\] (.*) \((.*)\)";
 
         public static void ParseTextForDevices(List<string> text, List<Device> devices)
         {
             bool inDevices = false;
+            int relativeIndex = 0;
             
             foreach (string line in text)
             {
@@ -28,28 +29,32 @@ namespace MultiMiner.Xgminer.Parsers
                     {
                         Device device = new Device();
 
-                        device.Identifier = match.Groups[1].Value.TrimEnd().Substring(0, 3);
-                        device.Name = match.Groups[2].Value.TrimEnd();
-                        device.Driver = match.Groups[3].Value.TrimEnd();
+                        device.Name = match.Groups[1].Value.Trim();
+
+                        string value = match.Groups[2].Value.TrimEnd();
+                        Dictionary<string, string> details =
+                            value.Split(';')
+                                .Select(x => x.Split('='))
+                                .ToDictionary(y => y[0].Trim(), y => y[1].Trim());
+
+                        device.Driver = details["driver"];
+                        device.ProcessorCount = int.Parse(details["procs"]);
+                        if (details.ContainsKey("serial"))
+                            device.Serial = details["serial"];
+                        if (details.ContainsKey("path"))
+                            device.Path = details["path"];
+
                         device.Kind = DeviceIsGpu(device) ? DeviceKind.GPU : DeviceKind.USB;
+                        if ((devices.Count > 0) && (devices.Last()).Kind != device.Kind)
+                            //relativeIndex is relative to device Kind
+                            relativeIndex = 0;
+
                         device.DeviceIndex = devices.Count;
+                        device.RelativeIndex = relativeIndex;
 
                         devices.Add(device);
-                    }
-                    else
-                    {
-                        match = Regex.Match(line, DeviceBriefPattern);
-                        if (match.Success)
-                        {
-                            Device device = new Device();
 
-                            device.Identifier = match.Groups[1].Value.TrimEnd().Substring(0, 3);
-                            device.Driver = match.Groups[2].Value.TrimEnd();
-                            device.Kind = DeviceIsGpu(device) ? DeviceKind.GPU : DeviceKind.USB;
-                            device.DeviceIndex = devices.Count;
-
-                            devices.Add(device);
-                        }
+                        relativeIndex++;
                     }
                 }
 
@@ -62,7 +67,7 @@ namespace MultiMiner.Xgminer.Parsers
 
         private static bool DeviceIsGpu(Device device)
         {
-            return device.Identifier.Equals("GPU") || device.Identifier.Equals("OCL");
+            return device.Driver.Equals("opencl");
         }
     }
 }

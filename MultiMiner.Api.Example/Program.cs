@@ -39,7 +39,7 @@ namespace MultiMiner.Api.Example
 
                 //output devices
                 foreach (Device device in deviceList)
-                    Console.WriteLine("Device detected: {0}\t{1}\t{2}", device.Kind, device.Driver, device.Identifier);
+                    Console.WriteLine("Device detected: {0}\t{1}\t{2}", device.Kind, device.Driver, device.Name);
 
                 //start mining if there are devices
                 if (deviceList.Count > 0)

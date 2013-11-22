@@ -36,6 +36,7 @@ namespace MultiMiner.Win
         private NotificationsControl notificationsControl;
         private bool settingsLoaded = false;
         private Dictionary<string, string> hostDomainNames = new Dictionary<string, string>();
+        private Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
 
         public MainForm()
         {
@@ -624,7 +625,6 @@ namespace MultiMiner.Win
                 proxyDevice.Kind = DeviceKind.PXY;
                 proxyDevice.Driver = "proxy";
                 proxyDevice.Name = "Stratum Proxy";
-                proxyDevice.Identifier = "PXY";
                 proxyDevice.DeviceIndex = detectedDevices.Count;
                 detectedDevices.Add(proxyDevice);
             }
@@ -886,6 +886,7 @@ namespace MultiMiner.Win
                 miningEngine.StopMining();
             }
 
+            processDeviceDetails.Clear();
             deviceStatsTimer.Enabled = false;
             minerSummaryTimer.Enabled = false;
             coinStatsCountdownTimer.Enabled = false;
@@ -1290,11 +1291,38 @@ namespace MultiMiner.Win
                     continue;
                 }
 
+                //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
+                List<DeviceDetailsResponse> processDevices = null;
+                if (processDeviceDetails.ContainsKey(minerProcess))
+                {
+                    processDevices = processDeviceDetails[minerProcess];
+
+                    foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                    {
+                        DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+                            && (d.ID == deviceInformation.ID));
+                        if (deviceDetails == null)
+                        {
+                            //devs API returned a device not in the previous DEVDETAILS response
+                            //need to clear our previous response and get a new one
+                            processDevices = null;
+                            break;
+                        }
+                    }
+
+                }
+
+                if (processDevices == null)
+                {
+                    processDevices = GetDeviceDetailsFromProcess(minerProcess);
+                    processDeviceDetails[minerProcess] = processDevices;
+                }
+
                 //first clear stats for each row
                 //this is because the PXY row stats get summed                
                 foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                 {
-                    int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
+                    int rowIndex = GetRowIndexForDeviceInformation(deviceInformation, processDevices);
                     if (rowIndex >= 0)
                         //could legitimately be -1 if the API is returning a device we don't know about
                         ClearDeviceInfoForRow(deviceGridView.Rows[rowIndex]);
@@ -1320,7 +1348,7 @@ namespace MultiMiner.Win
                             minerProcess.HasPoorPerformingDevice = true;
                     }
 
-                    int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
+                    int rowIndex = GetRowIndexForDeviceInformation(deviceInformation, processDevices);
 
                     if (rowIndex >= 0)
                     {
@@ -1383,6 +1411,36 @@ namespace MultiMiner.Win
             return deviceInformationList;
         }
 
+        private List<DeviceDetailsResponse> GetDeviceDetailsFromProcess(MinerProcess minerProcess)
+        {
+            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<DeviceDetailsResponse> deviceDetailsList = null;
+            try
+            {
+                try
+                {
+                    deviceDetailsList = apiContext.GetDeviceDetails().ToList();
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    deviceDetailsList = null;
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
+                deviceDetailsList = null;
+            }
+
+            return deviceDetailsList;
+        }
+
         private SummaryInformationResponse GetSummaryInfoFromProcess(MinerProcess minerProcess)
         {
             Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
@@ -1412,35 +1470,36 @@ namespace MultiMiner.Win
 
             return summaryInformation;
         }
-
-        private int GetRowIndexForDeviceInformation(DeviceInformationResponse deviceInformation)
+        
+        private int GetRowIndexForDeviceInformation(DeviceInformationResponse deviceInformation, IEnumerable<DeviceDetailsResponse> processDevices)
         {
-            int index = 0;
-            int rowIndex = -1;
-
+            DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+                && (d.ID == deviceInformation.ID));
+            
             for (int i = 0; i < devices.Count; i++)
             {
                 Device device = devices[i];
                 
-                if (device.Identifier.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase))
+                if (device.Driver.Equals(deviceDetails.Driver, StringComparison.OrdinalIgnoreCase)
+                    &&
+                    (
+                    
+                    //path == path
+                    (!String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
+                    
+                    //proxy == proxy
+                    || (device.Driver.Equals("proxy", StringComparison.OrdinalIgnoreCase))
+                    
+                    //opencl = opencl && ID = RelativeIndex
+                    || (device.Driver.Equals("opencl", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+
+                    ))
                 {
-                    if ((index == deviceInformation.ID)
-                        //for now all proxy devices will show under a single PXY device in MultiMiner
-                        || (device.Kind == DeviceKind.PXY))                
-                    {
-                        rowIndex = i;
-                        break;
-                    }
-                    index++;
-                }
-                else
-                {
-                    //reset index
-                    index = 0;
+                    return i;
                 }
             }
 
-            return rowIndex;
+            return -1;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

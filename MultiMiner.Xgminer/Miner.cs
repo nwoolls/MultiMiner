@@ -66,7 +66,8 @@ namespace MultiMiner.Xgminer
 
             //ADL mismatch with OCL can cause an error / exception, disable ADL when enumerating devices
             //user can then disable for mining in-app using settings
-            arguments = arguments + " --no-adl";
+            //this also prevents nice names for GPUs
+            //arguments = arguments + " --no-adl";
             
             //this must be done async, with 70+ devices doing this synchronous
             //locks up the process
