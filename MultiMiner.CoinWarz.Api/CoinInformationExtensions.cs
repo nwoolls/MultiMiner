@@ -13,7 +13,12 @@ namespace MultiMiner.CoinWarz.Api
             coinInformation.CurrentBlocks = jToken.Value<int>("BlockCount");
             coinInformation.Difficulty = jToken.Value<double>("Difficulty");
             coinInformation.Reward = jToken.Value<double>("BlockReward");
-            coinInformation.Price = jToken.Value<double>("ExchangeRate");
+
+            if (coinInformation.Symbol.Equals("BTC", System.StringComparison.OrdinalIgnoreCase))
+                coinInformation.Price = 1;
+            else
+                coinInformation.Price = jToken.Value<double>("ExchangeRate");
+
             coinInformation.Exchange = jToken.Value<string>("Exchange");
             coinInformation.Profitability = jToken.Value<double>("ProfitRatio");
             coinInformation.AdjustedProfitability = jToken.Value<double>("ProfitRatio");
