@@ -117,6 +117,7 @@ namespace MultiMiner.Win
             LoadSettings();
 
             RefreshBackendLabel();
+            RefreshCoinAPILabel();
 
             RefreshCoinComboBox();
 
@@ -1007,6 +1008,7 @@ namespace MultiMiner.Win
                 applicationConfiguration.SaveApplicationConfiguration();
                 RefreshDevices();
                 RefreshBackendLabel();
+                RefreshCoinAPILabel();
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
                 SetupRestartTimer();
                 CheckForUpdates();
@@ -1022,6 +1024,16 @@ namespace MultiMiner.Win
                 engineConfiguration.LoadMinerConfiguration();
                 applicationConfiguration.LoadApplicationConfiguration();
             }
+        }
+
+        private void RefreshCoinAPILabel()
+        {
+            if (applicationConfiguration.UseCoinWarzApi)
+                coinChooseLinkLabel.Text = "CoinWarz.com";
+            else
+                coinChooseLinkLabel.Text = "CoinChoose.com";
+
+            PositionCoinChooseLabels();
         }
 
         private void SetupRestartTimer()
@@ -1853,7 +1865,11 @@ namespace MultiMiner.Win
 
         private void coinChooseLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://coinchoose.com/");
+            string siteUrl = "http://coinchoose.com/";
+            if (applicationConfiguration.UseCoinWarzApi)
+                siteUrl = "http://coinwarz.com/";
+
+            Process.Start(siteUrl);
         }
 
         private void closeApiButton_Click(object sender, EventArgs e)
