@@ -21,7 +21,7 @@ namespace MultiMiner.CoinWarz.Api
             if (!string.IsNullOrEmpty(userAgent))
                 client.Headers.Add("user-agent", userAgent);
 
-            string apiUrl = String.Format(@"http://www.coinwarz.com/v1/api/profitability/?apikey={0}&algo=all", apiKey);
+            string apiUrl = GetApiUrl(profitabilityBasis);
 
             string jsonString = client.DownloadString(apiUrl);
 
@@ -42,6 +42,11 @@ namespace MultiMiner.CoinWarz.Api
             }
 
             return result;
+        }
+
+        public string GetApiUrl(BaseCoin profitabilityBasis)
+        {
+            return String.Format(@"http://www.coinwarz.com/v1/api/profitability/?apikey={0}&algo=all", apiKey);
         }
     }
 }

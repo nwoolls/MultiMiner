@@ -34,7 +34,7 @@ namespace MultiMiner.CoinChoose.Api
             return result;
         }
 
-        public static string GetApiUrl(BaseCoin profitabilityBasis)
+        public string GetApiUrl(BaseCoin profitabilityBasis)
         {
             string apiUrl = "http://www.coinchoose.com/api.php";
             if (profitabilityBasis == BaseCoin.Litecoin)

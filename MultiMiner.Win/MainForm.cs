@@ -1482,15 +1482,24 @@ namespace MultiMiner.Win
 
             try
             {
-                coinInformation = new CoinChoose.Api.ApiContext().GetCoinInformation(UserAgent.AgentString, 
-                    engineConfiguration.StrategyConfiguration.BaseCoin).ToList();
+                if (applicationConfiguration.UseCoinWarzApi)
+                {
+                    coinInformation = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey).GetCoinInformation(UserAgent.AgentString,
+                        engineConfiguration.StrategyConfiguration.BaseCoin).ToList();
+                }
+                else
+                {
+                    coinInformation = new CoinChoose.Api.ApiContext().GetCoinInformation(UserAgent.AgentString,
+                        engineConfiguration.StrategyConfiguration.BaseCoin).ToList();
+                }
+
             }
             catch (Exception ex)
             {
                 //don't crash if website cannot be resolved or JSON cannot be parsed
                 if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException))
                 {
-                    ShowCoinChooseApiErrorNotification(ex);
+                    ShowCoinApiErrorNotification(ex);
                     return;
                 }
                 throw;
@@ -1502,14 +1511,31 @@ namespace MultiMiner.Win
             SuggestCoinsToMine();
         }
 
-        private void ShowCoinChooseApiErrorNotification(Exception ex)
+        private void ShowCoinApiErrorNotification(Exception ex)
         {
+            string siteUrl = String.Empty;
+            string apiUrl = String.Empty;
+            string apiName = String.Empty;
+            
+            if (applicationConfiguration.UseCoinWarzApi)
+            {
+                apiName = "CoinWarz.com";
+                siteUrl = "http://coinchoose.com/";
+                apiUrl = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey).GetApiUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
+            }
+            else
+            {
+                apiName = "CoinChoose.com";
+                siteUrl = "http://coinwarz.com/";
+                apiUrl = new MultiMiner.CoinChoose.Api.ApiContext().GetApiUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
+            }
+
             notificationsControl.AddNotification(ex.Message,
-                "Error parsing the CoinChoose.com JSON API", () =>
+                "Error parsing the " + apiName + " JSON API", () =>
                 {
-                    Process.Start(MultiMiner.CoinChoose.Api.ApiContext.GetApiUrl(engineConfiguration.StrategyConfiguration.BaseCoin));
+                    Process.Start(apiUrl);
                 }, 
-                "http://coinchoose.com/");
+                siteUrl);
         }
 
         private void ShowMobileMinerApiErrorNotification(WebException ex)

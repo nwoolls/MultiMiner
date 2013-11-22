@@ -216,6 +216,10 @@
       <Project>{d9b3f627-cb7a-454c-af8f-70c8fb584553}</Project>
       <Name>MultiMiner.CoinChoose.Api</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.CoinWarz.Api\MultiMiner.CoinWarz.Api.csproj">
+      <Project>{5b2b2592-689a-4de2-815c-259427a3d101}</Project>
+      <Name>MultiMiner.CoinWarz.Api</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Engine\MultiMiner.Engine.csproj">
       <Project>{845687bb-ec47-46d3-ac9d-6fcfb63de8f5}</Project>
       <Name>MultiMiner.Engine</Name>
