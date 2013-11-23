@@ -2,6 +2,6 @@
 {
     public static class UserAgent
     {
-        public const string AgentString = "MultiMiner/V1";
+        public const string AgentString = "MultiMiner/V2";
     }
 }
