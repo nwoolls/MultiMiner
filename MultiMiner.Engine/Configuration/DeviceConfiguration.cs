@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MultiMiner.Xgminer;
+using System;
 
 namespace MultiMiner.Engine.Configuration
 {
-    public class DeviceConfiguration
+    public class DeviceConfiguration : DeviceDescriptor
     {
         public DeviceConfiguration()
         {
@@ -10,7 +11,6 @@ namespace MultiMiner.Engine.Configuration
             this.CoinSymbol = String.Empty;
         }
 
-        public int DeviceIndex { get; set; }
         public string CoinSymbol { get; set; }
         public bool Enabled { get; set; }
     }

@@ -43,9 +43,10 @@
     <Compile Include="AuthenticationFailedArgs.cs" />
     <Compile Include="Bfgminer\MinerParameter.cs" />
     <Compile Include="CoinAlgorithm.cs" />
-    <Compile Include="Device.cs" />
-    <Compile Include="DeviceKind.cs" />
-    <Compile Include="DevicePlatform.cs" />
+    <Compile Include="Device\Device.cs" />
+    <Compile Include="Device\DeviceDescriptor.cs" />
+    <Compile Include="Device\DeviceKind.cs" />
+    <Compile Include="Device\DevicePlatform.cs" />
     <Compile Include="Installer.cs" />
     <Compile Include="LaunchFailedArgs.cs" />
     <Compile Include="LogLaunchArgs.cs" />

@@ -85,7 +85,7 @@ namespace MultiMiner.Win
             {
                 Device lastDevice = devices.LastOrDefault();
                 if ((lastDevice != null) && (lastDevice.Kind == DeviceKind.PXY))
-                    ea.DeviceIndexes.Add(lastDevice.DeviceIndex);
+                    ea.DeviceDescriptors.Add(lastDevice);
             }
         }
 
@@ -460,7 +460,7 @@ namespace MultiMiner.Win
         //for instance if the user starts up the app with missing devices
         private void RemoveExcessDeviceConfigurations()
         {
-            engineConfiguration.DeviceConfigurations.RemoveAll(c => !devices.Exists(d => d.DeviceIndex == c.DeviceIndex));
+            engineConfiguration.DeviceConfigurations.RemoveAll(c => !devices.Exists(d => d.Equals(c)));
         }
 
         //each device needs to have a DeviceConfiguration
@@ -471,11 +471,13 @@ namespace MultiMiner.Win
             foreach (Device device in devices)
             {
                 DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
-                    c => (c.DeviceIndex == device.DeviceIndex));
+                    c => (c.Equals(device)));
                 if (existingConfiguration == null)
                 {
                     DeviceConfiguration newConfiguration = new DeviceConfiguration();
-                    newConfiguration.DeviceIndex = device.DeviceIndex;
+
+                    newConfiguration.Assign(device);
+
                     newConfiguration.Enabled = true;
                     engineConfiguration.DeviceConfigurations.Add(newConfiguration);
                 }
@@ -520,7 +522,9 @@ namespace MultiMiner.Win
             {
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                 deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
-                deviceConfiguration.DeviceIndex = devices[i].DeviceIndex;
+
+                deviceConfiguration.Assign(devices[i]);
+
                 deviceConfiguration.Enabled = true;
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
@@ -768,7 +772,8 @@ namespace MultiMiner.Win
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
-                deviceConfiguration.DeviceIndex = devices[i].DeviceIndex;
+                deviceConfiguration.Assign(devices[i]);
+
                 deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
                 object cellValue = gridRow.Cells[enabledColumn.Index].Value;
                 deviceConfiguration.Enabled = cellValue == null ? true : (bool)cellValue;
@@ -788,7 +793,7 @@ namespace MultiMiner.Win
                     DataGridViewRow gridRow = deviceGridView.Rows[i];
 
                     DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
-                        c => (c.DeviceIndex == devices[i].DeviceIndex));
+                        c => (c.Equals(devices[i].DeviceIndex)));
 
                     if (deviceConfiguration != null)
                     {
@@ -828,7 +833,7 @@ namespace MultiMiner.Win
             {
                 DataGridViewRow gridRow = deviceGridView.Rows[i];
                 DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
-                    c => (c.DeviceIndex == devices[i].DeviceIndex));
+                    c => c.Equals(devices[i].DeviceIndex));
 
                 foreach (DataGridViewCell gridCell in gridRow.Cells)
                 {
@@ -2426,7 +2431,7 @@ namespace MultiMiner.Win
                 LogProcessCloseArgs ea = this.logCloseEntries[index];
 
                 //convert from device indexes (0 based) to device #'s (more human readable)
-                string devicesString = GetFormattedDevicesString(ea.DeviceIndexes);
+                string devicesString = GetFormattedDevicesString(ea.DeviceDescriptors);
                 
                 historyGridView.Rows[index].Cells[devicesColumn.Index].Value = devicesString;
 
@@ -2435,18 +2440,19 @@ namespace MultiMiner.Win
             }
         }
 
-        private string GetFormattedDevicesString(List<int> deviceIndexes)
+        private string GetFormattedDevicesString(List<DeviceDescriptor> deviceDescriptors)
         {
-            List<string> deviceList = new List<string>();
+            //List<string> deviceList = new List<string>();
 
-            foreach (int deviceIndex in deviceIndexes)
-            {
-                //get the Row Index from the Device Index since GetDevices() sorts devices
-                int rowIndex = GetRowIndexForDeviceIndex(deviceIndex);
-                deviceList.Add(String.Format("#{0}", rowIndex + 1));
-            }
+            //foreach (DeviceDescriptor descriptor in deviceDescriptors)
+            //{
+            //    //get the Row Index from the Device Index since GetDevices() sorts devices
+            //    int rowIndex = GetRowIndexForDeviceIndex(descriptor);
+            //    deviceList.Add(String.Format("#{0}", rowIndex + 1));
+            //}
 
-            return String.Join(", ", deviceList.ToArray());
+            //return String.Join(", ", deviceList.ToArray());
+            return "???";
         }
 
         //get the index of a device in the grid based on the absolute DeviceIndex returned by the miner
@@ -2515,7 +2521,7 @@ namespace MultiMiner.Win
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
-                deviceConfiguration.DeviceIndex = device.DeviceIndex;
+                deviceConfiguration.Assign(device);
 
                 if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
                 {

@@ -13,7 +13,7 @@ namespace MultiMiner.Engine
         public double StartPrice { get; set; }
         public double EndPrice { get; set; }
         public long AcceptedShares { get; set; }
-        public List<int> DeviceIndexes { get; set; }
+        public List<DeviceDescriptor> DeviceDescriptors { get; set; }
         public MinerConfiguration MinerConfiguration { get; set; }
     }
 }

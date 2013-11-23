@@ -7,7 +7,7 @@ namespace MultiMiner.Xgminer
     {
         public MinerConfiguration()
         {
-            this.DeviceIndexes = new List<int>();
+            this.DeviceDescriptors = new List<DeviceDescriptor>();
             this.Priority = ProcessPriorityClass.Normal;
             this.Pools = new List<MiningPool>();
             this.StratumProxyPort = 8332;
@@ -21,7 +21,7 @@ namespace MultiMiner.Xgminer
         public int ApiPort { get; set; }
         public bool ApiListen { get; set; }
         public string AllowedApiIps { get; set; }
-        public List<int> DeviceIndexes { get; set; }
+        public List<DeviceDescriptor> DeviceDescriptors { get; set; }
         public string Arguments { get; set; }
         public string CoinName { get; set; }
         public bool DisableGpu { get; set; }

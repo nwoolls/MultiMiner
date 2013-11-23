@@ -189,11 +189,8 @@ namespace MultiMiner.Engine
 
             //get a copy using ToList() so we can change the list in the event handler without
             //affecting relaunching processes
-            List<int> deviceIndexes = minerProcess.MinerConfiguration.DeviceIndexes.ToList();
-
-            //we need to rebase GPUs here so that they match the rebasing done in CreateMinerConfiguration()
-            RebaseGpuDeviceIndexes(minerProcess, deviceIndexes);
-
+            List<DeviceDescriptor> deviceDescriptors = minerProcess.MinerConfiguration.DeviceDescriptors.ToList();
+                        
             LogProcessCloseArgs args = new LogProcessCloseArgs();
             args.StartDate = startDate;
             args.EndDate = endDate;
@@ -201,24 +198,12 @@ namespace MultiMiner.Engine
             args.CoinSymbol = coinSymbol;
             args.StartPrice = priceAtStart;
             args.EndPrice = priceAtEnd;
-            args.DeviceIndexes = deviceIndexes;
+            args.DeviceDescriptors = deviceDescriptors;
             args.MinerConfiguration = minerProcess.MinerConfiguration;
             args.AcceptedShares = minerProcess.AcceptedShares;
             this.LogProcessClose(this, args);
         }
-
-        private void RebaseGpuDeviceIndexes(MinerProcess minerProcess, List<int> deviceIndexes)
-        {
-            //we need to rebase GPUs here so that they match the rebasing done in CreateMinerConfiguration()
-            if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
-            {
-                int firstGpuIndex = GetIndexOfFirstGpu();
-
-                for (int i = 0; i < deviceIndexes.Count; i++)
-                    deviceIndexes[i] += firstGpuIndex;
-            }
-        }
-        
+                
         private int GetIndexOfFirstGpu()
         {
             Device firstGpu = devices.Find(d => d.Kind == DeviceKind.GPU);
@@ -414,8 +399,11 @@ namespace MultiMiner.Engine
                     }
 
                     DeviceConfiguration configEntry = new DeviceConfiguration();
+                    
+                    configEntry.Kind = device.Kind;
+                    configEntry.Driver = device.Driver;
+                    configEntry.Path = device.Path;
 
-                    configEntry.DeviceIndex = device.DeviceIndex;
                     configEntry.CoinSymbol = profitableCoin == null ? string.Empty : profitableCoin.Symbol;
                     
                     newConfiguration.Add(configEntry);
@@ -424,7 +412,10 @@ namespace MultiMiner.Engine
                 {
                     DeviceConfiguration configEntry = new DeviceConfiguration();
 
-                    configEntry.DeviceIndex = device.DeviceIndex;
+                    configEntry.Kind = device.Kind;
+                    configEntry.Driver = device.Driver;
+                    configEntry.Path = device.Path;
+
                     configEntry.CoinSymbol = existingConfiguration.CoinSymbol;
                     configEntry.Enabled = false;
 
@@ -532,7 +523,10 @@ namespace MultiMiner.Engine
                     DeviceConfiguration entry1 = configuration1[i];
                     DeviceConfiguration entry2 = configuration2[i];
 
-                    configDifferent = (!entry1.CoinSymbol.Equals(entry2.CoinSymbol) || (entry1.DeviceIndex != entry2.DeviceIndex));
+                    configDifferent = (!entry1.CoinSymbol.Equals(entry2.CoinSymbol)
+                        || (entry1.Kind != entry2.Kind)
+                        || (entry1.Driver != entry2.Driver)
+                        || (entry1.Path != entry2.Path));
                     if (configDifferent)
                         break;
                 }
@@ -615,19 +609,20 @@ namespace MultiMiner.Engine
                 DeviceConfiguration enabledConfiguration = enabledConfigurations[i];
 
                 //don't actually add stratum device as a device index
-                if (devices[enabledConfiguration.DeviceIndex].Kind != DeviceKind.PXY)
+                Device device = DeviceForConfiguration(enabledConfiguration);
+                if (device.Kind != DeviceKind.PXY)
                 {
-                    int deviceIndex = enabledConfiguration.DeviceIndex;
-                    
-                    if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
-                    {
-                        //launching bfgminer with --scrypt makes it ignore all USB devices
-                        //this wasn't an issue until 3.3.0 where -d? started returning GPUs last
-                        //rebase the device index by the number of non-GPU devices before this one
-                        deviceIndex = deviceIndex - firstGpuIndex;
-                    }
+                    //int deviceIndex = enabledConfiguration.DeviceIndex;
+                    //
+                    //if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
+                    //{
+                    //    //launching bfgminer with --scrypt makes it ignore all USB devices
+                    //    //this wasn't an issue until 3.3.0 where -d? started returning GPUs last
+                    //    //rebase the device index by the number of non-GPU devices before this one
+                    //    deviceIndex = deviceIndex - firstGpuIndex;
+                    //}
 
-                    minerConfiguration.DeviceIndexes.Add(deviceIndex);
+                    minerConfiguration.DeviceDescriptors.Add(device);
                 }
                 else
                 {
@@ -659,6 +654,11 @@ namespace MultiMiner.Engine
             minerConfiguration.Arguments = arguments;
 
             return minerConfiguration;
+        }
+
+        private Device DeviceForConfiguration(DeviceConfiguration deviceConfiguration)
+        {
+            return devices.SingleOrDefault(d => d.Equals(deviceConfiguration));
         }
     }
 }

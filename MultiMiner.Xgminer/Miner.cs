@@ -140,7 +140,7 @@ namespace MultiMiner.Xgminer
             if (minerConfiguration.MinerBackend == MinerBackend.Bfgminer)
             {
                 //don't add the serial argument if this is solely a stratum instance
-                if (!minerConfiguration.StratumProxy || (minerConfiguration.DeviceIndexes.Count > 0))
+                if (!minerConfiguration.StratumProxy || (minerConfiguration.DeviceDescriptors.Count > 0))
                 {
                     string serialArg = GetSerialArguments();
 
@@ -172,8 +172,17 @@ namespace MultiMiner.Xgminer
                 arguments = string.Format("{0} {1}", arguments, argument);
             }
 
-            foreach (int deviceIndex in minerConfiguration.DeviceIndexes)
-                arguments = string.Format("{0} -d {1}", arguments, deviceIndex);
+            foreach (DeviceDescriptor deviceDescriptor in minerConfiguration.DeviceDescriptors)
+            {
+                if (deviceDescriptor.Kind == DeviceKind.GPU)
+                {
+                    arguments = string.Format("{0} -d OCL{1}", arguments, deviceDescriptor.RelativeIndex);
+                } else if (deviceDescriptor.Kind == DeviceKind.USB)
+                {
+                    arguments = string.Format("{0} -d {1}:{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Path);
+                }
+                //    arguments = string.Format("{0} -d {1}", arguments, deviceDescriptor);
+            }
 
             if (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
                 //the --scrypt param must come before the --intensity params to use over 13 in latest cgminer
@@ -196,7 +205,7 @@ namespace MultiMiner.Xgminer
             }
 
             //don't mine with GPUs if this is solely a stratum instance
-            if (minerConfiguration.StratumProxy && (minerConfiguration.DeviceIndexes.Count == 0))
+            if (minerConfiguration.StratumProxy && (minerConfiguration.DeviceDescriptors.Count == 0))
                 minerConfiguration.DisableGpu = true;
 
             //required to run from inside an .app package on OS X
