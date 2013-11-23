@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace MultiMiner.Win
 {
-    public partial class CoinsForm : Form
+    public partial class CoinsForm : MessageBoxFontForm
     {
         private List<CoinConfiguration> configurations = new List<CoinConfiguration>();
         private List<CryptoCoin> knownCoins;

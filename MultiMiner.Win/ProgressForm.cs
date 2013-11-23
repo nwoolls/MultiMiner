@@ -2,7 +2,7 @@
 
 namespace MultiMiner.Win
 {
-    public partial class ProgressForm : Form
+    public partial class ProgressForm : MessageBoxFontForm
     {
         public ProgressForm(string labelText)
         {

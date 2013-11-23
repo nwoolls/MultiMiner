@@ -87,6 +87,12 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MessageBoxFontForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageBoxFontForm.Designer.cs">
+      <DependentUpon>MessageBoxFontForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Notifications\NotificationControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

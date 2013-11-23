@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace MultiMiner.Win
 {
-    public partial class CoinChooseForm : Form
+    public partial class CoinChooseForm : MessageBoxFontForm
     {
         public CryptoCoin SelectedCoin { get; set; }
 

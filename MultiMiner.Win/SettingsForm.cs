@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace MultiMiner.Win
 {
-    public partial class SettingsForm : Form
+    public partial class SettingsForm : MessageBoxFontForm
     {
         private readonly XgminerConfiguration minerConfiguration;
         private readonly ApplicationConfiguration applicationConfiguration;

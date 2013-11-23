@@ -18,7 +18,7 @@ using MultiMiner.Xgminer.Api.Responses;
 
 namespace MultiMiner.Win
 {
-    public partial class MainForm : Form
+    public partial class MainForm : MessageBoxFontForm
     {
         private List<Coin.Api.CoinInformation> coinInformation;
         private List<Device> devices;

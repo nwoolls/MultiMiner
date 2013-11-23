@@ -12,7 +12,7 @@ using System.Drawing;
 
 namespace MultiMiner.Win
 {
-    public partial class WizardForm : Form
+    public partial class WizardForm : MessageBoxFontForm
     {
         private List<CryptoCoin> coins;
 

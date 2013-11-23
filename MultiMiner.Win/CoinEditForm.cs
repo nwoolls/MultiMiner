@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace MultiMiner.Win
 {
-    public partial class CoinEditForm : Form
+    public partial class CoinEditForm : MessageBoxFontForm
     {
         private readonly CryptoCoin cryptoCoin;
         public CoinEditForm(CryptoCoin cryptoCoin)
