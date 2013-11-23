@@ -97,10 +97,7 @@ namespace MultiMiner.Win
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            SetupGridColumns();
-
-            //something in the VS IDE keeps moving this
-            enabledColumn.DisplayIndex = 0;            
+            SetupGridColumns();     
 
             logLaunchArgsBindingSource.DataSource = logCloseEntries;
 
@@ -119,7 +116,7 @@ namespace MultiMiner.Win
 
             RefreshCoinAPILabel();
 
-            RefreshCoinComboBox();
+            RefreshCoinPopupMenu();
 
             PositionCoinChooseLabels();
 
@@ -149,9 +146,6 @@ namespace MultiMiner.Win
 
             RefreshDevices();
             
-            if (devices.Count > 0)
-                deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
-
             UpdateMiningButtons();
 
             formLoaded = true;
@@ -361,11 +355,6 @@ namespace MultiMiner.Win
             //format prices in the History grid
             startPriceColumn.DefaultCellStyle.Format = ".########";
             endPriceColumn.DefaultCellStyle.Format = ".########";
-
-            //customized FillWeight doesn't behave properly under Mono on OS X
-            if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
-                foreach (DataGridViewColumn column in deviceGridView.Columns)
-                    column.FillWeight = 100;
         }
 
         private void PositionCoinChooseLabels()
@@ -410,11 +399,68 @@ namespace MultiMiner.Win
             AddMissingDeviceConfigurations();
             //but no configurations for devices that have gone missing
             RemoveExcessDeviceConfigurations();
+            
+            PopulateListViewFromDevices();
+            LoadListViewValuesFromConfiguration();
 
-            deviceBindingSource.DataSource = devices;
-            LoadGridValuesFromConfiguration();
-            CheckAndHideNameColumn();
+            //auto-size columns
+            AutoSizeListViewColumns();
+
             deviceTotalLabel.Text = String.Format("{0} device(s)", devices.Count);
+        }
+
+        private void AutoSizeListViewColumns()
+        {
+            foreach (ColumnHeader column in deviceListView.Columns)
+                column.Width = -2;
+        }
+
+        private void PopulateListViewFromDevices()
+        {
+            deviceListView.BeginUpdate();
+            try
+            {
+                deviceListView.Items.Clear();
+
+                foreach (Device device in devices)
+                {
+                    ListViewItem listViewItem = new ListViewItem();
+
+                    switch (device.Kind)
+                    {
+                        case DeviceKind.GPU:
+                            listViewItem.Group = deviceListView.Groups["gpuListViewGroup"];
+                            break;
+                        case DeviceKind.USB:
+                            listViewItem.Group = deviceListView.Groups["usbListViewGroup"];
+                            break;
+                        case DeviceKind.PXY:
+                            listViewItem.Group = deviceListView.Groups["proxyListViewGroup"];
+                            break;
+                    }
+
+                    listViewItem.Text = device.Name;
+
+                    //start at i = 1, skip the first column
+                    for (int i = 1; i < deviceListView.Columns.Count; i++)
+                    {
+                        ListViewItem.ListViewSubItem listViewSubItem = new ListViewItem.ListViewSubItem(listViewItem, String.Empty);
+                        listViewSubItem.Name = deviceListView.Columns[i].Text;
+                        listViewItem.SubItems.Add(listViewSubItem);
+                    }
+
+                    listViewItem.SubItems["Driver"].Text = device.Driver;
+
+                    deviceListView.Items.Add(listViewItem);
+
+                }
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
+
+
         }
 
         //each device needs to have a DeviceConfiguration
@@ -493,22 +539,14 @@ namespace MultiMiner.Win
             engineConfiguration.SaveDeviceConfigurations();
             UpdateMiningButtons();
         }
-
-        private void CheckAndHideNameColumn()
-        {
-            nameColumn.Visible = devices.Count(d => !string.IsNullOrEmpty(d.Name)) > 0;
-        }
-
+        
         private void LoadSettings()
         {
             engineConfiguration.LoadCoinConfigurations();
             engineConfiguration.LoadDeviceConfigurations();
             engineConfiguration.LoadMinerConfiguration();
             engineConfiguration.LoadStrategyConfiguration();
-
-            coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
-            coinColumn.DisplayStyle = coinColumn.ReadOnly ? DataGridViewComboBoxDisplayStyle.Nothing : DataGridViewComboBoxDisplayStyle.DropDownButton;
-
+            
             RefreshStrategiesLabel();
             RefreshStrategiesCountdown();
 
@@ -605,7 +643,6 @@ namespace MultiMiner.Win
 
         private void ConfigureCoins()
         {
-            deviceGridView.EndEdit(); //so the coin combo is immediately refreshed even if focused
             CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins);
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
@@ -613,7 +650,7 @@ namespace MultiMiner.Win
                 Application.DoEvents();
 
                 engineConfiguration.SaveCoinConfigurations();
-                RefreshCoinComboBox();
+                RefreshCoinPopupMenu();
 
                 //SaveChanges() will restart mining if needed
                 SaveChanges();
@@ -622,48 +659,8 @@ namespace MultiMiner.Win
                 engineConfiguration.LoadCoinConfigurations();
         }
 
-        private void RefreshCoinComboBox()
+        private void RefreshCoinPopupMenu()
         {
-            //remove any Coin values from the grid that may now be invalid
-            RemoveInvalidCoinValues();
-                        
-            //remove any Coin combo items that are no longer valid
-            //cannot clear as there are values bound in the grid
-            RemoveInvalidCoinComboItems();
-
-            AddMissingCoinComboItems();
-
-            coinColumn.Items.Add(string.Empty);
-        }
-
-        private void AddMissingCoinComboItems()
-        {
-            foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
-                if (!coinColumn.Items.Contains(configuration.Coin.Name))
-                    coinColumn.Items.Add(configuration.Coin.Name);
-        }
-
-        private void RemoveInvalidCoinComboItems()
-        {
-            for (int i = coinColumn.Items.Count - 1; i >= 0; i--)
-                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.Coin.Name.Equals(coinColumn.Items[i])) == null)
-                    coinColumn.Items.RemoveAt(i);
-        }
-
-        private void RemoveInvalidCoinValues()
-        {
-            foreach (DataGridViewRow row in deviceGridView.Rows)
-                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.Coin.Name.Equals(row.Cells[coinColumn.Index].Value)) == null)
-                    row.Cells[coinColumn.Index].Value = string.Empty;
-
-            ClearCoinStatsForDisabledCoins();
-        }
-
-        private void deviceGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
-        {
-            if (deviceGridView.CurrentCell.RowIndex >= 0)
-                if (!deviceGridView.CurrentCell.ReadOnly)
-                    deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
         
         private void saveButton_Click(object sender, EventArgs e)
@@ -674,9 +671,8 @@ namespace MultiMiner.Win
 
         private void SaveChanges()
         {
-            SaveGridValuesToConfiguration();
             engineConfiguration.SaveDeviceConfigurations();
-            LoadGridValuesFromConfiguration();
+            LoadListViewValuesFromConfiguration();
 
             UpdateChangesButtons(false);
 
@@ -691,116 +687,53 @@ namespace MultiMiner.Win
         private void cancelButton_Click(object sender, EventArgs e)
         {
             engineConfiguration.LoadDeviceConfigurations();
-            LoadGridValuesFromConfiguration();
+            LoadListViewValuesFromConfiguration();
 
             UpdateChangesButtons(false);
         }
 
         private void deviceGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (!deviceGridView.Columns[e.ColumnIndex].ReadOnly)
-            {
-                UpdateChangesButtons(true);
 
-                if (this.coinInformation != null)
-                    LoadGridValuesFromCoinStats();
-
-                UpdateMiningButtons();
-            }
         }
 
-        private void SaveGridValuesToConfiguration()
-        {
-            deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
 
-            engineConfiguration.DeviceConfigurations.Clear();
+
+        private void LoadListViewValuesFromConfiguration()
+        {
+            bool saveEnabled = saveButton.Enabled;
+
+            deviceListView.BeginUpdate();
 
             for (int i = 0; i < devices.Count; i++)
             {
-                DataGridViewRow gridRow = deviceGridView.Rows[i];
+                DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(c => (c.Equals(devices[i])));
+                ListViewItem listViewItem = deviceListView.Items[i];
 
-                //pull this from coin configurations, not known coins, may not be in CoinChoose
-                string gridRowValue = (string)gridRow.Cells[coinColumn.Index].Value;
-                CryptoCoin coin = null;
-                if (!String.IsNullOrEmpty(gridRowValue))
-                    coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(gridRowValue)).Coin;
-
-                DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
-
-                deviceConfiguration.Assign(devices[i]);
-
-                deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
-                object cellValue = gridRow.Cells[enabledColumn.Index].Value;
-                deviceConfiguration.Enabled = cellValue == null ? true : (bool)cellValue;
-
-                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
-
-            }
-        }
-
-        private void LoadGridValuesFromConfiguration()
-        {
-            bool saveEnabled = saveButton.Enabled;
-            try
-            {
-                for (int i = 0; i < devices.Count; i++)
+                if (deviceConfiguration != null)
                 {
-                    DataGridViewRow gridRow = deviceGridView.Rows[i];
-
-                    DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
-                        c => (c.Equals(devices[i])));
-
-                    if (deviceConfiguration != null)
-                    {
-                        //ensure the coin configuration still exists
-                        CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(deviceConfiguration.CoinSymbol));
-                        if (coinConfiguration != null)
-                            gridRow.Cells[coinColumn.Index].Value = coinConfiguration.Coin.Name;
-                        else
-                            gridRow.Cells[coinColumn.Index].Value = string.Empty;
-
-                        gridRow.Cells[enabledColumn.Index].Value = deviceConfiguration.Enabled;
-                    }
+                    //ensure the coin configuration still exists
+                    CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(deviceConfiguration.CoinSymbol));
+                    if (coinConfiguration != null)
+                        listViewItem.SubItems["Coin"].Text = coinConfiguration.Coin.Name;
                     else
-                    {
-                        gridRow.Cells[coinColumn.Index].Value = string.Empty;
-                        gridRow.Cells[enabledColumn.Index].Value = true;
-                    }
+                        listViewItem.SubItems["Coin"].Text = string.Empty;
+
+                    listViewItem.Checked = deviceConfiguration.Enabled;
+                }
+                else
+                {
+                    listViewItem.SubItems["Coin"].Text = string.Empty;
+                    listViewItem.Checked = true;
                 }
             }
-            finally
-            {
-                //restore button states after
-                UpdateChangesButtons(saveEnabled);
-            }
 
-            //leaving the enabledColumn focused can cause an artifact where it looks unchecked
-            //but isn't
-            if (deviceGridView.RowCount > 0)
-                deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
+            //restore button states after
+            UpdateChangesButtons(saveEnabled);
 
-            RefreshGridColorsFromConfiguration();
+            deviceListView.EndUpdate();
         }
-
-        private void RefreshGridColorsFromConfiguration()
-        {
-            for (int i = 0; i < deviceGridView.Rows.Count; i++)
-            {
-                DataGridViewRow gridRow = deviceGridView.Rows[i];
-                DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
-                    c => c.Equals(devices[i].DeviceIndex));
-
-                foreach (DataGridViewCell gridCell in gridRow.Cells)
-                {
-                    //deviceConfiguration may be null - may be a device that hasn't been configured
-                    if ((deviceConfiguration != null) && !deviceConfiguration.Enabled)                        
-                        gridCell.Style.ForeColor = SystemColors.GrayText;
-                    else
-                        gridCell.Style.ForeColor = SystemColors.WindowText;
-                }
-            }
-        }
-
+        
         private void UpdateMiningButtons()
         {
             startButton.Enabled = MiningConfigurationValid() && !miningEngine.Mining;
@@ -902,7 +835,7 @@ namespace MultiMiner.Win
             RefreshStrategiesCountdown();
 
             //to get changes from strategy config
-            LoadGridValuesFromConfiguration();
+            LoadListViewValuesFromConfiguration();
             //to get updated coin stats for coin changes
             LoadGridValuesFromCoinStats();
 
@@ -1004,66 +937,68 @@ namespace MultiMiner.Win
             if (saveButton.Enabled) //otherwise cleared coin isn't saved yet
                 return;
 
-            foreach (DataGridViewRow row in deviceGridView.Rows)
-                if (row.Cells[coinColumn.Index].Value == null)
-                    ClearDeviceInfoForRow(row);
+            foreach (ListViewItem item in deviceListView.Items)
+                if (!item.Checked)
+                    ClearDeviceInfoForListViewItem(item);
         }
 
-        private void ClearDeviceInfoForRow(DataGridViewRow row)
+        private void ClearDeviceInfoForListViewItem(ListViewItem item)
         {
-            row.Cells[temperatureColumn.Index].Value = null;
-            row.Cells[hashRateColumn.Index].Value = null;
-            row.Cells[acceptedColumn.Index].Value = null;
-            row.Cells[rejectedColumn.Index].Value = null;
-            row.Cells[errorsColumn.Index].Value = null;
-            row.Cells[utilityColumn.Index].Value = null;
-            row.Cells[intensityColumn.Index].Value = null;
-            row.Cells[poolColumn.Index].Value = null;
+            item.SubItems["Temp"].Text = String.Empty;
+            item.SubItems["Hashrate"].Text = String.Empty;
+            item.SubItems["Accepted"].Text = String.Empty;
+            item.SubItems["Rejected"].Text = String.Empty;
+            item.SubItems["Errors"].Text = String.Empty;
+            item.SubItems["Utility"].Text = String.Empty;
+            item.SubItems["Intensity"].Text = String.Empty;
+            item.SubItems["Pool"].Text = String.Empty;
         }
 
-        private void PopulateDeviceInfoForRow(DeviceInformationResponse deviceInformation, DataGridViewRow row)
+        private void PopulateDeviceInfoForListViewItem(DeviceInformationResponse deviceInformation, ListViewItem item)
         {
             //stratum devices get lumped together, so we sum those
             if (deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
             {
-                row.Cells[hashRateColumn.Index].Value = (double)(row.Cells[hashRateColumn.Index].Value ?? 0.00) + deviceInformation.AverageHashrate;
-                row.Cells[acceptedColumn.Index].Value = (int)(row.Cells[acceptedColumn.Index].Value ?? 0) + deviceInformation.AcceptedShares;
-                row.Cells[rejectedColumn.Index].Value = (int)(row.Cells[rejectedColumn.Index].Value ?? 0) + deviceInformation.RejectedShares;
-                row.Cells[errorsColumn.Index].Value = (int)(row.Cells[errorsColumn.Index].Value ?? 0) + deviceInformation.HardwareErrors;
-                row.Cells[utilityColumn.Index].Value = (double)(row.Cells[utilityColumn.Index].Value ?? 0.00) + deviceInformation.Utility;
+                item.SubItems["Hashrate"].Text = ((String.IsNullOrEmpty(item.SubItems["Hashrate"].Text) ? 0.00 : double.Parse(item.SubItems["Hashrate"].Text)) + deviceInformation.AverageHashrate).ToString();
+                item.SubItems["Accepted"].Text = ((String.IsNullOrEmpty(item.SubItems["Accepted"].Text) ? 0 : int.Parse(item.SubItems["Accepted"].Text)) + deviceInformation.AcceptedShares).ToString();
+                item.SubItems["Rejected"].Text = ((String.IsNullOrEmpty(item.SubItems["Rejected"].Text) ? 0 : int.Parse(item.SubItems["Rejected"].Text)) + deviceInformation.RejectedShares).ToString();
+                item.SubItems["Errors"].Text = ((String.IsNullOrEmpty(item.SubItems["Errors"].Text) ? 0 : int.Parse(item.SubItems["Errors"].Text)) + deviceInformation.HardwareErrors).ToString();
+                item.SubItems["Utility"].Text = ((String.IsNullOrEmpty(item.SubItems["Utility"].Text) ? 0.00 : double.Parse(item.SubItems["Utility"].Text)) + deviceInformation.Utility).ToString();
             }
             else
             {
-                row.Cells[hashRateColumn.Index].Value = deviceInformation.AverageHashrate;
-                row.Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
-                row.Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
-                row.Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
-                row.Cells[utilityColumn.Index].Value = deviceInformation.Utility;
+                item.SubItems["Hashrate"].Text = deviceInformation.AverageHashrate.ToString();
+                item.SubItems["Accepted"].Text = deviceInformation.AcceptedShares.ToString();
+                item.SubItems["Rejected"].Text = deviceInformation.RejectedShares.ToString();
+                item.SubItems["Errors"].Text = deviceInformation.HardwareErrors.ToString();
+                item.SubItems["Utility"].Text = deviceInformation.Utility.ToString();
             }
 
-            row.Cells[temperatureColumn.Index].Value = deviceInformation.Temperature;
-            row.Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
-            PopulatePoolForRow(deviceInformation.PoolIndex, row);
+            item.SubItems["Temp"].Text = deviceInformation.Temperature.ToString();
+            item.SubItems["Intensity"].Text = deviceInformation.Intensity;
+
+            PopulatePoolForListViewItem(deviceInformation.PoolIndex, item);
         }
 
-        private void PopulatePoolForRow(int poolIndex, DataGridViewRow row)
+        private void PopulatePoolForListViewItem(int poolIndex, ListViewItem item)
         {
             if (poolIndex >= 0)
             {
-                CoinConfiguration coinConfiguration = CoinConfigurationForRow(row);
+                CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
                 string poolHost = coinConfiguration.Pools[poolIndex].Host;
                 string poolDomain = GetDomainNameFromHost(poolHost);
-                row.Cells[poolColumn.Index].Value = poolDomain;
+
+                item.SubItems["Pool"].Text = poolDomain;
             }
             else
             {
-                row.Cells[poolColumn.Index].Value = String.Empty;
+                item.SubItems["Pool"].Text = String.Empty;
             }
         }
 
-        private CoinConfiguration CoinConfigurationForRow(DataGridViewRow row)
+        private CoinConfiguration CoinConfigurationForListViewItem(ListViewItem item)
         {
-            string rowCoinName = (string)row.Cells[coinColumn.Index].Value;
+            string rowCoinName = item.SubItems["Coin"].Text;
             CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(rowCoinName, StringComparison.OrdinalIgnoreCase));
             return coinConfiguration;
         }
@@ -1095,28 +1030,28 @@ namespace MultiMiner.Win
 
         private void ClearAllMinerStats()
         {
-            foreach (DataGridViewRow row in deviceGridView.Rows)
-                ClearDeviceInfoForRow(row);
+            foreach (ListViewItem item in deviceListView.Items)
+                ClearDeviceInfoForListViewItem(item);
         }
 
         private void ClearAllCoinStats()
         {
-            foreach (DataGridViewRow row in deviceGridView.Rows)
-                ClearCoinStatsForGridRow(row);
+            foreach (ListViewItem item in deviceListView.Items)
+                ClearCoinStatsForGridListViewItem(item);
         }
 
         private void ClearCoinStatsForDisabledCoins()
         {
-            foreach (DataGridViewRow row in deviceGridView.Rows)
-                if (string.IsNullOrEmpty((string)row.Cells[coinColumn.Index].Value))
-                    ClearCoinStatsForGridRow(row);
+            foreach (ListViewItem item in deviceListView.Items)
+                if (string.IsNullOrEmpty(item.SubItems["Coin"].Text))
+                    ClearCoinStatsForGridListViewItem(item);
         }
 
-        private void ClearCoinStatsForGridRow(DataGridViewRow gridRow)
+        private void ClearCoinStatsForGridListViewItem(ListViewItem item)
         {
-            gridRow.Cells[difficultyColumn.Index].Value = null;
-            gridRow.Cells[priceColumn.Index].Value = null;
-            gridRow.Cells[profitabilityColumn.Index].Value = null;
+            item.SubItems["Difficulty"].Text = String.Empty;
+            item.SubItems["Price"].Text = String.Empty;
+            item.SubItems["Profitability"].Text = String.Empty;
         }
 
         private void LogApiEvent(object sender, Xgminer.Api.LogEventArgs eventArgs)
@@ -1272,10 +1207,10 @@ namespace MultiMiner.Win
                 //this is because the PXY row stats get summed                
                 foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                 {
-                    int rowIndex = GetRowIndexForDeviceInformation(deviceInformation, processDevices);
+                    int rowIndex = GetItemIndexForDeviceInformation(deviceInformation, processDevices);
                     if (rowIndex >= 0)
                         //could legitimately be -1 if the API is returning a device we don't know about
-                        ClearDeviceInfoForRow(deviceGridView.Rows[rowIndex]);
+                        ClearDeviceInfoForListViewItem(deviceListView.Items[rowIndex]);
                 }
 
                 //clear accepted shares as we'll be summing that as well
@@ -1298,16 +1233,16 @@ namespace MultiMiner.Win
                             minerProcess.HasPoorPerformingDevice = true;
                     }
 
-                    int rowIndex = GetRowIndexForDeviceInformation(deviceInformation, processDevices);
+                    int itemIndex = GetItemIndexForDeviceInformation(deviceInformation, processDevices);
 
-                    if (rowIndex >= 0)
+                    if (itemIndex >= 0)
                     {
                         if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
                             totalScryptRate += deviceInformation.AverageHashrate;
                         else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
                             totalSha256Rate += deviceInformation.AverageHashrate;
 
-                        PopulateDeviceInfoForRow(deviceInformation, deviceGridView.Rows[rowIndex]);
+                        PopulateDeviceInfoForListViewItem(deviceInformation, deviceListView.Items[itemIndex]);
 
                         if (deviceInformation.Temperature > 0)
                             hasTempValue = true;
@@ -1324,11 +1259,13 @@ namespace MultiMiner.Win
             sha256RateLabel.Text = string.Format("SHA256: {0} Mh/s", totalSha256Rate / 1000); //Mh not mh, mh is milli
             notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
 
+            AutoSizeListViewColumns();
+
             //hide the temperature column if there are no tempts returned (USBs, OS X, etc)
-            temperatureColumn.Visible = hasTempValue;
+            //tempColumnHeader.Visible = hasTempValue;
 
             //hide the intensity column if there are no intensities returned (USBs)
-            intensityColumn.Visible = hasIntensityValue;
+            //intensityColumnHeader.Visible = hasIntensityValue;
         }
 
         private List<DeviceInformationResponse> GetDeviceInfoFromProcess(MinerProcess minerProcess)
@@ -1421,7 +1358,7 @@ namespace MultiMiner.Win
             return summaryInformation;
         }
         
-        private int GetRowIndexForDeviceInformation(DeviceInformationResponse deviceInformation, IEnumerable<DeviceDetailsResponse> processDevices)
+        private int GetItemIndexForDeviceInformation(DeviceInformationResponse deviceInformation, IEnumerable<DeviceDetailsResponse> processDevices)
         {
             DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
                 && (d.ID == deviceInformation.ID));
@@ -1490,7 +1427,7 @@ namespace MultiMiner.Win
                 //save any changes made by the engine
                 engineConfiguration.SaveDeviceConfigurations();
                 //to get changes from strategy config
-                LoadGridValuesFromConfiguration();
+                LoadListViewValuesFromConfiguration();
                 //to refresh coin stats due to changed coin selections
                 LoadGridValuesFromCoinStats();
             }
@@ -1705,29 +1642,29 @@ namespace MultiMiner.Win
 
             if (coinInformation != null) //null if no network connection
                 foreach (Coin.Api.CoinInformation coin in coinInformation)
-                    foreach (DataGridViewRow row in deviceGridView.Rows)
+                    foreach (ListViewItem item in deviceListView.Items)
                     {
-                        CoinConfiguration coinConfiguration = CoinConfigurationForRow(row);
+                        CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
                         if ((coinConfiguration != null) &&  coin.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase))
-                            PopulateCoinStatsForRow(coin, row);
+                            PopulateCoinStatsForListViewItem(coin, item);
                     }
         }
 
-        private void PopulateCoinStatsForRow(Coin.Api.CoinInformation coin, DataGridViewRow row)
+        private void PopulateCoinStatsForListViewItem(Coin.Api.CoinInformation coin, ListViewItem item)
         {
-            row.Cells[difficultyColumn.Index].Value = coin.Difficulty.ToString(".##########");
-            row.Cells[priceColumn.Index].Value = coin.Price.ToString(".##########");
+            item.SubItems["Difficulty"].Text = coin.Difficulty.ToString(".##########");
+            item.SubItems["Price"].Text = coin.Price.ToString(".##########");
 
             switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
             {
                 case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
-                    row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AdjustedProfitability, 2);
+                    item.SubItems["Profitability"].Text = Math.Round(coin.AdjustedProfitability, 2).ToString();
                     break;
                 case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
-                    row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AverageProfitability, 2);
+                    item.SubItems["Profitability"].Text = Math.Round(coin.AverageProfitability, 2).ToString();
                     break;
                 case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
-                    row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.Profitability, 2);
+                    item.SubItems["Profitability"].Text = Math.Round(coin.Profitability, 2).ToString();
                     break;
             }
         }
@@ -1799,9 +1736,6 @@ namespace MultiMiner.Win
                 applicationConfiguration.SaveApplicationConfiguration();
                 SetupCoinStatsTimer();
                 
-                coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
-                coinColumn.DisplayStyle = coinColumn.ReadOnly ? DataGridViewComboBoxDisplayStyle.Nothing : DataGridViewComboBoxDisplayStyle.DropDownButton;
-
                 //so updated profitability is shown
                 RefreshCoinStats();
 
@@ -2427,9 +2361,7 @@ namespace MultiMiner.Win
         {
             bool wasMining = miningEngine.Mining;
             StopMining();
-
-            deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
-
+            
             string coinSymbol = (string)((ToolStripMenuItem)sender).Tag;
 
             CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(coinSymbol));
@@ -2437,13 +2369,11 @@ namespace MultiMiner.Win
             SetAllDevicesToCoin(coinConfiguration);
 
             engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false; 
-            coinColumn.ReadOnly = false;
-            coinColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.DropDownButton;
 
             engineConfiguration.SaveDeviceConfigurations();
             engineConfiguration.SaveStrategyConfiguration();
 
-            LoadGridValuesFromConfiguration();
+            LoadListViewValuesFromConfiguration();
 
             if (wasMining)
                 StartMining();
@@ -2455,9 +2385,10 @@ namespace MultiMiner.Win
 
             for (int i = 0; i < devices.Count; i++)
             {
-                DataGridViewRow gridRow = deviceGridView.Rows[i];
+                ListViewItem listViewItem = deviceListView.Items[i];
+
                 Device device = devices[i];
-                CryptoCoin currentCoin = knownCoins.SingleOrDefault(c => c.Name.Equals(gridRow.Cells[coinColumn.Index].Value));
+                CryptoCoin currentCoin = knownCoins.SingleOrDefault(c => c.Name.Equals(listViewItem.SubItems["Coin"].Text));
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
@@ -2475,8 +2406,7 @@ namespace MultiMiner.Win
                     deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
                 }
 
-                object cellValue = gridRow.Cells[enabledColumn.Index].Value;
-                deviceConfiguration.Enabled = cellValue == null ? true : (bool)cellValue;
+                deviceConfiguration.Enabled = listViewItem.Checked;
 
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
@@ -2709,9 +2639,6 @@ namespace MultiMiner.Win
 
         private void deviceGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            //don't show 0 temps
-            if ((e.ColumnIndex == temperatureColumn.Index) && (e.Value != null) && ((double)e.Value == 0))
-                e.Value = null;
         }
 
         private void minerSummaryTimer_Tick(object sender, EventArgs e)
