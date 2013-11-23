@@ -2546,6 +2546,10 @@ namespace MultiMiner.Win
             }
 
             string installedMinerVersion = Engine.Installer.GetInstalledMinerVersion();
+            
+            if (!AutomaticUpgradeAllowed(installedMinerVersion, availableMinerVersion))
+                return;
+
             if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
             {
                 notificationsControl.AddNotification(multiMinerNotificationId.ToString(),
@@ -2559,6 +2563,14 @@ namespace MultiMiner.Win
                                 StartMining();
                         }, "http://releases.multiminerapp.com");
             }
+        }
+
+        private bool AutomaticUpgradeAllowed(string installedMinerVersion, string availableMinerVersion)
+        {
+            //don't automatically prompt to upgrade from 1.0 to 2.0
+            Version sourceVersion = new Version(installedMinerVersion);
+            Version targetVersion = new Version(availableMinerVersion);
+            return sourceVersion.Major == targetVersion.Major;
         }
 
         private bool ThisVersionGreater(string thisVersion, string thatVersion)
