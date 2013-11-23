@@ -59,7 +59,7 @@ namespace MultiMiner.Xgminer
 
             if (minerConfiguration.MinerBackend == MinerBackend.Bfgminer)
             {
-                string serialArg = GetSerialArguments();
+                string serialArg = GetListSerialArguments();
 
                 arguments = String.Format("{0} {1}", arguments, serialArg);
             }
@@ -96,7 +96,7 @@ namespace MultiMiner.Xgminer
             return result;
         }
 
-        private string GetSerialArguments()
+        private string GetListSerialArguments()
         {
             string serialArg = Bfgminer.MinerParameter.ScanSerialAll;
             if (minerConfiguration.BitfuryCompatibility)
@@ -139,13 +139,8 @@ namespace MultiMiner.Xgminer
 
             if (minerConfiguration.MinerBackend == MinerBackend.Bfgminer)
             {
-                //don't add the serial argument if this is solely a stratum instance
-                if (!minerConfiguration.StratumProxy || (minerConfiguration.DeviceDescriptors.Count > 0))
-                {
-                    string serialArg = GetSerialArguments();
-
-                    arguments = String.Format("{0} {1}", arguments, serialArg);
-                }
+                string serialArg = "-S noauto";
+                arguments = String.Format("{0} {1}", arguments, serialArg);
 
                 if (minerConfiguration.StratumProxy)
                 {
@@ -176,10 +171,10 @@ namespace MultiMiner.Xgminer
             {
                 if (deviceDescriptor.Kind == DeviceKind.GPU)
                 {
-                    arguments = string.Format("{0} -d OCL{1}", arguments, deviceDescriptor.RelativeIndex);
+                    arguments = string.Format("{0} -S opencl:auto -d OCL{1}", arguments, deviceDescriptor.RelativeIndex);
                 } else if (deviceDescriptor.Kind == DeviceKind.USB)
                 {
-                    arguments = string.Format("{0} -d {1}:{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Path);
+                    arguments = string.Format("{0} -S {1}:{2} -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Path);
                 }
                 //    arguments = string.Format("{0} -d {1}", arguments, deviceDescriptor);
             }
@@ -253,7 +248,7 @@ namespace MultiMiner.Xgminer
                 }
                 else
                 {
-                    startInfo.Arguments = startInfo.Arguments + " --disable-gpu";
+                    startInfo.Arguments = String.Format("{0} {1}", startInfo.Arguments, Bfgminer.MinerParameter.ScanSerialOpenCLNoAuto);
                 }
             }
 

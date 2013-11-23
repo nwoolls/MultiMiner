@@ -82,6 +82,17 @@ namespace MultiMiner.Engine.Configuration
         {
             DeviceConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<DeviceConfiguration>>(DeviceConfigurationsFileName());
             RemoveIvalidCoinsFromDeviceConfigurations();
+            RemoveDuplicateDeviceConfigurations();
+        }
+
+        //this is necessary due to large changes to the class definition and streaming in / deserializing
+        //older legacy XML
+        private void RemoveDuplicateDeviceConfigurations()
+        {
+            DeviceConfigurations = DeviceConfigurations
+                .GroupBy(c => new { c.Kind, c.RelativeIndex, c.Driver, c.Path })
+                .Select(c => c.First())
+                .ToList();
         }
 
         public static string CoinConfigurationsFileName()

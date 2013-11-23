@@ -77,8 +77,6 @@ namespace MultiMiner.Xgminer
             startInfo.CreateNoWindow = true;
             startInfo.RedirectStandardOutput = true;
 
-            startInfo.Arguments = startInfo.Arguments + " --disable-gpu";
-
             if (minerBackend == MinerBackend.Cgminer)
             {
                 string noGpuFilePath;
@@ -88,11 +86,15 @@ namespace MultiMiner.Xgminer
                     noGpuFilePath = startInfo.FileName + "-nogpu";
                 else
                     noGpuFilePath = executablePath.Replace("cgminer.exe", "cgminer-nogpu.exe");
-                
+
                 //first make sure the exe exists. this became necessary with cgminer 3.8.0 because
                 //ck stopped shipping cgminer-nogpu.exe, as cgminer.exe has no GPU support in 3.8
                 if (File.Exists(noGpuFilePath))
                     startInfo.FileName = noGpuFilePath;
+            }
+            else
+            {
+                startInfo.Arguments = String.Format("{0} {1}", startInfo.Arguments, Bfgminer.MinerParameter.ScanSerialOpenCLNoAuto);
             }
 
             Process process = Process.Start(startInfo);

@@ -793,7 +793,7 @@ namespace MultiMiner.Win
                     DataGridViewRow gridRow = deviceGridView.Rows[i];
 
                     DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
-                        c => (c.Equals(devices[i].DeviceIndex)));
+                        c => (c.Equals(devices[i])));
 
                     if (deviceConfiguration != null)
                     {
