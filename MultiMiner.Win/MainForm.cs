@@ -951,29 +951,32 @@ namespace MultiMiner.Win
             item.SubItems["Pool"].Text = String.Empty;
         }
 
-        private void PopulateDeviceInfoForListViewItem(DeviceInformationResponse deviceInformation, ListViewItem item)
+        private void PopulateDeviceStatsForListViewItem(DeviceInformationResponse deviceInformation, ListViewItem item)
         {
             //stratum devices get lumped together, so we sum those
             if (deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
             {
                 item.SubItems["Hashrate"].Tag = (double)(item.SubItems["Hashrate"].Tag ?? 0.00) + deviceInformation.AverageHashrate;
-
-                item.SubItems["Hashrate"].Text = FormatHashrate((double)item.SubItems["Hashrate"].Tag);
-
-                item.SubItems["Accepted"].Text = ((String.IsNullOrEmpty(item.SubItems["Accepted"].Text) ? 0 : int.Parse(item.SubItems["Accepted"].Text)) + deviceInformation.AcceptedShares).ToString();
-                item.SubItems["Rejected"].Text = ((String.IsNullOrEmpty(item.SubItems["Rejected"].Text) ? 0 : int.Parse(item.SubItems["Rejected"].Text)) + deviceInformation.RejectedShares).ToString();
-                item.SubItems["Errors"].Text = ((String.IsNullOrEmpty(item.SubItems["Errors"].Text) ? 0 : int.Parse(item.SubItems["Errors"].Text)) + deviceInformation.HardwareErrors).ToString();
-                item.SubItems["Utility"].Text = ((String.IsNullOrEmpty(item.SubItems["Utility"].Text) ? 0.00 : double.Parse(item.SubItems["Utility"].Text)) + deviceInformation.Utility).ToString();
+                item.SubItems["Rejected"].Tag = (int)(item.SubItems["Rejected"].Tag ?? 0) + deviceInformation.RejectedShares;
+                item.SubItems["Errors"].Tag = (int)(item.SubItems["Errors"].Tag ?? 0) + deviceInformation.HardwareErrors;
+                item.SubItems["Accepted"].Tag = (int)(item.SubItems["Accepted"].Tag ?? 0) + deviceInformation.AcceptedShares;
+                item.SubItems["Utility"].Tag = (double)(item.SubItems["Utility"].Tag ?? 0.00) + deviceInformation.Utility;
             }
             else
             {
-                item.SubItems["Hashrate"].Text = FormatHashrate(deviceInformation.AverageHashrate);
-                item.SubItems["Accepted"].Text = deviceInformation.AcceptedShares.ToString();
-                item.SubItems["Rejected"].Text = deviceInformation.RejectedShares.ToString();
-                item.SubItems["Errors"].Text = deviceInformation.HardwareErrors.ToString();
-                item.SubItems["Utility"].Text = deviceInformation.Utility.ToString();
+                item.SubItems["Hashrate"].Tag = deviceInformation.AverageHashrate;
+                item.SubItems["Rejected"].Tag = deviceInformation.RejectedShares;
+                item.SubItems["Errors"].Tag = deviceInformation.HardwareErrors;
+                item.SubItems["Accepted"].Tag = deviceInformation.AcceptedShares;
+                item.SubItems["Utility"].Tag = deviceInformation.Utility;
             }
 
+            item.SubItems["Hashrate"].Text = FormatHashrate((double)item.SubItems["Hashrate"].Tag);
+            item.SubItems["Rejected"].Text = (int)item.SubItems["Rejected"].Tag > 0 ? ((int)item.SubItems["Rejected"].Tag).ToString() : String.Empty;
+            item.SubItems["Errors"].Text = (int)item.SubItems["Errors"].Tag > 0 ? ((int)item.SubItems["Errors"].Tag).ToString() : String.Empty;
+            item.SubItems["Accepted"].Text = (int)item.SubItems["Accepted"].Tag > 0 ? ((int)item.SubItems["Accepted"].Tag).ToString() : String.Empty;
+            item.SubItems["Utility"].Text = (double)item.SubItems["Utility"].Tag > 0.00 ? ((double)item.SubItems["Utility"].Tag).ToString() : String.Empty;
+            
             item.SubItems["Temp"].Text = deviceInformation.Temperature > 0 ? deviceInformation.Temperature.ToString() + "°" : String.Empty;
             item.SubItems["Intensity"].Text = deviceInformation.Intensity;
 
@@ -1276,7 +1279,7 @@ namespace MultiMiner.Win
                         else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
                             totalSha256Rate += deviceInformation.AverageHashrate;
 
-                        PopulateDeviceInfoForListViewItem(deviceInformation, deviceListView.Items[itemIndex]);
+                        PopulateDeviceStatsForListViewItem(deviceInformation, deviceListView.Items[itemIndex]);
 
                         if (deviceInformation.Temperature > 0)
                             hasTempValue = true;
