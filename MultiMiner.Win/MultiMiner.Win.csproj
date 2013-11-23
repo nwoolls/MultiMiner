@@ -81,12 +81,6 @@
     <Compile Include="ApiLogEntry.cs" />
     <Compile Include="HourGlass.cs" />
     <Compile Include="InputValidation.cs" />
-    <Compile Include="InstallMinerForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="InstallMinerForm.Designer.cs">
-      <DependentUpon>InstallMinerForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,9 +141,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CoinsForm.resx">
       <DependentUpon>CoinsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="InstallMinerForm.resx">
-      <DependentUpon>InstallMinerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -243,9 +234,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Miners\bfgminer\Extract bfgminer here.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Miners\cgminer\Extract cgminer here.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\computer-control_play.png" />

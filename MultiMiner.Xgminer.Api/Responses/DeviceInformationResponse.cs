@@ -7,7 +7,7 @@ namespace MultiMiner.Xgminer.Api.Responses
         public DeviceInformationResponse()
         {
             Status = String.Empty;
-            Name = String.Empty; //cgminer may / does not return this
+            Name = String.Empty;
         }
 
         public string Kind { get; set; }

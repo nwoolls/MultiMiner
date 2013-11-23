@@ -41,7 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationFailedArgs.cs" />
-    <Compile Include="Bfgminer\MinerParameter.cs" />
     <Compile Include="CoinAlgorithm.cs" />
     <Compile Include="Device\Device.cs" />
     <Compile Include="Device\DeviceDescriptor.cs" />
@@ -50,7 +49,6 @@
     <Compile Include="Installer.cs" />
     <Compile Include="LaunchFailedArgs.cs" />
     <Compile Include="LogLaunchArgs.cs" />
-    <Compile Include="MinerBackend.cs" />
     <Compile Include="MinerLaunchException.cs" />
     <Compile Include="MiningPool.cs" />
     <Compile Include="Parsers\DeviceListParser.cs" />

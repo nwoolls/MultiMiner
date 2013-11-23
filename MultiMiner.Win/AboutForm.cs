@@ -34,18 +34,17 @@ namespace MultiMiner.Win
             string multiMinerVersion = Engine.Installer.GetInstalledMinerVersion();
             multiMinerLabel.Text = "MultiMiner " + multiMinerVersion;
 
-            PopulateXgminerVersion(Xgminer.MinerBackend.Cgminer, cgminerLabel);
-            PopulateXgminerVersion(Xgminer.MinerBackend.Bfgminer, bfgminerLabel);
+            PopulateXgminerVersion(bfgminerLabel);
         }
 
-        private static void PopulateXgminerVersion(MultiMiner.Xgminer.MinerBackend minerBackend, Label targetLabel)
+        private static void PopulateXgminerVersion(Label targetLabel)
         {
-            string xgminerName = MinerPath.GetMinerName(minerBackend);
-            string xgminerPath = MinerPath.GetPathToInstalledMiner(minerBackend);
+            string xgminerName = MinerPath.GetMinerName();
+            string xgminerPath = MinerPath.GetPathToInstalledMiner();
             string xgminerVersion = String.Empty;
 
             if (File.Exists(xgminerPath))
-                xgminerVersion = Xgminer.Installer.GetInstalledMinerVersion(minerBackend, xgminerPath);
+                xgminerVersion = Xgminer.Installer.GetInstalledMinerVersion(xgminerPath);
 
             if (string.IsNullOrEmpty(xgminerVersion))
                 targetLabel.Text = String.Format("{0} not installed", xgminerName);

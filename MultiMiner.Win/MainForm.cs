@@ -117,7 +117,6 @@ namespace MultiMiner.Win
             
             LoadSettings();
 
-            RefreshBackendLabel();
             RefreshCoinAPILabel();
 
             RefreshCoinComboBox();
@@ -292,7 +291,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private void CheckAndDownloadMiners()
+        private static void CheckAndDownloadMiners()
         {
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
                 return; //can't auto download binaries on Linux
@@ -300,46 +299,14 @@ namespace MultiMiner.Win
             bool hasMiners = HasMinersInstalled();
 
             if (!hasMiners)
-            {
-                InstallMinerForm minerForm = new InstallMinerForm();
-
-                DialogResult messageBoxResult = minerForm.ShowDialog();
-                if (messageBoxResult == System.Windows.Forms.DialogResult.Yes)
-                {
-                    if ((minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Cgminer) ||
-                        (minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Both))
-                    {
-                        MinerBackend minerBackend = MinerBackend.Cgminer;
-                        InstallMiner(minerBackend);
-                    }
-
-                    if ((minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Bfgminer) ||
-                        (minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Both))
-                    {
-                        MinerBackend minerBackend = MinerBackend.Bfgminer;
-                        InstallMiner(minerBackend);
-                    }
-
-                    if ((minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Cgminer) ||
-                        (minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Both))
-                    {
-                        engineConfiguration.XgminerConfiguration.MinerBackend = MinerBackend.Cgminer;
-                    }
-                    else if (minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Bfgminer)
-                    {
-                        engineConfiguration.XgminerConfiguration.MinerBackend = MinerBackend.Bfgminer;
-                    }
-
-                    engineConfiguration.SaveMinerConfiguration();
-                }
-            }
+                InstallMiner();
         }
         
-        private static void InstallMiner(MinerBackend minerBackend)
+        private static void InstallMiner()
         {
-            string minerName = MinerPath.GetMinerName(minerBackend);
+            string minerName = MinerPath.GetMinerName();
 
-            ProgressForm progressForm = new ProgressForm("Downloading and installing " + minerName + " from " + Xgminer.Installer.GetMinerDownloadRoot(minerBackend));
+            ProgressForm progressForm = new ProgressForm(String.Format("Downloading and installing {0} from {1}", minerName, Xgminer.Installer.GetMinerDownloadRoot()));
             progressForm.Show();
 
             //for Mono - show the UI
@@ -350,7 +317,7 @@ namespace MultiMiner.Win
             {
                 string minerPath = Path.Combine("Miners", minerName);
                 string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
-                Xgminer.Installer.InstallMiner(minerBackend, destinationFolder);
+                Xgminer.Installer.InstallMiner(destinationFolder);
             }
             finally
             {
@@ -360,23 +327,18 @@ namespace MultiMiner.Win
 
         private static bool HasMinersInstalled()
         {
-            bool hasMiners = MinerIsInstalled(MinerBackend.Cgminer);
-
-            if (!hasMiners)
-                hasMiners = MinerIsInstalled(MinerBackend.Bfgminer);
-
-            return hasMiners;
+            return MinerIsInstalled();
         }
         
-        private static bool MinerIsInstalled(MinerBackend minerBackend)
+        private static bool MinerIsInstalled()
         {
-            string path = MinerPath.GetPathToInstalledMiner(minerBackend);
+            string path = MinerPath.GetPathToInstalledMiner();
             return File.Exists(path);
         }
 
         private void CheckForDisownedMiners()
         {
-            string minerName = MinerPath.GetMinerName(engineConfiguration.XgminerConfiguration.MinerBackend);
+            string minerName = MinerPath.GetMinerName();
 
             List<Process> disownedMiners = Process.GetProcessesByName(minerName).ToList();
 
@@ -490,18 +452,17 @@ namespace MultiMiner.Win
 
             if (OSVersionPlatform.GetConcretePlatform() != PlatformID.Unix)
             {
-                MinerBackend minerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
-                string minerName = MinerPath.GetMinerName(minerBackend);
+                string minerName = MinerPath.GetMinerName();
 
                 DialogResult dialogResult = MessageBox.Show(String.Format(
-                    "The miner specified in your settings, {0}, is not installed. " +
+                    "No copy of bfgminer was detected. " +
                     "Would you like to download and install {0} now?", minerName), "Miner Not Found",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 
                 if (dialogResult == System.Windows.Forms.DialogResult.Yes)
                 {
-                    InstallMiner(minerBackend);
+                    InstallMiner();
                     RefreshDevices();
                     showWarning = false;
                 }
@@ -509,7 +470,7 @@ namespace MultiMiner.Win
 
             if (showWarning)
             {                
-                MessageBox.Show("The miner specified in your settings was not found. Please go to https://github.com/nwoolls/multiminer for instructions on installing either cgminer or bfgminer.",
+                MessageBox.Show("No copy of bfgminer was detected. Please go to https://github.com/nwoolls/multiminer for instructions on installing bfgminer.",
                     "Miner Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -610,20 +571,14 @@ namespace MultiMiner.Win
         {
             MinerConfiguration minerConfiguration = new MinerConfiguration();
 
-            minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
-            minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner(minerConfiguration.MinerBackend);
-            minerConfiguration.ErupterDriver = engineConfiguration.XgminerConfiguration.ErupterDriver;
-            minerConfiguration.BitfuryCompatibility = engineConfiguration.XgminerConfiguration.BitfuryCompatibility;
-
+            minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner();
             minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
 
             Miner miner = new Miner(minerConfiguration);
 
-
             List<Device> detectedDevices = miner.ListDevices();
 
-            if ((engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Bfgminer) &&
-                engineConfiguration.XgminerConfiguration.StratumProxy)
+            if (engineConfiguration.XgminerConfiguration.StratumProxy)
             {
                 Device proxyDevice = new Device();
                 proxyDevice.Kind = DeviceKind.PXY;
@@ -958,9 +913,8 @@ namespace MultiMiner.Win
         {
             const string bakExtension = ".mmbak";
 
-            MinerBackend minerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
-            string minerName = MinerPath.GetMinerName(minerBackend);
-            string minerExecutablePath = MinerPath.GetPathToInstalledMiner(minerBackend);
+            string minerName = MinerPath.GetMinerName();
+            string minerExecutablePath = MinerPath.GetPathToInstalledMiner();
             string confFileFilePath = String.Empty;
 
             if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
@@ -991,15 +945,7 @@ namespace MultiMiner.Win
 
             return true;           
         }
-
-        private void RefreshBackendLabel()
-        {
-            if (engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Bfgminer)
-                backendLabel.Text = "Backend: bfgminer";
-            else if (engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Cgminer)
-                backendLabel.Text = "Backend: cgminer";
-        }
-
+        
         private void ShowApplicationSettings()
         {
             SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration);
@@ -1013,7 +959,6 @@ namespace MultiMiner.Win
                 engineConfiguration.SaveMinerConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
                 RefreshDevices();
-                RefreshBackendLabel();
                 RefreshCoinAPILabel();
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
                 SetupRestartTimer();
@@ -2565,23 +2510,19 @@ namespace MultiMiner.Win
             //we cannot auto install miners on Unix (yet)
             if (applicationConfiguration.CheckForMinerUpdates && (concretePlatform != PlatformID.Unix))
             {
-                MinerBackend minerBackend = MinerBackend.Cgminer;
-                TryToCheckForMinerUpdates(minerBackend);
-
-                minerBackend = MinerBackend.Bfgminer;
-                TryToCheckForMinerUpdates(minerBackend);
+                TryToCheckForMinerUpdates();
             }
         }
 
-        private void TryToCheckForMinerUpdates(MinerBackend minerBackend)
+        private void TryToCheckForMinerUpdates()
         {
             try
             {
-                CheckForMinerUpdates(minerBackend);
+                CheckForMinerUpdates();
             }
             catch (ArgumentException ex)
             {
-                string error = String.Format("Error checking for {0} updates", minerBackend.ToString().ToLower());
+                string error = String.Format("Error checking for {0} updates", "bfgminer");
                 notificationsControl.AddNotification(error, error, () =>
                 {
                 }, "");
@@ -2589,7 +2530,6 @@ namespace MultiMiner.Win
         }
 
         private const int bfgminerNotificationId = 100;
-        private const int cgminerNotificationId = 101;
         private const int multiMinerNotificationId = 102;
 
         private void CheckForMultiMinerUpdates()
@@ -2629,33 +2569,27 @@ namespace MultiMiner.Win
             return thisVersionObj > thatVersionObj;
         }
 
-        private void CheckForMinerUpdates(MinerBackend minerBackend)
+        private void CheckForMinerUpdates()
         {
-            if (!MinerIsInstalled(minerBackend))
+            if (!MinerIsInstalled())
                 return;
 
-            string availableMinerVersion = GetAvailableBackendVersion(minerBackend);
+            string availableMinerVersion = GetAvailableBackendVersion();
             if (String.IsNullOrEmpty(availableMinerVersion))
                 return;
 
-            //don't automatically update to bfgminer 3.7 - its a big breaking change
-            if (!BackendVersionIsCompatible(minerBackend, availableMinerVersion))
-                return;
-
-            string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVersion(minerBackend, MinerPath.GetPathToInstalledMiner(minerBackend));
+            string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner());
             if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
-                DisplayMinerUpdateNotification(minerBackend, availableMinerVersion, installedMinerVersion);
+                DisplayMinerUpdateNotification(availableMinerVersion, installedMinerVersion);
         }
 
-        private void DisplayMinerUpdateNotification(MinerBackend minerBackend, string availableMinerVersion, string installedMinerVersion)
+        private void DisplayMinerUpdateNotification(string availableMinerVersion, string installedMinerVersion)
         {
-            int notificationId = minerBackend == MinerBackend.Bfgminer ? bfgminerNotificationId : cgminerNotificationId;
+            int notificationId = bfgminerNotificationId;
 
-            string informationUrl = "https://github.com/ckolivas/cgminer/blob/master/NEWS";
-            if (minerBackend == MinerBackend.Bfgminer)
-                informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
+            string informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
 
-            string minerName = MinerPath.GetMinerName(minerBackend);
+            string minerName = MinerPath.GetMinerName();
             notificationsControl.AddNotification(notificationId.ToString(),
                 String.Format("{0} version {1} is available ({2} installed)",
                     minerName, availableMinerVersion, installedMinerVersion), () =>
@@ -2663,39 +2597,27 @@ namespace MultiMiner.Win
                     bool wasMining = miningEngine.Mining;
 
                     //only stop mining if this is the engine being used
-                    if (wasMining && (engineConfiguration.XgminerConfiguration.MinerBackend == minerBackend))
+                    if (wasMining)
                         StopMining();
 
-                    InstallMiner(minerBackend);
+                    InstallMiner();
 
                     //only start mining if we stopped mining
-                    if (wasMining && (engineConfiguration.XgminerConfiguration.MinerBackend == minerBackend))
+                    if (wasMining)
                         StartMining();
                 }, informationUrl);
         }
 
-        private static string GetAvailableBackendVersion(MinerBackend minerBackend)
+        private static string GetAvailableBackendVersion()
         {
             string result = String.Empty;
             try
             {
-                result = Xgminer.Installer.GetAvailableMinerVersion(minerBackend);
+                result = Xgminer.Installer.GetAvailableMinerVersion();
             }
             catch (WebException ex)
             {
                 //downloads website is down
-            }
-            return result;
-        }
-
-        private static bool BackendVersionIsCompatible(MinerBackend minerBackend, string version)
-        {
-            bool result = true;
-            if (minerBackend == MinerBackend.Bfgminer)
-            {
-                //don't automatically update to bfgminer 3.7 - its a big breaking change
-                Version maxVersion = new Version(3, 7);
-                result = new Version(version) < maxVersion;
             }
             return result;
         }

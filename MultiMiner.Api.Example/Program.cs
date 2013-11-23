@@ -14,20 +14,18 @@ namespace MultiMiner.Api.Example
 
             //download and install the latest version of bfgminer
             const string executablePath = @"D:\bfgminer\";
-            const string executableName = "bfgminer.exe";            
-            MinerBackend minerBackend = MinerBackend.Bfgminer;
+            const string executableName = "bfgminer.exe";
 
             Console.WriteLine("Downloading and installing {0} from {1} to the directory {2}",
-                executableName, Xgminer.Installer.GetMinerDownloadRoot(minerBackend), executablePath);
+                executableName, Xgminer.Installer.GetMinerDownloadRoot(), executablePath);
 
             //download and install bfgminer from the official website
-            Xgminer.Installer.InstallMiner(minerBackend, executablePath);
+            Xgminer.Installer.InstallMiner(executablePath);
             try
             {
                 //create an instance of Miner with the downloaded executable
                 MinerConfiguration minerConfiguration = new MinerConfiguration()
                 {
-                    MinerBackend = minerBackend,
                     ExecutablePath = Path.Combine(executablePath, executableName)
                 };
                 Miner miner = new Miner(minerConfiguration);

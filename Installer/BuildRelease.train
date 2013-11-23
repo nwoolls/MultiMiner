@@ -35,7 +35,6 @@ inno.build("Installer.iss", { });
 //only this contains the Update.exe as this is the only update package
 folder.remove("PF", true);
 folder.create("PF/Miners/bfgminer");
-folder.create("PF/Miners/cgminer");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Win.exe", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Win.pdb", "PF/");
 file.copy("../MultiMiner.Update/bin/Release/MultiMiner.Update.exe", "PF/");
@@ -60,7 +59,6 @@ file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Miners/bfgminer/Extract bfgminer here.txt", "PF/Miners/bfgminer");
-file.copy("../MultiMiner.Win/bin/Release/Miners/cgminer/Extract cgminer here.txt", "PF/Miners/cgminer");
 zip.compress("Output/MultiMiner-" + appVersion + ".zip", "PF/", "*.*", true);
 folder.remove("PF", true);
 
@@ -79,7 +77,6 @@ msbuild.rebuild("../MultiMiner.MobileMiner.Api/MultiMiner.MobileMiner.Api.csproj
 //create a debug Zip release
 folder.remove("PF", true);
 folder.create("PF/Miners/bfgminer");
-folder.create("PF/Miners/cgminer");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Win.exe", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Win.pdb", "PF/");
 file.copy("../MultiMiner.Update/bin/Debug/MultiMiner.Update.exe", "PF/");
@@ -104,7 +101,6 @@ file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Xgminer.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Xgminer.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/Newtonsoft.Json.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/Miners/bfgminer/Extract bfgminer here.txt", "PF/Miners/bfgminer");
-file.copy("../MultiMiner.Win/bin/Debug/Miners/cgminer/Extract cgminer here.txt", "PF/Miners/cgminer");
 zip.compress("Output/MultiMiner-Debug-" + appVersion + ".zip", "PF/", "*.*", true);
 folder.remove("PF", true);
 
