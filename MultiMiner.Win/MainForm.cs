@@ -2440,19 +2440,14 @@ namespace MultiMiner.Win
             }
         }
 
-        private string GetFormattedDevicesString(List<DeviceDescriptor> deviceDescriptors)
+        private static string GetFormattedDevicesString(List<DeviceDescriptor> deviceDescriptors)
         {
-            //List<string> deviceList = new List<string>();
+            List<string> deviceList = new List<string>();
 
-            //foreach (DeviceDescriptor descriptor in deviceDescriptors)
-            //{
-            //    //get the Row Index from the Device Index since GetDevices() sorts devices
-            //    int rowIndex = GetRowIndexForDeviceIndex(descriptor);
-            //    deviceList.Add(String.Format("#{0}", rowIndex + 1));
-            //}
+            foreach (DeviceDescriptor descriptor in deviceDescriptors)
+                deviceList.Add(descriptor.Description());
 
-            //return String.Join(", ", deviceList.ToArray());
-            return "???";
+            return String.Join(" ", deviceList.ToArray());
         }
 
         //get the index of a device in the grid based on the absolute DeviceIndex returned by the miner

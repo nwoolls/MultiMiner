@@ -8,6 +8,16 @@ namespace MultiMiner.Xgminer
         public string Driver { get; set; }
         public string Path { get; set; }
 
+        public string Description()
+        {
+            if (this.Kind == DeviceKind.PXY)
+                return "proxy";
+            else if (this.Kind == DeviceKind.GPU)
+                return "opencl:" + this.RelativeIndex;
+            else
+                return String.Format("{0}:{1}", this.Driver, this.Path);
+        }
+
         public void Assign(DeviceDescriptor source)
         {
             this.Kind = source.Kind;
