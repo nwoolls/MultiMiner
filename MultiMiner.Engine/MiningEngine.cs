@@ -59,8 +59,7 @@ namespace MultiMiner.Engine
             {
                 this.engineConfiguration = engineConfiguration;
                 this.devices = devices;
-                this.backendVersion = new Version(Xgminer.Installer.GetInstalledMinerVersion(engineConfiguration.XgminerConfiguration.MinerBackend,
-                    MinerPath.GetPathToInstalledMiner(engineConfiguration.XgminerConfiguration.MinerBackend)));
+                this.backendVersion = new Version(Xgminer.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner()));
 
                 if (coinInformation != null) //null if no network connection
                     ApplyMiningStrategy(coinInformation);
@@ -584,11 +583,7 @@ namespace MultiMiner.Engine
 
             MinerConfiguration minerConfiguration = new MinerConfiguration();
             
-            minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
-            minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner(minerConfiguration.MinerBackend);
-
-            minerConfiguration.ErupterDriver = engineConfiguration.XgminerConfiguration.ErupterDriver;
-            minerConfiguration.BitfuryCompatibility = engineConfiguration.XgminerConfiguration.BitfuryCompatibility;
+            minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner();
             
             minerConfiguration.Pools = coinConfiguration.Pools;
             minerConfiguration.Algorithm = coinConfiguration.Coin.Algorithm;
@@ -605,7 +600,7 @@ namespace MultiMiner.Engine
                 DeviceConfiguration enabledConfiguration = enabledConfigurations[i];
 
                 //don't actually add stratum device as a device index
-                Device device = DeviceForConfiguration(enabledConfiguration);
+                Device device = devices.SingleOrDefault(d => d.Equals(enabledConfiguration));
                 if (device.Kind != DeviceKind.PXY)
                 {
                     //int deviceIndex = enabledConfiguration.DeviceIndex;
@@ -640,21 +635,11 @@ namespace MultiMiner.Engine
                 arguments = string.Format("{0} {1}", arguments, coinConfiguration.MinerFlags);
 
             if (engineConfiguration.XgminerConfiguration.DesktopMode)
-            {
-                //there is no -I argument anymore in cgminer after version 3.8
-                if ((engineConfiguration.XgminerConfiguration.MinerBackend != MinerBackend.Cgminer) ||
-                    (this.backendVersion < new Version(3, 8)))
-                    arguments = arguments + " -I D";
-            }
+                arguments = arguments + " -I D";
             
             minerConfiguration.Arguments = arguments;
 
             return minerConfiguration;
-        }
-
-        private Device DeviceForConfiguration(DeviceConfiguration deviceConfiguration)
-        {
-            return devices.SingleOrDefault(d => d.Equals(deviceConfiguration));
         }
     }
 }

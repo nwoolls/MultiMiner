@@ -31,9 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WizardForm));
             this.wizardTabControl = new System.Windows.Forms.TabControl();
             this.chooseMinerPage = new System.Windows.Forms.TabPage();
-            this.minerStepsLabel = new System.Windows.Forms.Label();
-            this.minerComboBox = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.downloadingMinerPage = new System.Windows.Forms.TabPage();
             this.downloadingMinerLabel = new System.Windows.Forms.Label();
@@ -99,9 +96,6 @@
             // 
             // chooseMinerPage
             // 
-            this.chooseMinerPage.Controls.Add(this.minerStepsLabel);
-            this.chooseMinerPage.Controls.Add(this.minerComboBox);
-            this.chooseMinerPage.Controls.Add(this.label2);
             this.chooseMinerPage.Controls.Add(this.label1);
             this.chooseMinerPage.Location = new System.Drawing.Point(4, 22);
             this.chooseMinerPage.Name = "chooseMinerPage";
@@ -111,45 +105,15 @@
             this.chooseMinerPage.Text = "Choose Miner";
             this.chooseMinerPage.UseVisualStyleBackColor = true;
             // 
-            // minerStepsLabel
-            // 
-            this.minerStepsLabel.Location = new System.Drawing.Point(3, 104);
-            this.minerStepsLabel.Name = "minerStepsLabel";
-            this.minerStepsLabel.Size = new System.Drawing.Size(424, 109);
-            this.minerStepsLabel.TabIndex = 3;
-            this.minerStepsLabel.Text = resources.GetString("minerStepsLabel.Text");
-            // 
-            // minerComboBox
-            // 
-            this.minerComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.minerComboBox.FormattingEnabled = true;
-            this.minerComboBox.Items.AddRange(new object[] {
-            "cgminer",
-            "bfgminer"});
-            this.minerComboBox.Location = new System.Drawing.Point(194, 60);
-            this.minerComboBox.Name = "minerComboBox";
-            this.minerComboBox.Size = new System.Drawing.Size(121, 21);
-            this.minerComboBox.TabIndex = 2;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(104, 63);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(76, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Mining engine:";
-            // 
             // label1
             // 
             this.label1.Dock = System.Windows.Forms.DockStyle.Top;
             this.label1.Location = new System.Drawing.Point(3, 3);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label1.Size = new System.Drawing.Size(422, 62);
+            this.label1.Size = new System.Drawing.Size(422, 171);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Welcome and thank you for choosing MultiMiner. To get started, please select the " +
-    "mining engine you would like to use with MultiMiner.";
+            this.label1.Text = resources.GetString("label1.Text");
             // 
             // downloadingMinerPage
             // 
@@ -528,7 +492,6 @@
             this.Load += new System.EventHandler(this.WizardForm_Load);
             this.wizardTabControl.ResumeLayout(false);
             this.chooseMinerPage.ResumeLayout(false);
-            this.chooseMinerPage.PerformLayout();
             this.downloadingMinerPage.ResumeLayout(false);
             this.chooseCoinPage.ResumeLayout(false);
             this.chooseCoinPage.PerformLayout();
@@ -557,9 +520,6 @@
         private System.Windows.Forms.Button closeButton;
         private System.Windows.Forms.Button nextButton;
         private System.Windows.Forms.Button backButton;
-        private System.Windows.Forms.Label minerStepsLabel;
-        private System.Windows.Forms.ComboBox minerComboBox;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label downloadingMinerLabel;
         private System.Windows.Forms.ComboBox coinComboBox;

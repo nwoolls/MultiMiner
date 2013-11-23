@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
             this.multiMinerLabel = new System.Windows.Forms.Label();
             this.bfgminerLabel = new System.Windows.Forms.Label();
-            this.cgminerLabel = new System.Windows.Forms.Label();
             this.multiMinerLink = new System.Windows.Forms.LinkLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.saveButton = new System.Windows.Forms.Button();
@@ -62,16 +61,6 @@
             this.bfgminerLabel.Size = new System.Drawing.Size(111, 13);
             this.bfgminerLabel.TabIndex = 3;
             this.bfgminerLabel.Text = "xgminer 1.1.1 installed";
-            // 
-            // cgminerLabel
-            // 
-            this.cgminerLabel.AutoSize = true;
-            this.cgminerLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.cgminerLabel.Location = new System.Drawing.Point(91, 50);
-            this.cgminerLabel.Name = "cgminerLabel";
-            this.cgminerLabel.Size = new System.Drawing.Size(111, 13);
-            this.cgminerLabel.TabIndex = 4;
-            this.cgminerLabel.Text = "xgminer 1.1.1 installed";
             // 
             // multiMinerLink
             // 
@@ -142,7 +131,6 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.multiMinerLink);
-            this.Controls.Add(this.cgminerLabel);
             this.Controls.Add(this.bfgminerLabel);
             this.Controls.Add(this.multiMinerLabel);
             this.Controls.Add(this.pictureBox1);
@@ -166,7 +154,6 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label multiMinerLabel;
         private System.Windows.Forms.Label bfgminerLabel;
-        private System.Windows.Forms.Label cgminerLabel;
         private System.Windows.Forms.LinkLabel multiMinerLink;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button saveButton;

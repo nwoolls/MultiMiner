@@ -27,9 +27,6 @@ namespace MultiMiner.Win
         {
             xgminerConfigurationBindingSource.DataSource = workingMinerConfiguration;
             applicationConfigurationBindingSource.DataSource = workingApplicationConfiguration;
-            erupterCheckBox.Enabled = minerConfiguration.MinerBackend == Xgminer.MinerBackend.Bfgminer;
-            proxyCheckBox.Enabled = minerConfiguration.MinerBackend == Xgminer.MinerBackend.Bfgminer;
-            proxyPortEdit.Enabled = minerConfiguration.MinerBackend == Xgminer.MinerBackend.Bfgminer;
             autoDesktopCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
             LoadSettings();
         }

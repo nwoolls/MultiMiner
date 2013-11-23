@@ -35,14 +35,13 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.checkBox7 = new System.Windows.Forms.CheckBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label7 = new System.Windows.Forms.Label();
             this.priorityCombo = new System.Windows.Forms.ComboBox();
-            this.minerCombo = new System.Windows.Forms.ComboBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.sha256ParamsEdit = new System.Windows.Forms.TextBox();
             this.scryptParamsEdit = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -73,14 +72,13 @@
             this.label8 = new System.Windows.Forms.Label();
             this.emailAddressEdit = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -124,9 +122,7 @@
             this.groupBox1.Controls.Add(this.pictureBox2);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.priorityCombo);
-            this.groupBox1.Controls.Add(this.minerCombo);
             this.groupBox1.Controls.Add(this.checkBox2);
-            this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.sha256ParamsEdit);
             this.groupBox1.Controls.Add(this.scryptParamsEdit);
             this.groupBox1.Controls.Add(this.label2);
@@ -145,9 +141,13 @@
             this.checkBox7.Location = new System.Drawing.Point(223, 134);
             this.checkBox7.Name = "checkBox7";
             this.checkBox7.Size = new System.Drawing.Size(113, 17);
-            this.checkBox7.TabIndex = 19;
+            this.checkBox7.TabIndex = 6;
             this.checkBox7.Text = "Check for updates";
             this.checkBox7.UseVisualStyleBackColor = true;
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
             // 
             // checkBox4
             // 
@@ -157,7 +157,7 @@
             this.checkBox4.Location = new System.Drawing.Point(223, 106);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(163, 17);
-            this.checkBox4.TabIndex = 5;
+            this.checkBox4.TabIndex = 4;
             this.checkBox4.Text = "Detect orphaned miners";
             this.checkBox4.UseVisualStyleBackColor = true;
             // 
@@ -167,7 +167,7 @@
             this.linkLabel1.Location = new System.Drawing.Point(34, 135);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(168, 13);
-            this.linkLabel1.TabIndex = 6;
+            this.linkLabel1.TabIndex = 5;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "Advanced backend miner settings";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
@@ -184,7 +184,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(220, 20);
+            this.label7.Location = new System.Drawing.Point(9, 79);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(41, 13);
             this.label7.TabIndex = 17;
@@ -197,23 +197,10 @@
             this.priorityCombo.Items.AddRange(new object[] {
             "cgminer",
             "bfgminer"});
-            this.priorityCombo.Location = new System.Drawing.Point(273, 17);
+            this.priorityCombo.Location = new System.Drawing.Point(104, 76);
             this.priorityCombo.Name = "priorityCombo";
-            this.priorityCombo.Size = new System.Drawing.Size(130, 21);
-            this.priorityCombo.TabIndex = 1;
-            // 
-            // minerCombo
-            // 
-            this.minerCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.minerCombo.FormattingEnabled = true;
-            this.minerCombo.Items.AddRange(new object[] {
-            "cgminer",
-            "bfgminer"});
-            this.minerCombo.Location = new System.Drawing.Point(104, 17);
-            this.minerCombo.Name = "minerCombo";
-            this.minerCombo.Size = new System.Drawing.Size(107, 21);
-            this.minerCombo.TabIndex = 0;
-            this.minerCombo.SelectedIndexChanged += new System.EventHandler(this.minerCombo_SelectedIndexChanged);
+            this.priorityCombo.Size = new System.Drawing.Size(107, 21);
+            this.priorityCombo.TabIndex = 2;
             // 
             // checkBox2
             // 
@@ -224,37 +211,28 @@
             this.checkBox2.Location = new System.Drawing.Point(11, 106);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(133, 17);
-            this.checkBox2.TabIndex = 4;
+            this.checkBox2.TabIndex = 3;
             this.checkBox2.Text = "Restart suspect miners";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 20);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(86, 13);
-            this.label5.TabIndex = 15;
-            this.label5.Text = "Mining backend:";
-            // 
             // sha256ParamsEdit
             // 
-            this.sha256ParamsEdit.Location = new System.Drawing.Point(104, 48);
+            this.sha256ParamsEdit.Location = new System.Drawing.Point(104, 18);
             this.sha256ParamsEdit.Name = "sha256ParamsEdit";
             this.sha256ParamsEdit.Size = new System.Drawing.Size(299, 20);
-            this.sha256ParamsEdit.TabIndex = 2;
+            this.sha256ParamsEdit.TabIndex = 0;
             // 
             // scryptParamsEdit
             // 
-            this.scryptParamsEdit.Location = new System.Drawing.Point(104, 77);
+            this.scryptParamsEdit.Location = new System.Drawing.Point(104, 47);
             this.scryptParamsEdit.Name = "scryptParamsEdit";
             this.scryptParamsEdit.Size = new System.Drawing.Size(299, 20);
-            this.scryptParamsEdit.TabIndex = 3;
+            this.scryptParamsEdit.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 80);
+            this.label2.Location = new System.Drawing.Point(9, 50);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(92, 13);
             this.label2.TabIndex = 9;
@@ -263,7 +241,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 51);
+            this.label1.Location = new System.Drawing.Point(9, 21);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(93, 13);
             this.label1.TabIndex = 8;
@@ -559,10 +537,6 @@
             this.label6.TabIndex = 0;
             this.label6.Text = "Application key:";
             // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -584,13 +558,13 @@
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -606,7 +580,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.BindingSource applicationConfigurationBindingSource;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox sysTrayCheckBox;
@@ -624,7 +597,6 @@
         private System.Windows.Forms.CheckBox remoteMonitoringCheck;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.LinkLabel mobileMinerInfoLink;
-        private System.Windows.Forms.ComboBox minerCombo;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox priorityCombo;
         private System.Windows.Forms.LinkLabel linkLabel1;

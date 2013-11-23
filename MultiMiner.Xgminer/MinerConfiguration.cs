@@ -14,7 +14,6 @@ namespace MultiMiner.Xgminer
             this.StratumProxyStratumPort = 3333;
         }
 
-        public MinerBackend MinerBackend { get; set; }
         public string ExecutablePath { get; set; }
         public List<MiningPool> Pools { get; set; }
         public CoinAlgorithm Algorithm { get; set; }
@@ -28,10 +27,8 @@ namespace MultiMiner.Xgminer
         public ProcessPriorityClass Priority { get; set; }
 
         //bfgminer-specific
-        public bool ErupterDriver { get; set; }
         public bool StratumProxy { get; set; }
         public int StratumProxyPort { get; set; }
         public int StratumProxyStratumPort { get; set; }
-        public bool BitfuryCompatibility { get; set; }
     }
 }

@@ -1,5 +1,4 @@
-﻿using MultiMiner.Utility;
-using MultiMiner.Xgminer.Parsers;
+﻿using MultiMiner.Xgminer.Parsers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -57,12 +56,9 @@ namespace MultiMiner.Xgminer
             string arguments = MinerParameter.DeviceList;
             bool redirectOutput = true;
 
-            if (minerConfiguration.MinerBackend == MinerBackend.Bfgminer)
-            {
-                string serialArg = GetListSerialArguments();
+            string serialArg = GetListSerialArguments();
 
-                arguments = String.Format("{0} {1}", arguments, serialArg);
-            }
+            arguments = String.Format("{0} {1}", arguments, serialArg);
 
             //ADL mismatch with OCL can cause an error / exception, disable ADL when enumerating devices
             //user can then disable for mining in-app using settings
@@ -98,20 +94,12 @@ namespace MultiMiner.Xgminer
 
         private string GetListSerialArguments()
         {
-            string serialArg = Bfgminer.MinerParameter.ScanSerialAll;
-            if (minerConfiguration.BitfuryCompatibility)
-            {
-                serialArg = Bfgminer.MinerParameter.ScanSerialErupterNoAuto;
-            }
-            else if (minerConfiguration.ErupterDriver)
-            {
-                serialArg = Bfgminer.MinerParameter.ScanSerialErupterAll;
-            }
+            string serialArg = MinerParameter.ScanSerialErupterAll;
 
             if (!minerConfiguration.DisableGpu)
             {
                 //openCL disabled by default in bfgminer 3.3.0+
-                serialArg = String.Format("{0} {1}", serialArg, Bfgminer.MinerParameter.ScanSerialOpenCL);
+                serialArg = String.Format("{0} {1}", serialArg, MinerParameter.ScanSerialOpenCL);
             }
             return serialArg;
         }
@@ -137,18 +125,15 @@ namespace MultiMiner.Xgminer
 
             string arguments = minerConfiguration.Arguments;
 
-            if (minerConfiguration.MinerBackend == MinerBackend.Bfgminer)
-            {
-                string serialArg = "-S noauto";
-                arguments = String.Format("{0} {1}", arguments, serialArg);
+            string serialArg = "-S noauto";
+            arguments = String.Format("{0} {1}", arguments, serialArg);
 
-                if (minerConfiguration.StratumProxy)
-                {
-                    if (minerConfiguration.StratumProxyPort > 0)
-                        arguments = String.Format("{0} --http-port {1}", arguments, minerConfiguration.StratumProxyPort);
-                    if (minerConfiguration.StratumProxyStratumPort > 0)
-                        arguments = String.Format("{0} --stratum-port {1}", arguments, minerConfiguration.StratumProxyStratumPort);
-                }
+            if (minerConfiguration.StratumProxy)
+            {
+                if (minerConfiguration.StratumProxyPort > 0)
+                    arguments = String.Format("{0} --http-port {1}", arguments, minerConfiguration.StratumProxyPort);
+                if (minerConfiguration.StratumProxyStratumPort > 0)
+                    arguments = String.Format("{0} --stratum-port {1}", arguments, minerConfiguration.StratumProxyStratumPort);
             }
 
             foreach (MiningPool pool in minerConfiguration.Pools)
@@ -224,32 +209,7 @@ namespace MultiMiner.Xgminer
             startInfo.Arguments = arguments.Trim();
             if (minerConfiguration.DisableGpu)
             {
-                if (minerConfiguration.MinerBackend == MinerBackend.Cgminer)
-                {
-                    Version version = new Version(Installer.GetInstalledMinerVersion(minerConfiguration.MinerBackend, minerConfiguration.ExecutablePath));
-                    Version v380 = new Version(3, 8);
-                    //starting with cgminer 3.8 there is no GPU support and no GPU parameters
-                    if (version < v380)
-                        startInfo.Arguments = startInfo.Arguments + " --disable-gpu";
-
-                    //cgminer for Windows and OS X were distributed with a -nogpu build until 3.8.0
-                    string noGpuFilePath;
-
-                    //otherwise it still requires OpenCL.dll - not an issue with bfgminer
-                    if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
-                        noGpuFilePath = startInfo.FileName + "-nogpu";
-                    else
-                        noGpuFilePath = minerConfiguration.ExecutablePath.Replace("cgminer.exe", "cgminer-nogpu.exe");
-
-                    //first make sure the exe exists. this became necessary with cgminer 3.8.0 because
-                    //ck stopped shipping cgminer-nogpu.exe, as cgminer.exe has no GPU support in 3.8
-                    if (File.Exists(noGpuFilePath))
-                        startInfo.FileName = noGpuFilePath;
-                }
-                else
-                {
-                    startInfo.Arguments = String.Format("{0} {1}", startInfo.Arguments, Bfgminer.MinerParameter.ScanSerialOpenCLNoAuto);
-                }
+                startInfo.Arguments = String.Format("{0} {1}", startInfo.Arguments, MinerParameter.ScanSerialOpenCLNoAuto);
             }
 
             startInfo.UseShellExecute = false;
