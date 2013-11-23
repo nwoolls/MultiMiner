@@ -12,6 +12,5 @@
         public DevicePlatform Platform { get; set; }
         public int DeviceIndex { get; set; }
         public int ProcessorCount { get; set; }
-        public string Serial { get; set; }
     }
 }

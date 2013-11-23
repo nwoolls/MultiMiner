@@ -39,8 +39,6 @@ namespace MultiMiner.Xgminer.Parsers
 
                         device.Driver = details["driver"];
                         device.ProcessorCount = int.Parse(details["procs"]);
-                        if (details.ContainsKey("serial"))
-                            device.Serial = details["serial"];
                         if (details.ContainsKey("path"))
                             device.Path = details["path"];
 
