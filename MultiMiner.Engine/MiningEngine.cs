@@ -399,10 +399,8 @@ namespace MultiMiner.Engine
                     }
 
                     DeviceConfiguration configEntry = new DeviceConfiguration();
-                    
-                    configEntry.Kind = device.Kind;
-                    configEntry.Driver = device.Driver;
-                    configEntry.Path = device.Path;
+
+                    configEntry.Assign(device);
 
                     configEntry.CoinSymbol = profitableCoin == null ? string.Empty : profitableCoin.Symbol;
                     
@@ -412,9 +410,7 @@ namespace MultiMiner.Engine
                 {
                     DeviceConfiguration configEntry = new DeviceConfiguration();
 
-                    configEntry.Kind = device.Kind;
-                    configEntry.Driver = device.Driver;
-                    configEntry.Path = device.Path;
+                    configEntry.Assign(device);
 
                     configEntry.CoinSymbol = existingConfiguration.CoinSymbol;
                     configEntry.Enabled = false;
