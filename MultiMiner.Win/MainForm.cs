@@ -402,6 +402,7 @@ namespace MultiMiner.Win
             
             PopulateListViewFromDevices();
             LoadListViewValuesFromConfiguration();
+            LoadListViewValuesFromCoinStats();
 
             //auto-size columns
             AutoSizeListViewColumns();
@@ -692,13 +693,6 @@ namespace MultiMiner.Win
             UpdateChangesButtons(false);
         }
 
-        private void deviceGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-
-
         private void LoadListViewValuesFromConfiguration()
         {
             bool saveEnabled = saveButton.Enabled;
@@ -837,7 +831,9 @@ namespace MultiMiner.Win
             //to get changes from strategy config
             LoadListViewValuesFromConfiguration();
             //to get updated coin stats for coin changes
-            LoadGridValuesFromCoinStats();
+            LoadListViewValuesFromCoinStats();
+
+            AutoSizeListViewColumns();
 
             UpdateMiningButtons();
         }
@@ -929,7 +925,7 @@ namespace MultiMiner.Win
         private void statsTimer_Tick(object sender, EventArgs e)
         {
             ClearMinerStatsForDisabledCoins();
-            PopulateDeviceInfoFromProcesses();
+            RefreshDeviceStats();
         }
 
         private void ClearMinerStatsForDisabledCoins()
@@ -946,6 +942,7 @@ namespace MultiMiner.Win
         {
             item.SubItems["Temp"].Text = String.Empty;
             item.SubItems["Hashrate"].Text = String.Empty;
+            item.SubItems["Hashrate"].Tag = 0.00;
             item.SubItems["Accepted"].Text = String.Empty;
             item.SubItems["Rejected"].Text = String.Empty;
             item.SubItems["Errors"].Text = String.Empty;
@@ -959,7 +956,10 @@ namespace MultiMiner.Win
             //stratum devices get lumped together, so we sum those
             if (deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
             {
-                item.SubItems["Hashrate"].Text = ((String.IsNullOrEmpty(item.SubItems["Hashrate"].Text) ? 0.00 : double.Parse(item.SubItems["Hashrate"].Text)) + deviceInformation.AverageHashrate).ToString();
+                item.SubItems["Hashrate"].Tag = (double)(item.SubItems["Hashrate"].Tag ?? 0.00) + deviceInformation.AverageHashrate;
+
+                item.SubItems["Hashrate"].Text = FormatHashrate((double)item.SubItems["Hashrate"].Tag);
+
                 item.SubItems["Accepted"].Text = ((String.IsNullOrEmpty(item.SubItems["Accepted"].Text) ? 0 : int.Parse(item.SubItems["Accepted"].Text)) + deviceInformation.AcceptedShares).ToString();
                 item.SubItems["Rejected"].Text = ((String.IsNullOrEmpty(item.SubItems["Rejected"].Text) ? 0 : int.Parse(item.SubItems["Rejected"].Text)) + deviceInformation.RejectedShares).ToString();
                 item.SubItems["Errors"].Text = ((String.IsNullOrEmpty(item.SubItems["Errors"].Text) ? 0 : int.Parse(item.SubItems["Errors"].Text)) + deviceInformation.HardwareErrors).ToString();
@@ -967,17 +967,49 @@ namespace MultiMiner.Win
             }
             else
             {
-                item.SubItems["Hashrate"].Text = deviceInformation.AverageHashrate.ToString();
+                item.SubItems["Hashrate"].Text = FormatHashrate(deviceInformation.AverageHashrate);
                 item.SubItems["Accepted"].Text = deviceInformation.AcceptedShares.ToString();
                 item.SubItems["Rejected"].Text = deviceInformation.RejectedShares.ToString();
                 item.SubItems["Errors"].Text = deviceInformation.HardwareErrors.ToString();
                 item.SubItems["Utility"].Text = deviceInformation.Utility.ToString();
             }
 
-            item.SubItems["Temp"].Text = deviceInformation.Temperature.ToString();
+            item.SubItems["Temp"].Text = deviceInformation.Temperature > 0 ? deviceInformation.Temperature.ToString() + "°" : String.Empty;
             item.SubItems["Intensity"].Text = deviceInformation.Intensity;
 
             PopulatePoolForListViewItem(deviceInformation.PoolIndex, item);
+        }
+
+        private string FormatHashrate(double hashrate)
+        {
+            string suffix = "K";
+            double shortrate = hashrate;
+
+            if (shortrate > 1000)
+            {
+                shortrate /= 1000;
+                suffix = "M";
+            }
+
+            if (shortrate > 1000)
+            {
+                shortrate /= 1000;
+                suffix = "G";
+            }
+
+            if (shortrate > 1000)
+            {
+                shortrate /= 1000;
+                suffix = "T";
+            }
+
+            if (shortrate > 1000)
+            {
+                shortrate /= 1000;
+                suffix = "P";
+            }
+
+            return String.Format("{0:0.##} {1}h/s", shortrate, suffix);
         }
 
         private void PopulatePoolForListViewItem(int poolIndex, ListViewItem item)
@@ -1022,6 +1054,8 @@ namespace MultiMiner.Win
                 int index = domainName.IndexOf(".") + 1;
                 domainName = domainName.Substring(index, domainName.Length - index);
             }
+
+            domainName = Path.GetFileNameWithoutExtension(domainName);
 
             hostDomainNames[poolHost] = domainName;
 
@@ -1152,7 +1186,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private void PopulateDeviceInfoFromProcesses()
+        private void RefreshDeviceStats()
         {
             double totalScryptRate = 0;
             double totalSha256Rate = 0;
@@ -1255,8 +1289,8 @@ namespace MultiMiner.Win
                 }
             }
 
-            scryptRateLabel.Text = string.Format("Scrypt: {0} Kh/s", totalScryptRate);
-            sha256RateLabel.Text = string.Format("SHA256: {0} Mh/s", totalSha256Rate / 1000); //Mh not mh, mh is milli
+            scryptRateLabel.Text = string.Format("Scrypt: {0}", FormatHashrate(totalScryptRate));
+            sha256RateLabel.Text = string.Format("SHA256: {0}", FormatHashrate(totalSha256Rate)); //Mh not mh, mh is milli
             notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
 
             AutoSizeListViewColumns();
@@ -1429,7 +1463,7 @@ namespace MultiMiner.Win
                 //to get changes from strategy config
                 LoadListViewValuesFromConfiguration();
                 //to refresh coin stats due to changed coin selections
-                LoadGridValuesFromCoinStats();
+                LoadListViewValuesFromCoinStats();
             }
         }
 
@@ -1464,9 +1498,10 @@ namespace MultiMiner.Win
                 throw;
             }
             
-            LoadGridValuesFromCoinStats();
+            LoadListViewValuesFromCoinStats();
             LoadKnownCoinsFromCoinStats();
             RefreshCoinStatsLabel();
+            AutoSizeListViewColumns();
             SuggestCoinsToMine();
         }
 
@@ -1634,7 +1669,7 @@ namespace MultiMiner.Win
             ConfigurationReaderWriter.WriteConfiguration(knownCoins, KnownCoinsFileName());
         }
 
-        private void LoadGridValuesFromCoinStats()
+        private void LoadListViewValuesFromCoinStats()
         {
             //clear all coin stats first
             //there may be coins configured that are no longer returned in the stats
@@ -1652,19 +1687,19 @@ namespace MultiMiner.Win
 
         private void PopulateCoinStatsForListViewItem(Coin.Api.CoinInformation coin, ListViewItem item)
         {
-            item.SubItems["Difficulty"].Text = coin.Difficulty.ToString(".##########");
-            item.SubItems["Price"].Text = coin.Price.ToString(".##########");
+            item.SubItems["Difficulty"].Text = coin.Difficulty.ToString(".##");
+            item.SubItems["Price"].Text = coin.Price.ToString(".#####");
 
             switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
             {
                 case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
-                    item.SubItems["Profitability"].Text = Math.Round(coin.AdjustedProfitability, 2).ToString();
+                    item.SubItems["Profitability"].Text = Math.Round(coin.AdjustedProfitability, 2).ToString() + "%";
                     break;
                 case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
-                    item.SubItems["Profitability"].Text = Math.Round(coin.AverageProfitability, 2).ToString();
+                    item.SubItems["Profitability"].Text = Math.Round(coin.AverageProfitability, 2).ToString() + "%";
                     break;
                 case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
-                    item.SubItems["Profitability"].Text = Math.Round(coin.Profitability, 2).ToString();
+                    item.SubItems["Profitability"].Text = Math.Round(coin.Profitability, 2).ToString() + "%";
                     break;
             }
         }
@@ -1740,7 +1775,7 @@ namespace MultiMiner.Win
                 RefreshCoinStats();
 
                 RefreshStrategiesLabel();
-                LoadGridValuesFromCoinStats();
+                LoadListViewValuesFromCoinStats();
                 UpdateMiningButtons();
 
                 Application.DoEvents();
