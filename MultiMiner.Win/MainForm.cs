@@ -144,6 +144,8 @@ namespace MultiMiner.Win
             
             SetupAutoUpdates();
 
+            UpdateChangesButtons(false);
+
             RefreshDevices();
             
             UpdateMiningButtons();
@@ -364,50 +366,59 @@ namespace MultiMiner.Win
             coinChooseSuffixLabel.Left = coinChooseLinkLabel.Left + coinChooseLinkLabel.Width;
         }
 
+        private bool populatingDevices = false;
         private void RefreshDevices()
         {
+            populatingDevices = true;
             try
             {
-                using (new HourGlass())
+                try
                 {
-                    try
+                    using (new HourGlass())
                     {
-                        devices = GetDevices();
-                    }
-                    finally
-                    {
-                        Application.UseWaitCursor = false;
+                        try
+                        {
+                            devices = GetDevices();
+                        }
+                        finally
+                        {
+                            Application.UseWaitCursor = false;
+                        }
                     }
                 }
+                catch (Win32Exception ex)
+                {
+                    //miner not installed/not launched
+                    devices = new List<Device>(); //dummy empty device list
+
+                    ShowNotInstalledMinerWarning();
+                }
+
+                if ((devices.Count > 0) && (engineConfiguration.DeviceConfigurations.Count == 0) &&
+                    (engineConfiguration.CoinConfigurations.Count == 1))
+                {
+                    //setup devices for a brand new user
+                    ConfigureDevicesForNewUser();
+                }
+
+                //there needs to be a device config for each device
+                AddMissingDeviceConfigurations();
+                //but no configurations for devices that have gone missing
+                RemoveExcessDeviceConfigurations();
+
+                PopulateListViewFromDevices();
+                LoadListViewValuesFromConfiguration();
+                LoadListViewValuesFromCoinStats();
+
+                //auto-size columns
+                AutoSizeListViewColumns();
+
+                deviceTotalLabel.Text = String.Format("{0} device(s)", devices.Count);
             }
-            catch (Win32Exception ex)
+            finally
             {
-                //miner not installed/not launched
-                devices = new List<Device>(); //dummy empty device list
-
-                ShowNotInstalledMinerWarning();
+                populatingDevices = false;
             }
-
-            if ((devices.Count > 0) && (engineConfiguration.DeviceConfigurations.Count == 0) &&
-                (engineConfiguration.CoinConfigurations.Count == 1))
-            {
-                //setup devices for a brand new user
-                ConfigureDevicesForNewUser();
-            }
-
-            //there needs to be a device config for each device
-            AddMissingDeviceConfigurations();
-            //but no configurations for devices that have gone missing
-            RemoveExcessDeviceConfigurations();
-            
-            PopulateListViewFromDevices();
-            LoadListViewValuesFromConfiguration();
-            LoadListViewValuesFromCoinStats();
-
-            //auto-size columns
-            AutoSizeListViewColumns();
-
-            deviceTotalLabel.Text = String.Format("{0} device(s)", devices.Count);
         }
 
         private void AutoSizeListViewColumns()
@@ -720,6 +731,7 @@ namespace MultiMiner.Win
 
         private void SaveChanges()
         {
+            SaveListViewValuesToConfiguration();
             engineConfiguration.SaveDeviceConfigurations();
             LoadListViewValuesFromConfiguration();
 
@@ -739,6 +751,32 @@ namespace MultiMiner.Win
             LoadListViewValuesFromConfiguration();
 
             UpdateChangesButtons(false);
+        }
+
+        private void SaveListViewValuesToConfiguration()
+        {
+            engineConfiguration.DeviceConfigurations.Clear();
+
+            for (int i = 0; i < devices.Count; i++)
+            {
+                ListViewItem listViewItem = deviceListView.Items[i];
+
+                //pull this from coin configurations, not known coins, may not be in CoinChoose
+                string coinValue = listViewItem.SubItems["Coin"].Text;
+                CryptoCoin coin = null;
+                if (!String.IsNullOrEmpty(coinValue))
+                    coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinValue, StringComparison.OrdinalIgnoreCase)).Coin;
+
+                DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+
+                deviceConfiguration.Assign(devices[i]);
+
+                deviceConfiguration.Enabled = listViewItem.Checked;
+                deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
+
+                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+
+            }
         }
 
         private void LoadListViewValuesFromConfiguration()
@@ -2779,7 +2817,13 @@ namespace MultiMiner.Win
                 {
                     coinPopupMenu.Show(Cursor.Position);
                 }
-            } 
+            }
+        }
+
+        private void deviceListView_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            if (!populatingDevices)
+                UpdateChangesButtons(true);
         }
     }
 }
