@@ -434,57 +434,46 @@ namespace MultiMiner.Win
 
         private void AutoSizeListViewColumns()
         {
-            deviceListView.BeginUpdate();
-            try
+            if (briefMode)
             {
+                nameColumnHeader.Width = -2;
+                driverColumnHeader.Width = 0;
+                coinColumnHeader.Width = -2;
+                difficultyColumnHeader.Width = 0;
+                priceColumnHeader.Width = 0;
+                profitabilityColumnHeader.Width = -2;
+                poolColumnHeader.Width = 0;
 
-                if (briefMode)
-                {
-                    nameColumnHeader.Width = -2;
-                    driverColumnHeader.Width = 0;
-                    coinColumnHeader.Width = -2;
-                    difficultyColumnHeader.Width = 0;
-                    priceColumnHeader.Width = 0;
-                    profitabilityColumnHeader.Width = -2;
-                    poolColumnHeader.Width = 0;
-
-                    if (ListViewColumnHasValues("Temp"))
-                        tempColumnHeader.Width = -2;
-                    else
-                        tempColumnHeader.Width = 0;
-
-                    hashrateColumnHeader.Width = -2;
-                    acceptedColumnHeader.Width = 0;
-                    rejectedColumnHeader.Width = 0;
-                    errorsColumnHeader.Width = 0;
-                    utilityColumnHeader.Width = 0;
-                    intensityColumnHeader.Width = 0;
-                }
+                if (ListViewColumnHasValues("Temp"))
+                    tempColumnHeader.Width = -2;
                 else
-                {
-                    for (int i = 0; i < deviceListView.Columns.Count; i++)
-                    {
-                        bool hasValue = false;
-                        if (i == 0)
-                        {
-                            hasValue = true;
-                        }
-                        else
-                        {
-                            hasValue = ListViewColumnHasValues(deviceListView.Columns[i].Text);
-                        }
-                        if (hasValue)
-                            deviceListView.Columns[i].Width = -2;
-                        else
-                            deviceListView.Columns[i].Width = 0;
-                    }      
-                }
+                    tempColumnHeader.Width = 0;
 
-          
+                hashrateColumnHeader.Width = -2;
+                acceptedColumnHeader.Width = 0;
+                rejectedColumnHeader.Width = 0;
+                errorsColumnHeader.Width = 0;
+                utilityColumnHeader.Width = 0;
+                intensityColumnHeader.Width = 0;
             }
-            finally
+            else
             {
-                deviceListView.EndUpdate();
+                for (int i = 0; i < deviceListView.Columns.Count; i++)
+                {
+                    bool hasValue = false;
+                    if (i == 0)
+                    {
+                        hasValue = true;
+                    }
+                    else
+                    {
+                        hasValue = ListViewColumnHasValues(deviceListView.Columns[i].Text);
+                    }
+                    if (hasValue)
+                        deviceListView.Columns[i].Width = -2;
+                    else
+                        deviceListView.Columns[i].Width = 0;
+                }
             }
         }
         
