@@ -1027,12 +1027,22 @@ namespace MultiMiner.Win
         private void ClearDeviceInfoForListViewItem(ListViewItem item)
         {
             item.SubItems["Temp"].Text = String.Empty;
+
             item.SubItems["Hashrate"].Text = String.Empty;
             item.SubItems["Hashrate"].Tag = 0.00;
+
             item.SubItems["Accepted"].Text = String.Empty;
+            item.SubItems["Accepted"].Tag = 0;
+
             item.SubItems["Rejected"].Text = String.Empty;
+            item.SubItems["Rejected"].Tag = 0;
+
             item.SubItems["Errors"].Text = String.Empty;
+            item.SubItems["Errors"].Tag = 0;
+
             item.SubItems["Utility"].Text = String.Empty;
+            item.SubItems["Utility"].Tag = 0.00;
+
             item.SubItems["Intensity"].Text = String.Empty;
             item.SubItems["Pool"].Text = String.Empty;
         }
