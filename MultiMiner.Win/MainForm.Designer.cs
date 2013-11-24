@@ -1181,7 +1181,7 @@
             // 
             this.quickCoinMenu.Name = "quickCoinMenu";
             this.quickCoinMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.quickCoinMenu.Size = new System.Drawing.Size(153, 26);
+            this.quickCoinMenu.Size = new System.Drawing.Size(61, 4);
             // 
             // MainForm
             // 

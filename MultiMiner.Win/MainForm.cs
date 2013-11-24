@@ -2926,7 +2926,7 @@ namespace MultiMiner.Win
 
         private void detectDevicesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowApplicationSettings();
+            RefreshDevices();
         }
 
         private void historyToolStripMenuItem_Click(object sender, EventArgs e)
