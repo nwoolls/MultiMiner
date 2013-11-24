@@ -691,8 +691,27 @@ namespace MultiMiner.Win
 
         private void RefreshCoinPopupMenu()
         {
+            coinPopupMenu.Items.Clear();
+            foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
+            {
+                ToolStripItem menuItem = coinPopupMenu.Items.Add(configuration.Coin.Name);
+                menuItem.Click += CoinMenuItemClick;
+            }
         }
-        
+
+        private void CoinMenuItemClick(object sender, EventArgs e)
+        {
+            ToolStripItem menuItem = (ToolStripItem)sender;
+
+            foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
+            {
+
+                selectedItem.SubItems["Coin"].Text = menuItem.Text;
+            }
+
+            UpdateChangesButtons(true);
+        }
+
         private void saveButton_Click(object sender, EventArgs e)
         {
             //SaveChanges() will restart mining if needed
@@ -2750,6 +2769,17 @@ namespace MultiMiner.Win
                 e.Cancel = true;
                 e.NewWidth = 0;
             }
+        }
+
+        private void deviceListView_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (deviceListView.FocusedItem.Bounds.Contains(e.Location) == true)
+                {
+                    coinPopupMenu.Show(Cursor.Position);
+                }
+            } 
         }
     }
 }
