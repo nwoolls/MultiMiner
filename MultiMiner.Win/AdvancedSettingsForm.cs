@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Engine.Configuration;
 using MultiMiner.Utility;
+using MultiMiner.Xgminer;
 using System;
 using System.Windows.Forms;
 
@@ -42,11 +43,19 @@ namespace MultiMiner.Win
         private void LoadSettings()
         {
             intervalCombo.SelectedIndex = (int)workingApplicationConfiguration.ScheduledRestartMiningInterval;
+
+            if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.SHA256))
+                sha256ParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256];
+            if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.Scrypt))
+                scryptParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt];
         }
 
         private void SaveSettings()
         {
             workingApplicationConfiguration.ScheduledRestartMiningInterval = (ApplicationConfiguration.TimerInterval)intervalCombo.SelectedIndex;
+
+            minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256] = sha256ParamsEdit.Text;
+            minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt] = scryptParamsEdit.Text;
         }
     }
 }

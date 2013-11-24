@@ -53,9 +53,6 @@ namespace MultiMiner.Win
         
         private void SaveSettings()
         {
-            minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256] = sha256ParamsEdit.Text;
-            minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt] = scryptParamsEdit.Text;
-
             minerConfiguration.Priority = (ProcessPriorityClass)priorityCombo.SelectedItem;
 
             applicationConfiguration.UseCoinWarzApi = coinApiCombo.SelectedIndex == 1;
@@ -80,11 +77,6 @@ namespace MultiMiner.Win
 
         private void LoadSettings()
         {
-            if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.SHA256))
-                sha256ParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256];
-            if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.Scrypt))
-                scryptParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt];
-
             applicationConfigurationBindingSource.DataSource = this.applicationConfiguration;
 
             priorityCombo.SelectedItem = minerConfiguration.Priority;
