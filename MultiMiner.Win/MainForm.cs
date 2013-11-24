@@ -591,7 +591,7 @@ namespace MultiMiner.Win
             RefreshStrategiesLabel();
             RefreshStrategiesCountdown();
 
-            desktopModeButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
+            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
 
             applicationConfiguration.LoadApplicationConfiguration();
 
@@ -2071,9 +2071,6 @@ namespace MultiMiner.Win
 
         private void desktopModeButton_Click(object sender, EventArgs e)
         {
-            engineConfiguration.XgminerConfiguration.DesktopMode = desktopModeButton.Checked;
-            RestartMiningIfMining();
-            engineConfiguration.SaveMinerConfiguration();
         }
 
         private void RestartMiningIfMining()
@@ -2768,7 +2765,7 @@ namespace MultiMiner.Win
         private void EnableDesktopMode(bool enabled)
         {
             engineConfiguration.XgminerConfiguration.DesktopMode = enabled;
-            desktopModeButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
+            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
             RestartMiningIfMining();
             engineConfiguration.SaveMinerConfiguration();
         }
@@ -2828,6 +2825,18 @@ namespace MultiMiner.Win
         {
             if (!populatingDevices)
                 UpdateChangesButtons(true);
+        }
+
+        private void dynamicIntensityButton_CheckStateChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dynamicIntensityButton_Click(object sender, EventArgs e)
+        {
+            engineConfiguration.XgminerConfiguration.DesktopMode = dynamicIntensityButton.Checked;
+            RestartMiningIfMining();
+            engineConfiguration.SaveMinerConfiguration();
         }
     }
 }
