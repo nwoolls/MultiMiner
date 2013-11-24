@@ -1431,7 +1431,7 @@ namespace MultiMiner.Win
             }
 
             scryptRateLabel.Text = string.Format("Scrypt: {0}", FormatHashrate(totalScryptRate));
-            sha256RateLabel.Text = string.Format("SHA256: {0}", FormatHashrate(totalSha256Rate)); //Mh not mh, mh is milli
+            sha256RateLabel.Text = string.Format("SHA-2: {0}", FormatHashrate(totalSha256Rate)); //Mh not mh, mh is milli
 
             scryptRateLabel.Visible = totalScryptRate > 0;
             sha256RateLabel.Visible = totalSha256Rate > 0;
@@ -3012,7 +3012,8 @@ namespace MultiMiner.Win
             {
                 if (WindowState != FormWindowState.Maximized)
                 {
-                    Size = new Size(720, 500);
+                    //use Math.Max so it won't size smaller to show more
+                    Size = new Size(Math.Max(Size.Width, 720), Math.Max(Size.Height, 500));
                 }
             }
 
