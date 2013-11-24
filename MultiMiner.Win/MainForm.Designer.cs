@@ -149,6 +149,7 @@
             this.apiMonitorButton = new System.Windows.Forms.ToolStripMenuItem();
             this.dynamicIntensitySeparator = new System.Windows.Forms.ToolStripSeparator();
             this.dynamicIntensityButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.quickCoinMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.notifyIconMenuStrip.SuspendLayout();
             this.startupMiningPanel.SuspendLayout();
             this.advancedAreaContainer.Panel1.SuspendLayout();
@@ -1176,6 +1177,12 @@
             this.dynamicIntensityButton.CheckStateChanged += new System.EventHandler(this.dynamicIntensityButton_CheckStateChanged);
             this.dynamicIntensityButton.Click += new System.EventHandler(this.dynamicIntensityButton_Click);
             // 
+            // quickCoinMenu
+            // 
+            this.quickCoinMenu.Name = "quickCoinMenu";
+            this.quickCoinMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.quickCoinMenu.Size = new System.Drawing.Size(153, 26);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1350,6 +1357,7 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dummyToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSplitButton detailsToggleButton;
+        private System.Windows.Forms.ContextMenuStrip quickCoinMenu;
     }
 }
 

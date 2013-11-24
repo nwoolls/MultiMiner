@@ -2567,9 +2567,11 @@ namespace MultiMiner.Win
 
         private void PopulateQuickSwitchMenu()
         {
-            quickSwitchItem.DropDownItems.Clear();
-            quickSwitchPopupItem.DropDownItems.Clear();
+            quickCoinMenu.Items.Clear();
 
+            quickSwitchItem.DropDown = quickCoinMenu;
+            quickSwitchPopupItem.DropDown = quickCoinMenu;
+            
             foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
             {
                 ToolStripMenuItem coinSwitchItem = new ToolStripMenuItem();
@@ -2578,8 +2580,7 @@ namespace MultiMiner.Win
                 coinSwitchItem.Tag = coinConfiguration.Coin.Symbol;
                 coinSwitchItem.Click += HandleQuickSwitchClick;
 
-                quickSwitchItem.DropDownItems.Add(coinSwitchItem);
-                quickSwitchPopupItem.DropDownItems.Add(coinSwitchItem);
+                quickCoinMenu.Items.Add(coinSwitchItem);
             }
         }
 
