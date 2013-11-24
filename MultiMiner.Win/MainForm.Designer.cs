@@ -30,12 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.deviceStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.startupMiningCountdownTimer = new System.Windows.Forms.Timer(this.components);
@@ -350,16 +350,16 @@
             this.utilityColumnHeader,
             this.intensityColumnHeader});
             this.deviceListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            listViewGroup4.Header = "GPU";
-            listViewGroup4.Name = "gpuListViewGroup";
-            listViewGroup5.Header = "USB";
-            listViewGroup5.Name = "usbListViewGroup";
-            listViewGroup6.Header = "Proxy";
-            listViewGroup6.Name = "proxyListViewGroup";
+            listViewGroup1.Header = "GPU";
+            listViewGroup1.Name = "gpuListViewGroup";
+            listViewGroup2.Header = "USB";
+            listViewGroup2.Name = "usbListViewGroup";
+            listViewGroup3.Header = "Proxy";
+            listViewGroup3.Name = "proxyListViewGroup";
             this.deviceListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup4,
-            listViewGroup5,
-            listViewGroup6});
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3});
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
             this.deviceListView.Size = new System.Drawing.Size(881, 243);
@@ -465,8 +465,8 @@
             this.apiLogGridView.AllowUserToDeleteRows = false;
             this.apiLogGridView.AllowUserToOrderColumns = true;
             this.apiLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.apiLogGridView.AutoGenerateColumns = false;
             this.apiLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.apiLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -537,8 +537,8 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToOrderColumns = true;
             this.dataGridView1.AllowUserToResizeRows = false;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.AutoGenerateColumns = false;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Window;
             this.dataGridView1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -617,8 +617,8 @@
             this.historyGridView.AllowUserToAddRows = false;
             this.historyGridView.AllowUserToDeleteRows = false;
             this.historyGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.historyGridView.AutoGenerateColumns = false;
             this.historyGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.historyGridView.BackgroundColor = System.Drawing.SystemColors.Window;
@@ -785,6 +785,7 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.strategiesLabel,
             this.strategyCountdownLabel,
@@ -837,17 +838,18 @@
             // 
             // toolStrip1
             // 
+            this.toolStrip1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.startButton,
             this.stopButton,
             this.toolStripSeparator3,
             this.settingsButton,
-            this.advancedMenuItem,
             this.saveSeparator,
             this.saveButton,
             this.cancelButton,
-            this.aboutButton});
+            this.aboutButton,
+            this.advancedMenuItem});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
@@ -915,6 +917,8 @@
             // 
             // advancedMenuItem
             // 
+            this.advancedMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.advancedMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.advancedMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.detectDevicesButton,
             this.quickSwitchItem,
@@ -927,7 +931,7 @@
             this.advancedMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("advancedMenuItem.Image")));
             this.advancedMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.advancedMenuItem.Name = "advancedMenuItem";
-            this.advancedMenuItem.Size = new System.Drawing.Size(89, 22);
+            this.advancedMenuItem.Size = new System.Drawing.Size(29, 22);
             this.advancedMenuItem.Text = "Advanced";
             this.advancedMenuItem.ToolTipText = "Advanced tools";
             this.advancedMenuItem.DropDownOpening += new System.EventHandler(this.advancedMenuItem_DropDownOpening);
@@ -1036,10 +1040,11 @@
             // aboutButton
             // 
             this.aboutButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.aboutButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.aboutButton.Image = global::MultiMiner.Win.Properties.Resources.application_info;
             this.aboutButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.aboutButton.Name = "aboutButton";
-            this.aboutButton.Size = new System.Drawing.Size(60, 22);
+            this.aboutButton.Size = new System.Drawing.Size(23, 22);
             this.aboutButton.Text = "About";
             this.aboutButton.Click += new System.EventHandler(this.aboutButton_Click);
             // 
