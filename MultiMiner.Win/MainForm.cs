@@ -2454,6 +2454,11 @@ namespace MultiMiner.Win
 
         private void processLogButton_Click(object sender, EventArgs e)
         {
+            ShowProcessLog();
+        }
+
+        private void ShowProcessLog()
+        {
             ShowAdvancedPanel();
             advancedTabControl.SelectedTab = processLogPage;
 
@@ -2462,6 +2467,11 @@ namespace MultiMiner.Win
         }
 
         private void historyButton_Click(object sender, EventArgs e)
+        {
+            ShowHistory();
+        }
+
+        private void ShowHistory()
         {
             ShowAdvancedPanel();
             advancedTabControl.SelectedTab = historyPage;
@@ -2515,6 +2525,8 @@ namespace MultiMiner.Win
         private void PopulateQuickSwitchMenu()
         {
             quickSwitchItem.DropDownItems.Clear();
+            quickSwitchPopupItem.DropDownItems.Clear();
+
             foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
             {
                 ToolStripMenuItem coinSwitchItem = new ToolStripMenuItem();
@@ -2524,6 +2536,7 @@ namespace MultiMiner.Win
                 coinSwitchItem.Click += HandleQuickSwitchClick;
 
                 quickSwitchItem.DropDownItems.Add(coinSwitchItem);
+                quickSwitchPopupItem.DropDownItems.Add(coinSwitchItem);
             }
         }
 
@@ -2852,6 +2865,63 @@ namespace MultiMiner.Win
             engineConfiguration.XgminerConfiguration.DesktopMode = dynamicIntensityButton.Checked;
             RestartMiningIfMining();
             engineConfiguration.SaveMinerConfiguration();
+        }
+
+        private void deviceListView_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (!deviceListView.FocusedItem.Bounds.Contains(e.Location))
+                {
+                    deviceListContextMenu.Show(Cursor.Position);
+                }
+            }
+        }
+
+        private void detectDevicesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowApplicationSettings();
+        }
+
+        private void historyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowHistory();
+        }
+
+        private void processLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowProcessLog();
+        }
+
+        private void aPIMonitorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowApiMonitor();
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowApplicationSettings();
+        }
+
+        private void coinsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConfigureCoins();
+        }
+
+        private void strategiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConfigureStrategies();
+        }
+
+        private void deviceListContextMenu_Opening(object sender, CancelEventArgs e)
+        {
+            //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
+            quickSwitchPopupItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
+        }
+
+        private void quickSwitchPopupItem_DropDownOpening(object sender, EventArgs e)
+        {
+            PopulateQuickSwitchMenu();
         }
     }
 }
