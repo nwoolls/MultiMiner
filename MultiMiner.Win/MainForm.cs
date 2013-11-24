@@ -1690,7 +1690,8 @@ namespace MultiMiner.Win
 
         private void PopulateCoinStatsForListViewItem(Coin.Api.CoinInformation coin, ListViewItem item)
         {
-            item.SubItems["Difficulty"].Text = coin.Difficulty.ToString(".##");
+            item.SubItems["Difficulty"].Text = FormatDifficulty(coin.Difficulty);
+
             item.SubItems["Price"].Text = coin.Price.ToString(".#####");
 
             switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
@@ -1706,6 +1707,39 @@ namespace MultiMiner.Win
                     break;
             }
         }
+
+        private string FormatDifficulty(double difficulty)
+        {
+            string suffix = "";
+            double shortened = difficulty;
+
+            if (shortened > 1000)
+            {
+                shortened /= 1000;
+                suffix = "K";
+            }
+
+            if (shortened > 1000)
+            {
+                shortened /= 1000;
+                suffix = "M";
+            }
+
+            if (shortened > 1000)
+            {
+                shortened /= 1000;
+                suffix = "B";
+            }
+
+            if (shortened > 1000)
+            {
+                shortened /= 1000;
+                suffix = "T";
+            }
+
+            return String.Format("{0:0.##} {1}", shortened, suffix).TrimEnd();
+        }
+           
 
         private void countdownTimer_Tick(object sender, EventArgs e)
         {
