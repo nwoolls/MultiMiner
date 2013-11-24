@@ -2601,6 +2601,7 @@ namespace MultiMiner.Win
             engineConfiguration.SaveStrategyConfiguration();
 
             LoadListViewValuesFromConfiguration();
+            LoadListViewValuesFromCoinStats(); 
 
             AutoSizeListViewColumns();
 
@@ -2638,9 +2639,7 @@ namespace MultiMiner.Win
                 deviceConfiguration.Enabled = listViewItem.Checked;
 
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
-            }
-
-            LoadListViewValuesFromCoinStats();            
+            }           
         }
 
         private void advancedMenuItem_DropDownOpening(object sender, EventArgs e)
