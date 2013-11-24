@@ -125,8 +125,8 @@
             this.detailsToggleButton = new System.Windows.Forms.ToolStripSplitButton();
             this.strategiesLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.strategyCountdownLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.scryptRateLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.sha256RateLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.scryptRateLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.deviceTotalLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.startButton = new System.Windows.Forms.ToolStripButton();
@@ -907,8 +907,8 @@
             this.detailsToggleButton,
             this.strategiesLabel,
             this.strategyCountdownLabel,
-            this.scryptRateLabel,
             this.sha256RateLabel,
+            this.scryptRateLabel,
             this.deviceTotalLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 459);
             this.statusStrip1.Name = "statusStrip1";
@@ -944,20 +944,20 @@
             this.strategyCountdownLabel.Text = "Time until strategy check: 60s";
             this.strategyCountdownLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // scryptRateLabel
-            // 
-            this.scryptRateLabel.AutoSize = false;
-            this.scryptRateLabel.Name = "scryptRateLabel";
-            this.scryptRateLabel.Size = new System.Drawing.Size(236, 17);
-            this.scryptRateLabel.Spring = true;
-            this.scryptRateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // sha256RateLabel
             // 
             this.sha256RateLabel.AutoSize = false;
             this.sha256RateLabel.Name = "sha256RateLabel";
-            this.sha256RateLabel.Size = new System.Drawing.Size(150, 17);
+            this.sha256RateLabel.Size = new System.Drawing.Size(236, 17);
+            this.sha256RateLabel.Spring = true;
             this.sha256RateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // scryptRateLabel
+            // 
+            this.scryptRateLabel.AutoSize = false;
+            this.scryptRateLabel.Name = "scryptRateLabel";
+            this.scryptRateLabel.Size = new System.Drawing.Size(150, 17);
+            this.scryptRateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // deviceTotalLabel
             // 
@@ -1246,8 +1246,8 @@
         private System.Windows.Forms.ToolStripButton stopButton;
         private System.Windows.Forms.ToolStripSeparator saveSeparator;
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel sha256RateLabel;
         private System.Windows.Forms.ToolStripStatusLabel scryptRateLabel;
+        private System.Windows.Forms.ToolStripStatusLabel sha256RateLabel;
         private System.Windows.Forms.ToolStripStatusLabel strategiesLabel;
         private System.Windows.Forms.ToolStripStatusLabel strategyCountdownLabel;
         private System.Windows.Forms.Timer coinStatsCountdownTimer;
