@@ -1430,11 +1430,11 @@ namespace MultiMiner.Win
                 }
             }
 
-            scryptRateLabel.Text = string.Format("Scrypt: {0}", FormatHashrate(totalScryptRate));
-            sha256RateLabel.Text = string.Format("SHA-2: {0}", FormatHashrate(totalSha256Rate)); //Mh not mh, mh is milli
-
-            scryptRateLabel.Visible = totalScryptRate > 0;
-            sha256RateLabel.Visible = totalSha256Rate > 0;
+            scryptRateLabel.Text = totalScryptRate == 0 ? String.Empty : String.Format("Scrypt: {0}", FormatHashrate(totalScryptRate));
+            sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}", FormatHashrate(totalSha256Rate)); //Mh not mh, mh is milli
+            
+            scryptRateLabel.AutoSize = true;
+            sha256RateLabel.AutoSize = true;
 
             notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
 
