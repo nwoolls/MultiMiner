@@ -1778,7 +1778,11 @@ namespace MultiMiner.Win
         {
             item.SubItems["Difficulty"].Text = FormatDifficulty(coin.Difficulty);
 
-            item.SubItems["Price"].Text = coin.Price.ToString(".#####");
+            string unit = "BTC";
+            if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == Coin.Api.BaseCoin.Litecoin))
+                unit = "LTC";
+
+            item.SubItems["Price"].Text = coin.Price.ToString(".#####") + " " + unit;
 
             switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
             {
