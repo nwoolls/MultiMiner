@@ -293,6 +293,8 @@ namespace MultiMiner.Win
                 this.engineConfiguration.SaveCoinConfigurations();
                 this.engineConfiguration.SaveMinerConfiguration();
                 this.applicationConfiguration.SaveApplicationConfiguration();
+
+                SetBriefMode(applicationConfiguration.BriefUserInterface);
             }
         }
 
@@ -2056,6 +2058,9 @@ namespace MultiMiner.Win
 
         private void ShowAdvancedPanel()
         {
+            if (briefMode)
+                SetBriefMode(false);
+
             closeApiButton.Visible = true;
             apiLogGridView.Visible = true;
             advancedAreaContainer.Panel2Collapsed = false;
@@ -2922,7 +2927,7 @@ namespace MultiMiner.Win
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (!deviceListView.FocusedItem.Bounds.Contains(e.Location))
+                if ((deviceListView.FocusedItem == null) || !deviceListView.FocusedItem.Bounds.Contains(e.Location))
                 {
                     deviceListContextMenu.Show(Cursor.Position);
                 }
@@ -2995,11 +3000,23 @@ namespace MultiMiner.Win
             briefMode = newBriefMode;
             RefreshDetailsToggleButton();
 
+            //do this before adjusting the window size so we can base it on column widths
+            AutoSizeListViewColumns();
+
             if (briefMode)
             {
                 HideAdvancedPanel();
                 WindowState = FormWindowState.Normal;
-                Size = new Size(300, 400);
+
+                int newWidth = 0;
+
+                foreach (ColumnHeader column in deviceListView.Columns)
+                    newWidth += column.Width;
+                newWidth += 40; //needs to be pretty wide for e.g. Aero Basic
+
+                newWidth = Math.Max(newWidth, 300);
+
+                Size = new Size(newWidth, 400);
 
             } else
             {
@@ -3017,7 +3034,6 @@ namespace MultiMiner.Win
             settingsButton.Visible = !briefMode;
             settingsSeparator.Visible = !briefMode;
 
-            AutoSizeListViewColumns();
 
             footerPanel.Visible = !briefMode;
 

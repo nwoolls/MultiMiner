@@ -382,7 +382,6 @@
             this.deviceListView.View = System.Windows.Forms.View.Details;
             this.deviceListView.ColumnWidthChanging += new System.Windows.Forms.ColumnWidthChangingEventHandler(this.deviceListView_ColumnWidthChanging);
             this.deviceListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.deviceListView_ItemChecked);
-            this.deviceListView.SizeChanged += new System.EventHandler(this.deviceListView_SizeChanged);
             this.deviceListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.deviceListView_MouseClick);
             this.deviceListView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.deviceListView_MouseUp);
             // 
@@ -916,7 +915,6 @@
             this.statusStrip1.Size = new System.Drawing.Size(881, 22);
             this.statusStrip1.TabIndex = 8;
             this.statusStrip1.Text = "statusStrip1";
-            this.statusStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.statusStrip1_ItemClicked);
             // 
             // detailsToggleButton
             // 
@@ -1194,7 +1192,6 @@
             this.Text = "MultiMiner";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
-            this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.notifyIconMenuStrip.ResumeLayout(false);
             this.startupMiningPanel.ResumeLayout(false);

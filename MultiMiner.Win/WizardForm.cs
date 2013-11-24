@@ -300,6 +300,7 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
             applicationConfiguraion.MobileMinerRemoteCommands = remoteCommandsCheck.Checked;
             applicationConfiguraion.MobileMinerEmailAddress = emailAddressEdit.Text;
             applicationConfiguraion.MobileMinerApplicationKey = appKeyEdit.Text;
+            applicationConfiguraion.BriefUserInterface = true;
             return applicationConfiguraion;
         }
     }
