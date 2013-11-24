@@ -97,6 +97,10 @@ namespace MultiMiner.Win
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            saveButton.Visible = false;
+            cancelButton.Visible = false;
+            saveSeparator.Visible = false;
+
             SetupGridColumns();     
 
             logLaunchArgsBindingSource.DataSource = logCloseEntries;
