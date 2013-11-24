@@ -412,8 +412,29 @@ namespace MultiMiner.Win
 
         private void AutoSizeListViewColumns()
         {
-            foreach (ColumnHeader column in deviceListView.Columns)
-                column.Width = -2;
+            for (int i = 0; i < deviceListView.Columns.Count; i++)
+            {
+                bool hasValue = false;
+                if (i == 0)
+                {
+                    hasValue = true;
+                }
+                else
+                {
+                    foreach (ListViewItem item in deviceListView.Items)
+                    {
+                        if (!String.IsNullOrEmpty(item.SubItems[deviceListView.Columns[i].Text].Text))
+                        {
+                            hasValue = true;
+                            break;
+                        }
+                    }
+                }
+                if (hasValue)
+                    deviceListView.Columns[i].Width = -2;
+                else
+                    deviceListView.Columns[i].Width = 0;
+            }
         }
 
         private void PopulateListViewFromDevices()
@@ -2717,13 +2738,18 @@ namespace MultiMiner.Win
             RestartMiningIfMining();
         }
 
-        private void deviceGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-        }
-
         private void minerSummaryTimer_Tick(object sender, EventArgs e)
         {
             PopulateSummaryInfoFromProcesses();
+        }
+
+        private void deviceListView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
+        {
+            if (deviceListView.Columns[e.ColumnIndex].Width == 0)
+            {
+                e.Cancel = true;
+                e.NewWidth = 0;
+            }
         }
     }
 }
