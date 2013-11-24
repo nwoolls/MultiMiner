@@ -13,9 +13,10 @@ namespace MultiMiner.Win
             FifteenMinutes = 1,
             ThirtyMinutes = 2,
             OneHour = 3,
-            ThreeHours = 4,
-            SixHours = 5,
-            TwelveHours = 6
+            TwoHours = 4,
+            ThreeHours = 5,
+            SixHours = 6,
+            TwelveHours = 7
         }
 
         [Flags]
