@@ -2558,6 +2558,8 @@ namespace MultiMiner.Win
 
             LoadListViewValuesFromConfiguration();
 
+            AutoSizeListViewColumns();
+
             if (wasMining)
                 StartMining();
         }
