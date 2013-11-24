@@ -48,6 +48,8 @@ namespace MultiMiner.Win
                 sha256ParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256];
             if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.Scrypt))
                 scryptParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt];
+
+            autoDesktopCheckBox.Enabled = !disableGpuCheckbox.Checked;
         }
 
         private void SaveSettings()
@@ -56,6 +58,11 @@ namespace MultiMiner.Win
 
             minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256] = sha256ParamsEdit.Text;
             minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt] = scryptParamsEdit.Text;
+        }
+
+        private void disableGpuCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            autoDesktopCheckBox.Enabled = !disableGpuCheckbox.Checked;
         }
     }
 }

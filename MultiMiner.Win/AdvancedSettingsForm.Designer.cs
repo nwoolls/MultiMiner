@@ -107,6 +107,7 @@
             this.disableGpuCheckbox.TabIndex = 0;
             this.disableGpuCheckbox.Text = "Disable GPU mining";
             this.disableGpuCheckbox.UseVisualStyleBackColor = true;
+            this.disableGpuCheckbox.CheckedChanged += new System.EventHandler(this.disableGpuCheckbox_CheckedChanged);
             // 
             // xgminerConfigurationBindingSource
             // 
@@ -173,7 +174,7 @@
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "StartingApiPort", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox1.Location = new System.Drawing.Point(122, 25);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(121, 23);
+            this.textBox1.Size = new System.Drawing.Size(127, 23);
             this.textBox1.TabIndex = 0;
             // 
             // autoDesktopCheckBox
@@ -182,9 +183,9 @@
             this.autoDesktopCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "AutoSetDesktopMode", true));
             this.autoDesktopCheckBox.Location = new System.Drawing.Point(274, 9);
             this.autoDesktopCheckBox.Name = "autoDesktopCheckBox";
-            this.autoDesktopCheckBox.Size = new System.Drawing.Size(190, 51);
+            this.autoDesktopCheckBox.Size = new System.Drawing.Size(185, 51);
             this.autoDesktopCheckBox.TabIndex = 3;
-            this.autoDesktopCheckBox.Text = "Automatically set Desktop Mode based on computer use";
+            this.autoDesktopCheckBox.Text = "Automatically set Dynamic Intensity based on computer use";
             this.autoDesktopCheckBox.UseVisualStyleBackColor = true;
             // 
             // applicationConfigurationBindingSource
@@ -220,7 +221,7 @@
             "12 hours"});
             this.intervalCombo.Location = new System.Drawing.Point(164, 38);
             this.intervalCombo.Name = "intervalCombo";
-            this.intervalCombo.Size = new System.Drawing.Size(92, 23);
+            this.intervalCombo.Size = new System.Drawing.Size(99, 23);
             this.intervalCombo.TabIndex = 2;
             // 
             // groupBox2
