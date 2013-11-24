@@ -439,7 +439,7 @@ namespace MultiMiner.Win
                             listViewItem.Group = deviceListView.Groups["proxyListViewGroup"];
                             break;
                     }
-
+                    
                     listViewItem.Text = device.Name;
 
                     //start at i = 1, skip the first column
@@ -447,8 +447,16 @@ namespace MultiMiner.Win
                     {
                         ListViewItem.ListViewSubItem listViewSubItem = new ListViewItem.ListViewSubItem(listViewItem, String.Empty);
                         listViewSubItem.Name = deviceListView.Columns[i].Text;
+                        listViewSubItem.ForeColor = SystemColors.WindowFrame;
                         listViewItem.SubItems.Add(listViewSubItem);
                     }
+
+                    listViewItem.SubItems["Coin"].ForeColor = SystemColors.WindowText;
+                    listViewItem.SubItems["Errors"].ForeColor = SystemColors.WindowText;
+                    listViewItem.SubItems["Rejected"].ForeColor = SystemColors.WindowText;
+
+                    listViewItem.UseItemStyleForSubItems = false;
+
 
                     listViewItem.SubItems["Driver"].Text = device.Driver;
 
