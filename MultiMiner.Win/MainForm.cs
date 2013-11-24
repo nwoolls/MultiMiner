@@ -100,6 +100,7 @@ namespace MultiMiner.Win
             saveButton.Visible = false;
             cancelButton.Visible = false;
             saveSeparator.Visible = false;
+            stopButton.Visible = false;
 
             SetupGridColumns();     
 
@@ -117,6 +118,8 @@ namespace MultiMiner.Win
             CheckAndShowGettingStarted();
             
             LoadSettings();
+
+            RefreshDetailsToggleButton();
 
             RefreshCoinAPILabel();
 
@@ -153,6 +156,8 @@ namespace MultiMiner.Win
             RefreshDevices();
             
             UpdateMiningButtons();
+
+            AutoSizeListViewColumns();
 
             formLoaded = true;
         }
@@ -427,29 +432,66 @@ namespace MultiMiner.Win
 
         private void AutoSizeListViewColumns()
         {
-            for (int i = 0; i < deviceListView.Columns.Count; i++)
+            deviceListView.BeginUpdate();
+            try
             {
-                bool hasValue = false;
-                if (i == 0)
+
+                if (briefMode)
                 {
-                    hasValue = true;
+                    nameColumnHeader.Width = -2;
+                    driverColumnHeader.Width = 0;
+                    coinColumnHeader.Width = -2;
+                    difficultyColumnHeader.Width = 0;
+                    priceColumnHeader.Width = 0;
+                    profitabilityColumnHeader.Width = -2;
+                    poolColumnHeader.Width = 0;
+
+                    if (ListViewColumnHasValues("Temp"))
+                        tempColumnHeader.Width = -2;
+                    else
+                        tempColumnHeader.Width = 0;
+
+                    hashrateColumnHeader.Width = -2;
+                    acceptedColumnHeader.Width = 0;
+                    rejectedColumnHeader.Width = 0;
+                    errorsColumnHeader.Width = 0;
+                    utilityColumnHeader.Width = 0;
+                    intensityColumnHeader.Width = 0;
                 }
                 else
                 {
-                    foreach (ListViewItem item in deviceListView.Items)
+                    for (int i = 0; i < deviceListView.Columns.Count; i++)
                     {
-                        if (!String.IsNullOrEmpty(item.SubItems[deviceListView.Columns[i].Text].Text))
+                        bool hasValue = false;
+                        if (i == 0)
                         {
                             hasValue = true;
-                            break;
                         }
-                    }
+                        else
+                        {
+                            hasValue = ListViewColumnHasValues(deviceListView.Columns[i].Text);
+                        }
+                        if (hasValue)
+                            deviceListView.Columns[i].Width = -2;
+                        else
+                            deviceListView.Columns[i].Width = 0;
+                    }      
                 }
-                if (hasValue)
-                    deviceListView.Columns[i].Width = -2;
-                else
-                    deviceListView.Columns[i].Width = 0;
+
+          
             }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
+        }
+        
+        private bool ListViewColumnHasValues(string headerText)
+        {
+            foreach (ListViewItem item in deviceListView.Items)
+                if (!String.IsNullOrEmpty(item.SubItems[headerText].Text))
+                    return true;
+            return false;
         }
 
         private void PopulateListViewFromDevices()
@@ -599,6 +641,10 @@ namespace MultiMiner.Win
 
             applicationConfiguration.LoadApplicationConfiguration();
 
+            //load brief mode first, then location
+            SetBriefMode(applicationConfiguration.BriefUserInterface);
+
+            //now location so we pick up the customizations
             if ((applicationConfiguration.AppPosition != null) &&
                 (applicationConfiguration.AppPosition.Height > 0) &&
                 (applicationConfiguration.AppPosition.Width > 9))
@@ -1395,15 +1441,14 @@ namespace MultiMiner.Win
 
             scryptRateLabel.Text = string.Format("Scrypt: {0}", FormatHashrate(totalScryptRate));
             sha256RateLabel.Text = string.Format("SHA256: {0}", FormatHashrate(totalSha256Rate)); //Mh not mh, mh is milli
+
+            scryptRateLabel.Visible = totalScryptRate > 0;
+            sha256RateLabel.Visible = totalSha256Rate > 0;
+
             notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
 
             AutoSizeListViewColumns();
 
-            //hide the temperature column if there are no tempts returned (USBs, OS X, etc)
-            //tempColumnHeader.Visible = hasTempValue;
-
-            //hide the intensity column if there are no intensities returned (USBs)
-            //intensityColumnHeader.Visible = hasIntensityValue;
         }
 
         private List<DeviceInformationResponse> GetDeviceInfoFromProcess(MinerProcess minerProcess)
@@ -2928,6 +2973,56 @@ namespace MultiMiner.Win
         private void quickSwitchPopupItem_DropDownOpening(object sender, EventArgs e)
         {
             PopulateQuickSwitchMenu();
+        }
+
+        private bool briefMode = false;
+        private void detailsToggleButton_ButtonClick(object sender, EventArgs e)
+        {
+            SetBriefMode(!briefMode);
+            RefreshDetailsToggleButton();
+        }
+
+        private void RefreshDetailsToggleButton()
+        {
+            if (briefMode)
+                detailsToggleButton.Text = "▾ More details";
+            else
+                detailsToggleButton.Text = "▴ Fewer details";
+        }
+
+        private void SetBriefMode(bool newBriefMode)
+        {
+            briefMode = newBriefMode;
+            RefreshDetailsToggleButton();
+
+            if (briefMode)
+            {
+                HideAdvancedPanel();
+                WindowState = FormWindowState.Normal;
+                Size = new Size(300, 400);
+
+            } else
+            {
+                if (WindowState != FormWindowState.Maximized)
+                {
+                    Size = new Size(720, 500);
+                }
+            }
+
+            strategiesLabel.Visible = !briefMode;
+            strategyCountdownLabel.Visible = !briefMode;
+            deviceTotalLabel.Visible = !briefMode;
+
+            advancedMenuItem.Visible = !briefMode;
+            settingsButton.Visible = !briefMode;
+            settingsSeparator.Visible = !briefMode;
+
+            AutoSizeListViewColumns();
+
+            footerPanel.Visible = !briefMode;
+
+            applicationConfiguration.BriefUserInterface = briefMode;
+            applicationConfiguration.SaveApplicationConfiguration();
         }
     }
 }

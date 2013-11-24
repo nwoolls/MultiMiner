@@ -51,6 +51,7 @@ namespace MultiMiner.Win
         public bool AutoSetDesktopMode { get; set; }
         public Rectangle AppPosition { get; set; }
         public bool CheckForMinerUpdates { get; set; }
+        public bool BriefUserInterface { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }

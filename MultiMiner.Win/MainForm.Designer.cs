@@ -107,6 +107,7 @@
             this.deviceListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.detectDevicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quickSwitchPopupItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dummyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.historyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.processLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -121,6 +122,7 @@
             this.coinChooseLinkLabel = new System.Windows.Forms.LinkLabel();
             this.coinChoosePrefixLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.detailsToggleButton = new System.Windows.Forms.ToolStripSplitButton();
             this.strategiesLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.strategyCountdownLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.sha256RateLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -129,7 +131,7 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.startButton = new System.Windows.Forms.ToolStripButton();
             this.stopButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.settingsSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.settingsButton = new System.Windows.Forms.ToolStripSplitButton();
             this.coinsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.strategiesButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -147,7 +149,6 @@
             this.apiMonitorButton = new System.Windows.Forms.ToolStripMenuItem();
             this.dynamicIntensitySeparator = new System.Windows.Forms.ToolStripSeparator();
             this.dynamicIntensityButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.dummyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIconMenuStrip.SuspendLayout();
             this.startupMiningPanel.SuspendLayout();
             this.advancedAreaContainer.Panel1.SuspendLayout();
@@ -379,7 +380,9 @@
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
             this.deviceListView.View = System.Windows.Forms.View.Details;
+            this.deviceListView.ColumnWidthChanging += new System.Windows.Forms.ColumnWidthChangingEventHandler(this.deviceListView_ColumnWidthChanging);
             this.deviceListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.deviceListView_ItemChecked);
+            this.deviceListView.SizeChanged += new System.EventHandler(this.deviceListView_SizeChanged);
             this.deviceListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.deviceListView_MouseClick);
             this.deviceListView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.deviceListView_MouseUp);
             // 
@@ -782,6 +785,12 @@
             this.quickSwitchPopupItem.Text = "Quick Switch";
             this.quickSwitchPopupItem.DropDownOpening += new System.EventHandler(this.quickSwitchPopupItem_DropDownOpening);
             // 
+            // dummyToolStripMenuItem1
+            // 
+            this.dummyToolStripMenuItem1.Name = "dummyToolStripMenuItem1";
+            this.dummyToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+            this.dummyToolStripMenuItem1.Text = "Dummy";
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -858,7 +867,7 @@
             this.coinStatsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.coinStatsLabel.Location = new System.Drawing.Point(1735, 15);
             this.coinStatsLabel.Name = "coinStatsLabel";
-            this.coinStatsLabel.Size = new System.Drawing.Size(233, 27);
+            this.coinStatsLabel.Size = new System.Drawing.Size(200, 27);
             this.coinStatsLabel.TabIndex = 3;
             this.coinStatsLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
@@ -887,14 +896,15 @@
             this.coinChoosePrefixLabel.AutoSize = true;
             this.coinChoosePrefixLabel.Location = new System.Drawing.Point(3, 15);
             this.coinChoosePrefixLabel.Name = "coinChoosePrefixLabel";
-            this.coinChoosePrefixLabel.Size = new System.Drawing.Size(372, 15);
+            this.coinChoosePrefixLabel.Size = new System.Drawing.Size(373, 15);
             this.coinChoosePrefixLabel.TabIndex = 0;
-            this.coinChoosePrefixLabel.Text = "Crypto-currency pricing and profitability information powered by the";
+            this.coinChoosePrefixLabel.Text = "Crypto-currency pricing and profitability information provided by the";
             // 
             // statusStrip1
             // 
             this.statusStrip1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.detailsToggleButton,
             this.strategiesLabel,
             this.strategyCountdownLabel,
             this.sha256RateLabel,
@@ -906,6 +916,18 @@
             this.statusStrip1.Size = new System.Drawing.Size(881, 22);
             this.statusStrip1.TabIndex = 8;
             this.statusStrip1.Text = "statusStrip1";
+            this.statusStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.statusStrip1_ItemClicked);
+            // 
+            // detailsToggleButton
+            // 
+            this.detailsToggleButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.detailsToggleButton.DropDownButtonWidth = 0;
+            this.detailsToggleButton.Image = ((System.Drawing.Image)(resources.GetObject("detailsToggleButton.Image")));
+            this.detailsToggleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.detailsToggleButton.Name = "detailsToggleButton";
+            this.detailsToggleButton.Size = new System.Drawing.Size(93, 20);
+            this.detailsToggleButton.Text = "▾ Fewer details";
+            this.detailsToggleButton.ButtonClick += new System.EventHandler(this.detailsToggleButton_ButtonClick);
             // 
             // strategiesLabel
             // 
@@ -926,7 +948,7 @@
             // sha256RateLabel
             // 
             this.sha256RateLabel.Name = "sha256RateLabel";
-            this.sha256RateLabel.Size = new System.Drawing.Size(369, 17);
+            this.sha256RateLabel.Size = new System.Drawing.Size(276, 17);
             this.sha256RateLabel.Spring = true;
             this.sha256RateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -951,7 +973,7 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.startButton,
             this.stopButton,
-            this.toolStripSeparator3,
+            this.settingsSeparator,
             this.settingsButton,
             this.saveSeparator,
             this.saveButton,
@@ -987,10 +1009,10 @@
             this.stopButton.ToolTipText = "Stop mining";
             this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
             // 
-            // toolStripSeparator3
+            // settingsSeparator
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            this.settingsSeparator.Name = "settingsSeparator";
+            this.settingsSeparator.Size = new System.Drawing.Size(6, 25);
             // 
             // settingsButton
             // 
@@ -1105,7 +1127,7 @@
             // dummyToolStripMenuItem
             // 
             this.dummyToolStripMenuItem.Name = "dummyToolStripMenuItem";
-            this.dummyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.dummyToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.dummyToolStripMenuItem.Text = "Dummy";
             // 
             // toolStripSeparator5
@@ -1156,12 +1178,6 @@
             this.dynamicIntensityButton.CheckStateChanged += new System.EventHandler(this.dynamicIntensityButton_CheckStateChanged);
             this.dynamicIntensityButton.Click += new System.EventHandler(this.dynamicIntensityButton_Click);
             // 
-            // dummyToolStripMenuItem1
-            // 
-            this.dummyToolStripMenuItem1.Name = "dummyToolStripMenuItem1";
-            this.dummyToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.dummyToolStripMenuItem1.Text = "Dummy";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1178,6 +1194,7 @@
             this.Text = "MultiMiner";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.notifyIconMenuStrip.ResumeLayout(false);
             this.startupMiningPanel.ResumeLayout(false);
@@ -1233,7 +1250,7 @@
         private System.Windows.Forms.Label coinChooseSuffixLabel;
         private System.Windows.Forms.LinkLabel coinChooseLinkLabel;
         private System.Windows.Forms.Label coinChoosePrefixLabel;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripSeparator settingsSeparator;
         private System.Windows.Forms.Label coinStatsLabel;
         private System.Windows.Forms.SplitContainer advancedAreaContainer;
         private System.Windows.Forms.Panel panel2;
@@ -1335,6 +1352,7 @@
         private System.Windows.Forms.ToolStripMenuItem strategiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dummyToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSplitButton detailsToggleButton;
     }
 }
 
