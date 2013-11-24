@@ -2639,6 +2639,8 @@ namespace MultiMiner.Win
 
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
+
+            LoadListViewValuesFromCoinStats();            
         }
 
         private void advancedMenuItem_DropDownOpening(object sender, EventArgs e)
