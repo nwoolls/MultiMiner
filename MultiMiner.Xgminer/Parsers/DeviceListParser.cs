@@ -41,6 +41,8 @@ namespace MultiMiner.Xgminer.Parsers
                         device.ProcessorCount = int.Parse(details["procs"]);
                         if (details.ContainsKey("path"))
                             device.Path = details["path"];
+                        if (details.ContainsKey("serial"))
+                            device.Serial = details["serial"];
 
                         device.Kind = DeviceIsGpu(device) ? DeviceKind.GPU : DeviceKind.USB;
                         if ((devices.Count > 0) && (devices.Last()).Kind != device.Kind)

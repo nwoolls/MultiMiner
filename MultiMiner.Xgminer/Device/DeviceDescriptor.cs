@@ -7,12 +7,14 @@ namespace MultiMiner.Xgminer
         public int RelativeIndex { get; set; }
         public string Driver { get; set; }
         public string Path { get; set; }
+        public string Serial { get; set; }
 
         public DeviceDescriptor()
         {
             this.Driver = String.Empty;
             this.Path = String.Empty;
             this.RelativeIndex = -1;
+            this.Serial = String.Empty;
         }
 
         public string Description()
@@ -31,16 +33,25 @@ namespace MultiMiner.Xgminer
             this.RelativeIndex = source.RelativeIndex;
             this.Driver = source.Driver;
             this.Path = source.Path;
+            this.Serial = source.Serial;
         }
 
-        public bool Equals(DeviceDescriptor target)
+        public bool Equals(Object obj)
         {
+            if (obj == null)
+                return false;
+
+            DeviceDescriptor target = (DeviceDescriptor)obj;
+
             if (this.Kind == DeviceKind.PXY)
                 return target.Kind == DeviceKind.PXY;
             else if (this.Kind == DeviceKind.GPU)
                 return target.Kind == DeviceKind.GPU && target.RelativeIndex == this.RelativeIndex;
-            else
+            else if (String.IsNullOrEmpty(target.Serial))
+                //only match on Path if there is no Serial
                 return target.Driver.Equals(this.Driver, StringComparison.OrdinalIgnoreCase) && target.Path.Equals(this.Path, StringComparison.OrdinalIgnoreCase);
+            else
+                return target.Driver.Equals(this.Driver, StringComparison.OrdinalIgnoreCase) && target.Serial.Equals(this.Serial, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
