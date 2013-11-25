@@ -741,6 +741,9 @@ namespace MultiMiner.Win
                 Application.DoEvents();
 
                 engineConfiguration.SaveCoinConfigurations();
+
+                RemoveInvalidCoinValuesFromListView();
+
                 RefreshCoinPopupMenu();
 
                 //SaveChanges() will restart mining if needed
@@ -748,6 +751,24 @@ namespace MultiMiner.Win
             }
             else
                 engineConfiguration.LoadCoinConfigurations();
+        }
+
+        private void RemoveInvalidCoinValuesFromListView()
+        {
+            foreach (ListViewItem item in deviceListView.Items)
+            {
+                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.Coin.Name.Equals(item.SubItems["Coin"].Text)) == null)
+                    item.SubItems["Coin"].Text = String.Empty;
+            }
+
+            ClearCoinStatsForDisabledCoins();
+        }
+
+        private void ClearCoinStatsForDisabledCoins()
+        {
+            foreach (ListViewItem item in deviceListView.Items)
+                if (string.IsNullOrEmpty(item.SubItems["Coin"].Text))
+                    ClearCoinStatsForGridListViewItem(item);
         }
 
         private void RefreshCoinPopupMenu()
@@ -1232,13 +1253,6 @@ namespace MultiMiner.Win
         {
             foreach (ListViewItem item in deviceListView.Items)
                 ClearCoinStatsForGridListViewItem(item);
-        }
-
-        private void ClearCoinStatsForDisabledCoins()
-        {
-            foreach (ListViewItem item in deviceListView.Items)
-                if (string.IsNullOrEmpty(item.SubItems["Coin"].Text))
-                    ClearCoinStatsForGridListViewItem(item);
         }
 
         private static void ClearCoinStatsForGridListViewItem(ListViewItem item)
