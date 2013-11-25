@@ -741,6 +741,9 @@ namespace MultiMiner.Win
                     if (result == 0)
                         result = d1.Path.CompareTo(d2.Path);
 
+                    if (result == 0)
+                        result = d1.RelativeIndex.CompareTo(d2.RelativeIndex);
+
                     return result;
                 });
 
