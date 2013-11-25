@@ -801,6 +801,10 @@ namespace MultiMiner.Win
             foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
                 selectedItem.SubItems["Coin"].Text = menuItem.Text;
 
+            LoadListViewValuesFromCoinStats();
+
+            AutoSizeListViewColumns();
+
             UpdateChangesButtons(true);
         }
 
