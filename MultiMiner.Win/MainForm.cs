@@ -1495,8 +1495,10 @@ namespace MultiMiner.Win
                 }
             }
 
+            //Mh not mh, mh is milli
             scryptRateLabel.Text = totalScryptRate == 0 ? String.Empty : String.Format("Scrypt: {0}", FormatHashrate(totalScryptRate));
-            sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}", FormatHashrate(totalSha256Rate)); //Mh not mh, mh is milli
+            //spacing used to pad out the status bar item
+            sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}   ", FormatHashrate(totalSha256Rate)); 
 
             scryptRateLabel.AutoSize = true;
             sha256RateLabel.AutoSize = true;
