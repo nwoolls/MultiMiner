@@ -1857,7 +1857,7 @@ namespace MultiMiner.Win
 
         private void RefreshCoinStatsLabel()
         {
-            coinChooseSuffixLabel.Text = string.Format("at {0}.", DateTime.Now.ToShortTimeString());
+            coinChooseSuffixLabel.Text = string.Format("at {0}", DateTime.Now.ToShortTimeString());
         }
 
         private void LoadKnownCoinsFromCoinStats()
