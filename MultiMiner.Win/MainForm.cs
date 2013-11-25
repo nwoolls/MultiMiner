@@ -451,47 +451,56 @@ namespace MultiMiner.Win
             }
         }
 
+        //optimized for speed
+        private static void SetColumWidth(ColumnHeader column, int width)
+        {
+            if ((width < 0) || (column.Width != width))
+                column.Width = width;
+        }
+
         private void AutoSizeListViewColumns()
         {
+            if (deviceListView.View != View.Details)
+                return;
+
             if (briefMode)
             {
-                nameColumnHeader.Width = -2;
-                driverColumnHeader.Width = 0;
-                coinColumnHeader.Width = -2;
-                difficultyColumnHeader.Width = 0;
-                priceColumnHeader.Width = 0;
-                profitabilityColumnHeader.Width = -2;
-                poolColumnHeader.Width = 0;
+                SetColumWidth(nameColumnHeader, -2);
+                SetColumWidth(driverColumnHeader, 0);
+                SetColumWidth(coinColumnHeader, -2);
+                SetColumWidth(difficultyColumnHeader, 0);
+                SetColumWidth(priceColumnHeader, 0);
+                SetColumWidth(profitabilityColumnHeader, -2);
+                SetColumWidth(poolColumnHeader, 0);
 
                 if (ListViewColumnHasValues("Temp"))
-                    tempColumnHeader.Width = -2;
-                else
-                    tempColumnHeader.Width = 0;
+                    SetColumWidth(tempColumnHeader, -2);
+                else if (tempColumnHeader.Width != 0)
+                    SetColumWidth(tempColumnHeader, 0);
 
-                hashrateColumnHeader.Width = -2;
-                acceptedColumnHeader.Width = 0;
-                rejectedColumnHeader.Width = 0;
-                errorsColumnHeader.Width = 0;
-                utilityColumnHeader.Width = 0;
-                intensityColumnHeader.Width = 0;
+                SetColumWidth(hashrateColumnHeader, -2);
+                SetColumWidth(acceptedColumnHeader, 0);
+                SetColumWidth(rejectedColumnHeader, 0);
+                SetColumWidth(errorsColumnHeader, 0);
+                SetColumWidth(utilityColumnHeader, 0);
+                SetColumWidth(intensityColumnHeader, 0);
             }
             else
             {
                 for (int i = 0; i < deviceListView.Columns.Count; i++)
                 {
+                    ColumnHeader column = deviceListView.Columns[i];
+
                     bool hasValue = false;
                     if (i == 0)
-                    {
                         hasValue = true;
-                    }
                     else
-                    {
-                        hasValue = ListViewColumnHasValues(deviceListView.Columns[i].Text);
-                    }
+                        hasValue = ListViewColumnHasValues(column.Text);
+
                     if (hasValue)
-                        deviceListView.Columns[i].Width = -2;
+                        SetColumWidth(column, -2);
                     else
-                        deviceListView.Columns[i].Width = 0;
+                        SetColumWidth(column, 0);
                 }
             }
         }
@@ -1135,7 +1144,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private void ClearDeviceInfoForListViewItem(ListViewItem item)
+        private static void ClearDeviceInfoForListViewItem(ListViewItem item)
         {
             item.SubItems["Temp"].Text = String.Empty;
 
@@ -1437,86 +1446,113 @@ namespace MultiMiner.Win
                 }
 
                 //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
-                List<DeviceDetailsResponse> processDevices = null;
-                if (processDeviceDetails.ContainsKey(minerProcess))
+                List<DeviceDetailsResponse> processDevices = GetProcessDevices(minerProcess, deviceInformationList);
+
+                //first clear stats for each row
+                //this is because the PXY row stats get summed  
+                deviceListView.BeginUpdate();
+                try
                 {
-                    processDevices = processDeviceDetails[minerProcess];
+                    foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                    {
+                        int itemIndex = GetItemIndexForDeviceInformation(deviceInformation, processDevices);
+                        if (itemIndex >= 0)
+                            //could legitimately be -1 if the API is returning a device we don't know about
+                            ClearDeviceInfoForListViewItem(deviceListView.Items[itemIndex]);
+                    }
+
+                    //clear accepted shares as we'll be summing that as well
+                    minerProcess.AcceptedShares = 0;
 
                     foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                     {
-                        DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
-                            && (d.ID == deviceInformation.ID));
-                        if (deviceDetails == null)
+                        if (deviceInformation.Status.ToLower().Contains("sick"))
+                            minerProcess.HasSickDevice = true;
+                        if (deviceInformation.Status.ToLower().Contains("dead"))
+                            minerProcess.HasDeadDevice = true;
+                        if (deviceInformation.CurrentHashrate == 0)
+                            minerProcess.HasZeroHashrateDevice = true;
+
+                        //avoid div by 0
+                        if (deviceInformation.AverageHashrate > 0)
                         {
-                            //devs API returned a device not in the previous DEVDETAILS response
-                            //need to clear our previous response and get a new one
-                            processDevices = null;
-                            break;
+                            double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
+                            if (performanceRatio <= 0.50)
+                                minerProcess.HasPoorPerformingDevice = true;
+                        }
+
+                        int itemIndex = GetItemIndexForDeviceInformation(deviceInformation, processDevices);
+
+                        if (itemIndex >= 0)
+                        {
+                            if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
+                                totalScryptRate += deviceInformation.AverageHashrate;
+                            else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
+                                totalSha256Rate += deviceInformation.AverageHashrate;
+
+                            PopulateDeviceStatsForListViewItem(deviceInformation, deviceListView.Items[itemIndex]);
+
+                            minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
                         }
                     }
                 }
-
-                if (processDevices == null)
+                finally
                 {
-                    processDevices = GetDeviceDetailsFromProcess(minerProcess);
-                    processDeviceDetails[minerProcess] = processDevices;
-                }
-
-                //first clear stats for each row
-                //this is because the PXY row stats get summed                
-                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
-                {
-                    int rowIndex = GetItemIndexForDeviceInformation(deviceInformation, processDevices);
-                    if (rowIndex >= 0)
-                        //could legitimately be -1 if the API is returning a device we don't know about
-                        ClearDeviceInfoForListViewItem(deviceListView.Items[rowIndex]);
-                }
-
-                //clear accepted shares as we'll be summing that as well
-                minerProcess.AcceptedShares = 0;
-
-                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
-                {
-                    if (deviceInformation.Status.ToLower().Contains("sick"))
-                        minerProcess.HasSickDevice = true;
-                    if (deviceInformation.Status.ToLower().Contains("dead"))
-                        minerProcess.HasDeadDevice = true;
-                    if (deviceInformation.CurrentHashrate == 0)
-                        minerProcess.HasZeroHashrateDevice = true;
-
-                    //avoid div by 0
-                    if (deviceInformation.AverageHashrate > 0)
-                    {
-                        double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
-                        if (performanceRatio <= 0.50)
-                            minerProcess.HasPoorPerformingDevice = true;
-                    }
-
-                    int itemIndex = GetItemIndexForDeviceInformation(deviceInformation, processDevices);
-
-                    if (itemIndex >= 0)
-                    {
-                        if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
-                            totalScryptRate += deviceInformation.AverageHashrate;
-                        else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
-                            totalSha256Rate += deviceInformation.AverageHashrate;
-
-                        PopulateDeviceStatsForListViewItem(deviceInformation, deviceListView.Items[itemIndex]);
-                        
-                        minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
-                    }
+                    deviceListView.EndUpdate();
                 }
             }
 
             scryptRateLabel.Text = totalScryptRate == 0 ? String.Empty : String.Format("Scrypt: {0}", FormatHashrate(totalScryptRate));
             sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}", FormatHashrate(totalSha256Rate)); //Mh not mh, mh is milli
-            
+
             scryptRateLabel.AutoSize = true;
             sha256RateLabel.AutoSize = true;
 
             notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
+            
+            int count = 3;
+            //auto sizing the columns is moderately CPU intensive, so only do it every /count/ times
+            AutoSizeListViewColumnsEvery(count);
+        }
 
-            AutoSizeListViewColumns();
+        private void AutoSizeListViewColumnsEvery(int count)
+        {
+            autoSizeColumnsFlag++;
+            if (autoSizeColumnsFlag == count)
+            {
+                autoSizeColumnsFlag = 0;
+                AutoSizeListViewColumns();
+            }
+        }
+        private ushort autoSizeColumnsFlag = 0;
+
+        private List<DeviceDetailsResponse> GetProcessDevices(MinerProcess minerProcess, List<DeviceInformationResponse> deviceInformationList)
+        {
+            List<DeviceDetailsResponse> processDevices = null;
+            if (processDeviceDetails.ContainsKey(minerProcess))
+            {
+                processDevices = processDeviceDetails[minerProcess];
+
+                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                {
+                    DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+                        && (d.ID == deviceInformation.ID));
+                    if (deviceDetails == null)
+                    {
+                        //devs API returned a device not in the previous DEVDETAILS response
+                        //need to clear our previous response and get a new one
+                        processDevices = null;
+                        break;
+                    }
+                }
+            }
+
+            if (processDevices == null)
+            {
+                processDevices = GetDeviceDetailsFromProcess(minerProcess);
+                processDeviceDetails[minerProcess] = processDevices;
+            }
+            return processDevices;
         }
 
         private List<DeviceInformationResponse> GetDeviceInfoFromProcess(MinerProcess minerProcess)
@@ -3199,6 +3235,11 @@ namespace MultiMiner.Win
                 e.Value = GetReallyShortDateTimeFormat((DateTime)e.Value);
                 e.FormattingApplied = true;
             }
+        }
+
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            AutoSizeListViewColumns();
         }
     }
 }
