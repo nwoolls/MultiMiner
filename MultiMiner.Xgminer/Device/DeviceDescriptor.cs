@@ -8,6 +8,13 @@ namespace MultiMiner.Xgminer
         public string Driver { get; set; }
         public string Path { get; set; }
 
+        public DeviceDescriptor()
+        {
+            this.Driver = String.Empty;
+            this.Path = String.Empty;
+            this.RelativeIndex = -1;
+        }
+
         public string Description()
         {
             if (this.Kind == DeviceKind.PXY)
