@@ -120,7 +120,6 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.closeApiButton = new System.Windows.Forms.Button();
             this.footerPanel = new System.Windows.Forms.Panel();
-            this.coinStatsLabel = new System.Windows.Forms.Label();
             this.coinChooseSuffixLabel = new System.Windows.Forms.Label();
             this.coinChooseLinkLabel = new System.Windows.Forms.LinkLabel();
             this.coinChoosePrefixLabel = new System.Windows.Forms.Label();
@@ -469,8 +468,8 @@
             // 
             this.advancedAreaContainer.Panel2.Controls.Add(this.advancedTabControl);
             this.advancedAreaContainer.Panel2.Controls.Add(this.panel2);
-            this.advancedAreaContainer.Size = new System.Drawing.Size(881, 391);
-            this.advancedAreaContainer.SplitterDistance = 243;
+            this.advancedAreaContainer.Size = new System.Drawing.Size(881, 399);
+            this.advancedAreaContainer.SplitterDistance = 247;
             this.advancedAreaContainer.SplitterWidth = 5;
             this.advancedAreaContainer.TabIndex = 10;
             this.advancedAreaContainer.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.advancedAreaContainer_SplitterMoved);
@@ -508,7 +507,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(881, 243);
+            this.deviceListView.Size = new System.Drawing.Size(881, 247);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -593,7 +592,7 @@
             this.advancedTabControl.Location = new System.Drawing.Point(0, 32);
             this.advancedTabControl.Name = "advancedTabControl";
             this.advancedTabControl.SelectedIndex = 0;
-            this.advancedTabControl.Size = new System.Drawing.Size(881, 111);
+            this.advancedTabControl.Size = new System.Drawing.Size(881, 115);
             this.advancedTabControl.TabIndex = 15;
             // 
             // historyPage
@@ -603,7 +602,7 @@
             this.historyPage.Location = new System.Drawing.Point(4, 24);
             this.historyPage.Name = "historyPage";
             this.historyPage.Padding = new System.Windows.Forms.Padding(3);
-            this.historyPage.Size = new System.Drawing.Size(873, 83);
+            this.historyPage.Size = new System.Drawing.Size(873, 87);
             this.historyPage.TabIndex = 2;
             this.historyPage.Text = "History";
             this.historyPage.UseVisualStyleBackColor = true;
@@ -636,7 +635,7 @@
             this.historyGridView.Name = "historyGridView";
             this.historyGridView.ReadOnly = true;
             this.historyGridView.RowHeadersVisible = false;
-            this.historyGridView.Size = new System.Drawing.Size(867, 77);
+            this.historyGridView.Size = new System.Drawing.Size(867, 81);
             this.historyGridView.TabIndex = 0;
             this.historyGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.historyGridView_CellFormatting);
             this.historyGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.historyGridView_RowsAdded);
@@ -887,29 +886,19 @@
             // footerPanel
             // 
             this.footerPanel.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.footerPanel.Controls.Add(this.coinStatsLabel);
             this.footerPanel.Controls.Add(this.coinChooseSuffixLabel);
             this.footerPanel.Controls.Add(this.coinChooseLinkLabel);
             this.footerPanel.Controls.Add(this.coinChoosePrefixLabel);
             this.footerPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.footerPanel.Location = new System.Drawing.Point(0, 416);
+            this.footerPanel.Location = new System.Drawing.Point(0, 424);
             this.footerPanel.Name = "footerPanel";
-            this.footerPanel.Size = new System.Drawing.Size(881, 43);
+            this.footerPanel.Size = new System.Drawing.Size(881, 35);
             this.footerPanel.TabIndex = 9;
-            // 
-            // coinStatsLabel
-            // 
-            this.coinStatsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.coinStatsLabel.Location = new System.Drawing.Point(1735, 15);
-            this.coinStatsLabel.Name = "coinStatsLabel";
-            this.coinStatsLabel.Size = new System.Drawing.Size(200, 27);
-            this.coinStatsLabel.TabIndex = 3;
-            this.coinStatsLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // coinChooseSuffixLabel
             // 
             this.coinChooseSuffixLabel.AutoSize = true;
-            this.coinChooseSuffixLabel.Location = new System.Drawing.Point(530, 15);
+            this.coinChooseSuffixLabel.Location = new System.Drawing.Point(327, 11);
             this.coinChooseSuffixLabel.Name = "coinChooseSuffixLabel";
             this.coinChooseSuffixLabel.Size = new System.Drawing.Size(28, 15);
             this.coinChooseSuffixLabel.TabIndex = 2;
@@ -918,7 +907,7 @@
             // coinChooseLinkLabel
             // 
             this.coinChooseLinkLabel.AutoSize = true;
-            this.coinChooseLinkLabel.Location = new System.Drawing.Point(400, 15);
+            this.coinChooseLinkLabel.Location = new System.Drawing.Point(217, 11);
             this.coinChooseLinkLabel.Name = "coinChooseLinkLabel";
             this.coinChooseLinkLabel.Size = new System.Drawing.Size(99, 15);
             this.coinChooseLinkLabel.TabIndex = 1;
@@ -929,11 +918,11 @@
             // coinChoosePrefixLabel
             // 
             this.coinChoosePrefixLabel.AutoSize = true;
-            this.coinChoosePrefixLabel.Location = new System.Drawing.Point(3, 15);
+            this.coinChoosePrefixLabel.Location = new System.Drawing.Point(5, 11);
             this.coinChoosePrefixLabel.Name = "coinChoosePrefixLabel";
-            this.coinChoosePrefixLabel.Size = new System.Drawing.Size(373, 15);
+            this.coinChoosePrefixLabel.Size = new System.Drawing.Size(209, 15);
             this.coinChoosePrefixLabel.TabIndex = 0;
-            this.coinChoosePrefixLabel.Text = "Crypto-currency pricing and profitability information provided by the";
+            this.coinChoosePrefixLabel.Text = "Pricing and profitability retrieved from";
             // 
             // statusStrip1
             // 
@@ -1345,7 +1334,6 @@
         private System.Windows.Forms.LinkLabel coinChooseLinkLabel;
         private System.Windows.Forms.Label coinChoosePrefixLabel;
         private System.Windows.Forms.ToolStripSeparator settingsSeparator;
-        private System.Windows.Forms.Label coinStatsLabel;
         private System.Windows.Forms.SplitContainer advancedAreaContainer;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button closeApiButton;

@@ -139,8 +139,6 @@ namespace MultiMiner.Win
             logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
 
             UpdateChangesButtons(false);
-
-            PositionCoinStatsLabel();
             
             if (!HasMinersInstalled())
                 CancelMiningOnStartup();
@@ -189,14 +187,6 @@ namespace MultiMiner.Win
 
             saveButton.Enabled = hasChanges;
             cancelButton.Enabled = hasChanges;
-        }
-
-        private void PositionCoinStatsLabel()
-        {
-            //manually position - IDE has screwed this up repeatedly
-            const int padding = 4;
-            coinStatsLabel.Location = new Point(footerPanel.Width - coinStatsLabel.Size.Width - padding, coinChoosePrefixLabel.Location.Y);
-            coinStatsLabel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
         }
 
         private void SetupAutoUpdates()
@@ -1862,7 +1852,7 @@ namespace MultiMiner.Win
 
         private void RefreshCoinStatsLabel()
         {
-            coinStatsLabel.Text = string.Format("Coin stats last fetched at {0}.", DateTime.Now.ToShortTimeString());
+            coinChooseSuffixLabel.Text = string.Format("at {0}.", DateTime.Now.ToShortTimeString());
         }
 
         private void LoadKnownCoinsFromCoinStats()
