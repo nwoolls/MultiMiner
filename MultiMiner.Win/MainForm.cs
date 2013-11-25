@@ -162,6 +162,8 @@ namespace MultiMiner.Win
             AutoSizeListViewColumns();
 
             formLoaded = true;
+
+            logProcessCloseArgsBindingSource.MoveLast();
         }
 
         private const int MaxHistoryOnScreen = 1000;
