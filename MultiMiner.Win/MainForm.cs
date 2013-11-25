@@ -725,7 +725,6 @@ namespace MultiMiner.Win
                 proxyDevice.Kind = DeviceKind.PXY;
                 proxyDevice.Driver = "proxy";
                 proxyDevice.Name = "Stratum Proxy";
-                proxyDevice.DeviceIndex = detectedDevices.Count;
                 detectedDevices.Add(proxyDevice);
             }
 
@@ -735,8 +734,12 @@ namespace MultiMiner.Win
                     int result = 0;
 
                     result = d1.Kind.CompareTo(d2.Kind);
+
                     if (result == 0)
-                        result = d1.DeviceIndex.CompareTo(d2.DeviceIndex);
+                        result = d1.Driver.CompareTo(d2.Driver);
+
+                    if (result == 0)
+                        result = d1.Path.CompareTo(d2.Path);
 
                     return result;
                 });
@@ -796,10 +799,7 @@ namespace MultiMiner.Win
             ToolStripItem menuItem = (ToolStripItem)sender;
 
             foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
-            {
-
                 selectedItem.SubItems["Coin"].Text = menuItem.Text;
-            }
 
             UpdateChangesButtons(true);
         }
@@ -2556,14 +2556,6 @@ namespace MultiMiner.Win
                 deviceList.Add(descriptor.Description());
 
             return String.Join(" ", deviceList.ToArray());
-        }
-
-        //get the index of a device in the grid based on the absolute DeviceIndex returned by the miner
-        private int GetRowIndexForDeviceIndex(int deviceIndex)
-        {
-            Device device = this.devices.Single(d => d.DeviceIndex == deviceIndex);
-            int rowIndex = this.devices.IndexOf(device);
-            return rowIndex;
         }
 
         private void quickSwitchItem_DropDownOpening(object sender, EventArgs e)

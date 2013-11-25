@@ -202,15 +202,6 @@ namespace MultiMiner.Engine
             args.AcceptedShares = minerProcess.AcceptedShares;
             this.LogProcessClose(this, args);
         }
-                
-        private int GetIndexOfFirstGpu()
-        {
-            Device firstGpu = devices.Find(d => d.Kind == DeviceKind.GPU);
-            int firstGpuIndex = 0;
-            if (firstGpu != null)
-                firstGpuIndex = firstGpu.DeviceIndex;
-            return firstGpuIndex;
-        }
 
         private List<CoinInformation> coinInformation;
         //update engineConfiguration.DeviceConfiguration based on mining strategy & coin info
@@ -592,9 +583,7 @@ namespace MultiMiner.Engine
             minerConfiguration.AllowedApiIps = engineConfiguration.XgminerConfiguration.AllowedApiIps;
             minerConfiguration.CoinName = coinConfiguration.Coin.Name;
             minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
-
-            int firstGpuIndex = GetIndexOfFirstGpu();
-
+            
             for (int i = 0; i < enabledConfigurations.Count; i++)
             {
                 DeviceConfiguration enabledConfiguration = enabledConfigurations[i];
@@ -603,16 +592,6 @@ namespace MultiMiner.Engine
                 Device device = devices.SingleOrDefault(d => d.Equals(enabledConfiguration));
                 if (device.Kind != DeviceKind.PXY)
                 {
-                    //int deviceIndex = enabledConfiguration.DeviceIndex;
-                    //
-                    //if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
-                    //{
-                    //    //launching bfgminer with --scrypt makes it ignore all USB devices
-                    //    //this wasn't an issue until 3.3.0 where -d? started returning GPUs last
-                    //    //rebase the device index by the number of non-GPU devices before this one
-                    //    deviceIndex = deviceIndex - firstGpuIndex;
-                    //}
-
                     minerConfiguration.DeviceDescriptors.Add(device);
                 }
                 else

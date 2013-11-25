@@ -47,7 +47,6 @@ namespace MultiMiner.Xgminer.Parsers
                             //relativeIndex is relative to device Kind
                             relativeIndex = 0;
 
-                        device.DeviceIndex = devices.Count;
                         device.RelativeIndex = relativeIndex;
 
                         devices.Add(device);
