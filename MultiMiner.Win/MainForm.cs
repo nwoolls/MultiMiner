@@ -2891,13 +2891,19 @@ namespace MultiMiner.Win
                 if (idleTimeSpan.TotalMinutes > idleMinutesForDesktopMode)
                 {
                     if (engineConfiguration.XgminerConfiguration.DesktopMode)
-                    EnableDesktopMode(false);
+                    {
+                        EnableDesktopMode(false);
+                        RestartMiningIfMining();
+                    }
                 }
                 //else if idle for less than the idleTimer interval, enable Desktop Mode
                 else if (idleTimeSpan.TotalMilliseconds <= idleTimer.Interval)
                 {
                     if (!engineConfiguration.XgminerConfiguration.DesktopMode)
-                    EnableDesktopMode(true);
+                    {
+                        EnableDesktopMode(true);
+                        RestartMiningIfMining();
+                    }
                 }
             }
         }
@@ -2931,6 +2937,11 @@ namespace MultiMiner.Win
         }
 
         private void restartTimer_Tick(object sender, EventArgs e)
+        {
+            RestartMiningIfMining();
+        }
+
+        private void RestartMiningIfMining()
         {
             if (miningEngine.Mining)
             {
