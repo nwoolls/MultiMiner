@@ -93,6 +93,12 @@
     <Compile Include="MessageBoxFontForm.Designer.cs">
       <DependentUpon>MessageBoxFontForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NoFlickerListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NoFlickerListView.Designer.cs">
+      <DependentUpon>NoFlickerListView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Notifications\NotificationControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
