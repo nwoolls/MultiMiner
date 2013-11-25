@@ -140,6 +140,8 @@ namespace MultiMiner.Win
 
             PositionCoinStatsLabel();
 
+            LoadPreviousHistory();
+
             if (!HasMinersInstalled())
                 CancelMiningOnStartup();
 
@@ -160,6 +162,11 @@ namespace MultiMiner.Win
             AutoSizeListViewColumns();
 
             formLoaded = true;
+        }
+
+        private void LoadPreviousHistory()
+        {
+            
         }
 
         private void UpdateChangesButtons(bool hasChanges)
