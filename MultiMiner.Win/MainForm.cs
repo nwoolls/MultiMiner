@@ -72,7 +72,7 @@ namespace MultiMiner.Win
 
             logProcessCloseArgsBindingSource.Position = logProcessCloseArgsBindingSource.Add(ea);
 
-            while (logProcessCloseArgsBindingSource.Count > 1000)
+            while (logProcessCloseArgsBindingSource.Count > MaxHistoryOnScreen)
                 logProcessCloseArgsBindingSource.RemoveAt(0);
 
             LogProcessCloseToFile(ea);
@@ -102,8 +102,9 @@ namespace MultiMiner.Win
             saveSeparator.Visible = false;
             stopButton.Visible = false;
 
-            SetupGridColumns();     
+            SetupGridColumns();
 
+            LoadPreviousHistory();
             logLaunchArgsBindingSource.DataSource = logCloseEntries;
 
             const int mobileMinerInterval = 32; //seconds
@@ -139,9 +140,7 @@ namespace MultiMiner.Win
             UpdateChangesButtons(false);
 
             PositionCoinStatsLabel();
-
-            LoadPreviousHistory();
-
+            
             if (!HasMinersInstalled())
                 CancelMiningOnStartup();
 
@@ -164,9 +163,16 @@ namespace MultiMiner.Win
             formLoaded = true;
         }
 
+        private const int MaxHistoryOnScreen = 1000;
         private void LoadPreviousHistory()
         {
-            
+            //logCloseEntries
+            //LogObjectToFile(ea, logFileName);
+            const string logFileName = "MiningLog.json";
+            string logFilePath = Path.Combine(AppDataPath(), logFileName);
+            List<LogProcessCloseArgs> loadLogFile = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
+            loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - MaxHistoryOnScreen));
+            logCloseEntries.AddRange(loadLogFile);
         }
 
         private void UpdateChangesButtons(bool hasChanges)
@@ -756,10 +762,8 @@ namespace MultiMiner.Win
         private void RemoveInvalidCoinValuesFromListView()
         {
             foreach (ListViewItem item in deviceListView.Items)
-            {
                 if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.Coin.Name.Equals(item.SubItems["Coin"].Text)) == null)
                     item.SubItems["Coin"].Text = String.Empty;
-            }
 
             ClearCoinStatsForDisabledCoins();
         }

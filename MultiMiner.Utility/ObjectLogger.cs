@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Web.Script.Serialization;
 
@@ -14,6 +15,18 @@ namespace MultiMiner.Utility
         {
             this.rollOverFiles = rollOverFiles;
             this.oldFileSets = oldFileSets;
+        }
+
+        public static IEnumerable<T> LoadLogFile<T>(string logFilePath)
+        {
+            string[] logFile = File.ReadAllLines(logFilePath);
+            List<T> result = new List<T>();
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            foreach (string line in logFile)
+            {
+                result.Add(serializer.Deserialize<T>(line));
+            }
+            return result;
         }
 
         public void LogObjectToFile(Object objectToLog, string logFilePath)
