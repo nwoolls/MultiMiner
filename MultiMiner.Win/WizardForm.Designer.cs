@@ -444,6 +444,7 @@
             // 
             // closeButton
             // 
+            this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.closeButton.Location = new System.Drawing.Point(14, 7);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(87, 27);
@@ -476,9 +477,11 @@
             // 
             // WizardForm
             // 
+            this.AcceptButton = this.nextButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.CancelButton = this.closeButton;
             this.ClientSize = new System.Drawing.Size(484, 301);
             this.Controls.Add(this.wizardTabControl);
             this.Controls.Add(this.buttonPanel);
