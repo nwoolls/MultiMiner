@@ -2047,9 +2047,9 @@ namespace MultiMiner.Win
         private void RefreshStrategiesLabel()
         {
             if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
-                strategiesLabel.Text = "Strategies: enabled";
+                strategiesLabel.Text = " Strategies: enabled";
             else
-                strategiesLabel.Text = "Strategies: disabled";
+                strategiesLabel.Text = " Strategies: disabled";
         }
 
         private void RefreshStrategiesCountdown()
