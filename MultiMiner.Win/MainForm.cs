@@ -1847,18 +1847,28 @@ namespace MultiMiner.Win
 
         private void LoadListViewValuesFromCoinStats()
         {
-            //clear all coin stats first
-            //there may be coins configured that are no longer returned in the stats
-            ClearAllCoinStats();
+            deviceListView.BeginUpdate();
+            try
+            {
+                //clear all coin stats first
+                //there may be coins configured that are no longer returned in the stats
+                ClearAllCoinStats();
 
-            if (coinInformation != null) //null if no network connection
-                foreach (Coin.Api.CoinInformation coin in coinInformation)
-                    foreach (ListViewItem item in deviceListView.Items)
-                    {
-                        CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
-                        if ((coinConfiguration != null) &&  coin.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase))
-                            PopulateCoinStatsForListViewItem(coin, item);
-                    }
+                if (coinInformation != null) //null if no network connection
+                    foreach (Coin.Api.CoinInformation coin in coinInformation)
+                        foreach (ListViewItem item in deviceListView.Items)
+                        {
+                            CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
+                            if ((coinConfiguration != null) && coin.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase))
+                            {
+                                PopulateCoinStatsForListViewItem(coin, item);
+                            }
+                        }
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
         }
 
         private void PopulateCoinStatsForListViewItem(Coin.Api.CoinInformation coin, ListViewItem item)
