@@ -3020,9 +3020,9 @@ namespace MultiMiner.Win
             deviceTotalLabel.Visible = !briefMode;
 
             advancedMenuItem.Visible = !briefMode;
-            settingsButton.Visible = !briefMode;
-            settingsSeparator.Visible = !briefMode;
-
+            //don't hide settings - the wizard talks about the button
+            //settingsButton.Visible = !briefMode;
+            //settingsSeparator.Visible = !briefMode;
 
             footerPanel.Visible = !briefMode;
 
