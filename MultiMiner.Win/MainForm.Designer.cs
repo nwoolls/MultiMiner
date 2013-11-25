@@ -1267,7 +1267,6 @@
             this.dynamicIntensityButton.Size = new System.Drawing.Size(169, 22);
             this.dynamicIntensityButton.Text = "Dynamic Intensity";
             this.dynamicIntensityButton.ToolTipText = "Dynamic GPU intensity";
-            this.dynamicIntensityButton.CheckStateChanged += new System.EventHandler(this.dynamicIntensityButton_CheckStateChanged);
             this.dynamicIntensityButton.Click += new System.EventHandler(this.dynamicIntensityButton_Click);
             // 
             // MainForm

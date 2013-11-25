@@ -533,15 +533,12 @@ namespace MultiMiner.Win
                     listViewItem.SubItems["Driver"].Text = device.Driver;
 
                     deviceListView.Items.Add(listViewItem);
-
                 }
             }
             finally
             {
                 deviceListView.EndUpdate();
             }
-
-
         }
 
         //each device needs to have a DeviceConfiguration
@@ -1237,7 +1234,7 @@ namespace MultiMiner.Win
                     ClearCoinStatsForGridListViewItem(item);
         }
 
-        private void ClearCoinStatsForGridListViewItem(ListViewItem item)
+        private static void ClearCoinStatsForGridListViewItem(ListViewItem item)
         {
             item.SubItems["Difficulty"].Text = String.Empty;
             item.SubItems["Price"].Text = String.Empty;
@@ -1347,9 +1344,6 @@ namespace MultiMiner.Win
             double totalScryptRate = 0;
             double totalSha256Rate = 0;
 
-            bool hasTempValue = false;
-            bool hasIntensityValue = false;
-
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
                 minerProcess.HasDeadDevice = false;
@@ -1384,7 +1378,6 @@ namespace MultiMiner.Win
                             break;
                         }
                     }
-
                 }
 
                 if (processDevices == null)
@@ -1433,13 +1426,7 @@ namespace MultiMiner.Win
                             totalSha256Rate += deviceInformation.AverageHashrate;
 
                         PopulateDeviceStatsForListViewItem(deviceInformation, deviceListView.Items[itemIndex]);
-
-                        if (deviceInformation.Temperature > 0)
-                            hasTempValue = true;
-
-                        if (!string.IsNullOrEmpty(deviceInformation.Intensity))
-                            hasIntensityValue = true;
-
+                        
                         minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
                     }
                 }
@@ -1454,7 +1441,6 @@ namespace MultiMiner.Win
             notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
 
             AutoSizeListViewColumns();
-
         }
 
         private List<DeviceInformationResponse> GetDeviceInfoFromProcess(MinerProcess minerProcess)
@@ -1680,7 +1666,7 @@ namespace MultiMiner.Win
             }
 
             notificationsControl.AddNotification(ex.Message,
-                "Error parsing the " + apiName + " JSON API", () =>
+                String.Format("Error parsing the {0} JSON API", apiName), () =>
                 {
                     Process.Start(apiUrl);
                 }, 
@@ -1811,7 +1797,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private void RemoveBunkCoins(List<CryptoCoin> knownCoins)
+        private static void RemoveBunkCoins(List<CryptoCoin> knownCoins)
         {
             //CoinChoose.com served up ButterFlyCoin as BOC, and then later as BFC
             CryptoCoin badCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals("BOC", StringComparison.OrdinalIgnoreCase));
@@ -1851,7 +1837,7 @@ namespace MultiMiner.Win
                 if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == Coin.Api.BaseCoin.Litecoin))
                     unit = "LTC";
 
-                item.SubItems["Price"].Text = coin.Price.ToString(".#####") + " " + unit;
+                item.SubItems["Price"].Text = String.Format("{0:.#####} {1}", coin.Price, unit);
 
                 switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
                 {
@@ -2145,10 +2131,6 @@ namespace MultiMiner.Win
             StopMining();
         }
 
-        private void desktopModeButton_Click(object sender, EventArgs e)
-        {
-        }
-
         private void RestartMiningIfMining()
         {
             if (miningEngine.Mining)
@@ -2185,7 +2167,6 @@ namespace MultiMiner.Win
         }
 
         private const string mobileMinerApiKey = "P3mVX95iP7xfoI";
-        private const bool mobileMinerAsync = true;
         
         //don't show a dialog for a 403 after successful submissions.
         //it's not ideal but there have been two reports now of this
@@ -2236,17 +2217,10 @@ namespace MultiMiner.Win
 
             if (statisticsList.Count > 0)
             {
-                if (mobileMinerAsync)
-                {
-                    if (submitMiningStatisticsDelegate == null)
-                        submitMiningStatisticsDelegate = SubmitMiningStatistics;
+                if (submitMiningStatisticsDelegate == null)
+                    submitMiningStatisticsDelegate = SubmitMiningStatistics;
 
-                    submitMiningStatisticsDelegate.BeginInvoke(statisticsList, null, null);
-                }
-                else
-                {
-                    SubmitMiningStatistics(statisticsList);
-                }
+                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, null, null);
             }
         }
 
@@ -2308,17 +2282,10 @@ namespace MultiMiner.Win
                 string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
                 return;
 
-            if (mobileMinerAsync)
-            {
-                if (submitNotificationDelegate == null)
-                    submitNotificationDelegate = SubmitNotification;
+            if (submitNotificationDelegate == null)
+                submitNotificationDelegate = SubmitNotification;
 
-                submitNotificationDelegate.BeginInvoke(text, null, null);
-            }
-            else
-            {
-                SubmitNotification(text);
-            }
+            submitNotificationDelegate.BeginInvoke(text, null, null);
         }
 
         private Action<string> submitNotificationDelegate;
@@ -2344,7 +2311,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private bool ShowingModalDialog()
+        private static bool ShowingModalDialog()
         {
             foreach (Form f in Application.OpenForms)
                 if (f.Modal)
@@ -2364,17 +2331,10 @@ namespace MultiMiner.Win
                 string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
                 return;
 
-            if (mobileMinerAsync)
-            {
-                if (checkForRemoteCommandsDelegate == null)
-                    checkForRemoteCommandsDelegate = GetRemoteCommands;
+            if (checkForRemoteCommandsDelegate == null)
+                checkForRemoteCommandsDelegate = GetRemoteCommands;
 
-                checkForRemoteCommandsDelegate.BeginInvoke(null, null);
-            }
-            else
-            {
-                GetRemoteCommands();
-            }
+            checkForRemoteCommandsDelegate.BeginInvoke(null, null);
         }
 
         private Action checkForRemoteCommandsDelegate;
@@ -2471,17 +2431,10 @@ namespace MultiMiner.Win
                     StartMining();
                 }
 
-                if (mobileMinerAsync)
-                {
-                    if (deleteRemoteCommandDelegate == null)
-                        deleteRemoteCommandDelegate = DeleteRemoteCommand;
+                if (deleteRemoteCommandDelegate == null)
+                    deleteRemoteCommandDelegate = DeleteRemoteCommand;
 
-                    deleteRemoteCommandDelegate.BeginInvoke(command, null, null);
-                }
-                else
-                {
-                    DeleteRemoteCommand(command);
-                }
+                deleteRemoteCommandDelegate.BeginInvoke(command, null, null);
             }
         }
 
@@ -2747,7 +2700,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private bool ThisVersionGreater(string thisVersion, string thatVersion)
+        private static bool ThisVersionGreater(string thisVersion, string thatVersion)
         {
             Version thisVersionObj = new Version(thisVersion);
             Version thatVersionObj = new Version(thatVersion);
@@ -2910,23 +2863,14 @@ namespace MultiMiner.Win
         private void deviceListView_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
-            {
                 if (deviceListView.FocusedItem.Bounds.Contains(e.Location) == true)
-                {
                     coinPopupMenu.Show(Cursor.Position);
-                }
-            }
         }
 
         private void deviceListView_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             if (!updatingListView)
                 UpdateChangesButtons(true);
-        }
-
-        private void dynamicIntensityButton_CheckStateChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void dynamicIntensityButton_Click(object sender, EventArgs e)
