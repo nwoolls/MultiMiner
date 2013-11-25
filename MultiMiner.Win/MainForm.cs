@@ -1122,9 +1122,17 @@ namespace MultiMiner.Win
             if (saveButton.Enabled) //otherwise cleared coin isn't saved yet
                 return;
 
-            foreach (ListViewItem item in deviceListView.Items)
-                if (!item.Checked)
-                    ClearDeviceInfoForListViewItem(item);
+            deviceListView.BeginUpdate();
+            try
+            {
+                foreach (ListViewItem item in deviceListView.Items)
+                    if (!item.Checked)
+                        ClearDeviceInfoForListViewItem(item);
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
         }
 
         private void ClearDeviceInfoForListViewItem(ListViewItem item)
@@ -1276,14 +1284,30 @@ namespace MultiMiner.Win
 
         private void ClearAllMinerStats()
         {
-            foreach (ListViewItem item in deviceListView.Items)
-                ClearDeviceInfoForListViewItem(item);
+            deviceListView.BeginUpdate();
+            try
+            {
+                foreach (ListViewItem item in deviceListView.Items)
+                    ClearDeviceInfoForListViewItem(item);
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
         }
 
         private void ClearAllCoinStats()
         {
-            foreach (ListViewItem item in deviceListView.Items)
-                ClearCoinStatsForGridListViewItem(item);
+            deviceListView.BeginUpdate();
+            try
+            {
+                foreach (ListViewItem item in deviceListView.Items)
+                    ClearCoinStatsForGridListViewItem(item);
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
         }
 
         private static void ClearCoinStatsForGridListViewItem(ListViewItem item)
