@@ -114,7 +114,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.window_sel;
+            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.computer_coins;
             this.pictureBox1.Location = new System.Drawing.Point(14, 14);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(75, 74);

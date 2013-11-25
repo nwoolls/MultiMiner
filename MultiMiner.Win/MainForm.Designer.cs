@@ -1040,7 +1040,7 @@
             // 
             this.restartButton.Image = global::MultiMiner.Win.Properties.Resources.computer_update;
             this.restartButton.Name = "restartButton";
-            this.restartButton.Size = new System.Drawing.Size(152, 22);
+            this.restartButton.Size = new System.Drawing.Size(110, 22);
             this.restartButton.Text = "Restart";
             this.restartButton.ToolTipText = "Restart mining";
             this.restartButton.Click += new System.EventHandler(this.restartButton_Click);

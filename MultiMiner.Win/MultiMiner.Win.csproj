@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>window_sel.ico</ApplicationIcon>
+    <ApplicationIcon>computer-coins.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -245,6 +245,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="computer-coins.ico" />
     <Content Include="Miners\bfgminer\Extract bfgminer here.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -281,6 +282,7 @@
     <None Include="Resources\view_medium_icons.png" />
     <None Include="Resources\hardware-find.png" />
     <None Include="Resources\computer-update.png" />
+    <None Include="Resources\computer-coins.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>
