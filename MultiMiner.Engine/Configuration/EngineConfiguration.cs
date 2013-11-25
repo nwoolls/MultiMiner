@@ -90,7 +90,7 @@ namespace MultiMiner.Engine.Configuration
         private void RemoveDuplicateDeviceConfigurations()
         {
             DeviceConfigurations = DeviceConfigurations
-                .GroupBy(c => new { c.Kind, c.RelativeIndex, c.Driver, c.Path })
+                .GroupBy(c => new { c.Kind, c.RelativeIndex, c.Driver, c.Path, c.Serial })
                 .Select(c => c.First())
                 .ToList();
         }
