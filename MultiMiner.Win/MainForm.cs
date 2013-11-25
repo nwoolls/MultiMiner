@@ -377,10 +377,10 @@ namespace MultiMiner.Win
             coinChooseSuffixLabel.Left = coinChooseLinkLabel.Left + coinChooseLinkLabel.Width;
         }
 
-        private bool populatingDevices = false;
+        private bool updatingListView = false;
         private void RefreshDevices()
         {
-            populatingDevices = true;
+            updatingListView = true;
             try
             {
                 try
@@ -428,7 +428,7 @@ namespace MultiMiner.Win
             }
             finally
             {
-                populatingDevices = false;
+                updatingListView = false;
             }
         }
 
@@ -500,12 +500,15 @@ namespace MultiMiner.Win
                     {
                         case DeviceKind.GPU:
                             listViewItem.Group = deviceListView.Groups["gpuListViewGroup"];
+                            listViewItem.ImageIndex = 0;
                             break;
                         case DeviceKind.USB:
                             listViewItem.Group = deviceListView.Groups["usbListViewGroup"];
+                            listViewItem.ImageIndex = 1;
                             break;
                         case DeviceKind.PXY:
                             listViewItem.Group = deviceListView.Groups["proxyListViewGroup"];
+                            listViewItem.ImageIndex = 2;
                             break;
                     }
                     
@@ -624,13 +627,15 @@ namespace MultiMiner.Win
             engineConfiguration.LoadDeviceConfigurations();
             engineConfiguration.LoadMinerConfiguration();
             engineConfiguration.LoadStrategyConfiguration();
-            
+
             RefreshStrategiesLabel();
             RefreshStrategiesCountdown();
 
             dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
 
             applicationConfiguration.LoadApplicationConfiguration();
+
+            SetListViewStyle(applicationConfiguration.ListViewStyle);
 
             //load brief mode first, then location
             SetBriefMode(applicationConfiguration.BriefUserInterface);
@@ -864,6 +869,7 @@ namespace MultiMiner.Win
             stopMenuItem.Enabled = stopButton.Enabled;
             //allow clicking Detect Devices with invalid configuration
             detectDevicesButton.Enabled = !miningEngine.Mining;
+            detectDevicesToolStripMenuItem.Enabled = !miningEngine.Mining;
 
             startButton.Visible = startButton.Enabled;
             stopButton.Visible = stopButton.Enabled;
@@ -1879,8 +1885,7 @@ namespace MultiMiner.Win
             }
 
             return String.Format("{0:0.##} {1}", shortened, suffix).TrimEnd();
-        }
-           
+        }           
 
         private void countdownTimer_Tick(object sender, EventArgs e)
         {
@@ -2898,7 +2903,7 @@ namespace MultiMiner.Win
 
         private void deviceListView_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            if (!populatingDevices)
+            if (!updatingListView)
                 UpdateChangesButtons(true);
         }
 
@@ -3031,6 +3036,92 @@ namespace MultiMiner.Win
 
             applicationConfiguration.BriefUserInterface = briefMode;
             applicationConfiguration.SaveApplicationConfiguration();
+        }
+
+        private void largeIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.LargeIcon);
+        }
+
+        private void smallIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.SmallIcon);
+        }
+
+        private void listToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.List);
+        }
+
+        private void detailsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.Details);
+        }
+
+        private void tilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.Tile);
+        }
+
+        private void SetListViewStyle(View view)
+        {
+            updatingListView = true;
+            try
+            {
+                deviceListView.CheckBoxes = false;
+                deviceListView.View = view;
+                deviceListView.CheckBoxes = view != View.Tile;
+
+                switch (view)
+                {
+                    case View.LargeIcon:
+                        listViewStyleButton.Image = Properties.Resources.view_medium_icons;
+                        break;
+                    case View.Details:
+                        listViewStyleButton.Image = Properties.Resources.view_details;
+                        break;
+                    case View.SmallIcon:
+                        listViewStyleButton.Image = Properties.Resources.view_small_icons;
+                        break;
+                    case View.List:
+                        listViewStyleButton.Image = Properties.Resources.view_list;
+                        break;
+                    case View.Tile:
+                        listViewStyleButton.Image = Properties.Resources.view_large_icons;
+                        break;
+                }
+
+                applicationConfiguration.ListViewStyle = view;
+
+                if (view == View.Details)
+                    AutoSizeListViewColumns();
+            }
+            finally
+            {
+                updatingListView = false;
+            }
+        }
+
+        private void listViewStyleButton_ButtonClick(object sender, EventArgs e)
+        {
+            switch (deviceListView.View)
+            {
+                case View.LargeIcon:
+                    SetListViewStyle(View.SmallIcon);
+                    break;
+                case View.Details:
+                    SetListViewStyle(View.Tile);
+                    break;
+                case View.SmallIcon:
+                    SetListViewStyle(View.List);
+                    break;
+                case View.List:
+                    SetListViewStyle(View.Details);
+                    break;
+                case View.Tile:
+                    SetListViewStyle(View.LargeIcon);
+                    break;
+            }
         }
     }
 }
