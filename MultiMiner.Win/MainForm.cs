@@ -15,6 +15,7 @@ using System.Threading;
 using MultiMiner.Utility;
 using MultiMiner.Win.Notifications;
 using MultiMiner.Xgminer.Api.Responses;
+using System.Globalization;
 
 namespace MultiMiner.Win
 {
@@ -3107,6 +3108,44 @@ namespace MultiMiner.Win
                 case View.Tile:
                     SetListViewStyle(View.LargeIcon);
                     break;
+            }
+        }
+
+        private void historyGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if ((e.ColumnIndex == 0) || (e.ColumnIndex == 1))
+            {
+                e.Value = GetReallyShortDateTimeFormat((DateTime)e.Value);
+                e.FormattingApplied = true;
+            }
+        }
+
+        private static string GetReallyShortDateTimeFormat(DateTime dateTime)
+        {
+            //date's, custom format without the year
+            string shortDateValue = dateTime.ToShortDateString();
+            string shortTimeValue = dateTime.ToShortTimeString();
+            int lastIndex = shortDateValue.LastIndexOf(CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator);
+            string reallyShortDateValue = shortDateValue.Remove(lastIndex);
+
+            return String.Format("{0} {1}", reallyShortDateValue, shortTimeValue);
+        }
+
+        private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.ColumnIndex == 0)
+            {
+                e.Value = GetReallyShortDateTimeFormat((DateTime)e.Value);
+                e.FormattingApplied = true;
+            }
+        }
+
+        private void apiLogGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.ColumnIndex == 0)
+            {
+                e.Value = GetReallyShortDateTimeFormat((DateTime)e.Value);
+                e.FormattingApplied = true;
             }
         }
     }
