@@ -124,7 +124,7 @@
             this.coinChooseLinkLabel = new System.Windows.Forms.LinkLabel();
             this.coinChoosePrefixLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.detailsToggleButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.detailsToggleButton = new System.Windows.Forms.ToolStripButton();
             this.strategiesLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.strategyCountdownLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.sha256RateLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -944,13 +944,12 @@
             // detailsToggleButton
             // 
             this.detailsToggleButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.detailsToggleButton.DropDownButtonWidth = 0;
             this.detailsToggleButton.Image = ((System.Drawing.Image)(resources.GetObject("detailsToggleButton.Image")));
             this.detailsToggleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.detailsToggleButton.Name = "detailsToggleButton";
-            this.detailsToggleButton.Size = new System.Drawing.Size(93, 20);
+            this.detailsToggleButton.Size = new System.Drawing.Size(92, 20);
             this.detailsToggleButton.Text = "▾ Fewer details";
-            this.detailsToggleButton.ButtonClick += new System.EventHandler(this.detailsToggleButton_ButtonClick);
+            this.detailsToggleButton.Click += new System.EventHandler(this.detailsToggleButton_ButtonClick);
             // 
             // strategiesLabel
             // 
@@ -1433,7 +1432,7 @@
         private System.Windows.Forms.ToolStripMenuItem strategiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dummyToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripSplitButton detailsToggleButton;
+        private System.Windows.Forms.ToolStripButton detailsToggleButton;
         private System.Windows.Forms.ContextMenuStrip quickCoinMenu;
         private System.Windows.Forms.ImageList largeImageList;
         private System.Windows.Forms.ImageList smallImageList;
