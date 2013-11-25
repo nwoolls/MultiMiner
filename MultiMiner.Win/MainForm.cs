@@ -891,6 +891,17 @@ namespace MultiMiner.Win
                         listViewItem.SubItems["Coin"].Text = string.Empty;
 
                     listViewItem.Checked = deviceConfiguration.Enabled;
+
+                    if (listViewItem.Checked)
+                    {
+                        listViewItem.ForeColor = SystemColors.WindowText;
+                        listViewItem.UseItemStyleForSubItems = false;
+                    }
+                    else
+                    {
+                        listViewItem.ForeColor = SystemColors.GrayText;
+                        listViewItem.UseItemStyleForSubItems = true; 
+                    }
                 }
                 else
                 {
