@@ -173,9 +173,12 @@ namespace MultiMiner.Win
             //LogObjectToFile(ea, logFileName);
             const string logFileName = "MiningLog.json";
             string logFilePath = Path.Combine(AppDataPath(), logFileName);
-            List<LogProcessCloseArgs> loadLogFile = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
-            loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - MaxHistoryOnScreen));
-            logCloseEntries.AddRange(loadLogFile);
+            if (File.Exists(logFilePath))
+            {
+                List<LogProcessCloseArgs> loadLogFile = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
+                loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - MaxHistoryOnScreen));
+                logCloseEntries.AddRange(loadLogFile);
+            }
         }
 
         private void UpdateChangesButtons(bool hasChanges)
