@@ -829,8 +829,6 @@ namespace MultiMiner.Win
 
             Application.DoEvents();
 
-            RestartMiningIfMining();
-
             UpdateMiningButtons();
             ClearMinerStatsForDisabledCoins();
         }
@@ -1063,7 +1061,7 @@ namespace MultiMiner.Win
             return true;           
         }
         
-        private void ShowApplicationSettings()
+        private void ConfigureSettings()
         {
             SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration);
             DialogResult dialogResult = settingsForm.ShowDialog();
@@ -1071,11 +1069,8 @@ namespace MultiMiner.Win
             {
                 Application.DoEvents();
 
-                bool wasMining = miningEngine.Mining;
-                StopMining(); // or USB devices may be in use for RefreshDevices() call below
                 engineConfiguration.SaveMinerConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
-                RefreshDevices();
                 RefreshCoinAPILabel();
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
                 SetupRestartTimer();
@@ -1083,9 +1078,6 @@ namespace MultiMiner.Win
                 RefreshCoinStats();
                 
                 Application.DoEvents();
-
-                if (wasMining)
-                    StartMining();
             }
             else
             {
@@ -2082,8 +2074,6 @@ namespace MultiMiner.Win
                 UpdateMiningButtons();
 
                 Application.DoEvents();
-
-                RestartMiningIfMining();
             }
             else
             {
@@ -2248,15 +2238,6 @@ namespace MultiMiner.Win
             StopMining();
         }
 
-        private void RestartMiningIfMining()
-        {
-            if (miningEngine.Mining)
-            {
-                StopMining();
-                StartMining();
-            }
-        }
-
         private void mobileMinerTimer_Tick(object sender, EventArgs e)
         {
             //if we do this with the Settings dialog open the user may have partially entered credentials
@@ -2370,7 +2351,7 @@ namespace MultiMiner.Win
 
                             //check to make sure there are no modal windows already
                             if (!ShowingModalDialog())
-                                ShowApplicationSettings();
+                                ConfigureSettings();
                         }
                     }
                     else
@@ -2492,7 +2473,7 @@ namespace MultiMiner.Win
 
                                     //check to make sure there are no modal windows already
                                     if (!ShowingModalDialog())
-                                        ShowApplicationSettings();
+                                        ConfigureSettings();
                                 }
                             }
                             else
@@ -2925,7 +2906,6 @@ namespace MultiMiner.Win
         {
             engineConfiguration.XgminerConfiguration.DesktopMode = enabled;
             dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
-            RestartMiningIfMining();
             engineConfiguration.SaveMinerConfiguration();
         }
 
@@ -2937,7 +2917,7 @@ namespace MultiMiner.Win
 
         private void settingsButton_ButtonClick(object sender, EventArgs e)
         {
-            ShowApplicationSettings();
+            ConfigureSettings();
         }
 
         private void coinsButton_Click_1(object sender, EventArgs e)
@@ -2952,7 +2932,11 @@ namespace MultiMiner.Win
 
         private void restartTimer_Tick(object sender, EventArgs e)
         {
-            RestartMiningIfMining();
+            if (miningEngine.Mining)
+            {
+                StopMining();
+                StartMining();
+            }
         }
 
         private void minerSummaryTimer_Tick(object sender, EventArgs e)
@@ -2985,7 +2969,6 @@ namespace MultiMiner.Win
         private void dynamicIntensityButton_Click(object sender, EventArgs e)
         {
             engineConfiguration.XgminerConfiguration.DesktopMode = dynamicIntensityButton.Checked;
-            RestartMiningIfMining();
             engineConfiguration.SaveMinerConfiguration();
         }
 
@@ -3022,7 +3005,7 @@ namespace MultiMiner.Win
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowApplicationSettings();
+            ConfigureSettings();
         }
 
         private void coinsToolStripMenuItem_Click(object sender, EventArgs e)
