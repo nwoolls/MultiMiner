@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WizardForm));
+            this.nextButton = new System.Windows.Forms.Button();
+            this.closeButton = new System.Windows.Forms.Button();
             this.wizardTabControl = new System.Windows.Forms.TabControl();
             this.chooseMinerPage = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
@@ -63,8 +65,6 @@
             this.whatNextPage = new System.Windows.Forms.TabPage();
             this.label13 = new System.Windows.Forms.Label();
             this.buttonPanel = new System.Windows.Forms.Panel();
-            this.closeButton = new System.Windows.Forms.Button();
-            this.nextButton = new System.Windows.Forms.Button();
             this.backButton = new System.Windows.Forms.Button();
             this.wizardTabControl.SuspendLayout();
             this.chooseMinerPage.SuspendLayout();
@@ -77,6 +77,28 @@
             this.whatNextPage.SuspendLayout();
             this.buttonPanel.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // nextButton
+            // 
+            this.nextButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.nextButton.Location = new System.Drawing.Point(382, 7);
+            this.nextButton.Name = "nextButton";
+            this.nextButton.Size = new System.Drawing.Size(87, 27);
+            this.nextButton.TabIndex = 1;
+            this.nextButton.Text = "Next >";
+            this.nextButton.UseVisualStyleBackColor = true;
+            this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
+            // 
+            // closeButton
+            // 
+            this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.closeButton.Location = new System.Drawing.Point(14, 7);
+            this.closeButton.Name = "closeButton";
+            this.closeButton.Size = new System.Drawing.Size(87, 27);
+            this.closeButton.TabIndex = 2;
+            this.closeButton.Text = "Close";
+            this.closeButton.UseVisualStyleBackColor = true;
+            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
             // 
             // wizardTabControl
             // 
@@ -237,9 +259,9 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(32, 118);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(63, 15);
+            this.label7.Size = new System.Drawing.Size(81, 15);
             this.label7.TabIndex = 30;
-            this.label7.Text = "Username:";
+            this.label7.Text = "Worker name:";
             // 
             // label8
             // 
@@ -441,28 +463,6 @@
             this.buttonPanel.Name = "buttonPanel";
             this.buttonPanel.Size = new System.Drawing.Size(484, 42);
             this.buttonPanel.TabIndex = 1;
-            // 
-            // closeButton
-            // 
-            this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.closeButton.Location = new System.Drawing.Point(14, 7);
-            this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(87, 27);
-            this.closeButton.TabIndex = 2;
-            this.closeButton.Text = "Close";
-            this.closeButton.UseVisualStyleBackColor = true;
-            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
-            // 
-            // nextButton
-            // 
-            this.nextButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.nextButton.Location = new System.Drawing.Point(382, 7);
-            this.nextButton.Name = "nextButton";
-            this.nextButton.Size = new System.Drawing.Size(87, 27);
-            this.nextButton.TabIndex = 1;
-            this.nextButton.Text = "Next >";
-            this.nextButton.UseVisualStyleBackColor = true;
-            this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
             // 
             // backButton
             // 
