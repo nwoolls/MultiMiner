@@ -1236,15 +1236,18 @@ namespace MultiMiner.Win
             if (poolIndex >= 0)
             {
                 CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
-                string poolHost = coinConfiguration.Pools[poolIndex].Host;
-                string poolDomain = GetDomainNameFromHost(poolHost);
+                if (coinConfiguration == null)
+                    item.SubItems["Pool"].Text = String.Empty;
+                else
+                {
+                    string poolHost = coinConfiguration.Pools[poolIndex].Host;
+                    string poolDomain = GetDomainNameFromHost(poolHost);
 
-                item.SubItems["Pool"].Text = poolDomain;
+                    item.SubItems["Pool"].Text = poolDomain;
+                }
             }
             else
-            {
                 item.SubItems["Pool"].Text = String.Empty;
-            }
         }
 
         private CoinConfiguration CoinConfigurationForListViewItem(ListViewItem item)
