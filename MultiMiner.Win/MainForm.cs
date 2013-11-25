@@ -1096,38 +1096,47 @@ namespace MultiMiner.Win
 
         private void PopulateDeviceStatsForListViewItem(DeviceInformationResponse deviceInformation, ListViewItem item)
         {
-            //stratum devices get lumped together, so we sum those
-            if (deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
+            deviceListView.BeginUpdate();
+            try
             {
-                item.SubItems["Hashrate"].Tag = (double)(item.SubItems["Hashrate"].Tag ?? 0.00) + deviceInformation.AverageHashrate;
-                item.SubItems["Rejected"].Tag = (int)(item.SubItems["Rejected"].Tag ?? 0) + deviceInformation.RejectedShares;
-                item.SubItems["Errors"].Tag = (int)(item.SubItems["Errors"].Tag ?? 0) + deviceInformation.HardwareErrors;
-                item.SubItems["Accepted"].Tag = (int)(item.SubItems["Accepted"].Tag ?? 0) + deviceInformation.AcceptedShares;
-                item.SubItems["Utility"].Tag = (double)(item.SubItems["Utility"].Tag ?? 0.00) + deviceInformation.Utility;
+                //stratum devices get lumped together, so we sum those
+                if (deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
+                {
+                    item.SubItems["Hashrate"].Tag = (double)(item.SubItems["Hashrate"].Tag ?? 0.00) + deviceInformation.AverageHashrate;
+                    item.SubItems["Rejected"].Tag = (int)(item.SubItems["Rejected"].Tag ?? 0) + deviceInformation.RejectedShares;
+                    item.SubItems["Errors"].Tag = (int)(item.SubItems["Errors"].Tag ?? 0) + deviceInformation.HardwareErrors;
+                    item.SubItems["Accepted"].Tag = (int)(item.SubItems["Accepted"].Tag ?? 0) + deviceInformation.AcceptedShares;
+                    item.SubItems["Utility"].Tag = (double)(item.SubItems["Utility"].Tag ?? 0.00) + deviceInformation.Utility;
+                }
+                else
+                {
+                    item.SubItems["Hashrate"].Tag = deviceInformation.AverageHashrate;
+                    item.SubItems["Rejected"].Tag = deviceInformation.RejectedShares;
+                    item.SubItems["Errors"].Tag = deviceInformation.HardwareErrors;
+                    item.SubItems["Accepted"].Tag = deviceInformation.AcceptedShares;
+                    item.SubItems["Utility"].Tag = deviceInformation.Utility;
+                }
+
+                item.SubItems["Hashrate"].Text = FormatHashrate((double)item.SubItems["Hashrate"].Tag);
+                item.SubItems["Rejected"].Text = (int)item.SubItems["Rejected"].Tag > 0 ? ((int)item.SubItems["Rejected"].Tag).ToString() : String.Empty;
+                item.SubItems["Errors"].Text = (int)item.SubItems["Errors"].Tag > 0 ? ((int)item.SubItems["Errors"].Tag).ToString() : String.Empty;
+                item.SubItems["Accepted"].Text = (int)item.SubItems["Accepted"].Tag > 0 ? ((int)item.SubItems["Accepted"].Tag).ToString() : String.Empty;
+
+                item.SubItems["Utility"].Text = (double)item.SubItems["Utility"].Tag > 0.00 ? ((double)item.SubItems["Utility"].Tag).ToString("0.###") : String.Empty;
+
+                item.SubItems["Temp"].Text = deviceInformation.Temperature > 0 ? deviceInformation.Temperature.ToString() + "°" : String.Empty;
+                item.SubItems["Intensity"].Text = deviceInformation.Intensity;
+
+                PopulatePoolForListViewItem(deviceInformation.PoolIndex, item);
             }
-            else
+            finally
             {
-                item.SubItems["Hashrate"].Tag = deviceInformation.AverageHashrate;
-                item.SubItems["Rejected"].Tag = deviceInformation.RejectedShares;
-                item.SubItems["Errors"].Tag = deviceInformation.HardwareErrors;
-                item.SubItems["Accepted"].Tag = deviceInformation.AcceptedShares;
-                item.SubItems["Utility"].Tag = deviceInformation.Utility;
+                deviceListView.EndUpdate();
             }
 
-            item.SubItems["Hashrate"].Text = FormatHashrate((double)item.SubItems["Hashrate"].Tag);
-            item.SubItems["Rejected"].Text = (int)item.SubItems["Rejected"].Tag > 0 ? ((int)item.SubItems["Rejected"].Tag).ToString() : String.Empty;
-            item.SubItems["Errors"].Text = (int)item.SubItems["Errors"].Tag > 0 ? ((int)item.SubItems["Errors"].Tag).ToString() : String.Empty;
-            item.SubItems["Accepted"].Text = (int)item.SubItems["Accepted"].Tag > 0 ? ((int)item.SubItems["Accepted"].Tag).ToString() : String.Empty;
-
-            item.SubItems["Utility"].Text = (double)item.SubItems["Utility"].Tag > 0.00 ? ((double)item.SubItems["Utility"].Tag).ToString("0.###") : String.Empty;
-            
-            item.SubItems["Temp"].Text = deviceInformation.Temperature > 0 ? deviceInformation.Temperature.ToString() + "°" : String.Empty;
-            item.SubItems["Intensity"].Text = deviceInformation.Intensity;
-
-            PopulatePoolForListViewItem(deviceInformation.PoolIndex, item);
         }
 
-        private string FormatHashrate(double hashrate)
+        private static string FormatHashrate(double hashrate)
         {
             string suffix = "K";
             double shortrate = hashrate;
@@ -1833,29 +1842,37 @@ namespace MultiMiner.Win
 
         private void PopulateCoinStatsForListViewItem(Coin.Api.CoinInformation coin, ListViewItem item)
         {
-            item.SubItems["Difficulty"].Text = FormatDifficulty(coin.Difficulty);
-
-            string unit = "BTC";
-            if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == Coin.Api.BaseCoin.Litecoin))
-                unit = "LTC";
-
-            item.SubItems["Price"].Text = coin.Price.ToString(".#####") + " " + unit;
-
-            switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+            deviceListView.BeginUpdate();
+            try
             {
-                case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
-                    item.SubItems["Profitability"].Text = Math.Round(coin.AdjustedProfitability, 2).ToString() + "%";
-                    break;
-                case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
-                    item.SubItems["Profitability"].Text = Math.Round(coin.AverageProfitability, 2).ToString() + "%";
-                    break;
-                case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
-                    item.SubItems["Profitability"].Text = Math.Round(coin.Profitability, 2).ToString() + "%";
-                    break;
+                item.SubItems["Difficulty"].Text = FormatDifficulty(coin.Difficulty);
+
+                string unit = "BTC";
+                if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == Coin.Api.BaseCoin.Litecoin))
+                    unit = "LTC";
+
+                item.SubItems["Price"].Text = coin.Price.ToString(".#####") + " " + unit;
+
+                switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+                {
+                    case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
+                        item.SubItems["Profitability"].Text = Math.Round(coin.AdjustedProfitability, 2).ToString() + "%";
+                        break;
+                    case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
+                        item.SubItems["Profitability"].Text = Math.Round(coin.AverageProfitability, 2).ToString() + "%";
+                        break;
+                    case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
+                        item.SubItems["Profitability"].Text = Math.Round(coin.Profitability, 2).ToString() + "%";
+                        break;
+                } 
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
             }
         }
 
-        private string FormatDifficulty(double difficulty)
+        private static string FormatDifficulty(double difficulty)
         {
             string suffix = "";
             double shortened = difficulty;
