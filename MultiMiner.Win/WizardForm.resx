@@ -120,7 +120,11 @@
   <data name="label1.Text" xml:space="preserve">
     <value>Welcome and thank you for choosing MultiMiner.
 
-Click Next and MultiMiner will automatically download and install bfgminer for your Operating System (if available).
+Click Next and MultiMiner will automatically download and install bfgminer for your Operating System.
+
+
+
+
 
 
 
@@ -130,7 +134,7 @@ If you are comfortable with configuring things yourself, click Close below and u
   <data name="label4.Text" xml:space="preserve">
     <value>Next, choose a crypto-currency that you would like to mine with MultiMiner.
 
-If you would like to mine more than one coin don't worry! You can add additional coins by clicking the Coins button in the program toolbar.</value>
+If you would like to mine more than one coin don't worry! You can add additional coins by clicking the Coins button in the program toolbar after the wizard completes.</value>
   </data>
   <data name="label13.Text" xml:space="preserve">
     <value>Thank you again for choosing MultiMiner.
