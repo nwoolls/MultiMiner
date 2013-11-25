@@ -739,6 +739,9 @@ namespace MultiMiner.Win
                         result = d1.Driver.CompareTo(d2.Driver);
 
                     if (result == 0)
+                        result = d1.Name.CompareTo(d2.Name);
+
+                    if (result == 0)
                         result = d1.Path.CompareTo(d2.Path);
 
                     if (result == 0)
