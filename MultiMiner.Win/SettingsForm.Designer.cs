@@ -273,7 +273,7 @@
             this.sysTrayCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MinimizeToNotificationArea", true));
             this.sysTrayCheckBox.Location = new System.Drawing.Point(260, 29);
             this.sysTrayCheckBox.Name = "sysTrayCheckBox";
-            this.sysTrayCheckBox.Size = new System.Drawing.Size(203, 20);
+            this.sysTrayCheckBox.Size = new System.Drawing.Size(224, 20);
             this.sysTrayCheckBox.TabIndex = 3;
             this.sysTrayCheckBox.Text = "Minimize to the notification area (system tray)";
             this.sysTrayCheckBox.UseVisualStyleBackColor = true;
