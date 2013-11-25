@@ -3236,5 +3236,11 @@ namespace MultiMiner.Win
         {
             AutoSizeListViewColumns();
         }
+
+        private void restartButton_Click(object sender, EventArgs e)
+        {
+            StopMining();
+            StartMining();
+        }
     }
 }

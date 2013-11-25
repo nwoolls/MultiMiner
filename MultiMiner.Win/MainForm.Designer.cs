@@ -132,7 +132,8 @@
             this.deviceTotalLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.startButton = new System.Windows.Forms.ToolStripButton();
-            this.stopButton = new System.Windows.Forms.ToolStripButton();
+            this.stopButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.restartButton = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.settingsButton = new System.Windows.Forms.ToolStripSplitButton();
             this.coinsButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -715,7 +716,7 @@
             this.processLogPage.Location = new System.Drawing.Point(4, 24);
             this.processLogPage.Name = "processLogPage";
             this.processLogPage.Padding = new System.Windows.Forms.Padding(3);
-            this.processLogPage.Size = new System.Drawing.Size(873, 83);
+            this.processLogPage.Size = new System.Drawing.Size(873, 87);
             this.processLogPage.TabIndex = 1;
             this.processLogPage.Text = "Process Log";
             this.processLogPage.UseVisualStyleBackColor = true;
@@ -744,7 +745,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(867, 77);
+            this.dataGridView1.Size = new System.Drawing.Size(867, 81);
             this.dataGridView1.TabIndex = 14;
             this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
             // 
@@ -797,7 +798,7 @@
             this.apiMonitorPage.Location = new System.Drawing.Point(4, 24);
             this.apiMonitorPage.Name = "apiMonitorPage";
             this.apiMonitorPage.Padding = new System.Windows.Forms.Padding(3);
-            this.apiMonitorPage.Size = new System.Drawing.Size(873, 83);
+            this.apiMonitorPage.Size = new System.Drawing.Size(873, 87);
             this.apiMonitorPage.TabIndex = 0;
             this.apiMonitorPage.Text = "API Monitor";
             this.apiMonitorPage.UseVisualStyleBackColor = true;
@@ -824,7 +825,7 @@
             this.apiLogGridView.Location = new System.Drawing.Point(3, 3);
             this.apiLogGridView.Name = "apiLogGridView";
             this.apiLogGridView.RowHeadersVisible = false;
-            this.apiLogGridView.Size = new System.Drawing.Size(867, 77);
+            this.apiLogGridView.Size = new System.Drawing.Size(867, 81);
             this.apiLogGridView.TabIndex = 13;
             this.apiLogGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.apiLogGridView_CellFormatting);
             // 
@@ -971,7 +972,7 @@
             // 
             this.sha256RateLabel.AutoSize = false;
             this.sha256RateLabel.Name = "sha256RateLabel";
-            this.sha256RateLabel.Size = new System.Drawing.Size(236, 17);
+            this.sha256RateLabel.Size = new System.Drawing.Size(237, 17);
             this.sha256RateLabel.Spring = true;
             this.sha256RateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -1024,14 +1025,25 @@
             // 
             // stopButton
             // 
+            this.stopButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.restartButton});
             this.stopButton.Enabled = false;
             this.stopButton.Image = ((System.Drawing.Image)(resources.GetObject("stopButton.Image")));
             this.stopButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(51, 22);
+            this.stopButton.Size = new System.Drawing.Size(63, 22);
             this.stopButton.Text = "Stop";
             this.stopButton.ToolTipText = "Stop mining";
-            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
+            this.stopButton.ButtonClick += new System.EventHandler(this.stopButton_Click);
+            // 
+            // restartButton
+            // 
+            this.restartButton.Image = global::MultiMiner.Win.Properties.Resources.computer_update;
+            this.restartButton.Name = "restartButton";
+            this.restartButton.Size = new System.Drawing.Size(152, 22);
+            this.restartButton.Text = "Restart";
+            this.restartButton.ToolTipText = "Restart mining";
+            this.restartButton.Click += new System.EventHandler(this.restartButton_Click);
             // 
             // settingsSeparator
             // 
@@ -1320,7 +1332,7 @@
         private System.Windows.Forms.ToolStripButton startButton;
         private System.Windows.Forms.ToolStripButton saveButton;
         private System.Windows.Forms.ToolStripButton cancelButton;
-        private System.Windows.Forms.ToolStripButton stopButton;
+        private System.Windows.Forms.ToolStripSplitButton stopButton;
         private System.Windows.Forms.ToolStripSeparator saveSeparator;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel scryptRateLabel;
@@ -1443,6 +1455,7 @@
         private System.Windows.Forms.ToolStripMenuItem largeIconsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tilesToolStripMenuItem;
         private NoFlickerListView deviceListView;
+        private System.Windows.Forms.ToolStripMenuItem restartButton;
     }
 }
 

@@ -280,6 +280,7 @@
     <None Include="Resources\view_list.png" />
     <None Include="Resources\view_medium_icons.png" />
     <None Include="Resources\hardware-find.png" />
+    <None Include="Resources\computer-update.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>
