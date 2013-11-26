@@ -3212,8 +3212,11 @@ namespace MultiMiner.Win
         {
             if (e.ColumnIndex == 0)
             {
-                e.Value = GetReallyShortDateTimeFormat((DateTime)e.Value);
-                e.FormattingApplied = true;
+                if (e.Value != null)
+                {
+                    e.Value = GetReallyShortDateTimeFormat((DateTime)e.Value);
+                    e.FormattingApplied = true;
+                }
             }
         }
 
