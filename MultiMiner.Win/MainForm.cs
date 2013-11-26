@@ -143,6 +143,9 @@ namespace MultiMiner.Win
             if (!HasMinersInstalled())
                 CancelMiningOnStartup();
 
+            if (!MiningConfigurationValid())
+                CancelMiningOnStartup();
+
             //check for disowned miners before refreshing devices
             if (applicationConfiguration.DetectDisownedMiners)
                 CheckForDisownedMiners();
