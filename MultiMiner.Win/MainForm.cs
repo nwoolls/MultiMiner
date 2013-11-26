@@ -969,6 +969,7 @@ namespace MultiMiner.Win
             notifyIcon1.Text = "MultiMiner - Stopped";
             UpdateMiningButtons();
             ClearAllMinerStats();
+            AutoSizeListViewColumns();
         }
 
         private void startButton_Click(object sender, EventArgs e)
