@@ -616,6 +616,12 @@ namespace MultiMiner.Win
 
                     newConfiguration.Assign(device);
 
+                    //if the user has BTC configured, default to that
+                    string btcSymbol = "BTC";
+                    bool hasBtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.Coin.Symbol.Equals(btcSymbol, StringComparison.OrdinalIgnoreCase));
+                    if (hasBtcConfigured)
+                        newConfiguration.CoinSymbol = btcSymbol;
+
                     newConfiguration.Enabled = true;
                     engineConfiguration.DeviceConfigurations.Add(newConfiguration);
                 }
