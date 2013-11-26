@@ -84,9 +84,9 @@ namespace MultiMiner.Win
             //check and include the index of the virtual stratum proxy "device"
             if (ea.MinerConfiguration.StratumProxy)
             {
-                Device lastDevice = devices.LastOrDefault();
-                if ((lastDevice != null) && (lastDevice.Kind == DeviceKind.PXY))
-                    ea.DeviceDescriptors.Add(lastDevice);
+                Device proxyDevice = devices.SingleOrDefault(d => d.Kind == DeviceKind.PXY);
+                if (proxyDevice != null)
+                    ea.DeviceDescriptors.Add(proxyDevice);
             }
         }
 
