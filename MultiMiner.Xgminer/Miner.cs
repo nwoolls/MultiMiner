@@ -152,11 +152,14 @@ namespace MultiMiner.Xgminer
                 arguments = string.Format("{0} {1}", arguments, argument);
             }
 
+            if (minerConfiguration.DeviceDescriptors.Exists(d => d.Kind == DeviceKind.GPU))
+                arguments = String.Format("{0} {1}", arguments, MinerParameter.ScanSerialOpenCL);
+
             foreach (DeviceDescriptor deviceDescriptor in minerConfiguration.DeviceDescriptors)
             {
                 if (deviceDescriptor.Kind == DeviceKind.GPU)
                 {
-                    arguments = string.Format("{0} -S opencl:auto -d OCL{1}", arguments, deviceDescriptor.RelativeIndex);
+                    arguments = string.Format("{0} -d OCL{1}", arguments, deviceDescriptor.RelativeIndex);
                 } else if (deviceDescriptor.Kind == DeviceKind.USB)
                 {
                     arguments = string.Format("{0} -S {1}:{2} -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Path);
