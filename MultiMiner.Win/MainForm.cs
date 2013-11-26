@@ -844,8 +844,10 @@ namespace MultiMiner.Win
         {
             engineConfiguration.LoadDeviceConfigurations();
             LoadListViewValuesFromConfiguration();
+            LoadListViewValuesFromCoinStats();
 
             UpdateChangesButtons(false);
+            AutoSizeListViewColumns();
         }
 
         private void SaveListViewValuesToConfiguration()
