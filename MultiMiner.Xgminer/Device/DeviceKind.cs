@@ -1,10 +1,14 @@
-﻿namespace MultiMiner.Xgminer
+﻿using System;
+
+namespace MultiMiner.Xgminer
 {
+    [Flags]
     public enum DeviceKind
     {
-        GPU = 0,
-        USB = 1,
-        PXY = 2, //proxy
-        CPU = 3
+        None = 0,
+        GPU = 1,
+        USB = 2,
+        PXY = 4, //proxy
+        CPU = 8
     }
 }

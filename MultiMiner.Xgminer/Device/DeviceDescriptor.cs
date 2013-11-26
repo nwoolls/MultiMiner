@@ -15,6 +15,7 @@ namespace MultiMiner.Xgminer
             this.Path = String.Empty;
             this.RelativeIndex = -1;
             this.Serial = String.Empty;
+            this.Kind = DeviceKind.None;
         }
 
         public string Description()

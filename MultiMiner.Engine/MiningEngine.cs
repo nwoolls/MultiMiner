@@ -532,27 +532,42 @@ namespace MultiMiner.Engine
 
             foreach (string coinSymbol in coinSymbols)
             {
-                MinerConfiguration minerConfiguration = CreateMinerConfiguration(port, coinSymbol);
-
-                Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
-
-                if (!process.HasExited)
+                //launch separate processes for CPU & GPU vs USB & PXY (for stability)
+                MinerConfiguration minerConfiguration = CreateMinerConfiguration(port, coinSymbol, DeviceKind.CPU | DeviceKind.GPU);
+                if (minerConfiguration != null)
                 {
-                    MinerProcess minerProcess = new MinerProcess();
+                    Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
+                    if (!process.HasExited)
+                        StoreMinerProcess(process, minerConfiguration, port);
 
-                    minerProcess.Process = process;
-                    minerProcess.ApiPort = port;
-                    minerProcess.MinerConfiguration = minerConfiguration;
-
-                    setupProcessStartInfo(minerProcess);
-
-                    minerProcesses.Add(minerProcess);
+                    port++;
                 }
 
-                port++;
+                minerConfiguration = CreateMinerConfiguration(port, coinSymbol, DeviceKind.PXY | DeviceKind.USB);
+                if (minerConfiguration != null)
+                {
+                    Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
+                    if (!process.HasExited)
+                        StoreMinerProcess(process, minerConfiguration, port);
+
+                    port++;
+                }
             }
 
             mining = true;
+        }
+
+        private void StoreMinerProcess(Process process, MinerConfiguration minerConfiguration, int port)
+        {
+            MinerProcess minerProcess = new MinerProcess();
+
+            minerProcess.Process = process;
+            minerProcess.ApiPort = port;
+            minerProcess.MinerConfiguration = minerConfiguration;
+
+            setupProcessStartInfo(minerProcess);
+
+            minerProcesses.Add(minerProcess);
         }
 
         private Process LaunchMinerProcess(MinerConfiguration minerConfiguration, string reason)
@@ -566,7 +581,7 @@ namespace MultiMiner.Engine
             return process;
         }
 
-        private MinerConfiguration CreateMinerConfiguration(int port, string coinSymbol)
+        private MinerConfiguration CreateMinerConfiguration(int port, string coinSymbol, DeviceKind includeKinds)
         {
             CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(coinSymbol));
 
@@ -583,13 +598,20 @@ namespace MultiMiner.Engine
             minerConfiguration.AllowedApiIps = engineConfiguration.XgminerConfiguration.AllowedApiIps;
             minerConfiguration.CoinName = coinConfiguration.Coin.Name;
             minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
-            
+
+            int deviceCount = 0;
             for (int i = 0; i < enabledConfigurations.Count; i++)
             {
                 DeviceConfiguration enabledConfiguration = enabledConfigurations[i];
 
-                //don't actually add stratum device as a device index
                 Device device = devices.SingleOrDefault(d => d.Equals(enabledConfiguration));
+                
+                if ((includeKinds & device.Kind) == 0)
+                    continue;
+
+                deviceCount++;
+
+                //don't actually add stratum device as a device index
                 if (device.Kind != DeviceKind.PXY)
                 {
                     minerConfiguration.DeviceDescriptors.Add(device);
@@ -601,6 +623,9 @@ namespace MultiMiner.Engine
                     minerConfiguration.StratumProxyPort = engineConfiguration.XgminerConfiguration.StratumProxyPort;
                 }
             }
+
+            if (deviceCount == 0)
+                return null;
                         
             string arguments = string.Empty;
 
@@ -617,7 +642,7 @@ namespace MultiMiner.Engine
                 arguments = arguments + " -I D";
             
             minerConfiguration.Arguments = arguments;
-
+            
             return minerConfiguration;
         }
     }
