@@ -472,7 +472,7 @@ namespace MultiMiner.Engine
 
                 switch (engineConfiguration.StrategyConfiguration.MiningBasis)
                 {
-                    case Configuration.StrategyConfiguration.CoinMiningBasis.Profitability:
+                    case StrategyConfiguration.CoinMiningBasis.Profitability:
                         switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
                         {
                             case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
@@ -486,10 +486,10 @@ namespace MultiMiner.Engine
                                 break;
                         }
                         break;
-                    case Configuration.StrategyConfiguration.CoinMiningBasis.Difficulty:
+                    case StrategyConfiguration.CoinMiningBasis.Difficulty:
                         filteredCoinInformation = filteredCoinInformation.Where(c => c.Difficulty < minimumValue).ToList();
                         break;
-                    case Configuration.StrategyConfiguration.CoinMiningBasis.Price:
+                    case StrategyConfiguration.CoinMiningBasis.Price:
                         filteredCoinInformation = filteredCoinInformation.Where(c => c.Price > minimumValue).ToList();
                         break;
                 }
