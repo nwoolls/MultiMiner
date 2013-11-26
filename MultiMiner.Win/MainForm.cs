@@ -424,6 +424,10 @@ namespace MultiMiner.Win
                     ConfigureDevicesForNewUser();
                 }
 
+                //first try to match up devices without configurations with configurations without devices
+                //could happen if, for instance, a COM port changes for a device
+                FixOrphanedDeviceConfigurations();
+
                 //there needs to be a device config for each device
                 AddMissingDeviceConfigurations();
                 //but no configurations for devices that have gone missing
@@ -441,6 +445,29 @@ namespace MultiMiner.Win
             finally
             {
                 updatingListView = false;
+            }
+        }
+
+        //try to match up devices without configurations with configurations without devices
+        //could happen if, for instance, a COM port changes for a device
+        private void FixOrphanedDeviceConfigurations()
+        {
+            foreach (Device device in devices)
+            {
+                DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
+                    c => (c.Equals(device)));
+
+                //if there is no configuration specifically for the device
+                if (existingConfiguration == null)
+                {
+                    //find a configuration that uses the same driver and that, itself, has no specifically matching device
+                    DeviceConfiguration orphanedConfiguration = engineConfiguration.DeviceConfigurations.FirstOrDefault(
+                        c => c.Driver.Equals(device.Driver, StringComparison.OrdinalIgnoreCase) &&
+                                !devices.Exists(d => d.Equals(c)));
+
+                    if (orphanedConfiguration != null)
+                        orphanedConfiguration.Assign(device);
+                }
             }
         }
 
