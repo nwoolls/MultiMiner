@@ -97,10 +97,11 @@ namespace MultiMiner.Xgminer
             string serialArg = MinerParameter.ScanSerialErupterAll;
 
             if (!minerConfiguration.DisableGpu)
-            {
                 //openCL disabled by default in bfgminer 3.3.0+
                 serialArg = String.Format("{0} {1}", serialArg, MinerParameter.ScanSerialOpenCL);
-            }
+
+            serialArg = String.Format("{0} {1}", serialArg, MinerParameter.ScanSerialCpu);
+
             return serialArg;
         }
 
@@ -125,7 +126,7 @@ namespace MultiMiner.Xgminer
 
             string arguments = minerConfiguration.Arguments;
 
-            string serialArg = "-S noauto";
+            string serialArg = MinerParameter.ScanSerialNoAuto;
             arguments = String.Format("{0} {1}", arguments, serialArg);
 
             if (minerConfiguration.StratumProxy)
@@ -155,16 +156,17 @@ namespace MultiMiner.Xgminer
             if (minerConfiguration.DeviceDescriptors.Exists(d => d.Kind == DeviceKind.GPU))
                 arguments = String.Format("{0} {1}", arguments, MinerParameter.ScanSerialOpenCL);
 
+            if (minerConfiguration.DeviceDescriptors.Exists(d => d.Kind == DeviceKind.CPU))
+                arguments = String.Format("{0} {1}", arguments, MinerParameter.ScanSerialCpu);
+
             foreach (DeviceDescriptor deviceDescriptor in minerConfiguration.DeviceDescriptors)
             {
                 if (deviceDescriptor.Kind == DeviceKind.GPU)
-                {
                     arguments = string.Format("{0} -d OCL{1}", arguments, deviceDescriptor.RelativeIndex);
-                } else if (deviceDescriptor.Kind == DeviceKind.USB)
-                {
+                else if (deviceDescriptor.Kind == DeviceKind.CPU)
+                    arguments = string.Format("{0} -d CPU{1}", arguments, deviceDescriptor.RelativeIndex);
+                else if (deviceDescriptor.Kind == DeviceKind.USB)
                     arguments = string.Format("{0} -S {1}:{2} -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Path);
-                }
-                //    arguments = string.Format("{0} -d {1}", arguments, deviceDescriptor);
             }
 
             if (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt)

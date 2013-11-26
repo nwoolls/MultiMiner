@@ -4,6 +4,7 @@
     {
         GPU = 0,
         USB = 1,
-        PXY = 2 //proxy
+        PXY = 2, //proxy
+        CPU = 3
     }
 }

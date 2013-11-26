@@ -516,6 +516,10 @@ namespace MultiMiner.Win
 
                     switch (device.Kind)
                     {
+                        case DeviceKind.CPU:
+                            listViewItem.Group = deviceListView.Groups["cpuListViewGroup"];
+                            listViewItem.ImageIndex = 3;
+                            break;
                         case DeviceKind.GPU:
                             listViewItem.Group = deviceListView.Groups["gpuListViewGroup"];
                             listViewItem.ImageIndex = 0;
@@ -1654,6 +1658,9 @@ namespace MultiMiner.Win
                     
                     //opencl = opencl && ID = RelativeIndex
                     || (device.Driver.Equals("opencl", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+
+                    //cpu = cpu && ID = RelativeIndex
+                    || (device.Driver.Equals("cpu", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
 
                     ))
                 {

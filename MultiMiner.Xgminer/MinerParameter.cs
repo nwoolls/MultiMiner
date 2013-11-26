@@ -12,5 +12,7 @@
         public const string ScanSerialOpenCLNoAuto = "--scan opencl:noauto";
         public const string ScanSerialBigPicNoAuto = "--scan bigpic:noauto";
         public const string ScanSerialBflNoAuto = "--scan bfl:noauto";
+        public const string ScanSerialCpu = "--scan cpu:auto";
+        public const string ScanSerialNoAuto = "--scan noauto";
     }
 }

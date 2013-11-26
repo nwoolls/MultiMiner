@@ -47,6 +47,8 @@ namespace MultiMiner.Xgminer
                 return target.Kind == DeviceKind.PXY;
             else if (this.Kind == DeviceKind.GPU)
                 return target.Kind == DeviceKind.GPU && target.RelativeIndex == this.RelativeIndex;
+            else if (this.Kind == DeviceKind.CPU)
+                return target.Kind == DeviceKind.CPU && target.RelativeIndex == this.RelativeIndex;
             else if (String.IsNullOrEmpty(target.Serial))
                 //only match on Path if there is no Serial
                 return target.Driver.Equals(this.Driver, StringComparison.OrdinalIgnoreCase) && target.Path.Equals(this.Path, StringComparison.OrdinalIgnoreCase);

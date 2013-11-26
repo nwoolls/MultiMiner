@@ -44,7 +44,9 @@ namespace MultiMiner.Xgminer.Parsers
                         if (details.ContainsKey("serial"))
                             device.Serial = details["serial"];
 
-                        device.Kind = DeviceIsGpu(device) ? DeviceKind.GPU : DeviceKind.USB;
+                        device.Kind = device.Driver.Equals("opencl") ? DeviceKind.GPU :
+                            device.Driver.Equals("cpu") ? DeviceKind.CPU : DeviceKind.USB;
+
                         if ((devices.Count > 0) && (devices.Last()).Kind != device.Kind)
                             //relativeIndex is relative to device Kind
                             relativeIndex = 0;
@@ -62,11 +64,6 @@ namespace MultiMiner.Xgminer.Parsers
                     inDevices = true;
                 }
             }
-        }
-
-        private static bool DeviceIsGpu(Device device)
-        {
-            return device.Driver.Equals("opencl");
         }
     }
 }
