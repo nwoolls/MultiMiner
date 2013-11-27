@@ -102,7 +102,7 @@ namespace MultiMiner.Xgminer
         private static string GetBfgminerWindowsDownloadUrl()
         {
             string downloadRoot = GetMinerDownloadRoot();
-            const string downloadPath = "/programs/bitcoin/files/bfgminer/testing/";
+            const string downloadPath = "/programs/bitcoin/files/bfgminer/latest/";
             string availableDownloadsHtml = new WebClient().DownloadString(String.Format("{0}{1}", downloadRoot, downloadPath));
             const string pattern = @".*<a href=""(bfgminer-.+?-win32.zip)";
             Match match = Regex.Match(availableDownloadsHtml, pattern);
