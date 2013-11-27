@@ -219,9 +219,9 @@
             "3 hours",
             "6 hours",
             "12 hours"});
-            this.intervalCombo.Location = new System.Drawing.Point(164, 38);
+            this.intervalCombo.Location = new System.Drawing.Point(170, 38);
             this.intervalCombo.Name = "intervalCombo";
-            this.intervalCombo.Size = new System.Drawing.Size(99, 23);
+            this.intervalCombo.Size = new System.Drawing.Size(93, 23);
             this.intervalCombo.TabIndex = 2;
             // 
             // groupBox2
