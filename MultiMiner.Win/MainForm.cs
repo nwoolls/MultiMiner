@@ -465,7 +465,7 @@ namespace MultiMiner.Win
         {
             foreach (Device device in devices)
             {
-                DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
+                DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations.FirstOrDefault(
                     c => (c.Equals(device)));
 
                 //if there is no configuration specifically for the device
