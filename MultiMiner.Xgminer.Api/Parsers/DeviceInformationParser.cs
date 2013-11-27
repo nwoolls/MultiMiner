@@ -54,19 +54,17 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     if (keyValuePairs.ContainsKey("ID"))
                         newDevice.ID = TryToParseInt(keyValuePairs, "ID", newDevice.Index);
 
-                    if (newDevice.Kind.Equals("GPU"))
-                    {
-                        newDevice.Temperature = TryToParseDouble(keyValuePairs, "Temperature", 0.00);
-                        newDevice.FanSpeed = TryToParseInt(keyValuePairs, "Fan Speed", 0);
-                        newDevice.FanPercent = TryToParseInt(keyValuePairs, "Fan Percent", 0);
-                        newDevice.GpuClock = TryToParseInt(keyValuePairs, "GPU Clock", 0);
-                        newDevice.MemoryClock = TryToParseInt(keyValuePairs, "Memory Clock", 0);
-                        newDevice.GpuVoltage = TryToParseDouble(keyValuePairs, "GPU Voltage", 0.00);
-                        newDevice.GpuActivity = TryToParseInt(keyValuePairs, "GPU Activity", 0);
-                        newDevice.PowerTune = TryToParseInt(keyValuePairs, "Powertune", 0);
-                        if (keyValuePairs.ContainsKey("Intensity")) //check required for bfgminer 3.3.0
-                            newDevice.Intensity = keyValuePairs["Intensity"];
-                    }
+                    //parse regardless of device type = ASICs may have Temp
+                    newDevice.Temperature = TryToParseDouble(keyValuePairs, "Temperature", 0.00);
+                    newDevice.FanSpeed = TryToParseInt(keyValuePairs, "Fan Speed", 0);
+                    newDevice.FanPercent = TryToParseInt(keyValuePairs, "Fan Percent", 0);
+                    newDevice.GpuClock = TryToParseInt(keyValuePairs, "GPU Clock", 0);
+                    newDevice.MemoryClock = TryToParseInt(keyValuePairs, "Memory Clock", 0);
+                    newDevice.GpuVoltage = TryToParseDouble(keyValuePairs, "GPU Voltage", 0.00);
+                    newDevice.GpuActivity = TryToParseInt(keyValuePairs, "GPU Activity", 0);
+                    newDevice.PowerTune = TryToParseInt(keyValuePairs, "Powertune", 0);
+                    if (keyValuePairs.ContainsKey("Intensity")) //check required for bfgminer 3.3.0
+                        newDevice.Intensity = keyValuePairs["Intensity"];
 
                     newDevice.AverageHashrate = TryToParseDouble(keyValuePairs, "MHS av", 0.00) * 1000;
 
