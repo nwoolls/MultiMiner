@@ -1317,12 +1317,14 @@ namespace MultiMiner.Win
 
             domainName = uri.Host;
 
-            if (domainName.Split('.').Length > 1)
+            //remove subdomain if there is one
+            if (domainName.Split('.').Length > 2)
             {
                 int index = domainName.IndexOf(".") + 1;
                 domainName = domainName.Substring(index, domainName.Length - index);
             }
 
+            //remove TLD
             domainName = Path.GetFileNameWithoutExtension(domainName);
 
             hostDomainNames[poolHost] = domainName;
