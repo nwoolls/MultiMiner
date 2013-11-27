@@ -1298,8 +1298,12 @@ namespace MultiMiner.Win
 
         private CoinConfiguration CoinConfigurationForListViewItem(ListViewItem item)
         {
-            string rowCoinName = item.SubItems["Coin"].Text;
-            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(rowCoinName, StringComparison.OrdinalIgnoreCase));
+            int itemIndex = deviceListView.Items.IndexOf(item);
+            Device device = devices[itemIndex];
+            //get the actual device configuration, text in the ListViewItem may be unsaved
+            DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+            string itemCoinSymbol = deviceConfiguration.CoinSymbol;
+            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(itemCoinSymbol, StringComparison.OrdinalIgnoreCase));
             return coinConfiguration;
         }
 
