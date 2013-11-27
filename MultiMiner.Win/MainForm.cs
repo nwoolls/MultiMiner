@@ -93,7 +93,18 @@ namespace MultiMiner.Win
         private void LogProcessCloseToFile(LogProcessCloseArgs ea)
         {
             const string logFileName = "MiningLog.json";
-            LogObjectToFile(ea, logFileName);
+            //log an anonymous type so MinerConfiguration is ommitted
+            LogObjectToFile(new
+            {
+                StartDate = ea.StartDate,
+                EndDate = ea.EndDate,
+                CoinName = ea.CoinName,
+                CoinSymbol = ea.CoinSymbol,
+                StartPrice = ea.StartPrice,
+                EndPrice = ea.EndPrice,
+                AcceptedShares = ea.AcceptedShares,
+                DeviceDescriptors = ea.DeviceDescriptors
+            }, logFileName);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
