@@ -2664,8 +2664,12 @@ namespace MultiMiner.Win
                 
                 LogProcessCloseArgs ea = this.logCloseEntries[index];
 
+                string devicesString = "??";
                 //convert from device indexes (0 based) to device #'s (more human readable)
-                string devicesString = GetFormattedDevicesString(ea.DeviceDescriptors);
+                //check for NULL because the history JSON is reloaded on startup and older
+                //versions didn't have this property serialized
+                if (ea.DeviceDescriptors != null)
+                    devicesString = GetFormattedDevicesString(ea.DeviceDescriptors);
                 
                 historyGridView.Rows[index].Cells[devicesColumn.Index].Value = devicesString;
 
