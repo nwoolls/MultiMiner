@@ -9,13 +9,13 @@ namespace MultiMiner.Xgminer
 {
     public static class Installer
     {
-        public static void InstallMiner(MinerBackend minerBackend, string destinationFolder)
+        public static void InstallMiner(string destinationFolder)
         {
             //support Windows and OS X for now, we'll go for Linux in the future
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
                 throw new NotImplementedException();
 
-            string minerUrl = GetMinerDownloadUrl(minerBackend);
+            string minerUrl = GetMinerDownloadUrl();
 
             if (!String.IsNullOrEmpty(minerUrl))
             {
@@ -53,11 +53,11 @@ namespace MultiMiner.Xgminer
             }
         }
 
-        public static string GetAvailableMinerVersion(MinerBackend minerBackend)
+        public static string GetAvailableMinerVersion()
         {
             string version = String.Empty;
 
-            string minerDownloadUrl = GetMinerDownloadUrl(minerBackend);            
+            string minerDownloadUrl = GetMinerDownloadUrl();            
             const string pattern = @".+/.+?-(.+?)-.+\..+$";
             Match match = Regex.Match(minerDownloadUrl, pattern);
             if (match.Success)
@@ -66,7 +66,7 @@ namespace MultiMiner.Xgminer
             return version;
         }
 
-        public static string GetInstalledMinerVersion(MinerBackend minerBackend, string executablePath)
+        public static string GetInstalledMinerVersion(string executablePath)
         {
             string version = String.Empty;
 
@@ -77,23 +77,7 @@ namespace MultiMiner.Xgminer
             startInfo.CreateNoWindow = true;
             startInfo.RedirectStandardOutput = true;
 
-            startInfo.Arguments = startInfo.Arguments + " --disable-gpu";
-
-            if (minerBackend == MinerBackend.Cgminer)
-            {
-                string noGpuFilePath;
-
-                //otherwise it still requires OpenCL.dll - not an issue with bfgminer
-                if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
-                    noGpuFilePath = startInfo.FileName + "-nogpu";
-                else
-                    noGpuFilePath = executablePath.Replace("cgminer.exe", "cgminer-nogpu.exe");
-                
-                //first make sure the exe exists. this became necessary with cgminer 3.8.0 because
-                //ck stopped shipping cgminer-nogpu.exe, as cgminer.exe has no GPU support in 3.8
-                if (File.Exists(noGpuFilePath))
-                    startInfo.FileName = noGpuFilePath;
-            }
+            startInfo.Arguments = String.Format("{0} {1}", startInfo.Arguments, MinerParameter.ScanSerialOpenCLNoAuto);
 
             Process process = Process.Start(startInfo);
 
@@ -107,29 +91,17 @@ namespace MultiMiner.Xgminer
             return version;
         }
 
-        private static string GetMinerDownloadUrl(MinerBackend minerBackend)
-        {
-            string result = String.Empty;
-
-            if (minerBackend == MinerBackend.Cgminer)
-                result = GetCgminerDownloadUrl();
-            else if (minerBackend == MinerBackend.Bfgminer)
-                result = GetBfgminerDownloadUrl();
-
-            return result;
-        }
-
-        private static string GetBfgminerDownloadUrl()
+        private static string GetMinerDownloadUrl()
         {
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
-                return GetBfgminerMacOSXDownloadUrl();
+            { return GetXgminerDownloadUrl("bfgminer"); }
             else
                 return GetBfgminerWindowsDownloadUrl();
         }
 
         private static string GetBfgminerWindowsDownloadUrl()
         {
-            string downloadRoot = GetMinerDownloadRoot(MinerBackend.Bfgminer);
+            string downloadRoot = GetMinerDownloadRoot();
             const string downloadPath = "/programs/bitcoin/files/bfgminer/testing/";
             string availableDownloadsHtml = new WebClient().DownloadString(String.Format("{0}{1}", downloadRoot, downloadPath));
             const string pattern = @".*<a href=""(bfgminer-.+?-win32.zip)";
@@ -144,16 +116,11 @@ namespace MultiMiner.Xgminer
             return "";
         }
         
-        private static string GetBfgminerMacOSXDownloadUrl()
-        {
-            return GetXgminerDownloadUrl("bfgminer");
-        }
-
         private static string GetXgminerDownloadUrl(string minerName)
         {
             string downloadUrl = String.Empty;
 
-            string downloadRoot = GetMinerDownloadRoot(MinerBackend.Bfgminer);
+            string downloadRoot = GetMinerDownloadRoot();
             const string downloadPath = "/releases/";
             string availableDownloadsHtml = new WebClient().DownloadString(String.Format("{0}{1}", downloadRoot, downloadPath));
             string pattern = String.Format(@".*<a href="".+/xgminer-osx/releases/(.+/{0}-.+?-osx64.tar.gz)", minerName);
@@ -167,47 +134,12 @@ namespace MultiMiner.Xgminer
             return downloadUrl;
         }
 
-        private static string GetCgminerDownloadUrl()
-        {
-            if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
-                return GetCgminerMacOSXDownloadUrl();
-            else
-                return GetCgminerWindowsDownloadUrl();
-        }
-
-        public static string GetMinerDownloadRoot(MinerBackend minerBackend)
+        public static string GetMinerDownloadRoot()
         {
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
                 return "http://github.com/nwoolls/xgminer-osx";
             else
-            {
-                if (minerBackend == MinerBackend.Bfgminer)
-                    return "http://luke.dashjr.org";
-                else
-                    return "http://ck.kolivas.org";
-            }
-        }
-
-        private static string GetCgminerMacOSXDownloadUrl()
-        {
-            return GetXgminerDownloadUrl("cgminer");
-        }
-
-        private static string GetCgminerWindowsDownloadUrl()
-        {
-            string downloadRoot = GetMinerDownloadRoot(MinerBackend.Cgminer);
-            const string downloadPath = "/apps/cgminer/";
-            string availableDownloadsHtml = new WebClient().DownloadString(String.Format("{0}{1}", downloadRoot, downloadPath));
-            const string pattern = @".*<a href=""(cgminer-.+?-windows.zip)";
-            Match match = Regex.Match(availableDownloadsHtml, pattern);
-            if (match.Success)
-            {
-                string minerFileName = match.Groups[1].Value;
-                string minerUrl = String.Format("{0}{1}{2}", downloadRoot, downloadPath, minerFileName);
-                return minerUrl;
-            }
-
-            return "";
+                return "http://luke.dashjr.org";
         }
     }
 }

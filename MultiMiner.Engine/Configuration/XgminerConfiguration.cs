@@ -16,7 +16,6 @@ namespace MultiMiner.Engine.Configuration
         }
 
         public SerializableDictionary<CoinAlgorithm, string> AlgorithmFlags { get; set; }
-        public MinerBackend MinerBackend { get; set; }
         public bool DesktopMode { get; set; }
         public bool DisableGpu { get; set; }
         public ProcessPriorityClass Priority { get; set; }
@@ -27,35 +26,5 @@ namespace MultiMiner.Engine.Configuration
         public bool StratumProxy { get; set; }
         public int StratumProxyPort { get; set; }
         public int StratumProxyStratumPort { get; set; }
-
-        private bool bitfuryCompatibility;
-        public bool BitfuryCompatibility
-        {
-            get
-            {
-                return bitfuryCompatibility;
-            }
-            set
-            {
-                bitfuryCompatibility = value;
-                if (value)
-                    ErupterDriver = false;
-            }
-        }
-
-        private bool erupterDriver;
-        public bool ErupterDriver
-        {
-            get
-            {
-                return erupterDriver;
-            }
-            set
-            {
-                erupterDriver = value;
-                if (value)
-                    BitfuryCompatibility = false;
-            }
-        }
     }
 }

@@ -53,9 +53,7 @@ namespace MultiMiner.Xgminer.Parsers
                         device.Platform.Vendor = currentUsbManufacturer;
                         device.Platform.Version = string.Empty;
                         device.Name = currentUsbProduct;
-                        device.Description = string.Empty;
                         device.Kind = DeviceKind.USB;
-                        device.DeviceIndex = devices.Count;
 
                         devices.Add(device);
                     }
@@ -105,10 +103,6 @@ namespace MultiMiner.Xgminer.Parsers
                         device.Platform.Version = currentPlatformVersion;
 
                         device.Name = names[i];
-
-                        //may not be descriptions, e.g. under OS X
-                        if (i < descriptions.Count)
-                            device.Description = descriptions[i];
 
                         device.Kind = DeviceKind.GPU;
 

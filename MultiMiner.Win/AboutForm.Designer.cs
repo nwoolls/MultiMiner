@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
             this.multiMinerLabel = new System.Windows.Forms.Label();
             this.bfgminerLabel = new System.Windows.Forms.Label();
-            this.cgminerLabel = new System.Windows.Forms.Label();
             this.multiMinerLink = new System.Windows.Forms.LinkLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.saveButton = new System.Windows.Forms.Button();
@@ -47,7 +46,7 @@
             // 
             this.multiMinerLabel.AutoSize = true;
             this.multiMinerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.multiMinerLabel.Location = new System.Drawing.Point(91, 12);
+            this.multiMinerLabel.Location = new System.Drawing.Point(106, 14);
             this.multiMinerLabel.Name = "multiMinerLabel";
             this.multiMinerLabel.Size = new System.Drawing.Size(114, 16);
             this.multiMinerLabel.TabIndex = 1;
@@ -57,28 +56,18 @@
             // 
             this.bfgminerLabel.AutoSize = true;
             this.bfgminerLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.bfgminerLabel.Location = new System.Drawing.Point(91, 63);
+            this.bfgminerLabel.Location = new System.Drawing.Point(106, 73);
             this.bfgminerLabel.Name = "bfgminerLabel";
-            this.bfgminerLabel.Size = new System.Drawing.Size(111, 13);
+            this.bfgminerLabel.Size = new System.Drawing.Size(124, 15);
             this.bfgminerLabel.TabIndex = 3;
             this.bfgminerLabel.Text = "xgminer 1.1.1 installed";
-            // 
-            // cgminerLabel
-            // 
-            this.cgminerLabel.AutoSize = true;
-            this.cgminerLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.cgminerLabel.Location = new System.Drawing.Point(91, 50);
-            this.cgminerLabel.Name = "cgminerLabel";
-            this.cgminerLabel.Size = new System.Drawing.Size(111, 13);
-            this.cgminerLabel.TabIndex = 4;
-            this.cgminerLabel.Text = "xgminer 1.1.1 installed";
             // 
             // multiMinerLink
             // 
             this.multiMinerLink.AutoSize = true;
-            this.multiMinerLink.Location = new System.Drawing.Point(91, 28);
+            this.multiMinerLink.Location = new System.Drawing.Point(106, 32);
             this.multiMinerLink.Name = "multiMinerLink";
-            this.multiMinerLink.Size = new System.Drawing.Size(94, 13);
+            this.multiMinerLink.Size = new System.Drawing.Size(113, 15);
             this.multiMinerLink.TabIndex = 5;
             this.multiMinerLink.TabStop = true;
             this.multiMinerLink.Text = "multiminerapp.com";
@@ -89,18 +78,18 @@
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 356);
+            this.panel1.Location = new System.Drawing.Point(0, 411);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(469, 47);
+            this.panel1.Size = new System.Drawing.Size(547, 54);
             this.panel1.TabIndex = 6;
             // 
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.saveButton.Location = new System.Drawing.Point(382, 12);
+            this.saveButton.Location = new System.Drawing.Point(446, 14);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(75, 23);
+            this.saveButton.Size = new System.Drawing.Size(87, 27);
             this.saveButton.TabIndex = 0;
             this.saveButton.Text = "OK";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -112,37 +101,35 @@
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(12, 88);
+            this.textBox1.Location = new System.Drawing.Point(14, 102);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(443, 255);
+            this.textBox1.Size = new System.Drawing.Size(516, 294);
             this.textBox1.TabIndex = 8;
             this.textBox1.Text = resources.GetString("textBox1.Text");
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.window_sel;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 12);
+            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.computer_coins;
+            this.pictureBox1.Location = new System.Drawing.Point(14, 14);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(64, 64);
+            this.pictureBox1.Size = new System.Drawing.Size(75, 74);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
             // AboutForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(469, 403);
+            this.ClientSize = new System.Drawing.Size(547, 465);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.multiMinerLink);
-            this.Controls.Add(this.cgminerLabel);
             this.Controls.Add(this.bfgminerLabel);
             this.Controls.Add(this.multiMinerLabel);
             this.Controls.Add(this.pictureBox1);
@@ -166,7 +153,6 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label multiMinerLabel;
         private System.Windows.Forms.Label bfgminerLabel;
-        private System.Windows.Forms.Label cgminerLabel;
         private System.Windows.Forms.LinkLabel multiMinerLink;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button saveButton;

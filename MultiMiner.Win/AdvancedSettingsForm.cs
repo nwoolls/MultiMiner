@@ -1,11 +1,12 @@
 ﻿using MultiMiner.Engine.Configuration;
 using MultiMiner.Utility;
+using MultiMiner.Xgminer;
 using System;
 using System.Windows.Forms;
 
 namespace MultiMiner.Win
 {
-    public partial class AdvancedSettingsForm : Form
+    public partial class AdvancedSettingsForm : MessageBoxFontForm
     {
         private readonly XgminerConfiguration minerConfiguration;
         private readonly XgminerConfiguration workingMinerConfiguration;
@@ -27,9 +28,6 @@ namespace MultiMiner.Win
         {
             xgminerConfigurationBindingSource.DataSource = workingMinerConfiguration;
             applicationConfigurationBindingSource.DataSource = workingApplicationConfiguration;
-            erupterCheckBox.Enabled = minerConfiguration.MinerBackend == Xgminer.MinerBackend.Bfgminer;
-            proxyCheckBox.Enabled = minerConfiguration.MinerBackend == Xgminer.MinerBackend.Bfgminer;
-            proxyPortEdit.Enabled = minerConfiguration.MinerBackend == Xgminer.MinerBackend.Bfgminer;
             autoDesktopCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
             LoadSettings();
         }
@@ -45,11 +43,26 @@ namespace MultiMiner.Win
         private void LoadSettings()
         {
             intervalCombo.SelectedIndex = (int)workingApplicationConfiguration.ScheduledRestartMiningInterval;
+
+            if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.SHA256))
+                sha256ParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256];
+            if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.Scrypt))
+                scryptParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt];
+
+            autoDesktopCheckBox.Enabled = !disableGpuCheckbox.Checked;
         }
 
         private void SaveSettings()
         {
             workingApplicationConfiguration.ScheduledRestartMiningInterval = (ApplicationConfiguration.TimerInterval)intervalCombo.SelectedIndex;
+
+            minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256] = sha256ParamsEdit.Text;
+            minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt] = scryptParamsEdit.Text;
+        }
+
+        private void disableGpuCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            autoDesktopCheckBox.Enabled = !disableGpuCheckbox.Checked;
         }
     }
 }

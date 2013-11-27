@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>window_sel.ico</ApplicationIcon>
+    <ApplicationIcon>computer-coins.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -81,17 +81,23 @@
     <Compile Include="ApiLogEntry.cs" />
     <Compile Include="HourGlass.cs" />
     <Compile Include="InputValidation.cs" />
-    <Compile Include="InstallMinerForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="InstallMinerForm.Designer.cs">
-      <DependentUpon>InstallMinerForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MessageBoxFontForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageBoxFontForm.Designer.cs">
+      <DependentUpon>MessageBoxFontForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NoFlickerListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NoFlickerListView.Designer.cs">
+      <DependentUpon>NoFlickerListView.cs</DependentUpon>
     </Compile>
     <Compile Include="Notifications\NotificationControl.cs">
       <SubType>UserControl</SubType>
@@ -147,9 +153,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CoinsForm.resx">
       <DependentUpon>CoinsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="InstallMinerForm.resx">
-      <DependentUpon>InstallMinerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -242,10 +245,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="computer-coins.ico" />
     <Content Include="Miners\bfgminer\Extract bfgminer here.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Miners\cgminer\Extract cgminer here.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\computer-control_play.png" />
@@ -274,6 +275,14 @@
     <None Include="Resources\application-option.png" />
     <None Include="Resources\settings_options.png" />
     <None Include="Resources\sort.png" />
+    <None Include="Resources\view_details.png" />
+    <None Include="Resources\view_small_icons.png" />
+    <None Include="Resources\view_large_icons.png" />
+    <None Include="Resources\view_list.png" />
+    <None Include="Resources\view_medium_icons.png" />
+    <None Include="Resources\hardware-find.png" />
+    <None Include="Resources\computer-update.png" />
+    <None Include="Resources\computer-coins.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

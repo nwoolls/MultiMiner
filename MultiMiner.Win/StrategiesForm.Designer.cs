@@ -66,18 +66,18 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 335);
+            this.panel1.Location = new System.Drawing.Point(0, 387);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(355, 47);
+            this.panel1.Size = new System.Drawing.Size(414, 54);
             this.panel1.TabIndex = 7;
             // 
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.saveButton.Location = new System.Drawing.Point(187, 12);
+            this.saveButton.Location = new System.Drawing.Point(218, 14);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(75, 23);
+            this.saveButton.Size = new System.Drawing.Size(87, 27);
             this.saveButton.TabIndex = 0;
             this.saveButton.Text = "OK";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -87,9 +87,9 @@
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(268, 12);
+            this.cancelButton.Location = new System.Drawing.Point(313, 14);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(75, 23);
+            this.cancelButton.Size = new System.Drawing.Size(87, 27);
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
@@ -98,9 +98,9 @@
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.strategyConfigurationBindingSource, "AutomaticallyMineCoins", true));
-            this.checkBox1.Location = new System.Drawing.Point(12, 12);
+            this.checkBox1.Location = new System.Drawing.Point(14, 14);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(194, 17);
+            this.checkBox1.Size = new System.Drawing.Size(220, 19);
             this.checkBox1.TabIndex = 0;
             this.checkBox1.Text = "Automatically mine coin(s) based on";
             this.checkBox1.UseVisualStyleBackColor = true;
@@ -113,9 +113,9 @@
             // 
             this.singleCoinRadio.AutoSize = true;
             this.singleCoinRadio.Checked = true;
-            this.singleCoinRadio.Location = new System.Drawing.Point(19, 86);
+            this.singleCoinRadio.Location = new System.Drawing.Point(22, 99);
             this.singleCoinRadio.Name = "singleCoinRadio";
-            this.singleCoinRadio.Size = new System.Drawing.Size(212, 17);
+            this.singleCoinRadio.Size = new System.Drawing.Size(242, 19);
             this.singleCoinRadio.TabIndex = 2;
             this.singleCoinRadio.TabStop = true;
             this.singleCoinRadio.Text = "Mine only the single most profitable coin";
@@ -124,9 +124,9 @@
             // multiCoinRadio
             // 
             this.multiCoinRadio.AutoSize = true;
-            this.multiCoinRadio.Location = new System.Drawing.Point(19, 113);
+            this.multiCoinRadio.Location = new System.Drawing.Point(22, 130);
             this.multiCoinRadio.Name = "multiCoinRadio";
-            this.multiCoinRadio.Size = new System.Drawing.Size(190, 17);
+            this.multiCoinRadio.Size = new System.Drawing.Size(216, 19);
             this.multiCoinRadio.TabIndex = 3;
             this.multiCoinRadio.Text = "Mine all of the most profitable coins";
             this.multiCoinRadio.UseVisualStyleBackColor = true;
@@ -137,17 +137,17 @@
             this.thresholdSymbolCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.thresholdSymbolCombo.FormattingEnabled = true;
-            this.thresholdSymbolCombo.Location = new System.Drawing.Point(202, 25);
+            this.thresholdSymbolCombo.Location = new System.Drawing.Point(236, 29);
             this.thresholdSymbolCombo.Name = "thresholdSymbolCombo";
-            this.thresholdSymbolCombo.Size = new System.Drawing.Size(111, 21);
+            this.thresholdSymbolCombo.Size = new System.Drawing.Size(129, 23);
             this.thresholdSymbolCombo.TabIndex = 0;
             // 
             // thresholdSymbolLabel
             // 
             this.thresholdSymbolLabel.AutoSize = true;
-            this.thresholdSymbolLabel.Location = new System.Drawing.Point(16, 28);
+            this.thresholdSymbolLabel.Location = new System.Drawing.Point(19, 32);
             this.thresholdSymbolLabel.Name = "thresholdSymbolLabel";
-            this.thresholdSymbolLabel.Size = new System.Drawing.Size(176, 13);
+            this.thresholdSymbolLabel.Size = new System.Drawing.Size(200, 15);
             this.thresholdSymbolLabel.TabIndex = 8;
             this.thresholdSymbolLabel.Text = "Don\'t mine coins less profitable than";
             // 
@@ -163,9 +163,9 @@
             this.groupBox1.Controls.Add(this.thresholdSymbolCombo);
             this.groupBox1.Controls.Add(this.multiCoinRadio);
             this.groupBox1.Controls.Add(this.singleCoinRadio);
-            this.groupBox1.Location = new System.Drawing.Point(12, 149);
+            this.groupBox1.Location = new System.Drawing.Point(14, 172);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(331, 172);
+            this.groupBox1.Size = new System.Drawing.Size(386, 198);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Strategies (optional)";
@@ -175,18 +175,18 @@
             this.exceptionEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.exceptionEdit.Enabled = false;
-            this.exceptionEdit.Location = new System.Drawing.Point(202, 136);
+            this.exceptionEdit.Location = new System.Drawing.Point(236, 157);
             this.exceptionEdit.Name = "exceptionEdit";
-            this.exceptionEdit.Size = new System.Drawing.Size(111, 20);
+            this.exceptionEdit.Size = new System.Drawing.Size(129, 23);
             this.exceptionEdit.TabIndex = 5;
             // 
             // mineSingleOverrideLabel
             // 
             this.mineSingleOverrideLabel.AutoSize = true;
             this.mineSingleOverrideLabel.Enabled = false;
-            this.mineSingleOverrideLabel.Location = new System.Drawing.Point(35, 139);
+            this.mineSingleOverrideLabel.Location = new System.Drawing.Point(41, 160);
             this.mineSingleOverrideLabel.Name = "mineSingleOverrideLabel";
-            this.mineSingleOverrideLabel.Size = new System.Drawing.Size(151, 13);
+            this.mineSingleOverrideLabel.Size = new System.Drawing.Size(167, 15);
             this.mineSingleOverrideLabel.TabIndex = 4;
             this.mineSingleOverrideLabel.Text = "Mine a single coin if it exceeds";
             // 
@@ -194,26 +194,26 @@
             // 
             this.thresholdValueEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.thresholdValueEdit.Location = new System.Drawing.Point(202, 55);
+            this.thresholdValueEdit.Location = new System.Drawing.Point(236, 63);
             this.thresholdValueEdit.Name = "thresholdValueEdit";
-            this.thresholdValueEdit.Size = new System.Drawing.Size(111, 20);
+            this.thresholdValueEdit.Size = new System.Drawing.Size(129, 23);
             this.thresholdValueEdit.TabIndex = 1;
             // 
             // thresholdValueLabel
             // 
             this.thresholdValueLabel.AutoSize = true;
-            this.thresholdValueLabel.Location = new System.Drawing.Point(16, 58);
+            this.thresholdValueLabel.Location = new System.Drawing.Point(19, 67);
             this.thresholdValueLabel.Name = "thresholdValueLabel";
-            this.thresholdValueLabel.Size = new System.Drawing.Size(176, 13);
+            this.thresholdValueLabel.Size = new System.Drawing.Size(200, 15);
             this.thresholdValueLabel.TabIndex = 9;
             this.thresholdValueLabel.Text = "Don\'t mine coins less profitable than";
             // 
             // profitabilityKindLabel
             // 
             this.profitabilityKindLabel.AutoSize = true;
-            this.profitabilityKindLabel.Location = new System.Drawing.Point(28, 40);
+            this.profitabilityKindLabel.Location = new System.Drawing.Point(33, 46);
             this.profitabilityKindLabel.Name = "profitabilityKindLabel";
-            this.profitabilityKindLabel.Size = new System.Drawing.Size(83, 13);
+            this.profitabilityKindLabel.Size = new System.Drawing.Size(97, 15);
             this.profitabilityKindLabel.TabIndex = 3;
             this.profitabilityKindLabel.Text = "Profitability kind:";
             // 
@@ -227,9 +227,9 @@
             "Profitability Adjusted for Stales",
             "Average Profitability Past 7 Days",
             "Straight Profitability"});
-            this.profitabilityKindCombo.Location = new System.Drawing.Point(124, 37);
+            this.profitabilityKindCombo.Location = new System.Drawing.Point(145, 43);
             this.profitabilityKindCombo.Name = "profitabilityKindCombo";
-            this.profitabilityKindCombo.Size = new System.Drawing.Size(201, 21);
+            this.profitabilityKindCombo.Size = new System.Drawing.Size(234, 23);
             this.profitabilityKindCombo.TabIndex = 2;
             // 
             // intervalCombo
@@ -243,20 +243,21 @@
             "15 minutes",
             "30 minutes",
             "1 hour",
+            "2 hours",
             "3 hours",
             "6 hours",
             "12 hours"});
-            this.intervalCombo.Location = new System.Drawing.Point(124, 64);
+            this.intervalCombo.Location = new System.Drawing.Point(145, 74);
             this.intervalCombo.Name = "intervalCombo";
-            this.intervalCombo.Size = new System.Drawing.Size(201, 21);
+            this.intervalCombo.Size = new System.Drawing.Size(234, 23);
             this.intervalCombo.TabIndex = 3;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(28, 67);
+            this.label5.Location = new System.Drawing.Point(33, 77);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(70, 13);
+            this.label5.Size = new System.Drawing.Size(74, 15);
             this.label5.TabIndex = 5;
             this.label5.Text = "Check every:";
             // 
@@ -269,17 +270,17 @@
             this.baseCoinCombo.Items.AddRange(new object[] {
             "Bitcoin",
             "Litecoin"});
-            this.baseCoinCombo.Location = new System.Drawing.Point(124, 91);
+            this.baseCoinCombo.Location = new System.Drawing.Point(145, 105);
             this.baseCoinCombo.Name = "baseCoinCombo";
-            this.baseCoinCombo.Size = new System.Drawing.Size(201, 21);
+            this.baseCoinCombo.Size = new System.Drawing.Size(234, 23);
             this.baseCoinCombo.TabIndex = 4;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(28, 94);
+            this.label6.Location = new System.Drawing.Point(33, 108);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(57, 13);
+            this.label6.Size = new System.Drawing.Size(60, 15);
             this.label6.TabIndex = 7;
             this.label6.Text = "Base coin:";
             // 
@@ -293,9 +294,9 @@
             "Profitability",
             "Difficulty",
             "Price"});
-            this.miningBasisCombo.Location = new System.Drawing.Point(210, 10);
+            this.miningBasisCombo.Location = new System.Drawing.Point(245, 12);
             this.miningBasisCombo.Name = "miningBasisCombo";
-            this.miningBasisCombo.Size = new System.Drawing.Size(115, 21);
+            this.miningBasisCombo.Size = new System.Drawing.Size(133, 23);
             this.miningBasisCombo.TabIndex = 1;
             this.miningBasisCombo.SelectedIndexChanged += new System.EventHandler(this.miningBasisCombo_SelectedIndexChanged);
             // 
@@ -314,26 +315,26 @@
             "SHA-256",
             "Scrypt",
             "Both"});
-            this.suggestionsCombo.Location = new System.Drawing.Point(124, 118);
+            this.suggestionsCombo.Location = new System.Drawing.Point(145, 136);
             this.suggestionsCombo.Name = "suggestionsCombo";
-            this.suggestionsCombo.Size = new System.Drawing.Size(201, 21);
+            this.suggestionsCombo.Size = new System.Drawing.Size(234, 23);
             this.suggestionsCombo.TabIndex = 5;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(28, 121);
+            this.label1.Location = new System.Drawing.Point(33, 140);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(77, 13);
+            this.label1.Size = new System.Drawing.Size(83, 15);
             this.label1.TabIndex = 9;
             this.label1.Text = "Suggest coins:";
             // 
             // StrategiesForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(355, 382);
+            this.ClientSize = new System.Drawing.Size(414, 441);
             this.Controls.Add(this.suggestionsCombo);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.miningBasisCombo);

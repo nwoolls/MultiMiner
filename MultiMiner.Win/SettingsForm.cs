@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace MultiMiner.Win
 {
-    public partial class SettingsForm : Form
+    public partial class SettingsForm : MessageBoxFontForm
     {
         private readonly XgminerConfiguration minerConfiguration;
         private readonly ApplicationConfiguration applicationConfiguration;
@@ -50,21 +50,9 @@ namespace MultiMiner.Win
 
             return true;
         }
-
-        private MinerBackend SelectedMinerBackend()
-        {
-            if (minerCombo.SelectedIndex == 0)
-                return MinerBackend.Cgminer;
-            else
-                return MinerBackend.Bfgminer;
-        }
         
         private void SaveSettings()
         {
-            minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256] = sha256ParamsEdit.Text;
-            minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt] = scryptParamsEdit.Text;
-
-            minerConfiguration.MinerBackend = SelectedMinerBackend();
             minerConfiguration.Priority = (ProcessPriorityClass)priorityCombo.SelectedItem;
 
             applicationConfiguration.UseCoinWarzApi = coinApiCombo.SelectedIndex == 1;
@@ -89,17 +77,7 @@ namespace MultiMiner.Win
 
         private void LoadSettings()
         {
-            if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.SHA256))
-                sha256ParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256];
-            if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.Scrypt))
-                scryptParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt];
-
             applicationConfigurationBindingSource.DataSource = this.applicationConfiguration;
-
-            if (minerConfiguration.MinerBackend == MinerBackend.Cgminer)
-                minerCombo.SelectedIndex = 0;
-            else
-                minerCombo.SelectedIndex = 1;
 
             priorityCombo.SelectedItem = minerConfiguration.Priority;
         }
@@ -126,8 +104,6 @@ namespace MultiMiner.Win
 
         private void minerCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //so advanced settings are reflected
-            minerConfiguration.MinerBackend = SelectedMinerBackend();
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

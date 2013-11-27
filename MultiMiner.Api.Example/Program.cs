@@ -14,20 +14,18 @@ namespace MultiMiner.Api.Example
 
             //download and install the latest version of bfgminer
             const string executablePath = @"D:\bfgminer\";
-            const string executableName = "bfgminer.exe";            
-            MinerBackend minerBackend = MinerBackend.Bfgminer;
+            const string executableName = "bfgminer.exe";
 
             Console.WriteLine("Downloading and installing {0} from {1} to the directory {2}",
-                executableName, Xgminer.Installer.GetMinerDownloadRoot(minerBackend), executablePath);
+                executableName, Xgminer.Installer.GetMinerDownloadRoot(), executablePath);
 
             //download and install bfgminer from the official website
-            Xgminer.Installer.InstallMiner(minerBackend, executablePath);
+            Xgminer.Installer.InstallMiner(executablePath);
             try
             {
                 //create an instance of Miner with the downloaded executable
                 MinerConfiguration minerConfiguration = new MinerConfiguration()
                 {
-                    MinerBackend = minerBackend,
                     ExecutablePath = Path.Combine(executablePath, executableName)
                 };
                 Miner miner = new Miner(minerConfiguration);
@@ -39,7 +37,7 @@ namespace MultiMiner.Api.Example
 
                 //output devices
                 foreach (Device device in deviceList)
-                    Console.WriteLine("Device detected: {0}\t{1}\t{2}", device.Kind, device.Driver, device.Identifier);
+                    Console.WriteLine("Device detected: {0}\t{1}\t{2}", device.Kind, device.Driver, device.Name);
 
                 //start mining if there are devices
                 if (deviceList.Count > 0)
@@ -64,7 +62,7 @@ namespace MultiMiner.Api.Example
 
                     //specify device indexes to use
                     for (int i = 0; i < deviceList.Count; i++)
-                        minerConfiguration.DeviceIndexes.Add(deviceList[i].DeviceIndex);
+                        minerConfiguration.DeviceDescriptors.Add(deviceList[i]);
 
                     //enable RPC API
                     minerConfiguration.ApiListen = true;

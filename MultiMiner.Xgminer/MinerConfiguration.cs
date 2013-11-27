@@ -7,31 +7,28 @@ namespace MultiMiner.Xgminer
     {
         public MinerConfiguration()
         {
-            this.DeviceIndexes = new List<int>();
+            this.DeviceDescriptors = new List<DeviceDescriptor>();
             this.Priority = ProcessPriorityClass.Normal;
             this.Pools = new List<MiningPool>();
             this.StratumProxyPort = 8332;
             this.StratumProxyStratumPort = 3333;
         }
 
-        public MinerBackend MinerBackend { get; set; }
         public string ExecutablePath { get; set; }
         public List<MiningPool> Pools { get; set; }
         public CoinAlgorithm Algorithm { get; set; }
         public int ApiPort { get; set; }
         public bool ApiListen { get; set; }
         public string AllowedApiIps { get; set; }
-        public List<int> DeviceIndexes { get; set; }
+        public List<DeviceDescriptor> DeviceDescriptors { get; set; }
         public string Arguments { get; set; }
         public string CoinName { get; set; }
         public bool DisableGpu { get; set; }
         public ProcessPriorityClass Priority { get; set; }
 
         //bfgminer-specific
-        public bool ErupterDriver { get; set; }
         public bool StratumProxy { get; set; }
         public int StratumProxyPort { get; set; }
         public int StratumProxyStratumPort { get; set; }
-        public bool BitfuryCompatibility { get; set; }
     }
 }

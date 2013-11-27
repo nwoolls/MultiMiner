@@ -19,7 +19,7 @@ namespace MultiMiner.Xgminer.Tests
             string minerPath = Path.Combine(tempPath, Guid.NewGuid().ToString());
             Directory.CreateDirectory(minerPath);
             executablePath = Path.Combine(minerPath, "bfgminer.exe");
-            Xgminer.Installer.InstallMiner(MinerBackend.Bfgminer, minerPath);
+            Xgminer.Installer.InstallMiner(minerPath);
         }
 
         [ClassCleanup()]
@@ -38,7 +38,6 @@ namespace MultiMiner.Xgminer.Tests
             MinerConfiguration minerConfiguration = new MinerConfiguration();
 
             minerConfiguration.ExecutablePath = executablePath;
-            minerConfiguration.MinerBackend = MinerBackend.Bfgminer;
             minerConfiguration.DisableGpu = true;
 
             Miner miner = new Miner(minerConfiguration);
@@ -60,7 +59,6 @@ namespace MultiMiner.Xgminer.Tests
             MinerConfiguration minerConfiguration = new MinerConfiguration();
 
             minerConfiguration.ExecutablePath = executablePath;
-            minerConfiguration.MinerBackend = MinerBackend.Bfgminer;
             minerConfiguration.DisableGpu = true;
 
             Miner miner = new Miner(minerConfiguration);

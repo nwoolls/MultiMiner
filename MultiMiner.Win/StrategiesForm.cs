@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace MultiMiner.Win
 {
-    public partial class StrategiesForm : Form
+    public partial class StrategiesForm : MessageBoxFontForm
     {
         private readonly List<CryptoCoin> knownCoins;
         private readonly StrategyConfiguration strategyConfiguration;

@@ -12,7 +12,7 @@ using System.Drawing;
 
 namespace MultiMiner.Win
 {
-    public partial class WizardForm : Form
+    public partial class WizardForm : MessageBoxFontForm
     {
         private List<CryptoCoin> coins;
 
@@ -36,7 +36,6 @@ namespace MultiMiner.Win
         {
             SetupWizardTabControl();
             PopulateCoins();
-            minerComboBox.SelectedIndex = 1;
             coinComboBox.SelectedIndex = 0;
         }
         
@@ -76,9 +75,9 @@ namespace MultiMiner.Win
             buttonPanel.BringToFront();
         }
 
-        private static bool MinerIsInstalled(MinerBackend minerBackend)
+        private static bool MinerIsInstalled()
         {
-            string path = MinerPath.GetPathToInstalledMiner(minerBackend);
+            string path = MinerPath.GetPathToInstalledMiner();
             return File.Exists(path);
         }
 
@@ -89,8 +88,7 @@ namespace MultiMiner.Win
 
             if (wizardTabControl.SelectedTab == chooseMinerPage)
             {
-                MinerBackend minerBackend = GetSelectedMinerBackend();
-                if (MinerIsInstalled(minerBackend))
+                if (MinerIsInstalled())
                 {
                     wizardTabControl.SelectedIndex += 2;
                 }
@@ -120,9 +118,9 @@ namespace MultiMiner.Win
         private void showLinuxInstallationInstructions()
         {
             downloadingMinerLabel.Text =
-@"Unfortunately, prebuilt binaries of bfgminer are not available for Linux at this time. Additionally, only 64-bit binaries are avilable for cgminer.
+@"Unfortunately, prebuilt binaries of bfgminer are not available for Linux at this time.
 
-To install cgminer and/or bfgminer on Linux, please consult the websites for each miner. There are repositories for many popular Linux distributions.";
+To install bfgminer on Linux please consult the website for bfgminer. There are repositories for many popular Linux distributions.";
         }
 
         private bool ValidateInput()
@@ -170,28 +168,18 @@ To install cgminer and/or bfgminer on Linux, please consult the websites for eac
 
         private void DownloadChosenMiner()
         {
-            MinerBackend minerBackend = GetSelectedMinerBackend();
-
-            string minerName = MinerPath.GetMinerName(minerBackend);
+            string minerName = MinerPath.GetMinerName();
             string minerPath = Path.Combine("Miners", minerName);
             string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
 
-            downloadingMinerLabel.Text = String.Format("Please wait while {0} is downloaded from {2} and installed into the folder {1}", minerName, destinationFolder, Xgminer.Installer.GetMinerDownloadRoot(minerBackend));
+            downloadingMinerLabel.Text = String.Format("Please wait while {0} is downloaded from {2} and installed into the folder {1}", minerName, destinationFolder, Xgminer.Installer.GetMinerDownloadRoot());
             Application.DoEvents();
 
             Cursor = Cursors.WaitCursor;
-            Xgminer.Installer.InstallMiner(minerBackend, destinationFolder);
+            Xgminer.Installer.InstallMiner(destinationFolder);
             Cursor = Cursors.Default;
 
             wizardTabControl.SelectedTab = chooseCoinPage;
-        }
-
-        private MinerBackend GetSelectedMinerBackend()
-        {
-            MinerBackend minerBackend = MinerBackend.Cgminer;
-            if (minerComboBox.SelectedIndex == 1)
-                minerBackend = MinerBackend.Bfgminer;
-            return minerBackend;
         }
 
         private void UpdateButtons()
@@ -283,11 +271,7 @@ To install cgminer and/or bfgminer on Linux, please consult the websites for eac
         {
             EngineConfiguration engineConfiguration;
             engineConfiguration = new EngineConfiguration();
-
-            engineConfiguration.XgminerConfiguration.MinerBackend = MinerBackend.Cgminer;
-            if (minerComboBox.SelectedIndex == 1)
-                engineConfiguration.XgminerConfiguration.MinerBackend = MinerBackend.Bfgminer;
-
+            
             CoinConfiguration coinConfiguration = new CoinConfiguration();
 
             CryptoCoin coin = coins.Single(c => c.Name.Equals(coinComboBox.Text));
@@ -316,6 +300,7 @@ To install cgminer and/or bfgminer on Linux, please consult the websites for eac
             applicationConfiguraion.MobileMinerRemoteCommands = remoteCommandsCheck.Checked;
             applicationConfiguraion.MobileMinerEmailAddress = emailAddressEdit.Text;
             applicationConfiguraion.MobileMinerApplicationKey = appKeyEdit.Text;
+            applicationConfiguraion.BriefUserInterface = true;
             return applicationConfiguraion;
         }
     }

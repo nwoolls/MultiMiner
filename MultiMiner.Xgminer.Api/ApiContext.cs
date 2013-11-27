@@ -30,6 +30,14 @@ namespace MultiMiner.Xgminer.Api
             return result;
         }
 
+        public List<DeviceDetailsResponse> GetDeviceDetails()
+        {
+            string textResponse = GetResponse(ApiVerb.DevDetails);
+            List<DeviceDetailsResponse> result = new List<DeviceDetailsResponse>();
+            DeviceDetailsParser.ParseTextForDeviceDetails(textResponse, result);
+            return result;
+        }
+
         public SummaryInformationResponse GetSummaryInformation()
         {
             string textResponse = GetResponse(ApiVerb.Summary);

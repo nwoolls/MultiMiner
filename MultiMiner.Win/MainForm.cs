@@ -15,10 +15,11 @@ using System.Threading;
 using MultiMiner.Utility;
 using MultiMiner.Win.Notifications;
 using MultiMiner.Xgminer.Api.Responses;
+using System.Globalization;
 
 namespace MultiMiner.Win
 {
-    public partial class MainForm : Form
+    public partial class MainForm : MessageBoxFontForm
     {
         private List<Coin.Api.CoinInformation> coinInformation;
         private List<Device> devices;
@@ -36,6 +37,7 @@ namespace MultiMiner.Win
         private NotificationsControl notificationsControl;
         private bool settingsLoaded = false;
         private Dictionary<string, string> hostDomainNames = new Dictionary<string, string>();
+        private Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
 
         public MainForm()
         {
@@ -71,7 +73,7 @@ namespace MultiMiner.Win
 
             logProcessCloseArgsBindingSource.Position = logProcessCloseArgsBindingSource.Add(ea);
 
-            while (logProcessCloseArgsBindingSource.Count > 1000)
+            while (logProcessCloseArgsBindingSource.Count > MaxHistoryOnScreen)
                 logProcessCloseArgsBindingSource.RemoveAt(0);
 
             LogProcessCloseToFile(ea);
@@ -82,25 +84,39 @@ namespace MultiMiner.Win
             //check and include the index of the virtual stratum proxy "device"
             if (ea.MinerConfiguration.StratumProxy)
             {
-                Device lastDevice = devices.LastOrDefault();
-                if ((lastDevice != null) && (lastDevice.Kind == DeviceKind.PXY))
-                    ea.DeviceIndexes.Add(lastDevice.DeviceIndex);
+                Device proxyDevice = devices.SingleOrDefault(d => d.Kind == DeviceKind.PXY);
+                if (proxyDevice != null)
+                    ea.DeviceDescriptors.Add(proxyDevice);
             }
         }
 
         private void LogProcessCloseToFile(LogProcessCloseArgs ea)
         {
             const string logFileName = "MiningLog.json";
-            LogObjectToFile(ea, logFileName);
+            //log an anonymous type so MinerConfiguration is ommitted
+            LogObjectToFile(new
+            {
+                StartDate = ea.StartDate,
+                EndDate = ea.EndDate,
+                CoinName = ea.CoinName,
+                CoinSymbol = ea.CoinSymbol,
+                StartPrice = ea.StartPrice,
+                EndPrice = ea.EndPrice,
+                AcceptedShares = ea.AcceptedShares,
+                DeviceDescriptors = ea.DeviceDescriptors
+            }, logFileName);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            saveButton.Visible = false;
+            cancelButton.Visible = false;
+            saveSeparator.Visible = false;
+            stopButton.Visible = false;
+
             SetupGridColumns();
 
-            //something in the VS IDE keeps moving this
-            enabledColumn.DisplayIndex = 0;            
-
+            LoadPreviousHistory();
             logLaunchArgsBindingSource.DataSource = logCloseEntries;
 
             const int mobileMinerInterval = 32; //seconds
@@ -116,10 +132,11 @@ namespace MultiMiner.Win
             
             LoadSettings();
 
-            RefreshBackendLabel();
+            RefreshDetailsToggleButton();
+
             RefreshCoinAPILabel();
 
-            RefreshCoinComboBox();
+            RefreshCoinPopupMenu();
 
             PositionCoinChooseLabels();
 
@@ -133,10 +150,11 @@ namespace MultiMiner.Win
             logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
 
             UpdateChangesButtons(false);
-
-            PositionCoinStatsLabel();
-
+            
             if (!HasMinersInstalled())
+                CancelMiningOnStartup();
+
+            if (!MiningConfigurationValid())
                 CancelMiningOnStartup();
 
             //check for disowned miners before refreshing devices
@@ -147,14 +165,32 @@ namespace MultiMiner.Win
             
             SetupAutoUpdates();
 
+            UpdateChangesButtons(false);
+
             RefreshDevices();
             
-            if (devices.Count > 0)
-                deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
-
             UpdateMiningButtons();
 
+            AutoSizeListViewColumns();
+
             formLoaded = true;
+
+            logProcessCloseArgsBindingSource.MoveLast();
+        }
+
+        private const int MaxHistoryOnScreen = 1000;
+        private void LoadPreviousHistory()
+        {
+            //logCloseEntries
+            //LogObjectToFile(ea, logFileName);
+            const string logFileName = "MiningLog.json";
+            string logFilePath = Path.Combine(AppDataPath(), logFileName);
+            if (File.Exists(logFilePath))
+            {
+                List<LogProcessCloseArgs> loadLogFile = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
+                loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - MaxHistoryOnScreen));
+                logCloseEntries.AddRange(loadLogFile);
+            }
         }
 
         private void UpdateChangesButtons(bool hasChanges)
@@ -165,14 +201,6 @@ namespace MultiMiner.Win
 
             saveButton.Enabled = hasChanges;
             cancelButton.Enabled = hasChanges;
-        }
-
-        private void PositionCoinStatsLabel()
-        {
-            //manually position - IDE has screwed this up repeatedly
-            const int padding = 4;
-            coinStatsLabel.Location = new Point(footerPanel.Width - coinStatsLabel.Size.Width - padding, coinChoosePrefixLabel.Location.Y);
-            coinStatsLabel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
         }
 
         private void SetupAutoUpdates()
@@ -288,10 +316,12 @@ namespace MultiMiner.Win
                 this.engineConfiguration.SaveCoinConfigurations();
                 this.engineConfiguration.SaveMinerConfiguration();
                 this.applicationConfiguration.SaveApplicationConfiguration();
+
+                SetBriefMode(applicationConfiguration.BriefUserInterface);
             }
         }
 
-        private void CheckAndDownloadMiners()
+        private static void CheckAndDownloadMiners()
         {
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
                 return; //can't auto download binaries on Linux
@@ -299,46 +329,14 @@ namespace MultiMiner.Win
             bool hasMiners = HasMinersInstalled();
 
             if (!hasMiners)
-            {
-                InstallMinerForm minerForm = new InstallMinerForm();
-
-                DialogResult messageBoxResult = minerForm.ShowDialog();
-                if (messageBoxResult == System.Windows.Forms.DialogResult.Yes)
-                {
-                    if ((minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Cgminer) ||
-                        (minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Both))
-                    {
-                        MinerBackend minerBackend = MinerBackend.Cgminer;
-                        InstallMiner(minerBackend);
-                    }
-
-                    if ((minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Bfgminer) ||
-                        (minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Both))
-                    {
-                        MinerBackend minerBackend = MinerBackend.Bfgminer;
-                        InstallMiner(minerBackend);
-                    }
-
-                    if ((minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Cgminer) ||
-                        (minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Both))
-                    {
-                        engineConfiguration.XgminerConfiguration.MinerBackend = MinerBackend.Cgminer;
-                    }
-                    else if (minerForm.SelectedOption == InstallMinerForm.MinerInstallOption.Bfgminer)
-                    {
-                        engineConfiguration.XgminerConfiguration.MinerBackend = MinerBackend.Bfgminer;
-                    }
-
-                    engineConfiguration.SaveMinerConfiguration();
-                }
-            }
+                InstallMiner();
         }
         
-        private static void InstallMiner(MinerBackend minerBackend)
+        private static void InstallMiner()
         {
-            string minerName = MinerPath.GetMinerName(minerBackend);
+            string minerName = MinerPath.GetMinerName();
 
-            ProgressForm progressForm = new ProgressForm("Downloading and installing " + minerName + " from " + Xgminer.Installer.GetMinerDownloadRoot(minerBackend));
+            ProgressForm progressForm = new ProgressForm(String.Format("Downloading and installing {0} from {1}", minerName, Xgminer.Installer.GetMinerDownloadRoot()));
             progressForm.Show();
 
             //for Mono - show the UI
@@ -349,7 +347,7 @@ namespace MultiMiner.Win
             {
                 string minerPath = Path.Combine("Miners", minerName);
                 string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
-                Xgminer.Installer.InstallMiner(minerBackend, destinationFolder);
+                Xgminer.Installer.InstallMiner(destinationFolder);
             }
             finally
             {
@@ -359,23 +357,18 @@ namespace MultiMiner.Win
 
         private static bool HasMinersInstalled()
         {
-            bool hasMiners = MinerIsInstalled(MinerBackend.Cgminer);
-
-            if (!hasMiners)
-                hasMiners = MinerIsInstalled(MinerBackend.Bfgminer);
-
-            return hasMiners;
+            return MinerIsInstalled();
         }
         
-        private static bool MinerIsInstalled(MinerBackend minerBackend)
+        private static bool MinerIsInstalled()
         {
-            string path = MinerPath.GetPathToInstalledMiner(minerBackend);
+            string path = MinerPath.GetPathToInstalledMiner();
             return File.Exists(path);
         }
 
         private void CheckForDisownedMiners()
         {
-            string minerName = MinerPath.GetMinerName(engineConfiguration.XgminerConfiguration.MinerBackend);
+            string minerName = MinerPath.GetMinerName();
 
             List<Process> disownedMiners = Process.GetProcessesByName(minerName).ToList();
 
@@ -398,11 +391,6 @@ namespace MultiMiner.Win
             //format prices in the History grid
             startPriceColumn.DefaultCellStyle.Format = ".########";
             endPriceColumn.DefaultCellStyle.Format = ".########";
-
-            //customized FillWeight doesn't behave properly under Mono on OS X
-            if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
-                foreach (DataGridViewColumn column in deviceGridView.Columns)
-                    column.FillWeight = 100;
         }
 
         private void PositionCoinChooseLabels()
@@ -412,46 +400,208 @@ namespace MultiMiner.Win
             coinChooseSuffixLabel.Left = coinChooseLinkLabel.Left + coinChooseLinkLabel.Width;
         }
 
+        private bool updatingListView = false;
         private void RefreshDevices()
         {
+            updatingListView = true;
             try
             {
-                using (new HourGlass())
+                try
                 {
-                    try
+                    using (new HourGlass())
                     {
-                        devices = GetDevices();
-                    }
-                    finally
-                    {
-                        Application.UseWaitCursor = false;
+                        try
+                        {
+                            devices = GetDevices();
+                        }
+                        finally
+                        {
+                            Application.UseWaitCursor = false;
+                        }
                     }
                 }
+                catch (Win32Exception ex)
+                {
+                    //miner not installed/not launched
+                    devices = new List<Device>(); //dummy empty device list
+
+                    ShowNotInstalledMinerWarning();
+                }
+
+                if ((devices.Count > 0) && (engineConfiguration.DeviceConfigurations.Count == 0) &&
+                    (engineConfiguration.CoinConfigurations.Count == 1))
+                {
+                    //setup devices for a brand new user
+                    ConfigureDevicesForNewUser();
+                }
+
+                //first try to match up devices without configurations with configurations without devices
+                //could happen if, for instance, a COM port changes for a device
+                FixOrphanedDeviceConfigurations();
+
+                //there needs to be a device config for each device
+                AddMissingDeviceConfigurations();
+                //but no configurations for devices that have gone missing
+                RemoveExcessDeviceConfigurations();
+
+                PopulateListViewFromDevices();
+                LoadListViewValuesFromConfiguration();
+                LoadListViewValuesFromCoinStats();
+
+                //auto-size columns
+                AutoSizeListViewColumns();
+
+                deviceTotalLabel.Text = String.Format("{0} device(s)", devices.Count);
             }
-            catch (Win32Exception ex)
+            finally
             {
-                //miner not installed/not launched
-                devices = new List<Device>(); //dummy empty device list
-
-                ShowNotInstalledMinerWarning();
+                updatingListView = false;
             }
+        }
 
-            if ((devices.Count > 0) && (engineConfiguration.DeviceConfigurations.Count == 0) &&
-                (engineConfiguration.CoinConfigurations.Count == 1))
+        //try to match up devices without configurations with configurations without devices
+        //could happen if, for instance, a COM port changes for a device
+        private void FixOrphanedDeviceConfigurations()
+        {
+            foreach (Device device in devices)
             {
-                //setup devices for a brand new user
-                ConfigureDevicesForNewUser();
+                DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
+                    c => (c.Equals(device)));
+
+                //if there is no configuration specifically for the device
+                if (existingConfiguration == null)
+                {
+                    //find a configuration that uses the same driver and that, itself, has no specifically matching device
+                    DeviceConfiguration orphanedConfiguration = engineConfiguration.DeviceConfigurations.FirstOrDefault(
+                        c => c.Driver.Equals(device.Driver, StringComparison.OrdinalIgnoreCase) &&
+                                !devices.Exists(d => d.Equals(c)));
+
+                    if (orphanedConfiguration != null)
+                        orphanedConfiguration.Assign(device);
+                }
             }
+        }
 
-            //there needs to be a device config for each device
-            AddMissingDeviceConfigurations();
-            //but no configurations for devices that have gone missing
-            RemoveExcessDeviceConfigurations();
+        //optimized for speed
+        private static void SetColumWidth(ColumnHeader column, int width)
+        {
+            if ((width < 0) || (column.Width != width))
+                column.Width = width;
+        }
 
-            deviceBindingSource.DataSource = devices;
-            LoadGridValuesFromConfiguration();
-            CheckAndHideNameColumn();
-            deviceTotalLabel.Text = String.Format("{0} device(s)", devices.Count);
+        private void AutoSizeListViewColumns()
+        {
+            if (deviceListView.View != View.Details)
+                return;
+
+            if (briefMode)
+            {
+                SetColumWidth(nameColumnHeader, -2);
+                SetColumWidth(driverColumnHeader, 0);
+                SetColumWidth(coinColumnHeader, -2);
+                SetColumWidth(difficultyColumnHeader, 0);
+                SetColumWidth(priceColumnHeader, 0);
+                SetColumWidth(profitabilityColumnHeader, -2);
+                SetColumWidth(poolColumnHeader, 0);
+
+                if (ListViewColumnHasValues("Temp"))
+                    SetColumWidth(tempColumnHeader, -2);
+                else if (tempColumnHeader.Width != 0)
+                    SetColumWidth(tempColumnHeader, 0);
+
+                SetColumWidth(hashrateColumnHeader, -2);
+                SetColumWidth(acceptedColumnHeader, 0);
+                SetColumWidth(rejectedColumnHeader, 0);
+                SetColumWidth(errorsColumnHeader, 0);
+                SetColumWidth(utilityColumnHeader, 0);
+                SetColumWidth(intensityColumnHeader, 0);
+            }
+            else
+            {
+                for (int i = 0; i < deviceListView.Columns.Count; i++)
+                {
+                    ColumnHeader column = deviceListView.Columns[i];
+
+                    bool hasValue = false;
+                    if (i == 0)
+                        hasValue = true;
+                    else
+                        hasValue = ListViewColumnHasValues(column.Text);
+
+                    if (hasValue)
+                        SetColumWidth(column, -2);
+                    else
+                        SetColumWidth(column, 0);
+                }
+            }
+        }
+        
+        private bool ListViewColumnHasValues(string headerText)
+        {
+            foreach (ListViewItem item in deviceListView.Items)
+                if (!String.IsNullOrEmpty(item.SubItems[headerText].Text))
+                    return true;
+            return false;
+        }
+
+        private void PopulateListViewFromDevices()
+        {
+            deviceListView.BeginUpdate();
+            try
+            {
+                deviceListView.Items.Clear();
+
+                foreach (Device device in devices)
+                {
+                    ListViewItem listViewItem = new ListViewItem();
+
+                    switch (device.Kind)
+                    {
+                        case DeviceKind.CPU:
+                            listViewItem.Group = deviceListView.Groups["cpuListViewGroup"];
+                            listViewItem.ImageIndex = 3;
+                            break;
+                        case DeviceKind.GPU:
+                            listViewItem.Group = deviceListView.Groups["gpuListViewGroup"];
+                            listViewItem.ImageIndex = 0;
+                            break;
+                        case DeviceKind.USB:
+                            listViewItem.Group = deviceListView.Groups["usbListViewGroup"];
+                            listViewItem.ImageIndex = 1;
+                            break;
+                        case DeviceKind.PXY:
+                            listViewItem.Group = deviceListView.Groups["proxyListViewGroup"];
+                            listViewItem.ImageIndex = 2;
+                            break;
+                    }
+                    
+                    listViewItem.Text = device.Name;
+
+                    //start at i = 1, skip the first column
+                    for (int i = 1; i < deviceListView.Columns.Count; i++)
+                    {
+                        ListViewItem.ListViewSubItem listViewSubItem = new ListViewItem.ListViewSubItem(listViewItem, String.Empty);
+                        listViewSubItem.Name = deviceListView.Columns[i].Text;
+                        listViewSubItem.ForeColor = SystemColors.WindowFrame;
+                        listViewItem.SubItems.Add(listViewSubItem);
+                    }
+
+                    listViewItem.SubItems["Coin"].ForeColor = SystemColors.WindowText;
+                    listViewItem.SubItems["Errors"].ForeColor = SystemColors.WindowText;
+                    listViewItem.SubItems["Rejected"].ForeColor = SystemColors.WindowText;
+
+                    listViewItem.UseItemStyleForSubItems = false;
+
+
+                    listViewItem.SubItems["Driver"].Text = device.Driver;
+
+                    deviceListView.Items.Add(listViewItem);
+                }
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
         }
 
         //each device needs to have a DeviceConfiguration
@@ -459,7 +609,7 @@ namespace MultiMiner.Win
         //for instance if the user starts up the app with missing devices
         private void RemoveExcessDeviceConfigurations()
         {
-            engineConfiguration.DeviceConfigurations.RemoveAll(c => !devices.Exists(d => d.DeviceIndex == c.DeviceIndex));
+            engineConfiguration.DeviceConfigurations.RemoveAll(c => !devices.Exists(d => d.Equals(c)));
         }
 
         //each device needs to have a DeviceConfiguration
@@ -470,11 +620,19 @@ namespace MultiMiner.Win
             foreach (Device device in devices)
             {
                 DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
-                    c => (c.DeviceIndex == device.DeviceIndex));
+                    c => (c.Equals(device)));
                 if (existingConfiguration == null)
                 {
                     DeviceConfiguration newConfiguration = new DeviceConfiguration();
-                    newConfiguration.DeviceIndex = device.DeviceIndex;
+
+                    newConfiguration.Assign(device);
+
+                    //if the user has BTC configured, default to that
+                    string btcSymbol = "BTC";
+                    bool hasBtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.Coin.Symbol.Equals(btcSymbol, StringComparison.OrdinalIgnoreCase));
+                    if (hasBtcConfigured)
+                        newConfiguration.CoinSymbol = btcSymbol;
+
                     newConfiguration.Enabled = true;
                     engineConfiguration.DeviceConfigurations.Add(newConfiguration);
                 }
@@ -487,18 +645,17 @@ namespace MultiMiner.Win
 
             if (OSVersionPlatform.GetConcretePlatform() != PlatformID.Unix)
             {
-                MinerBackend minerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
-                string minerName = MinerPath.GetMinerName(minerBackend);
+                string minerName = MinerPath.GetMinerName();
 
                 DialogResult dialogResult = MessageBox.Show(String.Format(
-                    "The miner specified in your settings, {0}, is not installed. " +
+                    "No copy of bfgminer was detected. " +
                     "Would you like to download and install {0} now?", minerName), "Miner Not Found",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 
                 if (dialogResult == System.Windows.Forms.DialogResult.Yes)
                 {
-                    InstallMiner(minerBackend);
+                    InstallMiner();
                     RefreshDevices();
                     showWarning = false;
                 }
@@ -506,7 +663,7 @@ namespace MultiMiner.Win
 
             if (showWarning)
             {                
-                MessageBox.Show("The miner specified in your settings was not found. Please go to https://github.com/nwoolls/multiminer for instructions on installing either cgminer or bfgminer.",
+                MessageBox.Show("No copy of bfgminer was detected. Please go to https://github.com/nwoolls/multiminer for instructions on installing bfgminer.",
                     "Miner Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -519,7 +676,9 @@ namespace MultiMiner.Win
             {
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                 deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
-                deviceConfiguration.DeviceIndex = devices[i].DeviceIndex;
+
+                deviceConfiguration.Assign(devices[i]);
+
                 deviceConfiguration.Enabled = true;
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
@@ -527,12 +686,7 @@ namespace MultiMiner.Win
             engineConfiguration.SaveDeviceConfigurations();
             UpdateMiningButtons();
         }
-
-        private void CheckAndHideNameColumn()
-        {
-            nameColumn.Visible = devices.Count(d => !string.IsNullOrEmpty(d.Name)) > 0;
-        }
-
+        
         private void LoadSettings()
         {
             engineConfiguration.LoadCoinConfigurations();
@@ -540,16 +694,19 @@ namespace MultiMiner.Win
             engineConfiguration.LoadMinerConfiguration();
             engineConfiguration.LoadStrategyConfiguration();
 
-            coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
-            coinColumn.DisplayStyle = coinColumn.ReadOnly ? DataGridViewComboBoxDisplayStyle.Nothing : DataGridViewComboBoxDisplayStyle.DropDownButton;
-
             RefreshStrategiesLabel();
             RefreshStrategiesCountdown();
 
-            desktopModeButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
+            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
 
             applicationConfiguration.LoadApplicationConfiguration();
 
+            SetListViewStyle(applicationConfiguration.ListViewStyle);
+
+            //load brief mode first, then location
+            SetBriefMode(applicationConfiguration.BriefUserInterface);
+
+            //now location so we pick up the customizations
             if ((applicationConfiguration.AppPosition != null) &&
                 (applicationConfiguration.AppPosition.Height > 0) &&
                 (applicationConfiguration.AppPosition.Width > 9))
@@ -605,27 +762,19 @@ namespace MultiMiner.Win
         {
             MinerConfiguration minerConfiguration = new MinerConfiguration();
 
-            minerConfiguration.MinerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
-            minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner(minerConfiguration.MinerBackend);
-            minerConfiguration.ErupterDriver = engineConfiguration.XgminerConfiguration.ErupterDriver;
-            minerConfiguration.BitfuryCompatibility = engineConfiguration.XgminerConfiguration.BitfuryCompatibility;
-
+            minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner();
             minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
 
             Miner miner = new Miner(minerConfiguration);
 
-
             List<Device> detectedDevices = miner.ListDevices();
 
-            if ((engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Bfgminer) &&
-                engineConfiguration.XgminerConfiguration.StratumProxy)
+            if (engineConfiguration.XgminerConfiguration.StratumProxy)
             {
                 Device proxyDevice = new Device();
                 proxyDevice.Kind = DeviceKind.PXY;
                 proxyDevice.Driver = "proxy";
                 proxyDevice.Name = "Stratum Proxy";
-                proxyDevice.Identifier = "PXY";
-                proxyDevice.DeviceIndex = detectedDevices.Count;
                 detectedDevices.Add(proxyDevice);
             }
 
@@ -635,8 +784,18 @@ namespace MultiMiner.Win
                     int result = 0;
 
                     result = d1.Kind.CompareTo(d2.Kind);
+
                     if (result == 0)
-                        result = d1.DeviceIndex.CompareTo(d2.DeviceIndex);
+                        result = d1.Driver.CompareTo(d2.Driver);
+
+                    if (result == 0)
+                        result = d1.Name.CompareTo(d2.Name);
+
+                    if (result == 0)
+                        result = d1.Path.CompareTo(d2.Path);
+
+                    if (result == 0)
+                        result = d1.RelativeIndex.CompareTo(d2.RelativeIndex);
 
                     return result;
                 });
@@ -646,7 +805,6 @@ namespace MultiMiner.Win
 
         private void ConfigureCoins()
         {
-            deviceGridView.EndEdit(); //so the coin combo is immediately refreshed even if focused
             CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins);
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
@@ -654,7 +812,10 @@ namespace MultiMiner.Win
                 Application.DoEvents();
 
                 engineConfiguration.SaveCoinConfigurations();
-                RefreshCoinComboBox();
+
+                RemoveInvalidCoinValuesFromListView();
+
+                RefreshCoinPopupMenu();
 
                 //SaveChanges() will restart mining if needed
                 SaveChanges();
@@ -663,50 +824,46 @@ namespace MultiMiner.Win
                 engineConfiguration.LoadCoinConfigurations();
         }
 
-        private void RefreshCoinComboBox()
+        private void RemoveInvalidCoinValuesFromListView()
         {
-            //remove any Coin values from the grid that may now be invalid
-            RemoveInvalidCoinValues();
-                        
-            //remove any Coin combo items that are no longer valid
-            //cannot clear as there are values bound in the grid
-            RemoveInvalidCoinComboItems();
-
-            AddMissingCoinComboItems();
-
-            coinColumn.Items.Add(string.Empty);
-        }
-
-        private void AddMissingCoinComboItems()
-        {
-            foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
-                if (!coinColumn.Items.Contains(configuration.Coin.Name))
-                    coinColumn.Items.Add(configuration.Coin.Name);
-        }
-
-        private void RemoveInvalidCoinComboItems()
-        {
-            for (int i = coinColumn.Items.Count - 1; i >= 0; i--)
-                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.Coin.Name.Equals(coinColumn.Items[i])) == null)
-                    coinColumn.Items.RemoveAt(i);
-        }
-
-        private void RemoveInvalidCoinValues()
-        {
-            foreach (DataGridViewRow row in deviceGridView.Rows)
-                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.Coin.Name.Equals(row.Cells[coinColumn.Index].Value)) == null)
-                    row.Cells[coinColumn.Index].Value = string.Empty;
+            foreach (ListViewItem item in deviceListView.Items)
+                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.Coin.Name.Equals(item.SubItems["Coin"].Text)) == null)
+                    item.SubItems["Coin"].Text = String.Empty;
 
             ClearCoinStatsForDisabledCoins();
         }
 
-        private void deviceGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private void ClearCoinStatsForDisabledCoins()
         {
-            if (deviceGridView.CurrentCell.RowIndex >= 0)
-                if (!deviceGridView.CurrentCell.ReadOnly)
-                    deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            foreach (ListViewItem item in deviceListView.Items)
+                if (string.IsNullOrEmpty(item.SubItems["Coin"].Text))
+                    ClearCoinStatsForGridListViewItem(item);
         }
-        
+
+        private void RefreshCoinPopupMenu()
+        {
+            coinPopupMenu.Items.Clear();
+            foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
+            {
+                ToolStripItem menuItem = coinPopupMenu.Items.Add(configuration.Coin.Name);
+                menuItem.Click += CoinMenuItemClick;
+            }
+        }
+
+        private void CoinMenuItemClick(object sender, EventArgs e)
+        {
+            ToolStripItem menuItem = (ToolStripItem)sender;
+
+            foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
+                selectedItem.SubItems["Coin"].Text = menuItem.Text;
+
+            LoadListViewValuesFromCoinStats();
+
+            AutoSizeListViewColumns();
+
+            UpdateChangesButtons(true);
+        }
+
         private void saveButton_Click(object sender, EventArgs e)
         {
             //SaveChanges() will restart mining if needed
@@ -715,15 +872,13 @@ namespace MultiMiner.Win
 
         private void SaveChanges()
         {
-            SaveGridValuesToConfiguration();
+            SaveListViewValuesToConfiguration();
             engineConfiguration.SaveDeviceConfigurations();
-            LoadGridValuesFromConfiguration();
+            LoadListViewValuesFromConfiguration();
 
             UpdateChangesButtons(false);
 
             Application.DoEvents();
-
-            RestartMiningIfMining();
 
             UpdateMiningButtons();
             ClearMinerStatsForDisabledCoins();
@@ -732,115 +887,85 @@ namespace MultiMiner.Win
         private void cancelButton_Click(object sender, EventArgs e)
         {
             engineConfiguration.LoadDeviceConfigurations();
-            LoadGridValuesFromConfiguration();
+            LoadListViewValuesFromConfiguration();
+            LoadListViewValuesFromCoinStats();
 
             UpdateChangesButtons(false);
+            AutoSizeListViewColumns();
         }
 
-        private void deviceGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void SaveListViewValuesToConfiguration()
         {
-            if (!deviceGridView.Columns[e.ColumnIndex].ReadOnly)
-            {
-                UpdateChangesButtons(true);
-
-                if (this.coinInformation != null)
-                    LoadGridValuesFromCoinStats();
-
-                UpdateMiningButtons();
-            }
-        }
-
-        private void SaveGridValuesToConfiguration()
-        {
-            deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
-
             engineConfiguration.DeviceConfigurations.Clear();
 
             for (int i = 0; i < devices.Count; i++)
             {
-                DataGridViewRow gridRow = deviceGridView.Rows[i];
+                ListViewItem listViewItem = deviceListView.Items[i];
 
                 //pull this from coin configurations, not known coins, may not be in CoinChoose
-                string gridRowValue = (string)gridRow.Cells[coinColumn.Index].Value;
+                string coinValue = listViewItem.SubItems["Coin"].Text;
                 CryptoCoin coin = null;
-                if (!String.IsNullOrEmpty(gridRowValue))
-                    coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(gridRowValue)).Coin;
+                if (!String.IsNullOrEmpty(coinValue))
+                    coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinValue, StringComparison.OrdinalIgnoreCase)).Coin;
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
-                deviceConfiguration.DeviceIndex = devices[i].DeviceIndex;
+                deviceConfiguration.Assign(devices[i]);
+
+                deviceConfiguration.Enabled = listViewItem.Checked;
                 deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
-                object cellValue = gridRow.Cells[enabledColumn.Index].Value;
-                deviceConfiguration.Enabled = cellValue == null ? true : (bool)cellValue;
 
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
 
             }
         }
 
-        private void LoadGridValuesFromConfiguration()
+        private void LoadListViewValuesFromConfiguration()
         {
             bool saveEnabled = saveButton.Enabled;
-            try
+
+            deviceListView.BeginUpdate();
+
+            for (int i = 0; i < devices.Count; i++)
             {
-                for (int i = 0; i < devices.Count; i++)
+                DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(c => (c.Equals(devices[i])));
+                ListViewItem listViewItem = deviceListView.Items[i];
+
+                if (deviceConfiguration != null)
                 {
-                    DataGridViewRow gridRow = deviceGridView.Rows[i];
+                    //ensure the coin configuration still exists
+                    CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(deviceConfiguration.CoinSymbol));
+                    if (coinConfiguration != null)
+                        listViewItem.SubItems["Coin"].Text = coinConfiguration.Coin.Name;
+                    else
+                        listViewItem.SubItems["Coin"].Text = string.Empty;
 
-                    DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
-                        c => (c.DeviceIndex == devices[i].DeviceIndex));
+                    listViewItem.Checked = deviceConfiguration.Enabled;
 
-                    if (deviceConfiguration != null)
+                    if (listViewItem.Checked)
                     {
-                        //ensure the coin configuration still exists
-                        CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(deviceConfiguration.CoinSymbol));
-                        if (coinConfiguration != null)
-                            gridRow.Cells[coinColumn.Index].Value = coinConfiguration.Coin.Name;
-                        else
-                            gridRow.Cells[coinColumn.Index].Value = string.Empty;
-
-                        gridRow.Cells[enabledColumn.Index].Value = deviceConfiguration.Enabled;
+                        listViewItem.ForeColor = SystemColors.WindowText;
+                        listViewItem.UseItemStyleForSubItems = false;
                     }
                     else
                     {
-                        gridRow.Cells[coinColumn.Index].Value = string.Empty;
-                        gridRow.Cells[enabledColumn.Index].Value = true;
+                        listViewItem.ForeColor = SystemColors.GrayText;
+                        listViewItem.UseItemStyleForSubItems = true; 
                     }
                 }
-            }
-            finally
-            {
-                //restore button states after
-                UpdateChangesButtons(saveEnabled);
-            }
-
-            //leaving the enabledColumn focused can cause an artifact where it looks unchecked
-            //but isn't
-            if (deviceGridView.RowCount > 0)
-                deviceGridView.CurrentCell = deviceGridView.Rows[0].Cells[coinColumn.Index];
-
-            RefreshGridColorsFromConfiguration();
-        }
-
-        private void RefreshGridColorsFromConfiguration()
-        {
-            for (int i = 0; i < deviceGridView.Rows.Count; i++)
-            {
-                DataGridViewRow gridRow = deviceGridView.Rows[i];
-                DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(
-                    c => (c.DeviceIndex == devices[i].DeviceIndex));
-
-                foreach (DataGridViewCell gridCell in gridRow.Cells)
+                else
                 {
-                    //deviceConfiguration may be null - may be a device that hasn't been configured
-                    if ((deviceConfiguration != null) && !deviceConfiguration.Enabled)                        
-                        gridCell.Style.ForeColor = SystemColors.GrayText;
-                    else
-                        gridCell.Style.ForeColor = SystemColors.WindowText;
+                    listViewItem.SubItems["Coin"].Text = string.Empty;
+                    listViewItem.Checked = true;
                 }
             }
-        }
 
+            //restore button states after
+            UpdateChangesButtons(saveEnabled);
+
+            deviceListView.EndUpdate();
+        }
+        
         private void UpdateMiningButtons()
         {
             startButton.Enabled = MiningConfigurationValid() && !miningEngine.Mining;
@@ -850,6 +975,7 @@ namespace MultiMiner.Win
             stopMenuItem.Enabled = stopButton.Enabled;
             //allow clicking Detect Devices with invalid configuration
             detectDevicesButton.Enabled = !miningEngine.Mining;
+            detectDevicesToolStripMenuItem.Enabled = !miningEngine.Mining;
 
             startButton.Visible = startButton.Enabled;
             stopButton.Visible = stopButton.Enabled;
@@ -886,6 +1012,7 @@ namespace MultiMiner.Win
                 miningEngine.StopMining();
             }
 
+            processDeviceDetails.Clear();
             deviceStatsTimer.Enabled = false;
             minerSummaryTimer.Enabled = false;
             coinStatsCountdownTimer.Enabled = false;
@@ -895,6 +1022,7 @@ namespace MultiMiner.Win
             notifyIcon1.Text = "MultiMiner - Stopped";
             UpdateMiningButtons();
             ClearAllMinerStats();
+            AutoSizeListViewColumns();
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -941,9 +1069,11 @@ namespace MultiMiner.Win
             RefreshStrategiesCountdown();
 
             //to get changes from strategy config
-            LoadGridValuesFromConfiguration();
+            LoadListViewValuesFromConfiguration();
             //to get updated coin stats for coin changes
-            LoadGridValuesFromCoinStats();
+            LoadListViewValuesFromCoinStats();
+
+            AutoSizeListViewColumns();
 
             UpdateMiningButtons();
         }
@@ -952,9 +1082,8 @@ namespace MultiMiner.Win
         {
             const string bakExtension = ".mmbak";
 
-            MinerBackend minerBackend = engineConfiguration.XgminerConfiguration.MinerBackend;
-            string minerName = MinerPath.GetMinerName(minerBackend);
-            string minerExecutablePath = MinerPath.GetPathToInstalledMiner(minerBackend);
+            string minerName = MinerPath.GetMinerName();
+            string minerExecutablePath = MinerPath.GetPathToInstalledMiner();
             string confFileFilePath = String.Empty;
 
             if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
@@ -985,16 +1114,8 @@ namespace MultiMiner.Win
 
             return true;           
         }
-
-        private void RefreshBackendLabel()
-        {
-            if (engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Bfgminer)
-                backendLabel.Text = "Backend: bfgminer";
-            else if (engineConfiguration.XgminerConfiguration.MinerBackend == MinerBackend.Cgminer)
-                backendLabel.Text = "Backend: cgminer";
-        }
-
-        private void ShowApplicationSettings()
+        
+        private void ConfigureSettings()
         {
             SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration);
             DialogResult dialogResult = settingsForm.ShowDialog();
@@ -1002,12 +1123,8 @@ namespace MultiMiner.Win
             {
                 Application.DoEvents();
 
-                bool wasMining = miningEngine.Mining;
-                StopMining(); // or USB devices may be in use for RefreshDevices() call below
                 engineConfiguration.SaveMinerConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
-                RefreshDevices();
-                RefreshBackendLabel();
                 RefreshCoinAPILabel();
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
                 SetupRestartTimer();
@@ -1015,9 +1132,6 @@ namespace MultiMiner.Win
                 RefreshCoinStats();
                 
                 Application.DoEvents();
-
-                if (wasMining)
-                    StartMining();
             }
             else
             {
@@ -1045,7 +1159,7 @@ namespace MultiMiner.Win
         private void statsTimer_Tick(object sender, EventArgs e)
         {
             ClearMinerStatsForDisabledCoins();
-            PopulateDeviceInfoFromProcesses();
+            RefreshDeviceStats();
         }
 
         private void ClearMinerStatsForDisabledCoins()
@@ -1053,67 +1167,143 @@ namespace MultiMiner.Win
             if (saveButton.Enabled) //otherwise cleared coin isn't saved yet
                 return;
 
-            foreach (DataGridViewRow row in deviceGridView.Rows)
-                if (row.Cells[coinColumn.Index].Value == null)
-                    ClearDeviceInfoForRow(row);
-        }
-
-        private void ClearDeviceInfoForRow(DataGridViewRow row)
-        {
-            row.Cells[temperatureColumn.Index].Value = null;
-            row.Cells[hashRateColumn.Index].Value = null;
-            row.Cells[acceptedColumn.Index].Value = null;
-            row.Cells[rejectedColumn.Index].Value = null;
-            row.Cells[errorsColumn.Index].Value = null;
-            row.Cells[utilityColumn.Index].Value = null;
-            row.Cells[intensityColumn.Index].Value = null;
-            row.Cells[poolColumn.Index].Value = null;
-        }
-
-        private void PopulateDeviceInfoForRow(DeviceInformationResponse deviceInformation, DataGridViewRow row)
-        {
-            //stratum devices get lumped together, so we sum those
-            if (deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
+            deviceListView.BeginUpdate();
+            try
             {
-                row.Cells[hashRateColumn.Index].Value = (double)(row.Cells[hashRateColumn.Index].Value ?? 0.00) + deviceInformation.AverageHashrate;
-                row.Cells[acceptedColumn.Index].Value = (int)(row.Cells[acceptedColumn.Index].Value ?? 0) + deviceInformation.AcceptedShares;
-                row.Cells[rejectedColumn.Index].Value = (int)(row.Cells[rejectedColumn.Index].Value ?? 0) + deviceInformation.RejectedShares;
-                row.Cells[errorsColumn.Index].Value = (int)(row.Cells[errorsColumn.Index].Value ?? 0) + deviceInformation.HardwareErrors;
-                row.Cells[utilityColumn.Index].Value = (double)(row.Cells[utilityColumn.Index].Value ?? 0.00) + deviceInformation.Utility;
+                foreach (ListViewItem item in deviceListView.Items)
+                    if (!item.Checked)
+                        ClearDeviceInfoForListViewItem(item);
             }
-            else
+            finally
             {
-                row.Cells[hashRateColumn.Index].Value = deviceInformation.AverageHashrate;
-                row.Cells[acceptedColumn.Index].Value = deviceInformation.AcceptedShares;
-                row.Cells[rejectedColumn.Index].Value = deviceInformation.RejectedShares;
-                row.Cells[errorsColumn.Index].Value = deviceInformation.HardwareErrors;
-                row.Cells[utilityColumn.Index].Value = deviceInformation.Utility;
+                deviceListView.EndUpdate();
             }
-
-            row.Cells[temperatureColumn.Index].Value = deviceInformation.Temperature;
-            row.Cells[intensityColumn.Index].Value = deviceInformation.Intensity;
-            PopulatePoolForRow(deviceInformation.PoolIndex, row);
         }
 
-        private void PopulatePoolForRow(int poolIndex, DataGridViewRow row)
+        private static void ClearDeviceInfoForListViewItem(ListViewItem item)
+        {
+            item.SubItems["Temp"].Text = String.Empty;
+
+            item.SubItems["Hashrate"].Text = String.Empty;
+            item.SubItems["Hashrate"].Tag = 0.00;
+
+            item.SubItems["Accepted"].Text = String.Empty;
+            item.SubItems["Accepted"].Tag = 0;
+
+            item.SubItems["Rejected"].Text = String.Empty;
+            item.SubItems["Rejected"].Tag = 0;
+
+            item.SubItems["Errors"].Text = String.Empty;
+            item.SubItems["Errors"].Tag = 0;
+
+            item.SubItems["Utility"].Text = String.Empty;
+            item.SubItems["Utility"].Tag = 0.00;
+
+            item.SubItems["Intensity"].Text = String.Empty;
+            item.SubItems["Pool"].Text = String.Empty;
+        }
+
+        private void PopulateDeviceStatsForListViewItem(DeviceInformationResponse deviceInformation, ListViewItem item)
+        {
+            deviceListView.BeginUpdate();
+            try
+            {
+                //stratum devices get lumped together, so we sum those
+                if (deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
+                {
+                    item.SubItems["Hashrate"].Tag = (double)(item.SubItems["Hashrate"].Tag ?? 0.00) + deviceInformation.AverageHashrate;
+                    item.SubItems["Rejected"].Tag = (int)(item.SubItems["Rejected"].Tag ?? 0) + deviceInformation.RejectedShares;
+                    item.SubItems["Errors"].Tag = (int)(item.SubItems["Errors"].Tag ?? 0) + deviceInformation.HardwareErrors;
+                    item.SubItems["Accepted"].Tag = (int)(item.SubItems["Accepted"].Tag ?? 0) + deviceInformation.AcceptedShares;
+                    item.SubItems["Utility"].Tag = (double)(item.SubItems["Utility"].Tag ?? 0.00) + deviceInformation.Utility;
+                }
+                else
+                {
+                    item.SubItems["Hashrate"].Tag = deviceInformation.AverageHashrate;
+                    item.SubItems["Rejected"].Tag = deviceInformation.RejectedShares;
+                    item.SubItems["Errors"].Tag = deviceInformation.HardwareErrors;
+                    item.SubItems["Accepted"].Tag = deviceInformation.AcceptedShares;
+                    item.SubItems["Utility"].Tag = deviceInformation.Utility;
+                }
+
+                item.SubItems["Hashrate"].Text = FormatHashrate((double)item.SubItems["Hashrate"].Tag);
+                item.SubItems["Rejected"].Text = (int)item.SubItems["Rejected"].Tag > 0 ? ((int)item.SubItems["Rejected"].Tag).ToString() : String.Empty;
+                item.SubItems["Errors"].Text = (int)item.SubItems["Errors"].Tag > 0 ? ((int)item.SubItems["Errors"].Tag).ToString() : String.Empty;
+                item.SubItems["Accepted"].Text = (int)item.SubItems["Accepted"].Tag > 0 ? ((int)item.SubItems["Accepted"].Tag).ToString() : String.Empty;
+
+                item.SubItems["Utility"].Text = (double)item.SubItems["Utility"].Tag > 0.00 ? ((double)item.SubItems["Utility"].Tag).ToString("0.###") : String.Empty;
+
+                item.SubItems["Temp"].Text = deviceInformation.Temperature > 0 ? deviceInformation.Temperature.ToString() + "°" : String.Empty;
+                item.SubItems["Intensity"].Text = deviceInformation.Intensity;
+
+                PopulatePoolForListViewItem(deviceInformation.PoolIndex, item);
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
+
+        }
+
+        private static string FormatHashrate(double hashrate)
+        {
+            string suffix = "K";
+            double shortrate = hashrate;
+
+            if (shortrate > 1000)
+            {
+                shortrate /= 1000;
+                suffix = "M";
+            }
+
+            if (shortrate > 1000)
+            {
+                shortrate /= 1000;
+                suffix = "G";
+            }
+
+            if (shortrate > 1000)
+            {
+                shortrate /= 1000;
+                suffix = "T";
+            }
+
+            if (shortrate > 1000)
+            {
+                shortrate /= 1000;
+                suffix = "P";
+            }
+
+            return String.Format("{0:0.##} {1}h/s", shortrate, suffix);
+        }
+
+        private void PopulatePoolForListViewItem(int poolIndex, ListViewItem item)
         {
             if (poolIndex >= 0)
             {
-                CoinConfiguration coinConfiguration = CoinConfigurationForRow(row);
-                string poolHost = coinConfiguration.Pools[poolIndex].Host;
-                string poolDomain = GetDomainNameFromHost(poolHost);
-                row.Cells[poolColumn.Index].Value = poolDomain;
+                CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
+                if (coinConfiguration == null)
+                    item.SubItems["Pool"].Text = String.Empty;
+                else
+                {
+                    string poolHost = coinConfiguration.Pools[poolIndex].Host;
+                    string poolDomain = GetDomainNameFromHost(poolHost);
+
+                    item.SubItems["Pool"].Text = poolDomain;
+                }
             }
             else
-            {
-                row.Cells[poolColumn.Index].Value = String.Empty;
-            }
+                item.SubItems["Pool"].Text = String.Empty;
         }
 
-        private CoinConfiguration CoinConfigurationForRow(DataGridViewRow row)
+        private CoinConfiguration CoinConfigurationForListViewItem(ListViewItem item)
         {
-            string rowCoinName = (string)row.Cells[coinColumn.Index].Value;
-            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(rowCoinName, StringComparison.OrdinalIgnoreCase));
+            int itemIndex = deviceListView.Items.IndexOf(item);
+            Device device = devices[itemIndex];
+            //get the actual device configuration, text in the ListViewItem may be unsaved
+            DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+            string itemCoinSymbol = deviceConfiguration.CoinSymbol;
+            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(itemCoinSymbol, StringComparison.OrdinalIgnoreCase));
             return coinConfiguration;
         }
 
@@ -1131,11 +1321,15 @@ namespace MultiMiner.Win
 
             domainName = uri.Host;
 
-            if (domainName.Split('.').Length > 1)
+            //remove subdomain if there is one
+            if (domainName.Split('.').Length > 2)
             {
                 int index = domainName.IndexOf(".") + 1;
                 domainName = domainName.Substring(index, domainName.Length - index);
             }
+
+            //remove TLD
+            domainName = Path.GetFileNameWithoutExtension(domainName);
 
             hostDomainNames[poolHost] = domainName;
 
@@ -1144,28 +1338,37 @@ namespace MultiMiner.Win
 
         private void ClearAllMinerStats()
         {
-            foreach (DataGridViewRow row in deviceGridView.Rows)
-                ClearDeviceInfoForRow(row);
+            deviceListView.BeginUpdate();
+            try
+            {
+                foreach (ListViewItem item in deviceListView.Items)
+                    ClearDeviceInfoForListViewItem(item);
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
         }
 
         private void ClearAllCoinStats()
         {
-            foreach (DataGridViewRow row in deviceGridView.Rows)
-                ClearCoinStatsForGridRow(row);
+            deviceListView.BeginUpdate();
+            try
+            {
+                foreach (ListViewItem item in deviceListView.Items)
+                    ClearCoinStatsForGridListViewItem(item);
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
         }
 
-        private void ClearCoinStatsForDisabledCoins()
+        private static void ClearCoinStatsForGridListViewItem(ListViewItem item)
         {
-            foreach (DataGridViewRow row in deviceGridView.Rows)
-                if (string.IsNullOrEmpty((string)row.Cells[coinColumn.Index].Value))
-                    ClearCoinStatsForGridRow(row);
-        }
-
-        private void ClearCoinStatsForGridRow(DataGridViewRow gridRow)
-        {
-            gridRow.Cells[difficultyColumn.Index].Value = null;
-            gridRow.Cells[priceColumn.Index].Value = null;
-            gridRow.Cells[profitabilityColumn.Index].Value = null;
+            item.SubItems["Difficulty"].Text = String.Empty;
+            item.SubItems["Price"].Text = String.Empty;
+            item.SubItems["Profitability"].Text = String.Empty;
         }
 
         private void LogApiEvent(object sender, Xgminer.Api.LogEventArgs eventArgs)
@@ -1266,13 +1469,10 @@ namespace MultiMiner.Win
             }
         }
 
-        private void PopulateDeviceInfoFromProcesses()
+        private void RefreshDeviceStats()
         {
             double totalScryptRate = 0;
             double totalSha256Rate = 0;
-
-            bool hasTempValue = false;
-            bool hasIntensityValue = false;
 
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
@@ -1290,67 +1490,116 @@ namespace MultiMiner.Win
                     continue;
                 }
 
+                //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
+                List<DeviceDetailsResponse> processDevices = GetProcessDevices(minerProcess, deviceInformationList);
+
                 //first clear stats for each row
-                //this is because the PXY row stats get summed                
-                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                //this is because the PXY row stats get summed  
+                deviceListView.BeginUpdate();
+                try
                 {
-                    int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
-                    if (rowIndex >= 0)
-                        //could legitimately be -1 if the API is returning a device we don't know about
-                        ClearDeviceInfoForRow(deviceGridView.Rows[rowIndex]);
-                }
-
-                //clear accepted shares as we'll be summing that as well
-                minerProcess.AcceptedShares = 0;
-
-                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
-                {
-                    if (deviceInformation.Status.ToLower().Contains("sick"))
-                        minerProcess.HasSickDevice = true;
-                    if (deviceInformation.Status.ToLower().Contains("dead"))
-                        minerProcess.HasDeadDevice = true;
-                    if (deviceInformation.CurrentHashrate == 0)
-                        minerProcess.HasZeroHashrateDevice = true;
-
-                    //avoid div by 0
-                    if (deviceInformation.AverageHashrate > 0)
+                    foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                     {
-                        double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
-                        if (performanceRatio <= 0.50)
-                            minerProcess.HasPoorPerformingDevice = true;
+                        int itemIndex = GetItemIndexForDeviceInformation(deviceInformation, processDevices);
+                        if (itemIndex >= 0)
+                            //could legitimately be -1 if the API is returning a device we don't know about
+                            ClearDeviceInfoForListViewItem(deviceListView.Items[itemIndex]);
                     }
 
-                    int rowIndex = GetRowIndexForDeviceInformation(deviceInformation);
+                    //clear accepted shares as we'll be summing that as well
+                    minerProcess.AcceptedShares = 0;
 
-                    if (rowIndex >= 0)
+                    foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                     {
-                        if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
-                            totalScryptRate += deviceInformation.AverageHashrate;
-                        else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
-                            totalSha256Rate += deviceInformation.AverageHashrate;
+                        if (deviceInformation.Status.ToLower().Contains("sick"))
+                            minerProcess.HasSickDevice = true;
+                        if (deviceInformation.Status.ToLower().Contains("dead"))
+                            minerProcess.HasDeadDevice = true;
+                        if (deviceInformation.CurrentHashrate == 0)
+                            minerProcess.HasZeroHashrateDevice = true;
 
-                        PopulateDeviceInfoForRow(deviceInformation, deviceGridView.Rows[rowIndex]);
+                        //avoid div by 0
+                        if (deviceInformation.AverageHashrate > 0)
+                        {
+                            double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
+                            if (performanceRatio <= 0.50)
+                                minerProcess.HasPoorPerformingDevice = true;
+                        }
 
-                        if (deviceInformation.Temperature > 0)
-                            hasTempValue = true;
+                        int itemIndex = GetItemIndexForDeviceInformation(deviceInformation, processDevices);
 
-                        if (!string.IsNullOrEmpty(deviceInformation.Intensity))
-                            hasIntensityValue = true;
+                        if (itemIndex >= 0)
+                        {
+                            if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
+                                totalScryptRate += deviceInformation.AverageHashrate;
+                            else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
+                                totalSha256Rate += deviceInformation.AverageHashrate;
 
-                        minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
+                            PopulateDeviceStatsForListViewItem(deviceInformation, deviceListView.Items[itemIndex]);
+
+                            minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
+                        }
+                    }
+                }
+                finally
+                {
+                    deviceListView.EndUpdate();
+                }
+            }
+
+            //Mh not mh, mh is milli
+            scryptRateLabel.Text = totalScryptRate == 0 ? String.Empty : String.Format("Scrypt: {0}", FormatHashrate(totalScryptRate));
+            //spacing used to pad out the status bar item
+            sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}   ", FormatHashrate(totalSha256Rate)); 
+
+            scryptRateLabel.AutoSize = true;
+            sha256RateLabel.AutoSize = true;
+
+            notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
+            
+            int count = 3;
+            //auto sizing the columns is moderately CPU intensive, so only do it every /count/ times
+            AutoSizeListViewColumnsEvery(count);
+        }
+
+        private void AutoSizeListViewColumnsEvery(int count)
+        {
+            autoSizeColumnsFlag++;
+            if (autoSizeColumnsFlag == count)
+            {
+                autoSizeColumnsFlag = 0;
+                AutoSizeListViewColumns();
+            }
+        }
+        private ushort autoSizeColumnsFlag = 0;
+
+        private List<DeviceDetailsResponse> GetProcessDevices(MinerProcess minerProcess, List<DeviceInformationResponse> deviceInformationList)
+        {
+            List<DeviceDetailsResponse> processDevices = null;
+            if (processDeviceDetails.ContainsKey(minerProcess))
+            {
+                processDevices = processDeviceDetails[minerProcess];
+
+                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                {
+                    DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+                        && (d.ID == deviceInformation.ID));
+                    if (deviceDetails == null)
+                    {
+                        //devs API returned a device not in the previous DEVDETAILS response
+                        //need to clear our previous response and get a new one
+                        processDevices = null;
+                        break;
                     }
                 }
             }
 
-            scryptRateLabel.Text = string.Format("Scrypt: {0} Kh/s", totalScryptRate);
-            sha256RateLabel.Text = string.Format("SHA256: {0} Mh/s", totalSha256Rate / 1000); //Mh not mh, mh is milli
-            notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
-
-            //hide the temperature column if there are no tempts returned (USBs, OS X, etc)
-            temperatureColumn.Visible = hasTempValue;
-
-            //hide the intensity column if there are no intensities returned (USBs)
-            intensityColumn.Visible = hasIntensityValue;
+            if (processDevices == null)
+            {
+                processDevices = GetDeviceDetailsFromProcess(minerProcess);
+                processDeviceDetails[minerProcess] = processDevices;
+            }
+            return processDevices;
         }
 
         private List<DeviceInformationResponse> GetDeviceInfoFromProcess(MinerProcess minerProcess)
@@ -1383,6 +1632,36 @@ namespace MultiMiner.Win
             return deviceInformationList;
         }
 
+        private List<DeviceDetailsResponse> GetDeviceDetailsFromProcess(MinerProcess minerProcess)
+        {
+            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<DeviceDetailsResponse> deviceDetailsList = null;
+            try
+            {
+                try
+                {
+                    deviceDetailsList = apiContext.GetDeviceDetails().ToList();
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    deviceDetailsList = null;
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
+                deviceDetailsList = null;
+            }
+
+            return deviceDetailsList;
+        }
+
         private SummaryInformationResponse GetSummaryInfoFromProcess(MinerProcess minerProcess)
         {
             Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
@@ -1412,35 +1691,39 @@ namespace MultiMiner.Win
 
             return summaryInformation;
         }
-
-        private int GetRowIndexForDeviceInformation(DeviceInformationResponse deviceInformation)
+        
+        private int GetItemIndexForDeviceInformation(DeviceInformationResponse deviceInformation, IEnumerable<DeviceDetailsResponse> processDevices)
         {
-            int index = 0;
-            int rowIndex = -1;
-
+            DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+                && (d.ID == deviceInformation.ID));
+            
             for (int i = 0; i < devices.Count; i++)
             {
                 Device device = devices[i];
                 
-                if (device.Identifier.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase))
+                if (device.Driver.Equals(deviceDetails.Driver, StringComparison.OrdinalIgnoreCase)
+                    &&
+                    (
+                    
+                    //path == path
+                    (!String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
+                    
+                    //proxy == proxy
+                    || (device.Driver.Equals("proxy", StringComparison.OrdinalIgnoreCase))
+                    
+                    //opencl = opencl && ID = RelativeIndex
+                    || (device.Driver.Equals("opencl", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+
+                    //cpu = cpu && ID = RelativeIndex
+                    || (device.Driver.Equals("cpu", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+
+                    ))
                 {
-                    if ((index == deviceInformation.ID)
-                        //for now all proxy devices will show under a single PXY device in MultiMiner
-                        || (device.Kind == DeviceKind.PXY))                
-                    {
-                        rowIndex = i;
-                        break;
-                    }
-                    index++;
-                }
-                else
-                {
-                    //reset index
-                    index = 0;
+                    return i;
                 }
             }
 
-            return rowIndex;
+            return -1;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -1481,9 +1764,9 @@ namespace MultiMiner.Win
                 //save any changes made by the engine
                 engineConfiguration.SaveDeviceConfigurations();
                 //to get changes from strategy config
-                LoadGridValuesFromConfiguration();
+                LoadListViewValuesFromConfiguration();
                 //to refresh coin stats due to changed coin selections
-                LoadGridValuesFromCoinStats();
+                LoadListViewValuesFromCoinStats();
             }
         }
 
@@ -1518,9 +1801,10 @@ namespace MultiMiner.Win
                 throw;
             }
             
-            LoadGridValuesFromCoinStats();
+            LoadListViewValuesFromCoinStats();
             LoadKnownCoinsFromCoinStats();
             RefreshCoinStatsLabel();
+            AutoSizeListViewColumns();
             SuggestCoinsToMine();
         }
 
@@ -1544,7 +1828,7 @@ namespace MultiMiner.Win
             }
 
             notificationsControl.AddNotification(ex.Message,
-                "Error parsing the " + apiName + " JSON API", () =>
+                String.Format("Error parsing the {0} JSON API", apiName), () =>
                 {
                     Process.Start(apiUrl);
                 }, 
@@ -1628,7 +1912,7 @@ namespace MultiMiner.Win
 
         private void RefreshCoinStatsLabel()
         {
-            coinStatsLabel.Text = string.Format("Coin stats last fetched at {0}.", DateTime.Now.ToShortTimeString());
+            coinChooseSuffixLabel.Text = string.Format("at {0}", DateTime.Now.ToShortTimeString());
         }
 
         private void LoadKnownCoinsFromCoinStats()
@@ -1675,7 +1959,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private void RemoveBunkCoins(List<CryptoCoin> knownCoins)
+        private static void RemoveBunkCoins(List<CryptoCoin> knownCoins)
         {
             //CoinChoose.com served up ButterFlyCoin as BOC, and then later as BFC
             CryptoCoin badCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals("BOC", StringComparison.OrdinalIgnoreCase));
@@ -1688,40 +1972,95 @@ namespace MultiMiner.Win
             ConfigurationReaderWriter.WriteConfiguration(knownCoins, KnownCoinsFileName());
         }
 
-        private void LoadGridValuesFromCoinStats()
+        private void LoadListViewValuesFromCoinStats()
         {
-            //clear all coin stats first
-            //there may be coins configured that are no longer returned in the stats
-            ClearAllCoinStats();
-
-            if (coinInformation != null) //null if no network connection
-                foreach (Coin.Api.CoinInformation coin in coinInformation)
-                    foreach (DataGridViewRow row in deviceGridView.Rows)
-                    {
-                        CoinConfiguration coinConfiguration = CoinConfigurationForRow(row);
-                        if ((coinConfiguration != null) &&  coin.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase))
-                            PopulateCoinStatsForRow(coin, row);
-                    }
-        }
-
-        private void PopulateCoinStatsForRow(Coin.Api.CoinInformation coin, DataGridViewRow row)
-        {
-            row.Cells[difficultyColumn.Index].Value = coin.Difficulty.ToString(".##########");
-            row.Cells[priceColumn.Index].Value = coin.Price.ToString(".##########");
-
-            switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+            deviceListView.BeginUpdate();
+            try
             {
-                case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
-                    row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AdjustedProfitability, 2);
-                    break;
-                case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
-                    row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.AverageProfitability, 2);
-                    break;
-                case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
-                    row.Cells[profitabilityColumn.Index].Value = Math.Round(coin.Profitability, 2);
-                    break;
+                //clear all coin stats first
+                //there may be coins configured that are no longer returned in the stats
+                ClearAllCoinStats();
+
+                if (coinInformation != null) //null if no network connection
+                    foreach (Coin.Api.CoinInformation coin in coinInformation)
+                        foreach (ListViewItem item in deviceListView.Items)
+                        {
+                            CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
+                            if ((coinConfiguration != null) && coin.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase))
+                            {
+                                PopulateCoinStatsForListViewItem(coin, item);
+                            }
+                        }
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
             }
         }
+
+        private void PopulateCoinStatsForListViewItem(Coin.Api.CoinInformation coin, ListViewItem item)
+        {
+            deviceListView.BeginUpdate();
+            try
+            {
+                item.SubItems["Difficulty"].Text = FormatDifficulty(coin.Difficulty);
+
+                string unit = "BTC";
+                if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == Coin.Api.BaseCoin.Litecoin))
+                    unit = "LTC";
+
+                item.SubItems["Price"].Text = String.Format("{0:.#####} {1}", coin.Price, unit);
+
+                switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+                {
+                    case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
+                        item.SubItems["Profitability"].Text = Math.Round(coin.AdjustedProfitability, 2).ToString() + "%";
+                        break;
+                    case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
+                        item.SubItems["Profitability"].Text = Math.Round(coin.AverageProfitability, 2).ToString() + "%";
+                        break;
+                    case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
+                        item.SubItems["Profitability"].Text = Math.Round(coin.Profitability, 2).ToString() + "%";
+                        break;
+                } 
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
+        }
+
+        private static string FormatDifficulty(double difficulty)
+        {
+            string suffix = "";
+            double shortened = difficulty;
+
+            if (shortened > 1000)
+            {
+                shortened /= 1000;
+                suffix = "K";
+            }
+
+            if (shortened > 1000)
+            {
+                shortened /= 1000;
+                suffix = "M";
+            }
+
+            if (shortened > 1000)
+            {
+                shortened /= 1000;
+                suffix = "B";
+            }
+
+            if (shortened > 1000)
+            {
+                shortened /= 1000;
+                suffix = "T";
+            }
+
+            return String.Format("{0:0.##} {1}", shortened, suffix).TrimEnd();
+        }           
 
         private void countdownTimer_Tick(object sender, EventArgs e)
         {
@@ -1763,9 +2102,9 @@ namespace MultiMiner.Win
         private void RefreshStrategiesLabel()
         {
             if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
-                strategiesLabel.Text = "Strategies: enabled";
+                strategiesLabel.Text = " Strategies: enabled";
             else
-                strategiesLabel.Text = "Strategies: disabled";
+                strategiesLabel.Text = " Strategies: disabled";
         }
 
         private void RefreshStrategiesCountdown()
@@ -1790,19 +2129,14 @@ namespace MultiMiner.Win
                 applicationConfiguration.SaveApplicationConfiguration();
                 SetupCoinStatsTimer();
                 
-                coinColumn.ReadOnly = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
-                coinColumn.DisplayStyle = coinColumn.ReadOnly ? DataGridViewComboBoxDisplayStyle.Nothing : DataGridViewComboBoxDisplayStyle.DropDownButton;
-
                 //so updated profitability is shown
                 RefreshCoinStats();
 
                 RefreshStrategiesLabel();
-                LoadGridValuesFromCoinStats();
+                LoadListViewValuesFromCoinStats();
                 UpdateMiningButtons();
 
                 Application.DoEvents();
-
-                RestartMiningIfMining();
             }
             else
             {
@@ -1891,6 +2225,9 @@ namespace MultiMiner.Win
 
         private void ShowAdvancedPanel()
         {
+            if (briefMode)
+                SetBriefMode(false);
+
             closeApiButton.Visible = true;
             apiLogGridView.Visible = true;
             advancedAreaContainer.Panel2Collapsed = false;
@@ -1964,22 +2301,6 @@ namespace MultiMiner.Win
             StopMining();
         }
 
-        private void desktopModeButton_Click(object sender, EventArgs e)
-        {
-            engineConfiguration.XgminerConfiguration.DesktopMode = desktopModeButton.Checked;
-            RestartMiningIfMining();
-            engineConfiguration.SaveMinerConfiguration();
-        }
-
-        private void RestartMiningIfMining()
-        {
-            if (miningEngine.Mining)
-            {
-                StopMining();
-                StartMining();
-            }
-        }
-
         private void mobileMinerTimer_Tick(object sender, EventArgs e)
         {
             //if we do this with the Settings dialog open the user may have partially entered credentials
@@ -2007,7 +2328,6 @@ namespace MultiMiner.Win
         }
 
         private const string mobileMinerApiKey = "P3mVX95iP7xfoI";
-        private const bool mobileMinerAsync = true;
         
         //don't show a dialog for a 403 after successful submissions.
         //it's not ideal but there have been two reports now of this
@@ -2058,17 +2378,10 @@ namespace MultiMiner.Win
 
             if (statisticsList.Count > 0)
             {
-                if (mobileMinerAsync)
-                {
-                    if (submitMiningStatisticsDelegate == null)
-                        submitMiningStatisticsDelegate = SubmitMiningStatistics;
+                if (submitMiningStatisticsDelegate == null)
+                    submitMiningStatisticsDelegate = SubmitMiningStatistics;
 
-                    submitMiningStatisticsDelegate.BeginInvoke(statisticsList, null, null);
-                }
-                else
-                {
-                    SubmitMiningStatistics(statisticsList);
-                }
+                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, null, null);
             }
         }
 
@@ -2101,7 +2414,7 @@ namespace MultiMiner.Win
 
                             //check to make sure there are no modal windows already
                             if (!ShowingModalDialog())
-                                ShowApplicationSettings();
+                                ConfigureSettings();
                         }
                     }
                     else
@@ -2130,17 +2443,10 @@ namespace MultiMiner.Win
                 string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
                 return;
 
-            if (mobileMinerAsync)
-            {
-                if (submitNotificationDelegate == null)
-                    submitNotificationDelegate = SubmitNotification;
+            if (submitNotificationDelegate == null)
+                submitNotificationDelegate = SubmitNotification;
 
-                submitNotificationDelegate.BeginInvoke(text, null, null);
-            }
-            else
-            {
-                SubmitNotification(text);
-            }
+            submitNotificationDelegate.BeginInvoke(text, null, null);
         }
 
         private Action<string> submitNotificationDelegate;
@@ -2166,7 +2472,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private bool ShowingModalDialog()
+        private static bool ShowingModalDialog()
         {
             foreach (Form f in Application.OpenForms)
                 if (f.Modal)
@@ -2186,17 +2492,10 @@ namespace MultiMiner.Win
                 string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
                 return;
 
-            if (mobileMinerAsync)
-            {
-                if (checkForRemoteCommandsDelegate == null)
-                    checkForRemoteCommandsDelegate = GetRemoteCommands;
+            if (checkForRemoteCommandsDelegate == null)
+                checkForRemoteCommandsDelegate = GetRemoteCommands;
 
-                checkForRemoteCommandsDelegate.BeginInvoke(null, null);
-            }
-            else
-            {
-                GetRemoteCommands();
-            }
+            checkForRemoteCommandsDelegate.BeginInvoke(null, null);
         }
 
         private Action checkForRemoteCommandsDelegate;
@@ -2237,7 +2536,7 @@ namespace MultiMiner.Win
 
                                     //check to make sure there are no modal windows already
                                     if (!ShowingModalDialog())
-                                        ShowApplicationSettings();
+                                        ConfigureSettings();
                                 }
                             }
                             else
@@ -2293,17 +2592,10 @@ namespace MultiMiner.Win
                     StartMining();
                 }
 
-                if (mobileMinerAsync)
-                {
-                    if (deleteRemoteCommandDelegate == null)
-                        deleteRemoteCommandDelegate = DeleteRemoteCommand;
+                if (deleteRemoteCommandDelegate == null)
+                    deleteRemoteCommandDelegate = DeleteRemoteCommand;
 
-                    deleteRemoteCommandDelegate.BeginInvoke(command, null, null);
-                }
-                else
-                {
-                    DeleteRemoteCommand(command);
-                }
+                deleteRemoteCommandDelegate.BeginInvoke(command, null, null);
             }
         }
 
@@ -2341,6 +2633,11 @@ namespace MultiMiner.Win
 
         private void processLogButton_Click(object sender, EventArgs e)
         {
+            ShowProcessLog();
+        }
+
+        private void ShowProcessLog()
+        {
             ShowAdvancedPanel();
             advancedTabControl.SelectedTab = processLogPage;
 
@@ -2349,6 +2646,11 @@ namespace MultiMiner.Win
         }
 
         private void historyButton_Click(object sender, EventArgs e)
+        {
+            ShowHistory();
+        }
+
+        private void ShowHistory()
         {
             ShowAdvancedPanel();
             advancedTabControl.SelectedTab = historyPage;
@@ -2366,8 +2668,12 @@ namespace MultiMiner.Win
                 
                 LogProcessCloseArgs ea = this.logCloseEntries[index];
 
+                string devicesString = "??";
                 //convert from device indexes (0 based) to device #'s (more human readable)
-                string devicesString = GetFormattedDevicesString(ea.DeviceIndexes);
+                //check for NULL because the history JSON is reloaded on startup and older
+                //versions didn't have this property serialized
+                if (ea.DeviceDescriptors != null)
+                    devicesString = GetFormattedDevicesString(ea.DeviceDescriptors);
                 
                 historyGridView.Rows[index].Cells[devicesColumn.Index].Value = devicesString;
 
@@ -2376,26 +2682,14 @@ namespace MultiMiner.Win
             }
         }
 
-        private string GetFormattedDevicesString(List<int> deviceIndexes)
+        private static string GetFormattedDevicesString(List<DeviceDescriptor> deviceDescriptors)
         {
             List<string> deviceList = new List<string>();
 
-            foreach (int deviceIndex in deviceIndexes)
-            {
-                //get the Row Index from the Device Index since GetDevices() sorts devices
-                int rowIndex = GetRowIndexForDeviceIndex(deviceIndex);
-                deviceList.Add(String.Format("#{0}", rowIndex + 1));
-            }
+            foreach (DeviceDescriptor descriptor in deviceDescriptors)
+                deviceList.Add(descriptor.Description());
 
-            return String.Join(", ", deviceList.ToArray());
-        }
-
-        //get the index of a device in the grid based on the absolute DeviceIndex returned by the miner
-        private int GetRowIndexForDeviceIndex(int deviceIndex)
-        {
-            Device device = this.devices.Single(d => d.DeviceIndex == deviceIndex);
-            int rowIndex = this.devices.IndexOf(device);
-            return rowIndex;
+            return String.Join(" ", deviceList.ToArray());
         }
 
         private void quickSwitchItem_DropDownOpening(object sender, EventArgs e)
@@ -2405,7 +2699,11 @@ namespace MultiMiner.Win
 
         private void PopulateQuickSwitchMenu()
         {
-            quickSwitchItem.DropDownItems.Clear();
+            quickCoinMenu.Items.Clear();
+
+            quickSwitchItem.DropDown = quickCoinMenu;
+            quickSwitchPopupItem.DropDown = quickCoinMenu;
+            
             foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
             {
                 ToolStripMenuItem coinSwitchItem = new ToolStripMenuItem();
@@ -2414,7 +2712,7 @@ namespace MultiMiner.Win
                 coinSwitchItem.Tag = coinConfiguration.Coin.Symbol;
                 coinSwitchItem.Click += HandleQuickSwitchClick;
 
-                quickSwitchItem.DropDownItems.Add(coinSwitchItem);
+                quickCoinMenu.Items.Add(coinSwitchItem);
             }
         }
 
@@ -2422,9 +2720,7 @@ namespace MultiMiner.Win
         {
             bool wasMining = miningEngine.Mining;
             StopMining();
-
-            deviceGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
-
+            
             string coinSymbol = (string)((ToolStripMenuItem)sender).Tag;
 
             CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(coinSymbol));
@@ -2432,13 +2728,14 @@ namespace MultiMiner.Win
             SetAllDevicesToCoin(coinConfiguration);
 
             engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false; 
-            coinColumn.ReadOnly = false;
-            coinColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.DropDownButton;
 
             engineConfiguration.SaveDeviceConfigurations();
             engineConfiguration.SaveStrategyConfiguration();
 
-            LoadGridValuesFromConfiguration();
+            LoadListViewValuesFromConfiguration();
+            LoadListViewValuesFromCoinStats(); 
+
+            AutoSizeListViewColumns();
 
             if (wasMining)
                 StartMining();
@@ -2450,13 +2747,14 @@ namespace MultiMiner.Win
 
             for (int i = 0; i < devices.Count; i++)
             {
-                DataGridViewRow gridRow = deviceGridView.Rows[i];
+                ListViewItem listViewItem = deviceListView.Items[i];
+
                 Device device = devices[i];
-                CryptoCoin currentCoin = knownCoins.SingleOrDefault(c => c.Name.Equals(gridRow.Cells[coinColumn.Index].Value));
+                CryptoCoin currentCoin = knownCoins.SingleOrDefault(c => c.Name.Equals(listViewItem.SubItems["Coin"].Text));
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
-                deviceConfiguration.DeviceIndex = device.DeviceIndex;
+                deviceConfiguration.Assign(device);
 
                 if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
                 {
@@ -2470,17 +2768,20 @@ namespace MultiMiner.Win
                     deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
                 }
 
-                object cellValue = gridRow.Cells[enabledColumn.Index].Value;
-                deviceConfiguration.Enabled = cellValue == null ? true : (bool)cellValue;
+                deviceConfiguration.Enabled = listViewItem.Checked;
 
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
-            }
+            }           
         }
 
         private void advancedMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
             quickSwitchItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
+
+            //
+            dynamicIntensityButton.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
+            dynamicIntensitySeparator.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
         }
 
         private void notificationsControl1_NotificationsChanged(object sender)
@@ -2505,23 +2806,19 @@ namespace MultiMiner.Win
             //we cannot auto install miners on Unix (yet)
             if (applicationConfiguration.CheckForMinerUpdates && (concretePlatform != PlatformID.Unix))
             {
-                MinerBackend minerBackend = MinerBackend.Cgminer;
-                TryToCheckForMinerUpdates(minerBackend);
-
-                minerBackend = MinerBackend.Bfgminer;
-                TryToCheckForMinerUpdates(minerBackend);
+                TryToCheckForMinerUpdates();
             }
         }
 
-        private void TryToCheckForMinerUpdates(MinerBackend minerBackend)
+        private void TryToCheckForMinerUpdates()
         {
             try
             {
-                CheckForMinerUpdates(minerBackend);
+                CheckForMinerUpdates();
             }
             catch (ArgumentException ex)
             {
-                string error = String.Format("Error checking for {0} updates", minerBackend.ToString().ToLower());
+                string error = String.Format("Error checking for {0} updates", "bfgminer");
                 notificationsControl.AddNotification(error, error, () =>
                 {
                 }, "");
@@ -2529,7 +2826,6 @@ namespace MultiMiner.Win
         }
 
         private const int bfgminerNotificationId = 100;
-        private const int cgminerNotificationId = 101;
         private const int multiMinerNotificationId = 102;
 
         private void CheckForMultiMinerUpdates()
@@ -2573,7 +2869,7 @@ namespace MultiMiner.Win
             return sourceVersion.Major == targetVersion.Major;
         }
 
-        private bool ThisVersionGreater(string thisVersion, string thatVersion)
+        private static bool ThisVersionGreater(string thisVersion, string thatVersion)
         {
             Version thisVersionObj = new Version(thisVersion);
             Version thatVersionObj = new Version(thatVersion);
@@ -2581,33 +2877,27 @@ namespace MultiMiner.Win
             return thisVersionObj > thatVersionObj;
         }
 
-        private void CheckForMinerUpdates(MinerBackend minerBackend)
+        private void CheckForMinerUpdates()
         {
-            if (!MinerIsInstalled(minerBackend))
+            if (!MinerIsInstalled())
                 return;
 
-            string availableMinerVersion = GetAvailableBackendVersion(minerBackend);
+            string availableMinerVersion = GetAvailableBackendVersion();
             if (String.IsNullOrEmpty(availableMinerVersion))
                 return;
 
-            //don't automatically update to bfgminer 3.7 - its a big breaking change
-            if (!BackendVersionIsCompatible(minerBackend, availableMinerVersion))
-                return;
-
-            string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVersion(minerBackend, MinerPath.GetPathToInstalledMiner(minerBackend));
+            string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner());
             if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
-                DisplayMinerUpdateNotification(minerBackend, availableMinerVersion, installedMinerVersion);
+                DisplayMinerUpdateNotification(availableMinerVersion, installedMinerVersion);
         }
 
-        private void DisplayMinerUpdateNotification(MinerBackend minerBackend, string availableMinerVersion, string installedMinerVersion)
+        private void DisplayMinerUpdateNotification(string availableMinerVersion, string installedMinerVersion)
         {
-            int notificationId = minerBackend == MinerBackend.Bfgminer ? bfgminerNotificationId : cgminerNotificationId;
+            int notificationId = bfgminerNotificationId;
 
-            string informationUrl = "https://github.com/ckolivas/cgminer/blob/master/NEWS";
-            if (minerBackend == MinerBackend.Bfgminer)
-                informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
+            string informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
 
-            string minerName = MinerPath.GetMinerName(minerBackend);
+            string minerName = MinerPath.GetMinerName();
             notificationsControl.AddNotification(notificationId.ToString(),
                 String.Format("{0} version {1} is available ({2} installed)",
                     minerName, availableMinerVersion, installedMinerVersion), () =>
@@ -2615,39 +2905,27 @@ namespace MultiMiner.Win
                     bool wasMining = miningEngine.Mining;
 
                     //only stop mining if this is the engine being used
-                    if (wasMining && (engineConfiguration.XgminerConfiguration.MinerBackend == minerBackend))
+                    if (wasMining)
                         StopMining();
 
-                    InstallMiner(minerBackend);
+                    InstallMiner();
 
                     //only start mining if we stopped mining
-                    if (wasMining && (engineConfiguration.XgminerConfiguration.MinerBackend == minerBackend))
+                    if (wasMining)
                         StartMining();
                 }, informationUrl);
         }
 
-        private static string GetAvailableBackendVersion(MinerBackend minerBackend)
+        private static string GetAvailableBackendVersion()
         {
             string result = String.Empty;
             try
             {
-                result = Xgminer.Installer.GetAvailableMinerVersion(minerBackend);
+                result = Xgminer.Installer.GetAvailableMinerVersion();
             }
             catch (WebException ex)
             {
                 //downloads website is down
-            }
-            return result;
-        }
-
-        private static bool BackendVersionIsCompatible(MinerBackend minerBackend, string version)
-        {
-            bool result = true;
-            if (minerBackend == MinerBackend.Bfgminer)
-            {
-                //don't automatically update to bfgminer 3.7 - its a big breaking change
-                Version maxVersion = new Version(3, 7);
-                result = new Version(version) < maxVersion;
             }
             return result;
         }
@@ -2692,13 +2970,19 @@ namespace MultiMiner.Win
                 if (idleTimeSpan.TotalMinutes > idleMinutesForDesktopMode)
                 {
                     if (engineConfiguration.XgminerConfiguration.DesktopMode)
-                    EnableDesktopMode(false);
+                    {
+                        EnableDesktopMode(false);
+                        RestartMiningIfMining();
+                    }
                 }
                 //else if idle for less than the idleTimer interval, enable Desktop Mode
                 else if (idleTimeSpan.TotalMilliseconds <= idleTimer.Interval)
                 {
                     if (!engineConfiguration.XgminerConfiguration.DesktopMode)
-                    EnableDesktopMode(true);
+                    {
+                        EnableDesktopMode(true);
+                        RestartMiningIfMining();
+                    }
                 }
             }
         }
@@ -2706,8 +2990,7 @@ namespace MultiMiner.Win
         private void EnableDesktopMode(bool enabled)
         {
             engineConfiguration.XgminerConfiguration.DesktopMode = enabled;
-            desktopModeButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
-            RestartMiningIfMining();
+            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
             engineConfiguration.SaveMinerConfiguration();
         }
 
@@ -2719,7 +3002,7 @@ namespace MultiMiner.Win
 
         private void settingsButton_ButtonClick(object sender, EventArgs e)
         {
-            ShowApplicationSettings();
+            ConfigureSettings();
         }
 
         private void coinsButton_Click_1(object sender, EventArgs e)
@@ -2737,16 +3020,303 @@ namespace MultiMiner.Win
             RestartMiningIfMining();
         }
 
-        private void deviceGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void RestartMiningIfMining()
         {
-            //don't show 0 temps
-            if ((e.ColumnIndex == temperatureColumn.Index) && (e.Value != null) && ((double)e.Value == 0))
-                e.Value = null;
+            if (miningEngine.Mining)
+            {
+                StopMining();
+                StartMining();
+            }
         }
 
         private void minerSummaryTimer_Tick(object sender, EventArgs e)
         {
             PopulateSummaryInfoFromProcesses();
+        }
+
+        private void deviceListView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
+        {
+            if (deviceListView.Columns[e.ColumnIndex].Width == 0)
+            {
+                e.Cancel = true;
+                e.NewWidth = 0;
+            }
+        }
+
+        private void deviceListView_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+                if (deviceListView.FocusedItem.Bounds.Contains(e.Location) == true)
+                    coinPopupMenu.Show(Cursor.Position);
+        }
+
+        private void deviceListView_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            if (!updatingListView)
+                UpdateChangesButtons(true);
+        }
+
+        private void dynamicIntensityButton_Click(object sender, EventArgs e)
+        {
+            engineConfiguration.XgminerConfiguration.DesktopMode = dynamicIntensityButton.Checked;
+            engineConfiguration.SaveMinerConfiguration();
+        }
+
+        private void deviceListView_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if ((deviceListView.FocusedItem == null) || !deviceListView.FocusedItem.Bounds.Contains(e.Location))
+                {
+                    deviceListContextMenu.Show(Cursor.Position);
+                }
+            }
+        }
+
+        private void detectDevicesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RefreshDevices();
+        }
+
+        private void historyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowHistory();
+        }
+
+        private void processLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowProcessLog();
+        }
+
+        private void aPIMonitorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowApiMonitor();
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConfigureSettings();
+        }
+
+        private void coinsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConfigureCoins();
+        }
+
+        private void strategiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConfigureStrategies();
+        }
+
+        private void deviceListContextMenu_Opening(object sender, CancelEventArgs e)
+        {
+            //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
+            quickSwitchPopupItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
+        }
+
+        private void quickSwitchPopupItem_DropDownOpening(object sender, EventArgs e)
+        {
+            PopulateQuickSwitchMenu();
+        }
+
+        private bool briefMode = false;
+        private void detailsToggleButton_ButtonClick(object sender, EventArgs e)
+        {
+            SetBriefMode(!briefMode);
+            RefreshDetailsToggleButton();
+        }
+
+        private void RefreshDetailsToggleButton()
+        {
+            if (briefMode)
+                detailsToggleButton.Text = "▾ More details";
+            else
+                detailsToggleButton.Text = "▴ Fewer details";
+        }
+
+        private void SetBriefMode(bool newBriefMode)
+        {
+            briefMode = newBriefMode;
+            RefreshDetailsToggleButton();
+
+            //do this before adjusting the window size so we can base it on column widths
+            AutoSizeListViewColumns();
+
+            if (briefMode)
+            {
+                HideAdvancedPanel();
+                WindowState = FormWindowState.Normal;
+
+                int newWidth = 0;
+
+                foreach (ColumnHeader column in deviceListView.Columns)
+                    newWidth += column.Width;
+                newWidth += 40; //needs to be pretty wide for e.g. Aero Basic
+
+                newWidth = Math.Max(newWidth, 300);
+
+                Size = new Size(newWidth, 400);
+
+            } else
+            {
+                if (WindowState != FormWindowState.Maximized)
+                {
+                    //use Math.Max so it won't size smaller to show more
+                    Size = new Size(Math.Max(Size.Width, 720), Math.Max(Size.Height, 500));
+                }
+            }
+
+            strategiesLabel.Visible = !briefMode;
+            strategyCountdownLabel.Visible = !briefMode;
+            deviceTotalLabel.Visible = !briefMode;
+
+            advancedMenuItem.Visible = !briefMode;
+            //don't hide settings - the wizard talks about the button
+            //settingsButton.Visible = !briefMode;
+            //settingsSeparator.Visible = !briefMode;
+
+            footerPanel.Visible = !briefMode;
+
+            applicationConfiguration.BriefUserInterface = briefMode;
+            applicationConfiguration.SaveApplicationConfiguration();
+        }
+
+        private void largeIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.LargeIcon);
+        }
+
+        private void smallIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.SmallIcon);
+        }
+
+        private void listToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.List);
+        }
+
+        private void detailsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.Details);
+        }
+
+        private void tilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.Tile);
+        }
+
+        private void SetListViewStyle(View view)
+        {
+            updatingListView = true;
+            try
+            {
+                deviceListView.CheckBoxes = false;
+                deviceListView.View = view;
+                deviceListView.CheckBoxes = view != View.Tile;
+
+                switch (view)
+                {
+                    case View.LargeIcon:
+                        listViewStyleButton.Image = Properties.Resources.view_medium_icons;
+                        break;
+                    case View.Details:
+                        listViewStyleButton.Image = Properties.Resources.view_details;
+                        break;
+                    case View.SmallIcon:
+                        listViewStyleButton.Image = Properties.Resources.view_small_icons;
+                        break;
+                    case View.List:
+                        listViewStyleButton.Image = Properties.Resources.view_list;
+                        break;
+                    case View.Tile:
+                        listViewStyleButton.Image = Properties.Resources.view_large_icons;
+                        break;
+                }
+
+                applicationConfiguration.ListViewStyle = view;
+
+                if (view == View.Details)
+                    AutoSizeListViewColumns();
+            }
+            finally
+            {
+                updatingListView = false;
+            }
+        }
+
+        private void listViewStyleButton_ButtonClick(object sender, EventArgs e)
+        {
+            switch (deviceListView.View)
+            {
+                case View.LargeIcon:
+                    SetListViewStyle(View.SmallIcon);
+                    break;
+                case View.Details:
+                    SetListViewStyle(View.Tile);
+                    break;
+                case View.SmallIcon:
+                    SetListViewStyle(View.List);
+                    break;
+                case View.List:
+                    SetListViewStyle(View.Details);
+                    break;
+                case View.Tile:
+                    SetListViewStyle(View.LargeIcon);
+                    break;
+            }
+        }
+
+        private void historyGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if ((e.ColumnIndex == 0) || (e.ColumnIndex == 1))
+            {
+                e.Value = GetReallyShortDateTimeFormat((DateTime)e.Value);
+                e.FormattingApplied = true;
+            }
+        }
+
+        private static string GetReallyShortDateTimeFormat(DateTime dateTime)
+        {
+            //date's, custom format without the year
+            string shortDateValue = dateTime.ToShortDateString();
+            string shortTimeValue = dateTime.ToShortTimeString();
+            int lastIndex = shortDateValue.LastIndexOf(CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator);
+            string reallyShortDateValue = shortDateValue.Remove(lastIndex);
+
+            return String.Format("{0} {1}", reallyShortDateValue, shortTimeValue);
+        }
+
+        private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.ColumnIndex == 0)
+            {
+                if (e.Value != null)
+                {
+                    e.Value = GetReallyShortDateTimeFormat((DateTime)e.Value);
+                    e.FormattingApplied = true;
+                }
+            }
+        }
+
+        private void apiLogGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.ColumnIndex == 0)
+            {
+                e.Value = GetReallyShortDateTimeFormat((DateTime)e.Value);
+                e.FormattingApplied = true;
+            }
+        }
+
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            AutoSizeListViewColumns();
+        }
+
+        private void restartButton_Click(object sender, EventArgs e)
+        {
+            StopMining();
+            StartMining();
         }
     }
 }

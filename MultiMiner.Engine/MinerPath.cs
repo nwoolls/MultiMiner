@@ -1,5 +1,4 @@
 ﻿using MultiMiner.Utility;
-using MultiMiner.Xgminer;
 using System;
 using System.IO;
 
@@ -7,13 +6,12 @@ namespace MultiMiner.Engine
 {
     public static class MinerPath
     {
-        private const string CgminerName = "cgminer";
         private const string BfgminerName = "bfgminer";
 
-        public static string GetPathToInstalledMiner(MinerBackend minerBackend)
+        public static string GetPathToInstalledMiner()
         {
             string executablePath = string.Empty;
-            string minerName = GetMinerName(minerBackend);
+            string minerName = GetMinerName();
 
             switch (OSVersionPlatform.GetConcretePlatform())
             {
@@ -50,14 +48,9 @@ namespace MultiMiner.Engine
             return executablePath;
         }
 
-        public static string GetMinerName(MinerBackend minerBackend)
+        public static string GetMinerName()
         {
-            string minerName = CgminerName;
-
-            if (minerBackend == MinerBackend.Bfgminer)
-                minerName = BfgminerName;
-
-            return minerName;
+            return BfgminerName;
         }
     }
 }

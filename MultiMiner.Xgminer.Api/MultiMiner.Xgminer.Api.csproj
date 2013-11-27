@@ -40,7 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiContext.cs" />
+    <Compile Include="Parsers\DeviceDetailsParser.cs" />
     <Compile Include="Parsers\ResponseTextParser.cs" />
+    <Compile Include="Responses\DeviceDetailsResponse.cs" />
     <Compile Include="Responses\DeviceInformationResponse.cs" />
     <Compile Include="LogEventArgs.cs" />
     <Compile Include="Parsers\DeviceInformationParser.cs" />

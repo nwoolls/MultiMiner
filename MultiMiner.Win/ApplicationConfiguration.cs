@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
 
 namespace MultiMiner.Win
 {
@@ -13,9 +14,10 @@ namespace MultiMiner.Win
             FifteenMinutes = 1,
             ThirtyMinutes = 2,
             OneHour = 3,
-            ThreeHours = 4,
-            SixHours = 5,
-            TwelveHours = 6
+            TwoHours = 4,
+            ThreeHours = 5,
+            SixHours = 6,
+            TwelveHours = 7
         }
 
         [Flags]
@@ -36,6 +38,7 @@ namespace MultiMiner.Win
             this.MobileMinerUsesHttps = true;
             this.SuggestionsAlgorithm = CoinSuggestionsAlgorithm.SHA256 | CoinSuggestionsAlgorithm.Scrypt;
             this.CheckForMinerUpdates = true;
+            this.ListViewStyle = View.Details;
         }
 
         public bool LaunchOnWindowsLogin { get; set; }
@@ -51,6 +54,8 @@ namespace MultiMiner.Win
         public bool AutoSetDesktopMode { get; set; }
         public Rectangle AppPosition { get; set; }
         public bool CheckForMinerUpdates { get; set; }
+        public bool BriefUserInterface { get; set; }
+        public View ListViewStyle { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }
