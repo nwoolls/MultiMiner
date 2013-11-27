@@ -1302,6 +1302,9 @@ namespace MultiMiner.Win
             Device device = devices[itemIndex];
             //get the actual device configuration, text in the ListViewItem may be unsaved
             DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+            if (deviceConfiguration == null)
+                return null;
+
             string itemCoinSymbol = deviceConfiguration.CoinSymbol;
             CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(itemCoinSymbol, StringComparison.OrdinalIgnoreCase));
             return coinConfiguration;
