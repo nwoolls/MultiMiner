@@ -1,6 +1,7 @@
 //get version info from VersionInfo.ini
 var versionInfoIni = ini.fromFile("VersionInfo.ini");
 var appVersion = versionInfoIni.getValue("VersionInfo", "AppVersion", "1.0");
+var shortAppVersion = appVersion.substring(0, appVersion.lastIndexOf(".", appVersion.length - 1));
 
 //update the assembly versions for each .NET project using the above version info
 msbuild.updateAssemblyVersion("../MultiMiner.Coin.Api/Properties/AssemblyInfo.cs", appVersion);
@@ -26,7 +27,7 @@ msbuild.rebuild("../MultiMiner.Xgminer.Api/MultiMiner.Xgminer.Api.csproj", { con
 msbuild.rebuild("../MultiMiner.MobileMiner.Api/MultiMiner.MobileMiner.Api.csproj", { configuration: "Release" });
 
 //export environment variable for InnoSetup to use for app version
-export("MM_AppVersion", appVersion);
+export("MM_AppVersion", shortAppVersion);
 
 //build an InnoSetup installer
 inno.build("Installer.iss", { });
@@ -59,7 +60,7 @@ file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Miners/bfgminer/Extract bfgminer here.txt", "PF/Miners/bfgminer");
-zip.compress("Output/MultiMiner-" + appVersion + ".zip", "PF/", "*.*", true);
+zip.compress("Output/MultiMiner-" + shortAppVersion + ".zip", "PF/", "*.*", true);
 folder.remove("PF", true);
 
 //rebuild each .NET project - Debug configurations
@@ -101,7 +102,7 @@ file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Xgminer.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Xgminer.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/Newtonsoft.Json.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Debug/Miners/bfgminer/Extract bfgminer here.txt", "PF/Miners/bfgminer");
-zip.compress("Output/MultiMiner-Debug-" + appVersion + ".zip", "PF/", "*.*", true);
+zip.compress("Output/MultiMiner-Debug-" + shortAppVersion + ".zip", "PF/", "*.*", true);
 folder.remove("PF", true);
 
 //create Mac .app package (requires Mono, X11 to run)
@@ -141,7 +142,7 @@ Miners \
 folder.move("Output/MultiMiner.Win.app", "Output/MultiMiner.app");
 
 //zip the .app package up
-zip.compress("Output/MultiMiner-" + appVersion + ".app.zip", "Output/", "MultiMiner.app/", true);
+zip.compress("Output/MultiMiner-" + shortAppVersion + ".app.zip", "Output/", "MultiMiner.app/", true);
 
 //remove the .app package
 folder.remove("Output/MultiMiner.app", true);
