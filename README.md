@@ -3,21 +3,21 @@ MultiMiner
 ### Your coins. Your pools. Your way.
 __MultiMiner__ is a graphical application for crypto-coin mining on Windows, OS X and Linux. MultiMiner simplifies switching individual devices (GPUs, ASICs, FPGAs) between crypto-currencies such as Bitcoin and Litecoin.
 
-MultiMiner uses the underlying mining engine ([cgminer][1] by default) to detect available mining devices and then presents a user interface for selecting the coins you'd like to mine.
+MultiMiner uses the underlying mining engine ([bfgminer][2]) to detect available mining devices and then presents a user interface for selecting the coins you'd like to mine.
 
 ![Main Screen](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen.png "Main Screen")
+
+MultiMiner also offers several views, allowing you to display as much or as little information as you like.
+
+![Brief View](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Brief%20View.png "Brief View")
 
 For new users, MultiMiner includes a Getting Started wizard that walks you through selecting an engine, a coin, a pool, and configuring [MobileMiner][14].
 
 ![Getting Started](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Getting%20Started.png "Getting Started")
 
-MultiMiner will automatically download and install the latest version of either cgminer, [bfgminer][2], or both, making it simple for the new user to get started.
+MultiMiner will automatically download and install the latest version of either [bfgminer][2], making it simple for the new user to get started.
 
-![No Miners Prompt](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt.png "No Miners Prompt")
-
-These command line miners are standard tools for crypto-coin mining and are downloaded from official sources.
-
-![Downloading and Installing Cgminer](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Downloading%20and%20Installing%20Cgminer.png "Downloading and Installing Cgminer")
+![Downloading and Installing Cgminer](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Downloading%20and%20Installing%20Bfgminer.png "Downloading and Installing Cgminer")
 
 You can then use the Configure Coins dialog to setup each coin that you would like to mine along with their pools, including support for load balancing.
 
@@ -65,9 +65,7 @@ OS X Installation
 3. Download and extract the __.app__.zip file at the above Downloads link
 4. Launch MultiMiner.app to get started
 
-![No Miners Prompt - OS X](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/No%20Miners%20Prompt%20-%20OS%20X.png "No Miners Prompt - OS X")
-
-MultiMiner will automatically download redistributable binaries of cgminer and bfgminer from the [xgminer-osx][13] project.
+MultiMiner will automatically download redistributable binaries of bfgminer from the [xgminer-osx][13] project.
 
 ![Main Screen - OS X](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen%20-%20OS%20X.png "Main Screen - OS X")
 
@@ -93,7 +91,7 @@ Linux Installation (Debian-Based)
 Generic Mono Installation
 -------------------------------
 1. Download and extract the zip file at the above Downloads link
-2. Install cgminer or bfgminer. For OS X, you can find packages and for doing so [here][5] and instructions for using them [here][6].
+2. Install bfgminer. For OS X, you can find packages and for doing so [here][5] and instructions for using them [here][6].
 3. Install X11. Under OS X you should install Xquartz available [here][7].
 4. Install the latest version of [Mono][8].
 5. Run MultiMiner.Win.exe using mono:
@@ -108,7 +106,7 @@ Source Code
 -----------
 The source code is structured in such a way that it should be fairly easy to use and re-use for other projects:
 
-* __MultiMiner.Xgminer__ is an assembly for controling either the cgminer or bfgminer executable - e.g. launching and enumerating devices
+* __MultiMiner.Xgminer__ is an assembly for controlling the bfgminer executable - e.g. launching and enumerating devices
 * __MultiMiner.Xgminer.Api__ assists in communicating with the underlying miner via the RPC API
 * __MultiMiner.Coinchoose.Api__ assists in consuming the cypto-currency information available at [CoinChoose.com][9]
 * __MultiMiner.MobileMiner.Api__ facilitates communicating with the [MobileMiner][14] REST API
