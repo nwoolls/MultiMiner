@@ -187,9 +187,19 @@ namespace MultiMiner.Win
             string logFilePath = Path.Combine(AppDataPath(), logFileName);
             if (File.Exists(logFilePath))
             {
-                List<LogProcessCloseArgs> loadLogFile = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
-                loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - MaxHistoryOnScreen));
-                logCloseEntries.AddRange(loadLogFile);
+                try
+                {
+                    List<LogProcessCloseArgs> loadLogFile = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
+                    loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - MaxHistoryOnScreen));
+                    logCloseEntries.AddRange(loadLogFile);
+                }
+                catch (ArgumentException ex)
+                {
+                    //old MiningLog.json file - wrong format serialized
+                    //MiningLog.json rolls over so we will eventually be able to
+                    //load the previous log file
+                    return;
+                }
             }
         }
 
