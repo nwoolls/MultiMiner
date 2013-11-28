@@ -2430,7 +2430,16 @@ namespace MultiMiner.Win
 
                             //check to make sure there are no modal windows already
                             if (!ShowingModalDialog())
-                                ConfigureSettings();
+                            {
+                                if (InvokeRequired)
+                                    BeginInvoke((Action)(() =>
+                                    {
+                                        //code to update UI
+                                        ConfigureSettings();
+                                    }));
+                                else
+                                    ConfigureSettings();
+                            }
                         }
                     }
                     else
@@ -2552,7 +2561,16 @@ namespace MultiMiner.Win
 
                                     //check to make sure there are no modal windows already
                                     if (!ShowingModalDialog())
-                                        ConfigureSettings();
+                                    {
+                                        if (InvokeRequired)
+                                            BeginInvoke((Action)(() =>
+                                            {
+                                                //code to update UI
+                                                ConfigureSettings();
+                                            }));
+                                        else
+                                            ConfigureSettings();
+                                    }
                                 }
                             }
                             else
