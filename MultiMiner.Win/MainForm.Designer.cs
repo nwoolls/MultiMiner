@@ -342,8 +342,8 @@
             // 
             this.detectDevicesToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.hardware_find;
             this.detectDevicesToolStripMenuItem.Name = "detectDevicesToolStripMenuItem";
-            this.detectDevicesToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-            this.detectDevicesToolStripMenuItem.Text = "Detect Hardware";
+            this.detectDevicesToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.detectDevicesToolStripMenuItem.Text = "Scan Hardware";
             this.detectDevicesToolStripMenuItem.Click += new System.EventHandler(this.detectDevicesToolStripMenuItem_Click);
             // 
             // quickSwitchPopupItem
@@ -1209,7 +1209,7 @@
             this.detectDevicesButton.Image = global::MultiMiner.Win.Properties.Resources.hardware_find;
             this.detectDevicesButton.Name = "detectDevicesButton";
             this.detectDevicesButton.Size = new System.Drawing.Size(169, 22);
-            this.detectDevicesButton.Text = "Detect Hardware";
+            this.detectDevicesButton.Text = "Scan Hardware";
             this.detectDevicesButton.ToolTipText = "Scan for mining capable devices";
             this.detectDevicesButton.Click += new System.EventHandler(this.detectDevicesButton_Click);
             // 
