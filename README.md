@@ -7,6 +7,10 @@ MultiMiner uses the underlying mining engine ([bfgminer][2]) to detect available
 
 ![Main Screen](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen.png "Main Screen")
 
+MultiMiner also offers several views, allowing you to display as much or as little information as you like.
+
+![Brief View](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Brief%20View.png "Brief View")
+
 For new users, MultiMiner includes a Getting Started wizard that walks you through selecting an engine, a coin, a pool, and configuring [MobileMiner][14].
 
 ![Getting Started](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Getting%20Started.png "Getting Started")
