@@ -2331,11 +2331,14 @@ namespace MultiMiner.Win
             if (!applicationConfiguration.MobileMinerUsesHttps)
                 prefix = "http://";
 
-            string result = prefix + "api.mobileminerapp.com";
+            //deprecate api.mobileminerapp.com starting 11/28
+            //more expensive for no functional benefit
+            //string result = prefix + "api.mobileminerapp.com";
 
-            if (!OSVersionPlatform.IsWindowsVistaOrHigher())
-                //SNI SSL not supported on XP
-                result = prefix + "mobileminer.azurewebsites.net/api";
+            //if (!OSVersionPlatform.IsWindowsVistaOrHigher())
+            //    //SNI SSL not supported on XP
+            
+            string result = prefix + "mobileminer.azurewebsites.net/api";
 
             return result;
         }
