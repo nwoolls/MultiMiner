@@ -1685,9 +1685,11 @@ namespace MultiMiner.Win
                 if (device.Driver.Equals(deviceDetails.Driver, StringComparison.OrdinalIgnoreCase)
                     &&
                     (
-                    
+                    //serial == serial
+                    (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase))
+
                     //path == path
-                    (!String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
+                    || (!String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
                     
                     //proxy == proxy
                     || (device.Driver.Equals("proxy", StringComparison.OrdinalIgnoreCase))

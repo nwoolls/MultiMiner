@@ -37,6 +37,8 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     newDevice.Driver = keyValuePairs["Driver"];
                     if (keyValuePairs.ContainsKey("Device Path"))
                         newDevice.DevicePath = keyValuePairs["Device Path"];
+                    if (keyValuePairs.ContainsKey("Serial"))
+                        newDevice.Serial = keyValuePairs["Serial"];
                     if (keyValuePairs.ContainsKey("Kernel"))
                         newDevice.Kernel = keyValuePairs["Kernel"];
                     if (keyValuePairs.ContainsKey("Model"))
