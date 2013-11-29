@@ -15,7 +15,7 @@ For new users, MultiMiner includes a Getting Started wizard that walks you throu
 
 ![Getting Started](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Getting%20Started.png "Getting Started")
 
-MultiMiner will automatically download and install the latest version of either [bfgminer][2], making it simple for the new user to get started.
+MultiMiner will automatically download and install the latest version of [bfgminer][2], making it simple for the new user to get started.
 
 ![Downloading and Installing Cgminer](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Downloading%20and%20Installing%20Bfgminer.png "Downloading and Installing Cgminer")
 
