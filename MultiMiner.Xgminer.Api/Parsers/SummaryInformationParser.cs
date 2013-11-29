@@ -34,7 +34,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
             {
                 summaryInformation.Elapsed = TryToParseInt(keyValuePairs, "Elapsed", 0);
                 summaryInformation.AverageHashrate = TryToParseDouble(keyValuePairs, "MHS av", 0);
-                summaryInformation.FoundBlocks = TryToParseInt(keyValuePairs, "MHS av", 0);
+                summaryInformation.FoundBlocks = TryToParseInt(keyValuePairs, "Found Blocks", 0);
                 summaryInformation.GetWorks = TryToParseInt(keyValuePairs, "Getworks", 0);
                 summaryInformation.AcceptedShares = TryToParseInt(keyValuePairs, "Accepted", 0);
                 summaryInformation.RejectedShares = TryToParseInt(keyValuePairs, "Rejected", 0);
