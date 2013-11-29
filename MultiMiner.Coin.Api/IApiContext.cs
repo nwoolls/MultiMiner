@@ -6,5 +6,7 @@ namespace MultiMiner.Coin.Api
     {
         IEnumerable<CoinInformation> GetCoinInformation(string userAgent = "", BaseCoin profitabilityBasis = BaseCoin.Bitcoin);
         string GetApiUrl(BaseCoin profitabilityBasis);
+        string GetInfoUrl(BaseCoin profitabilityBasis);
+        string GetApiName();
     }
 }

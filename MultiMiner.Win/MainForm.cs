@@ -37,6 +37,7 @@ namespace MultiMiner.Win
         private NotificationsControl notificationsControl;
         private bool settingsLoaded = false;
         private Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
+        private MultiMiner.Coin.Api.IApiContext apiContext = new CoinChoose.Api.ApiContext();
 
         public MainForm()
         {
@@ -63,7 +64,7 @@ namespace MultiMiner.Win
 
             RefreshDetailsToggleButton();
 
-            RefreshCoinAPILabel();
+            RefreshCoinApiLabel();
 
             RefreshCoinPopupMenu();
 
@@ -428,8 +429,8 @@ namespace MultiMiner.Win
         private void PositionCoinChooseLabels()
         {
             //so things align correctly under Mono
-            coinChooseLinkLabel.Left = coinChoosePrefixLabel.Left + coinChoosePrefixLabel.Width;
-            coinChooseSuffixLabel.Left = coinChooseLinkLabel.Left + coinChooseLinkLabel.Width;
+            coinApiLinkLabel.Left = coinChoosePrefixLabel.Left + coinChoosePrefixLabel.Width;
+            coinChooseSuffixLabel.Left = coinApiLinkLabel.Left + coinApiLinkLabel.Width;
         }
 
         private bool updatingListView = false;
@@ -722,6 +723,8 @@ namespace MultiMiner.Win
         private void LoadSettings()
         {
             engineConfiguration.LoadAllConfigurations();
+
+            SetupCoinApi();
 
             RefreshStrategiesLabel();
             RefreshStrategiesCountdown();
@@ -1160,7 +1163,8 @@ namespace MultiMiner.Win
 
                 engineConfiguration.SaveMinerConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
-                RefreshCoinAPILabel();
+                SetupCoinApi();
+                RefreshCoinApiLabel();
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
                 SetupRestartTimer();
                 CheckForUpdates();
@@ -1175,12 +1179,17 @@ namespace MultiMiner.Win
             }
         }
 
-        private void RefreshCoinAPILabel()
+        private void SetupCoinApi()
         {
             if (applicationConfiguration.UseCoinWarzApi)
-                coinChooseLinkLabel.Text = "CoinWarz.com";
+                this.apiContext = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey);
             else
-                coinChooseLinkLabel.Text = "CoinChoose.com";
+                this.apiContext = new CoinChoose.Api.ApiContext();
+        }
+
+        private void RefreshCoinApiLabel()
+        {
+            coinApiLinkLabel.Text = this.apiContext.GetApiName();
 
             PositionCoinChooseLabels();
         }
@@ -1789,22 +1798,9 @@ namespace MultiMiner.Win
 
         private void ShowCoinApiErrorNotification(Exception ex)
         {
-            string siteUrl = String.Empty;
-            string apiUrl = String.Empty;
-            string apiName = String.Empty;
-            
-            if (applicationConfiguration.UseCoinWarzApi)
-            {
-                apiName = "CoinWarz.com";
-                siteUrl = "http://coinchoose.com/";
-                apiUrl = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey).GetApiUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
-            }
-            else
-            {
-                apiName = "CoinChoose.com";
-                siteUrl = "http://coinwarz.com/";
-                apiUrl = new MultiMiner.CoinChoose.Api.ApiContext().GetApiUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
-            }
+            string siteUrl = this.apiContext.GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
+            string apiUrl = this.apiContext.GetApiUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
+            string apiName = this.apiContext.GetApiName();
 
             notificationsControl.AddNotification(ex.Message,
                 String.Format("Error parsing the {0} JSON API", apiName), () =>
@@ -1882,9 +1878,9 @@ namespace MultiMiner.Win
                     break;
             }
 
-            string infoUrl = "http://coinchoose.com/index.php";
-            if (engineConfiguration.StrategyConfiguration.BaseCoin == Coin.Api.BaseCoin.Litecoin)
-                infoUrl = "http://coinchoose.com/litecoin.php";
+            string infoUrl = new CoinChoose.Api.ApiContext().GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
+            if (applicationConfiguration.UseCoinWarzApi)
+                infoUrl = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey).GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
 
             notificationsControl.AddNotification(coin.Symbol,
                 String.Format("Consider mining {0} ({1} {2})",
@@ -2123,11 +2119,7 @@ namespace MultiMiner.Win
 
         private void coinChooseLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string siteUrl = "http://coinchoose.com/";
-            if (applicationConfiguration.UseCoinWarzApi)
-                siteUrl = "http://coinwarz.com/";
-
-            Process.Start(siteUrl);
+            Process.Start(this.apiContext.GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin));
         }
 
         private void closeApiButton_Click(object sender, EventArgs e)

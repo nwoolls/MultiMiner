@@ -122,7 +122,7 @@
             this.closeApiButton = new System.Windows.Forms.Button();
             this.footerPanel = new System.Windows.Forms.Panel();
             this.coinChooseSuffixLabel = new System.Windows.Forms.Label();
-            this.coinChooseLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.coinApiLinkLabel = new System.Windows.Forms.LinkLabel();
             this.coinChoosePrefixLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.detailsToggleButton = new System.Windows.Forms.ToolStripButton();
@@ -894,7 +894,7 @@
             // 
             this.footerPanel.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.footerPanel.Controls.Add(this.coinChooseSuffixLabel);
-            this.footerPanel.Controls.Add(this.coinChooseLinkLabel);
+            this.footerPanel.Controls.Add(this.coinApiLinkLabel);
             this.footerPanel.Controls.Add(this.coinChoosePrefixLabel);
             this.footerPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.footerPanel.Location = new System.Drawing.Point(0, 424);
@@ -913,14 +913,14 @@
             // 
             // coinChooseLinkLabel
             // 
-            this.coinChooseLinkLabel.AutoSize = true;
-            this.coinChooseLinkLabel.Location = new System.Drawing.Point(217, 11);
-            this.coinChooseLinkLabel.Name = "coinChooseLinkLabel";
-            this.coinChooseLinkLabel.Size = new System.Drawing.Size(99, 15);
-            this.coinChooseLinkLabel.TabIndex = 1;
-            this.coinChooseLinkLabel.TabStop = true;
-            this.coinChooseLinkLabel.Text = "CoinChoose.com";
-            this.coinChooseLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.coinChooseLink_LinkClicked);
+            this.coinApiLinkLabel.AutoSize = true;
+            this.coinApiLinkLabel.Location = new System.Drawing.Point(217, 11);
+            this.coinApiLinkLabel.Name = "coinChooseLinkLabel";
+            this.coinApiLinkLabel.Size = new System.Drawing.Size(99, 15);
+            this.coinApiLinkLabel.TabIndex = 1;
+            this.coinApiLinkLabel.TabStop = true;
+            this.coinApiLinkLabel.Text = "CoinChoose.com";
+            this.coinApiLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.coinChooseLink_LinkClicked);
             // 
             // coinChoosePrefixLabel
             // 
@@ -1348,7 +1348,7 @@
         private System.Windows.Forms.Timer coinStatsCountdownTimer;
         private System.Windows.Forms.Panel footerPanel;
         private System.Windows.Forms.Label coinChooseSuffixLabel;
-        private System.Windows.Forms.LinkLabel coinChooseLinkLabel;
+        private System.Windows.Forms.LinkLabel coinApiLinkLabel;
         private System.Windows.Forms.Label coinChoosePrefixLabel;
         private System.Windows.Forms.ToolStripSeparator settingsSeparator;
         private System.Windows.Forms.SplitContainer advancedAreaContainer;

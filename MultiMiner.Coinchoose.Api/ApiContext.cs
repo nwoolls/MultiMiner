@@ -41,5 +41,18 @@ namespace MultiMiner.CoinChoose.Api
                 apiUrl = apiUrl + "?base=LTC";
             return apiUrl;
         }
+
+        public string GetInfoUrl(BaseCoin profitabilityBasis)
+        {
+            if (profitabilityBasis == BaseCoin.Litecoin)
+                return "http://coinchoose.com/litecoin.php";
+            else
+                return "http://coinchoose.com/index.php";
+        }
+        
+        public string GetApiName()
+        {
+            return "CoinChoose.com";
+        }
     }
 }

@@ -53,5 +53,15 @@ namespace MultiMiner.CoinWarz.Api
         {
             return String.Format(@"http://www.coinwarz.com/v1/api/profitability/?apikey={0}&algo=all", apiKey);
         }
+
+        public string GetInfoUrl(BaseCoin profitabilityBasis)
+        {
+            return String.Format(@"http://www.coinwarz.com/cryptocurrency", apiKey);
+        }
+
+        public string GetApiName()
+        {
+            return "CoinWarz.com";
+        }
     }
 }

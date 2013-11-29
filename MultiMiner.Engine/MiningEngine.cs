@@ -152,7 +152,7 @@ namespace MultiMiner.Engine
             if (coinInformation != null) //null if no network connection
                 processCoinInfo = coinInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             
-            //coin may not be in CoinChoose.com
+            //coin may not be in Coin API
             if (processCoinInfo != null)
                 minerProcess.CoinInformation = processCoinInfo;
             
@@ -170,7 +170,7 @@ namespace MultiMiner.Engine
 
             double priceAtStart = 0;
             string coinSymbol = String.Empty;
-            //coin may not be in CoinChoose.com
+            //coin may not be in Coin API
             if (minerProcess.CoinInformation != null)
             {
                 coinSymbol = minerProcess.CoinInformation.Symbol;
