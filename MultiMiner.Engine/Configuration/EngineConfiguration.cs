@@ -36,6 +36,14 @@ namespace MultiMiner.Engine.Configuration
             }
         }
 
+        public void LoadAllConfigurations()
+        {
+            LoadCoinConfigurations();
+            LoadDeviceConfigurations();
+            LoadMinerConfiguration();
+            LoadStrategyConfiguration();
+        }
+
         private static string AppDataPath()
         {
             string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
