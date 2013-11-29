@@ -15,7 +15,7 @@ using System.Threading;
 using MultiMiner.Utility;
 using MultiMiner.Win.Notifications;
 using MultiMiner.Xgminer.Api.Responses;
-using System.Globalization;
+using MultiMiner.Win.Extensions;
 
 namespace MultiMiner.Win
 {
@@ -1162,7 +1162,7 @@ namespace MultiMiner.Win
 
         private void SetupRestartTimer()
         {
-            restartTimer.Interval = TimerIntervalToMinutes(applicationConfiguration.ScheduledRestartMiningInterval) * 60 * 1000;
+            restartTimer.Interval = applicationConfiguration.ScheduledRestartMiningInterval.ToMinutes() * 60 * 1000;
             restartTimer.Enabled = applicationConfiguration.ScheduledRestartMining;
         }
 
@@ -1236,7 +1236,7 @@ namespace MultiMiner.Win
                     item.SubItems["Utility"].Tag = deviceInformation.Utility;
                 }
 
-                item.SubItems["Hashrate"].Text = FormatHashrate((double)item.SubItems["Hashrate"].Tag);
+                item.SubItems["Hashrate"].Text = ((double)item.SubItems["Hashrate"].Tag).ToHashrateString();
                 item.SubItems["Rejected"].Text = (int)item.SubItems["Rejected"].Tag > 0 ? ((int)item.SubItems["Rejected"].Tag).ToString() : String.Empty;
                 item.SubItems["Errors"].Text = (int)item.SubItems["Errors"].Tag > 0 ? ((int)item.SubItems["Errors"].Tag).ToString() : String.Empty;
                 item.SubItems["Accepted"].Text = (int)item.SubItems["Accepted"].Tag > 0 ? ((int)item.SubItems["Accepted"].Tag).ToString() : String.Empty;
@@ -1254,39 +1254,7 @@ namespace MultiMiner.Win
             }
 
         }
-
-        private static string FormatHashrate(double hashrate)
-        {
-            string suffix = "K";
-            double shortrate = hashrate;
-
-            if (shortrate > 1000)
-            {
-                shortrate /= 1000;
-                suffix = "M";
-            }
-
-            if (shortrate > 1000)
-            {
-                shortrate /= 1000;
-                suffix = "G";
-            }
-
-            if (shortrate > 1000)
-            {
-                shortrate /= 1000;
-                suffix = "T";
-            }
-
-            if (shortrate > 1000)
-            {
-                shortrate /= 1000;
-                suffix = "P";
-            }
-
-            return String.Format("{0:0.##} {1}h/s", shortrate, suffix);
-        }
-
+        
         private void PopulatePoolForListViewItem(int poolIndex, ListViewItem item)
         {
             if (poolIndex >= 0)
@@ -1561,9 +1529,9 @@ namespace MultiMiner.Win
             }
 
             //Mh not mh, mh is milli
-            scryptRateLabel.Text = totalScryptRate == 0 ? String.Empty : String.Format("Scrypt: {0}", FormatHashrate(totalScryptRate));
+            scryptRateLabel.Text = totalScryptRate == 0 ? String.Empty : String.Format("Scrypt: {0}", totalScryptRate.ToHashrateString());
             //spacing used to pad out the status bar item
-            sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}   ", FormatHashrate(totalSha256Rate)); 
+            sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}   ", totalSha256Rate.ToHashrateString()); 
 
             scryptRateLabel.AutoSize = true;
             sha256RateLabel.AutoSize = true;
@@ -2016,7 +1984,7 @@ namespace MultiMiner.Win
             deviceListView.BeginUpdate();
             try
             {
-                item.SubItems["Difficulty"].Text = FormatDifficulty(coin.Difficulty);
+                item.SubItems["Difficulty"].Text = coin.Difficulty.ToDifficultyString();
 
                 string unit = "BTC";
                 if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == Coin.Api.BaseCoin.Litecoin))
@@ -2027,13 +1995,13 @@ namespace MultiMiner.Win
                 switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
                 {
                     case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
-                        item.SubItems["Profitability"].Text = Math.Round(coin.AdjustedProfitability, 2).ToString() + "%";
+                        item.SubItems["Profitability"].Text = Math.Round(coin.AdjustedProfitability, 2) + "%";
                         break;
                     case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
-                        item.SubItems["Profitability"].Text = Math.Round(coin.AverageProfitability, 2).ToString() + "%";
+                        item.SubItems["Profitability"].Text = Math.Round(coin.AverageProfitability, 2) + "%";
                         break;
                     case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
-                        item.SubItems["Profitability"].Text = Math.Round(coin.Profitability, 2).ToString() + "%";
+                        item.SubItems["Profitability"].Text = Math.Round(coin.Profitability, 2) + "%";
                         break;
                 } 
             }
@@ -2042,38 +2010,6 @@ namespace MultiMiner.Win
                 deviceListView.EndUpdate();
             }
         }
-
-        private static string FormatDifficulty(double difficulty)
-        {
-            string suffix = "";
-            double shortened = difficulty;
-
-            if (shortened > 1000)
-            {
-                shortened /= 1000;
-                suffix = "K";
-            }
-
-            if (shortened > 1000)
-            {
-                shortened /= 1000;
-                suffix = "M";
-            }
-
-            if (shortened > 1000)
-            {
-                shortened /= 1000;
-                suffix = "B";
-            }
-
-            if (shortened > 1000)
-            {
-                shortened /= 1000;
-                suffix = "T";
-            }
-
-            return String.Format("{0:0.##} {1}", shortened, suffix).TrimEnd();
-        }           
 
         private void countdownTimer_Tick(object sender, EventArgs e)
         {
@@ -2163,7 +2099,7 @@ namespace MultiMiner.Win
             int coinStatsMinutes = 15;
             ApplicationConfiguration.TimerInterval timerInterval = applicationConfiguration.StrategyCheckInterval;
 
-            coinStatsMinutes = TimerIntervalToMinutes(timerInterval);
+            coinStatsMinutes = timerInterval.ToMinutes();
 
             coinStatsTimer.Enabled = false;
             coinStatsCountdownTimer.Enabled = false;
@@ -2175,35 +2111,6 @@ namespace MultiMiner.Win
             coinStatsCountdownTimer.Enabled = true;
         }
 
-        private static int TimerIntervalToMinutes(ApplicationConfiguration.TimerInterval timerInterval)
-        {
-            int coinStatsMinutes;
-            switch (timerInterval)
-            {
-                case ApplicationConfiguration.TimerInterval.FiveMinutes:
-                    coinStatsMinutes = 5;
-                    break;
-                case ApplicationConfiguration.TimerInterval.ThirtyMinutes:
-                    coinStatsMinutes = 30;
-                    break;
-                case ApplicationConfiguration.TimerInterval.OneHour:
-                    coinStatsMinutes = 1 * 60;
-                    break;
-                case ApplicationConfiguration.TimerInterval.ThreeHours:
-                    coinStatsMinutes = 3 * 60;
-                    break;
-                case ApplicationConfiguration.TimerInterval.SixHours:
-                    coinStatsMinutes = 6 * 60;
-                    break;
-                case ApplicationConfiguration.TimerInterval.TwelveHours:
-                    coinStatsMinutes = 12 * 60;
-                    break;
-                default:
-                    coinStatsMinutes = 15;
-                    break;
-            }
-            return coinStatsMinutes;
-        }
         private void coinStatsCountdownTimer_Tick(object sender, EventArgs e)
         {
             coinStatsCountdownMinutes--;
@@ -2368,25 +2275,14 @@ namespace MultiMiner.Win
                 List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
 
                 if (deviceInformationList == null) //handled failure getting API info
-                {
                     continue;
-                }
 
                 foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                 {
                     MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics = new MobileMiner.Api.MiningStatistics();
 
-                    miningStatistics.MinerName = "MultiMiner";
+                    PopulateMiningStatistics(miningStatistics, deviceInformation);
                     miningStatistics.CoinName = GetCoinNameForApiContext(minerProcess.ApiContext);
-                    CryptoCoin coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(miningStatistics.CoinName)).Coin;
-                    miningStatistics.CoinSymbol = coin.Symbol;
-
-                    if (coin.Algorithm == CoinAlgorithm.Scrypt)
-                        miningStatistics.Algorithm = "scrypt";
-                    else if (coin.Algorithm == CoinAlgorithm.SHA256)
-                        miningStatistics.Algorithm = "SHA-256";
-
-                    PopulateMiningStatsFromDeviceInfo(miningStatistics, deviceInformation);
 
                     statisticsList.Add(miningStatistics);
                 }
@@ -2399,6 +2295,20 @@ namespace MultiMiner.Win
 
                 submitMiningStatisticsDelegate.BeginInvoke(statisticsList, null, null);
             }
+        }
+
+        private void PopulateMiningStatistics(MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics, DeviceInformationResponse deviceInformation)
+        {
+            miningStatistics.MinerName = "MultiMiner";
+            CryptoCoin coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(miningStatistics.CoinName)).Coin;
+            miningStatistics.CoinSymbol = coin.Symbol;
+
+            if (coin.Algorithm == CoinAlgorithm.Scrypt)
+                miningStatistics.Algorithm = "scrypt";
+            else if (coin.Algorithm == CoinAlgorithm.SHA256)
+                miningStatistics.Algorithm = "SHA-256";
+
+            miningStatistics.PopulateFrom(deviceInformation);
         }
 
         private Action<List<MultiMiner.MobileMiner.Api.MiningStatistics>> submitMiningStatisticsDelegate;
@@ -2642,29 +2552,6 @@ namespace MultiMiner.Win
                                 Environment.MachineName, command.Id);
         }
 
-        private static void PopulateMiningStatsFromDeviceInfo(MobileMiner.Api.MiningStatistics miningStatistics, DeviceInformationResponse deviceInformation)
-        {
-            miningStatistics.AcceptedShares = deviceInformation.AcceptedShares;
-            miningStatistics.AverageHashrate = deviceInformation.AverageHashrate;
-            miningStatistics.CurrentHashrate = deviceInformation.CurrentHashrate;
-            miningStatistics.Enabled = deviceInformation.Enabled;
-            miningStatistics.FanPercent = deviceInformation.FanPercent;
-            miningStatistics.FanSpeed = deviceInformation.FanSpeed;
-            miningStatistics.GpuActivity = deviceInformation.GpuActivity;
-            miningStatistics.GpuClock = deviceInformation.GpuClock;
-            miningStatistics.GpuVoltage = deviceInformation.GpuVoltage;
-            miningStatistics.HardwareErrors = deviceInformation.HardwareErrors;
-            miningStatistics.Index = deviceInformation.Index;
-            miningStatistics.Intensity = deviceInformation.Intensity;
-            miningStatistics.Kind = deviceInformation.Kind;
-            miningStatistics.MemoryClock = deviceInformation.MemoryClock;
-            miningStatistics.PowerTune = deviceInformation.PowerTune;
-            miningStatistics.RejectedShares = deviceInformation.RejectedShares;
-            miningStatistics.Status = deviceInformation.Status;
-            miningStatistics.Temperature = deviceInformation.Temperature;
-            miningStatistics.Utility = deviceInformation.Utility;
-        }
-
         private void processLogButton_Click(object sender, EventArgs e)
         {
             ShowProcessLog();
@@ -2703,7 +2590,7 @@ namespace MultiMiner.Win
                 LogProcessCloseArgs ea = this.logCloseEntries[index];
 
                 string devicesString = "??";
-                //convert from device indexes (0 based) to device #'s (more human readable)
+                //convert device descriptors to homan readable string
                 //check for NULL because the history JSON is reloaded on startup and older
                 //versions didn't have this property serialized
                 if (ea.DeviceDescriptors != null)
@@ -2718,12 +2605,7 @@ namespace MultiMiner.Win
 
         private static string GetFormattedDevicesString(List<DeviceDescriptor> deviceDescriptors)
         {
-            List<string> deviceList = new List<string>();
-
-            foreach (DeviceDescriptor descriptor in deviceDescriptors)
-                deviceList.Add(descriptor.Description());
-
-            return String.Join(" ", deviceList.ToArray());
+            return String.Join(" ", deviceDescriptors.Select(d => d.ToString()).ToArray());
         }
 
         private void quickSwitchItem_DropDownOpening(object sender, EventArgs e)
@@ -2839,9 +2721,7 @@ namespace MultiMiner.Win
 
             //we cannot auto install miners on Unix (yet)
             if (applicationConfiguration.CheckForMinerUpdates && (concretePlatform != PlatformID.Unix))
-            {
                 TryToCheckForMinerUpdates();
-            }
         }
 
         private void TryToCheckForMinerUpdates()
@@ -3070,6 +2950,7 @@ namespace MultiMiner.Win
 
         private void deviceListView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
         {
+            //don't allow 0-width (hidden) columns to be resized
             if (deviceListView.Columns[e.ColumnIndex].Width == 0)
             {
                 e.Cancel = true;
@@ -3098,13 +2979,10 @@ namespace MultiMiner.Win
 
         private void deviceListView_MouseUp(object sender, MouseEventArgs e)
         {
+            //display the devices context menu when no item is selected
             if (e.Button == MouseButtons.Right)
-            {
                 if ((deviceListView.FocusedItem == null) || !deviceListView.FocusedItem.Bounds.Contains(e.Location))
-                {
                     deviceListContextMenu.Show(Cursor.Position);
-                }
-            }
         }
 
         private void detectDevicesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3312,13 +3190,7 @@ namespace MultiMiner.Win
 
         private static string GetReallyShortDateTimeFormat(DateTime dateTime)
         {
-            //date's, custom format without the year
-            string shortDateValue = dateTime.ToShortDateString();
-            string shortTimeValue = dateTime.ToShortTimeString();
-            int lastIndex = shortDateValue.LastIndexOf(CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator);
-            string reallyShortDateValue = shortDateValue.Remove(lastIndex);
-
-            return String.Format("{0} {1}", reallyShortDateValue, shortTimeValue);
+            return String.Format("{0} {1}", dateTime.ToReallyShortDateString(), dateTime.ToShortTimeString());
         }
 
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)

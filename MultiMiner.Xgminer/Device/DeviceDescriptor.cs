@@ -18,7 +18,7 @@ namespace MultiMiner.Xgminer
             this.Kind = DeviceKind.None;
         }
 
-        public string Description()
+        public override string ToString()
         {
             if (this.Kind == DeviceKind.PXY)
                 return "proxy";

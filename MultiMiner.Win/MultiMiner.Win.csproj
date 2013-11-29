@@ -79,6 +79,10 @@
       <DependentUpon>CoinsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ApiLogEntry.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\DoubleExtensions.cs" />
+    <Compile Include="Extensions\MiningStatisticsExtensions.cs" />
+    <Compile Include="Extensions\TimeIntervalExtensions.cs" />
     <Compile Include="HourGlass.cs" />
     <Compile Include="InputValidation.cs" />
     <Compile Include="MainForm.cs">
