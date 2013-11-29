@@ -238,7 +238,7 @@ namespace MultiMiner.Win
 
         private void SetupNotificationsControl()
         {
-            SplitterPanel parent = advancedAreaContainer.Panel1;
+            Control parent = advancedAreaContainer.Panel1;
 
             const int ControlOffset = 2;
             const int ControlHeight = 143;
@@ -250,8 +250,6 @@ namespace MultiMiner.Win
                 Height = ControlHeight,
                 Width = ControlWidth,
                 Parent = parent,
-                Left = parent.Width - ControlWidth - ControlOffset,
-                Top = parent.Height - ControlHeight - ControlOffset,
                 Anchor = AnchorStyles.Right | AnchorStyles.Bottom
             };
 
@@ -261,6 +259,11 @@ namespace MultiMiner.Win
             if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
                 //adjust for different metrics/layout under OS X/Unix
                 notificationsControl.Width += 50;
+
+            //base this on control.Width, not ControlWidth
+            notificationsControl.Left = parent.Width - notificationsControl.Width - ControlOffset;
+            //same here
+            notificationsControl.Top = parent.Height - notificationsControl.Height - ControlOffset;
         }
 
         private void notificationsControl1_NotificationAdded(string text)
