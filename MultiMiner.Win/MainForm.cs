@@ -1274,11 +1274,14 @@ namespace MultiMiner.Win
                 }
 
                 item.SubItems["Hashrate"].Text = ((double)item.SubItems["Hashrate"].Tag).ToHashrateString();
-                item.SubItems["Rejected"].Text = (double)item.SubItems["Rejected"].Tag > 0.00 ? ((double)item.SubItems["Rejected"].Tag).ToString("0.#") + "%" : String.Empty;
-                item.SubItems["Errors"].Text = (double)item.SubItems["Errors"].Tag > 0.00 ? ((double)item.SubItems["Errors"].Tag).ToString("0.#") + "%" : String.Empty;
+
+                //check for >= 0.05 so we don't show 0% (due to the format string)
+                item.SubItems["Rejected"].Text = (double)item.SubItems["Rejected"].Tag >= 0.05 ? ((double)item.SubItems["Rejected"].Tag).ToString("0.#") + "%" : String.Empty;
+                item.SubItems["Errors"].Text = (double)item.SubItems["Errors"].Tag >= 0.05 ? ((double)item.SubItems["Errors"].Tag).ToString("0.#") + "%" : String.Empty;
+
                 item.SubItems["Accepted"].Text = (int)item.SubItems["Accepted"].Tag > 0 ? ((int)item.SubItems["Accepted"].Tag).ToString() : String.Empty;
 
-                item.SubItems["Utility"].Text = (double)item.SubItems["Utility"].Tag > 0.00 ? ((double)item.SubItems["Utility"].Tag).ToString("0.###") : String.Empty;
+                item.SubItems["Utility"].Text = (double)item.SubItems["Utility"].Tag >= 0.00 ? ((double)item.SubItems["Utility"].Tag).ToString("0.###") : String.Empty;
 
                 item.SubItems["Temp"].Text = deviceInformation.Temperature > 0 ? deviceInformation.Temperature.ToString() + "°" : String.Empty;
                 item.SubItems["Intensity"].Text = deviceInformation.Intensity;
