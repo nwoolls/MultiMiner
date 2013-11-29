@@ -1238,10 +1238,10 @@ namespace MultiMiner.Win
             item.SubItems["Accepted"].Tag = 0;
 
             item.SubItems["Rejected"].Text = String.Empty;
-            item.SubItems["Rejected"].Tag = 0;
+            item.SubItems["Rejected"].Tag = 0.00;
 
             item.SubItems["Errors"].Text = String.Empty;
-            item.SubItems["Errors"].Tag = 0;
+            item.SubItems["Errors"].Tag = 0.00;
 
             item.SubItems["Utility"].Text = String.Empty;
             item.SubItems["Utility"].Tag = 0.00;
@@ -1259,23 +1259,23 @@ namespace MultiMiner.Win
                 if (deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
                 {
                     item.SubItems["Hashrate"].Tag = (double)(item.SubItems["Hashrate"].Tag ?? 0.00) + deviceInformation.AverageHashrate;
-                    item.SubItems["Rejected"].Tag = (int)(item.SubItems["Rejected"].Tag ?? 0) + deviceInformation.RejectedShares;
-                    item.SubItems["Errors"].Tag = (int)(item.SubItems["Errors"].Tag ?? 0) + deviceInformation.HardwareErrors;
+                    item.SubItems["Rejected"].Tag = (double)(item.SubItems["Rejected"].Tag ?? 0.00) + deviceInformation.RejectedSharesPercent;
+                    item.SubItems["Errors"].Tag = (double)(item.SubItems["Errors"].Tag ?? 0.00) + deviceInformation.HardwareErrorsPercent;
                     item.SubItems["Accepted"].Tag = (int)(item.SubItems["Accepted"].Tag ?? 0) + deviceInformation.AcceptedShares;
                     item.SubItems["Utility"].Tag = (double)(item.SubItems["Utility"].Tag ?? 0.00) + deviceInformation.Utility;
                 }
                 else
                 {
                     item.SubItems["Hashrate"].Tag = deviceInformation.AverageHashrate;
-                    item.SubItems["Rejected"].Tag = deviceInformation.RejectedShares;
-                    item.SubItems["Errors"].Tag = deviceInformation.HardwareErrors;
+                    item.SubItems["Rejected"].Tag = deviceInformation.RejectedSharesPercent;
+                    item.SubItems["Errors"].Tag = deviceInformation.HardwareErrorsPercent;
                     item.SubItems["Accepted"].Tag = deviceInformation.AcceptedShares;
                     item.SubItems["Utility"].Tag = deviceInformation.Utility;
                 }
 
                 item.SubItems["Hashrate"].Text = ((double)item.SubItems["Hashrate"].Tag).ToHashrateString();
-                item.SubItems["Rejected"].Text = (int)item.SubItems["Rejected"].Tag > 0 ? ((int)item.SubItems["Rejected"].Tag).ToString() : String.Empty;
-                item.SubItems["Errors"].Text = (int)item.SubItems["Errors"].Tag > 0 ? ((int)item.SubItems["Errors"].Tag).ToString() : String.Empty;
+                item.SubItems["Rejected"].Text = (double)item.SubItems["Rejected"].Tag > 0.00 ? ((double)item.SubItems["Rejected"].Tag).ToString("0.#") + "%" : String.Empty;
+                item.SubItems["Errors"].Text = (double)item.SubItems["Errors"].Tag > 0.00 ? ((double)item.SubItems["Errors"].Tag).ToString("0.#") + "%" : String.Empty;
                 item.SubItems["Accepted"].Text = (int)item.SubItems["Accepted"].Tag > 0 ? ((int)item.SubItems["Accepted"].Tag).ToString() : String.Empty;
 
                 item.SubItems["Utility"].Text = (double)item.SubItems["Utility"].Tag > 0.00 ? ((double)item.SubItems["Utility"].Tag).ToString("0.###") : String.Empty;
