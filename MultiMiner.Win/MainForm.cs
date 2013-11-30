@@ -3000,7 +3000,43 @@ namespace MultiMiner.Win
         {
             if (e.Button == MouseButtons.Right)
                 if (deviceListView.FocusedItem.Bounds.Contains(e.Location) == true)
+                {
+                    string currentCoin = GetCurrentlySelectedCoinName();
+
+                    CheckCoinInPopupMenu(currentCoin);
+
                     coinPopupMenu.Show(Cursor.Position);
+                }
+        }
+
+        private void CheckCoinInPopupMenu(string currentCoin)
+        {
+            foreach (ToolStripItem item in coinPopupMenu.Items)
+                ((ToolStripMenuItem)item).Checked = false;
+
+            if (!String.IsNullOrEmpty(currentCoin))
+            {
+                foreach (ToolStripItem item in coinPopupMenu.Items)
+                    if (item.Text.Equals(currentCoin))
+                    {
+                        ((ToolStripMenuItem)item).Checked = true;
+                        break;
+                    }
+            }
+        }
+        private string GetCurrentlySelectedCoinName()
+        {
+            string currentCoin = null;
+            foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
+            {
+                string itemValue = selectedItem.SubItems["Coin"].Text;
+                if (!String.IsNullOrEmpty(itemValue))
+                {
+                    currentCoin = itemValue;
+                    break;
+                }
+            }
+            return currentCoin;
         }
 
         private void deviceListView_ItemChecked(object sender, ItemCheckedEventArgs e)
