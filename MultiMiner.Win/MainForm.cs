@@ -1303,10 +1303,19 @@ namespace MultiMiner.Win
                     item.SubItems["Pool"].Text = String.Empty;
                 else
                 {
-                    string poolHost = coinConfiguration.Pools[poolIndex].Host;
-                    string poolDomain = poolHost.DomainFromHost();
+                    //the poolIndex may be greater than the Pools count if the user edits
+                    //their pools while mining
+                    if (poolIndex < coinConfiguration.Pools.Count)
+                    {
+                        string poolHost = coinConfiguration.Pools[poolIndex].Host;
+                        string poolDomain = poolHost.DomainFromHost();
 
-                    item.SubItems["Pool"].Text = poolDomain;
+                        item.SubItems["Pool"].Text = poolDomain;
+                    }
+                    else
+                    {
+                        item.SubItems["Pool"].Text = String.Empty;
+                    }
                 }
             }
             else
