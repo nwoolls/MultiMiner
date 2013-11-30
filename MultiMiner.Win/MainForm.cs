@@ -269,7 +269,18 @@ namespace MultiMiner.Win
 
         private void notificationsControl1_NotificationAdded(string text)
         {
+            LogNotificationToFile(text);
             SubmitMobileMinerNotification(text);
+        }
+
+        private void LogNotificationToFile(string text)
+        {
+            const string logFileName = "NotificationLog.json";
+            LogObjectToFile(new 
+            {
+                DateTime = DateTime.Now,
+                Notification = text
+            }, logFileName);
         }
 
         private void ProcessLaunchFailed(object sender, LaunchFailedArgs ea)
