@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MultiMiner.Utility
 {
@@ -27,6 +29,20 @@ namespace MultiMiner.Utility
             CopyObject(source, result);
 
             return result;
+        }
+
+        public static TDestination DeepCloneObject<TSource, TDestination>(TSource source)
+        {
+            TDestination objResult = default(TDestination);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                bf.Serialize(ms, source);
+
+                ms.Position = 0;
+                objResult = (TDestination)bf.Deserialize(ms);
+            }
+            return objResult;
         }
     }
 }

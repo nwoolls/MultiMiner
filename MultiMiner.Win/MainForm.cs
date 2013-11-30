@@ -38,6 +38,7 @@ namespace MultiMiner.Win
         private bool settingsLoaded = false;
         private Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
         private MultiMiner.Coin.Api.IApiContext apiContext = new CoinChoose.Api.ApiContext();
+        private List<CoinConfiguration> miningCoinConfigurations;
 
         public MainForm()
         {
@@ -1089,6 +1090,11 @@ namespace MultiMiner.Win
             startButton.Enabled = false; //immediately disable, update after
             startMenuItem.Enabled = false;
 
+            //create a deep clone of the mining configurations
+            //this is so we can accurately display e.g. the currently mining pools
+            //even if the user changes pool info without restartinging mining
+            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(this.engineConfiguration.CoinConfigurations);
+
             try
             {
                 using (new HourGlass())
@@ -1332,7 +1338,14 @@ namespace MultiMiner.Win
                 return null;
 
             string itemCoinSymbol = deviceConfiguration.CoinSymbol;
-            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(itemCoinSymbol, StringComparison.OrdinalIgnoreCase));
+
+            List<CoinConfiguration> configurations;
+            if (miningEngine.Mining)
+                configurations = this.miningCoinConfigurations;
+            else
+                configurations = engineConfiguration.CoinConfigurations;
+
+            CoinConfiguration coinConfiguration = configurations.SingleOrDefault(c => c.Coin.Symbol.Equals(itemCoinSymbol, StringComparison.OrdinalIgnoreCase));
             return coinConfiguration;
         }
 

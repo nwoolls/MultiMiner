@@ -1,5 +1,9 @@
-﻿namespace MultiMiner.Xgminer
+﻿using System;
+
+namespace MultiMiner.Xgminer
 {
+    //marked Serializable to allow deep cloning of CoinConfiguration
+    [Serializable]
     public class MiningPool
     {
         public string Host { get; set; }

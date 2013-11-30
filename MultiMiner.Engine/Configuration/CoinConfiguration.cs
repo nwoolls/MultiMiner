@@ -1,8 +1,11 @@
 ﻿using MultiMiner.Xgminer;
+using System;
 using System.Collections.Generic;
 
 namespace MultiMiner.Engine.Configuration
 {
+    //marked Serializable to allow deep cloning of CoinConfiguration
+    [Serializable]
     public class CoinConfiguration
     {
         public enum AdjustmentType
