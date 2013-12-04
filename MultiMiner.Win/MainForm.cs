@@ -1555,12 +1555,17 @@ namespace MultiMiner.Win
                         if (deviceInformation.CurrentHashrate == 0)
                             minerProcess.HasZeroHashrateDevice = true;
 
-                        //avoid div by 0
-                        if (deviceInformation.AverageHashrate > 0)
+                        //don't check average hashrate if using dynamic intensity and its a GPU
+                        if (!engineConfiguration.XgminerConfiguration.DesktopMode ||
+                            (!deviceInformation.Kind.Equals("GPU", StringComparison.OrdinalIgnoreCase)))
                         {
-                            double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
-                            if (performanceRatio <= 0.50)
-                                minerProcess.HasPoorPerformingDevice = true;
+                            //avoid div by 0
+                            if (deviceInformation.AverageHashrate > 0)
+                            {
+                                double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
+                                if (performanceRatio <= 0.50)
+                                    minerProcess.HasPoorPerformingDevice = true;
+                            }
                         }
 
                         DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
