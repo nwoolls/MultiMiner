@@ -1969,7 +1969,9 @@ namespace MultiMiner.Win
 
                 knownCoin.Symbol = item.Symbol;
                 knownCoin.Name = item.Name;
-                if (item.Algorithm.Contains("scrypt"))
+
+                //needs to be a case insensitive check to work with both CoinChoose and CoinWarz
+                if (item.Algorithm.ToLower().Contains("scrypt"))
                     knownCoin.Algorithm = CoinAlgorithm.Scrypt;
                 else
                     knownCoin.Algorithm = CoinAlgorithm.SHA256;
