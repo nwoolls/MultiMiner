@@ -323,14 +323,14 @@ namespace MultiMiner.Xgminer
         {
             //any lower than this seems to have a decent chance of a USB ASIC miner process not
             //successfully stopping & restarting
-            const int timeout = 3500;
+            //const int timeout = 3500;
 
             //newest cgminer, paired with USB ASIC's, likes to die on startup a few times saying the specified device
             //wasn't detected, happens when stopping/starting mining on USB ASIC's repeatedly
-            Thread.Sleep(timeout);
+            //Thread.Sleep(timeout); //no more cgminer, can we do this?
 
             int retries = 0;
-            const int maxRetries = 2;
+            const int maxRetries = 0; //no more cgminer, can we do this?
 
             while (process.HasExited)
             {
@@ -347,7 +347,7 @@ namespace MultiMiner.Xgminer
 
                 //ensure the new process is stored and returned
                 process = StartProcessAndCheckResponse(startInfo);
-                Thread.Sleep(timeout);
+                //Thread.Sleep(timeout); //no more cgminer, can we do this?
                 retries++;
             }
 
