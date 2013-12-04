@@ -295,7 +295,7 @@ namespace MultiMiner.Win
 
                     int enabledConfigurationCount = engineConfiguration.CoinConfigurations.Count(c => c.Enabled);
                     
-                    //only disble the configuration if there are others enabled - otherwise left idling
+                    //only disable the configuration if there are others enabled - otherwise left idling
                     if (enabledConfigurationCount > 1)
                     {
 
@@ -327,9 +327,20 @@ namespace MultiMiner.Win
                 }
                 else
                 {
-                    //if auto mining is disabled, stop mining and display a dialog
-                    StopMining();
-                    MessageBox.Show(ea.Reason, "Launching Miner Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (!applicationConfiguration.RestartCrashedMiners)
+                    {     
+                        //if we are not restarting miners, display a dialog
+                        MessageBox.Show(ea.Reason, "Launching Miner Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        //just notify - relaunching option will take care of the rest
+                        string notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
+                        notificationsControl.AddNotification(notificationReason, notificationReason, () =>
+                        {
+                            ConfigureCoins();
+                        }, "");
+                    }
                 }
             }));
         }
