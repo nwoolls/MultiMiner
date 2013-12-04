@@ -275,13 +275,17 @@ namespace MultiMiner.Xgminer
             return process;
         }
 
+        private bool errorHandledByEvent = false;
         private void HandleProcessOutput(object sender, DataReceivedEventArgs e)
         {
             if (String.IsNullOrEmpty(e.Data))
                 return;
 
+            errorHandledByEvent = false;
+
             if ((e.Data.IndexOf("auth failed", StringComparison.OrdinalIgnoreCase) >= 0) && (AuthenticationFailed != null))
             {
+                errorHandledByEvent = true; //must be done first as its async
                 AuthenticationFailedArgs args = new AuthenticationFailedArgs();
                 Match match = Regex.Match(e.Data, @" pool (\d) ");
                 string poolIndex = "??";
@@ -296,6 +300,7 @@ namespace MultiMiner.Xgminer
                 (e.Data.IndexOf("No servers were found", StringComparison.OrdinalIgnoreCase) >= 0))
                 && (LaunchFailed != null))
             {
+                errorHandledByEvent = true; //must be done first as its async
                 LaunchFailedArgs args = new LaunchFailedArgs();
                 args.Reason = String.Format("None of the pools configured for {0} could be used. Verify your pool settings and try again.",
                     minerConfiguration.CoinName);
@@ -334,7 +339,9 @@ namespace MultiMiner.Xgminer
 
             while (process.HasExited)
             {
-                if (retries >= maxRetries)
+                if ((retries >= maxRetries)
+                    //only throw an error if we haven't already triggered an event
+                    && !errorHandledByEvent)
                 {
                     string errors = processLaunchError;
 
