@@ -4,7 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
-namespace MultiMiner.Win
+namespace MultiMiner.Win.Configuration
 {
     public class ApplicationConfiguration
     {

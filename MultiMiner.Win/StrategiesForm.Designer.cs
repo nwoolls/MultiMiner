@@ -302,7 +302,7 @@
             // 
             // applicationConfigurationBindingSource
             // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.ApplicationConfiguration);
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.ApplicationConfiguration);
             // 
             // suggestionsCombo
             // 

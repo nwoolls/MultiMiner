@@ -1,9 +1,9 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Engine.Configuration;
 using System;
-using System.Windows.Forms;
 using System.Linq;
 using System.Collections.Generic;
+using MultiMiner.Win.Configuration;
 
 namespace MultiMiner.Win
 {

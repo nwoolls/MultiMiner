@@ -16,6 +16,7 @@ using MultiMiner.Utility;
 using MultiMiner.Win.Notifications;
 using MultiMiner.Xgminer.Api.Responses;
 using MultiMiner.Win.Extensions;
+using MultiMiner.Win.Configuration;
 
 namespace MultiMiner.Win
 {

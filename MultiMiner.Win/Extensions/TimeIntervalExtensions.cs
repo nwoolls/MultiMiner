@@ -1,8 +1,10 @@
-﻿namespace MultiMiner.Win.Extensions
+﻿using MultiMiner.Win.Configuration;
+
+namespace MultiMiner.Win.Extensions
 {
     static class TimeIntervalExtensions
     {
-        public static int ToMinutes(this MultiMiner.Win.ApplicationConfiguration.TimerInterval timerInterval)
+        public static int ToMinutes(this ApplicationConfiguration.TimerInterval timerInterval)
         {
             int coinStatsMinutes;
             switch (timerInterval)

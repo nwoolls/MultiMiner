@@ -59,7 +59,7 @@
     <Compile Include="AdvancedSettingsForm.Designer.cs">
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ApplicationConfiguration.cs" />
+    <Compile Include="Configuration\ApplicationConfiguration.cs" />
     <Compile Include="CoinChooseForm.cs">
       <SubType>Form</SubType>
     </Compile>
