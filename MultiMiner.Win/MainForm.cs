@@ -89,6 +89,8 @@ namespace MultiMiner.Win
             if (applicationConfiguration.DetectDisownedMiners)
                 CheckForDisownedMiners();
 
+            SetupStatusBarLabelLayouts();
+
             CheckAndDownloadMiners();
             
             SetupAutoUpdates();
@@ -1574,7 +1576,7 @@ namespace MultiMiner.Win
             //Mh not mh, mh is milli
             scryptRateLabel.Text = totalScryptRate == 0 ? String.Empty : String.Format("Scrypt: {0}", totalScryptRate.ToHashrateString());
             //spacing used to pad out the status bar item
-            sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}   ", totalSha256Rate.ToHashrateString()); 
+            sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}", totalSha256Rate.ToHashrateString()); 
 
             scryptRateLabel.AutoSize = true;
             sha256RateLabel.AutoSize = true;
@@ -3165,6 +3167,18 @@ namespace MultiMiner.Win
 
             applicationConfiguration.BriefUserInterface = briefMode;
             applicationConfiguration.SaveApplicationConfiguration();
+        }
+
+        private void SetupStatusBarLabelLayouts()
+        {
+            sha256RateLabel.AutoSize = true;
+            sha256RateLabel.Spring = true;
+
+            scryptRateLabel.AutoSize = true;
+            scryptRateLabel.Padding = new Padding(12, 0, 0, 0);
+
+            deviceTotalLabel.AutoSize = true;
+            deviceTotalLabel.Padding = new Padding(12, 0, 0, 0);
         }
 
         private void largeIconsToolStripMenuItem_Click(object sender, EventArgs e)
