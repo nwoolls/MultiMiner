@@ -1754,8 +1754,9 @@ namespace MultiMiner.Win
                 if (device.Driver.Equals(deviceDetails.Driver, StringComparison.OrdinalIgnoreCase)
                     &&
                     (
-                    //serial == serial
-                    (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase))
+                    //serial == serial && path == path (serial may not be unique)
+                    (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
+                      && !String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
 
                     //path == path
                     || (!String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))

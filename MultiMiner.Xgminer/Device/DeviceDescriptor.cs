@@ -55,7 +55,10 @@ namespace MultiMiner.Xgminer
                 //check for Serial on both sides as the Equals() needs to be bi-directional
                 return target.Driver.Equals(this.Driver, StringComparison.OrdinalIgnoreCase) && target.Path.Equals(this.Path, StringComparison.OrdinalIgnoreCase);
             else
-                return target.Driver.Equals(this.Driver, StringComparison.OrdinalIgnoreCase) && target.Serial.Equals(this.Serial, StringComparison.OrdinalIgnoreCase);
+                //match on Driver, Serial AND Path
+                //cannot just do Serial because, while it should be unique, in practice it is not
+                return target.Driver.Equals(this.Driver, StringComparison.OrdinalIgnoreCase) && target.Serial.Equals(this.Serial, StringComparison.OrdinalIgnoreCase)
+                    && target.Path.Equals(this.Path, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
