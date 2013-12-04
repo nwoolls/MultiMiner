@@ -41,6 +41,10 @@ namespace MultiMiner.Xgminer
 
         private static void DeleteFolderContents(string folderPath)
         {
+            if (!Directory.Exists(folderPath))
+                //necessary or an Exception is thrown under Mono for OS X
+                return;
+
             DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
 
             foreach (FileInfo fileInfo in directoryInfo.GetFiles())
