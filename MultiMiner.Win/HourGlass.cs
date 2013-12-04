@@ -22,6 +22,10 @@ namespace MultiMiner.Win
             get { return Application.UseWaitCursor; }
             set
             {
+                //this just doesn't work well consistently under Linux - usually the hourglass
+                //cursor is left spinning
+                if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix) return;
+
                 if (value == Application.UseWaitCursor) return;
                 Application.UseWaitCursor = value;
                 Form activeForm = Form.ActiveForm;
