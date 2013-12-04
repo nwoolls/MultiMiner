@@ -334,6 +334,9 @@ namespace MultiMiner.Xgminer
             //wasn't detected, happens when stopping/starting mining on USB ASIC's repeatedly
             //Thread.Sleep(timeout); //no more cgminer, can we do this?
 
+            //new code for bfgminer, a sleep is still needed for starting many instances in a loop
+            Thread.Sleep(100);
+
             int retries = 0;
             const int maxRetries = 0; //no more cgminer, can we do this?
 
