@@ -335,7 +335,7 @@ namespace MultiMiner.Xgminer
             //Thread.Sleep(timeout); //no more cgminer, can we do this?
 
             //new code for bfgminer, a sleep is still needed for starting many instances in a loop
-            Thread.Sleep(100);
+            Thread.Sleep(500);
 
             int retries = 0;
             const int maxRetries = 0; //no more cgminer, can we do this?
