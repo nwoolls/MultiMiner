@@ -493,6 +493,8 @@ namespace MultiMiner.Win
                 AddMissingDeviceConfigurations();
                 //but no configurations for devices that have gone missing
                 RemoveExcessDeviceConfigurations();
+                //remove any duplicate configurations
+                engineConfiguration.RemoveDuplicateDeviceConfigurations();
 
                 PopulateListViewFromDevices();
                 LoadListViewValuesFromConfiguration();

@@ -95,7 +95,7 @@ namespace MultiMiner.Engine.Configuration
 
         //this is necessary due to large changes to the class definition and streaming in / deserializing
         //older legacy XML
-        private void RemoveDuplicateDeviceConfigurations()
+        public void RemoveDuplicateDeviceConfigurations()
         {
             DeviceConfigurations = DeviceConfigurations
                 .GroupBy(c => new { c.Kind, c.RelativeIndex, c.Driver, c.Path, c.Serial })
