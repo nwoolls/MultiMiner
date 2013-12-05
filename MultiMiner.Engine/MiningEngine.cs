@@ -621,6 +621,7 @@ namespace MultiMiner.Engine
                     //only enable the stratum proxy if these devices contain the PXY device
                     minerConfiguration.StratumProxy = engineConfiguration.XgminerConfiguration.StratumProxy;
                     minerConfiguration.StratumProxyPort = engineConfiguration.XgminerConfiguration.StratumProxyPort;
+                    minerConfiguration.StratumProxyStratumPort = engineConfiguration.XgminerConfiguration.StratumProxyStratumPort;
                 }
             }
 
