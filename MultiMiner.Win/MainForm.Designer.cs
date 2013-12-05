@@ -124,6 +124,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.closeApiButton = new System.Windows.Forms.Button();
             this.footerPanel = new System.Windows.Forms.Panel();
+            this.incomeSummaryLabel = new System.Windows.Forms.Label();
             this.coinChooseSuffixLabel = new System.Windows.Forms.Label();
             this.coinApiLinkLabel = new System.Windows.Forms.LinkLabel();
             this.coinChoosePrefixLabel = new System.Windows.Forms.Label();
@@ -920,6 +921,7 @@
             // footerPanel
             // 
             this.footerPanel.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.footerPanel.Controls.Add(this.incomeSummaryLabel);
             this.footerPanel.Controls.Add(this.coinChooseSuffixLabel);
             this.footerPanel.Controls.Add(this.coinApiLinkLabel);
             this.footerPanel.Controls.Add(this.coinChoosePrefixLabel);
@@ -928,6 +930,21 @@
             this.footerPanel.Name = "footerPanel";
             this.footerPanel.Size = new System.Drawing.Size(881, 35);
             this.footerPanel.TabIndex = 9;
+            // 
+            // incomeSummaryLabel
+            // 
+            this.incomeSummaryLabel.AutoSize = true;
+            this.incomeSummaryLabel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.incomeSummaryLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.incomeSummaryLabel.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.incomeSummaryLabel.Location = new System.Drawing.Point(737, 0);
+            this.incomeSummaryLabel.MinimumSize = new System.Drawing.Size(35, 0);
+            this.incomeSummaryLabel.Name = "incomeSummaryLabel";
+            this.incomeSummaryLabel.Padding = new System.Windows.Forms.Padding(0, 10, 8, 0);
+            this.incomeSummaryLabel.Size = new System.Drawing.Size(144, 25);
+            this.incomeSummaryLabel.TabIndex = 3;
+            this.incomeSummaryLabel.Text = "label1 and test and test";
+            this.incomeSummaryLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // coinChooseSuffixLabel
             // 
@@ -1507,6 +1524,7 @@
         private System.Windows.Forms.ColumnHeader exchangeColumnHeader;
         private System.Windows.Forms.Timer exchangeRateTimer;
         private System.Windows.Forms.ColumnHeader incomeColumnHeader;
+        private System.Windows.Forms.Label incomeSummaryLabel;
     }
 }
 

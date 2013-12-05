@@ -52,6 +52,8 @@ namespace MultiMiner.Win
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            incomeSummaryLabel.Text = String.Empty;
+
             SetupInitialButtonVisibility();
 
             SetupGridColumns();
@@ -1114,6 +1116,7 @@ namespace MultiMiner.Win
             notifyIcon1.Text = "MultiMiner - Stopped";
             UpdateMiningButtons();
             ClearAllMinerStats();
+            RefreshIncomeSummary();
             AutoSizeListViewColumns();
         }
 
@@ -1304,7 +1307,9 @@ namespace MultiMiner.Win
 
             item.SubItems["Intensity"].Text = String.Empty;
             item.SubItems["Pool"].Text = String.Empty;
+
             item.SubItems["Daily"].Text = String.Empty;
+            item.SubItems["Daily"].Tag = 0.00;
         }
 
         private void PopulateDeviceStatsForListViewItem(DeviceInformationResponse deviceInformation, ListViewItem item)
@@ -1356,22 +1361,24 @@ namespace MultiMiner.Win
         private void PopulateIncomeForListViewItem(ListViewItem item)
         {
             item.SubItems["Daily"].Text = String.Empty;
-            if (perksConfiguration.PerksEnabled && perksConfiguration.ShowIncomeRates)
-            {
-                string coinName = item.SubItems["Coin"].Text;
-                CoinInformation info = coinInformation.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
-                if (info != null)
-                {
-                    double difficulty = (double)item.SubItems["Difficulty"].Tag;
-                    double hashrate = (double)item.SubItems["Hashrate"].Tag * 1000;
-                    double fullDifficulty = difficulty * difficultyMuliplier;
-                    double secondsToCalcShare = fullDifficulty / hashrate;
-                    const double secondsPerDay = 86400;
-                    double sharesPerDay = secondsPerDay / secondsToCalcShare;
-                    double rewardPerDay = sharesPerDay * info.Reward;
 
-                    item.SubItems["Daily"].Text = String.Format("{0:0.#####}", rewardPerDay);
-                }
+            if (!(perksConfiguration.PerksEnabled && perksConfiguration.ShowIncomeRates))
+                return;
+
+            string coinName = item.SubItems["Coin"].Text;
+            CoinInformation info = coinInformation.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            if (info != null)
+            {
+                double difficulty = (double)item.SubItems["Difficulty"].Tag;
+                double hashrate = (double)item.SubItems["Hashrate"].Tag * 1000;
+                double fullDifficulty = difficulty * difficultyMuliplier;
+                double secondsToCalcShare = fullDifficulty / hashrate;
+                const double secondsPerDay = 86400;
+                double sharesPerDay = secondsPerDay / secondsToCalcShare;
+                double rewardPerDay = sharesPerDay * info.Reward;
+
+                item.SubItems["Daily"].Tag = rewardPerDay;
+                item.SubItems["Daily"].Text = String.Format("{0:0.#####}", rewardPerDay);
             }
         }
 
@@ -1656,6 +1663,77 @@ namespace MultiMiner.Win
             int count = 3;
             //auto sizing the columns is moderately CPU intensive, so only do it every /count/ times
             AutoSizeListViewColumnsEvery(count);
+
+            RefreshIncomeSummary();
+        }
+
+        private void RefreshIncomeSummary()
+        {
+            if (!perksConfiguration.PerksEnabled || !perksConfiguration.ShowIncomeRates)
+            {
+                incomeSummaryLabel.Text = "";
+                return;
+            }
+
+            string summary = String.Empty;
+
+            Dictionary<string, double> incomeForCoins = GetIncomeForCoins();
+
+            if (incomeForCoins.Count == 0)
+                incomeSummaryLabel.Text = "";
+            else
+            {
+                const string addition = " + ";
+                double usdTotal = 0.00;
+                foreach (string coinName in incomeForCoins.Keys)
+                {
+                    double coinIncome = incomeForCoins[coinName];
+                    CoinInformation coinInfo = coinInformation.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+                    if (coinInfo != null)
+                    {
+                        double coinUsd = sellPrices.Subtotal.Amount * coinInfo.Price;
+                        double coinDailyUsd = coinIncome * coinUsd;
+                        usdTotal += coinDailyUsd;
+
+                        summary = String.Format("{0}{1:0.####} {2}{3}", summary, coinIncome, coinInfo.Symbol, addition);
+                    }
+                }
+
+                if (!String.IsNullOrEmpty(summary))
+                {
+                    summary = summary.Remove(summary.Length - addition.Length, addition.Length); //remove trailing " + "
+
+                    if (perksConfiguration.ShowExchangeRates)
+                        summary = String.Format("{0} = ${1} / day", summary, String.Format("{0:0.00}", usdTotal));
+
+                    incomeSummaryLabel.Text = summary;
+
+                    incomeSummaryLabel.AutoSize = true;
+                    incomeSummaryLabel.Padding = new Padding(0, 11, 17, 0);
+                }
+            }
+        }
+
+        private Dictionary<string, double> GetIncomeForCoins()
+        {
+            Dictionary<string, double> coinsIncome = new Dictionary<string, double>();
+
+            for (int i = 0; i < deviceListView.Items.Count; i++)
+            {
+                ListViewItem listItem = deviceListView.Items[i];
+                if (listItem.SubItems["Daily"].Tag != null)
+                {
+
+                    string coinName = listItem.SubItems["Coin"].Text;
+                    double coinIncome = (double)listItem.SubItems["Daily"].Tag;
+
+                    if (coinsIncome.ContainsKey(coinName))
+                        coinsIncome[coinName] = coinsIncome[coinName] + coinIncome;
+                    else
+                        coinsIncome[coinName] = coinIncome;
+                }
+            }
+            return coinsIncome;
         }
 
         private static void ClearSuspectProcessFlags(MinerProcess minerProcess)
@@ -3410,6 +3488,7 @@ namespace MultiMiner.Win
                 if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
                     RefreshExchangeRates();
                 LoadListViewValuesFromCoinStats();
+                RefreshIncomeSummary();
                 AutoSizeListViewColumns();
             }
             else
