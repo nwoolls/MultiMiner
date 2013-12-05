@@ -82,11 +82,12 @@
             this.coinColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.difficultyColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.priceColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.exchangeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.exchangeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.profitabilityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.poolColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tempColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.hashrateColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.incomeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.acceptedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.rejectedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.errorsColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -501,11 +502,12 @@
             this.coinColumnHeader,
             this.difficultyColumnHeader,
             this.priceColumnHeader,
-            this.exchangeColumn,
+            this.exchangeColumnHeader,
             this.profitabilityColumnHeader,
             this.poolColumnHeader,
             this.tempColumnHeader,
             this.hashrateColumnHeader,
+            this.incomeColumnHeader,
             this.acceptedColumnHeader,
             this.rejectedColumnHeader,
             this.errorsColumnHeader,
@@ -560,10 +562,10 @@
             this.priceColumnHeader.Text = "Price";
             this.priceColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // exchangeColumn
+            // exchangeColumnHeader
             // 
-            this.exchangeColumn.Text = "Exchange";
-            this.exchangeColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.exchangeColumnHeader.Text = "Exchange";
+            this.exchangeColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // profitabilityColumnHeader
             // 
@@ -584,6 +586,11 @@
             // 
             this.hashrateColumnHeader.Text = "Hashrate";
             this.hashrateColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // incomeColumnHeader
+            // 
+            this.incomeColumnHeader.Text = "Daily";
+            this.incomeColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // acceptedColumnHeader
             // 
@@ -1497,8 +1504,9 @@
         private System.Windows.Forms.ToolStripMenuItem restartButton;
         private System.Windows.Forms.ToolStripMenuItem perksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem perksToolStripMenuItem1;
-        private System.Windows.Forms.ColumnHeader exchangeColumn;
+        private System.Windows.Forms.ColumnHeader exchangeColumnHeader;
         private System.Windows.Forms.Timer exchangeRateTimer;
+        private System.Windows.Forms.ColumnHeader incomeColumnHeader;
     }
 }
 

@@ -17,6 +17,7 @@ using MultiMiner.Win.Notifications;
 using MultiMiner.Xgminer.Api.Responses;
 using MultiMiner.Win.Extensions;
 using MultiMiner.Win.Configuration;
+using MultiMiner.Coin.Api;
 
 namespace MultiMiner.Win
 {
@@ -42,6 +43,7 @@ namespace MultiMiner.Win
         private List<CoinConfiguration> miningCoinConfigurations;
         private readonly PerksConfiguration perksConfiguration = new PerksConfiguration();
         private MultiMiner.Coinbase.Api.SellPrices sellPrices;
+        private double difficultyMuliplier = Math.Pow(2, 32);
 
         public MainForm()
         {
@@ -1302,6 +1304,7 @@ namespace MultiMiner.Win
 
             item.SubItems["Intensity"].Text = String.Empty;
             item.SubItems["Pool"].Text = String.Empty;
+            item.SubItems["Daily"].Text = String.Empty;
         }
 
         private void PopulateDeviceStatsForListViewItem(DeviceInformationResponse deviceInformation, ListViewItem item)
@@ -1341,13 +1344,37 @@ namespace MultiMiner.Win
                 item.SubItems["Intensity"].Text = deviceInformation.Intensity;
 
                 PopulatePoolForListViewItem(deviceInformation.PoolIndex, item);
+
+                PopulateIncomeForListViewItem(item);
             }
             finally
             {
                 deviceListView.EndUpdate();
             }
         }
-        
+
+        private void PopulateIncomeForListViewItem(ListViewItem item)
+        {
+            item.SubItems["Daily"].Text = String.Empty;
+            if (perksConfiguration.PerksEnabled && perksConfiguration.ShowIncomeRates)
+            {
+                string coinName = item.SubItems["Coin"].Text;
+                CoinInformation info = coinInformation.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+                if (info != null)
+                {
+                    double difficulty = (double)item.SubItems["Difficulty"].Tag;
+                    double hashrate = (double)item.SubItems["Hashrate"].Tag * 1000;
+                    double fullDifficulty = difficulty * difficultyMuliplier;
+                    double secondsToCalcShare = fullDifficulty / hashrate;
+                    const double secondsPerDay = 86400;
+                    double sharesPerDay = secondsPerDay / secondsToCalcShare;
+                    double rewardPerDay = sharesPerDay * info.Reward;
+
+                    item.SubItems["Daily"].Text = String.Format("{0:0.#####}", rewardPerDay);
+                }
+            }
+        }
+
         private void PopulatePoolForListViewItem(int poolIndex, ListViewItem item)
         {
             if (poolIndex >= 0)
@@ -1427,9 +1454,12 @@ namespace MultiMiner.Win
 
         private static void ClearCoinStatsForGridListViewItem(ListViewItem item)
         {
+            item.SubItems["Difficulty"].Tag = 0.0;
             item.SubItems["Difficulty"].Text = String.Empty;
+
             item.SubItems["Price"].Text = String.Empty;
             item.SubItems["Profitability"].Text = String.Empty;
+            item.SubItems["Exchange"].Text = String.Empty;
         }
 
         private void LogApiEvent(object sender, Xgminer.Api.LogEventArgs eventArgs)
@@ -2068,6 +2098,7 @@ namespace MultiMiner.Win
             deviceListView.BeginUpdate();
             try
             {
+                item.SubItems["Difficulty"].Tag = coin.Difficulty;
                 item.SubItems["Difficulty"].Text = coin.Difficulty.ToDifficultyString();
 
                 string unit = "BTC";
@@ -3379,6 +3410,7 @@ namespace MultiMiner.Win
                 if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
                     RefreshExchangeRates();
                 LoadListViewValuesFromCoinStats();
+                AutoSizeListViewColumns();
             }
             else
                 perksConfiguration.LoadPerksConfiguration();
