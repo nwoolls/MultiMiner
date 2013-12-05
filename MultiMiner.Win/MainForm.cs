@@ -37,7 +37,7 @@ namespace MultiMiner.Win
         private NotificationsControl notificationsControl;
         private bool settingsLoaded = false;
         private Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
-        private MultiMiner.Coin.Api.IApiContext apiContext = new CoinChoose.Api.ApiContext();
+        private MultiMiner.Coin.Api.IApiContext coinApiContext = new CoinChoose.Api.ApiContext();
         private List<CoinConfiguration> miningCoinConfigurations;
 
         public MainForm()
@@ -1230,14 +1230,14 @@ namespace MultiMiner.Win
         private void SetupCoinApi()
         {
             if (applicationConfiguration.UseCoinWarzApi)
-                this.apiContext = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey);
+                this.coinApiContext = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey);
             else
-                this.apiContext = new CoinChoose.Api.ApiContext();
+                this.coinApiContext = new CoinChoose.Api.ApiContext();
         }
 
         private void RefreshCoinApiLabel()
         {
-            coinApiLinkLabel.Text = this.apiContext.GetApiName();
+            coinApiLinkLabel.Text = this.coinApiContext.GetApiName();
 
             PositionCoinChooseLabels();
         }
@@ -1871,9 +1871,9 @@ namespace MultiMiner.Win
 
         private void ShowCoinApiErrorNotification(Exception ex)
         {
-            string siteUrl = this.apiContext.GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
-            string apiUrl = this.apiContext.GetApiUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
-            string apiName = this.apiContext.GetApiName();
+            string siteUrl = this.coinApiContext.GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
+            string apiUrl = this.coinApiContext.GetApiUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
+            string apiName = this.coinApiContext.GetApiName();
 
             notificationsControl.AddNotification(ex.Message,
                 String.Format("Error parsing the {0} JSON API", apiName), () =>
@@ -2194,7 +2194,7 @@ namespace MultiMiner.Win
 
         private void coinChooseLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(this.apiContext.GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin));
+            Process.Start(this.coinApiContext.GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin));
         }
 
         private void closeApiButton_Click(object sender, EventArgs e)
