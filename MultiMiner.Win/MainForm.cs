@@ -1133,10 +1133,10 @@ namespace MultiMiner.Win
                 EnableDesktopMode(true);
 
             SaveChanges();
-            StartMining();
+            StartMining(true);
         }
 
-        private void StartMining()
+        private void StartMining(bool donating = false)
         {
             if (!MiningConfigurationValid())
                 return;
@@ -1153,13 +1153,17 @@ namespace MultiMiner.Win
             //create a deep clone of the mining configurations
             //this is so we can accurately display e.g. the currently mining pools
             //even if the user changes pool info without restartinging mining
-            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(this.engineConfiguration.CoinConfigurations);
+            EngineConfiguration workingConfiguration = engineConfiguration;
+            if (donating)
+                workingConfiguration = CreateDonationConfiguration();
+
+            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(workingConfiguration.CoinConfigurations);
 
             try
             {
                 using (new HourGlass())
                 {
-                    miningEngine.StartMining(engineConfiguration, devices, coinInformation);
+                    miningEngine.StartMining(workingConfiguration, devices, coinInformation);
                 }
             }
             catch (MinerLaunchException ex)
@@ -1168,7 +1172,8 @@ namespace MultiMiner.Win
                 return;
             }
 
-            engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
+            if (!donating)
+                workingConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
 
             deviceStatsTimer.Enabled = true;
             minerSummaryTimer.Enabled = true;
@@ -1183,6 +1188,40 @@ namespace MultiMiner.Win
             AutoSizeListViewColumns();
 
             UpdateMiningButtons();
+        }
+
+        private EngineConfiguration CreateDonationConfiguration()
+        {
+            EngineConfiguration result = ObjectCopier.DeepCloneObject<EngineConfiguration, EngineConfiguration>(this.engineConfiguration);
+
+            result.CoinConfigurations.Clear();
+            CoinConfiguration donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals("BTC"));
+
+            MiningPool donationPool = new MiningPool();
+            donationPool.Host = "stratum+tcp://mint.bitminter.com";
+            donationPool.Port = 3333;
+            donationPool.Username = "nwoolls.mmdonations";
+            donationPool.Password = "nwoolls.mmdonations";
+
+            donationConfiguration.Pools.Add(donationPool);
+
+            donationPool = new MiningPool();
+            donationPool.Host = "stratum+tcp://stratum.mining.eligius.st";
+            donationPool.Port = 3334;
+            donationPool.Username = "1LKwyLK4KhojsJUEvUx8bEmnmjohNMjRDM";
+            donationPool.Password = "X";
+
+            donationConfiguration.Pools.Add(donationPool);
+
+            donationConfiguration.MinerFlags = "--balance";
+
+            result.CoinConfigurations.Add(donationConfiguration);
+
+            foreach (DeviceConfiguration deviceConfiguration in result.DeviceConfigurations)
+                deviceConfiguration.CoinSymbol = donationConfiguration.Coin.Symbol;
+
+            return result;
         }
 
         private static bool ConfigFileHandled()
@@ -1676,6 +1715,13 @@ namespace MultiMiner.Win
 
         private void RefreshIncomeSummary()
         {
+            if (coinInformation == null)
+            {
+                //no internet or error parsing API
+                incomeSummaryLabel.Text = "";
+                return;
+            }
+
             if (!perksConfiguration.PerksEnabled || !perksConfiguration.ShowIncomeRates)
             {
                 incomeSummaryLabel.Text = "";
