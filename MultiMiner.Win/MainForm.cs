@@ -950,6 +950,12 @@ namespace MultiMiner.Win
 
             UpdateMiningButtons();
             ClearMinerStatsForDisabledCoins();
+            
+            //update coin stats now that we saved coin changes
+            LoadListViewValuesFromCoinStats();
+
+            //take into account above changes
+            AutoSizeListViewColumns();
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
