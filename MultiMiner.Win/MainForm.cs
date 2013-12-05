@@ -3334,5 +3334,21 @@ namespace MultiMiner.Win
             StopMining();
             StartMining();
         }
+
+        private void perksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConfigurePerks();
+        }
+
+        private void ConfigurePerks()
+        {
+            PerksForm perksForm = new PerksForm();
+            perksForm.ShowDialog();
+        }
+
+        private void perksToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ConfigurePerks();
+        }
     }
 }
