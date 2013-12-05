@@ -44,7 +44,6 @@ namespace MultiMiner.Win
         private readonly PerksConfiguration perksConfiguration = new PerksConfiguration();
         private MultiMiner.Coinbase.Api.SellPrices sellPrices;
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
-        private EngineConfiguration miningEngineConfiguration;
 
         public MainForm()
         {
@@ -1138,7 +1137,7 @@ namespace MultiMiner.Win
             StartMining(true);
         }
 
-        private void StartMining(bool donating = false)
+        private void StartMining(bool donate = false)
         {
             if (!MiningConfigurationValid())
                 return;
@@ -1151,21 +1150,17 @@ namespace MultiMiner.Win
 
             startButton.Enabled = false; //immediately disable, update after
             startMenuItem.Enabled = false;
-
-            miningEngineConfiguration = engineConfiguration;
-            if (donating)
-                miningEngineConfiguration = CreateDonationConfiguration(engineConfiguration);
-
+            
             //create a deep clone of the mining configurations
             //this is so we can accurately display e.g. the currently mining pools
             //even if the user changes pool info without restartinging mining
-            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(miningEngineConfiguration.CoinConfigurations);
+            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
 
             try
             {
                 using (new HourGlass())
                 {
-                    miningEngine.StartMining(miningEngineConfiguration, devices, coinInformation);
+                    miningEngine.StartMining(engineConfiguration, devices, coinInformation);
                 }
             }
             catch (MinerLaunchException ex)
@@ -1174,7 +1169,7 @@ namespace MultiMiner.Win
                 return;
             }
 
-            if (!donating)
+            if (!donate)
                 engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
 
             deviceStatsTimer.Enabled = true;
@@ -1190,48 +1185,6 @@ namespace MultiMiner.Win
             AutoSizeListViewColumns();
 
             UpdateMiningButtons();
-        }
-
-        private EngineConfiguration CreateDonationConfiguration(EngineConfiguration sourceConfiguration)
-        {
-            EngineConfiguration result = new EngineConfiguration();
-
-            CoinConfiguration donationCoinConfiguration = new CoinConfiguration() 
-            { 
-                Coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals("BTC")), 
-                MinerFlags = "--balance" 
-            };
-
-            MiningPool donationPool = new MiningPool() 
-            { 
-                Host = "stratum+tcp://mint.bitminter.com", 
-                Port = 3333, 
-                Username = "nwoolls.mmdonations", 
-                Password = "nwoolls.mmdonations" 
-            };
-            donationCoinConfiguration.Pools.Add(donationPool);
-
-            donationPool = new MiningPool() 
-            { 
-                Host = "stratum+tcp://stratum.mining.eligius.st", 
-                Port = 3334, 
-                Username = "1LKwyLK4KhojsJUEvUx8bEmnmjohNMjRDM", 
-                Password = "X" 
-            };
-            donationCoinConfiguration.Pools.Add(donationPool);
-            
-            result.CoinConfigurations.Add(donationCoinConfiguration);
-
-            foreach (DeviceConfiguration deviceConfiguration in sourceConfiguration.DeviceConfigurations)
-            {
-                DeviceConfiguration newDeviceConfiguration = ObjectCopier.CloneObject <DeviceConfiguration, DeviceConfiguration>(deviceConfiguration);
-                newDeviceConfiguration.CoinSymbol = donationCoinConfiguration.Coin.Symbol;
-                result.DeviceConfigurations.Add(newDeviceConfiguration);
-            }
-            
-            result.XgminerConfiguration = sourceConfiguration.XgminerConfiguration;
-
-            return result;
         }
 
         private static bool ConfigFileHandled()
@@ -1471,9 +1424,7 @@ namespace MultiMiner.Win
             int itemIndex = deviceListView.Items.IndexOf(item);
             Device device = devices[itemIndex];
             //get the actual device configuration, text in the ListViewItem may be unsaved
-            //also get it from the engine configuration we are mining with, as we may be donating
-            EngineConfiguration activeConfiguration = miningEngine.Mining ? miningEngineConfiguration : engineConfiguration;
-            DeviceConfiguration deviceConfiguration = activeConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+            DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
             if (deviceConfiguration == null)
                 return null;
 
