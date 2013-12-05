@@ -16,6 +16,9 @@
                 case ApplicationConfiguration.TimerInterval.OneHour:
                     coinStatsMinutes = 1 * 60;
                     break;
+                case ApplicationConfiguration.TimerInterval.TwoHours:
+                    coinStatsMinutes = 2 * 60;
+                    break;
                 case ApplicationConfiguration.TimerInterval.ThreeHours:
                     coinStatsMinutes = 3 * 60;
                     break;
