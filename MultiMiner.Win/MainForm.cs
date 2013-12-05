@@ -114,6 +114,7 @@ namespace MultiMiner.Win
             engineConfiguration.LoadCoinConfigurations(); //needed before refreshing coins
             applicationConfiguration.LoadApplicationConfiguration(); //needed before refreshing coins
             SetupNotificationsControl(); //needed before refreshing coins
+            SetupCoinApi(); //so we target the correct API
             RefreshCoinStats();
         }
 
