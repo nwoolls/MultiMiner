@@ -1844,12 +1844,9 @@ namespace MultiMiner.Win
 
             try
             {
-                if (applicationConfiguration.UseCoinWarzApi)
-                    coinInformation = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey).GetCoinInformation(UserAgent.AgentString,
-                            engineConfiguration.StrategyConfiguration.BaseCoin).ToList();
-                else
-                    coinInformation = new CoinChoose.Api.ApiContext().GetCoinInformation(UserAgent.AgentString,
-                            engineConfiguration.StrategyConfiguration.BaseCoin).ToList();
+                coinInformation = coinApiContext.GetCoinInformation(
+                    UserAgent.AgentString,
+                    engineConfiguration.StrategyConfiguration.BaseCoin).ToList();
             }
             catch (Exception ex)
             {
@@ -1951,9 +1948,7 @@ namespace MultiMiner.Win
                     break;
             }
 
-            string infoUrl = new CoinChoose.Api.ApiContext().GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
-            if (applicationConfiguration.UseCoinWarzApi)
-                infoUrl = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey).GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
+            string infoUrl = coinApiContext.GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
 
             notificationsControl.AddNotification(coin.Symbol,
                 String.Format("Consider mining {0} ({1} {2})",
