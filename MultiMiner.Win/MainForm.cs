@@ -37,9 +37,11 @@ namespace MultiMiner.Win
         private readonly List<LogProcessCloseArgs> logCloseEntries = new List<LogProcessCloseArgs>();
         private NotificationsControl notificationsControl;
         private bool settingsLoaded = false;
-        private Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
+        private readonly Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
         private MultiMiner.Coin.Api.IApiContext apiContext = new CoinChoose.Api.ApiContext();
         private List<CoinConfiguration> miningCoinConfigurations;
+        private readonly PerksConfiguration perksConfiguration = new PerksConfiguration();
+        private MultiMiner.Coinbase.Api.SellPrices sellPrices;
 
         public MainForm()
         {
@@ -764,6 +766,11 @@ namespace MultiMiner.Win
 
             applicationConfiguration.LoadApplicationConfiguration();
 
+            perksConfiguration.LoadPerksConfiguration();
+            exchangeRateTimer.Interval = 1000 * 60 * 30; //30 minutes
+            exchangeRateTimer.Enabled = perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates;
+            RefreshExchangeRates();
+
             SetListViewStyle(applicationConfiguration.ListViewStyle);
 
             //load brief mode first, then location
@@ -814,6 +821,14 @@ namespace MultiMiner.Win
             Application.DoEvents();
 
             this.settingsLoaded = true;
+        }
+
+        private void RefreshExchangeRates()
+        {
+            if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
+            {
+                sellPrices = Coinbase.Api.ApiContext.GetSellPrices();
+            }
         }
 
         private void RefreshCountdownLabel()
@@ -2054,6 +2069,13 @@ namespace MultiMiner.Win
                     unit = "LTC";
 
                 item.SubItems["Price"].Text = String.Format("{0:.#####} {1}", coin.Price, unit);
+
+                if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
+                {
+                    double btcExchangeRate = sellPrices.Subtotal.Amount;
+                    double coinExchangeRate = coin.Price * btcExchangeRate;
+                    item.SubItems["Exchange"].Text = String.Format("${0:0.00}", coinExchangeRate);
+                }
 
                 switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
                 {
@@ -3342,13 +3364,28 @@ namespace MultiMiner.Win
 
         private void ConfigurePerks()
         {
-            PerksForm perksForm = new PerksForm();
-            perksForm.ShowDialog();
+            PerksForm perksForm = new PerksForm(perksConfiguration);
+            DialogResult dialogResult = perksForm.ShowDialog();
+
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                perksConfiguration.SavePerksConfiguration();
+                if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
+                    RefreshExchangeRates();
+                LoadListViewValuesFromCoinStats();
+            }
+            else
+                perksConfiguration.LoadPerksConfiguration();
         }
 
         private void perksToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             ConfigurePerks();
+        }
+
+        private void exchangeRateTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshExchangeRates();
         }
     }
 }

@@ -209,6 +209,7 @@
     <None Include="Properties\DataSources\MultiMiner.Engine.CryptoCoin.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.LogProcessCloseArgs.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.MiningPool.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Win.Configuration.PerksConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.LogEntry.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Device.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.LogLaunchArgs.datasource" />
@@ -304,6 +305,7 @@
     <None Include="Resources\computer-coins.png" />
     <None Include="Resources\application-add.png" />
     <None Include="Resources\application-execute.png" />
+    <None Include="Resources\info1.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

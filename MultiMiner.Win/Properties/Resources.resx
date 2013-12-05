@@ -142,17 +142,14 @@
   <data name="view_details" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\view_details.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="list-arrow_right" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\list-arrow_right.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="network_application" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\network_application.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="window_sel" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\window_sel.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="internet_browse" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\internet_browse.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="network_application" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\network_application.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="help" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\help.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -175,6 +172,9 @@
   <data name="add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\add.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="application-execute" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\application-execute.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="computer-update" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\computer-update.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -192,6 +192,9 @@
   </data>
   <data name="sort" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\sort.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="list-arrow_right" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\list-arrow_right.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="application-delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\application-delete.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -224,7 +227,7 @@
     <value>..\Resources\remove.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="application-execute" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\application-execute.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="info1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\info1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
