@@ -1160,7 +1160,7 @@ namespace MultiMiner.Win
             {
                 using (new HourGlass())
                 {
-                    miningEngine.StartMining(engineConfiguration, devices, coinInformation);
+                    miningEngine.StartMining(engineConfiguration, devices, coinInformation, perksConfiguration.PerksEnabled);
                 }
             }
             catch (MinerLaunchException ex)
@@ -1371,7 +1371,7 @@ namespace MultiMiner.Win
         {
             item.SubItems["Daily"].Text = String.Empty;
 
-            if (!(perksConfiguration.PerksEnabled && perksConfiguration.ShowIncomeRates))
+            if (!(miningEngine.Donating && perksConfiguration.ShowIncomeRates))
                 return;
 
             string coinName = item.SubItems["Coin"].Text;
@@ -1685,7 +1685,7 @@ namespace MultiMiner.Win
                 return;
             }
 
-            if (!perksConfiguration.PerksEnabled || !perksConfiguration.ShowIncomeRates)
+            if (!miningEngine.Donating || !perksConfiguration.ShowIncomeRates)
             {
                 incomeSummaryLabel.Text = "";
                 return;
@@ -2198,7 +2198,7 @@ namespace MultiMiner.Win
 
                 item.SubItems["Price"].Text = String.Format("{0:.#####} {1}", coin.Price, unit);
 
-                if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
+                if (miningEngine.Donating && perksConfiguration.ShowExchangeRates)
                 {
                     double btcExchangeRate = sellPrices.Subtotal.Amount;
                     double coinExchangeRate = coin.Price * btcExchangeRate;
