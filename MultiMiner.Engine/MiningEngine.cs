@@ -749,7 +749,8 @@ namespace MultiMiner.Engine
             CoinConfiguration donationConfiguration = this.donationConfigurations.SingleOrDefault(dc => dc.Coin.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             if (donationConfiguration != null)
             {
-                int index = random.Next(0, donationConfiguration.Pools.Count - 1);
+                //inclusive lower, exclusive upper
+                int index = random.Next(0, donationConfiguration.Pools.Count);
                 donationPool = donationConfiguration.Pools[index];
             }
 
