@@ -50,16 +50,16 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 180);
+            this.panel1.Location = new System.Drawing.Point(0, 172);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(400, 54);
+            this.panel1.Size = new System.Drawing.Size(376, 54);
             this.panel1.TabIndex = 4;
             // 
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.saveButton.Location = new System.Drawing.Point(204, 14);
+            this.saveButton.Location = new System.Drawing.Point(180, 14);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(87, 27);
             this.saveButton.TabIndex = 0;
@@ -70,7 +70,7 @@
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(298, 14);
+            this.cancelButton.Location = new System.Drawing.Point(274, 14);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(87, 27);
             this.cancelButton.TabIndex = 1;
@@ -81,7 +81,7 @@
             // 
             this.perksCheckBox.AutoSize = true;
             this.perksCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.perksConfigurationBindingSource, "PerksEnabled", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.perksCheckBox.Location = new System.Drawing.Point(56, 75);
+            this.perksCheckBox.Location = new System.Drawing.Point(56, 67);
             this.perksCheckBox.Name = "perksCheckBox";
             this.perksCheckBox.Size = new System.Drawing.Size(192, 19);
             this.perksCheckBox.TabIndex = 5;
@@ -97,7 +97,7 @@
             // 
             this.coinbaseCheckBox.AutoSize = true;
             this.coinbaseCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.perksConfigurationBindingSource, "ShowExchangeRates", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.coinbaseCheckBox.Location = new System.Drawing.Point(77, 103);
+            this.coinbaseCheckBox.Location = new System.Drawing.Point(77, 95);
             this.coinbaseCheckBox.Name = "coinbaseCheckBox";
             this.coinbaseCheckBox.Size = new System.Drawing.Size(217, 19);
             this.coinbaseCheckBox.TabIndex = 6;
@@ -108,7 +108,7 @@
             // 
             this.incomeCheckBox.AutoSize = true;
             this.incomeCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.perksConfigurationBindingSource, "ShowIncomeRates", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.incomeCheckBox.Location = new System.Drawing.Point(77, 131);
+            this.incomeCheckBox.Location = new System.Drawing.Point(77, 123);
             this.incomeCheckBox.Name = "incomeCheckBox";
             this.incomeCheckBox.Size = new System.Drawing.Size(224, 19);
             this.incomeCheckBox.TabIndex = 7;
@@ -121,10 +121,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.Location = new System.Drawing.Point(53, 12);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(332, 49);
+            this.label1.Size = new System.Drawing.Size(308, 44);
             this.label1.TabIndex = 8;
-            this.label1.Text = "By enabling the perks in MultiMiner, your mining resources will be donated toward" +
-    "s the author for 1% (15 minutes) of each day.";
+            this.label1.Text = "By enabling the perks in MultiMiner, 1% of your mining resources will go towards " +
+    "the software\'s author.";
             // 
             // pictureBox1
             // 
@@ -140,7 +140,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(400, 234);
+            this.ClientSize = new System.Drawing.Size(376, 226);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.incomeCheckBox);
