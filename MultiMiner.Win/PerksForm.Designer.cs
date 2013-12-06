@@ -81,7 +81,7 @@
             // 
             this.perksCheckBox.AutoSize = true;
             this.perksCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.perksConfigurationBindingSource, "PerksEnabled", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.perksCheckBox.Location = new System.Drawing.Point(56, 67);
+            this.perksCheckBox.Location = new System.Drawing.Point(56, 69);
             this.perksCheckBox.Name = "perksCheckBox";
             this.perksCheckBox.Size = new System.Drawing.Size(192, 19);
             this.perksCheckBox.TabIndex = 5;
@@ -97,7 +97,7 @@
             // 
             this.coinbaseCheckBox.AutoSize = true;
             this.coinbaseCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.perksConfigurationBindingSource, "ShowExchangeRates", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.coinbaseCheckBox.Location = new System.Drawing.Point(77, 95);
+            this.coinbaseCheckBox.Location = new System.Drawing.Point(77, 97);
             this.coinbaseCheckBox.Name = "coinbaseCheckBox";
             this.coinbaseCheckBox.Size = new System.Drawing.Size(217, 19);
             this.coinbaseCheckBox.TabIndex = 6;
@@ -108,7 +108,7 @@
             // 
             this.incomeCheckBox.AutoSize = true;
             this.incomeCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.perksConfigurationBindingSource, "ShowIncomeRates", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.incomeCheckBox.Location = new System.Drawing.Point(77, 123);
+            this.incomeCheckBox.Location = new System.Drawing.Point(77, 125);
             this.incomeCheckBox.Name = "incomeCheckBox";
             this.incomeCheckBox.Size = new System.Drawing.Size(224, 19);
             this.incomeCheckBox.TabIndex = 7;
@@ -121,7 +121,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.Location = new System.Drawing.Point(53, 12);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(308, 44);
+            this.label1.Size = new System.Drawing.Size(308, 52);
             this.label1.TabIndex = 8;
             this.label1.Text = "By enabling the perks in MultiMiner, 1% of your mining resources will go towards " +
     "the software\'s author.";
