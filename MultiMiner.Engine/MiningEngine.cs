@@ -748,6 +748,30 @@ namespace MultiMiner.Engine
 
             result.Add(donationConfiguration);
 
+            //FTC
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "FTC";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://stratum.wemineftc.com",
+                Port = 4444,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            donationPool = new MiningPool()
+            {
+                Host = "http://feathercoin.is-a-geek.com",
+                Port = 8341,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            result.Add(donationConfiguration);
+
             return result;
         }
 
