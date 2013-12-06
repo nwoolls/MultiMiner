@@ -772,6 +772,30 @@ namespace MultiMiner.Engine
 
             result.Add(donationConfiguration);
 
+            //MEC
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "MEC";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://us.miningpool.co",
+                Port = 9002,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://au1.miningpool.co",
+                Port = 9001,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            result.Add(donationConfiguration);
+
             return result;
         }
 
