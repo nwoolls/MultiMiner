@@ -741,7 +741,7 @@ namespace MultiMiner.Engine
             return result;
         }
 
-        private readonly Random random = new Random();
+        private readonly Random random = new Random(Guid.NewGuid().GetHashCode()); //seed so we don't keep getting the same indexes
         private void AddDonationPool(string coinSymbol, MinerConfiguration minerConfiguration)
         {
             MiningPool donationPool = null;
