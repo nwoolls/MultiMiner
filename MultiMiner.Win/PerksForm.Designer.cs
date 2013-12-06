@@ -38,9 +38,11 @@
             this.coinbaseCheckBox = new System.Windows.Forms.CheckBox();
             this.incomeCheckBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.smileyPicture = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.perksConfigurationBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -126,6 +128,16 @@
             this.label1.Text = "By enabling the perks in MultiMiner, 1% of your mining resources will go towards " +
     "the software author.";
             // 
+            // smileyPicture
+            // 
+            this.smileyPicture.Image = global::MultiMiner.Win.Properties.Resources.smiley_happy;
+            this.smileyPicture.Location = new System.Drawing.Point(313, 70);
+            this.smileyPicture.Name = "smileyPicture";
+            this.smileyPicture.Size = new System.Drawing.Size(20, 20);
+            this.smileyPicture.TabIndex = 10;
+            this.smileyPicture.TabStop = false;
+            this.smileyPicture.Visible = false;
+            // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.info1;
@@ -141,6 +153,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(376, 226);
+            this.Controls.Add(this.smileyPicture);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.incomeCheckBox);
@@ -157,6 +170,7 @@
             this.Load += new System.EventHandler(this.PerksForm_Load);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.perksConfigurationBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -174,5 +188,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.BindingSource perksConfigurationBindingSource;
+        private System.Windows.Forms.PictureBox smileyPicture;
     }
 }

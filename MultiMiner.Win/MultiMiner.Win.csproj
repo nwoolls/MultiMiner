@@ -306,6 +306,7 @@
     <None Include="Resources\application-add.png" />
     <None Include="Resources\application-execute.png" />
     <None Include="Resources\info1.png" />
+    <None Include="Resources\smiley_happy.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

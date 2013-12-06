@@ -72,6 +72,7 @@
             this.label13 = new System.Windows.Forms.Label();
             this.buttonPanel = new System.Windows.Forms.Panel();
             this.backButton = new System.Windows.Forms.Button();
+            this.smileyPicture = new System.Windows.Forms.PictureBox();
             this.wizardTabControl.SuspendLayout();
             this.chooseMinerPage.SuspendLayout();
             this.downloadingMinerPage.SuspendLayout();
@@ -84,6 +85,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.whatNextPage.SuspendLayout();
             this.buttonPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).BeginInit();
             this.SuspendLayout();
             // 
             // nextButton
@@ -442,6 +444,7 @@
             // 
             // configurePerksPage
             // 
+            this.configurePerksPage.Controls.Add(this.smileyPicture);
             this.configurePerksPage.Controls.Add(this.pictureBox3);
             this.configurePerksPage.Controls.Add(this.label2);
             this.configurePerksPage.Controls.Add(this.incomeCheckBox);
@@ -550,6 +553,16 @@
             this.backButton.UseVisualStyleBackColor = true;
             this.backButton.Click += new System.EventHandler(this.backButton_Click);
             // 
+            // smileyPicture
+            // 
+            this.smileyPicture.Image = global::MultiMiner.Win.Properties.Resources.smiley_happy;
+            this.smileyPicture.Location = new System.Drawing.Point(302, 83);
+            this.smileyPicture.Name = "smileyPicture";
+            this.smileyPicture.Size = new System.Drawing.Size(20, 20);
+            this.smileyPicture.TabIndex = 15;
+            this.smileyPicture.TabStop = false;
+            this.smileyPicture.Visible = false;
+            // 
             // WizardForm
             // 
             this.AcceptButton = this.nextButton;
@@ -584,6 +597,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.whatNextPage.ResumeLayout(false);
             this.buttonPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -633,5 +647,6 @@
         private System.Windows.Forms.CheckBox incomeCheckBox;
         private System.Windows.Forms.CheckBox coinbaseCheckBox;
         private System.Windows.Forms.CheckBox perksCheckBox;
+        private System.Windows.Forms.PictureBox smileyPicture;
     }
 }
