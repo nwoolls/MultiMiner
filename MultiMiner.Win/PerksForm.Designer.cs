@@ -124,7 +124,7 @@
             this.label1.Size = new System.Drawing.Size(308, 52);
             this.label1.TabIndex = 8;
             this.label1.Text = "By enabling the perks in MultiMiner, 1% of your mining resources will go towards " +
-    "the software\'s author.";
+    "the software author.";
             // 
             // pictureBox1
             // 
