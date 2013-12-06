@@ -16,6 +16,8 @@ using MultiMiner.Utility;
 using MultiMiner.Win.Notifications;
 using MultiMiner.Xgminer.Api.Responses;
 using MultiMiner.Win.Extensions;
+using MultiMiner.Win.Configuration;
+using MultiMiner.Coin.Api;
 
 namespace MultiMiner.Win
 {
@@ -39,6 +41,9 @@ namespace MultiMiner.Win
         private Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
         private MultiMiner.Coin.Api.IApiContext coinApiContext = new CoinChoose.Api.ApiContext();
         private List<CoinConfiguration> miningCoinConfigurations;
+        private readonly PerksConfiguration perksConfiguration = new PerksConfiguration();
+        private MultiMiner.Coinbase.Api.SellPrices sellPrices;
+        private readonly double difficultyMuliplier = Math.Pow(2, 32);
 
         public MainForm()
         {
@@ -47,6 +52,8 @@ namespace MultiMiner.Win
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            incomeSummaryLabel.Text = String.Empty;
+
             SetupInitialButtonVisibility();
 
             SetupGridColumns();
@@ -764,6 +771,11 @@ namespace MultiMiner.Win
 
             applicationConfiguration.LoadApplicationConfiguration();
 
+            perksConfiguration.LoadPerksConfiguration();
+            exchangeRateTimer.Interval = 1000 * 60 * 30; //30 minutes
+            exchangeRateTimer.Enabled = perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates;
+            RefreshExchangeRates();
+
             SetListViewStyle(applicationConfiguration.ListViewStyle);
 
             //load brief mode first, then location
@@ -814,6 +826,14 @@ namespace MultiMiner.Win
             Application.DoEvents();
 
             this.settingsLoaded = true;
+        }
+
+        private void RefreshExchangeRates()
+        {
+            if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
+            {
+                sellPrices = Coinbase.Api.ApiContext.GetSellPrices();
+            }
         }
 
         private void RefreshCountdownLabel()
@@ -1097,6 +1117,7 @@ namespace MultiMiner.Win
             notifyIcon1.Text = "MultiMiner - Stopped";
             UpdateMiningButtons();
             ClearAllMinerStats();
+            RefreshIncomeSummary();
             AutoSizeListViewColumns();
         }
 
@@ -1106,10 +1127,10 @@ namespace MultiMiner.Win
                 EnableDesktopMode(true);
 
             SaveChanges();
-            StartMining();
+            StartMining(true);
         }
 
-        private void StartMining()
+        private void StartMining(bool donate = false)
         {
             if (!MiningConfigurationValid())
                 return;
@@ -1122,17 +1143,17 @@ namespace MultiMiner.Win
 
             startButton.Enabled = false; //immediately disable, update after
             startMenuItem.Enabled = false;
-
+            
             //create a deep clone of the mining configurations
             //this is so we can accurately display e.g. the currently mining pools
             //even if the user changes pool info without restartinging mining
-            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(this.engineConfiguration.CoinConfigurations);
+            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
 
             try
             {
                 using (new HourGlass())
                 {
-                    miningEngine.StartMining(engineConfiguration, devices, coinInformation);
+                    miningEngine.StartMining(engineConfiguration, devices, coinInformation, perksConfiguration.PerksEnabled);
                 }
             }
             catch (MinerLaunchException ex)
@@ -1141,7 +1162,8 @@ namespace MultiMiner.Win
                 return;
             }
 
-            engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
+            if (!donate)
+                engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
 
             deviceStatsTimer.Enabled = true;
             minerSummaryTimer.Enabled = true;
@@ -1287,6 +1309,9 @@ namespace MultiMiner.Win
 
             item.SubItems["Intensity"].Text = String.Empty;
             item.SubItems["Pool"].Text = String.Empty;
+
+            item.SubItems["Daily"].Text = String.Empty;
+            item.SubItems["Daily"].Tag = 0.00;
         }
 
         private void PopulateDeviceStatsForListViewItem(DeviceInformationResponse deviceInformation, ListViewItem item)
@@ -1326,13 +1351,39 @@ namespace MultiMiner.Win
                 item.SubItems["Intensity"].Text = deviceInformation.Intensity;
 
                 PopulatePoolForListViewItem(deviceInformation.PoolIndex, item);
+
+                PopulateIncomeForListViewItem(item);
             }
             finally
             {
                 deviceListView.EndUpdate();
             }
         }
-        
+
+        private void PopulateIncomeForListViewItem(ListViewItem item)
+        {
+            item.SubItems["Daily"].Text = String.Empty;
+
+            if (!(miningEngine.Donating && perksConfiguration.ShowIncomeRates))
+                return;
+
+            string coinName = item.SubItems["Coin"].Text;
+            CoinInformation info = coinInformation.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            if (info != null)
+            {
+                double difficulty = (double)item.SubItems["Difficulty"].Tag;
+                double hashrate = (double)item.SubItems["Hashrate"].Tag * 1000;
+                double fullDifficulty = difficulty * difficultyMuliplier;
+                double secondsToCalcShare = fullDifficulty / hashrate;
+                const double secondsPerDay = 86400;
+                double sharesPerDay = secondsPerDay / secondsToCalcShare;
+                double rewardPerDay = sharesPerDay * info.Reward;
+
+                item.SubItems["Daily"].Tag = rewardPerDay;
+                item.SubItems["Daily"].Text = String.Format("{0:0.#####}", rewardPerDay);
+            }
+        }
+
         private void PopulatePoolForListViewItem(int poolIndex, ListViewItem item)
         {
             if (poolIndex >= 0)
@@ -1412,9 +1463,12 @@ namespace MultiMiner.Win
 
         private static void ClearCoinStatsForGridListViewItem(ListViewItem item)
         {
+            item.SubItems["Difficulty"].Tag = 0.0;
             item.SubItems["Difficulty"].Text = String.Empty;
+
             item.SubItems["Price"].Text = String.Empty;
             item.SubItems["Profitability"].Text = String.Empty;
+            item.SubItems["Exchange"].Text = String.Empty;
         }
 
         private void LogApiEvent(object sender, Xgminer.Api.LogEventArgs eventArgs)
@@ -1611,6 +1665,86 @@ namespace MultiMiner.Win
             int count = 3;
             //auto sizing the columns is moderately CPU intensive, so only do it every /count/ times
             AutoSizeListViewColumnsEvery(count);
+
+            RefreshIncomeSummary();
+        }
+
+        private void RefreshIncomeSummary()
+        {
+            if (coinInformation == null)
+            {
+                //no internet or error parsing API
+                incomeSummaryLabel.Text = "";
+                return;
+            }
+
+            if (!miningEngine.Donating || !perksConfiguration.ShowIncomeRates)
+            {
+                incomeSummaryLabel.Text = "";
+                return;
+            }
+
+            string summary = String.Empty;
+
+            Dictionary<string, double> incomeForCoins = GetIncomeForCoins();
+
+            if (incomeForCoins.Count == 0)
+                incomeSummaryLabel.Text = "";
+            else
+            {
+                const string addition = " + ";
+                double usdTotal = 0.00;
+                foreach (string coinName in incomeForCoins.Keys)
+                {
+                    double coinIncome = incomeForCoins[coinName];
+                    CoinInformation coinInfo = coinInformation.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+                    if (coinInfo != null)
+                    {
+                        double coinUsd = sellPrices.Subtotal.Amount * coinInfo.Price;
+                        double coinDailyUsd = coinIncome * coinUsd;
+                        usdTotal += coinDailyUsd;
+
+                        summary = String.Format("{0}{1:0.####} {2}{3}", summary, coinIncome, coinInfo.Symbol, addition);
+                    }
+                }
+
+                if (!String.IsNullOrEmpty(summary))
+                {
+                    summary = summary.Remove(summary.Length - addition.Length, addition.Length); //remove trailing " + "
+
+                    if (perksConfiguration.ShowExchangeRates)
+                        summary = String.Format("{0} = ${1} / day", summary, String.Format("{0:0.00}", usdTotal));
+
+                    incomeSummaryLabel.Text = summary;
+
+                    incomeSummaryLabel.AutoSize = true;
+                    incomeSummaryLabel.Padding = new Padding(0, 11, 17, 0);
+                }
+            }
+        }
+
+        private Dictionary<string, double> GetIncomeForCoins()
+        {
+            Dictionary<string, double> coinsIncome = new Dictionary<string, double>();
+
+            for (int i = 0; i < deviceListView.Items.Count; i++)
+            {
+                ListViewItem listItem = deviceListView.Items[i];
+                if (listItem.SubItems["Daily"].Tag != null)
+                {
+                    //report on the actual, mining coin, not just what is in the ListView
+                    //e.g. we may be donating
+                    string coinName = CoinConfigurationForListViewItem(listItem).Coin.Name;
+                    
+                    double coinIncome = (double)listItem.SubItems["Daily"].Tag;
+
+                    if (coinsIncome.ContainsKey(coinName))
+                        coinsIncome[coinName] = coinsIncome[coinName] + coinIncome;
+                    else
+                        coinsIncome[coinName] = coinIncome;
+                }
+            }
+            return coinsIncome;
         }
 
         private static void ClearSuspectProcessFlags(MinerProcess minerProcess)
@@ -2048,6 +2182,7 @@ namespace MultiMiner.Win
             deviceListView.BeginUpdate();
             try
             {
+                item.SubItems["Difficulty"].Tag = coin.Difficulty;
                 item.SubItems["Difficulty"].Text = coin.Difficulty.ToDifficultyString();
 
                 string unit = "BTC";
@@ -2055,6 +2190,13 @@ namespace MultiMiner.Win
                     unit = "LTC";
 
                 item.SubItems["Price"].Text = String.Format("{0:.#####} {1}", coin.Price, unit);
+
+                if (miningEngine.Donating && perksConfiguration.ShowExchangeRates)
+                {
+                    double btcExchangeRate = sellPrices.Subtotal.Amount;
+                    double coinExchangeRate = coin.Price * btcExchangeRate;
+                    item.SubItems["Exchange"].Text = String.Format("${0:0.00}", coinExchangeRate);
+                }
 
                 switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
                 {
@@ -3334,6 +3476,39 @@ namespace MultiMiner.Win
         {
             StopMining();
             StartMining();
+        }
+
+        private void perksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConfigurePerks();
+        }
+
+        private void ConfigurePerks()
+        {
+            PerksForm perksForm = new PerksForm(perksConfiguration);
+            DialogResult dialogResult = perksForm.ShowDialog();
+
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                perksConfiguration.SavePerksConfiguration();
+                if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
+                    RefreshExchangeRates();
+                LoadListViewValuesFromCoinStats();
+                RefreshIncomeSummary();
+                AutoSizeListViewColumns();
+            }
+            else
+                perksConfiguration.LoadPerksConfiguration();
+        }
+
+        private void perksToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ConfigurePerks();
+        }
+
+        private void exchangeRateTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshExchangeRates();
         }
     }
 }

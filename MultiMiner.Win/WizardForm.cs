@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Linq;
 using MultiMiner.Utility;
 using System.Drawing;
+using MultiMiner.Win.Configuration;
 
 namespace MultiMiner.Win
 {

@@ -69,6 +69,7 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.coinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.strategiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.perksToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quickCoinMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.startupMiningPanel = new System.Windows.Forms.Panel();
@@ -81,10 +82,12 @@
             this.coinColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.difficultyColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.priceColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.exchangeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.profitabilityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.poolColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tempColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.hashrateColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.incomeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.acceptedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.rejectedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.errorsColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -121,6 +124,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.closeApiButton = new System.Windows.Forms.Button();
             this.footerPanel = new System.Windows.Forms.Panel();
+            this.incomeSummaryLabel = new System.Windows.Forms.Label();
             this.coinChooseSuffixLabel = new System.Windows.Forms.Label();
             this.coinApiLinkLabel = new System.Windows.Forms.LinkLabel();
             this.coinChoosePrefixLabel = new System.Windows.Forms.Label();
@@ -139,6 +143,7 @@
             this.settingsButton = new System.Windows.Forms.ToolStripSplitButton();
             this.coinsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.strategiesButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.perksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.saveButton = new System.Windows.Forms.ToolStripButton();
             this.cancelButton = new System.Windows.Forms.ToolStripButton();
@@ -159,6 +164,7 @@
             this.apiMonitorButton = new System.Windows.Forms.ToolStripMenuItem();
             this.dynamicIntensitySeparator = new System.Windows.Forms.ToolStripSeparator();
             this.dynamicIntensityButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.exchangeRateTimer = new System.Windows.Forms.Timer(this.components);
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.startupMiningPanel.SuspendLayout();
@@ -332,10 +338,11 @@
             this.toolStripSeparator2,
             this.coinsToolStripMenuItem,
             this.strategiesToolStripMenuItem,
+            this.perksToolStripMenuItem1,
             this.settingsToolStripMenuItem});
             this.deviceListContextMenu.Name = "deviceListContextMenu";
             this.deviceListContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.deviceListContextMenu.Size = new System.Drawing.Size(163, 192);
+            this.deviceListContextMenu.Size = new System.Drawing.Size(154, 214);
             this.deviceListContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.deviceListContextMenu_Opening);
             // 
             // detectDevicesToolStripMenuItem
@@ -352,7 +359,7 @@
             this.dummyToolStripMenuItem1});
             this.quickSwitchPopupItem.Image = global::MultiMiner.Win.Properties.Resources.list_arrow_right;
             this.quickSwitchPopupItem.Name = "quickSwitchPopupItem";
-            this.quickSwitchPopupItem.Size = new System.Drawing.Size(162, 22);
+            this.quickSwitchPopupItem.Size = new System.Drawing.Size(153, 22);
             this.quickSwitchPopupItem.Text = "Quick Switch";
             this.quickSwitchPopupItem.DropDownOpening += new System.EventHandler(this.quickSwitchPopupItem_DropDownOpening);
             // 
@@ -365,13 +372,13 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(159, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(150, 6);
             // 
             // historyToolStripMenuItem
             // 
             this.historyToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.history;
             this.historyToolStripMenuItem.Name = "historyToolStripMenuItem";
-            this.historyToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.historyToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.historyToolStripMenuItem.Text = "History";
             this.historyToolStripMenuItem.Click += new System.EventHandler(this.historyToolStripMenuItem_Click);
             // 
@@ -379,7 +386,7 @@
             // 
             this.processLogToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.window_text;
             this.processLogToolStripMenuItem.Name = "processLogToolStripMenuItem";
-            this.processLogToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.processLogToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.processLogToolStripMenuItem.Text = "Process Log";
             this.processLogToolStripMenuItem.Click += new System.EventHandler(this.processLogToolStripMenuItem_Click);
             // 
@@ -387,36 +394,44 @@
             // 
             this.aPIMonitorToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.network_application;
             this.aPIMonitorToolStripMenuItem.Name = "aPIMonitorToolStripMenuItem";
-            this.aPIMonitorToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.aPIMonitorToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.aPIMonitorToolStripMenuItem.Text = "API Monitor";
             this.aPIMonitorToolStripMenuItem.Click += new System.EventHandler(this.aPIMonitorToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(159, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(150, 6);
             // 
             // coinsToolStripMenuItem
             // 
             this.coinsToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_gear;
             this.coinsToolStripMenuItem.Name = "coinsToolStripMenuItem";
-            this.coinsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.coinsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.coinsToolStripMenuItem.Text = "Coins";
             this.coinsToolStripMenuItem.Click += new System.EventHandler(this.coinsToolStripMenuItem_Click);
             // 
             // strategiesToolStripMenuItem
             // 
-            this.strategiesToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.settings_options;
+            this.strategiesToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_execute;
             this.strategiesToolStripMenuItem.Name = "strategiesToolStripMenuItem";
-            this.strategiesToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.strategiesToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.strategiesToolStripMenuItem.Text = "Strategies";
             this.strategiesToolStripMenuItem.Click += new System.EventHandler(this.strategiesToolStripMenuItem_Click);
+            // 
+            // perksToolStripMenuItem1
+            // 
+            this.perksToolStripMenuItem1.Image = global::MultiMiner.Win.Properties.Resources.application_add;
+            this.perksToolStripMenuItem1.Name = "perksToolStripMenuItem1";
+            this.perksToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
+            this.perksToolStripMenuItem1.Text = "Perks";
+            this.perksToolStripMenuItem1.Click += new System.EventHandler(this.perksToolStripMenuItem1_Click);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_option;
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
@@ -488,10 +503,12 @@
             this.coinColumnHeader,
             this.difficultyColumnHeader,
             this.priceColumnHeader,
+            this.exchangeColumnHeader,
             this.profitabilityColumnHeader,
             this.poolColumnHeader,
             this.tempColumnHeader,
             this.hashrateColumnHeader,
+            this.incomeColumnHeader,
             this.acceptedColumnHeader,
             this.rejectedColumnHeader,
             this.errorsColumnHeader,
@@ -546,10 +563,16 @@
             this.priceColumnHeader.Text = "Price";
             this.priceColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
+            // exchangeColumnHeader
+            // 
+            this.exchangeColumnHeader.Text = "Exchange";
+            this.exchangeColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // profitabilityColumnHeader
             // 
             this.profitabilityColumnHeader.Text = "Profitability";
             this.profitabilityColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.profitabilityColumnHeader.Width = 80;
             // 
             // poolColumnHeader
             // 
@@ -564,6 +587,11 @@
             // 
             this.hashrateColumnHeader.Text = "Hashrate";
             this.hashrateColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // incomeColumnHeader
+            // 
+            this.incomeColumnHeader.Text = "Daily";
+            this.incomeColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // acceptedColumnHeader
             // 
@@ -893,6 +921,7 @@
             // footerPanel
             // 
             this.footerPanel.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.footerPanel.Controls.Add(this.incomeSummaryLabel);
             this.footerPanel.Controls.Add(this.coinChooseSuffixLabel);
             this.footerPanel.Controls.Add(this.coinApiLinkLabel);
             this.footerPanel.Controls.Add(this.coinChoosePrefixLabel);
@@ -901,6 +930,21 @@
             this.footerPanel.Name = "footerPanel";
             this.footerPanel.Size = new System.Drawing.Size(881, 35);
             this.footerPanel.TabIndex = 9;
+            // 
+            // incomeSummaryLabel
+            // 
+            this.incomeSummaryLabel.AutoSize = true;
+            this.incomeSummaryLabel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.incomeSummaryLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.incomeSummaryLabel.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.incomeSummaryLabel.Location = new System.Drawing.Point(737, 0);
+            this.incomeSummaryLabel.MinimumSize = new System.Drawing.Size(35, 0);
+            this.incomeSummaryLabel.Name = "incomeSummaryLabel";
+            this.incomeSummaryLabel.Padding = new System.Windows.Forms.Padding(0, 10, 8, 0);
+            this.incomeSummaryLabel.Size = new System.Drawing.Size(144, 25);
+            this.incomeSummaryLabel.TabIndex = 3;
+            this.incomeSummaryLabel.Text = "label1 and test and test";
+            this.incomeSummaryLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // coinChooseSuffixLabel
             // 
@@ -911,11 +955,11 @@
             this.coinChooseSuffixLabel.TabIndex = 2;
             this.coinChooseSuffixLabel.Text = "API.";
             // 
-            // coinChooseLinkLabel
+            // coinApiLinkLabel
             // 
             this.coinApiLinkLabel.AutoSize = true;
             this.coinApiLinkLabel.Location = new System.Drawing.Point(217, 11);
-            this.coinApiLinkLabel.Name = "coinChooseLinkLabel";
+            this.coinApiLinkLabel.Name = "coinApiLinkLabel";
             this.coinApiLinkLabel.Size = new System.Drawing.Size(99, 15);
             this.coinApiLinkLabel.TabIndex = 1;
             this.coinApiLinkLabel.TabStop = true;
@@ -1060,7 +1104,8 @@
             // 
             this.settingsButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.coinsButton,
-            this.strategiesButton});
+            this.strategiesButton,
+            this.perksToolStripMenuItem});
             this.settingsButton.Image = global::MultiMiner.Win.Properties.Resources.application_option;
             this.settingsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.settingsButton.Name = "settingsButton";
@@ -1080,12 +1125,20 @@
             // 
             // strategiesButton
             // 
-            this.strategiesButton.Image = global::MultiMiner.Win.Properties.Resources.settings_options;
+            this.strategiesButton.Image = global::MultiMiner.Win.Properties.Resources.application_execute;
             this.strategiesButton.Name = "strategiesButton";
             this.strategiesButton.Size = new System.Drawing.Size(125, 22);
             this.strategiesButton.Text = "Strategies";
             this.strategiesButton.ToolTipText = "Configure profitability strategies";
             this.strategiesButton.Click += new System.EventHandler(this.strategiesButton_Click_1);
+            // 
+            // perksToolStripMenuItem
+            // 
+            this.perksToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_add;
+            this.perksToolStripMenuItem.Name = "perksToolStripMenuItem";
+            this.perksToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.perksToolStripMenuItem.Text = "Perks";
+            this.perksToolStripMenuItem.Click += new System.EventHandler(this.perksToolStripMenuItem_Click);
             // 
             // saveSeparator
             // 
@@ -1278,6 +1331,10 @@
             this.dynamicIntensityButton.ToolTipText = "Dynamic GPU intensity";
             this.dynamicIntensityButton.Click += new System.EventHandler(this.dynamicIntensityButton_Click);
             // 
+            // exchangeRateTimer
+            // 
+            this.exchangeRateTimer.Tick += new System.EventHandler(this.exchangeRateTimer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1462,6 +1519,12 @@
         private System.Windows.Forms.ToolStripMenuItem tilesToolStripMenuItem;
         private NoFlickerListView deviceListView;
         private System.Windows.Forms.ToolStripMenuItem restartButton;
+        private System.Windows.Forms.ToolStripMenuItem perksToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem perksToolStripMenuItem1;
+        private System.Windows.Forms.ColumnHeader exchangeColumnHeader;
+        private System.Windows.Forms.Timer exchangeRateTimer;
+        private System.Windows.Forms.ColumnHeader incomeColumnHeader;
+        private System.Windows.Forms.Label incomeSummaryLabel;
     }
 }
 

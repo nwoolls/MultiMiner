@@ -1,6 +1,6 @@
 ﻿using MultiMiner.Engine.Configuration;
 using MultiMiner.Utility;
-using MultiMiner.Xgminer;
+using MultiMiner.Win.Configuration;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;

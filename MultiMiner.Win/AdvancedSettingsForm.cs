@@ -1,8 +1,8 @@
 ﻿using MultiMiner.Engine.Configuration;
 using MultiMiner.Utility;
+using MultiMiner.Win.Configuration;
 using MultiMiner.Xgminer;
 using System;
-using System.Windows.Forms;
 
 namespace MultiMiner.Win
 {
