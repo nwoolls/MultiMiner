@@ -62,6 +62,12 @@
             this.emailAddressEdit = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
+            this.configurePerksPage = new System.Windows.Forms.TabPage();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.incomeCheckBox = new System.Windows.Forms.CheckBox();
+            this.coinbaseCheckBox = new System.Windows.Forms.CheckBox();
+            this.perksCheckBox = new System.Windows.Forms.CheckBox();
             this.whatNextPage = new System.Windows.Forms.TabPage();
             this.label13 = new System.Windows.Forms.Label();
             this.buttonPanel = new System.Windows.Forms.Panel();
@@ -74,6 +80,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.configureMobileMinerPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.configurePerksPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.whatNextPage.SuspendLayout();
             this.buttonPanel.SuspendLayout();
             this.SuspendLayout();
@@ -107,6 +115,7 @@
             this.wizardTabControl.Controls.Add(this.chooseCoinPage);
             this.wizardTabControl.Controls.Add(this.configurePoolPage);
             this.wizardTabControl.Controls.Add(this.configureMobileMinerPage);
+            this.wizardTabControl.Controls.Add(this.configurePerksPage);
             this.wizardTabControl.Controls.Add(this.whatNextPage);
             this.wizardTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.wizardTabControl.Location = new System.Drawing.Point(0, 0);
@@ -431,6 +440,72 @@
             this.label14.Text = "MobileMiner allows you to remotely monitor and control mining from your smartphon" +
     "e. Enter your MobileMiner information below or click Next to skip this step.";
             // 
+            // configurePerksPage
+            // 
+            this.configurePerksPage.Controls.Add(this.pictureBox3);
+            this.configurePerksPage.Controls.Add(this.label2);
+            this.configurePerksPage.Controls.Add(this.incomeCheckBox);
+            this.configurePerksPage.Controls.Add(this.coinbaseCheckBox);
+            this.configurePerksPage.Controls.Add(this.perksCheckBox);
+            this.configurePerksPage.Location = new System.Drawing.Point(4, 24);
+            this.configurePerksPage.Name = "configurePerksPage";
+            this.configurePerksPage.Padding = new System.Windows.Forms.Padding(3);
+            this.configurePerksPage.Size = new System.Drawing.Size(476, 231);
+            this.configurePerksPage.TabIndex = 6;
+            this.configurePerksPage.Text = "Configure Perks";
+            this.configurePerksPage.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Image = global::MultiMiner.Win.Properties.Resources.info1;
+            this.pictureBox3.Location = new System.Drawing.Point(10, 10);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(35, 34);
+            this.pictureBox3.TabIndex = 14;
+            this.pictureBox3.TabStop = false;
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2.Location = new System.Drawing.Point(51, 10);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(414, 52);
+            this.label2.TabIndex = 13;
+            this.label2.Text = "By enabling the perks in MultiMiner, 1% of your mining resources will go towards " +
+    "the software\'s author.";
+            // 
+            // incomeCheckBox
+            // 
+            this.incomeCheckBox.AutoSize = true;
+            this.incomeCheckBox.Location = new System.Drawing.Point(125, 138);
+            this.incomeCheckBox.Name = "incomeCheckBox";
+            this.incomeCheckBox.Size = new System.Drawing.Size(224, 19);
+            this.incomeCheckBox.TabIndex = 12;
+            this.incomeCheckBox.Text = "Show estimated income from devices";
+            this.incomeCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // coinbaseCheckBox
+            // 
+            this.coinbaseCheckBox.AutoSize = true;
+            this.coinbaseCheckBox.Location = new System.Drawing.Point(125, 110);
+            this.coinbaseCheckBox.Name = "coinbaseCheckBox";
+            this.coinbaseCheckBox.Size = new System.Drawing.Size(217, 19);
+            this.coinbaseCheckBox.TabIndex = 11;
+            this.coinbaseCheckBox.Text = "Show exchange rates from Coinbase";
+            this.coinbaseCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // perksCheckBox
+            // 
+            this.perksCheckBox.AutoSize = true;
+            this.perksCheckBox.Location = new System.Drawing.Point(104, 82);
+            this.perksCheckBox.Name = "perksCheckBox";
+            this.perksCheckBox.Size = new System.Drawing.Size(192, 19);
+            this.perksCheckBox.TabIndex = 10;
+            this.perksCheckBox.Text = "Enable perks (at a 1% donation)";
+            this.perksCheckBox.UseVisualStyleBackColor = true;
+            this.perksCheckBox.CheckedChanged += new System.EventHandler(this.perksCheckBox_CheckedChanged);
+            // 
             // whatNextPage
             // 
             this.whatNextPage.Controls.Add(this.label13);
@@ -504,6 +579,9 @@
             this.configureMobileMinerPage.ResumeLayout(false);
             this.configureMobileMinerPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.configurePerksPage.ResumeLayout(false);
+            this.configurePerksPage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.whatNextPage.ResumeLayout(false);
             this.buttonPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -549,5 +627,11 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.LinkLabel poolsLink;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.TabPage configurePerksPage;
+        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox incomeCheckBox;
+        private System.Windows.Forms.CheckBox coinbaseCheckBox;
+        private System.Windows.Forms.CheckBox perksCheckBox;
     }
 }

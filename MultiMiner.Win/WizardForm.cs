@@ -38,6 +38,7 @@ namespace MultiMiner.Win
             SetupWizardTabControl();
             PopulateCoins();
             coinComboBox.SelectedIndex = 0;
+            UpdateCheckStates();
         }
         
         private void PopulateCoins()
@@ -262,10 +263,23 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
         }
 
         public void CreateConfigurations(out EngineConfiguration engineConfiguration, 
-            out ApplicationConfiguration applicationConfiguraion)
+            out ApplicationConfiguration applicationConfiguraion,
+            out PerksConfiguration perksConfiguration)
         {
             engineConfiguration = CreateEngineConfiguration();
             applicationConfiguraion = CreateApplicationConfiguration();
+            perksConfiguration = CreatePerksConfiguration();
+        }
+
+        private PerksConfiguration CreatePerksConfiguration()
+        {
+            PerksConfiguration result = new PerksConfiguration();
+
+            result.PerksEnabled = perksCheckBox.Checked;
+            result.ShowExchangeRates = coinbaseCheckBox.Checked;
+            result.ShowIncomeRates = incomeCheckBox.Checked;
+
+            return result;
         }
 
         private EngineConfiguration CreateEngineConfiguration()
@@ -303,6 +317,17 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
             applicationConfiguraion.MobileMinerApplicationKey = appKeyEdit.Text;
             applicationConfiguraion.BriefUserInterface = true;
             return applicationConfiguraion;
+        }
+
+        private void perksCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateCheckStates();
+        }
+
+        private void UpdateCheckStates()
+        {
+            this.coinbaseCheckBox.Enabled = perksCheckBox.Checked;
+            this.incomeCheckBox.Enabled = perksCheckBox.Checked;
         }
     }
 }

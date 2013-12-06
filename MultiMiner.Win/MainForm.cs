@@ -41,7 +41,7 @@ namespace MultiMiner.Win
         private Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
         private MultiMiner.Coin.Api.IApiContext coinApiContext = new CoinChoose.Api.ApiContext();
         private List<CoinConfiguration> miningCoinConfigurations;
-        private readonly PerksConfiguration perksConfiguration = new PerksConfiguration();
+        private PerksConfiguration perksConfiguration = new PerksConfiguration();
         private MultiMiner.Coinbase.Api.SellPrices sellPrices;
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
 
@@ -377,14 +377,17 @@ namespace MultiMiner.Win
             {
                 EngineConfiguration newEngineConfiguration;
                 ApplicationConfiguration newApplicationConfiguration;
-                wizardForm.CreateConfigurations(out newEngineConfiguration, out newApplicationConfiguration);
+                PerksConfiguration newPerksConfiguration;
+                wizardForm.CreateConfigurations(out newEngineConfiguration, out newApplicationConfiguration, out newPerksConfiguration);
                 
                 this.engineConfiguration = newEngineConfiguration;
                 this.applicationConfiguration = newApplicationConfiguration;
+                this.perksConfiguration = newPerksConfiguration;
 
                 this.engineConfiguration.SaveCoinConfigurations();
                 this.engineConfiguration.SaveMinerConfiguration();
                 this.applicationConfiguration.SaveApplicationConfiguration();
+                this.perksConfiguration.SavePerksConfiguration();
 
                 SetBriefMode(applicationConfiguration.BriefUserInterface);
             }
