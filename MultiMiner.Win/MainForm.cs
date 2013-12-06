@@ -1412,7 +1412,10 @@ namespace MultiMiner.Win
                     }
                     else
                     {
-                        item.SubItems["Pool"].Text = String.Empty;
+                        if (miningEngine.Donating)
+                            item.SubItems["Pool"].Text = "donation"; //donation pool won't be in list
+                        else
+                            item.SubItems["Pool"].Text = String.Empty;
                     }
                 }
             }
