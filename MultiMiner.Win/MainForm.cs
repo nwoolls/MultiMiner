@@ -2860,6 +2860,9 @@ namespace MultiMiner.Win
 
             if (wasMining)
                 StartMining();
+            else
+                //so the Start button becomes enabled if we now have a valid config
+                UpdateMiningButtons();
         }
 
         private void SetAllDevicesToCoin(CoinConfiguration coinConfiguration)
