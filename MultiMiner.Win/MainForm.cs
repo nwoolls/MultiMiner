@@ -843,8 +843,35 @@ namespace MultiMiner.Win
         {
             if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
             {
-                sellPrices = Coinbase.Api.ApiContext.GetSellPrices();
+                try
+                {
+                    sellPrices = Coinbase.Api.ApiContext.GetSellPrices();
+                }
+                catch (Exception ex)
+                {
+                    //don't crash if website cannot be resolved or JSON cannot be parsed
+                    if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException))
+                    {
+                        ShowCoinbaseApiErrorNotification(ex);
+                        return;
+                    }
+                    throw;
+                }
             }
+        }
+
+        private void ShowCoinbaseApiErrorNotification(Exception ex)
+        {
+            string siteUrl = Coinbase.Api.ApiContext.GetInfoUrl();
+            string apiUrl = Coinbase.Api.ApiContext.GetApiUrl();
+            string apiName = Coinbase.Api.ApiContext.GetApiName();
+
+            notificationsControl.AddNotification(ex.Message,
+                String.Format("Error parsing the {0} JSON API", apiName), () =>
+                {
+                    Process.Start(apiUrl);
+                },
+                siteUrl);
         }
 
         private void RefreshCountdownLabel()

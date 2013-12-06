@@ -23,10 +23,25 @@ namespace MultiMiner.Coinbase.Api
         {
             WebClient webClient = new ApiWebClient();
 
-            string response = webClient.DownloadString(new Uri("https://coinbase.com/api/v1/prices/sell"));
+            string response = webClient.DownloadString(new Uri(GetApiUrl()));
 
             SellPrices sellPrices = JsonConvert.DeserializeObject<SellPrices>(response);
             return sellPrices;
+        }
+
+        public static string GetInfoUrl()
+        {
+            return "https://coinbase.com";
+        }
+
+        public static string GetApiUrl()
+        {
+            return "https://coinbase.com/api/v1/prices/sell";
+        }
+
+        public static string GetApiName()
+        {
+            return "Coinbase";
         }
     }
 }
