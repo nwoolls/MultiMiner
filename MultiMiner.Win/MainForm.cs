@@ -564,11 +564,16 @@ namespace MultiMiner.Win
         {
             if (deviceListView.View != View.Details)
                 return;
+
+            //hide the driver column (by default)
+            SetColumWidth(driverColumnHeader, 0);
+
                         
             if (briefMode)
             {
                 SetColumWidth(nameColumnHeader, -2);
-                SetColumWidth(driverColumnHeader, 0);
+                //hide the driver column (by default)
+                //SetColumWidth(driverColumnHeader, 0);
                 SetColumWidth(coinColumnHeader, -2);
                 SetColumWidth(difficultyColumnHeader, 0);
                 SetColumWidth(priceColumnHeader, 0);
@@ -592,6 +597,9 @@ namespace MultiMiner.Win
                 for (int i = 0; i < deviceListView.Columns.Count; i++)
                 {
                     ColumnHeader column = deviceListView.Columns[i];
+                    //hide the driver column (by default)
+                    if (column == driverColumnHeader)
+                        continue;
 
                     bool hasValue = false;
                     if (i == 0)
