@@ -20,11 +20,16 @@ namespace MultiMiner.Engine
         public event Miner.LogLaunchHandler LogProcessLaunch;
         public event Miner.LaunchFailedHandler ProcessLaunchFailed;
         public event Miner.AuthenticationFailedHandler ProcessAuthenticationFailed;
-
         private List<MinerProcess> minerProcesses = new List<MinerProcess>();
         private EngineConfiguration engineConfiguration;
         private List<Device> devices;
         private Version backendVersion;
+        private bool donating;
+        
+        public bool Donating
+        {
+            get { return donating; }
+        }        
 
         public List<MinerProcess> MinerProcesses
         {
@@ -50,7 +55,7 @@ namespace MultiMiner.Engine
         }
 
         private bool startingMining = false;
-        public void StartMining(EngineConfiguration engineConfiguration, List<Device> devices, List<CoinInformation> coinInformation)
+        public void StartMining(EngineConfiguration engineConfiguration, List<Device> devices, List<CoinInformation> coinInformation, bool donate)
         {
             StopMining();
 
@@ -60,6 +65,7 @@ namespace MultiMiner.Engine
                 this.engineConfiguration = engineConfiguration;
                 this.devices = devices;
                 this.backendVersion = new Version(Xgminer.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner()));
+                this.donating = donate;
 
                 if (coinInformation != null) //null if no network connection
                     ApplyMiningStrategy(coinInformation);
@@ -591,7 +597,21 @@ namespace MultiMiner.Engine
             
             minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner();
             
-            minerConfiguration.Pools = coinConfiguration.Pools;
+            //minerConfiguration.Pools = coinConfiguration.Pools;
+            foreach (MiningPool pool in coinConfiguration.Pools)
+            {
+                pool.Quota = 0;
+                minerConfiguration.Pools.Add(pool);
+            }
+            //using bfgminer quotas for failover, that way we can augment for donations
+            minerConfiguration.Pools.First().Quota = 100;
+
+            if (donating)
+            {
+                minerConfiguration.Pools.First().Quota--; //99%
+                AddDonationPool(coinSymbol, minerConfiguration);
+            }
+
             minerConfiguration.Algorithm = coinConfiguration.Coin.Algorithm;
             minerConfiguration.ApiPort = port;
             minerConfiguration.ApiListen = true;
@@ -641,10 +661,103 @@ namespace MultiMiner.Engine
 
             if (engineConfiguration.XgminerConfiguration.DesktopMode)
                 arguments = arguments + " -I D";
+
+            if (donating)
+                arguments = arguments + " --load-balance";
             
             minerConfiguration.Arguments = arguments;
             
             return minerConfiguration;
+        }
+
+        private readonly List<CoinConfiguration> donationConfigurations = InitializeDonationConfigurations();
+
+        private static List<CoinConfiguration> InitializeDonationConfigurations()
+        {
+            List<CoinConfiguration> result = new List<CoinConfiguration>();
+
+            //BTC
+            CoinConfiguration donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "BTC";
+
+            MiningPool donationPool = new MiningPool() 
+            { 
+                Host = "stratum+tcp://stratum.mining.eligius.st", 
+                Port = 3334, 
+                Username = "1LKwyLK4KhojsJUEvUx8bEmnmjohNMjRDM",
+                Password = "X" 
+            };
+
+            donationConfiguration.Pools.Add(donationPool);
+
+            donationPool = new MiningPool() 
+            { 
+                Host = "stratum+tcp://mint.bitminter.com", 
+                Port = 3333, 
+                Username = "nwoolls.mmdonations", 
+                Password = "X" 
+            };
+
+            donationConfiguration.Pools.Add(donationPool);
+
+            donationPool = new MiningPool() 
+            { 
+                Host = "stratum+tcp://stratum.bitcoin.cz", 
+                Port = 3333, 
+                Username = "nwoolls.mmdonations", 
+                Password = "X" 
+            };
+
+            donationConfiguration.Pools.Add(donationPool);
+
+            result.Add(donationConfiguration);
+
+            //LTC
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "LTC";
+
+            donationPool = new MiningPool() 
+            { 
+                Host = "stratum+tcp://world.wemineltc.com", 
+                Port = 3333, 
+                Username = "nwoolls.mmdonations", 
+                Password = "X" 
+            };
+
+            donationConfiguration.Pools.Add(donationPool);
+
+            donationPool = new MiningPool() 
+            { 
+                Host = "stratum+tcp://primary.coinhuntr.com", 
+                Port = 3333, 
+                Username = "nwoolls.mmdonations", 
+                Password = "X" 
+            };
+
+            donationConfiguration.Pools.Add(donationPool);
+
+            result.Add(donationConfiguration);
+
+            return result;
+        }
+
+        private readonly Random random = new Random();
+        private void AddDonationPool(string coinSymbol, MinerConfiguration minerConfiguration)
+        {
+            MiningPool donationPool = null;
+
+            CoinConfiguration donationConfiguration = this.donationConfigurations.SingleOrDefault(dc => dc.Coin.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+            if (donationConfiguration != null)
+            {
+                int index = random.Next(0, donationConfiguration.Pools.Count - 1);
+                donationPool = donationConfiguration.Pools[index];
+            }
+
+            if (donationPool != null)
+            {
+                donationPool.Quota = 1; //1% donation
+                minerConfiguration.Pools.Add(donationPool);
+            }
         }
     }
 }

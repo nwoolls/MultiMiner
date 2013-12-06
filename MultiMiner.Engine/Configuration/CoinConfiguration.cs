@@ -18,6 +18,7 @@ namespace MultiMiner.Engine.Configuration
         {
             this.Pools = new List<MiningPool>();
             this.Enabled = true;
+            this.Coin = new CryptoCoin();
         }
 
         public CryptoCoin Coin { get; set; }
