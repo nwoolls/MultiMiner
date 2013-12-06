@@ -687,7 +687,6 @@ namespace MultiMiner.Engine
                 Username = "1LKwyLK4KhojsJUEvUx8bEmnmjohNMjRDM",
                 Password = "X" 
             };
-
             donationConfiguration.Pools.Add(donationPool);
 
             donationPool = new MiningPool() 
@@ -697,7 +696,6 @@ namespace MultiMiner.Engine
                 Username = "nwoolls.mmdonations", 
                 Password = "X" 
             };
-
             donationConfiguration.Pools.Add(donationPool);
 
             donationPool = new MiningPool() 
@@ -707,7 +705,6 @@ namespace MultiMiner.Engine
                 Username = "nwoolls.mmdonations", 
                 Password = "X" 
             };
-
             donationConfiguration.Pools.Add(donationPool);
 
             result.Add(donationConfiguration);
@@ -723,7 +720,6 @@ namespace MultiMiner.Engine
                 Username = "nwoolls.mmdonations", 
                 Password = "X" 
             };
-
             donationConfiguration.Pools.Add(donationPool);
 
             donationPool = new MiningPool() 
@@ -733,7 +729,21 @@ namespace MultiMiner.Engine
                 Username = "nwoolls.mmdonations", 
                 Password = "X" 
             };
+            donationConfiguration.Pools.Add(donationPool);
 
+            result.Add(donationConfiguration);
+
+            //BQC
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "BQC";
+
+            donationPool = new MiningPool()
+            {
+                Host = "http://de1.bigbbq.cc",
+                Port = 8446,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
             donationConfiguration.Pools.Add(donationPool);
 
             result.Add(donationConfiguration);
