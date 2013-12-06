@@ -8,6 +8,19 @@ namespace MultiMiner.CoinWarz.Api
 {
     public class ApiContext : IApiContext
     {
+        private class ApiWebClient : WebClient
+        {
+            protected override WebRequest GetWebRequest(Uri uri)
+            {
+                WebRequest w = base.GetWebRequest(uri);
+                //default is 100s - far too long for our API calls
+                //if Azure is being flakey we don't want calls taking 100s to timeout
+                //lets go with 10s
+                w.Timeout = 10 * 1000;
+                return w;
+            }
+        }
+
         private readonly string apiKey;
         public ApiContext(string apiKey)
         {
@@ -17,7 +30,7 @@ namespace MultiMiner.CoinWarz.Api
         public IEnumerable<CoinInformation> GetCoinInformation(string userAgent = "",
             BaseCoin profitabilityBasis = BaseCoin.Bitcoin)
         {
-            WebClient client = new WebClient();
+            WebClient client = new ApiWebClient();
             if (!string.IsNullOrEmpty(userAgent))
                 client.Headers.Add("user-agent", userAgent);
 
