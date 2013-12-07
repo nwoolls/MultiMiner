@@ -1712,6 +1712,13 @@ namespace MultiMiner.Win
 
         private void RefreshIncomeSummary()
         {
+            if (sellPrices == null)
+            {
+                //no internet or error parsing API
+                incomeSummaryLabel.Text = "";
+                return;
+            }
+
             if (coinInformation == null)
             {
                 //no internet or error parsing API
@@ -2232,7 +2239,9 @@ namespace MultiMiner.Win
 
                 item.SubItems["Price"].Text = String.Format("{0:.#####} {1}", coin.Price, unit);
 
-                if (miningEngine.Donating && perksConfiguration.ShowExchangeRates)
+                if (miningEngine.Donating && perksConfiguration.ShowExchangeRates
+                    //ensure Coinbase is available:
+                    && (sellPrices != null))
                 {
                     double btcExchangeRate = sellPrices.Subtotal.Amount;
                     double coinExchangeRate = coin.Price * btcExchangeRate;
