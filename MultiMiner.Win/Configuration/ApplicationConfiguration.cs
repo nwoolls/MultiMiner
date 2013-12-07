@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Utility;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -39,6 +40,7 @@ namespace MultiMiner.Win.Configuration
             this.SuggestionsAlgorithm = CoinSuggestionsAlgorithm.SHA256 | CoinSuggestionsAlgorithm.Scrypt;
             this.CheckForMinerUpdates = true;
             this.ListViewStyle = View.Details;
+            this.HiddenColumns = new List<string>();
         }
 
         public bool LaunchOnWindowsLogin { get; set; }
@@ -56,6 +58,7 @@ namespace MultiMiner.Win.Configuration
         public bool CheckForMinerUpdates { get; set; }
         public bool BriefUserInterface { get; set; }
         public View ListViewStyle { get; set; }
+        public List<string> HiddenColumns { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }

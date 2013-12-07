@@ -482,14 +482,7 @@ namespace MultiMiner.Win
                 {
                     using (new HourGlass())
                     {
-                        try
-                        {
-                            devices = GetDevices();
-                        }
-                        finally
-                        {
-                            Application.UseWaitCursor = false;
-                        }
+                        devices = GetDevices();
                     }
                 }
                 catch (Win32Exception ex)
@@ -567,16 +560,11 @@ namespace MultiMiner.Win
         {
             if (deviceListView.View != View.Details)
                 return;
-
-            //hide the driver column (by default)
-            SetColumWidth(driverColumnHeader, 0);
-
-                        
+                                    
             if (briefMode)
             {
                 SetColumWidth(nameColumnHeader, -2);
-                //hide the driver column (by default)
-                //SetColumWidth(driverColumnHeader, 0);
+                SetColumWidth(driverColumnHeader, 0);
                 SetColumWidth(coinColumnHeader, -2);
                 SetColumWidth(difficultyColumnHeader, 0);
                 SetColumWidth(priceColumnHeader, 0);
@@ -594,15 +582,21 @@ namespace MultiMiner.Win
                 SetColumWidth(errorsColumnHeader, 0);
                 SetColumWidth(utilityColumnHeader, 0);
                 SetColumWidth(intensityColumnHeader, 0);
+                SetColumWidth(fanColumnHeader, 0);
+                SetColumWidth(incomeColumnHeader, 0);
+                SetColumWidth(exchangeColumnHeader, 0);
             }
             else
             {
                 for (int i = 0; i < deviceListView.Columns.Count; i++)
                 {
                     ColumnHeader column = deviceListView.Columns[i];
-                    //hide the driver column (by default)
-                    if (column == driverColumnHeader)
+
+                    if (applicationConfiguration.HiddenColumns.Contains(column.Text))
+                    {
+                        SetColumWidth(column, 0);
                         continue;
+                    }
 
                     bool hasValue = false;
                     if (i == 0)
@@ -3228,7 +3222,7 @@ namespace MultiMiner.Win
                 e.NewWidth = 0;
             }
         }
-
+        
         private void deviceListView_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -3257,6 +3251,7 @@ namespace MultiMiner.Win
                     }
             }
         }
+
         private string GetCurrentlySelectedCoinName()
         {
             string currentCoin = null;
@@ -3289,7 +3284,9 @@ namespace MultiMiner.Win
             //display the devices context menu when no item is selected
             if (e.Button == MouseButtons.Right)
                 if ((deviceListView.FocusedItem == null) || !deviceListView.FocusedItem.Bounds.Contains(e.Location))
+                {
                     deviceListContextMenu.Show(Cursor.Position);
+                }
         }
 
         private void detectDevicesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3586,9 +3583,65 @@ namespace MultiMiner.Win
         {
             if (e.Column == incomeColumnHeader.Index)
             {
-                perksConfiguration.ShowIncomeInUsd = !perksConfiguration.ShowIncomeInUsd;
-                RefreshDeviceStats();
-                perksConfiguration.SavePerksConfiguration();
+                using (new HourGlass())
+                {
+                    perksConfiguration.ShowIncomeInUsd = !perksConfiguration.ShowIncomeInUsd;
+                    RefreshDeviceStats();
+                    perksConfiguration.SavePerksConfiguration();
+                    AutoSizeListViewColumns();
+                }
+            }
+        }
+
+        private void columnHeaderMenu_Opening(object sender, CancelEventArgs e)
+        {
+            if (deviceListView.View != View.Details)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            Rectangle headerRect = new Rectangle(0, 0, deviceListView.Width, 20);
+            if (!headerRect.Contains(deviceListView.PointToClient(Control.MousePosition)))
+                e.Cancel = true;
+
+            if (!e.Cancel)
+            {
+                if (columnHeaderMenu.Items.Count <= 1) //1 dummy item so it opens
+                    SetupColumnHeaderMenu();
+            }
+        }
+
+        private void SetupColumnHeaderMenu()
+        {
+            columnHeaderMenu.Items.Clear();
+
+            foreach (ColumnHeader column in deviceListView.Columns)
+            {
+                if ((column == nameColumnHeader)
+                    || (column == coinColumnHeader))
+                    continue;
+
+                string columnText = column.Text;
+
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)columnHeaderMenu.Items.Add(columnText);
+                menuItem.Checked = !applicationConfiguration.HiddenColumns.Contains(columnText);
+
+                menuItem.Click += ColumnHeaderMenuClick;
+            }
+        }
+
+        private void ColumnHeaderMenuClick(object sender, EventArgs e)
+        {
+            using (new HourGlass())
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+                menuItem.Checked = !menuItem.Checked;
+                if (menuItem.Checked)
+                    applicationConfiguration.HiddenColumns.Remove(menuItem.Text);
+                else
+                    applicationConfiguration.HiddenColumns.Add(menuItem.Text);
+                applicationConfiguration.SaveApplicationConfiguration();
                 AutoSizeListViewColumns();
             }
         }

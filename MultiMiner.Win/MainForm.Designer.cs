@@ -86,6 +86,7 @@
             this.profitabilityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.poolColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tempColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.fanColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.hashrateColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.incomeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.acceptedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -93,6 +94,7 @@
             this.errorsColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.utilityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.intensityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.advancedTabControl = new System.Windows.Forms.TabControl();
             this.historyPage = new System.Windows.Forms.TabPage();
             this.historyGridView = new System.Windows.Forms.DataGridView();
@@ -165,13 +167,14 @@
             this.dynamicIntensitySeparator = new System.Windows.Forms.ToolStripSeparator();
             this.dynamicIntensityButton = new System.Windows.Forms.ToolStripMenuItem();
             this.exchangeRateTimer = new System.Windows.Forms.Timer(this.components);
-            this.fanColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.dummyToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.startupMiningPanel.SuspendLayout();
             this.advancedAreaContainer.Panel1.SuspendLayout();
             this.advancedAreaContainer.Panel2.SuspendLayout();
             this.advancedAreaContainer.SuspendLayout();
+            this.columnHeaderMenu.SuspendLayout();
             this.advancedTabControl.SuspendLayout();
             this.historyPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.historyGridView)).BeginInit();
@@ -516,6 +519,7 @@
             this.errorsColumnHeader,
             this.utilityColumnHeader,
             this.intensityColumnHeader});
+            this.deviceListView.ContextMenuStrip = this.columnHeaderMenu;
             this.deviceListView.Dock = System.Windows.Forms.DockStyle.Fill;
             listViewGroup1.Header = "CPU";
             listViewGroup1.Name = "cpuListViewGroup";
@@ -586,6 +590,11 @@
             this.tempColumnHeader.Text = "Temp";
             this.tempColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
+            // fanColumnHeader
+            // 
+            this.fanColumnHeader.Text = "Fan";
+            this.fanColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // hashrateColumnHeader
             // 
             this.hashrateColumnHeader.Text = "Hashrate";
@@ -619,6 +628,15 @@
             // intensityColumnHeader
             // 
             this.intensityColumnHeader.Text = "Intensity";
+            // 
+            // columnHeaderMenu
+            // 
+            this.columnHeaderMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.dummyToolStripMenuItem2});
+            this.columnHeaderMenu.Name = "columnHeaderMenu";
+            this.columnHeaderMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.columnHeaderMenu.Size = new System.Drawing.Size(118, 26);
+            this.columnHeaderMenu.Opening += new System.ComponentModel.CancelEventHandler(this.columnHeaderMenu_Opening);
             // 
             // advancedTabControl
             // 
@@ -1338,10 +1356,11 @@
             // 
             this.exchangeRateTimer.Tick += new System.EventHandler(this.exchangeRateTimer_Tick);
             // 
-            // fanColumnHeader
+            // dummyToolStripMenuItem2
             // 
-            this.fanColumnHeader.Text = "Fan";
-            this.fanColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.dummyToolStripMenuItem2.Name = "dummyToolStripMenuItem2";
+            this.dummyToolStripMenuItem2.Size = new System.Drawing.Size(117, 22);
+            this.dummyToolStripMenuItem2.Text = "Dummy";
             // 
             // MainForm
             // 
@@ -1368,6 +1387,7 @@
             this.advancedAreaContainer.Panel1.ResumeLayout(false);
             this.advancedAreaContainer.Panel2.ResumeLayout(false);
             this.advancedAreaContainer.ResumeLayout(false);
+            this.columnHeaderMenu.ResumeLayout(false);
             this.advancedTabControl.ResumeLayout(false);
             this.historyPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.historyGridView)).EndInit();
@@ -1534,6 +1554,8 @@
         private System.Windows.Forms.ColumnHeader incomeColumnHeader;
         private System.Windows.Forms.Label incomeSummaryLabel;
         private System.Windows.Forms.ColumnHeader fanColumnHeader;
+        private System.Windows.Forms.ContextMenuStrip columnHeaderMenu;
+        private System.Windows.Forms.ToolStripMenuItem dummyToolStripMenuItem2;
     }
 }
 
