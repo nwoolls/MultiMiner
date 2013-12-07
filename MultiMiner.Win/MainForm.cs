@@ -48,10 +48,20 @@ namespace MultiMiner.Win
         public MainForm()
         {
             InitializeComponent();
+
+            applicationConfiguration.LoadApplicationConfiguration();
+            if (applicationConfiguration.StartupMinimized)
+                this.WindowState = FormWindowState.Minimized;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            if (applicationConfiguration.StartupMinimized && applicationConfiguration.MinimizeToNotificationArea)
+            {
+                notifyIcon1.Visible = true;
+                this.Hide();
+            }
+
             incomeSummaryLabel.Text = String.Empty;
 
             SetupInitialButtonVisibility();
@@ -119,7 +129,7 @@ namespace MultiMiner.Win
         {
             engineConfiguration.LoadStrategyConfiguration(); //needed before refreshing coins
             engineConfiguration.LoadCoinConfigurations(); //needed before refreshing coins
-            applicationConfiguration.LoadApplicationConfiguration(); //needed before refreshing coins
+            //already done in ctor applicationConfiguration.LoadApplicationConfiguration(); //needed before refreshing coins
             SetupNotificationsControl(); //needed before refreshing coins
             SetupCoinApi(); //so we target the correct API
             RefreshCoinStats();
@@ -774,7 +784,7 @@ namespace MultiMiner.Win
 
             dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
 
-            applicationConfiguration.LoadApplicationConfiguration();
+            //already done in ctor //applicationConfiguration.LoadApplicationConfiguration();
 
             perksConfiguration.LoadPerksConfiguration();
             exchangeRateTimer.Interval = 1000 * 60 * 30; //30 minutes

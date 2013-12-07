@@ -48,6 +48,7 @@ namespace MultiMiner.Win.Configuration
         public int StartupMiningDelay { get; set; }
         public bool RestartCrashedMiners { get; set; }
         public bool MinimizeToNotificationArea { get; set; }
+        public bool StartupMinimized { get; set; }
         public bool DetectDisownedMiners { get; set; }
         public bool Maximized { get; set; }
         public bool LogAreaVisible { get; set; }
