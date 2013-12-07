@@ -3541,6 +3541,11 @@ namespace MultiMiner.Win
         private void restartButton_Click(object sender, EventArgs e)
         {
             StopMining();
+
+            //refresh stats from Coin API so the Restart button can be used as a way to
+            //force MultiMiner to apply updated mining strategies
+            RefreshCoinStats();
+            
             StartMining();
         }
 
