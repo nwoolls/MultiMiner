@@ -165,6 +165,7 @@
             this.dynamicIntensitySeparator = new System.Windows.Forms.ToolStripSeparator();
             this.dynamicIntensityButton = new System.Windows.Forms.ToolStripMenuItem();
             this.exchangeRateTimer = new System.Windows.Forms.Timer(this.components);
+            this.fanColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.startupMiningPanel.SuspendLayout();
@@ -507,6 +508,7 @@
             this.profitabilityColumnHeader,
             this.poolColumnHeader,
             this.tempColumnHeader,
+            this.fanColumnHeader,
             this.hashrateColumnHeader,
             this.incomeColumnHeader,
             this.acceptedColumnHeader,
@@ -1335,6 +1337,11 @@
             // 
             this.exchangeRateTimer.Tick += new System.EventHandler(this.exchangeRateTimer_Tick);
             // 
+            // fanColumnHeader
+            // 
+            this.fanColumnHeader.Text = "Fan";
+            this.fanColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1525,6 +1532,7 @@
         private System.Windows.Forms.Timer exchangeRateTimer;
         private System.Windows.Forms.ColumnHeader incomeColumnHeader;
         private System.Windows.Forms.Label incomeSummaryLabel;
+        private System.Windows.Forms.ColumnHeader fanColumnHeader;
     }
 }
 

@@ -1385,7 +1385,8 @@ namespace MultiMiner.Win
 
                 item.SubItems["Utility"].Text = (double)item.SubItems["Utility"].Tag >= 0.00 ? ((double)item.SubItems["Utility"].Tag).ToString("0.###") : String.Empty;
 
-                item.SubItems["Temp"].Text = deviceInformation.Temperature > 0 ? deviceInformation.Temperature.ToString() + "°" : String.Empty;
+                item.SubItems["Temp"].Text = deviceInformation.Temperature > 0 ? deviceInformation.Temperature + "°" : String.Empty;
+                item.SubItems["Fan"].Text = deviceInformation.FanPercent > 0 ? deviceInformation.FanPercent + "%" : String.Empty;
                 item.SubItems["Intensity"].Text = deviceInformation.Intensity;
 
                 PopulatePoolForListViewItem(deviceInformation.PoolIndex, item);
