@@ -1400,8 +1400,9 @@ namespace MultiMiner.Win
             if (!(miningEngine.Donating && perksConfiguration.ShowIncomeRates))
                 return;
 
-            string coinName = item.SubItems["Coin"].Text;
-            CoinInformation info = coinInformation.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            //base this off the active configuration, not the text in the ListView (may be unsaved)
+            CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
+            CoinInformation info = coinInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
             if (info != null)
             {
                 double difficulty = (double)item.SubItems["Difficulty"].Tag;
