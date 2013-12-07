@@ -9,6 +9,7 @@ namespace MultiMiner.Win.Configuration
         public bool PerksEnabled { get; set; }
         public bool ShowExchangeRates { get; set; }
         public bool ShowIncomeRates { get; set; }
+        public bool ShowIncomeInUsd { get; set; }
 
         private static string AppDataPath()
         {

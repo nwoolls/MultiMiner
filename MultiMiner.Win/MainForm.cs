@@ -1419,7 +1419,15 @@ namespace MultiMiner.Win
                 double rewardPerDay = sharesPerDay * info.Reward;
 
                 item.SubItems["Daily"].Tag = rewardPerDay;
-                item.SubItems["Daily"].Text = String.Format("{0:0.#####}", rewardPerDay);
+
+                if (perksConfiguration.ShowExchangeRates && perksConfiguration.ShowIncomeInUsd)
+                {
+                    item.SubItems["Daily"].Text = String.Format("${0:0.00}", rewardPerDay * (double)item.SubItems["Exchange"].Tag);
+                }
+                else
+                {
+                    item.SubItems["Daily"].Text = String.Format("{0:0.#####} {1}", rewardPerDay, info.Symbol);
+                }
             }
         }
 
@@ -1510,6 +1518,8 @@ namespace MultiMiner.Win
 
             item.SubItems["Price"].Text = String.Empty;
             item.SubItems["Profitability"].Text = String.Empty;
+
+            item.SubItems["Exchange"].Tag = 0.0;
             item.SubItems["Exchange"].Text = String.Empty;
         }
 
@@ -2246,6 +2256,8 @@ namespace MultiMiner.Win
                 {
                     double btcExchangeRate = sellPrices.Subtotal.Amount;
                     double coinExchangeRate = coin.Price * btcExchangeRate;
+
+                    item.SubItems["Exchange"].Tag = coinExchangeRate;
                     item.SubItems["Exchange"].Text = String.Format("${0:0.00}", coinExchangeRate);
                 }
 
@@ -3563,6 +3575,17 @@ namespace MultiMiner.Win
         private void exchangeRateTimer_Tick(object sender, EventArgs e)
         {
             RefreshExchangeRates();
+        }
+
+        private void deviceListView_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (e.Column == incomeColumnHeader.Index)
+            {
+                perksConfiguration.ShowIncomeInUsd = !perksConfiguration.ShowIncomeInUsd;
+                RefreshDeviceStats();
+                perksConfiguration.SavePerksConfiguration();
+                AutoSizeListViewColumns();
+            }
         }
     }
 }
