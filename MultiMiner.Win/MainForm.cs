@@ -1412,6 +1412,10 @@ namespace MultiMiner.Win
 
             //base this off the active configuration, not the text in the ListView (may be unsaved)
             CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
+            //guard against null-ref if the device has no configuration
+            if (coinConfiguration == null)
+                return;
+
             CoinInformation info = coinInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
             if (info != null)
             {
@@ -1962,6 +1966,10 @@ namespace MultiMiner.Win
                     //serial == serial && path == path (serial may not be unique)
                     (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
                       && !String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
+
+                    //serial == serial && path == String.Empty - WinUSB/LibUSB has no path, but has a serial #
+                    || (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
+                      && String.IsNullOrEmpty(device.Path) && String.IsNullOrEmpty(deviceDetails.DevicePath))
 
                     //path == path
                     || (!String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))

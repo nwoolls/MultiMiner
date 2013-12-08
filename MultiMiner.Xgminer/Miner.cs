@@ -166,7 +166,15 @@ namespace MultiMiner.Xgminer
                 else if (deviceDescriptor.Kind == DeviceKind.CPU)
                     arguments = string.Format("{0} -d CPU{1}", arguments, deviceDescriptor.RelativeIndex);
                 else if (deviceDescriptor.Kind == DeviceKind.USB)
-                    arguments = string.Format("{0} -S {1}:{2} -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Path);
+                {
+                    //hashbuster may not have path
+                    if (String.IsNullOrEmpty(deviceDescriptor.Path))
+                    {
+                        arguments = string.Format("{0} -S {1}:auto -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Serial);
+                    }
+                    else
+                        arguments = string.Format("{0} -S {1}:{2} -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Path);
+                }
             }
 
             if (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
