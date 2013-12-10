@@ -167,11 +167,16 @@ namespace MultiMiner.Xgminer
                     arguments = string.Format("{0} -d CPU{1}", arguments, deviceDescriptor.RelativeIndex);
                 else if (deviceDescriptor.Kind == DeviceKind.USB)
                 {
-                    //hashbuster may not have path
-                    if (String.IsNullOrEmpty(deviceDescriptor.Path))
+                    //hashbuster may not have path - but does in later versions of bfgminer
+                    //leaving as a code-path (for now)
+                    if (deviceDescriptor.Driver.Equals("hashbusterusb", StringComparison.OrdinalIgnoreCase))
                     {
+                        //hard-coded implementation for now until the bfgminer implementation is a bit more stable
+                        //3.8.1 introduced a Path for HashBuster Micro, but the path is not usable with -S -d
                         arguments = string.Format("{0} -S {1}:auto -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Serial);
                     }
+                    else if (String.IsNullOrEmpty(deviceDescriptor.Path))
+                        arguments = string.Format("{0} -S {1}:{2} -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Serial);
                     else
                         arguments = string.Format("{0} -S {1}:{2} -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Path);
                 }
