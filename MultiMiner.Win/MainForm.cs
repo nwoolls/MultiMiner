@@ -124,9 +124,15 @@ namespace MultiMiner.Win
 
             AutoSizeListViewColumns();
 
-            formLoaded = true;
-
             logProcessCloseArgsBindingSource.MoveLast();
+
+            if (deviceListView.Items.Count > 0)
+            {
+                deviceListView.Items[0].Selected = true;
+                deviceListView.Items[0].Focused = true;
+            }
+
+            formLoaded = true;
         }
 
         private void FetchInitialCoinStats()
@@ -3674,6 +3680,11 @@ namespace MultiMiner.Win
                 applicationConfiguration.SaveApplicationConfiguration();
                 AutoSizeListViewColumns();
             }
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            deviceListView.Focus();
         }
     }
 }
