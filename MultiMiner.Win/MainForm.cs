@@ -860,7 +860,8 @@ namespace MultiMiner.Win
                     //don't crash if website cannot be resolved or JSON cannot be parsed
                     if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException))
                     {
-                        ShowCoinbaseApiErrorNotification(ex);
+                        if (applicationConfiguration.ShowApiErrors)
+                            ShowCoinbaseApiErrorNotification(ex);
                         return;
                     }
                     throw;
@@ -2062,7 +2063,8 @@ namespace MultiMiner.Win
                 //don't crash if website cannot be resolved or JSON cannot be parsed
                 if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is Coin.Api.CoinApiException))
                 {
-                    ShowCoinApiErrorNotification(ex);
+                    if (applicationConfiguration.ShowApiErrors)
+                        ShowCoinApiErrorNotification(ex);
                     return;
                 }
                 throw;
@@ -2641,7 +2643,7 @@ namespace MultiMiner.Win
                             }
                         }
                     }
-                    else
+                    else if (applicationConfiguration.ShowApiErrors)
                     {
                         if (InvokeRequired)
                             BeginInvoke((Action)(() =>
@@ -2772,7 +2774,7 @@ namespace MultiMiner.Win
                                     }
                                 }
                             }
-                            else
+                            else if (applicationConfiguration.ShowApiErrors)
                             {
                                 if (InvokeRequired)
                                     BeginInvoke((Action)(() =>

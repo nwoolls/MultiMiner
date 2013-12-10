@@ -60,6 +60,7 @@ namespace MultiMiner.Win.Configuration
         public bool BriefUserInterface { get; set; }
         public View ListViewStyle { get; set; }
         public List<string> HiddenColumns { get; set; }
+        public bool ShowApiErrors { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }

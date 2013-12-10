@@ -66,6 +66,8 @@ namespace MultiMiner.Win
             sysTrayCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
 
             coinApiCombo.SelectedIndex = applicationConfiguration.UseCoinWarzApi ? 1 : 0;
+
+            UpdateMobileMinerControls();
         }
 
         private void PopulatePriorities()
@@ -84,17 +86,21 @@ namespace MultiMiner.Win
 
         private void remoteMonitoringCheck_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateMobileMinerEdits();
+            UpdateMobileMinerControls();
         }
 
         private void remoteCommandsCheck_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateMobileMinerEdits();
         }
-        private void UpdateMobileMinerEdits()
+
+        private void UpdateMobileMinerControls()
         {
-            emailAddressEdit.Enabled = remoteMonitoringCheck.Checked || remoteCommandsCheck.Checked;
-            appKeyEdit.Enabled = emailAddressEdit.Enabled;
+            emailAddressEdit.Enabled = remoteMonitoringCheck.Checked;
+            remoteCommandsCheck.Enabled = remoteMonitoringCheck.Checked;
+            pushNotificationsCheck.Enabled = remoteMonitoringCheck.Checked;
+            httpsMobileMinerCheck.Enabled = remoteMonitoringCheck.Checked;
+            emailAddressEdit.Enabled = remoteMonitoringCheck.Checked;
+            appKeyEdit.Enabled = remoteMonitoringCheck.Checked;            
         }
 
         private void mobileMinerInfoLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
