@@ -62,6 +62,10 @@ namespace MultiMiner.Win
                 this.Hide();
             }
 
+            //make it easier for users to understand there are selected items
+            //trying to make the context menu discoverable
+            deviceListView.HideSelection = false;
+
             incomeSummaryLabel.Text = String.Empty;
 
             SetupInitialButtonVisibility();
