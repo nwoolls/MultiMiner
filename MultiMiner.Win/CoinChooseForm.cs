@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace MultiMiner.Win
 {
@@ -29,18 +28,19 @@ namespace MultiMiner.Win
         private void PopulateCoinCombo()
         {
             foreach (CryptoCoin sortedCoin in sortedCoins)
-                coinCombo.Items.Add(sortedCoin.Name);
+                coinCombo.Items.Add(String.Format("{0} ({1})", sortedCoin.Name, sortedCoin.Symbol));
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            string coinName = coinCombo.Text;
-            CryptoCoin knownCoin = sortedCoins.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
-
+            CryptoCoin knownCoin = null;
+            if (coinCombo.SelectedIndex >= 0)
+                knownCoin = sortedCoins[coinCombo.SelectedIndex];
+            
             if (knownCoin == null)
             {
                 CryptoCoin newCoin = new CryptoCoin();
-                newCoin.Name = coinName;
+                newCoin.Name = coinCombo.Text;
                 newCoin.Algorithm = Xgminer.CoinAlgorithm.SHA256;
 
                 CoinEditForm coinEditForm = new CoinEditForm(newCoin);
