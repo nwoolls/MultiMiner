@@ -1802,8 +1802,13 @@ namespace MultiMiner.Win
                 {
                     //report on the actual, mining coin, not just what is in the ListView
                     //e.g. we may be donating
-                    string coinName = CoinConfigurationForListViewItem(listItem).Coin.Name;
-                    
+                    CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(listItem);
+
+                    if (coinConfiguration == null)
+                        //no configuration for list item, continue to next
+                        continue;
+
+                    string coinName = coinConfiguration.Coin.Name;
                     double coinIncome = (double)listItem.SubItems["Daily"].Tag;
 
                     if (coinsIncome.ContainsKey(coinName))
