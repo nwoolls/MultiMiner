@@ -2451,8 +2451,8 @@ namespace MultiMiner.Win
 
         private void ShowApiMonitor()
         {
-            ShowAdvancedPanel();
             advancedTabControl.SelectedTab = apiMonitorPage;
+            ShowAdvancedPanel();
 
             applicationConfiguration.LogAreaVisible = true;
             applicationConfiguration.SaveApplicationConfiguration();
@@ -2856,8 +2856,8 @@ namespace MultiMiner.Win
 
         private void ShowProcessLog()
         {
-            ShowAdvancedPanel();
             advancedTabControl.SelectedTab = processLogPage;
+            ShowAdvancedPanel();
 
             applicationConfiguration.LogAreaVisible = true;
             applicationConfiguration.SaveApplicationConfiguration();
@@ -2870,8 +2870,8 @@ namespace MultiMiner.Win
 
         private void ShowHistory()
         {
-            ShowAdvancedPanel();
             advancedTabControl.SelectedTab = historyPage;
+            ShowAdvancedPanel();
 
             applicationConfiguration.LogAreaVisible = true;
             applicationConfiguration.SaveApplicationConfiguration();
