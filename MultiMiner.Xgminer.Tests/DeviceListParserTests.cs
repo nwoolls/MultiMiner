@@ -10,6 +10,25 @@ namespace MultiMiner.Xgminer.Tests
     public class DeviceListParserTests
     {
         [TestMethod]
+        public void PraseTextForDevices_UserData1_Succeeds()
+        {
+            const string inputText =
+@"[2013-12-09 12:39:26] Started bfgminer 3.8.0
+ [2013-12-09 12:39:28] Devices detected:
+ [2013-12-09 12:39:28]  AMD Radeon HD 5800 Series (driver=opencl; procs=1)
+
+1 devices listed";
+
+            List<string> inputLines = inputText.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+
+            List<Device> deviceList = new List<Device>();
+
+            DeviceListParser.ParseTextForDevices(inputLines, deviceList);
+
+            Assert.IsTrue(deviceList.Count == 1);
+        }
+
+        [TestMethod]
         public void ParseTextForDevices_Over10Devices_Succeeds()
         {
             const string inputText =
