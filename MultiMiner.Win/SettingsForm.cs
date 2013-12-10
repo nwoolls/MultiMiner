@@ -22,6 +22,8 @@ namespace MultiMiner.Win
 
         private void saveButton_Click(object sender, EventArgs e)
         {
+            CleanUpInput();
+
             if (!ValidateInput())
                 return;
 
@@ -30,8 +32,17 @@ namespace MultiMiner.Win
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
+        private void CleanUpInput()
+        {
+            //clean up input
+            emailAddressEdit.Text = emailAddressEdit.Text.Trim();
+            appKeyEdit.Text = appKeyEdit.Text.Trim();
+            apiKeyEdit.Text = apiKeyEdit.Text.Trim();
+        }
+
         private bool ValidateInput()
         {
+            //validate input
             if (emailAddressEdit.Enabled && !String.IsNullOrEmpty(emailAddressEdit.Text) &&
                 !InputValidation.IsValidEmailAddress(emailAddressEdit.Text))
             {
@@ -89,10 +100,6 @@ namespace MultiMiner.Win
             UpdateMobileMinerControls();
         }
 
-        private void remoteCommandsCheck_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
         private void UpdateMobileMinerControls()
         {
             emailAddressEdit.Enabled = remoteMonitoringCheck.Checked;
@@ -106,10 +113,6 @@ namespace MultiMiner.Win
         private void mobileMinerInfoLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("http://mobileminerapp.com/");
-        }
-
-        private void minerCombo_SelectedIndexChanged(object sender, EventArgs e)
-        {
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
