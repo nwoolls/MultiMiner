@@ -1424,6 +1424,10 @@ namespace MultiMiner.Win
             if (!(miningEngine.Donating && perksConfiguration.ShowIncomeRates))
                 return;
 
+            if (coinInformation == null)
+                //no internet or error parsing API
+                return;
+
             //base this off the active configuration, not the text in the ListView (may be unsaved)
             CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
             //guard against null-ref if the device has no configuration
