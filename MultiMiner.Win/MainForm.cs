@@ -569,11 +569,14 @@ namespace MultiMiner.Win
             }
         }
 
-        //optimized for speed
+        private const int maxColumnWidth = 250;
+        //optimized for speed        
         private static void SetColumWidth(ColumnHeader column, int width)
         {
             if ((width < 0) || (column.Width != width))
                 column.Width = width;
+            if (column.Width > maxColumnWidth)
+                column.Width = maxColumnWidth;
         }
 
         private void AutoSizeListViewColumns()
