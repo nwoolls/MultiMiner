@@ -1684,25 +1684,9 @@ namespace MultiMiner.Win
 
                     foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                     {
-                        if (deviceInformation.Status.ToLower().Contains("sick"))
-                            minerProcess.HasSickDevice = true;
-                        if (deviceInformation.Status.ToLower().Contains("dead"))
-                            minerProcess.HasDeadDevice = true;
-                        if (deviceInformation.CurrentHashrate == 0)
-                            minerProcess.HasZeroHashrateDevice = true;
-
-                        //don't check average hashrate if using dynamic intensity and its a GPU
-                        if (!engineConfiguration.XgminerConfiguration.DesktopMode ||
-                            (!deviceInformation.Kind.Equals("GPU", StringComparison.OrdinalIgnoreCase)))
-                        {
-                            //avoid div by 0
-                            if (deviceInformation.AverageHashrate > 0)
-                            {
-                                double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
-                                if (performanceRatio <= 0.50)
-                                    minerProcess.HasPoorPerformingDevice = true;
-                            }
-                        }
+                        //don't consider a standalone miner suspect - restarting the proxy doesn't help and often hurts
+                        if (!deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
+                            FlagSuspiciousMiner(minerProcess, deviceInformation);
 
                         DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
                             && (d.ID == deviceInformation.ID));
@@ -1742,6 +1726,29 @@ namespace MultiMiner.Win
             AutoSizeListViewColumnsEvery(count);
 
             RefreshIncomeSummary();
+        }
+
+        private void FlagSuspiciousMiner(MinerProcess minerProcess, DeviceInformationResponse deviceInformation)
+        {
+            if (deviceInformation.Status.ToLower().Contains("sick"))
+                minerProcess.HasSickDevice = true;
+            if (deviceInformation.Status.ToLower().Contains("dead"))
+                minerProcess.HasDeadDevice = true;
+            if (deviceInformation.CurrentHashrate == 0)
+                minerProcess.HasZeroHashrateDevice = true;
+
+            //don't check average hashrate if using dynamic intensity and its a GPU
+            if (!engineConfiguration.XgminerConfiguration.DesktopMode ||
+                (!deviceInformation.Kind.Equals("GPU", StringComparison.OrdinalIgnoreCase)))
+            {
+                //avoid div by 0
+                if (deviceInformation.AverageHashrate > 0)
+                {
+                    double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
+                    if (performanceRatio <= 0.50)
+                        minerProcess.HasPoorPerformingDevice = true;
+                }
+            }
         }
 
         private void RefreshIncomeSummary()
