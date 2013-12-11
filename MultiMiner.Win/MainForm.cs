@@ -1797,6 +1797,7 @@ namespace MultiMiner.Win
             {
                 const string addition = " + ";
                 double usdTotal = 0.00;
+                CoinInformation btcCoinInfo = coinInformation.SingleOrDefault(c => c.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
                 foreach (string coinName in incomeForCoins.Keys)
                 {
                     double coinIncome = incomeForCoins[coinName];
@@ -1804,6 +1805,11 @@ namespace MultiMiner.Win
                     if (coinInfo != null)
                     {
                         double coinUsd = sellPrices.Subtotal.Amount * coinInfo.Price;
+
+                        //if BaseCoin is LiteCoin, adjust the USD price accordingly
+                        if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == BaseCoin.Litecoin))
+                            coinUsd = coinUsd / btcCoinInfo.Price;
+
                         double coinDailyUsd = coinIncome * coinUsd;
                         usdTotal += coinDailyUsd;
 
@@ -2291,26 +2297,37 @@ namespace MultiMiner.Win
             }
         }
 
-        private void PopulateCoinStatsForListViewItem(Coin.Api.CoinInformation coin, ListViewItem item)
+        private void PopulateCoinStatsForListViewItem(Coin.Api.CoinInformation coinInfo, ListViewItem item)
         {
             deviceListView.BeginUpdate();
             try
             {
-                item.SubItems["Difficulty"].Tag = coin.Difficulty;
-                item.SubItems["Difficulty"].Text = coin.Difficulty.ToDifficultyString();
+                item.SubItems["Difficulty"].Tag = coinInfo.Difficulty;
+                item.SubItems["Difficulty"].Text = coinInfo.Difficulty.ToDifficultyString();
 
                 string unit = "BTC";
                 if (currentBaseCoin == Coin.Api.BaseCoin.Litecoin)
                     unit = "LTC";
 
-                item.SubItems["Price"].Text = String.Format("{0:.#####} {1}", coin.Price, unit);
+                item.SubItems["Price"].Text = String.Format("{0:.#####} {1}", coinInfo.Price, unit);
 
                 if (miningEngine.Donating && perksConfiguration.ShowExchangeRates
                     //ensure Coinbase is available:
-                    && (sellPrices != null))
+                    && (sellPrices != null)
+                    //ensure coin API is available:
+                    && (coinInfo != null))
                 {
                     double btcExchangeRate = sellPrices.Subtotal.Amount;
-                    double coinExchangeRate = coin.Price * btcExchangeRate;
+                    double coinExchangeRate = 0.00;
+
+                    if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == BaseCoin.Litecoin))
+                    {
+                        //if BaseCoin is LiteCoin, adjust the USD price accordingly
+                        CoinInformation btcCoinInfo = coinInformation.SingleOrDefault(c => c.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
+                        coinExchangeRate = coinInfo.Price * (btcExchangeRate / btcCoinInfo.Price);
+                    }
+                    else
+                        coinExchangeRate = coinInfo.Price * btcExchangeRate;
 
                     item.SubItems["Exchange"].Tag = coinExchangeRate;
                     item.SubItems["Exchange"].Text = String.Format("${0:0.00}", coinExchangeRate);
@@ -2319,13 +2336,13 @@ namespace MultiMiner.Win
                 switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
                 {
                     case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
-                        item.SubItems["Profitability"].Text = Math.Round(coin.AdjustedProfitability, 2) + "%";
+                        item.SubItems["Profitability"].Text = Math.Round(coinInfo.AdjustedProfitability, 2) + "%";
                         break;
                     case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
-                        item.SubItems["Profitability"].Text = Math.Round(coin.AverageProfitability, 2) + "%";
+                        item.SubItems["Profitability"].Text = Math.Round(coinInfo.AverageProfitability, 2) + "%";
                         break;
                     case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
-                        item.SubItems["Profitability"].Text = Math.Round(coin.Profitability, 2) + "%";
+                        item.SubItems["Profitability"].Text = Math.Round(coinInfo.Profitability, 2) + "%";
                         break;
                 } 
             }
@@ -2334,6 +2351,7 @@ namespace MultiMiner.Win
                 deviceListView.EndUpdate();
             }
         }
+
 
         private void countdownTimer_Tick(object sender, EventArgs e)
         {
