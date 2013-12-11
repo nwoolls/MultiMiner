@@ -44,6 +44,7 @@ namespace MultiMiner.Win
         private PerksConfiguration perksConfiguration = new PerksConfiguration();
         private MultiMiner.Coinbase.Api.SellPrices sellPrices;
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
+        private BaseCoin currentBaseCoin = BaseCoin.Bitcoin;
 
         public MainForm()
         {
@@ -2086,6 +2087,7 @@ namespace MultiMiner.Win
                 coinInformation = coinApiContext.GetCoinInformation(
                     UserAgent.AgentString,
                     engineConfiguration.StrategyConfiguration.BaseCoin).ToList();
+                currentBaseCoin = applicationConfiguration.UseCoinWarzApi ? BaseCoin.Bitcoin : engineConfiguration.StrategyConfiguration.BaseCoin;
             }
             catch (Exception ex)
             {
@@ -2298,7 +2300,7 @@ namespace MultiMiner.Win
                 item.SubItems["Difficulty"].Text = coin.Difficulty.ToDifficultyString();
 
                 string unit = "BTC";
-                if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == Coin.Api.BaseCoin.Litecoin))
+                if (currentBaseCoin == Coin.Api.BaseCoin.Litecoin)
                     unit = "LTC";
 
                 item.SubItems["Price"].Text = String.Format("{0:.#####} {1}", coin.Price, unit);
