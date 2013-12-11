@@ -1454,14 +1454,15 @@ namespace MultiMiner.Win
             }
         }
 
-        private void PopulatePoolForListViewItem(int poolIndex, ListViewItem item)
+        private string GetPoolNameByIndex(int poolIndex, int deviceIndex)
         {
+            string result = String.Empty;
+
             if (poolIndex >= 0)
             {
-                CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
-                if (coinConfiguration == null)
-                    item.SubItems["Pool"].Text = String.Empty;
-                else
+                Device device = devices[deviceIndex];
+                CoinConfiguration coinConfiguration = CoinConfigurationForDevice(device);
+                if (coinConfiguration != null)
                 {
                     //the poolIndex may be greater than the Pools count if the user edits
                     //their pools while mining
@@ -1470,25 +1471,33 @@ namespace MultiMiner.Win
                         string poolHost = coinConfiguration.Pools[poolIndex].Host;
                         string poolDomain = poolHost.DomainFromHost();
 
-                        item.SubItems["Pool"].Text = poolDomain;
+                        result = poolDomain;
                     }
                     else
                     {
                         if (miningEngine.Donating)
-                            item.SubItems["Pool"].Text = "donation"; //donation pool won't be in list
-                        else
-                            item.SubItems["Pool"].Text = String.Empty;
+                            result = "donation"; //donation pool won't be in list
                     }
                 }
             }
-            else
-                item.SubItems["Pool"].Text = String.Empty;
+
+            return result;
+        }
+
+        private void PopulatePoolForListViewItem(int poolIndex, ListViewItem item)
+        {
+            item.SubItems["Pool"].Text = GetPoolNameByIndex(poolIndex, deviceListView.Items.IndexOf(item));
         }
 
         private CoinConfiguration CoinConfigurationForListViewItem(ListViewItem item)
         {
             int itemIndex = deviceListView.Items.IndexOf(item);
             Device device = devices[itemIndex];
+            return CoinConfigurationForDevice(device);
+        }
+
+        private CoinConfiguration CoinConfigurationForDevice(Device device)
+        {
             //get the actual device configuration, text in the ListViewItem may be unsaved
             DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
             if (deviceConfiguration == null)
@@ -2533,7 +2542,7 @@ namespace MultiMiner.Win
             {
                 //check for commands first so we can report mining activity after
                 CheckForMobileMinerCommands();
-                SubmitMobileMinerStats();
+                SubmitMobileMinerStatistics();
             }
         }
         
@@ -2562,7 +2571,7 @@ namespace MultiMiner.Win
         //being triggered by someone who has valid credentials, and
         //i've seen it myself as well
         private bool mobileMinerSuccess = false;
-        private void SubmitMobileMinerStats()
+        private void SubmitMobileMinerStatistics()
         {
             //are remote monitoring enabled?
             if (!applicationConfiguration.MobileMinerMonitoring)
@@ -2582,12 +2591,22 @@ namespace MultiMiner.Win
                 if (deviceInformationList == null) //handled failure getting API info
                     continue;
 
+                //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
+                List<DeviceDetailsResponse> processDevices = GetProcessDevices(minerProcess, deviceInformationList);
+
                 foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                 {
                     MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics = new MobileMiner.Api.MiningStatistics();
 
-                    //set CoinName first as it is used in PopulateMiningStatistics
                     PopulateMiningStatistics(miningStatistics, deviceInformation, GetCoinNameForApiContext(minerProcess.ApiContext));
+                                        
+                    DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+                        && (d.ID == deviceInformation.ID));
+                    int deviceIndex = GetItemIndexForDeviceDetails(deviceDetails);
+                    Device device = devices[deviceIndex];
+
+                    miningStatistics.FullName = device.Name;
+                    miningStatistics.PoolName = GetPoolNameByIndex(deviceInformation.PoolIndex, deviceIndex);
 
                     statisticsList.Add(miningStatistics);
                 }
@@ -2607,7 +2626,8 @@ namespace MultiMiner.Win
         {
             miningStatistics.MinerName = "MultiMiner";
             miningStatistics.CoinName = coinName;
-            CryptoCoin coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinName)).Coin;
+            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinName));
+            CryptoCoin coin = coinConfiguration.Coin;
             miningStatistics.CoinSymbol = coin.Symbol;
 
             if (coin.Algorithm == CoinAlgorithm.Scrypt)

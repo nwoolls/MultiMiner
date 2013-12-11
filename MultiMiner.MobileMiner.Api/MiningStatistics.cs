@@ -28,5 +28,14 @@ namespace MultiMiner.MobileMiner.Api
         public int HardwareErrors { get; set; }
         public double Utility { get; set; }
         public string Intensity { get; set; } //string, might be D
+        //new properties from bfgminer
+        public string Name { get; set; }
+        public int DeviceID { get; set; }
+        public int PoolIndex { get; set; }
+        public double RejectedSharesPercent { get; set; }
+        public double HardwareErrorsPercent { get; set; }
+        //calculated properties from MultiMiner
+        public string FullName { get; set; }
+        public string PoolName { get; set; }
     }
 }
