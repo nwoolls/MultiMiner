@@ -55,14 +55,14 @@ Windows Installation
 
 The installer runs without needing admin rights and does not install to Program Files so as not to be intrusive. However, if you prefer you can use the zip file:
 
-1. Download and extract the .zip file at the above link
+1. Download and extract the .zip file at the [GitHub Releases page][12]
 2. Launch MultiMiner.Win.exe to get started
 
 OS X Installation
 -----------------
 1. Install Xquartz available [here][7]
 2. Install the latest version of [Mono][8]
-3. Download and extract the __.app__.zip file at the above Downloads link
+3. Download and extract the __.app__.zip file at the [GitHub Releases page][12]
 4. Launch MultiMiner.app to get started
 
 MultiMiner will automatically download redistributable binaries of bfgminer from the [xgminer-osx][13] project.
@@ -81,7 +81,7 @@ Linux Installation (Debian-Based)
         sudo apt-get update
         sudo apt-get install bfgminer
         
-3. Download and extract the .zip file at the above Downloads link
+3. Download and extract the .zip file at the [GitHub Releases page][12]
 4. Run MultiMiner.Win.exe using mono:
 
         mono MultiMiner.Win.exe
@@ -90,7 +90,7 @@ Linux Installation (Debian-Based)
         
 Generic Mono Installation
 -------------------------------
-1. Download and extract the zip file at the above Downloads link
+1. Download and extract the zip file at the [GitHub Releases page][12]
 2. Install bfgminer. For OS X, you can find packages and for doing so [here][5] and instructions for using them [here][6].
 3. Install X11. Under OS X you should install Xquartz available [here][7].
 4. Install the latest version of [Mono][8].
