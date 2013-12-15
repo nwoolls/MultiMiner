@@ -837,7 +837,9 @@ namespace MultiMiner.Win
                 if ((applicationConfiguration.LogAreaTabIndex >= 0) &&
                     (applicationConfiguration.LogAreaTabIndex < advancedTabControl.TabCount))
                     advancedTabControl.SelectedIndex = applicationConfiguration.LogAreaTabIndex;
-                if (applicationConfiguration.LogAreaDistance > 0)
+                if ((applicationConfiguration.LogAreaDistance > 0) &&
+                    //can't set splitter distance with the app minimized :( InvalidOperationException
+                    !applicationConfiguration.StartupMinimized)
                     advancedAreaContainer.SplitterDistance = applicationConfiguration.LogAreaDistance;
             }
             else
