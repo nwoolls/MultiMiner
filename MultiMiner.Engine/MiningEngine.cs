@@ -24,11 +24,11 @@ namespace MultiMiner.Engine
         private EngineConfiguration engineConfiguration;
         private List<Device> devices;
         private Version backendVersion;
-        private bool donating;
+        private int donationPercent;
         
         public bool Donating
         {
-            get { return donating; }
+            get { return donationPercent > 0; }
         }        
 
         public List<MinerProcess> MinerProcesses
@@ -55,7 +55,7 @@ namespace MultiMiner.Engine
         }
 
         private bool startingMining = false;
-        public void StartMining(EngineConfiguration engineConfiguration, List<Device> devices, List<CoinInformation> coinInformation, bool donate)
+        public void StartMining(EngineConfiguration engineConfiguration, List<Device> devices, List<CoinInformation> coinInformation, int donationPercent)
         {
             StopMining();
 
@@ -65,7 +65,7 @@ namespace MultiMiner.Engine
                 this.engineConfiguration = engineConfiguration;
                 this.devices = devices;
                 this.backendVersion = new Version(Xgminer.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner()));
-                this.donating = donate;
+                this.donationPercent = donationPercent;
 
                 if (coinInformation != null) //null if no network connection
                     ApplyMiningStrategy(coinInformation);
@@ -596,23 +596,20 @@ namespace MultiMiner.Engine
             IList<DeviceConfiguration> enabledConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol)).ToList();
 
             MinerConfiguration minerConfiguration = new MinerConfiguration();
-            
+
             minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner();
-            
+
             //minerConfiguration.Pools = coinConfiguration.Pools;
             foreach (MiningPool pool in coinConfiguration.Pools)
             {
                 pool.Quota = 0;
                 minerConfiguration.Pools.Add(pool);
             }
-            //using bfgminer quotas for failover, that way we can augment for donations
-            minerConfiguration.Pools.First().Quota = 100;
 
-            if (donating)
-            {
-                minerConfiguration.Pools.First().Quota--; //99%
+            //using bfgminer quotas for failover, that way we can augment for donations
+            minerConfiguration.Pools.First().Quota = 100 - donationPercent;
+            if (donationPercent > 0)
                 AddDonationPool(coinSymbol, minerConfiguration);
-            }
 
             minerConfiguration.Algorithm = coinConfiguration.Coin.Algorithm;
             minerConfiguration.ApiPort = port;
@@ -627,7 +624,7 @@ namespace MultiMiner.Engine
                 DeviceConfiguration enabledConfiguration = enabledConfigurations[i];
 
                 Device device = devices.SingleOrDefault(d => d.Equals(enabledConfiguration));
-                
+
                 if ((includeKinds & device.Kind) == 0)
                     continue;
 
@@ -649,7 +646,7 @@ namespace MultiMiner.Engine
 
             if (deviceCount == 0)
                 return null;
-                        
+
             string arguments = string.Empty;
 
             //apply algorithm-specific parameters
@@ -664,11 +661,11 @@ namespace MultiMiner.Engine
             if (engineConfiguration.XgminerConfiguration.DesktopMode)
                 arguments = arguments + " -I D";
 
-            if (donating)
+            if (donationPercent > 0)
                 arguments = arguments + " --load-balance";
-            
+
             minerConfiguration.LaunchArguments = arguments;
-            
+
             return minerConfiguration;
         }
 
@@ -820,7 +817,7 @@ namespace MultiMiner.Engine
 
             if (donationPool != null)
             {
-                donationPool.Quota = 1; //1% donation
+                donationPool.Quota = donationPercent;
                 minerConfiguration.Pools.Add(donationPool);
             }
         }

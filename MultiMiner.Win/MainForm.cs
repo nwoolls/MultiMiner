@@ -1222,7 +1222,10 @@ namespace MultiMiner.Win
             {
                 using (new HourGlass())
                 {
-                    miningEngine.StartMining(engineConfiguration, devices, coinInformation, perksConfiguration.PerksEnabled);
+                    int donationPercent = 0;
+                    if (perksConfiguration.PerksEnabled)
+                        donationPercent = perksConfiguration.DonationPercent;
+                    miningEngine.StartMining(engineConfiguration, devices, coinInformation, donationPercent);
                 }
             }
             catch (MinerLaunchException ex)

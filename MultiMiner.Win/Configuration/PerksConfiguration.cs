@@ -11,6 +11,19 @@ namespace MultiMiner.Win.Configuration
         public bool ShowIncomeRates { get; set; }
         public bool ShowIncomeInUsd { get; set; }
 
+        private int donationPercent = 1;
+        public int DonationPercent
+        {
+            get
+            {
+                return donationPercent;
+            }
+            set
+            {
+                donationPercent = Math.Max(1, Math.Min(100, value));
+            }
+        }
+
         private static string AppDataPath()
         {
             string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);

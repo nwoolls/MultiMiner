@@ -13,7 +13,7 @@ namespace MultiMiner.Win
 
         private void perksCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateCheckStates();
+            UpdateControlStates();
             UpdateThanks();
         }
 
@@ -28,15 +28,32 @@ namespace MultiMiner.Win
             smileyPicture.Left = perksCheckBox.Left + perksCheckBox.Width + 2;
         }
 
-        private void UpdateCheckStates()
+        private void UpdateControlStates()
         {
             this.coinbaseCheckBox.Enabled = perksCheckBox.Checked;
             this.incomeCheckBox.Enabled = perksCheckBox.Checked;
+            this.percentEdit.Enabled = perksCheckBox.Checked;
+            this.percentLabel1.Enabled = perksCheckBox.Checked;
+            this.percentLabel2.Enabled = perksCheckBox.Checked;
         }
 
         private void PerksForm_Load(object sender, EventArgs e)
         {
-            UpdateCheckStates();
+            UpdateControlStates();
+        }
+
+        private void percentEdit_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            int percent = 1;
+            bool success = int.TryParse(percentEdit.Text, out percent);
+            if (success)
+            {
+                if (percent < 1)
+                    success = false;
+                if (percent > 100)
+                    success = false;
+            }
+            e.Cancel = !success;
         }
     }
 }
