@@ -133,7 +133,16 @@ namespace MultiMiner.Win
                 deviceListView.Items[0].Focused = true;
             }
 
+            SetGpuEnvironmentVariables();
+
             formLoaded = true;
+        }
+
+        //required for GPU mining
+        private static void SetGpuEnvironmentVariables()
+        {
+            Environment.SetEnvironmentVariable("GPU_MAX_ALLOC_PERCENT", "100", EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable("GPU_USE_SYNC_OBJECTS", "1", EnvironmentVariableTarget.User);
         }
 
         private void FetchInitialCoinStats()
