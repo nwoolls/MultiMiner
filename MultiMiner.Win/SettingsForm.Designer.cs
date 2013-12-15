@@ -119,6 +119,7 @@
             // 
             // apiKeyEdit
             // 
+            this.apiKeyEdit.AccessibleName = "API key";
             this.apiKeyEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "CoinWarzApiKey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.apiKeyEdit.Location = new System.Drawing.Point(318, 25);
             this.apiKeyEdit.Name = "apiKeyEdit";
@@ -210,7 +211,6 @@
             this.remoteCommandsCheck.TabIndex = 4;
             this.remoteCommandsCheck.Text = "Enable remote control";
             this.remoteCommandsCheck.UseVisualStyleBackColor = true;
-            
             // 
             // remoteMonitoringCheck
             // 
@@ -226,13 +226,13 @@
             // 
             // appKeyEdit
             // 
+            this.appKeyEdit.AccessibleName = "App key";
             this.appKeyEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "MobileMinerApplicationKey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.appKeyEdit.Enabled = false;
             this.appKeyEdit.Location = new System.Drawing.Point(318, 120);
             this.appKeyEdit.Name = "appKeyEdit";
             this.appKeyEdit.Size = new System.Drawing.Size(151, 23);
             this.appKeyEdit.TabIndex = 8;
-            
             // 
             // label8
             // 
@@ -245,6 +245,7 @@
             // 
             // emailAddressEdit
             // 
+            this.emailAddressEdit.AccessibleName = "Email address";
             this.emailAddressEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "MobileMinerEmailAddress", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.emailAddressEdit.Enabled = false;
             this.emailAddressEdit.Location = new System.Drawing.Point(121, 120);

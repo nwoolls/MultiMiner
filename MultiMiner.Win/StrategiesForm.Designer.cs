@@ -134,6 +134,7 @@
             // 
             // thresholdSymbolCombo
             // 
+            this.thresholdSymbolCombo.AccessibleName = "Minimum profit coin";
             this.thresholdSymbolCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.thresholdSymbolCombo.FormattingEnabled = true;
@@ -172,6 +173,7 @@
             // 
             // exceptionEdit
             // 
+            this.exceptionEdit.AccessibleName = "Single coin threshold";
             this.exceptionEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.exceptionEdit.Enabled = false;
@@ -192,6 +194,7 @@
             // 
             // thresholdValueEdit
             // 
+            this.thresholdValueEdit.AccessibleName = "Minimum profit percent";
             this.thresholdValueEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.thresholdValueEdit.Location = new System.Drawing.Point(236, 63);
@@ -219,6 +222,7 @@
             // 
             // profitabilityKindCombo
             // 
+            this.profitabilityKindCombo.AccessibleName = "Profitability kind";
             this.profitabilityKindCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.profitabilityKindCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -234,6 +238,7 @@
             // 
             // intervalCombo
             // 
+            this.intervalCombo.AccessibleName = "Check every";
             this.intervalCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.intervalCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -263,6 +268,7 @@
             // 
             // baseCoinCombo
             // 
+            this.baseCoinCombo.AccessibleName = "Base coin";
             this.baseCoinCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.baseCoinCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -286,6 +292,7 @@
             // 
             // miningBasisCombo
             // 
+            this.miningBasisCombo.AccessibleName = "Mining basis";
             this.miningBasisCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.miningBasisCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -306,6 +313,7 @@
             // 
             // suggestionsCombo
             // 
+            this.suggestionsCombo.AccessibleName = "Suggest coins";
             this.suggestionsCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.suggestionsCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;

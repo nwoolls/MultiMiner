@@ -150,6 +150,7 @@
             // 
             // textBox2
             // 
+            this.textBox2.AccessibleName = "Permitted IPs";
             this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "AllowedApiIps", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -169,6 +170,7 @@
             // 
             // textBox1
             // 
+            this.textBox1.AccessibleName = "Starting port";
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "StartingApiPort", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -249,6 +251,7 @@
             // 
             // textBox3
             // 
+            this.textBox3.AccessibleName = "Stratum port";
             this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "StratumProxyStratumPort", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -268,6 +271,7 @@
             // 
             // proxyPortEdit
             // 
+            this.proxyPortEdit.AccessibleName = "Getwork port";
             this.proxyPortEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.proxyPortEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "StratumProxyPort", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -302,6 +306,7 @@
             // 
             // sha256ParamsEdit
             // 
+            this.sha256ParamsEdit.AccessibleName = "SHA-2";
             this.sha256ParamsEdit.Location = new System.Drawing.Point(121, 22);
             this.sha256ParamsEdit.Name = "sha256ParamsEdit";
             this.sha256ParamsEdit.Size = new System.Drawing.Size(301, 23);
@@ -309,6 +314,7 @@
             // 
             // scryptParamsEdit
             // 
+            this.scryptParamsEdit.AccessibleName = "Scrypt";
             this.scryptParamsEdit.Location = new System.Drawing.Point(121, 55);
             this.scryptParamsEdit.Name = "scryptParamsEdit";
             this.scryptParamsEdit.Size = new System.Drawing.Size(301, 23);

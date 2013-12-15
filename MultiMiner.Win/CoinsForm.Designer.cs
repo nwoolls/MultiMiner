@@ -83,6 +83,7 @@
             // 
             // toolStrip1
             // 
+            this.toolStrip1.AccessibleRole = System.Windows.Forms.AccessibleRole.ToolBar;
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addCoinButton,
@@ -96,6 +97,7 @@
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.toolStrip1.Size = new System.Drawing.Size(651, 25);
             this.toolStrip1.TabIndex = 0;
+            this.toolStrip1.TabStop = true;
             this.toolStrip1.Text = "toolStrip1";
             // 
             // addCoinButton
@@ -247,6 +249,7 @@
             // 
             // poolDownButton
             // 
+            this.poolDownButton.AccessibleName = "Down";
             this.poolDownButton.BackColor = System.Drawing.SystemColors.Control;
             this.poolDownButton.Image = global::MultiMiner.Win.Properties.Resources.arrow_down;
             this.poolDownButton.Location = new System.Drawing.Point(399, 58);
@@ -258,6 +261,7 @@
             // 
             // poolUpButton
             // 
+            this.poolUpButton.AccessibleName = "Up";
             this.poolUpButton.BackColor = System.Drawing.SystemColors.Control;
             this.poolUpButton.Image = global::MultiMiner.Win.Properties.Resources.arrow_up;
             this.poolUpButton.Location = new System.Drawing.Point(399, 22);
@@ -295,6 +299,7 @@
             // 
             // poolListBox
             // 
+            this.poolListBox.AccessibleName = "Pools";
             this.poolListBox.DataSource = this.miningPoolBindingSource;
             this.poolListBox.DisplayMember = "Host";
             this.poolListBox.FormattingEnabled = true;
@@ -347,6 +352,7 @@
             // 
             // userNameEdit
             // 
+            this.userNameEdit.AccessibleName = "Worker name";
             this.userNameEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Username", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.userNameEdit.Location = new System.Drawing.Point(102, 140);
             this.userNameEdit.Name = "userNameEdit";
@@ -356,6 +362,7 @@
             // 
             // hostEdit
             // 
+            this.hostEdit.AccessibleName = "Host";
             this.hostEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Host", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.hostEdit.Location = new System.Drawing.Point(102, 110);
             this.hostEdit.Name = "hostEdit";
@@ -364,6 +371,7 @@
             // 
             // textBox2
             // 
+            this.textBox2.AccessibleName = "Port";
             this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Port", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox2.Location = new System.Drawing.Point(346, 110);
             this.textBox2.Name = "textBox2";
@@ -372,6 +380,7 @@
             // 
             // textBox1
             // 
+            this.textBox1.AccessibleName = "Password";
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Password", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox1.Location = new System.Drawing.Point(102, 170);
             this.textBox1.Name = "textBox1";
@@ -380,6 +389,7 @@
             // 
             // textBox3
             // 
+            this.textBox3.AccessibleName = "Miner arguments";
             this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.coinConfigurationBindingSource, "MinerFlags", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox3.Location = new System.Drawing.Point(325, 287);
             this.textBox3.Name = "textBox3";
@@ -411,6 +421,7 @@
             // 
             // textBox5
             // 
+            this.textBox5.AccessibleName = "Adjust profitability";
             this.textBox5.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.coinConfigurationBindingSource, "ProfitabilityAdjustment", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox5.Location = new System.Drawing.Point(325, 317);
             this.textBox5.Name = "textBox5";
@@ -437,6 +448,7 @@
             // 
             // adjustProfitCombo
             // 
+            this.adjustProfitCombo.AccessibleName = "Adjust by";
             this.adjustProfitCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.adjustProfitCombo.FormattingEnabled = true;
             this.adjustProfitCombo.Items.AddRange(new object[] {

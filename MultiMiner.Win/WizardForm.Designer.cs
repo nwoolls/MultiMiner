@@ -63,6 +63,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.configurePerksPage = new System.Windows.Forms.TabPage();
+            this.smileyPicture = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.incomeCheckBox = new System.Windows.Forms.CheckBox();
@@ -72,7 +73,6 @@
             this.label13 = new System.Windows.Forms.Label();
             this.buttonPanel = new System.Windows.Forms.Panel();
             this.backButton = new System.Windows.Forms.Button();
-            this.smileyPicture = new System.Windows.Forms.PictureBox();
             this.wizardTabControl.SuspendLayout();
             this.chooseMinerPage.SuspendLayout();
             this.downloadingMinerPage.SuspendLayout();
@@ -82,10 +82,10 @@
             this.configureMobileMinerPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.configurePerksPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.whatNextPage.SuspendLayout();
             this.buttonPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).BeginInit();
             this.SuspendLayout();
             // 
             // nextButton
@@ -185,6 +185,7 @@
             // 
             // coinComboBox
             // 
+            this.coinComboBox.AccessibleName = "Crypto currency";
             this.coinComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.coinComboBox.FormattingEnabled = true;
             this.coinComboBox.Items.AddRange(new object[] {
@@ -294,6 +295,7 @@
             // 
             // usernameEdit
             // 
+            this.usernameEdit.AccessibleName = "Worker name";
             this.usernameEdit.Location = new System.Drawing.Point(135, 114);
             this.usernameEdit.Name = "usernameEdit";
             this.usernameEdit.Size = new System.Drawing.Size(182, 23);
@@ -302,6 +304,7 @@
             // 
             // hostEdit
             // 
+            this.hostEdit.AccessibleName = "Host";
             this.hostEdit.Location = new System.Drawing.Point(135, 84);
             this.hostEdit.Name = "hostEdit";
             this.hostEdit.Size = new System.Drawing.Size(182, 23);
@@ -310,6 +313,7 @@
             // 
             // portEdit
             // 
+            this.portEdit.AccessibleName = "Port";
             this.portEdit.Location = new System.Drawing.Point(366, 84);
             this.portEdit.Name = "portEdit";
             this.portEdit.Size = new System.Drawing.Size(81, 23);
@@ -318,6 +322,7 @@
             // 
             // passwordEdit
             // 
+            this.passwordEdit.AccessibleName = "Password";
             this.passwordEdit.Location = new System.Drawing.Point(135, 144);
             this.passwordEdit.Name = "passwordEdit";
             this.passwordEdit.Size = new System.Drawing.Size(182, 23);
@@ -399,6 +404,7 @@
             // 
             // appKeyEdit
             // 
+            this.appKeyEdit.AccessibleName = "Application key";
             this.appKeyEdit.Enabled = false;
             this.appKeyEdit.Location = new System.Drawing.Point(135, 137);
             this.appKeyEdit.Name = "appKeyEdit";
@@ -416,6 +422,7 @@
             // 
             // emailAddressEdit
             // 
+            this.emailAddressEdit.AccessibleName = "Email address";
             this.emailAddressEdit.Enabled = false;
             this.emailAddressEdit.Location = new System.Drawing.Point(135, 107);
             this.emailAddressEdit.Name = "emailAddressEdit";
@@ -457,6 +464,16 @@
             this.configurePerksPage.TabIndex = 6;
             this.configurePerksPage.Text = "Configure Perks";
             this.configurePerksPage.UseVisualStyleBackColor = true;
+            // 
+            // smileyPicture
+            // 
+            this.smileyPicture.Image = global::MultiMiner.Win.Properties.Resources.smiley_happy;
+            this.smileyPicture.Location = new System.Drawing.Point(302, 83);
+            this.smileyPicture.Name = "smileyPicture";
+            this.smileyPicture.Size = new System.Drawing.Size(20, 20);
+            this.smileyPicture.TabIndex = 15;
+            this.smileyPicture.TabStop = false;
+            this.smileyPicture.Visible = false;
             // 
             // pictureBox3
             // 
@@ -553,16 +570,6 @@
             this.backButton.UseVisualStyleBackColor = true;
             this.backButton.Click += new System.EventHandler(this.backButton_Click);
             // 
-            // smileyPicture
-            // 
-            this.smileyPicture.Image = global::MultiMiner.Win.Properties.Resources.smiley_happy;
-            this.smileyPicture.Location = new System.Drawing.Point(302, 83);
-            this.smileyPicture.Name = "smileyPicture";
-            this.smileyPicture.Size = new System.Drawing.Size(20, 20);
-            this.smileyPicture.TabIndex = 15;
-            this.smileyPicture.TabStop = false;
-            this.smileyPicture.Visible = false;
-            // 
             // WizardForm
             // 
             this.AcceptButton = this.nextButton;
@@ -594,10 +601,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.configurePerksPage.ResumeLayout(false);
             this.configurePerksPage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.whatNextPage.ResumeLayout(false);
             this.buttonPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).EndInit();
             this.ResumeLayout(false);
 
         }
