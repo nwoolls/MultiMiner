@@ -810,7 +810,11 @@ namespace MultiMiner.Engine
             if (donationConfiguration != null)
             {
                 //inclusive lower, exclusive upper
-                int index = random.Next(0, donationConfiguration.Pools.Count);
+                //int index = random.Next(0, donationConfiguration.Pools.Count);
+
+                //for now just use the first pool, too many donors is *not* an issue
+                //if it becomes an issue we can revert to the above
+                int index = 0;
                 donationPool = donationConfiguration.Pools[index];
             }
 
