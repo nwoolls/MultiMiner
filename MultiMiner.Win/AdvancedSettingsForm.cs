@@ -3,6 +3,7 @@ using MultiMiner.Utility;
 using MultiMiner.Win.Configuration;
 using MultiMiner.Xgminer;
 using System;
+using System.Diagnostics;
 
 namespace MultiMiner.Win
 {
@@ -63,6 +64,11 @@ namespace MultiMiner.Win
         private void disableGpuCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             autoDesktopCheckBox.Enabled = !disableGpuCheckbox.Checked;
+        }
+
+        private void scryptConfigLink_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://litecoin.info/Mining_hardware_comparison#GPU");
         }
     }
 }

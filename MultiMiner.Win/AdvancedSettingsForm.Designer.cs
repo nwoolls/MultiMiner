@@ -56,12 +56,15 @@
             this.scryptParamsEdit = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.scryptConfigLink = new System.Windows.Forms.LinkLabel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -70,7 +73,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 445);
+            this.panel1.Location = new System.Drawing.Point(0, 495);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(471, 54);
             this.panel1.TabIndex = 7;
@@ -122,9 +125,9 @@
             this.groupBox1.Controls.Add(this.textBox2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Location = new System.Drawing.Point(14, 175);
+            this.groupBox1.Location = new System.Drawing.Point(14, 203);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(442, 119);
+            this.groupBox1.Size = new System.Drawing.Size(445, 119);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "API Settings";
@@ -156,7 +159,7 @@
             this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "AllowedApiIps", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox2.Location = new System.Drawing.Point(122, 55);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(297, 23);
+            this.textBox2.Size = new System.Drawing.Size(300, 23);
             this.textBox2.TabIndex = 1;
             // 
             // label1
@@ -176,7 +179,7 @@
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "StartingApiPort", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox1.Location = new System.Drawing.Point(122, 25);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(127, 23);
+            this.textBox1.Size = new System.Drawing.Size(130, 23);
             this.textBox1.TabIndex = 0;
             // 
             // autoDesktopCheckBox
@@ -233,7 +236,7 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.proxyPortEdit);
             this.groupBox2.Controls.Add(this.proxyCheckBox);
-            this.groupBox2.Location = new System.Drawing.Point(14, 302);
+            this.groupBox2.Location = new System.Drawing.Point(14, 332);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(444, 131);
             this.groupBox2.TabIndex = 6;
@@ -293,13 +296,15 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.scryptConfigLink);
+            this.groupBox3.Controls.Add(this.pictureBox1);
             this.groupBox3.Controls.Add(this.sha256ParamsEdit);
             this.groupBox3.Controls.Add(this.scryptParamsEdit);
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.label7);
             this.groupBox3.Location = new System.Drawing.Point(14, 70);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(444, 97);
+            this.groupBox3.Size = new System.Drawing.Size(444, 123);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Arguments";
@@ -338,12 +343,32 @@
             this.label7.TabIndex = 12;
             this.label7.Text = "SHA-2:";
             // 
+            // scryptConfigLink
+            // 
+            this.scryptConfigLink.AutoSize = true;
+            this.scryptConfigLink.Location = new System.Drawing.Point(36, 93);
+            this.scryptConfigLink.Name = "scryptConfigLink";
+            this.scryptConfigLink.Size = new System.Drawing.Size(350, 15);
+            this.scryptConfigLink.TabIndex = 15;
+            this.scryptConfigLink.TabStop = true;
+            this.scryptConfigLink.Text = "Example Scrypt configurations (required for decent performance)";
+            this.scryptConfigLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.scryptConfigLink_LinkClicked);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.info;
+            this.pictureBox1.Location = new System.Drawing.Point(14, 91);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(19, 18);
+            this.pictureBox1.TabIndex = 14;
+            this.pictureBox1.TabStop = false;
+            // 
             // AdvancedSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(471, 499);
+            this.ClientSize = new System.Drawing.Size(471, 549);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.checkBox1);
@@ -368,6 +393,7 @@
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -401,5 +427,7 @@
         private System.Windows.Forms.TextBox scryptParamsEdit;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.LinkLabel scryptConfigLink;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
