@@ -914,7 +914,8 @@ namespace MultiMiner.Win
             MinerConfiguration minerConfiguration = new MinerConfiguration() 
             { 
                 ExecutablePath = MinerPath.GetPathToInstalledMiner(), 
-                DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu 
+                DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu,
+                ScanArguments = engineConfiguration.XgminerConfiguration.ScanArguments
             };
 
             Miner miner = new Miner(minerConfiguration);

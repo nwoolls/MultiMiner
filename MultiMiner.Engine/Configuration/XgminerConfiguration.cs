@@ -16,6 +16,7 @@ namespace MultiMiner.Engine.Configuration
         }
 
         public SerializableDictionary<CoinAlgorithm, string> AlgorithmFlags { get; set; }
+        public string ScanArguments { get; set; }
         public bool DesktopMode { get; set; }
         public bool DisableGpu { get; set; }
         public ProcessPriorityClass Priority { get; set; }

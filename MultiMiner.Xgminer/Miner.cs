@@ -60,6 +60,9 @@ namespace MultiMiner.Xgminer
 
             arguments = String.Format("{0} {1}", arguments, serialArg);
 
+            //include the args specified by the user so we pickup manual devices (e.g. Avalon)
+            arguments = String.Format("{0} {1}", arguments, minerConfiguration.ScanArguments);
+
             //ADL mismatch with OCL can cause an error / exception, disable ADL when enumerating devices
             //user can then disable for mining in-app using settings
             //this also prevents nice names for GPUs

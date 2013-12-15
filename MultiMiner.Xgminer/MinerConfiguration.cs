@@ -22,6 +22,7 @@ namespace MultiMiner.Xgminer
         public string AllowedApiIps { get; set; }
         public List<DeviceDescriptor> DeviceDescriptors { get; set; }
         public string LaunchArguments { get; set; }
+        public string ScanArguments { get; set; }
         public string CoinName { get; set; }
         public bool DisableGpu { get; set; }
         public ProcessPriorityClass Priority { get; set; }
