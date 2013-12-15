@@ -294,7 +294,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [18]: https://github.com/luke-jr/bfgminer/blob/bfgminer/README.RPC
 [19]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Api.Example
 [20]: http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx
-[21]: https://bitcointalk.org/index.php?topic=319419.0
+[21]: http://minecoin.net/bluefuryredfury-driver-for-windows/
 [22]: http://www.ftdichip.com/Drivers/VCP.htm
 [23]: http://zadig.akeo.ie/
 [24]: http://support.amd.com/en-us/download
