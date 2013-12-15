@@ -667,7 +667,7 @@ namespace MultiMiner.Engine
             if (donating)
                 arguments = arguments + " --load-balance";
             
-            minerConfiguration.Arguments = arguments;
+            minerConfiguration.LaunchArguments = arguments;
             
             return minerConfiguration;
         }

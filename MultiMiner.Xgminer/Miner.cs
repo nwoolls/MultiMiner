@@ -124,7 +124,7 @@ namespace MultiMiner.Xgminer
             //if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
             //    redirectOutput = true;
 
-            string arguments = minerConfiguration.Arguments;
+            string arguments = minerConfiguration.LaunchArguments;
 
             string serialArg = MinerParameter.ScanSerialNoAuto;
             arguments = String.Format("{0} {1}", arguments, serialArg);
