@@ -3442,12 +3442,12 @@ namespace MultiMiner.Win
 
         private void dynamicIntensityButton_Click(object sender, EventArgs e)
         {
-            ToggleDynamicIntensity();
+            ToggleDynamicIntensity(dynamicIntensityButton.Checked);
         }
 
-        private void ToggleDynamicIntensity()
+        private void ToggleDynamicIntensity(bool enabled)
         {
-            engineConfiguration.XgminerConfiguration.DesktopMode = dynamicIntensityButton.Checked;
+            engineConfiguration.XgminerConfiguration.DesktopMode = enabled;
             engineConfiguration.SaveMinerConfiguration();
         }
 
@@ -3865,7 +3865,7 @@ namespace MultiMiner.Win
 
         private void dynamicIntensityToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ToggleDynamicIntensity();
+            ToggleDynamicIntensity(dynamicIntensityToolStripMenuItem.Checked);
         }
 
         private void largeIconsToolStripMenuItem1_Click(object sender, EventArgs e)
