@@ -23,19 +23,28 @@ namespace MultiMiner.Win.Configuration
                 donationPercent = Math.Max(1, Math.Min(100, value));
             }
         }
-        
-        public static string PerksConfigurationFileName()
+
+        private string configDirectory;
+        public string PerksConfigurationFileName()
         {
-            return Path.Combine(ApplicationPaths.AppDataPath(), "PerksConfiguration.xml");
+            return Path.Combine(configDirectory, "PerksConfiguration.xml");
         }
 
-        public void SavePerksConfiguration()
+        public void SavePerksConfiguration(string configDirectory = null)
         {
+            if (!String.IsNullOrEmpty(configDirectory))
+                this.configDirectory = configDirectory;
+
             ConfigurationReaderWriter.WriteConfiguration(this, PerksConfigurationFileName());
         }
-        
-        public void LoadPerksConfiguration()
+
+        public void LoadPerksConfiguration(string configDirectory)
         {
+            if (String.IsNullOrEmpty(configDirectory))
+                this.configDirectory = ApplicationPaths.AppDataPath();
+            else
+                this.configDirectory = configDirectory;
+
             PerksConfiguration tmp = ConfigurationReaderWriter.ReadConfiguration<PerksConfiguration>(PerksConfigurationFileName());
 
             ObjectCopier.CopyObject(tmp, this);

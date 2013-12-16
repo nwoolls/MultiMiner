@@ -40,9 +40,17 @@
             this.logPathEdit = new System.Windows.Forms.TextBox();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.logPathButton = new System.Windows.Forms.Button();
+            this.configPathButton = new System.Windows.Forms.Button();
+            this.configPathEdit = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.pathConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -51,10 +59,10 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 187);
+            this.panel1.Location = new System.Drawing.Point(0, 172);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(426, 54);
-            this.panel1.TabIndex = 4;
+            this.panel1.TabIndex = 6;
             // 
             // saveButton
             // 
@@ -80,8 +88,9 @@
             // 
             // textBox2
             // 
+            this.textBox2.AccessibleName = "Roll over logs";
             this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "OldLogFileSets", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox2.Location = new System.Drawing.Point(122, 51);
+            this.textBox2.Location = new System.Drawing.Point(127, 51);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(37, 20);
             this.textBox2.TabIndex = 3;
@@ -121,14 +130,16 @@
             // 
             // logPathEdit
             // 
+            this.logPathEdit.AccessibleName = "Log file path";
             this.logPathEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "LogFilePath", true));
-            this.logPathEdit.Location = new System.Drawing.Point(122, 18);
+            this.logPathEdit.Location = new System.Drawing.Point(127, 18);
             this.logPathEdit.Name = "logPathEdit";
-            this.logPathEdit.Size = new System.Drawing.Size(251, 20);
+            this.logPathEdit.Size = new System.Drawing.Size(246, 20);
             this.logPathEdit.TabIndex = 0;
             // 
             // logPathButton
             // 
+            this.logPathButton.AccessibleName = "Browse";
             this.logPathButton.Location = new System.Drawing.Point(379, 16);
             this.logPathButton.Name = "logPathButton";
             this.logPathButton.Size = new System.Drawing.Size(27, 23);
@@ -137,9 +148,61 @@
             this.logPathButton.UseVisualStyleBackColor = true;
             this.logPathButton.Click += new System.EventHandler(this.logPathButton_Click);
             // 
+            // configPathButton
+            // 
+            this.configPathButton.AccessibleName = "Browse";
+            this.configPathButton.Location = new System.Drawing.Point(379, 82);
+            this.configPathButton.Name = "configPathButton";
+            this.configPathButton.Size = new System.Drawing.Size(27, 23);
+            this.configPathButton.TabIndex = 5;
+            this.configPathButton.Text = "...";
+            this.configPathButton.UseVisualStyleBackColor = true;
+            this.configPathButton.Click += new System.EventHandler(this.configPathButton_Click);
+            // 
+            // configPathEdit
+            // 
+            this.configPathEdit.AccessibleName = "Shared config path";
+            this.configPathEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.pathConfigurationBindingSource, "SharedConfigPath", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.configPathEdit.Location = new System.Drawing.Point(127, 84);
+            this.configPathEdit.Name = "configPathEdit";
+            this.configPathEdit.Size = new System.Drawing.Size(246, 20);
+            this.configPathEdit.TabIndex = 4;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(18, 87);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(100, 13);
+            this.label2.TabIndex = 27;
+            this.label2.Text = "Shared config path:";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.info;
+            this.pictureBox1.Location = new System.Drawing.Point(21, 116);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(19, 18);
+            this.pictureBox1.TabIndex = 29;
+            this.pictureBox1.TabStop = false;
+            // 
+            // label3
+            // 
+            this.label3.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label3.Location = new System.Drawing.Point(47, 116);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(359, 37);
+            this.label3.TabIndex = 28;
+            this.label3.Text = "You can changes the above path to override where non device-specific configuratio" +
+    "ns are stored.";
+            // 
             // applicationConfigurationBindingSource
             // 
             this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.ApplicationConfiguration);
+            // 
+            // pathConfigurationBindingSource
+            // 
+            this.pathConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.PathConfiguration);
             // 
             // AdvancedSettingsForm
             // 
@@ -148,7 +211,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(426, 241);
+            this.ClientSize = new System.Drawing.Size(426, 226);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.configPathButton);
+            this.Controls.Add(this.configPathEdit);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.logPathButton);
             this.Controls.Add(this.logPathEdit);
             this.Controls.Add(this.label1);
@@ -165,7 +233,9 @@
             this.Text = "Configure Advanced Settings";
             this.Load += new System.EventHandler(this.AdvancedSettingsForm_Load);
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -184,5 +254,11 @@
         private System.Windows.Forms.TextBox logPathEdit;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button logPathButton;
+        private System.Windows.Forms.Button configPathButton;
+        private System.Windows.Forms.TextBox configPathEdit;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.BindingSource pathConfigurationBindingSource;
     }
 }

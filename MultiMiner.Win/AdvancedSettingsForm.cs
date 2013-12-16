@@ -11,55 +11,61 @@ namespace MultiMiner.Win
         private readonly ApplicationConfiguration applicationConfiguration;
         private readonly ApplicationConfiguration workingApplicationConfiguration;
 
-        public AdvancedSettingsForm(ApplicationConfiguration applicationConfiguration)
+        private readonly PathConfiguration pathConfiguration;
+        private readonly PathConfiguration workingPathConfiguration;
+
+        public AdvancedSettingsForm(ApplicationConfiguration applicationConfiguration, PathConfiguration pathConfiguration)
         {
             InitializeComponent();
 
             this.applicationConfiguration = applicationConfiguration;
             workingApplicationConfiguration = ObjectCopier.CloneObject<ApplicationConfiguration, ApplicationConfiguration>(applicationConfiguration);
+
+            this.pathConfiguration = pathConfiguration;
+            workingPathConfiguration = ObjectCopier.CloneObject<PathConfiguration, PathConfiguration>(pathConfiguration);
+
             if (String.IsNullOrEmpty(workingApplicationConfiguration.LogFilePath))
                 workingApplicationConfiguration.LogFilePath = ApplicationPaths.AppDataPath();
+
+            if (String.IsNullOrEmpty(workingPathConfiguration.SharedConfigPath))
+                workingPathConfiguration.SharedConfigPath = ApplicationPaths.AppDataPath();
         }
 
         private void AdvancedSettingsForm_Load(object sender, EventArgs e)
         {
             applicationConfigurationBindingSource.DataSource = workingApplicationConfiguration;
+            pathConfigurationBindingSource.DataSource = workingPathConfiguration;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            if (workingApplicationConfiguration.LogFilePath.Equals(ApplicationPaths.AppDataPath()))
-                workingApplicationConfiguration.LogFilePath = String.Empty;
+            CopyLogFilesIfChanged();
 
-            if (!applicationConfiguration.LogFilePath.Equals(workingApplicationConfiguration.LogFilePath, StringComparison.OrdinalIgnoreCase))
-                CopyLogFiles();
+            //don't persist default values
+            ClearDefaultValues();
 
+            ObjectCopier.CopyObject(workingPathConfiguration, pathConfiguration);
             ObjectCopier.CopyObject(workingApplicationConfiguration, applicationConfiguration);
+
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
-        private void CopyLogFiles()
+        private void ClearDefaultValues()
         {
-            string sourceDirectory = applicationConfiguration.LogFilePath;
-            if (String.IsNullOrEmpty(sourceDirectory))
-                sourceDirectory = ApplicationPaths.AppDataPath();
+            if (workingApplicationConfiguration.LogFilePath.Equals(ApplicationPaths.AppDataPath()))
+                workingApplicationConfiguration.LogFilePath = String.Empty;
 
-            CopyFilesToFolder(sourceDirectory, workingApplicationConfiguration.LogFilePath, "*.json");
+            if (workingPathConfiguration.SharedConfigPath.Equals(ApplicationPaths.AppDataPath()))
+                workingPathConfiguration.SharedConfigPath = String.Empty;
         }
 
-        private void CopyFilesToFolder(string sourceDirectory, string destinationDirectory, string searchPattern)
+        private void CopyLogFilesIfChanged()
         {
-            if (Directory.Exists(sourceDirectory))
-            {
-                Directory.CreateDirectory(destinationDirectory);
-                foreach (string sourceFilePath in Directory.GetFiles(sourceDirectory, searchPattern))
-                {
-                    string fileName = Path.GetFileName(sourceFilePath);
-                    string destinationFilePath = Path.Combine(workingApplicationConfiguration.LogFilePath, fileName);
-
-                    File.Copy(sourceFilePath, destinationFilePath, true);
-                }
-            }
+            string originalPath = applicationConfiguration.LogFilePath;
+            if (string.IsNullOrEmpty(originalPath))
+                originalPath = ApplicationPaths.AppDataPath();
+            if (!originalPath.Equals(workingApplicationConfiguration.LogFilePath, StringComparison.OrdinalIgnoreCase))
+                FileCopier.CopyFilesToFolder(originalPath, workingApplicationConfiguration.LogFilePath, "*.json");
         }
 
         private void logPathButton_Click(object sender, EventArgs e)
@@ -69,6 +75,16 @@ namespace MultiMiner.Win
             {
                 workingApplicationConfiguration.LogFilePath = folderBrowserDialog1.SelectedPath;
                 logPathEdit.Text = folderBrowserDialog1.SelectedPath;
+            }
+        }
+
+        private void configPathButton_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog1.SelectedPath = configPathEdit.Text;
+            if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                pathConfiguration.SharedConfigPath = folderBrowserDialog1.SelectedPath;
+                configPathEdit.Text = folderBrowserDialog1.SelectedPath;
             }
         }
     }

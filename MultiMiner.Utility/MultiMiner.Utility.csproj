@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="ApplicationPaths.cs" />
     <Compile Include="ConfigurationReaderWriter.cs" />
+    <Compile Include="FileCopier.cs" />
     <Compile Include="IdleTimeFinder.cs" />
     <Compile Include="ObjectCopier.cs" />
     <Compile Include="ObjectLogger.cs" />

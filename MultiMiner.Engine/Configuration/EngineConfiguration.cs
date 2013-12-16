@@ -36,26 +36,40 @@ namespace MultiMiner.Engine.Configuration
             }
         }
 
-        public void LoadAllConfigurations()
+        private string configDirectory;
+        public void LoadAllConfigurations(string configDirectory)
         {
-            LoadCoinConfigurations();
+            if (String.IsNullOrEmpty(configDirectory))
+                this.configDirectory = ApplicationPaths.AppDataPath();
+            else
+                this.configDirectory = configDirectory;
+
+            LoadCoinConfigurations(configDirectory);
             LoadDeviceConfigurations();
             LoadMinerConfiguration();
-            LoadStrategyConfiguration();
+            LoadStrategyConfiguration(configDirectory);
         }
 
-        private static string StrategyConfigurationsFileName()
+        private string StrategyConfigurationsFileName()
         {
-            return Path.Combine(ApplicationPaths.AppDataPath(), "StrategyConfiguration.xml");
+            return Path.Combine(configDirectory, "StrategyConfiguration.xml");
         }
 
-        public void SaveStrategyConfiguration()
+        public void SaveStrategyConfiguration(string configDirectory = null)
         {
+            if (!String.IsNullOrEmpty(configDirectory))
+                this.configDirectory = configDirectory;
+
             ConfigurationReaderWriter.WriteConfiguration(StrategyConfiguration, StrategyConfigurationsFileName());
         }
 
-        public void LoadStrategyConfiguration()
+        public void LoadStrategyConfiguration(string configDirectory)
         {
+            if (String.IsNullOrEmpty(configDirectory))
+                this.configDirectory = ApplicationPaths.AppDataPath();
+            else
+                this.configDirectory = configDirectory;
+
             try
             {
                 StrategyConfiguration = ConfigurationReaderWriter.ReadConfiguration<StrategyConfiguration>(StrategyConfigurationsFileName());
@@ -97,13 +111,18 @@ namespace MultiMiner.Engine.Configuration
                 .ToList();
         }
 
-        public static string CoinConfigurationsFileName()
+        public string CoinConfigurationsFileName()
         {
-            return Path.Combine(ApplicationPaths.AppDataPath(), "CoinConfigurations.xml");
+            return Path.Combine(configDirectory, "CoinConfigurations.xml");
         }
 
-        public void LoadCoinConfigurations()
+        public void LoadCoinConfigurations(string configDirectory)
         {
+            if (String.IsNullOrEmpty(configDirectory))
+                this.configDirectory = ApplicationPaths.AppDataPath();
+            else
+                this.configDirectory = configDirectory;
+
             CoinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<CoinConfiguration>>(CoinConfigurationsFileName());
             RemoveIvalidCoinsFromDeviceConfigurations();
             RemoveBlankPoolConfigurations();
@@ -132,8 +151,11 @@ namespace MultiMiner.Engine.Configuration
             RemoveDeletedCoinsFromDeviceConfigurations();
         }
 
-        public void SaveCoinConfigurations()
+        public void SaveCoinConfigurations(string configDirectory = null)
         {
+            if (!String.IsNullOrEmpty(configDirectory))
+                this.configDirectory = configDirectory;
+
             RemoveBlankPoolConfigurations();
             ConfigurationReaderWriter.WriteConfiguration(CoinConfigurations, CoinConfigurationsFileName());
             RemoveIvalidCoinsFromDeviceConfigurations();

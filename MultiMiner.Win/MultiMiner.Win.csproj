@@ -59,6 +59,7 @@
     <Compile Include="AdvancedSettingsForm.Designer.cs">
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Configuration\PathConfiguration.cs" />
     <Compile Include="MinerSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -219,6 +220,7 @@
     <None Include="Properties\DataSources\MultiMiner.Engine.LogProcessCloseArgs.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.MiningPool.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.ApplicationConfiguration.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Win.Configuration.PathConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.PerksConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.LogEntry.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Device.datasource" />

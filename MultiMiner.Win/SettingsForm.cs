@@ -11,13 +11,16 @@ namespace MultiMiner.Win
     {
         private readonly XgminerConfiguration minerConfiguration;
         private readonly ApplicationConfiguration applicationConfiguration;
+        private readonly PathConfiguration pathConfiguration;
 
-        public SettingsForm(ApplicationConfiguration applicationConfiguration, XgminerConfiguration minerConfiguration)
+        public SettingsForm(ApplicationConfiguration applicationConfiguration, XgminerConfiguration minerConfiguration,
+            PathConfiguration pathConfiguration)
         {
             InitializeComponent();
 
             this.minerConfiguration = minerConfiguration;
             this.applicationConfiguration = applicationConfiguration;
+            this.pathConfiguration = pathConfiguration;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -134,7 +137,7 @@ namespace MultiMiner.Win
 
         private void advancedSettingsLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            AdvancedSettingsForm advancedSettingsForm = new AdvancedSettingsForm(applicationConfiguration);
+            AdvancedSettingsForm advancedSettingsForm = new AdvancedSettingsForm(applicationConfiguration, pathConfiguration);
             advancedSettingsForm.ShowDialog();
         }
     }

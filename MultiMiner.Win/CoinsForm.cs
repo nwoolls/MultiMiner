@@ -13,13 +13,16 @@ namespace MultiMiner.Win
 {
     public partial class CoinsForm : MessageBoxFontForm
     {
-        private List<CoinConfiguration> configurations = new List<CoinConfiguration>();
-        private List<CryptoCoin> knownCoins;
+        private readonly List<CoinConfiguration> configurations = new List<CoinConfiguration>();
+        private readonly List<CryptoCoin> knownCoins;
+        private readonly string coinConfigurationsFileName;
 
-        public CoinsForm(List<CoinConfiguration> configurations, List<CryptoCoin> knownCoins)
+        public CoinsForm(List<CoinConfiguration> configurations, List<CryptoCoin> knownCoins,
+            string coinConfigurationsFileName)
         {
             this.configurations = configurations;
             this.knownCoins = knownCoins;
+            this.coinConfigurationsFileName = coinConfigurationsFileName;
             InitializeComponent();
         }
 
@@ -249,7 +252,7 @@ namespace MultiMiner.Win
             DialogResult dialogResult = saveFileDialog1.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                string sourceFileName = EngineConfiguration.CoinConfigurationsFileName();
+                string sourceFileName = coinConfigurationsFileName;
                 string destinationFileName = saveFileDialog1.FileName;
                 if (File.Exists(destinationFileName))
                     File.Delete(destinationFileName);

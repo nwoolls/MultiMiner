@@ -83,14 +83,18 @@ namespace MultiMiner.Win.Configuration
 
         public bool ScheduledRestartMining { get; set; }
         public TimerInterval ScheduledRestartMiningInterval { get; set; }
-        
-        public static string ApplicationConfigurationFileName()
+
+        private string configDirectory;
+        public string ApplicationConfigurationFileName()
         {
-            return Path.Combine(ApplicationPaths.AppDataPath(), "ApplicationConfiguration.xml");
+            return Path.Combine(configDirectory, "ApplicationConfiguration.xml");
         }
 
-        public void SaveApplicationConfiguration()
+        public void SaveApplicationConfiguration(string configDirectory = null)
         {
+            if (!String.IsNullOrEmpty(configDirectory))
+                this.configDirectory = configDirectory;
+
             ConfigurationReaderWriter.WriteConfiguration(this, ApplicationConfigurationFileName());
 
             if (OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix)
@@ -106,8 +110,13 @@ namespace MultiMiner.Win.Configuration
                 WindowsStartupShortcut.DeleteStartupFolderShortcuts();
         }
 
-        public void LoadApplicationConfiguration()
+        public void LoadApplicationConfiguration(string configDirectory)
         {
+            if (String.IsNullOrEmpty(configDirectory))
+                this.configDirectory = ApplicationPaths.AppDataPath();
+            else
+                this.configDirectory = configDirectory;
+
             ApplicationConfiguration tmp = ConfigurationReaderWriter.ReadConfiguration<ApplicationConfiguration>(ApplicationConfigurationFileName());
 
             ObjectCopier.CopyObject(tmp, this);

@@ -45,12 +45,14 @@ namespace MultiMiner.Win
         private MultiMiner.Coinbase.Api.SellPrices sellPrices;
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
         private BaseCoin currentBaseCoin = BaseCoin.Bitcoin;
+        private readonly PathConfiguration pathConfiguration = new PathConfiguration();
 
         public MainForm()
         {
             InitializeComponent();
 
-            applicationConfiguration.LoadApplicationConfiguration();
+            pathConfiguration.LoadPathConfiguration();
+            applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
             if (applicationConfiguration.StartupMinimized)
                 this.WindowState = FormWindowState.Minimized;
         }
@@ -147,8 +149,8 @@ namespace MultiMiner.Win
 
         private void FetchInitialCoinStats()
         {
-            engineConfiguration.LoadStrategyConfiguration(); //needed before refreshing coins
-            engineConfiguration.LoadCoinConfigurations(); //needed before refreshing coins
+            engineConfiguration.LoadStrategyConfiguration(pathConfiguration.SharedConfigPath); //needed before refreshing coins
+            engineConfiguration.LoadCoinConfigurations(pathConfiguration.SharedConfigPath); //needed before refreshing coins
             //already done in ctor applicationConfiguration.LoadApplicationConfiguration(); //needed before refreshing coins
             SetupNotificationsControl(); //needed before refreshing coins
             SetupCoinApi(); //so we target the correct API
@@ -407,7 +409,7 @@ namespace MultiMiner.Win
         private void CheckAndShowGettingStarted()
         {
             //only show if there's no settings yet
-            if (File.Exists(ApplicationConfiguration.ApplicationConfigurationFileName()))
+            if (File.Exists(applicationConfiguration.ApplicationConfigurationFileName()))
                 return;
 
             WizardForm wizardForm = new WizardForm(this.knownCoins);
@@ -807,7 +809,7 @@ namespace MultiMiner.Win
         
         private void LoadSettings()
         {
-            engineConfiguration.LoadAllConfigurations();
+            engineConfiguration.LoadAllConfigurations(pathConfiguration.SharedConfigPath);
 
             SetupCoinApi();
 
@@ -818,7 +820,7 @@ namespace MultiMiner.Win
 
             //already done in ctor //applicationConfiguration.LoadApplicationConfiguration();
 
-            perksConfiguration.LoadPerksConfiguration();
+            perksConfiguration.LoadPerksConfiguration(pathConfiguration.SharedConfigPath);
             exchangeRateTimer.Interval = 1000 * 60 * 30; //30 minutes
             exchangeRateTimer.Enabled = perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates;
             RefreshExchangeRates();
@@ -972,7 +974,7 @@ namespace MultiMiner.Win
 
         private void ConfigureCoins()
         {
-            CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins);
+            CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins, engineConfiguration.CoinConfigurationsFileName());
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
@@ -988,7 +990,7 @@ namespace MultiMiner.Win
                 SaveChanges();
             }
             else
-                engineConfiguration.LoadCoinConfigurations();
+                engineConfiguration.LoadCoinConfigurations(pathConfiguration.SharedConfigPath);
         }
 
         private void RemoveInvalidCoinValuesFromListView()
@@ -1300,14 +1302,24 @@ namespace MultiMiner.Win
         
         private void ConfigureSettings()
         {
-            SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration);
+            SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration, pathConfiguration);
             DialogResult dialogResult = settingsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 Application.DoEvents();
 
+                pathConfiguration.SavePathConfiguration();
+
+                //save settings as the "shared" config path may have changed
+                //these are settings not considered machine/device-specific
+                //e.g. no device settings, no miner settings
                 engineConfiguration.SaveMinerConfiguration();
-                applicationConfiguration.SaveApplicationConfiguration();
+                applicationConfiguration.SaveApplicationConfiguration(pathConfiguration.SharedConfigPath);
+                perksConfiguration.SavePerksConfiguration(pathConfiguration.SharedConfigPath);
+                engineConfiguration.SaveCoinConfigurations(pathConfiguration.SharedConfigPath);
+                engineConfiguration.SaveStrategyConfiguration(pathConfiguration.SharedConfigPath);
+                SaveKnownCoinsToFile();
+
                 SetupCoinApi();
                 RefreshCoinApiLabel();
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
@@ -1320,7 +1332,8 @@ namespace MultiMiner.Win
             else
             {
                 engineConfiguration.LoadMinerConfiguration();
-                applicationConfiguration.LoadApplicationConfiguration();
+                pathConfiguration.LoadPathConfiguration();
+                applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
             }
         }
 
@@ -2261,9 +2274,14 @@ namespace MultiMiner.Win
             SaveKnownCoinsToFile();
         }
         
-        private static string KnownCoinsFileName()
+        private string KnownCoinsFileName()
         {
-            return Path.Combine(ApplicationPaths.AppDataPath(), "KnownCoinsCache.xml");
+            string filePath;
+            if (String.IsNullOrEmpty(pathConfiguration.SharedConfigPath))
+                filePath = ApplicationPaths.AppDataPath();
+            else
+                filePath = pathConfiguration.SharedConfigPath;
+            return Path.Combine(filePath, "KnownCoinsCache.xml");
         }
 
         private void LoadKnownCoinsFromFile()
@@ -2449,8 +2467,8 @@ namespace MultiMiner.Win
             }
             else
             {
-                engineConfiguration.LoadStrategyConfiguration();
-                applicationConfiguration.LoadApplicationConfiguration();
+                engineConfiguration.LoadStrategyConfiguration(pathConfiguration.SharedConfigPath);
+                applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
             }
         }
 
@@ -3674,7 +3692,7 @@ namespace MultiMiner.Win
                 AutoSizeListViewColumns();
             }
             else
-                perksConfiguration.LoadPerksConfiguration();
+                perksConfiguration.LoadPerksConfiguration(pathConfiguration.SharedConfigPath);
         }
 
         private void perksToolStripMenuItem1_Click(object sender, EventArgs e)
