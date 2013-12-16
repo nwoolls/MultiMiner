@@ -57,9 +57,9 @@ namespace MultiMiner.Engine
                     if (destinationFolder.ToLower().Contains(executingPath.ToLower()))
                     {
                         //extract MultiMiner.Update.exe from the zip file, run it, and exit
-                        string temporaryFolder = Path.Combine(Path.GetTempPath(), "miner");
-                        if (Directory.Exists(temporaryFolder))
-                            Directory.Delete(temporaryFolder, true);
+                        //use a random directory - rare user report of being unable to delete contents
+                        //if an existing directory is reused
+                        string temporaryFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
                         Unzipper.UnzipFileToFolder(minerDownloadFile, temporaryFolder);
                         string updaterFilePath = Path.Combine(temporaryFolder, "MultiMiner.Update.exe");
@@ -71,6 +71,8 @@ namespace MultiMiner.Engine
                         Process.Start(startInfo);
 
                         Environment.Exit(0);
+
+                        Directory.Delete(temporaryFolder, true);
                     }
                     else
                     {
