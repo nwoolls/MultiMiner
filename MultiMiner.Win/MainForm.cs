@@ -2251,16 +2251,10 @@ namespace MultiMiner.Win
             }
             SaveKnownCoinsToFile();
         }
-
-        private static string AppDataPath()
-        {
-            string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(rootPath, "MultiMiner");
-        }
-
+        
         private static string KnownCoinsFileName()
         {
-            return Path.Combine(AppDataPath(), "KnownCoinsCache.xml");
+            return Path.Combine(ApplicationPaths.AppDataPath(), "KnownCoinsCache.xml");
         }
 
         private void LoadKnownCoinsFromFile()

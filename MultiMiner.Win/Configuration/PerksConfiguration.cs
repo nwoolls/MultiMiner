@@ -23,16 +23,10 @@ namespace MultiMiner.Win.Configuration
                 donationPercent = Math.Max(1, Math.Min(100, value));
             }
         }
-
-        private static string AppDataPath()
-        {
-            string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(rootPath, "MultiMiner");
-        }
-
+        
         public static string PerksConfigurationFileName()
         {
-            return Path.Combine(AppDataPath(), "PerksConfiguration.xml");
+            return Path.Combine(ApplicationPaths.AppDataPath(), "PerksConfiguration.xml");
         }
 
         public void SavePerksConfiguration()

@@ -44,15 +44,9 @@ namespace MultiMiner.Engine.Configuration
             LoadStrategyConfiguration();
         }
 
-        private static string AppDataPath()
-        {
-            string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(rootPath, "MultiMiner");
-        }
-
         private static string StrategyConfigurationsFileName()
         {
-            return Path.Combine(AppDataPath(), "StrategyConfiguration.xml");
+            return Path.Combine(ApplicationPaths.AppDataPath(), "StrategyConfiguration.xml");
         }
 
         public void SaveStrategyConfiguration()
@@ -78,7 +72,7 @@ namespace MultiMiner.Engine.Configuration
 
         private static string DeviceConfigurationsFileName()
         {
-            return Path.Combine(AppDataPath(), "DeviceConfigurations.xml");
+            return Path.Combine(ApplicationPaths.AppDataPath(), "DeviceConfigurations.xml");
         }
         
         public void SaveDeviceConfigurations()
@@ -105,7 +99,7 @@ namespace MultiMiner.Engine.Configuration
 
         public static string CoinConfigurationsFileName()
         {
-            return Path.Combine(AppDataPath(), "CoinConfigurations.xml");
+            return Path.Combine(ApplicationPaths.AppDataPath(), "CoinConfigurations.xml");
         }
 
         public void LoadCoinConfigurations()
@@ -147,7 +141,7 @@ namespace MultiMiner.Engine.Configuration
 
         private static string XgminerConfigurationFileName()
         {
-            return Path.Combine(AppDataPath(), "XgminerConfiguration.xml");
+            return Path.Combine(ApplicationPaths.AppDataPath(), "XgminerConfiguration.xml");
         }
 
         public void LoadMinerConfiguration()

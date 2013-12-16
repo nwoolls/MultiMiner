@@ -82,16 +82,10 @@ namespace MultiMiner.Win.Configuration
 
         public bool ScheduledRestartMining { get; set; }
         public TimerInterval ScheduledRestartMiningInterval { get; set; }
-
-        private static string AppDataPath()
-        {
-            string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(rootPath, "MultiMiner");
-        }
-
+        
         public static string ApplicationConfigurationFileName()
         {
-            return Path.Combine(AppDataPath(), "ApplicationConfiguration.xml");
+            return Path.Combine(ApplicationPaths.AppDataPath(), "ApplicationConfiguration.xml");
         }
 
         public void SaveApplicationConfiguration()
