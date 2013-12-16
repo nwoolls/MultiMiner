@@ -46,12 +46,12 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.pathConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.pathConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -141,23 +141,25 @@
             // logPathButton
             // 
             this.logPathButton.AccessibleName = "Browse";
+            this.logPathButton.BackColor = System.Drawing.SystemColors.Control;
             this.logPathButton.Location = new System.Drawing.Point(379, 16);
             this.logPathButton.Name = "logPathButton";
             this.logPathButton.Size = new System.Drawing.Size(27, 23);
             this.logPathButton.TabIndex = 1;
             this.logPathButton.Text = "...";
-            this.logPathButton.UseVisualStyleBackColor = true;
+            this.logPathButton.UseVisualStyleBackColor = false;
             this.logPathButton.Click += new System.EventHandler(this.logPathButton_Click);
             // 
             // configPathButton
             // 
             this.configPathButton.AccessibleName = "Browse";
+            this.configPathButton.BackColor = System.Drawing.SystemColors.Control;
             this.configPathButton.Location = new System.Drawing.Point(379, 82);
             this.configPathButton.Name = "configPathButton";
             this.configPathButton.Size = new System.Drawing.Size(27, 23);
             this.configPathButton.TabIndex = 5;
             this.configPathButton.Text = "...";
-            this.configPathButton.UseVisualStyleBackColor = true;
+            this.configPathButton.UseVisualStyleBackColor = false;
             this.configPathButton.Click += new System.EventHandler(this.configPathButton_Click);
             // 
             // configPathEdit
@@ -208,13 +210,13 @@
             this.checkBox2.Text = "Use a standard menu designed for accessibility";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
-            // pathConfigurationBindingSource
-            // 
-            this.pathConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.PathConfiguration);
-            // 
             // applicationConfigurationBindingSource
             // 
             this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.ApplicationConfiguration);
+            // 
+            // pathConfigurationBindingSource
+            // 
+            this.pathConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.PathConfiguration);
             // 
             // AdvancedSettingsForm
             // 
@@ -247,8 +249,8 @@
             this.Load += new System.EventHandler(this.AdvancedSettingsForm_Load);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
