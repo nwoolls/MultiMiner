@@ -117,7 +117,7 @@ namespace MultiMiner.Win
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            AdvancedMinerSettingsForm advancedSettingsForm = new AdvancedMinerSettingsForm(minerConfiguration, applicationConfiguration);
+            MinerSettingsForm advancedSettingsForm = new MinerSettingsForm(minerConfiguration, applicationConfiguration);
             advancedSettingsForm.ShowDialog();
         }
 
