@@ -795,6 +795,79 @@ namespace MultiMiner.Engine
 
             result.Add(donationConfiguration);
 
+            //PPC
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "PPC";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://stratum.d7.lt",
+                Port = 3333,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            //NVC
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "NVC";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://stratum.khore.org",
+                Port = 3334,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            result.Add(donationConfiguration);
+
+            //CAP
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "CAP";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://cap.coinmine.pl",
+                Port = 8102,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            result.Add(donationConfiguration);
+
+            //ZET
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "ZET";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://mine1.coinmine.pl",
+                Port = 6000,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            result.Add(donationConfiguration);
+
+            //UNO
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "UNO";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://de1.miningpool.co",
+                Port = 10701,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            result.Add(donationConfiguration);
+
             return result;
         }
 
