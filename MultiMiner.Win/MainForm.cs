@@ -141,6 +141,15 @@ namespace MultiMiner.Win
 
             SetupAccessibleMenu();
 
+            //do this after all other data has loaded to prevent errors when the delay is set very low (1s)
+            if (applicationConfiguration.StartMiningOnStartup)
+            {
+                //minimum 1s delay for mining on startup - 0 not allowed
+                startupMiningCountdownSeconds = Math.Max(1, applicationConfiguration.StartupMiningDelay);
+                startupMiningCountdownTimer.Enabled = true;
+                RefreshCountdownLabel();
+            }
+
             formLoaded = true;
         }
 
@@ -875,14 +884,6 @@ namespace MultiMiner.Win
             }
             else
                 HideAdvancedPanel();
-
-            if (applicationConfiguration.StartMiningOnStartup)
-            {
-                //minimum 1s delay for mining on startup - 0 not allowed
-                startupMiningCountdownSeconds = Math.Max(1, applicationConfiguration.StartupMiningDelay);
-                startupMiningCountdownTimer.Enabled = true;
-                RefreshCountdownLabel();
-            }
 
             startupMiningPanel.Visible = applicationConfiguration.StartMiningOnStartup;
 
