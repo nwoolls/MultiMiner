@@ -59,6 +59,8 @@ namespace MultiMiner.Win
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            accessibleMenu.Visible = false;
+
             if (applicationConfiguration.StartupMinimized && applicationConfiguration.MinimizeToNotificationArea)
             {
                 notifyIcon1.Visible = true;
@@ -137,7 +139,18 @@ namespace MultiMiner.Win
 
             SetGpuEnvironmentVariables();
 
+            SetupAccessibleMenu();
+
             formLoaded = true;
+        }
+
+        private void SetupAccessibleMenu()
+        {
+            if (accessibleMenu.Visible != applicationConfiguration.UseAccessibleMenu)
+            {
+                accessibleMenu.Visible = applicationConfiguration.UseAccessibleMenu;
+                standardToolBar.Visible = !applicationConfiguration.UseAccessibleMenu;
+            }
         }
 
         //required for GPU mining
@@ -279,6 +292,10 @@ namespace MultiMiner.Win
 
             saveButton.Enabled = hasChanges;
             cancelButton.Enabled = hasChanges;
+
+            //accessible menu
+            saveToolStripMenuItem.Enabled = hasChanges;
+            cancelToolStripMenuItem.Enabled = hasChanges;
         }
 
         private void SetupAutoUpdates()
@@ -1061,6 +1078,11 @@ namespace MultiMiner.Win
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
+            CancelChanges();
+        }
+
+        private void CancelChanges()
+        {
             engineConfiguration.LoadDeviceConfigurations();
             LoadListViewValuesFromConfiguration();
             LoadListViewValuesFromCoinStats();
@@ -1158,8 +1180,15 @@ namespace MultiMiner.Win
             if (!startButton.Visible && !stopButton.Visible)
                 startButton.Visible = true; //show something, even if disabled
 
+            //sys tray menu
             startMenuItem.Visible = startMenuItem.Enabled;
             stopMenuItem.Visible = stopMenuItem.Enabled;
+            
+            //accessible menu
+            startToolStripMenuItem.Enabled = startMenuItem.Enabled;
+            stopToolStripMenuItem.Enabled = stopMenuItem.Enabled;
+            restartToolStripMenuItem.Enabled = stopMenuItem.Enabled;
+            scanHardwareToolStripMenuItem.Enabled = !miningEngine.Mining;
         }
 
         private bool MiningConfigurationValid()
@@ -1202,6 +1231,11 @@ namespace MultiMiner.Win
         }
 
         private void startButton_Click(object sender, EventArgs e)
+        {
+            HandleStartButtonClick();
+        }
+
+        private void HandleStartButtonClick()
         {
             if (applicationConfiguration.AutoSetDesktopMode)
                 EnableDesktopMode(true);
@@ -1326,6 +1360,7 @@ namespace MultiMiner.Win
                 SetupRestartTimer();
                 CheckForUpdates();
                 RefreshCoinStats();
+                SetupAccessibleMenu();
                 
                 Application.DoEvents();
             }
@@ -3006,6 +3041,7 @@ namespace MultiMiner.Win
 
             quickSwitchItem.DropDown = quickCoinMenu;
             quickSwitchPopupItem.DropDown = quickCoinMenu;
+            quickSwitchToolStripMenuItem.DropDown = quickCoinMenu;
             
             foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
             {
@@ -3085,9 +3121,9 @@ namespace MultiMiner.Win
         {
             //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
             quickSwitchItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
-
             //
             dynamicIntensityButton.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
+            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
             dynamicIntensitySeparator.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
         }
 
@@ -3256,6 +3292,11 @@ namespace MultiMiner.Win
 
         private void aboutButton_Click(object sender, EventArgs e)
         {
+            ShowAboutDialog();
+        }
+
+        private static void ShowAboutDialog()
+        {
             AboutForm aboutForm = new AboutForm();
             aboutForm.ShowDialog();
         }
@@ -3400,6 +3441,11 @@ namespace MultiMiner.Win
         }
 
         private void dynamicIntensityButton_Click(object sender, EventArgs e)
+        {
+            ToggleDynamicIntensity();
+        }
+
+        private void ToggleDynamicIntensity()
         {
             engineConfiguration.XgminerConfiguration.DesktopMode = dynamicIntensityButton.Checked;
             engineConfiguration.SaveMinerConfiguration();
@@ -3663,12 +3709,17 @@ namespace MultiMiner.Win
 
         private void restartButton_Click(object sender, EventArgs e)
         {
+            RestartMining();
+        }
+
+        private void RestartMining()
+        {
             StopMining();
 
             //refresh stats from Coin API so the Restart button can be used as a way to
             //force MultiMiner to apply updated mining strategies
             RefreshCoinStats();
-            
+
             StartMining();
         }
 
@@ -3775,6 +3826,121 @@ namespace MultiMiner.Win
         private void MainForm_Shown(object sender, EventArgs e)
         {
             deviceListView.Focus();
+        }
+
+        private void advancedToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
+            quickSwitchToolStripMenuItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
+            //
+            dynamicIntensityToolStripMenuItem.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
+            dynamicIntensityToolStripMenuItem.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
+            dynamicIntensityMenuSeperator.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowAboutDialog();
+        }
+
+        private void scanHardwareToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RefreshDevices();
+        }
+
+        private void historyToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ShowHistory();
+        }
+
+        private void processLogToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ShowProcessLog();
+        }
+
+        private void aPIMonitorToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ShowApiMonitor();
+        }
+
+        private void dynamicIntensityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToggleDynamicIntensity();
+        }
+
+        private void largeIconsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.LargeIcon);
+        }
+
+        private void smallIconsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.SmallIcon);
+        }
+
+        private void listToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.List);
+        }
+
+        private void detailsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.Details);
+        }
+
+        private void tilesToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.Tile);
+        }
+
+        private void settingsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ConfigureSettings();
+        }
+
+        private void coinsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ConfigureCoins();
+        }
+
+        private void strategiesToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ConfigureStrategies();
+        }
+
+        private void perksToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            ConfigurePerks();
+        }
+
+        private void startToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HandleStartButtonClick();
+        }
+
+        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StopMining();
+        }
+
+        private void restartToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RestartMining();
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveChanges();
+        }
+
+        private void cancelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CancelChanges();
+        }
+
+        private void quickSwitchToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            PopulateQuickSwitchMenu();
         }
     }
 }

@@ -45,12 +45,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.pathConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -59,7 +60,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 172);
+            this.panel1.Location = new System.Drawing.Point(0, 191);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(426, 54);
             this.panel1.TabIndex = 6;
@@ -196,13 +197,24 @@
             this.label3.Text = "You can changes the above path to override where non device-specific configuratio" +
     "ns are stored.";
             // 
-            // applicationConfigurationBindingSource
+            // checkBox2
             // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.ApplicationConfiguration);
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "UseAccessibleMenu", true));
+            this.checkBox2.Location = new System.Drawing.Point(21, 156);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(247, 17);
+            this.checkBox2.TabIndex = 30;
+            this.checkBox2.Text = "Use a standard menu designed for accessibility";
+            this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // pathConfigurationBindingSource
             // 
             this.pathConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.PathConfiguration);
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.ApplicationConfiguration);
             // 
             // AdvancedSettingsForm
             // 
@@ -211,7 +223,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(426, 226);
+            this.ClientSize = new System.Drawing.Size(426, 245);
+            this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.configPathButton);
@@ -234,8 +247,8 @@
             this.Load += new System.EventHandler(this.AdvancedSettingsForm_Load);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -260,5 +273,6 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.BindingSource pathConfigurationBindingSource;
+        private System.Windows.Forms.CheckBox checkBox2;
     }
 }
