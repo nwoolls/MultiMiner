@@ -53,11 +53,11 @@
     <Compile Include="AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="AdvancedMinerSettingsForm.cs">
+    <Compile Include="MinerSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AdvancedMinerSettingsForm.Designer.cs">
-      <DependentUpon>AdvancedMinerSettingsForm.cs</DependentUpon>
+    <Compile Include="MinerSettingsForm.Designer.cs">
+      <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Configuration\ApplicationConfiguration.cs" />
     <Compile Include="CoinChooseForm.cs">
@@ -154,8 +154,8 @@
     <EmbeddedResource Include="AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AdvancedMinerSettingsForm.resx">
-      <DependentUpon>AdvancedMinerSettingsForm.cs</DependentUpon>
+    <EmbeddedResource Include="MinerSettingsForm.resx">
+      <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CoinChooseForm.resx">
       <DependentUpon>CoinChooseForm.cs</DependentUpon>
