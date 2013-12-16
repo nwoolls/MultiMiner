@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace MultiMiner.Win
 {
-    public partial class AdvancedSettingsForm : MessageBoxFontForm
+    public partial class AdvancedMinerSettingsForm : MessageBoxFontForm
     {
         private readonly XgminerConfiguration minerConfiguration;
         private readonly XgminerConfiguration workingMinerConfiguration;
@@ -15,7 +15,7 @@ namespace MultiMiner.Win
         private readonly ApplicationConfiguration applicationConfiguration;
         private readonly ApplicationConfiguration workingApplicationConfiguration;
 
-        public AdvancedSettingsForm(XgminerConfiguration minerConfiguration, ApplicationConfiguration applicationConfiguration)
+        public AdvancedMinerSettingsForm(XgminerConfiguration minerConfiguration, ApplicationConfiguration applicationConfiguration)
         {
             InitializeComponent();
             this.minerConfiguration = minerConfiguration;
