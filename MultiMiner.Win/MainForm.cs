@@ -1697,7 +1697,8 @@ namespace MultiMiner.Win
         private void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
         {
             string coinName = minerProcess.MinerConfiguration.CoinName;
-            CoinConfiguration configuration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            //reference miningCoinConfigurations so that we get access to the mining coins
+            CoinConfiguration configuration = miningCoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
             if (configuration == null)
                 return;
 
@@ -1717,7 +1718,8 @@ namespace MultiMiner.Win
         private void CheckAndNotifyAcceptedShares(MinerProcess minerProcess, long acceptedShares)
         {
             string coinName = minerProcess.MinerConfiguration.CoinName;
-            CoinConfiguration configuration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            //reference miningCoinConfigurations so that we get access to the mining coins
+            CoinConfiguration configuration = miningCoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
             if (configuration == null)
                 return;
 
