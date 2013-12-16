@@ -189,7 +189,15 @@ namespace MultiMiner.Win
 
         private void LogObjectToFile(object objectToLog, string logFileName)
         {
-            string logFilePath = Path.Combine(AppDataPath(), logFileName);
+            string logDirectory = ApplicationPaths.AppDataPath();
+            if (!String.IsNullOrEmpty(applicationConfiguration.LogFilePath))
+            {
+                Directory.CreateDirectory(applicationConfiguration.LogFilePath);
+                if (Directory.Exists(applicationConfiguration.LogFilePath))
+                    logDirectory = applicationConfiguration.LogFilePath;
+            }
+
+            string logFilePath = Path.Combine(logDirectory, logFileName);
             ObjectLogger logger = new ObjectLogger(applicationConfiguration.RollOverLogFiles, applicationConfiguration.OldLogFileSets);
             logger.LogObjectToFile(objectToLog, logFilePath);
         }
@@ -238,10 +246,11 @@ namespace MultiMiner.Win
         private const int MaxHistoryOnScreen = 1000;
         private void LoadPreviousHistory()
         {
-            //logCloseEntries
-            //LogObjectToFile(ea, logFileName);
             const string logFileName = "MiningLog.json";
-            string logFilePath = Path.Combine(AppDataPath(), logFileName);
+            string logDirectory = ApplicationPaths.AppDataPath();
+            if (Directory.Exists(applicationConfiguration.LogFilePath))
+                logDirectory = applicationConfiguration.LogFilePath;
+            string logFilePath = Path.Combine(logDirectory, logFileName);
             if (File.Exists(logFilePath))
             {
                 try

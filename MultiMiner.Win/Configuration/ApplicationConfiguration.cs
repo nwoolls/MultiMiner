@@ -51,9 +51,6 @@ namespace MultiMiner.Win.Configuration
         public bool StartupMinimized { get; set; }
         public bool DetectDisownedMiners { get; set; }
         public bool Maximized { get; set; }
-        public bool LogAreaVisible { get; set; }
-        public int LogAreaTabIndex { get; set; }
-        public int LogAreaDistance { get; set; }
         public bool AutoSetDesktopMode { get; set; }
         public Rectangle AppPosition { get; set; }
         public bool CheckForMinerUpdates { get; set; }
@@ -77,8 +74,12 @@ namespace MultiMiner.Win.Configuration
         public bool SuggestCoinsToMine { get; set; }
         public CoinSuggestionsAlgorithm SuggestionsAlgorithm { get; set; }
 
+        public bool LogAreaVisible { get; set; }
+        public int LogAreaTabIndex { get; set; }
+        public int LogAreaDistance { get; set; }
         public bool RollOverLogFiles { get; set; }
         public int OldLogFileSets { get; set; }
+        public string LogFilePath { get; set; }
 
         public bool ScheduledRestartMining { get; set; }
         public TimerInterval ScheduledRestartMiningInterval { get; set; }
