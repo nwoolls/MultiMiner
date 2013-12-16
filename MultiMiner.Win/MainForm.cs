@@ -607,7 +607,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private const int maxColumnWidth = 250;
+        private const int maxColumnWidth = 195;
         //optimized for speed        
         private static void SetColumWidth(ColumnHeader column, int width)
         {
