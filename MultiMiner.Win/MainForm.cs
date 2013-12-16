@@ -154,10 +154,13 @@ namespace MultiMiner.Win
         }
 
         //required for GPU mining
-        private static void SetGpuEnvironmentVariables()
+        private void SetGpuEnvironmentVariables()
         {
-            Environment.SetEnvironmentVariable("GPU_MAX_ALLOC_PERCENT", "100", EnvironmentVariableTarget.User);
-            Environment.SetEnvironmentVariable("GPU_USE_SYNC_OBJECTS", "1", EnvironmentVariableTarget.User);
+            if (applicationConfiguration.SetGpuEnvironmentVariables)
+            {
+                Environment.SetEnvironmentVariable("GPU_MAX_ALLOC_PERCENT", "100", EnvironmentVariableTarget.User);
+                Environment.SetEnvironmentVariable("GPU_USE_SYNC_OBJECTS", "1", EnvironmentVariableTarget.User);
+            }
         }
 
         private void FetchInitialCoinStats()
@@ -1361,6 +1364,7 @@ namespace MultiMiner.Win
                 CheckForUpdates();
                 RefreshCoinStats();
                 SetupAccessibleMenu();
+                SetGpuEnvironmentVariables();
                 
                 Application.DoEvents();
             }

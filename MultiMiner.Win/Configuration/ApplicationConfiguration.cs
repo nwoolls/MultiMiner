@@ -41,6 +41,7 @@ namespace MultiMiner.Win.Configuration
             this.CheckForMinerUpdates = true;
             this.ListViewStyle = View.Details;
             this.HiddenColumns = new List<string>();
+            this.SetGpuEnvironmentVariables = true;
         }
 
         public bool LaunchOnWindowsLogin { get; set; }
@@ -59,6 +60,7 @@ namespace MultiMiner.Win.Configuration
         public List<string> HiddenColumns { get; set; }
         public bool ShowApiErrors { get; set; }
         public bool UseAccessibleMenu { get; set; }
+        public bool SetGpuEnvironmentVariables { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }

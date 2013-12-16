@@ -48,6 +48,7 @@
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.pathConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
@@ -60,7 +61,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 191);
+            this.panel1.Location = new System.Drawing.Point(0, 225);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(426, 54);
             this.panel1.TabIndex = 6;
@@ -202,7 +203,7 @@
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "UseAccessibleMenu", true));
+            this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "UseAccessibleMenu", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.checkBox2.Location = new System.Drawing.Point(21, 156);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(247, 17);
@@ -218,6 +219,17 @@
             // 
             this.pathConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.PathConfiguration);
             // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "SetGpuEnvironmentVariables", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBox3.Location = new System.Drawing.Point(21, 185);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(270, 17);
+            this.checkBox3.TabIndex = 31;
+            this.checkBox3.Text = "Automatically set GPU mining environment variables";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
             // AdvancedSettingsForm
             // 
             this.AcceptButton = this.saveButton;
@@ -225,7 +237,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(426, 245);
+            this.ClientSize = new System.Drawing.Size(426, 279);
+            this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label3);
@@ -276,5 +289,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.BindingSource pathConfigurationBindingSource;
         private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox checkBox3;
     }
 }
