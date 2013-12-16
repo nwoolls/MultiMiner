@@ -32,18 +32,22 @@ namespace MultiMiner.Win.Configuration
 
         public void SavePerksConfiguration(string configDirectory = null)
         {
-            if (!String.IsNullOrEmpty(configDirectory))
-                this.configDirectory = configDirectory;
+            InitializeConfigDirectory(configDirectory);
 
             ConfigurationReaderWriter.WriteConfiguration(this, PerksConfigurationFileName());
         }
 
+        private void InitializeConfigDirectory(string configDirectory)
+        {
+            if (!String.IsNullOrEmpty(configDirectory))
+                this.configDirectory = configDirectory;
+            else if (String.IsNullOrEmpty(this.configDirectory))
+                this.configDirectory = ApplicationPaths.AppDataPath();
+        }
+
         public void LoadPerksConfiguration(string configDirectory)
         {
-            if (String.IsNullOrEmpty(configDirectory))
-                this.configDirectory = ApplicationPaths.AppDataPath();
-            else
-                this.configDirectory = configDirectory;
+            InitializeConfigDirectory(configDirectory);
 
             PerksConfiguration tmp = ConfigurationReaderWriter.ReadConfiguration<PerksConfiguration>(PerksConfigurationFileName());
 

@@ -93,13 +93,20 @@ namespace MultiMiner.Win.Configuration
 
         public void SaveApplicationConfiguration(string configDirectory = null)
         {
-            if (!String.IsNullOrEmpty(configDirectory))
-                this.configDirectory = configDirectory;
+            InitializeConfigDirectory(configDirectory);
 
             ConfigurationReaderWriter.WriteConfiguration(this, ApplicationConfigurationFileName());
 
             if (OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix)
                 ApplyLaunchOnWindowsStartup();
+        }
+
+        private void InitializeConfigDirectory(string configDirectory)
+        {
+            if (!String.IsNullOrEmpty(configDirectory))
+                this.configDirectory = configDirectory;
+            else if (String.IsNullOrEmpty(this.configDirectory))
+                this.configDirectory = ApplicationPaths.AppDataPath();
         }
 
         private void ApplyLaunchOnWindowsStartup()
@@ -113,10 +120,7 @@ namespace MultiMiner.Win.Configuration
 
         public void LoadApplicationConfiguration(string configDirectory)
         {
-            if (String.IsNullOrEmpty(configDirectory))
-                this.configDirectory = ApplicationPaths.AppDataPath();
-            else
-                this.configDirectory = configDirectory;
+            InitializeConfigDirectory(configDirectory);
 
             ApplicationConfiguration tmp = ConfigurationReaderWriter.ReadConfiguration<ApplicationConfiguration>(ApplicationConfigurationFileName());
 

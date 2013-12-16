@@ -39,10 +39,7 @@ namespace MultiMiner.Engine.Configuration
         private string configDirectory;
         public void LoadAllConfigurations(string configDirectory)
         {
-            if (String.IsNullOrEmpty(configDirectory))
-                this.configDirectory = ApplicationPaths.AppDataPath();
-            else
-                this.configDirectory = configDirectory;
+            InitializeConfigDirectory(configDirectory);
 
             LoadCoinConfigurations(configDirectory);
             LoadDeviceConfigurations();
@@ -57,18 +54,22 @@ namespace MultiMiner.Engine.Configuration
 
         public void SaveStrategyConfiguration(string configDirectory = null)
         {
-            if (!String.IsNullOrEmpty(configDirectory))
-                this.configDirectory = configDirectory;
+            InitializeConfigDirectory(configDirectory);
 
             ConfigurationReaderWriter.WriteConfiguration(StrategyConfiguration, StrategyConfigurationsFileName());
         }
 
+        private void InitializeConfigDirectory(string configDirectory)
+        {
+            if (!String.IsNullOrEmpty(configDirectory))
+                this.configDirectory = configDirectory;
+            else if (String.IsNullOrEmpty(this.configDirectory))
+                this.configDirectory = ApplicationPaths.AppDataPath();
+        }
+
         public void LoadStrategyConfiguration(string configDirectory)
         {
-            if (String.IsNullOrEmpty(configDirectory))
-                this.configDirectory = ApplicationPaths.AppDataPath();
-            else
-                this.configDirectory = configDirectory;
+            InitializeConfigDirectory(configDirectory);
 
             try
             {
@@ -118,10 +119,7 @@ namespace MultiMiner.Engine.Configuration
 
         public void LoadCoinConfigurations(string configDirectory)
         {
-            if (String.IsNullOrEmpty(configDirectory))
-                this.configDirectory = ApplicationPaths.AppDataPath();
-            else
-                this.configDirectory = configDirectory;
+            InitializeConfigDirectory(configDirectory);
 
             CoinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<CoinConfiguration>>(CoinConfigurationsFileName());
             RemoveIvalidCoinsFromDeviceConfigurations();
@@ -153,8 +151,7 @@ namespace MultiMiner.Engine.Configuration
 
         public void SaveCoinConfigurations(string configDirectory = null)
         {
-            if (!String.IsNullOrEmpty(configDirectory))
-                this.configDirectory = configDirectory;
+            InitializeConfigDirectory(configDirectory);
 
             RemoveBlankPoolConfigurations();
             ConfigurationReaderWriter.WriteConfiguration(CoinConfigurations, CoinConfigurationsFileName());
