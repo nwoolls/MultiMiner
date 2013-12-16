@@ -131,5 +131,11 @@ namespace MultiMiner.Win
             apiKeyEdit.Enabled = coinApiCombo.SelectedIndex == 1;
             apiKeyLabel.Enabled = apiKeyEdit.Enabled;
         }
+
+        private void advancedSettingsLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            AdvancedSettingsForm advancedSettingsForm = new AdvancedSettingsForm(applicationConfiguration);
+            advancedSettingsForm.ShowDialog();
+        }
     }
 }

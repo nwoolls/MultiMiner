@@ -53,6 +53,12 @@
     <Compile Include="AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="AdvancedSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AdvancedSettingsForm.Designer.cs">
+      <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MinerSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -154,6 +160,9 @@
     <EmbeddedResource Include="AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AdvancedSettingsForm.resx">
+      <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MinerSettingsForm.resx">
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -209,6 +218,7 @@
     <None Include="Properties\DataSources\MultiMiner.Engine.CryptoCoin.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.LogProcessCloseArgs.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.MiningPool.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Win.Configuration.ApplicationConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.PerksConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.LogEntry.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Device.datasource" />
@@ -307,6 +317,7 @@
     <None Include="Resources\application-execute.png" />
     <None Include="Resources\info1.png" />
     <None Include="Resources\smiley_happy.png" />
+    <None Include="Resources\settings-option.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

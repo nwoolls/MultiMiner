@@ -385,7 +385,7 @@
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
-            // AdvancedSettingsForm
+            // MinerSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -402,9 +402,9 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "AdvancedSettingsForm";
+            this.Name = "MinerSettingsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Advanced Miner Settings";
+            this.Text = "Configure Miner Settings";
             this.Load += new System.EventHandler(this.AdvancedSettingsForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).EndInit();
             this.groupBox3.ResumeLayout(false);
