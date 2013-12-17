@@ -143,10 +143,63 @@ namespace MultiMiner.Win
 
             SetupAccessibleMenu();
 
+            ShowStartupTips();
+
             //do this after all other data has loaded to prevent errors when the delay is set very low (1s)
             SetupMiningOnStartup();
 
             formLoaded = true;
+        }
+
+        private void ShowStartupTips()
+        {
+            string tip = null;
+
+            switch (applicationConfiguration.TipsShown)
+            {
+                case 0:
+                    tip = "Tip: right-click device names to change coins";
+                    notificationsControl.AddNotification(tip, tip, () =>
+                    {
+                        if (deviceListView.Items.Count > 0)
+                        {
+                            string currentCoin = GetCurrentlySelectedCoinName();
+                            CheckCoinInPopupMenu(currentCoin);
+
+                            ListViewItem firstItem = deviceListView.Items[0];
+                            Point popupPosition = firstItem.Position;
+                            popupPosition.Offset(14, 6);
+                            coinPopupMenu.Show(deviceListView, popupPosition);
+                        }
+                    }, "");
+                    applicationConfiguration.TipsShown++;
+                    break;
+                case 1:
+                    tip = "Tip: right-click the main window for common tasks";
+                    notificationsControl.AddNotification(tip, tip, () =>
+                    {
+                            deviceListContextMenu.Show(deviceListView, 150, 100);
+                    }, "");
+                    applicationConfiguration.TipsShown++;
+                    break;
+                case 2:
+                    tip = "Tip: restart mining after changing any settings";
+                    notificationsControl.AddNotification(tip, tip, () =>
+                    {
+                    }, "");
+                    applicationConfiguration.TipsShown++;
+                    break;
+                case 3:
+                    tip = "Tip: consider enabling perks to give back to the author";
+                    notificationsControl.AddNotification(tip, tip, () =>
+                    {
+                        ConfigurePerks();
+                    }, "");
+                    applicationConfiguration.TipsShown++;
+                    break;
+            }
+
+            applicationConfiguration.SaveApplicationConfiguration();
         }
 
         private void SetupLookAndFeel()
