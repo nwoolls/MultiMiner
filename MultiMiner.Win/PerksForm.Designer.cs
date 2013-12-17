@@ -34,6 +34,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.incomeCheckBox = new System.Windows.Forms.CheckBox();
+            this.perksConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.coinbaseCheckBox = new System.Windows.Forms.CheckBox();
             this.perksCheckBox = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -42,11 +43,10 @@
             this.percentEdit = new System.Windows.Forms.TextBox();
             this.percentLabel1 = new System.Windows.Forms.Label();
             this.percentLabel2 = new System.Windows.Forms.Label();
-            this.perksConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.perksConfigurationBindingSource)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // smileyPicture
@@ -89,6 +89,10 @@
             this.incomeCheckBox.TabIndex = 7;
             this.incomeCheckBox.Text = "Show estimated income from devices";
             this.incomeCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // perksConfigurationBindingSource
+            // 
+            this.perksConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.PerksConfiguration);
             // 
             // coinbaseCheckBox
             // 
@@ -149,7 +153,7 @@
             // percentEdit
             // 
             this.percentEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.perksConfigurationBindingSource, "DonationPercent", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.percentEdit.Location = new System.Drawing.Point(203, 155);
+            this.percentEdit.Location = new System.Drawing.Point(205, 155);
             this.percentEdit.Name = "percentEdit";
             this.percentEdit.Size = new System.Drawing.Size(45, 23);
             this.percentEdit.TabIndex = 11;
@@ -168,15 +172,11 @@
             // percentLabel2
             // 
             this.percentLabel2.AutoSize = true;
-            this.percentLabel2.Location = new System.Drawing.Point(250, 158);
+            this.percentLabel2.Location = new System.Drawing.Point(254, 158);
             this.percentLabel2.Name = "percentLabel2";
             this.percentLabel2.Size = new System.Drawing.Size(17, 15);
             this.percentLabel2.TabIndex = 13;
             this.percentLabel2.Text = "%";
-            // 
-            // perksConfigurationBindingSource
-            // 
-            this.perksConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.PerksConfiguration);
             // 
             // PerksForm
             // 
@@ -184,9 +184,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(376, 253);
+            this.Controls.Add(this.percentEdit);
             this.Controls.Add(this.percentLabel2);
             this.Controls.Add(this.percentLabel1);
-            this.Controls.Add(this.percentEdit);
             this.Controls.Add(this.smileyPicture);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label1);
@@ -204,8 +204,8 @@
             this.Load += new System.EventHandler(this.PerksForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.perksConfigurationBindingSource)).EndInit();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
