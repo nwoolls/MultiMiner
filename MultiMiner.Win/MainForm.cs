@@ -59,13 +59,15 @@ namespace MultiMiner.Win
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            accessibleMenu.Visible = false;
-
             if (applicationConfiguration.StartupMinimized && applicationConfiguration.MinimizeToNotificationArea)
             {
                 notifyIcon1.Visible = true;
                 this.Hide();
             }
+
+            accessibleMenu.Visible = false;
+
+            SetupLookAndFeel();
 
             //make it easier for users to understand there are selected items
             //trying to make the context menu discoverable
@@ -142,6 +144,31 @@ namespace MultiMiner.Win
             SetupAccessibleMenu();
 
             //do this after all other data has loaded to prevent errors when the delay is set very low (1s)
+            SetupMiningOnStartup();
+
+            formLoaded = true;
+        }
+
+        private void SetupLookAndFeel()
+        {
+            Version win8version = new Version(6, 2, 9200, 0);
+
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT &&
+                Environment.OSVersion.Version >= win8version)
+            {
+                // its win8 or higher.
+                accessibleMenu.BackColor = SystemColors.ControlLightLight;
+                standardToolBar.BackColor = SystemColors.ControlLightLight;
+            }
+            else
+            {
+                accessibleMenu.BackColor = SystemColors.Control;
+                standardToolBar.BackColor = SystemColors.Control;
+            }
+        }
+
+        private void SetupMiningOnStartup()
+        {
             if (applicationConfiguration.StartMiningOnStartup)
             {
                 //minimum 1s delay for mining on startup - 0 not allowed
@@ -149,8 +176,6 @@ namespace MultiMiner.Win
                 startupMiningCountdownTimer.Enabled = true;
                 RefreshCountdownLabel();
             }
-
-            formLoaded = true;
         }
 
         private void SetupAccessibleMenu()
