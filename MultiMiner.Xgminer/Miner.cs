@@ -248,6 +248,9 @@ namespace MultiMiner.Xgminer
 
                 LogLaunch(this, args);
             }
+
+            //requiest UTF-8 encoding so that characters from bfgminer are read 
+            startInfo.StandardOutputEncoding = System.Text.Encoding.UTF8;
             
             Process process = StartProcessAndCheckResponse(startInfo, startProcess);
             
