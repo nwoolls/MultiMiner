@@ -2,6 +2,7 @@
 using System.Net;
 using System.Web.Script.Serialization;
 using System;
+using System.Text;
 
 namespace MultiMiner.MobileMiner.Api
 {
@@ -28,6 +29,9 @@ namespace MultiMiner.MobileMiner.Api
                 url, emailAddress, applicationKey, machineName, apiKey);
             using (WebClient client = new ApiWebClient())
             {
+                //specify UTF8 so devices with Unicode characters are posted up properly
+                client.Encoding = Encoding.UTF8;
+
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 string jsonData = serializer.Serialize(miningStatistics);
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
