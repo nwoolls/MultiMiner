@@ -57,6 +57,7 @@ Depending on your OS and the mining devices you plan on using you will need one 
 * [Blue / Red Fury][21]
 * [BFL / Bitforce][22]
 * [HashBuster Micro][23]
+* [Bi•Fury][25]
 * [AMD GPU][24]
 
 Windows Installation
@@ -298,3 +299,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [22]: http://www.ftdichip.com/Drivers/VCP.htm
 [23]: http://zadig.akeo.ie/
 [24]: http://support.amd.com/en-us/download
+[25]: http://store.bitcoin.org.pl/support
