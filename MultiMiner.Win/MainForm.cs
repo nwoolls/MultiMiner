@@ -245,8 +245,11 @@ namespace MultiMiner.Win
         {
             if (applicationConfiguration.SetGpuEnvironmentVariables)
             {
+                using (new HourGlass())
+                {
                 Environment.SetEnvironmentVariable("GPU_MAX_ALLOC_PERCENT", "100", EnvironmentVariableTarget.User);
                 Environment.SetEnvironmentVariable("GPU_USE_SYNC_OBJECTS", "1", EnvironmentVariableTarget.User);
+                }
             }
         }
 
@@ -3259,7 +3262,10 @@ namespace MultiMiner.Win
             string availableMinerVersion = String.Empty;
             try
             {
-                availableMinerVersion = Engine.Installer.GetAvailableMinerVersion();
+                using (new HourGlass())
+                {
+                    availableMinerVersion = Engine.Installer.GetAvailableMinerVersion();
+                }
             }
             catch (WebException ex)
             {
@@ -3308,7 +3314,12 @@ namespace MultiMiner.Win
             if (!MinerIsInstalled())
                 return;
 
-            string availableMinerVersion = GetAvailableBackendVersion();
+            string availableMinerVersion = null;
+            using (new HourGlass())
+            {
+                availableMinerVersion = GetAvailableBackendVersion();
+            }
+
             if (String.IsNullOrEmpty(availableMinerVersion))
                 return;
 
