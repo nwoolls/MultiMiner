@@ -34,6 +34,7 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label9 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -42,17 +43,16 @@
             this.logPathButton = new System.Windows.Forms.Button();
             this.configPathButton = new System.Windows.Forms.Button();
             this.configPathEdit = new System.Windows.Forms.TextBox();
+            this.pathConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label2 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.pathConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -98,6 +98,10 @@
             this.textBox2.TabIndex = 3;
             this.textBox2.Text = "45";
             this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.ApplicationConfiguration);
             // 
             // label9
             // 
@@ -172,6 +176,10 @@
             this.configPathEdit.Size = new System.Drawing.Size(246, 20);
             this.configPathEdit.TabIndex = 4;
             // 
+            // pathConfigurationBindingSource
+            // 
+            this.pathConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.PathConfiguration);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -197,8 +205,8 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(359, 37);
             this.label3.TabIndex = 28;
-            this.label3.Text = "You can changes the above path to override where non device-specific configuratio" +
-    "ns are stored.";
+            this.label3.Text = "You can change the above path to override where non device-specific configuration" +
+    "s are stored.";
             // 
             // checkBox2
             // 
@@ -210,14 +218,6 @@
             this.checkBox2.TabIndex = 30;
             this.checkBox2.Text = "Use a standard menu designed for accessibility";
             this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.ApplicationConfiguration);
-            // 
-            // pathConfigurationBindingSource
-            // 
-            this.pathConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.PathConfiguration);
             // 
             // checkBox3
             // 
@@ -261,9 +261,9 @@
             this.Text = "Configure Advanced Settings";
             this.Load += new System.EventHandler(this.AdvancedSettingsForm_Load);
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
