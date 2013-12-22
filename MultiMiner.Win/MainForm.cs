@@ -224,7 +224,7 @@ namespace MultiMiner.Win
             {
                 accessibleMenu.BackColor = SystemColors.Control;
                 standardToolBar.BackColor = SystemColors.Control;
-                statusStrip.BackColor = SystemColors.Control;
+                statusStrip1.BackColor = SystemColors.Control;
             }
         }
 
