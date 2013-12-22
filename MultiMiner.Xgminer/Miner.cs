@@ -213,6 +213,10 @@ namespace MultiMiner.Xgminer
             //also required under Windows to avoid "initscr(): Unable to create SP"
             arguments = arguments + " -T";
 
+            //limits console output
+            //we don't read the console output anyway and this is proven to improve performance (at least with very fast devices, e.g. KnC)
+            arguments = arguments + " -q";
+
             Process process = StartMinerProcess(arguments, redirectOutput, ensureProcessStarts, reason);
 
             return process;
