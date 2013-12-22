@@ -139,11 +139,12 @@ namespace MultiMiner.Win
                 deviceListView.Items[0].Focused = true;
             }
 
-            SetGpuEnvironmentVariables();
-
             SetupAccessibleMenu();
 
             ShowStartupTips();
+
+            //do this last as it can take a few seconds
+            SetGpuEnvironmentVariables();
 
             //do this after all other data has loaded to prevent errors when the delay is set very low (1s)
             SetupMiningOnStartup();
@@ -247,10 +248,20 @@ namespace MultiMiner.Win
             {
                 using (new HourGlass())
                 {
-                Environment.SetEnvironmentVariable("GPU_MAX_ALLOC_PERCENT", "100", EnvironmentVariableTarget.User);
-                Environment.SetEnvironmentVariable("GPU_USE_SYNC_OBJECTS", "1", EnvironmentVariableTarget.User);
+                    const string GpuMaxAllocPercent = "GPU_MAX_ALLOC_PERCENT";
+                    const string GpuUseSyncObjects = "GPU_USE_SYNC_OBJECTS";
+
+                    SetEnvironmentVariableIfNotSet(GpuMaxAllocPercent, "100");
+                    SetEnvironmentVariableIfNotSet(GpuUseSyncObjects, "1");
                 }
             }
+        }
+
+        private static void SetEnvironmentVariableIfNotSet(string name, string value)
+        {
+            string currentValue = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.User);
+            if (String.IsNullOrEmpty(currentValue))
+                Environment.SetEnvironmentVariable(name, value, EnvironmentVariableTarget.User);
         }
 
         private void FetchInitialCoinStats()
