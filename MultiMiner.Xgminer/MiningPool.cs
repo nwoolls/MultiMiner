@@ -6,6 +6,14 @@ namespace MultiMiner.Xgminer
     [Serializable]
     public class MiningPool
     {
+        public MiningPool()
+        {
+            //set defaults
+            Host = String.Empty;
+            Username = String.Empty;
+            Password = String.Empty;
+        }
+
         public string Host { get; set; }
         public int Port { get; set; }
         public string Username { get; set; }
