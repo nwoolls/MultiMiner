@@ -219,6 +219,13 @@ namespace MultiMiner.Win
                 accessibleMenu.BackColor = SystemColors.Control;
                 standardToolBar.BackColor = SystemColors.Control;
             }
+
+            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+            {
+                accessibleMenu.BackColor = SystemColors.Control;
+                standardToolBar.BackColor = SystemColors.Control;
+                statusStrip.BackColor = SystemColors.Control;
+            }
         }
 
         private void SetupMiningOnStartup()
