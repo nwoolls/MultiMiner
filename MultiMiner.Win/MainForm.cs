@@ -3628,6 +3628,9 @@ namespace MultiMiner.Win
 
                 newWidth = Math.Max(newWidth, 300);
 
+                //don't (automatically) set the width to crop notifications
+                newWidth = Math.Max(newWidth, notificationsControl.Width + 24);
+
                 Size = new Size(newWidth, 400);
 
             } else
