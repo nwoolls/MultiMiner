@@ -3138,16 +3138,13 @@ namespace MultiMiner.Win
 
         private void quickSwitchItem_DropDownOpening(object sender, EventArgs e)
         {
-            PopulateQuickSwitchMenu();
+            PopulateQuickSwitchMenu(quickSwitchItem);
         }
 
-        private void PopulateQuickSwitchMenu()
+        private void PopulateQuickSwitchMenu(ToolStripDropDownItem parent)
         {
             quickCoinMenu.Items.Clear();
 
-            quickSwitchItem.DropDown = quickCoinMenu;
-            quickSwitchPopupItem.DropDown = quickCoinMenu;
-            quickSwitchToolStripMenuItem.DropDown = quickCoinMenu;
             
             foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
             {
@@ -3160,6 +3157,10 @@ namespace MultiMiner.Win
 
                 quickCoinMenu.Items.Add(coinSwitchItem);
             }
+
+            //Mono under Linux absolutely doesn't like having one context menu assigned to multiple
+            //toolstrip items' DropDown property at once, so we have to target a single one here
+            parent.DropDown = quickCoinMenu;
         }
 
         private void HandleQuickSwitchClick(object sender, EventArgs e)
@@ -3618,7 +3619,7 @@ namespace MultiMiner.Win
 
         private void quickSwitchPopupItem_DropDownOpening(object sender, EventArgs e)
         {
-            PopulateQuickSwitchMenu();
+            PopulateQuickSwitchMenu(quickSwitchPopupItem);
         }
 
         private bool briefMode = false;
@@ -4057,7 +4058,7 @@ namespace MultiMiner.Win
 
         private void quickSwitchToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            PopulateQuickSwitchMenu();
+            PopulateQuickSwitchMenu(quickSwitchToolStripMenuItem);
         }
     }
 }
