@@ -109,6 +109,16 @@ Generic Mono Installation
 
         mono MultiMiner.Win.exe
         
+FAQ
+-------
+
+* How do I restart the setup wizard? How do I delete all my MultiMiner settings and start over?
+    * Reset settings by deleting the contents of %appdata%\MultiMiner (type that into the address bar in Windows Explorer). Be sure to quit MultiMiner before you delete the contents. Then, restart MultiMiner.
+* Should I modify my GPU settings (overclock, undervolt, etc) with a utility like MSI Afterburner, or via config flags in MultiMiner?
+    * Utilities like MSI Afterburner are recommended. Relying on bfgminer (via the config flags in MultiMiner) to do the clocking and fan speed does work, but if the bfgminer crashes it leaves things over/under-clocked/volted. GPU utilities seems to be more reliable.
+* I found a question and answer in the Support thread below (or through gosh darned trial and error) that I wish had been here in the FAQ - how do I save the next visitor all the trouble I went through?
+    * Simple! Make a pull request to add to the FAQ, or email your Q and A to cooper dot marcus at gmail dot com (Qs without As will be ignored) and he'll add it to the FAQ for you.
+
 Support
 -------
 The official forum thread for MultiMiner can be found [here][15].
