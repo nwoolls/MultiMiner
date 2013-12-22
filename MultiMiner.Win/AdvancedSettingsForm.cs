@@ -1,12 +1,11 @@
 ﻿using MultiMiner.Utility;
 using MultiMiner.Win.Configuration;
 using System;
-using System.IO;
 using System.Windows.Forms;
 
 namespace MultiMiner.Win
 {
-    public partial class AdvancedSettingsForm : Form
+    public partial class AdvancedSettingsForm : MessageBoxFontForm
     {
         private readonly ApplicationConfiguration applicationConfiguration;
         private readonly ApplicationConfiguration workingApplicationConfiguration;

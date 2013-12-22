@@ -61,17 +61,17 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 225);
+            this.panel1.Location = new System.Drawing.Point(0, 260);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(426, 54);
+            this.panel1.Size = new System.Drawing.Size(497, 62);
             this.panel1.TabIndex = 6;
             // 
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveButton.Location = new System.Drawing.Point(230, 14);
+            this.saveButton.Location = new System.Drawing.Point(268, 16);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(87, 27);
+            this.saveButton.Size = new System.Drawing.Size(101, 31);
             this.saveButton.TabIndex = 0;
             this.saveButton.Text = "OK";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -81,9 +81,9 @@
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(324, 14);
+            this.cancelButton.Location = new System.Drawing.Point(378, 16);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(87, 27);
+            this.cancelButton.Size = new System.Drawing.Size(101, 31);
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
@@ -92,9 +92,9 @@
             // 
             this.textBox2.AccessibleName = "Roll over logs";
             this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "OldLogFileSets", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox2.Location = new System.Drawing.Point(127, 51);
+            this.textBox2.Location = new System.Drawing.Point(148, 59);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(37, 20);
+            this.textBox2.Size = new System.Drawing.Size(42, 23);
             this.textBox2.TabIndex = 3;
             this.textBox2.Text = "45";
             this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -106,9 +106,9 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(178, 54);
+            this.label9.Location = new System.Drawing.Point(208, 62);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(49, 13);
+            this.label9.Size = new System.Drawing.Size(55, 15);
             this.label9.TabIndex = 23;
             this.label9.Text = "old set(s)";
             // 
@@ -118,9 +118,9 @@
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "RollOverLogFiles", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox1.Location = new System.Drawing.Point(21, 53);
+            this.checkBox1.Location = new System.Drawing.Point(24, 61);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(93, 17);
+            this.checkBox1.Size = new System.Drawing.Size(100, 19);
             this.checkBox1.TabIndex = 2;
             this.checkBox1.Text = "Roll over logs:";
             this.checkBox1.UseVisualStyleBackColor = true;
@@ -128,9 +128,9 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(18, 21);
+            this.label1.Location = new System.Drawing.Point(21, 24);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 13);
+            this.label1.Size = new System.Drawing.Size(76, 15);
             this.label1.TabIndex = 24;
             this.label1.Text = "Log file path:";
             // 
@@ -138,18 +138,18 @@
             // 
             this.logPathEdit.AccessibleName = "Log file path";
             this.logPathEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "LogFilePath", true));
-            this.logPathEdit.Location = new System.Drawing.Point(127, 18);
+            this.logPathEdit.Location = new System.Drawing.Point(148, 21);
             this.logPathEdit.Name = "logPathEdit";
-            this.logPathEdit.Size = new System.Drawing.Size(246, 20);
+            this.logPathEdit.Size = new System.Drawing.Size(286, 23);
             this.logPathEdit.TabIndex = 0;
             // 
             // logPathButton
             // 
             this.logPathButton.AccessibleName = "Browse";
             this.logPathButton.BackColor = System.Drawing.SystemColors.Control;
-            this.logPathButton.Location = new System.Drawing.Point(379, 16);
+            this.logPathButton.Location = new System.Drawing.Point(442, 18);
             this.logPathButton.Name = "logPathButton";
-            this.logPathButton.Size = new System.Drawing.Size(27, 23);
+            this.logPathButton.Size = new System.Drawing.Size(31, 27);
             this.logPathButton.TabIndex = 1;
             this.logPathButton.Text = "...";
             this.logPathButton.UseVisualStyleBackColor = false;
@@ -159,9 +159,9 @@
             // 
             this.configPathButton.AccessibleName = "Browse";
             this.configPathButton.BackColor = System.Drawing.SystemColors.Control;
-            this.configPathButton.Location = new System.Drawing.Point(379, 82);
+            this.configPathButton.Location = new System.Drawing.Point(442, 95);
             this.configPathButton.Name = "configPathButton";
-            this.configPathButton.Size = new System.Drawing.Size(27, 23);
+            this.configPathButton.Size = new System.Drawing.Size(31, 27);
             this.configPathButton.TabIndex = 5;
             this.configPathButton.Text = "...";
             this.configPathButton.UseVisualStyleBackColor = false;
@@ -171,9 +171,9 @@
             // 
             this.configPathEdit.AccessibleName = "Shared config path";
             this.configPathEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.pathConfigurationBindingSource, "SharedConfigPath", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.configPathEdit.Location = new System.Drawing.Point(127, 84);
+            this.configPathEdit.Location = new System.Drawing.Point(148, 97);
             this.configPathEdit.Name = "configPathEdit";
-            this.configPathEdit.Size = new System.Drawing.Size(246, 20);
+            this.configPathEdit.Size = new System.Drawing.Size(286, 23);
             this.configPathEdit.TabIndex = 4;
             // 
             // pathConfigurationBindingSource
@@ -183,27 +183,27 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 87);
+            this.label2.Location = new System.Drawing.Point(21, 100);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(100, 13);
+            this.label2.Size = new System.Drawing.Size(110, 15);
             this.label2.TabIndex = 27;
             this.label2.Text = "Shared config path:";
             // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.info;
-            this.pictureBox1.Location = new System.Drawing.Point(21, 116);
+            this.pictureBox1.Location = new System.Drawing.Point(24, 134);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(19, 18);
+            this.pictureBox1.Size = new System.Drawing.Size(22, 21);
             this.pictureBox1.TabIndex = 29;
             this.pictureBox1.TabStop = false;
             // 
             // label3
             // 
             this.label3.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label3.Location = new System.Drawing.Point(47, 116);
+            this.label3.Location = new System.Drawing.Point(55, 134);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(359, 37);
+            this.label3.Size = new System.Drawing.Size(418, 43);
             this.label3.TabIndex = 28;
             this.label3.Text = "You can change the above path to override where non device-specific configuration" +
     "s are stored.";
@@ -212,9 +212,9 @@
             // 
             this.checkBox2.AutoSize = true;
             this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "UseAccessibleMenu", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox2.Location = new System.Drawing.Point(21, 156);
+            this.checkBox2.Location = new System.Drawing.Point(24, 180);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(247, 17);
+            this.checkBox2.Size = new System.Drawing.Size(272, 19);
             this.checkBox2.TabIndex = 30;
             this.checkBox2.Text = "Use a standard menu designed for accessibility";
             this.checkBox2.UseVisualStyleBackColor = true;
@@ -223,9 +223,9 @@
             // 
             this.checkBox3.AutoSize = true;
             this.checkBox3.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "SetGpuEnvironmentVariables", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox3.Location = new System.Drawing.Point(21, 185);
+            this.checkBox3.Location = new System.Drawing.Point(24, 213);
             this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(270, 17);
+            this.checkBox3.Size = new System.Drawing.Size(305, 19);
             this.checkBox3.TabIndex = 31;
             this.checkBox3.Text = "Automatically set GPU mining environment variables";
             this.checkBox3.UseVisualStyleBackColor = true;
@@ -233,11 +233,11 @@
             // AdvancedSettingsForm
             // 
             this.AcceptButton = this.saveButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(426, 279);
+            this.ClientSize = new System.Drawing.Size(497, 322);
             this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.pictureBox1);
