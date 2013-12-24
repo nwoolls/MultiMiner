@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MultiMiner.Win.Notifications
@@ -40,6 +41,14 @@ namespace MultiMiner.Win.Notifications
         private void NotificationControl_Load(object sender, EventArgs e)
         {
             infoPicture.Visible = !String.IsNullOrEmpty(informationUrl);
+            PositionCloseButton(); 
+        }
+
+        private void PositionCloseButton()
+        {
+            closeButton.Size = new Size(22, 22);
+            const int offset = 2;
+            closeButton.Location = new Point(this.Width - closeButton.Width - offset, 0 + offset);
         }
     }
 }
