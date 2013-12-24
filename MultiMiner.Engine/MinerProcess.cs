@@ -47,7 +47,7 @@ namespace MultiMiner.Engine
                     //try to give the miner time to close
                     //killing it could leave (Win)USB devices tied up
                     int count = 0;
-                    const int max = 5;
+                    const int max = 10;
                     while (!Process.HasExited && (count < max))
                     {
                         Thread.Sleep(500);
