@@ -139,6 +139,8 @@ namespace MultiMiner.Win
                 deviceListView.Items[0].Focused = true;
             }
 
+            PositionAdvancedAreaCloseButton();
+
             SetupAccessibleMenu();
 
             ShowStartupTips();
@@ -150,6 +152,13 @@ namespace MultiMiner.Win
             SetupMiningOnStartup();
 
             formLoaded = true;
+        }
+
+        private void PositionAdvancedAreaCloseButton()
+        {
+            closeApiButton.Parent = advancedAreaContainer.Panel2;
+            closeApiButton.BringToFront();
+            panel2.Visible = false;
         }
 
         private void ShowStartupTips()

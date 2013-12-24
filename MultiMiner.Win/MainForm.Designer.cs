@@ -690,10 +690,10 @@
             this.advancedTabControl.Controls.Add(this.apiMonitorPage);
             this.advancedTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.advancedTabControl.ImageList = this.imageList1;
-            this.advancedTabControl.Location = new System.Drawing.Point(0, 32);
+            this.advancedTabControl.Location = new System.Drawing.Point(0, 26);
             this.advancedTabControl.Name = "advancedTabControl";
             this.advancedTabControl.SelectedIndex = 0;
-            this.advancedTabControl.Size = new System.Drawing.Size(881, 106);
+            this.advancedTabControl.Size = new System.Drawing.Size(881, 112);
             this.advancedTabControl.TabIndex = 15;
             // 
             // historyPage
@@ -703,7 +703,7 @@
             this.historyPage.Location = new System.Drawing.Point(4, 24);
             this.historyPage.Name = "historyPage";
             this.historyPage.Padding = new System.Windows.Forms.Padding(3);
-            this.historyPage.Size = new System.Drawing.Size(873, 78);
+            this.historyPage.Size = new System.Drawing.Size(873, 84);
             this.historyPage.TabIndex = 2;
             this.historyPage.Text = "History";
             this.historyPage.UseVisualStyleBackColor = true;
@@ -736,7 +736,7 @@
             this.historyGridView.Name = "historyGridView";
             this.historyGridView.ReadOnly = true;
             this.historyGridView.RowHeadersVisible = false;
-            this.historyGridView.Size = new System.Drawing.Size(867, 72);
+            this.historyGridView.Size = new System.Drawing.Size(867, 78);
             this.historyGridView.TabIndex = 0;
             this.historyGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.historyGridView_CellFormatting);
             this.historyGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.historyGridView_RowsAdded);
@@ -816,7 +816,7 @@
             this.processLogPage.Location = new System.Drawing.Point(4, 24);
             this.processLogPage.Name = "processLogPage";
             this.processLogPage.Padding = new System.Windows.Forms.Padding(3);
-            this.processLogPage.Size = new System.Drawing.Size(873, 78);
+            this.processLogPage.Size = new System.Drawing.Size(873, 84);
             this.processLogPage.TabIndex = 1;
             this.processLogPage.Text = "Process Log";
             this.processLogPage.UseVisualStyleBackColor = true;
@@ -845,7 +845,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(867, 72);
+            this.dataGridView1.Size = new System.Drawing.Size(867, 78);
             this.dataGridView1.TabIndex = 14;
             this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
             this.dataGridView1.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDown);
@@ -899,7 +899,7 @@
             this.apiMonitorPage.Location = new System.Drawing.Point(4, 24);
             this.apiMonitorPage.Name = "apiMonitorPage";
             this.apiMonitorPage.Padding = new System.Windows.Forms.Padding(3);
-            this.apiMonitorPage.Size = new System.Drawing.Size(873, 78);
+            this.apiMonitorPage.Size = new System.Drawing.Size(873, 84);
             this.apiMonitorPage.TabIndex = 0;
             this.apiMonitorPage.Text = "API Monitor";
             this.apiMonitorPage.UseVisualStyleBackColor = true;
@@ -926,7 +926,7 @@
             this.apiLogGridView.Location = new System.Drawing.Point(3, 3);
             this.apiLogGridView.Name = "apiLogGridView";
             this.apiLogGridView.RowHeadersVisible = false;
-            this.apiLogGridView.Size = new System.Drawing.Size(867, 72);
+            this.apiLogGridView.Size = new System.Drawing.Size(867, 78);
             this.apiLogGridView.TabIndex = 13;
             this.apiLogGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.apiLogGridView_CellFormatting);
             // 
@@ -971,18 +971,19 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(881, 32);
+            this.panel2.Size = new System.Drawing.Size(881, 26);
             this.panel2.TabIndex = 14;
             // 
             // closeApiButton
             // 
             this.closeApiButton.AccessibleName = "Close";
             this.closeApiButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.closeApiButton.Location = new System.Drawing.Point(848, 1);
+            this.closeApiButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.closeApiButton.Location = new System.Drawing.Point(858, 0);
             this.closeApiButton.Name = "closeApiButton";
-            this.closeApiButton.Size = new System.Drawing.Size(29, 27);
+            this.closeApiButton.Size = new System.Drawing.Size(22, 22);
             this.closeApiButton.TabIndex = 0;
-            this.closeApiButton.Text = "X";
+            this.closeApiButton.Text = "✖";
             this.closeApiButton.UseVisualStyleBackColor = true;
             this.closeApiButton.Click += new System.EventHandler(this.closeApiButton_Click);
             // 
@@ -1768,7 +1769,6 @@
         private System.Windows.Forms.ToolStripSeparator settingsSeparator;
         private System.Windows.Forms.SplitContainer advancedAreaContainer;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Button closeApiButton;
         private System.Windows.Forms.BindingSource apiLogEntryBindingSource;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.ContextMenuStrip notifyIconMenuStrip;
@@ -1919,6 +1919,7 @@
         private System.Windows.Forms.ToolStripMenuItem dummyToolStripMenuItem3;
         private System.Windows.Forms.ContextMenuStrip processLogMenu;
         private System.Windows.Forms.ToolStripMenuItem launchToolStripMenuItem;
+        private System.Windows.Forms.Button closeApiButton;
     }
 }
 
