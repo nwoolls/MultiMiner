@@ -47,8 +47,8 @@ namespace MultiMiner.Win
             closeDetailsButton.Location = new Point(this.Width - closeDetailsButton.Width - offset, 0 + offset);
             closeDetailsButton.BringToFront();
 
-            dataGridView1.Width = this.Width - (dataGridView1.Left * 2);
-            dataGridView1.Height = this.Height - dataGridView1.Top - 6;
+            workersGridView.Width = this.Width - (workersGridView.Left * 2);
+            workersGridView.Height = this.Height - workersGridView.Top - 6;
         }
 
         public void InspectDetails(Device device, CoinConfiguration coinConfiguration, CoinInformation coinInformation,
@@ -61,8 +61,9 @@ namespace MultiMiner.Win
             }
             hashrateLabel.Text = hashrate.ToHashrateString();
 
-            dataGridView1.Visible = (device.Kind == DeviceKind.PXY) &&
+            workersGridView.Visible = (device.Kind == DeviceKind.PXY) &&
                 (deviceInformation.Count > 0);
+            workersTitleLabel.Visible = workersGridView.Visible;
 
             //Internet or Coin API could be down
             if (coinInformation != null)
@@ -102,6 +103,49 @@ namespace MultiMiner.Win
             }
 
             nameLabel.Width = this.Width - nameLabel.Left - closeDetailsButton.Width;
+
+            acceptedLabel.Text = deviceInformation.Sum(d => d.AcceptedShares).ToString();
+            rejectedLabel.Text = deviceInformation.Sum(d => d.RejectedShares).ToString();
+            errorsLabel.Text = deviceInformation.Sum(d => d.HardwareErrors).ToString();
+            utilityLabel.Text = deviceInformation.Sum(d => d.Utility).ToString();
+
+            DeviceInformationResponse deviceInfo = (DeviceInformationResponse)deviceInformationResponseBindingSource.Current;
+            if (deviceInfo != null)
+            {
+                if (deviceInfo.Temperature > 0)
+                    tempLabel.Text = deviceInfo.Temperature + "°";
+                else
+                    tempLabel.Text = String.Empty;
+
+                if (deviceInfo.FanPercent > 0)
+                    fanLabel.Text = deviceInfo.FanPercent + "%";
+                else
+                    fanLabel.Text = String.Empty;
+            }
+            else
+            {
+                tempLabel.Text = String.Empty;
+                fanLabel.Text = String.Empty;
+            }
+        }
+
+        private void workersGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.ColumnIndex == averageHashrateDataGridViewTextBoxColumn.Index ||
+                e.ColumnIndex == currentHashrateDataGridViewTextBoxColumn.Index)
+            {
+                e.Value = ((double)e.Value).ToHashrateString();
+            }
+            else if (e.ColumnIndex == rejectedSharesPercentDataGridViewTextBoxColumn.Index ||
+                e.ColumnIndex == hardwareErrorsPercentDataGridViewTextBoxColumn.Index)
+            {
+                //check for >= 0.05 so we don't show 0% (due to the format string)
+                e.Value = (double)e.Value >= 0.05 ? ((double)e.Value).ToString("0.#") + "%" : String.Empty;
+            }
+            else if (e.ColumnIndex == acceptedSharesDataGridViewTextBoxColumn.Index)
+            {
+                e.Value = (int)e.Value > 0 ? ((int)e.Value).ToString() : String.Empty;
+            }
         }
     }
 }
