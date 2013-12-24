@@ -320,6 +320,8 @@
     <None Include="Resources\info1.png" />
     <None Include="Resources\smiley_happy.png" />
     <None Include="Resources\settings-option.png" />
+    <None Include="Resources\application-execute1.png" />
+    <None Include="Resources\application-control_play.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

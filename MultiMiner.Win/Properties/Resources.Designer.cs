@@ -93,6 +93,16 @@ namespace MultiMiner.Win.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap application_control_play {
+            get {
+                object obj = ResourceManager.GetObject("application-control_play", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap application_delete {
             get {
                 object obj = ResourceManager.GetObject("application-delete", resourceCulture);
@@ -106,6 +116,16 @@ namespace MultiMiner.Win.Properties {
         internal static System.Drawing.Bitmap application_execute {
             get {
                 object obj = ResourceManager.GetObject("application-execute", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap application_execute1 {
+            get {
+                object obj = ResourceManager.GetObject("application-execute1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

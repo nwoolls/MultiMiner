@@ -1295,6 +1295,9 @@ namespace MultiMiner.Win
             stopToolStripMenuItem.Enabled = stopMenuItem.Enabled;
             restartToolStripMenuItem.Enabled = stopMenuItem.Enabled;
             scanHardwareToolStripMenuItem.Enabled = !miningEngine.Mining;
+
+            //process log menu
+            launchToolStripMenuItem.Enabled = startMenuItem.Enabled;
         }
 
         private bool MiningConfigurationValid()
@@ -4072,6 +4075,37 @@ namespace MultiMiner.Win
         private void quickSwitchToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             PopulateQuickSwitchMenu(quickSwitchToolStripMenuItem);
+        }
+
+        private void launchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LogLaunchArgs args = (LogLaunchArgs)logLaunchArgsBindingSource.Current;
+
+            string arguments = args.Arguments;
+            arguments = arguments.Replace("-T -q", String.Empty).Trim();
+
+            Process.Start(args.ExecutablePath, arguments);
+        }
+
+        private void dataGridView1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            // Ignore if a column or row header is clicked
+            if (e.RowIndex != -1 && e.ColumnIndex != -1)
+            {
+                if (e.Button == MouseButtons.Right)
+                {
+                    DataGridViewCell clickedCell = (sender as DataGridView).Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+                    // Here you can do whatever you want with the cell
+                    this.dataGridView1.CurrentCell = clickedCell;  // Select the clicked cell, for instance
+
+                    // Get mouse position relative to the vehicles grid
+                    var relativeMousePosition = dataGridView1.PointToClient(Cursor.Position);
+
+                    // Show the context menu
+                    this.processLogMenu.Show(dataGridView1, relativeMousePosition);
+                }
+            }
         }
     }
 }
