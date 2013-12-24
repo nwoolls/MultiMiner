@@ -23,7 +23,7 @@ namespace MultiMiner.Win
 {
     public partial class MainForm : MessageBoxFontForm
     {
-        private List<Coin.Api.CoinInformation> coinInformation;
+        private List<Coin.Api.CoinInformation> coinApiInformation;
         private List<Device> devices;
         private EngineConfiguration engineConfiguration = new EngineConfiguration();
         private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
@@ -38,7 +38,8 @@ namespace MultiMiner.Win
         private readonly List<LogProcessCloseArgs> logCloseEntries = new List<LogProcessCloseArgs>();
         private NotificationsControl notificationsControl;
         private bool settingsLoaded = false;
-        private Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
+        private readonly Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
+        private readonly Dictionary<Device, DeviceDetailsResponse> deviceDetailsMapping = new Dictionary<Device, DeviceDetailsResponse>();
         private MultiMiner.Coin.Api.IApiContext coinApiContext = new CoinChoose.Api.ApiContext();
         private List<CoinConfiguration> miningCoinConfigurations;
         private PerksConfiguration perksConfiguration = new PerksConfiguration();
@@ -46,6 +47,7 @@ namespace MultiMiner.Win
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
         private BaseCoin currentBaseCoin = BaseCoin.Bitcoin;
         private readonly PathConfiguration pathConfiguration = new PathConfiguration();
+        private readonly List<DeviceInformationResponse> allDeviceInformation = new List<DeviceInformationResponse>();
 
         public MainForm()
         {
@@ -697,6 +699,10 @@ namespace MultiMiner.Win
                 PopulateListViewFromDevices();
                 LoadListViewValuesFromConfiguration();
                 LoadListViewValuesFromCoinStats();
+                RefreshDetailsAreaIfVisible();
+
+                //clean up mappings from previous device list
+                deviceDetailsMapping.Clear();
 
                 //auto-size columns
                 AutoSizeListViewColumns();
@@ -1390,7 +1396,7 @@ namespace MultiMiner.Win
                     int donationPercent = 0;
                     if (perksConfiguration.PerksEnabled)
                         donationPercent = perksConfiguration.DonationPercent;
-                    miningEngine.StartMining(engineConfiguration, devices, coinInformation, donationPercent);
+                    miningEngine.StartMining(engineConfiguration, devices, coinApiInformation, donationPercent);
                 }
             }
             catch (MinerLaunchException ex)
@@ -1627,7 +1633,7 @@ namespace MultiMiner.Win
             if (!(miningEngine.Donating && perksConfiguration.ShowIncomeRates))
                 return;
 
-            if (coinInformation == null)
+            if (coinApiInformation == null)
                 //no internet or error parsing API
                 return;
 
@@ -1637,7 +1643,7 @@ namespace MultiMiner.Win
             if (coinConfiguration == null)
                 return;
 
-            CoinInformation info = coinInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
+            CoinInformation info = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
             if (info != null)
             {
                 double difficulty = (double)item.SubItems["Difficulty"].Tag;
@@ -1868,6 +1874,8 @@ namespace MultiMiner.Win
             double totalScryptRate = 0;
             double totalSha256Rate = 0;
 
+            allDeviceInformation.Clear();
+
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
                 ClearSuspectProcessFlags(minerProcess);
@@ -1879,6 +1887,8 @@ namespace MultiMiner.Win
                     minerProcess.MinerIsFrozen = true;
                     continue;
                 }
+
+                allDeviceInformation.AddRange(deviceInformationList);
 
                 //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
                 List<DeviceDetailsResponse> processDevices = GetProcessDevices(minerProcess, deviceInformationList);
@@ -1913,6 +1923,8 @@ namespace MultiMiner.Win
 
                         if (itemIndex >= 0)
                         {
+                            deviceDetailsMapping[devices[itemIndex]] = deviceDetails;
+
                             if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
                                 totalScryptRate += deviceInformation.AverageHashrate;
                             else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
@@ -1945,6 +1957,7 @@ namespace MultiMiner.Win
             AutoSizeListViewColumnsEvery(count);
 
             RefreshIncomeSummary();
+            RefreshDetailsAreaIfVisible();
         }
 
         private void FlagSuspiciousMiner(MinerProcess minerProcess, DeviceInformationResponse deviceInformation)
@@ -1979,7 +1992,7 @@ namespace MultiMiner.Win
                 return;
             }
 
-            if (coinInformation == null)
+            if (coinApiInformation == null)
             {
                 //no internet or error parsing API
                 incomeSummaryLabel.Text = "";
@@ -2002,11 +2015,11 @@ namespace MultiMiner.Win
             {
                 const string addition = " + ";
                 double usdTotal = 0.00;
-                CoinInformation btcCoinInfo = coinInformation.SingleOrDefault(c => c.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
+                CoinInformation btcCoinInfo = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
                 foreach (string coinName in incomeForCoins.Keys)
                 {
                     double coinIncome = incomeForCoins[coinName];
-                    CoinInformation coinInfo = coinInformation.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+                    CoinInformation coinInfo = coinApiInformation.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
                     if (coinInfo != null)
                     {
                         double coinUsd = sellPrices.Subtotal.Amount * coinInfo.Price;
@@ -2277,7 +2290,7 @@ namespace MultiMiner.Win
                 //ensure the user isn't editing settings
                 !ShowingModalDialog())
             {
-                miningEngine.ApplyMiningStrategy(coinInformation);
+                miningEngine.ApplyMiningStrategy(coinApiInformation);
                 //save any changes made by the engine
                 engineConfiguration.SaveDeviceConfigurations();
                 //to get changes from strategy config
@@ -2295,7 +2308,7 @@ namespace MultiMiner.Win
 
             try
             {
-                coinInformation = coinApiContext.GetCoinInformation(
+                coinApiInformation = coinApiContext.GetCoinInformation(
                     UserAgent.AgentString,
                     engineConfiguration.StrategyConfiguration.BaseCoin).ToList();
                 currentBaseCoin = applicationConfiguration.UseCoinWarzApi ? BaseCoin.Bitcoin : engineConfiguration.StrategyConfiguration.BaseCoin;
@@ -2317,6 +2330,7 @@ namespace MultiMiner.Win
             RefreshCoinStatsLabel();
             AutoSizeListViewColumns();
             SuggestCoinsToMine();
+            RefreshDetailsAreaIfVisible();
         }
 
         private void ShowCoinApiErrorNotification(Exception ex)
@@ -2349,7 +2363,7 @@ namespace MultiMiner.Win
                 return;
             if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.None)
                 return;
-            if (coinInformation == null) //no network connection
+            if (coinApiInformation == null) //no network connection
                 return;
 
             IEnumerable<Coin.Api.CoinInformation> coinsToMine = GetCoinsToMine();
@@ -2360,7 +2374,7 @@ namespace MultiMiner.Win
 
         private IEnumerable<Coin.Api.CoinInformation> GetCoinsToMine()
         {
-            IEnumerable<Coin.Api.CoinInformation> filteredCoins = this.coinInformation;
+            IEnumerable<Coin.Api.CoinInformation> filteredCoins = this.coinApiInformation;
             if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256)
                 filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("SHA-256", StringComparison.OrdinalIgnoreCase));
             else if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt)
@@ -2370,10 +2384,10 @@ namespace MultiMiner.Win
             switch (engineConfiguration.StrategyConfiguration.MiningBasis)
             {
                 case StrategyConfiguration.CoinMiningBasis.Difficulty:
-                    orderedCoins = coinInformation.OrderBy(c => c.Difficulty);
+                    orderedCoins = coinApiInformation.OrderBy(c => c.Difficulty);
                     break;
                 case StrategyConfiguration.CoinMiningBasis.Price:
-                    orderedCoins = coinInformation.OrderByDescending(c => c.Price);
+                    orderedCoins = coinApiInformation.OrderByDescending(c => c.Price);
                     break;
             }
 
@@ -2419,7 +2433,7 @@ namespace MultiMiner.Win
 
         private void LoadKnownCoinsFromCoinStats()
         {
-            foreach (Coin.Api.CoinInformation item in coinInformation)
+            foreach (Coin.Api.CoinInformation item in coinApiInformation)
             {
                 //find existing known coin or create a knew one
                 CryptoCoin knownCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(item.Symbol));
@@ -2484,8 +2498,8 @@ namespace MultiMiner.Win
                 //there may be coins configured that are no longer returned in the stats
                 ClearAllCoinStats();
 
-                if (coinInformation != null) //null if no network connection
-                    foreach (Coin.Api.CoinInformation coin in coinInformation)
+                if (coinApiInformation != null) //null if no network connection
+                    foreach (Coin.Api.CoinInformation coin in coinApiInformation)
                         foreach (ListViewItem item in deviceListView.Items)
                         {
                             CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
@@ -2527,7 +2541,7 @@ namespace MultiMiner.Win
                     if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == BaseCoin.Litecoin))
                     {
                         //if BaseCoin is LiteCoin, adjust the USD price accordingly
-                        CoinInformation btcCoinInfo = coinInformation.SingleOrDefault(c => c.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
+                        CoinInformation btcCoinInfo = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
                         coinExchangeRate = coinInfo.Price * (btcExchangeRate / btcCoinInfo.Price);
                     }
                     else
@@ -4137,8 +4151,71 @@ namespace MultiMiner.Win
 
         private void ShowDetailsArea()
         {
+            RefreshDetailsArea();
+
             detailsAreaContainer.Panel2Collapsed = false;
             detailsAreaContainer.Panel2.Show();
+        }
+
+        private void RefreshDetailsAreaIfVisible()
+        {
+            if (!detailsAreaContainer.Panel2Collapsed)
+                RefreshDetailsArea();
+        }
+
+        private void RefreshDetailsArea()
+        {
+            if (deviceListView.SelectedItems.Count == 0)
+            {
+                CloseDetailsArea();
+                return;
+            }
+
+            int deviceIndex = deviceListView.SelectedIndices[0];
+            Device selectedDevice = devices[deviceIndex];
+            DeviceDetailsResponse deviceDetails = null;
+            if (deviceDetailsMapping.ContainsKey(selectedDevice))
+                deviceDetails = deviceDetailsMapping[selectedDevice];
+            CoinConfiguration coinConfiguration = CoinConfigurationForDevice(selectedDevice);
+            CoinInformation coinInfo = null;
+
+            //Internet or Coin API could be down
+            if (this.coinApiInformation != null)
+                coinInfo = this.coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
+
+            List<DeviceInformationResponse> minerDeviceInformation = new List<DeviceInformationResponse>();
+
+            if (deviceDetails != null)
+            {
+                if (deviceDetails.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
+                    minerDeviceInformation = allDeviceInformation.Where(d => d.Name.Equals(deviceDetails.Name, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                else
+                    minerDeviceInformation = allDeviceInformation.Where(d => d.Name.Equals(deviceDetails.Name, StringComparison.OrdinalIgnoreCase)
+                        && (d.ID == deviceDetails.ID)).ToList();
+            }
+
+            //allDeviceInformation
+            //List<DeviceInformationResponse> deviceInformation = allDeviceInformation
+            //    .Where(di => di.Equals(selectedDevice))
+            //    .ToList();
+
+            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, deviceDetails, minerDeviceInformation);
+        }
+
+        private void detailsControl1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void deviceListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+        }
+
+        private void deviceListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (deviceListView.SelectedItems.Count > 0)
+                RefreshDetailsArea();
         }
     }
 }

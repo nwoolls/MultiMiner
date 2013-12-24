@@ -227,6 +227,7 @@
     </EmbeddedResource>
     <None Include="Properties\DataSources\ApiLogEntry.datasource" />
     <None Include="Properties\DataSources\ApplicationConfiguration.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Coin.Api.CoinInformation.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.CoinConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.CoinConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.StrategyConfiguration.datasource" />
@@ -238,6 +239,8 @@
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.PathConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.PerksConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.LogEntry.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.Responses.DeviceDetailsResponse.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.Responses.DeviceInformationResponse.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Device.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.LogLaunchArgs.datasource" />
     <None Include="Properties\Settings.settings">
