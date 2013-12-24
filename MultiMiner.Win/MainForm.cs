@@ -632,6 +632,9 @@ namespace MultiMiner.Win
             //format prices in the History grid
             startPriceColumn.DefaultCellStyle.Format = ".########";
             endPriceColumn.DefaultCellStyle.Format = ".########";
+
+            //only one executable now - preserve space
+            executablePathDataGridViewTextBoxColumn.Visible = false;
         }
 
         private void PositionCoinChooseLabels()
