@@ -79,7 +79,8 @@
             this.cancelStartupMiningButton = new System.Windows.Forms.Button();
             this.countdownLabel = new System.Windows.Forms.Label();
             this.advancedAreaContainer = new System.Windows.Forms.SplitContainer();
-            this.deviceListView = new MultiMiner.Win.NoFlickerListView();
+            this.detailsAreaContainer = new System.Windows.Forms.SplitContainer();
+            this.deviceListView = new MultiMiner.Win.DeviceListView();
             this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.driverColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.coinColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -97,6 +98,7 @@
             this.errorsColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.utilityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.intensityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.detailsControl1 = new MultiMiner.Win.DetailsControl();
             this.advancedTabControl = new System.Windows.Forms.TabControl();
             this.historyPage = new System.Windows.Forms.TabPage();
             this.historyGridView = new System.Windows.Forms.DataGridView();
@@ -208,6 +210,9 @@
             this.advancedAreaContainer.Panel1.SuspendLayout();
             this.advancedAreaContainer.Panel2.SuspendLayout();
             this.advancedAreaContainer.SuspendLayout();
+            this.detailsAreaContainer.Panel1.SuspendLayout();
+            this.detailsAreaContainer.Panel2.SuspendLayout();
+            this.detailsAreaContainer.SuspendLayout();
             this.advancedTabControl.SuspendLayout();
             this.historyPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.historyGridView)).BeginInit();
@@ -539,7 +544,7 @@
             // 
             // advancedAreaContainer.Panel1
             // 
-            this.advancedAreaContainer.Panel1.Controls.Add(this.deviceListView);
+            this.advancedAreaContainer.Panel1.Controls.Add(this.detailsAreaContainer);
             // 
             // advancedAreaContainer.Panel2
             // 
@@ -550,6 +555,24 @@
             this.advancedAreaContainer.SplitterWidth = 5;
             this.advancedAreaContainer.TabIndex = 10;
             this.advancedAreaContainer.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.advancedAreaContainer_SplitterMoved);
+            // 
+            // detailsAreaContainer
+            // 
+            this.detailsAreaContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.detailsAreaContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.detailsAreaContainer.Location = new System.Drawing.Point(0, 0);
+            this.detailsAreaContainer.Name = "detailsAreaContainer";
+            // 
+            // detailsAreaContainer.Panel1
+            // 
+            this.detailsAreaContainer.Panel1.Controls.Add(this.deviceListView);
+            // 
+            // detailsAreaContainer.Panel2
+            // 
+            this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
+            this.detailsAreaContainer.Size = new System.Drawing.Size(881, 232);
+            this.detailsAreaContainer.SplitterDistance = 671;
+            this.detailsAreaContainer.TabIndex = 3;
             // 
             // deviceListView
             // 
@@ -591,7 +614,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(881, 232);
+            this.deviceListView.Size = new System.Drawing.Size(671, 232);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -599,6 +622,7 @@
             this.deviceListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.deviceListView_ColumnClick);
             this.deviceListView.ColumnWidthChanging += new System.Windows.Forms.ColumnWidthChangingEventHandler(this.deviceListView_ColumnWidthChanging);
             this.deviceListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.deviceListView_ItemChecked);
+            this.deviceListView.DoubleClick += new System.EventHandler(this.deviceListView_DoubleClick);
             this.deviceListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.deviceListView_MouseClick);
             this.deviceListView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.deviceListView_MouseUp);
             // 
@@ -682,6 +706,16 @@
             // intensityColumnHeader
             // 
             this.intensityColumnHeader.Text = "Intensity";
+            // 
+            // detailsControl1
+            // 
+            this.detailsControl1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.detailsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.detailsControl1.Location = new System.Drawing.Point(0, 0);
+            this.detailsControl1.Name = "detailsControl1";
+            this.detailsControl1.Size = new System.Drawing.Size(206, 232);
+            this.detailsControl1.TabIndex = 0;
+            this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
             // advancedTabControl
             // 
@@ -1716,6 +1750,9 @@
             this.advancedAreaContainer.Panel1.ResumeLayout(false);
             this.advancedAreaContainer.Panel2.ResumeLayout(false);
             this.advancedAreaContainer.ResumeLayout(false);
+            this.detailsAreaContainer.Panel1.ResumeLayout(false);
+            this.detailsAreaContainer.Panel2.ResumeLayout(false);
+            this.detailsAreaContainer.ResumeLayout(false);
             this.advancedTabControl.ResumeLayout(false);
             this.historyPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.historyGridView)).EndInit();
@@ -1875,7 +1912,7 @@
         private System.Windows.Forms.ToolStripMenuItem smallIconsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem largeIconsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tilesToolStripMenuItem;
-        private NoFlickerListView deviceListView;
+        private DeviceListView deviceListView;
         private System.Windows.Forms.ToolStripMenuItem restartButton;
         private System.Windows.Forms.ToolStripMenuItem perksButton;
         private System.Windows.Forms.ToolStripMenuItem perksToolStripMenuItem1;
@@ -1920,6 +1957,8 @@
         private System.Windows.Forms.ContextMenuStrip processLogMenu;
         private System.Windows.Forms.ToolStripMenuItem launchToolStripMenuItem;
         private System.Windows.Forms.Button closeApiButton;
+        private System.Windows.Forms.SplitContainer detailsAreaContainer;
+        private DetailsControl detailsControl1;
     }
 }
 

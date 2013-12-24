@@ -85,6 +85,8 @@ namespace MultiMiner.Win
             const int mobileMinerInterval = 32; //seconds
             mobileMinerTimer.Interval = mobileMinerInterval * 1000;
 
+            CloseDetailsArea();
+
             FetchInitialCoinStats();
 
             CheckAndShowGettingStarted();
@@ -427,7 +429,7 @@ namespace MultiMiner.Win
 
         private void SetupNotificationsControl()
         {
-            Control parent = advancedAreaContainer.Panel1;
+            Control parent = detailsAreaContainer.Panel1;
 
             const int ControlOffset = 2;
             const int ControlHeight = 143;
@@ -4115,6 +4117,28 @@ namespace MultiMiner.Win
                     this.processLogMenu.Show(dataGridView1, relativeMousePosition);
                 }
             }
+        }
+
+        private void detailsControl1_CloseClicked(object sender)
+        {
+            CloseDetailsArea();
+        }
+
+        private void CloseDetailsArea()
+        {
+            detailsAreaContainer.Panel2.Hide();
+            detailsAreaContainer.Panel2Collapsed = true;
+        }
+
+        private void deviceListView_DoubleClick(object sender, EventArgs e)
+        {
+            ShowDetailsArea();
+        }
+
+        private void ShowDetailsArea()
+        {
+            detailsAreaContainer.Panel2Collapsed = false;
+            detailsAreaContainer.Panel2.Show();
         }
     }
 }

@@ -60,6 +60,18 @@
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Configuration\PathConfiguration.cs" />
+    <Compile Include="DetailsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DetailsControl.Designer.cs">
+      <DependentUpon>DetailsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DeviceListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DeviceListView.Designer.cs">
+      <DependentUpon>DeviceListView.cs</DependentUpon>
+    </Compile>
     <Compile Include="MinerSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -163,6 +175,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AdvancedSettingsForm.resx">
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DetailsControl.resx">
+      <DependentUpon>DetailsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MinerSettingsForm.resx">
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>
