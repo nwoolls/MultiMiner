@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MultiMiner.Win.Extensions
 {
@@ -69,6 +66,39 @@ namespace MultiMiner.Win.Extensions
             }
 
             return String.Format("{0:0.##} {1}h/s", shortrate, suffix);
+        }
+        
+        public static string ToFriendlyString(this double value, bool currency = false)
+        {
+            if (currency)
+            {
+                if (value >= 10)
+                    return value.ToString("0.00");
+                if (value >= 1)
+                    return value.ToString("0.00#");
+
+                return RoundToSignificantDigits(value, 3).ToString("0.00##############");
+            }
+            else
+            {
+                if (value >= 100)
+                    return value.ToString("#.#");
+                if (value >= 10)
+                    return value.ToString("#.##");
+                if (value >= 1)
+                    return value.ToString("#.###");
+
+                return RoundToSignificantDigits(value, 3).ToString(".################");
+            }
+        }
+
+        public static double RoundToSignificantDigits(this double d, int digits)
+        {
+            if (d == 0)
+                return 0;
+
+            double scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(d))) + 1);
+            return scale * Math.Round(d / scale, digits);
         }
     }
 }

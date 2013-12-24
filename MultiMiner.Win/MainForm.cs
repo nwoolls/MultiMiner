@@ -1626,11 +1626,12 @@ namespace MultiMiner.Win
 
                 if (perksConfiguration.ShowExchangeRates && perksConfiguration.ShowIncomeInUsd)
                 {
-                    item.SubItems["Daily"].Text = String.Format("${0:0.00}", rewardPerDay * (double)item.SubItems["Exchange"].Tag);
+                    double fiatPerDay = rewardPerDay * (double)item.SubItems["Exchange"].Tag;
+                    item.SubItems["Daily"].Text = String.Format("${0}", fiatPerDay.ToFriendlyString(true));
                 }
                 else
                 {
-                    item.SubItems["Daily"].Text = String.Format("{0:0.#####} {1}", rewardPerDay, info.Symbol);
+                    item.SubItems["Daily"].Text = String.Format("{0} {1}", rewardPerDay.ToFriendlyString(), info.Symbol);
                 }
             }
         }
@@ -1991,7 +1992,7 @@ namespace MultiMiner.Win
                         double coinDailyUsd = coinIncome * coinUsd;
                         usdTotal += coinDailyUsd;
 
-                        summary = String.Format("{0}{1:0.####} {2}{3}", summary, coinIncome, coinInfo.Symbol, addition);
+                        summary = String.Format("{0}{1} {2}{3}", summary, coinIncome.ToFriendlyString(), coinInfo.Symbol, addition);
                     }
                 }
 
@@ -2000,7 +2001,7 @@ namespace MultiMiner.Win
                     summary = summary.Remove(summary.Length - addition.Length, addition.Length); //remove trailing " + "
 
                     if (perksConfiguration.ShowExchangeRates)
-                        summary = String.Format("{0} = ${1} / day", summary, String.Format("{0:0.00}", usdTotal));
+                        summary = String.Format("{0} = ${1} / day", summary, usdTotal.ToFriendlyString(true));
 
                     incomeSummaryLabel.Text = summary;
 
@@ -2486,7 +2487,7 @@ namespace MultiMiner.Win
                 if (currentBaseCoin == Coin.Api.BaseCoin.Litecoin)
                     unit = "LTC";
 
-                item.SubItems["Price"].Text = String.Format("{0:.#####} {1}", coinInfo.Price, unit);
+                item.SubItems["Price"].Text = String.Format("{0} {1}", coinInfo.Price.ToFriendlyString(), unit);
 
                 if (miningEngine.Donating && perksConfiguration.ShowExchangeRates
                     //ensure Coinbase is available:
@@ -2507,7 +2508,7 @@ namespace MultiMiner.Win
                         coinExchangeRate = coinInfo.Price * btcExchangeRate;
 
                     item.SubItems["Exchange"].Tag = coinExchangeRate;
-                    item.SubItems["Exchange"].Text = String.Format("${0:0.00}", coinExchangeRate);
+                    item.SubItems["Exchange"].Text = String.Format("${0}", coinExchangeRate.ToFriendlyString(true));
                 }
 
                 switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
