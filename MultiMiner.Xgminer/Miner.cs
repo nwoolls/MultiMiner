@@ -187,7 +187,7 @@ namespace MultiMiner.Xgminer
 
             if (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
                 //the --scrypt param must come before the --intensity params to use over 13 in latest cgminer
-                arguments = "--scrypt " + arguments;
+                arguments = "--scrypt " + arguments.TrimStart();
 
             if (minerConfiguration.ApiListen)
             {
