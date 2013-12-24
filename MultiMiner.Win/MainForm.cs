@@ -1439,8 +1439,12 @@ namespace MultiMiner.Win
         
         private void ConfigureSettings()
         {
+            bool oldCoinWarzValue = applicationConfiguration.UseCoinWarzApi;
+            string oldCoinWarzKey = applicationConfiguration.CoinWarzApiKey;
+
             SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration, pathConfiguration);
             DialogResult dialogResult = settingsForm.ShowDialog();
+
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 Application.DoEvents();
@@ -1462,7 +1466,12 @@ namespace MultiMiner.Win
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
                 SetupRestartTimer();
                 CheckForUpdates();
-                RefreshCoinStats();
+
+                //don't refresh coin stats excessively
+                if ((oldCoinWarzValue != applicationConfiguration.UseCoinWarzApi) ||
+                    !oldCoinWarzKey.Equals(applicationConfiguration.CoinWarzApiKey))
+                    RefreshCoinStats();
+                
                 SetupAccessibleMenu();
                 SetGpuEnvironmentVariables();
                 
