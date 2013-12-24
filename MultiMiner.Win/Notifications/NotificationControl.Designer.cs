@@ -52,9 +52,9 @@
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button3.Location = new System.Drawing.Point(264, 3);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(21, 20);
+            this.button3.Size = new System.Drawing.Size(20, 20);
             this.button3.TabIndex = 3;
-            this.button3.Text = "x";
+            this.button3.Text = "✖";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
