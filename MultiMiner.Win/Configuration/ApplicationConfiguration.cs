@@ -42,6 +42,7 @@ namespace MultiMiner.Win.Configuration
             this.ListViewStyle = View.Details;
             this.HiddenColumns = new List<string>();
             this.SetGpuEnvironmentVariables = true;
+            this.CoinWarzApiKey = String.Empty; //simplify handling NULL
         }
 
         public bool LaunchOnWindowsLogin { get; set; }
