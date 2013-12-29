@@ -6,5 +6,6 @@
         public const string DevDetails = "devdetails";
         public const string Quit = "quit";
         public const string Summary = "summary";
+        public const string Pools = "pools";
     }
 }

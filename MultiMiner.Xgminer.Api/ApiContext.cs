@@ -46,6 +46,14 @@ namespace MultiMiner.Xgminer.Api
             return result;
         }
 
+        public List<PoolInformationResponse> GetPoolInformation()
+        {
+            string textResponse = GetResponse(ApiVerb.Pools);
+            List<PoolInformationResponse> result = new List<PoolInformationResponse>();
+            PoolInformationParser.ParseTextForDeviceDetails(textResponse, result);
+            return result;
+        }
+
         public void QuitMining()
         {
             GetResponse(ApiVerb.Quit);

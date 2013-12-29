@@ -40,7 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiContext.cs" />
+    <Compile Include="Extensions\IntegerExtensions.cs" />
     <Compile Include="Parsers\DeviceDetailsParser.cs" />
+    <Compile Include="Parsers\PoolInformationParser.cs" />
     <Compile Include="Parsers\ResponseTextParser.cs" />
     <Compile Include="Responses\DeviceDetailsResponse.cs" />
     <Compile Include="Responses\DeviceInformationResponse.cs" />
@@ -49,6 +51,7 @@
     <Compile Include="Parsers\SummaryInformationParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ApiVerb.cs" />
+    <Compile Include="Responses\PoolInformationResponse.cs" />
     <Compile Include="Responses\SummaryInformationResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
