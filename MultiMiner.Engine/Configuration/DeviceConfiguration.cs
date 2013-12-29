@@ -3,6 +3,7 @@ using System;
 
 namespace MultiMiner.Engine.Configuration
 {
+    [Serializable]
     public class DeviceConfiguration : DeviceDescriptor
     {
         public DeviceConfiguration()
