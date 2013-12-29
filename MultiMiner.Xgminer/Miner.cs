@@ -142,8 +142,12 @@ namespace MultiMiner.Xgminer
 
             foreach (MiningPool pool in minerConfiguration.Pools)
             {
+                string argument;
                 //trim Host to ensure proper formatting
-                string argument = string.Format("--quota \"{3};{0}:{1}\" -u {2}", pool.Host.Trim(), pool.Port, pool.Username, pool.Quota);
+                if (pool.QuotaEnabled)
+                    argument = string.Format("--quota \"{3};{0}:{1}\" -u {2}", pool.Host.Trim(), pool.Port, pool.Username, pool.Quota);
+                else
+                    argument = string.Format("-o {0}:{1} -u {2}", pool.Host.Trim(), pool.Port, pool.Username);
 
                 //some pools do not require a password
                 //but the miners require some password
@@ -174,6 +178,9 @@ namespace MultiMiner.Xgminer
                     //leaving as a code-path (for now)
                     if (deviceDescriptor.Driver.Equals("hashbusterusb", StringComparison.OrdinalIgnoreCase))
                     {
+                        //FIXED IN BFGMINER 3.9
+                        //SAFE TO REMOVE THIS CODE PATH ONCE 3.9 HAS BEEN RELEASE & STABLE
+
                         //hard-coded implementation for now until the bfgminer implementation is a bit more stable
                         //3.8.1 introduced a Path for HashBuster Micro, but the path is not usable with -S -d
                         arguments = string.Format("{0} -S {1}:auto -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Serial);
@@ -187,7 +194,7 @@ namespace MultiMiner.Xgminer
 
             if (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
                 //the --scrypt param must come before the --intensity params to use over 13 in latest cgminer
-                arguments = "--scrypt " + arguments;
+                arguments = "--scrypt " + arguments.TrimStart();
 
             if (minerConfiguration.ApiListen)
             {

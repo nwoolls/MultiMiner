@@ -63,6 +63,7 @@ namespace MultiMiner.Win.Configuration
         public bool UseAccessibleMenu { get; set; }
         public bool SetGpuEnvironmentVariables { get; set; }
         public int TipsShown { get; set; }
+        public bool AllowMultipleInstances { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }

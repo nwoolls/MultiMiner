@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MultiMiner.Win.Notifications
 {
-    public partial class NotificationControl : UserControl
+    public partial class NotificationControl : MessageBoxFontUserControl
     {
         private readonly Action clickHandler;
         private readonly Action<NotificationControl> closeHandler;
@@ -40,6 +41,15 @@ namespace MultiMiner.Win.Notifications
         private void NotificationControl_Load(object sender, EventArgs e)
         {
             infoPicture.Visible = !String.IsNullOrEmpty(informationUrl);
+            PositionCloseButton(); 
+        }
+
+        private void PositionCloseButton()
+        {
+            closeButton.Size = new Size(22, 22);
+            const int offset = 2;
+            closeButton.Location = new Point(this.Width - closeButton.Width - offset, 0 + offset);
+            infoPicture.Location = new Point(closeButton.Left - infoPicture.Width - 2, closeButton.Top + 3);
         }
     }
 }
