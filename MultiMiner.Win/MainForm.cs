@@ -771,56 +771,66 @@ namespace MultiMiner.Win
         {
             if (deviceListView.View != View.Details)
                 return;
-                                    
-            if (briefMode)
-            {
-                SetColumWidth(nameColumnHeader, -2);
-                SetColumWidth(driverColumnHeader, 0);
-                SetColumWidth(coinColumnHeader, -2);
-                SetColumWidth(difficultyColumnHeader, 0);
-                SetColumWidth(priceColumnHeader, 0);
-                SetColumWidth(profitabilityColumnHeader, -2);
-                SetColumWidth(poolColumnHeader, 0);
 
-                if (ListViewColumnHasValues("Temp"))
-                    SetColumWidth(tempColumnHeader, -2);
-                else if (tempColumnHeader.Width != 0)
-                    SetColumWidth(tempColumnHeader, 0);
-
-                SetColumWidth(hashrateColumnHeader, -2);
-                SetColumWidth(acceptedColumnHeader, 0);
-                SetColumWidth(rejectedColumnHeader, 0);
-                SetColumWidth(errorsColumnHeader, 0);
-                SetColumWidth(utilityColumnHeader, 0);
-                SetColumWidth(intensityColumnHeader, 0);
-                SetColumWidth(fanColumnHeader, 0);
-                SetColumWidth(incomeColumnHeader, 0);
-                SetColumWidth(exchangeColumnHeader, 0);
-            }
-            else
+            deviceListView.BeginUpdate();
+            try
             {
-                for (int i = 0; i < deviceListView.Columns.Count; i++)
+
+                if (briefMode)
                 {
-                    ColumnHeader column = deviceListView.Columns[i];
+                    SetColumWidth(nameColumnHeader, -2);
+                    SetColumWidth(driverColumnHeader, 0);
+                    SetColumWidth(coinColumnHeader, -2);
+                    SetColumWidth(difficultyColumnHeader, 0);
+                    SetColumWidth(priceColumnHeader, 0);
+                    SetColumWidth(profitabilityColumnHeader, -2);
+                    SetColumWidth(poolColumnHeader, 0);
 
-                    if (applicationConfiguration.HiddenColumns.Contains(column.Text))
+                    if (ListViewColumnHasValues("Temp"))
+                        SetColumWidth(tempColumnHeader, -2);
+                    else if (tempColumnHeader.Width != 0)
+                        SetColumWidth(tempColumnHeader, 0);
+
+                    SetColumWidth(hashrateColumnHeader, -2);
+                    SetColumWidth(acceptedColumnHeader, 0);
+                    SetColumWidth(rejectedColumnHeader, 0);
+                    SetColumWidth(errorsColumnHeader, 0);
+                    SetColumWidth(utilityColumnHeader, 0);
+                    SetColumWidth(intensityColumnHeader, 0);
+                    SetColumWidth(fanColumnHeader, 0);
+                    SetColumWidth(incomeColumnHeader, 0);
+                    SetColumWidth(exchangeColumnHeader, 0);
+                }
+                else
+                {
+                    for (int i = 0; i < deviceListView.Columns.Count; i++)
                     {
-                        SetColumWidth(column, 0);
-                        continue;
+                        ColumnHeader column = deviceListView.Columns[i];
+
+                        if (applicationConfiguration.HiddenColumns.Contains(column.Text))
+                        {
+                            SetColumWidth(column, 0);
+                            continue;
+                        }
+
+                        bool hasValue = false;
+                        if (i == 0)
+                            hasValue = true;
+                        else
+                            hasValue = ListViewColumnHasValues(column.Text);
+
+                        if (hasValue)
+                            SetColumWidth(column, -2);
+                        else
+                            SetColumWidth(column, 0);
                     }
-
-                    bool hasValue = false;
-                    if (i == 0)
-                        hasValue = true;
-                    else
-                        hasValue = ListViewColumnHasValues(column.Text);
-
-                    if (hasValue)
-                        SetColumWidth(column, -2);
-                    else
-                        SetColumWidth(column, 0);
                 }
             }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
+           
         }
         
         private bool ListViewColumnHasValues(string headerText)
