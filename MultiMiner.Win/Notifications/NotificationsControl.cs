@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace MultiMiner.Win.Notifications
 {
-    public partial class NotificationsControl : UserControl
+    public partial class NotificationsControl : MessageBoxFontUserControl
     {
         //events
         //delegate declarations
