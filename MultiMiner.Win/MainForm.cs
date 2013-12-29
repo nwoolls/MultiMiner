@@ -223,7 +223,7 @@ namespace MultiMiner.Win
                     applicationConfiguration.TipsShown++;
                     break;
                 case 3:
-                    tip = "Tip: consider enabling perks to give back to the author";
+                    tip = "Tip: enabling perks gives back to the author";
                     notificationsControl.AddNotification(tip, tip, () =>
                     {
                         ConfigurePerks();
