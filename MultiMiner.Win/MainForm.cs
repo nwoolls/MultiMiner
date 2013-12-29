@@ -4220,7 +4220,9 @@ namespace MultiMiner.Win
             CoinInformation coinInfo = null;
 
             //Internet or Coin API could be down
-            if (this.coinApiInformation != null)
+            if ((this.coinApiInformation != null) &&
+                //device may not be configured
+                (coinConfiguration != null))
                 coinInfo = this.coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
 
             List<DeviceInformationResponse> minerDeviceInformation = new List<DeviceInformationResponse>();
@@ -4235,16 +4237,20 @@ namespace MultiMiner.Win
                         && (d.ID == deviceDetails.ID)).ToList();
             }
 
+            List<DeviceDetailsResponse> minerDeviceDetails = new List<DeviceDetailsResponse>();
+
             PoolInformationResponse poolInformation = null;
-            MinerProcess minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinInformation == coinInfo);
+            MinerProcess minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinInformation.Symbol.Equals(coinInfo.Symbol, StringComparison.OrdinalIgnoreCase));
             if (minerProcess != null)
             {
                 DeviceInformationResponse deviceInformation = minerDeviceInformation.FirstOrDefault();
                 if ((deviceInformation != null) && processPoolInformation.ContainsKey(minerProcess))
                     poolInformation = processPoolInformation[minerProcess].SingleOrDefault(p => p.Index == deviceInformation.PoolIndex);
+                if (processDeviceDetails.ContainsKey(minerProcess))
+                    minerDeviceDetails = processDeviceDetails[minerProcess];
             }
-            
-            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, deviceDetails, minerDeviceInformation, poolInformation);
+
+            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, minerDeviceInformation, poolInformation, minerDeviceDetails);
         }
 
         private void deviceListView_SelectedIndexChanged(object sender, EventArgs e)
