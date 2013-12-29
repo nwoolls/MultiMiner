@@ -23,31 +23,48 @@ namespace MultiMiner.Win
 {
     public partial class MainForm : MessageBoxFontForm
     {
-        private List<Coin.Api.CoinInformation> coinApiInformation;
-        private List<Device> devices;
+        //API contexts
+        private IApiContext coinApiContext = new CoinChoose.Api.ApiContext();
+
+        //API information
+        private List<CoinInformation> coinApiInformation;
+        private MultiMiner.Coinbase.Api.SellPrices sellPrices;
+
+        //configuration
         private EngineConfiguration engineConfiguration = new EngineConfiguration();
-        private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
-        private readonly MiningEngine miningEngine = new MiningEngine();
         private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
-        private int startupMiningCountdownSeconds = 0;
-        private int coinStatsCountdownMinutes = 0;
-        private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
-        private bool formLoaded = false;
-        private readonly List<LogLaunchArgs> logLaunchEntries = new List<LogLaunchArgs>();
-        private readonly List<int> processedCommandIds = new List<int>();
-        private readonly List<LogProcessCloseArgs> logCloseEntries = new List<LogProcessCloseArgs>();
-        private NotificationsControl notificationsControl;
-        private bool settingsLoaded = false;
+        private readonly PathConfiguration pathConfiguration = new PathConfiguration();
+        private PerksConfiguration perksConfiguration = new PerksConfiguration();
+
+        //hardware information
+        private List<Device> devices;
+        private readonly List<DeviceInformationResponse> allDeviceInformation = new List<DeviceInformationResponse>();
         private readonly Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
         private readonly Dictionary<Device, DeviceDetailsResponse> deviceDetailsMapping = new Dictionary<Device, DeviceDetailsResponse>();
-        private MultiMiner.Coin.Api.IApiContext coinApiContext = new CoinChoose.Api.ApiContext();
-        private List<CoinConfiguration> miningCoinConfigurations;
-        private PerksConfiguration perksConfiguration = new PerksConfiguration();
-        private MultiMiner.Coinbase.Api.SellPrices sellPrices;
-        private readonly double difficultyMuliplier = Math.Pow(2, 32);
+
+        //currently mining information
         private BaseCoin currentBaseCoin = BaseCoin.Bitcoin;
-        private readonly PathConfiguration pathConfiguration = new PathConfiguration();
-        private readonly List<DeviceInformationResponse> allDeviceInformation = new List<DeviceInformationResponse>();
+        private List<CoinConfiguration> miningCoinConfigurations;
+
+        //data sources
+        private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
+        private readonly List<LogLaunchArgs> logLaunchEntries = new List<LogLaunchArgs>();
+        private readonly List<LogProcessCloseArgs> logCloseEntries = new List<LogProcessCloseArgs>();
+
+        //fields
+        private int startupMiningCountdownSeconds = 0;
+        private int coinStatsCountdownMinutes = 0;
+        private bool settingsLoaded = false;
+        private readonly double difficultyMuliplier = Math.Pow(2, 32);
+        private bool formLoaded = false;
+
+        //logic
+        private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
+        private readonly MiningEngine miningEngine = new MiningEngine();
+        private readonly List<int> processedCommandIds = new List<int>();
+
+        //controls
+        private NotificationsControl notificationsControl;
 
         public MainForm()
         {
@@ -2316,7 +2333,7 @@ namespace MultiMiner.Win
             catch (Exception ex)
             {
                 //don't crash if website cannot be resolved or JSON cannot be parsed
-                if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is Coin.Api.CoinApiException))
+                if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is CoinApiException))
                 {
                     if (applicationConfiguration.ShowApiErrors)
                         ShowCoinApiErrorNotification(ex);
@@ -2324,7 +2341,7 @@ namespace MultiMiner.Win
                 }
                 throw;
             }
-            
+
             LoadListViewValuesFromCoinStats();
             LoadKnownCoinsFromCoinStats();
             RefreshCoinStatsLabel();
@@ -2366,21 +2383,21 @@ namespace MultiMiner.Win
             if (coinApiInformation == null) //no network connection
                 return;
 
-            IEnumerable<Coin.Api.CoinInformation> coinsToMine = GetCoinsToMine();
+            IEnumerable<CoinInformation> coinsToMine = GetCoinsToMine();
 
-            foreach (Coin.Api.CoinInformation coin in coinsToMine)
+            foreach (CoinInformation coin in coinsToMine)
                 NotifyCoinToMine(coin);
         }
 
-        private IEnumerable<Coin.Api.CoinInformation> GetCoinsToMine()
+        private IEnumerable<CoinInformation> GetCoinsToMine()
         {
-            IEnumerable<Coin.Api.CoinInformation> filteredCoins = this.coinApiInformation;
+            IEnumerable<CoinInformation> filteredCoins = this.coinApiInformation;
             if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256)
                 filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("SHA-256", StringComparison.OrdinalIgnoreCase));
             else if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt)
                 filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("Scrypt", StringComparison.OrdinalIgnoreCase));
 
-            IEnumerable<Coin.Api.CoinInformation> orderedCoins = filteredCoins.OrderByDescending(c => c.AverageProfitability);
+            IEnumerable<CoinInformation> orderedCoins = filteredCoins.OrderByDescending(c => c.AverageProfitability);
             switch (engineConfiguration.StrategyConfiguration.MiningBasis)
             {
                 case StrategyConfiguration.CoinMiningBasis.Difficulty:
@@ -2393,12 +2410,12 @@ namespace MultiMiner.Win
 
             //added checks for coin.Symbol and coin.Exchange
             //current CoinChoose.com feed for LTC profitability has a NULL exchange for Litecoin
-            IEnumerable<Coin.Api.CoinInformation> unconfiguredCoins = orderedCoins.Where(coin => !String.IsNullOrEmpty(coin.Symbol) && !engineConfiguration.CoinConfigurations.Any(config => config.Coin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase)));
-            IEnumerable<Coin.Api.CoinInformation> coinsToMine = unconfiguredCoins.Take(3);
+            IEnumerable<CoinInformation> unconfiguredCoins = orderedCoins.Where(coin => !String.IsNullOrEmpty(coin.Symbol) && !engineConfiguration.CoinConfigurations.Any(config => config.Coin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase)));
+            IEnumerable<CoinInformation> coinsToMine = unconfiguredCoins.Take(3);
             return coinsToMine;
         }
 
-        private void NotifyCoinToMine(MultiMiner.Coin.Api.CoinInformation coin)
+        private void NotifyCoinToMine(CoinInformation coin)
         {
             string value = coin.AverageProfitability.ToString(".#") + "%";
             string noun = "average profitability";
@@ -2433,7 +2450,7 @@ namespace MultiMiner.Win
 
         private void LoadKnownCoinsFromCoinStats()
         {
-            foreach (Coin.Api.CoinInformation item in coinApiInformation)
+            foreach (CoinInformation item in coinApiInformation)
             {
                 //find existing known coin or create a knew one
                 CryptoCoin knownCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(item.Symbol));
@@ -2499,7 +2516,7 @@ namespace MultiMiner.Win
                 ClearAllCoinStats();
 
                 if (coinApiInformation != null) //null if no network connection
-                    foreach (Coin.Api.CoinInformation coin in coinApiInformation)
+                    foreach (CoinInformation coin in coinApiInformation)
                         foreach (ListViewItem item in deviceListView.Items)
                         {
                             CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
@@ -2515,7 +2532,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private void PopulateCoinStatsForListViewItem(Coin.Api.CoinInformation coinInfo, ListViewItem item)
+        private void PopulateCoinStatsForListViewItem(CoinInformation coinInfo, ListViewItem item)
         {
             deviceListView.BeginUpdate();
             try
@@ -2524,7 +2541,7 @@ namespace MultiMiner.Win
                 item.SubItems["Difficulty"].Text = coinInfo.Difficulty.ToDifficultyString();
 
                 string unit = "BTC";
-                if (currentBaseCoin == Coin.Api.BaseCoin.Litecoin)
+                if (currentBaseCoin == BaseCoin.Litecoin)
                     unit = "LTC";
 
                 item.SubItems["Price"].Text = String.Format("{0} {1}", coinInfo.Price.ToFriendlyString(), unit);
@@ -2562,7 +2579,7 @@ namespace MultiMiner.Win
                     case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
                         item.SubItems["Profitability"].Text = Math.Round(coinInfo.Profitability, 2) + "%";
                         break;
-                } 
+                }
             }
             finally
             {
