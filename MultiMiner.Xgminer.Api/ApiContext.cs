@@ -51,7 +51,7 @@ namespace MultiMiner.Xgminer.Api
             GetResponse(ApiVerb.Quit);
         }
 
-        private string GetResponse(string apiVerb)
+        public string GetResponse(string apiVerb)
         {
             TcpClient tcpClient = new TcpClient("127.0.0.1", port);
             NetworkStream tcpStream = tcpClient.GetStream();
