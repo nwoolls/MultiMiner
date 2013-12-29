@@ -66,30 +66,12 @@
             this.label23 = new System.Windows.Forms.Label();
             this.utilityLabel = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
-            this.kindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.indexDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.iDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.enabledDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.statusDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.temperatureDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fanSpeedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fanPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gpuClockDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.memoryClockDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gpuVoltageDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gpuActivityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.powerTuneDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.averageHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.acceptedSharesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.rejectedSharesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rejectedSharesPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hardwareErrorsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.hardwareErrorsPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.utilityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.intensityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.poolIndexDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
@@ -136,6 +118,7 @@
             this.nameLabel.AutoEllipsis = true;
             this.nameLabel.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Name", true));
             this.nameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nameLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.nameLabel.Location = new System.Drawing.Point(79, 3);
             this.nameLabel.Name = "nameLabel";
             this.nameLabel.Size = new System.Drawing.Size(411, 22);
@@ -150,6 +133,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Name", true));
+            this.label2.ForeColor = System.Drawing.SystemColors.GrayText;
             this.label2.Location = new System.Drawing.Point(79, 28);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(35, 13);
@@ -168,6 +152,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Symbol", true));
+            this.label3.ForeColor = System.Drawing.SystemColors.GrayText;
             this.label3.Location = new System.Drawing.Point(79, 41);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(35, 13);
@@ -178,6 +163,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Algorithm", true));
+            this.label4.ForeColor = System.Drawing.SystemColors.GrayText;
             this.label4.Location = new System.Drawing.Point(79, 54);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(35, 13);
@@ -197,6 +183,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "ProcessorCount", true));
+            this.label5.ForeColor = System.Drawing.SystemColors.GrayText;
             this.label5.Location = new System.Drawing.Point(79, 74);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(35, 13);
@@ -207,6 +194,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Driver", true));
+            this.label6.ForeColor = System.Drawing.SystemColors.GrayText;
             this.label6.Location = new System.Drawing.Point(79, 87);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(35, 13);
@@ -226,6 +214,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Path", true));
+            this.label8.ForeColor = System.Drawing.SystemColors.GrayText;
             this.label8.Location = new System.Drawing.Point(79, 100);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(35, 13);
@@ -245,6 +234,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Serial", true));
+            this.label10.ForeColor = System.Drawing.SystemColors.GrayText;
             this.label10.Location = new System.Drawing.Point(79, 113);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(41, 13);
@@ -273,6 +263,7 @@
             // 
             this.hashrateLabel.AutoSize = true;
             this.hashrateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hashrateLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.hashrateLabel.Location = new System.Drawing.Point(79, 126);
             this.hashrateLabel.Name = "hashrateLabel";
             this.hashrateLabel.Size = new System.Drawing.Size(48, 13);
@@ -296,30 +287,12 @@
             this.workersGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.workersGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.workersGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.kindDataGridViewTextBoxColumn,
-            this.nameDataGridViewTextBoxColumn,
-            this.indexDataGridViewTextBoxColumn,
-            this.iDDataGridViewTextBoxColumn,
-            this.enabledDataGridViewCheckBoxColumn,
-            this.statusDataGridViewTextBoxColumn,
-            this.temperatureDataGridViewTextBoxColumn,
-            this.fanSpeedDataGridViewTextBoxColumn,
-            this.fanPercentDataGridViewTextBoxColumn,
-            this.gpuClockDataGridViewTextBoxColumn,
-            this.memoryClockDataGridViewTextBoxColumn,
-            this.gpuVoltageDataGridViewTextBoxColumn,
-            this.gpuActivityDataGridViewTextBoxColumn,
-            this.powerTuneDataGridViewTextBoxColumn,
             this.averageHashrateDataGridViewTextBoxColumn,
             this.currentHashrateDataGridViewTextBoxColumn,
             this.acceptedSharesDataGridViewTextBoxColumn,
-            this.rejectedSharesDataGridViewTextBoxColumn,
             this.rejectedSharesPercentDataGridViewTextBoxColumn,
-            this.hardwareErrorsDataGridViewTextBoxColumn,
             this.hardwareErrorsPercentDataGridViewTextBoxColumn,
-            this.utilityDataGridViewTextBoxColumn,
-            this.intensityDataGridViewTextBoxColumn,
-            this.poolIndexDataGridViewTextBoxColumn});
+            this.utilityDataGridViewTextBoxColumn});
             this.workersGridView.DataSource = this.deviceInformationResponseBindingSource;
             this.workersGridView.GridColor = System.Drawing.SystemColors.ControlLightLight;
             this.workersGridView.Location = new System.Drawing.Point(6, 246);
@@ -347,6 +320,7 @@
             // 
             this.tempLabel.AutoSize = true;
             this.tempLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tempLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tempLabel.Location = new System.Drawing.Point(79, 139);
             this.tempLabel.Name = "tempLabel";
             this.tempLabel.Size = new System.Drawing.Size(48, 13);
@@ -365,6 +339,7 @@
             // fanLabel
             // 
             this.fanLabel.AutoSize = true;
+            this.fanLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.fanLabel.Location = new System.Drawing.Point(79, 152);
             this.fanLabel.Name = "fanLabel";
             this.fanLabel.Size = new System.Drawing.Size(41, 13);
@@ -383,6 +358,7 @@
             // acceptedLabel
             // 
             this.acceptedLabel.AutoSize = true;
+            this.acceptedLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.acceptedLabel.Location = new System.Drawing.Point(79, 165);
             this.acceptedLabel.Name = "acceptedLabel";
             this.acceptedLabel.Size = new System.Drawing.Size(41, 13);
@@ -401,6 +377,7 @@
             // rejectedLabel
             // 
             this.rejectedLabel.AutoSize = true;
+            this.rejectedLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.rejectedLabel.Location = new System.Drawing.Point(79, 178);
             this.rejectedLabel.Name = "rejectedLabel";
             this.rejectedLabel.Size = new System.Drawing.Size(41, 13);
@@ -419,6 +396,7 @@
             // errorsLabel
             // 
             this.errorsLabel.AutoSize = true;
+            this.errorsLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.errorsLabel.Location = new System.Drawing.Point(79, 191);
             this.errorsLabel.Name = "errorsLabel";
             this.errorsLabel.Size = new System.Drawing.Size(41, 13);
@@ -437,6 +415,7 @@
             // utilityLabel
             // 
             this.utilityLabel.AutoSize = true;
+            this.utilityLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.utilityLabel.Location = new System.Drawing.Point(79, 204);
             this.utilityLabel.Name = "utilityLabel";
             this.utilityLabel.Size = new System.Drawing.Size(41, 13);
@@ -451,118 +430,6 @@
             this.label25.Size = new System.Drawing.Size(35, 13);
             this.label25.TabIndex = 29;
             this.label25.Text = "Utility:";
-            // 
-            // kindDataGridViewTextBoxColumn
-            // 
-            this.kindDataGridViewTextBoxColumn.DataPropertyName = "Kind";
-            this.kindDataGridViewTextBoxColumn.HeaderText = "Kind";
-            this.kindDataGridViewTextBoxColumn.Name = "kindDataGridViewTextBoxColumn";
-            this.kindDataGridViewTextBoxColumn.ReadOnly = true;
-            this.kindDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.nameDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // indexDataGridViewTextBoxColumn
-            // 
-            this.indexDataGridViewTextBoxColumn.DataPropertyName = "Index";
-            this.indexDataGridViewTextBoxColumn.HeaderText = "Index";
-            this.indexDataGridViewTextBoxColumn.Name = "indexDataGridViewTextBoxColumn";
-            this.indexDataGridViewTextBoxColumn.ReadOnly = true;
-            this.indexDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // iDDataGridViewTextBoxColumn
-            // 
-            this.iDDataGridViewTextBoxColumn.DataPropertyName = "ID";
-            this.iDDataGridViewTextBoxColumn.HeaderText = "ID";
-            this.iDDataGridViewTextBoxColumn.Name = "iDDataGridViewTextBoxColumn";
-            this.iDDataGridViewTextBoxColumn.ReadOnly = true;
-            this.iDDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // enabledDataGridViewCheckBoxColumn
-            // 
-            this.enabledDataGridViewCheckBoxColumn.DataPropertyName = "Enabled";
-            this.enabledDataGridViewCheckBoxColumn.HeaderText = "Enabled";
-            this.enabledDataGridViewCheckBoxColumn.Name = "enabledDataGridViewCheckBoxColumn";
-            this.enabledDataGridViewCheckBoxColumn.ReadOnly = true;
-            this.enabledDataGridViewCheckBoxColumn.Visible = false;
-            // 
-            // statusDataGridViewTextBoxColumn
-            // 
-            this.statusDataGridViewTextBoxColumn.DataPropertyName = "Status";
-            this.statusDataGridViewTextBoxColumn.HeaderText = "Status";
-            this.statusDataGridViewTextBoxColumn.Name = "statusDataGridViewTextBoxColumn";
-            this.statusDataGridViewTextBoxColumn.ReadOnly = true;
-            this.statusDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // temperatureDataGridViewTextBoxColumn
-            // 
-            this.temperatureDataGridViewTextBoxColumn.DataPropertyName = "Temperature";
-            this.temperatureDataGridViewTextBoxColumn.HeaderText = "Temperature";
-            this.temperatureDataGridViewTextBoxColumn.Name = "temperatureDataGridViewTextBoxColumn";
-            this.temperatureDataGridViewTextBoxColumn.ReadOnly = true;
-            this.temperatureDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // fanSpeedDataGridViewTextBoxColumn
-            // 
-            this.fanSpeedDataGridViewTextBoxColumn.DataPropertyName = "FanSpeed";
-            this.fanSpeedDataGridViewTextBoxColumn.HeaderText = "FanSpeed";
-            this.fanSpeedDataGridViewTextBoxColumn.Name = "fanSpeedDataGridViewTextBoxColumn";
-            this.fanSpeedDataGridViewTextBoxColumn.ReadOnly = true;
-            this.fanSpeedDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // fanPercentDataGridViewTextBoxColumn
-            // 
-            this.fanPercentDataGridViewTextBoxColumn.DataPropertyName = "FanPercent";
-            this.fanPercentDataGridViewTextBoxColumn.HeaderText = "FanPercent";
-            this.fanPercentDataGridViewTextBoxColumn.Name = "fanPercentDataGridViewTextBoxColumn";
-            this.fanPercentDataGridViewTextBoxColumn.ReadOnly = true;
-            this.fanPercentDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // gpuClockDataGridViewTextBoxColumn
-            // 
-            this.gpuClockDataGridViewTextBoxColumn.DataPropertyName = "GpuClock";
-            this.gpuClockDataGridViewTextBoxColumn.HeaderText = "GpuClock";
-            this.gpuClockDataGridViewTextBoxColumn.Name = "gpuClockDataGridViewTextBoxColumn";
-            this.gpuClockDataGridViewTextBoxColumn.ReadOnly = true;
-            this.gpuClockDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // memoryClockDataGridViewTextBoxColumn
-            // 
-            this.memoryClockDataGridViewTextBoxColumn.DataPropertyName = "MemoryClock";
-            this.memoryClockDataGridViewTextBoxColumn.HeaderText = "MemoryClock";
-            this.memoryClockDataGridViewTextBoxColumn.Name = "memoryClockDataGridViewTextBoxColumn";
-            this.memoryClockDataGridViewTextBoxColumn.ReadOnly = true;
-            this.memoryClockDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // gpuVoltageDataGridViewTextBoxColumn
-            // 
-            this.gpuVoltageDataGridViewTextBoxColumn.DataPropertyName = "GpuVoltage";
-            this.gpuVoltageDataGridViewTextBoxColumn.HeaderText = "GpuVoltage";
-            this.gpuVoltageDataGridViewTextBoxColumn.Name = "gpuVoltageDataGridViewTextBoxColumn";
-            this.gpuVoltageDataGridViewTextBoxColumn.ReadOnly = true;
-            this.gpuVoltageDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // gpuActivityDataGridViewTextBoxColumn
-            // 
-            this.gpuActivityDataGridViewTextBoxColumn.DataPropertyName = "GpuActivity";
-            this.gpuActivityDataGridViewTextBoxColumn.HeaderText = "GpuActivity";
-            this.gpuActivityDataGridViewTextBoxColumn.Name = "gpuActivityDataGridViewTextBoxColumn";
-            this.gpuActivityDataGridViewTextBoxColumn.ReadOnly = true;
-            this.gpuActivityDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // powerTuneDataGridViewTextBoxColumn
-            // 
-            this.powerTuneDataGridViewTextBoxColumn.DataPropertyName = "PowerTune";
-            this.powerTuneDataGridViewTextBoxColumn.HeaderText = "PowerTune";
-            this.powerTuneDataGridViewTextBoxColumn.Name = "powerTuneDataGridViewTextBoxColumn";
-            this.powerTuneDataGridViewTextBoxColumn.ReadOnly = true;
-            this.powerTuneDataGridViewTextBoxColumn.Visible = false;
             // 
             // averageHashrateDataGridViewTextBoxColumn
             // 
@@ -586,14 +453,6 @@
             this.acceptedSharesDataGridViewTextBoxColumn.Name = "acceptedSharesDataGridViewTextBoxColumn";
             this.acceptedSharesDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // rejectedSharesDataGridViewTextBoxColumn
-            // 
-            this.rejectedSharesDataGridViewTextBoxColumn.DataPropertyName = "RejectedShares";
-            this.rejectedSharesDataGridViewTextBoxColumn.HeaderText = "RejectedShares";
-            this.rejectedSharesDataGridViewTextBoxColumn.Name = "rejectedSharesDataGridViewTextBoxColumn";
-            this.rejectedSharesDataGridViewTextBoxColumn.ReadOnly = true;
-            this.rejectedSharesDataGridViewTextBoxColumn.Visible = false;
-            // 
             // rejectedSharesPercentDataGridViewTextBoxColumn
             // 
             this.rejectedSharesPercentDataGridViewTextBoxColumn.DataPropertyName = "RejectedSharesPercent";
@@ -601,14 +460,6 @@
             this.rejectedSharesPercentDataGridViewTextBoxColumn.HeaderText = "Rej. %";
             this.rejectedSharesPercentDataGridViewTextBoxColumn.Name = "rejectedSharesPercentDataGridViewTextBoxColumn";
             this.rejectedSharesPercentDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // hardwareErrorsDataGridViewTextBoxColumn
-            // 
-            this.hardwareErrorsDataGridViewTextBoxColumn.DataPropertyName = "HardwareErrors";
-            this.hardwareErrorsDataGridViewTextBoxColumn.HeaderText = "HardwareErrors";
-            this.hardwareErrorsDataGridViewTextBoxColumn.Name = "hardwareErrorsDataGridViewTextBoxColumn";
-            this.hardwareErrorsDataGridViewTextBoxColumn.ReadOnly = true;
-            this.hardwareErrorsDataGridViewTextBoxColumn.Visible = false;
             // 
             // hardwareErrorsPercentDataGridViewTextBoxColumn
             // 
@@ -625,22 +476,6 @@
             this.utilityDataGridViewTextBoxColumn.HeaderText = "Utility";
             this.utilityDataGridViewTextBoxColumn.Name = "utilityDataGridViewTextBoxColumn";
             this.utilityDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // intensityDataGridViewTextBoxColumn
-            // 
-            this.intensityDataGridViewTextBoxColumn.DataPropertyName = "Intensity";
-            this.intensityDataGridViewTextBoxColumn.HeaderText = "Intensity";
-            this.intensityDataGridViewTextBoxColumn.Name = "intensityDataGridViewTextBoxColumn";
-            this.intensityDataGridViewTextBoxColumn.ReadOnly = true;
-            this.intensityDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // poolIndexDataGridViewTextBoxColumn
-            // 
-            this.poolIndexDataGridViewTextBoxColumn.DataPropertyName = "PoolIndex";
-            this.poolIndexDataGridViewTextBoxColumn.HeaderText = "PoolIndex";
-            this.poolIndexDataGridViewTextBoxColumn.Name = "poolIndexDataGridViewTextBoxColumn";
-            this.poolIndexDataGridViewTextBoxColumn.ReadOnly = true;
-            this.poolIndexDataGridViewTextBoxColumn.Visible = false;
             // 
             // DetailsControl
             // 
@@ -677,6 +512,7 @@
             this.Controls.Add(this.nameLabel);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.closeDetailsButton);
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Name = "DetailsControl";
             this.Size = new System.Drawing.Size(515, 410);
             this.Load += new System.EventHandler(this.DetailsControl_Load);
@@ -730,29 +566,11 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label utilityLabel;
         private System.Windows.Forms.Label label25;
-        private System.Windows.Forms.DataGridViewTextBoxColumn kindDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn indexDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn iDDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn enabledDataGridViewCheckBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn statusDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn temperatureDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn fanSpeedDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn fanPercentDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn gpuClockDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn memoryClockDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn gpuVoltageDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn gpuActivityDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn powerTuneDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn averageHashrateDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn currentHashrateDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn acceptedSharesDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn rejectedSharesDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn rejectedSharesPercentDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn hardwareErrorsDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn hardwareErrorsPercentDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn utilityDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn intensityDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn poolIndexDataGridViewTextBoxColumn;
     }
 }

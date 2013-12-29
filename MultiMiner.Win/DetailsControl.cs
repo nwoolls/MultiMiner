@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using MultiMiner.Xgminer;
 using MultiMiner.Coin.Api;
@@ -126,6 +123,26 @@ namespace MultiMiner.Win
             {
                 tempLabel.Text = String.Empty;
                 fanLabel.Text = String.Empty;
+            }
+
+            UpdateColumnVisibility();
+        }
+
+        private void UpdateColumnVisibility()
+        {
+            bool visible = false;
+            foreach (DataGridViewColumn column in workersGridView.Columns)
+            {
+                visible = false;
+                foreach (DataGridViewRow row in workersGridView.Rows)
+                {
+                    if (!String.IsNullOrEmpty((string)row.Cells[column.Index].FormattedValue))
+                    {
+                        visible = true;
+                        break;
+                    }
+                }
+                column.Visible = visible;
             }
         }
 
