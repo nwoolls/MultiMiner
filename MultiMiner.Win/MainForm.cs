@@ -44,6 +44,7 @@ namespace MultiMiner.Win
 
         //currently mining information
         private BaseCoin currentBaseCoin = BaseCoin.Bitcoin;
+        private List<DeviceConfiguration> miningDeviceConfigurations;
         private List<CoinConfiguration> miningCoinConfigurations;
 
         //data sources
@@ -1401,10 +1402,11 @@ namespace MultiMiner.Win
             startButton.Enabled = false; //immediately disable, update after
             startMenuItem.Enabled = false;
             
-            //create a deep clone of the mining configurations
+            //create a deep clone of the mining & device configurations
             //this is so we can accurately display e.g. the currently mining pools
             //even if the user changes pool info without restartinging mining
             this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
+            this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
 
             try
             {
@@ -1730,7 +1732,12 @@ namespace MultiMiner.Win
         private CoinConfiguration CoinConfigurationForDevice(Device device)
         {
             //get the actual device configuration, text in the ListViewItem may be unsaved
-            DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+            DeviceConfiguration deviceConfiguration = null;
+            if (miningEngine.Mining)
+                deviceConfiguration = miningDeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+            else
+                deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+
             if (deviceConfiguration == null)
                 return null;
 
