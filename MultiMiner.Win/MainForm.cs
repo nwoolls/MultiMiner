@@ -3728,6 +3728,7 @@ namespace MultiMiner.Win
 
             if (briefMode)
             {
+                CloseDetailsArea();
                 HideAdvancedPanel();
                 WindowState = FormWindowState.Normal;
 
@@ -4191,6 +4192,7 @@ namespace MultiMiner.Win
 
         private void ShowDetailsArea()
         {
+            SetBriefMode(false);
             RefreshDetailsArea();
 
             detailsAreaContainer.Panel2Collapsed = false;
