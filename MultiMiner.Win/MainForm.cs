@@ -25,6 +25,9 @@ namespace MultiMiner.Win
     {
         //API contexts
         private IApiContext coinApiContext = new CoinChoose.Api.ApiContext();
+        private readonly List<DeviceInformationResponse> allDeviceInformation = new List<DeviceInformationResponse>();
+        private readonly Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
+        private readonly Dictionary<MinerProcess, List<PoolInformationResponse>> processPoolInformation = new Dictionary<MinerProcess, List<PoolInformationResponse>>();
 
         //API information
         private List<CoinInformation> coinApiInformation;
@@ -38,8 +41,6 @@ namespace MultiMiner.Win
 
         //hardware information
         private List<Device> devices;
-        private readonly List<DeviceInformationResponse> allDeviceInformation = new List<DeviceInformationResponse>();
-        private readonly Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
         private readonly Dictionary<Device, DeviceDetailsResponse> deviceDetailsMapping = new Dictionary<Device, DeviceDetailsResponse>();
 
         //currently mining information
@@ -1364,6 +1365,7 @@ namespace MultiMiner.Win
             deviceStatsTimer.Enabled = false;
             minerSummaryTimer.Enabled = false;
             coinStatsCountdownTimer.Enabled = false;
+            poolInfoTimer.Enabled = false;
             RefreshStrategiesCountdown();
             scryptRateLabel.Text = string.Empty;
             sha256RateLabel.Text = string.Empty;
@@ -1430,6 +1432,7 @@ namespace MultiMiner.Win
             deviceStatsTimer.Enabled = true;
             minerSummaryTimer.Enabled = true;
             coinStatsCountdownTimer.Enabled = true;
+            poolInfoTimer.Enabled = true;
             RefreshStrategiesCountdown();
 
             //to get changes from strategy config
@@ -1982,6 +1985,9 @@ namespace MultiMiner.Win
 
             RefreshIncomeSummary();
             RefreshDetailsAreaIfVisible();
+
+            if (processPoolInformation.Count == 0)
+                RefreshPoolInfo();
         }
 
         private void FlagSuspiciousMiner(MinerProcess minerProcess, DeviceInformationResponse deviceInformation)
@@ -4219,27 +4225,76 @@ namespace MultiMiner.Win
                         && (d.ID == deviceDetails.ID)).ToList();
             }
 
-            //allDeviceInformation
-            //List<DeviceInformationResponse> deviceInformation = allDeviceInformation
-            //    .Where(di => di.Equals(selectedDevice))
-            //    .ToList();
-
-            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, deviceDetails, minerDeviceInformation);
-        }
-
-        private void detailsControl1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void deviceListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-        {
+            PoolInformationResponse poolInformation = null;
+            MinerProcess minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinInformation == coinInfo);
+            if (minerProcess != null)
+            {
+                DeviceInformationResponse deviceInformation = minerDeviceInformation.FirstOrDefault();
+                if ((deviceInformation != null) && processPoolInformation.ContainsKey(minerProcess))
+                    poolInformation = processPoolInformation[minerProcess].SingleOrDefault(p => p.Index == deviceInformation.PoolIndex);
+            }
+            
+            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, deviceDetails, minerDeviceInformation, poolInformation);
         }
 
         private void deviceListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (deviceListView.SelectedItems.Count > 0)
                 RefreshDetailsArea();
+        }
+
+        private void poolInfoTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshPoolInfo();
+            RefreshDetailsAreaIfVisible();
+        }
+
+        private void RefreshPoolInfo()
+        {
+            this.processPoolInformation.Clear();
+            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+            {
+                List<PoolInformationResponse> poolInformation = GetPoolInfoFromProcess(minerProcess);
+
+                if (poolInformation == null) //handled failure getting API info
+                {
+                    minerProcess.MinerIsFrozen = true;
+                    continue;
+                }
+
+                //...
+                processPoolInformation[minerProcess] = poolInformation;
+            }
+        }
+
+        private List<PoolInformationResponse> GetPoolInfoFromProcess(MinerProcess minerProcess)
+        {
+            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<PoolInformationResponse> poolInformation = null;
+            try
+            {
+                try
+                {
+                    poolInformation = apiContext.GetPoolInformation();
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    poolInformation = null;
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
+                poolInformation = null;
+            }
+
+            return poolInformation;
         }
     }
 }

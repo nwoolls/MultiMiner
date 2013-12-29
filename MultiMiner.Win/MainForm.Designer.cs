@@ -203,6 +203,7 @@
             this.dynamicIntensityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.poolInfoTimer = new System.Windows.Forms.Timer(this.components);
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -571,7 +572,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(881, 232);
-            this.detailsAreaContainer.SplitterDistance = 648;
+            this.detailsAreaContainer.SplitterDistance = 538;
             this.detailsAreaContainer.TabIndex = 3;
             // 
             // deviceListView
@@ -614,7 +615,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(648, 232);
+            this.deviceListView.Size = new System.Drawing.Size(538, 232);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -622,7 +623,6 @@
             this.deviceListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.deviceListView_ColumnClick);
             this.deviceListView.ColumnWidthChanging += new System.Windows.Forms.ColumnWidthChangingEventHandler(this.deviceListView_ColumnWidthChanging);
             this.deviceListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.deviceListView_ItemChecked);
-            this.deviceListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.deviceListView_ItemSelectionChanged);
             this.deviceListView.SelectedIndexChanged += new System.EventHandler(this.deviceListView_SelectedIndexChanged);
             this.deviceListView.DoubleClick += new System.EventHandler(this.deviceListView_DoubleClick);
             this.deviceListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.deviceListView_MouseClick);
@@ -713,12 +713,13 @@
             // 
             this.detailsControl1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.detailsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.detailsControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(229, 232);
+            this.detailsControl1.Size = new System.Drawing.Size(339, 232);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
-            this.detailsControl1.Load += new System.EventHandler(this.detailsControl1_Load);
             // 
             // advancedTabControl
             // 
@@ -1724,6 +1725,11 @@
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
+            // poolInfoTimer
+            // 
+            this.poolInfoTimer.Interval = 60000;
+            this.poolInfoTimer.Tick += new System.EventHandler(this.poolInfoTimer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1962,6 +1968,7 @@
         private System.Windows.Forms.Button closeApiButton;
         private System.Windows.Forms.SplitContainer detailsAreaContainer;
         private DetailsControl detailsControl1;
+        private System.Windows.Forms.Timer poolInfoTimer;
     }
 }
 

@@ -12,7 +12,7 @@ using MultiMiner.Win.Extensions;
 
 namespace MultiMiner.Win
 {
-    public partial class DetailsControl : UserControl
+    public partial class DetailsControl : MessageBoxFontUserControl
     {
         //events
         //delegate declarations
@@ -49,7 +49,7 @@ namespace MultiMiner.Win
         }
 
         public void InspectDetails(Device device, CoinConfiguration coinConfiguration, CoinInformation coinInformation,
-            DeviceDetailsResponse deviceDetails, List<DeviceInformationResponse> deviceInformation)
+            DeviceDetailsResponse deviceDetails, List<DeviceInformationResponse> deviceInformation, PoolInformationResponse poolInformation)
         {
             double hashrate = 0;
             foreach (DeviceInformationResponse individualDevice in deviceInformation)
@@ -126,6 +126,12 @@ namespace MultiMiner.Win
             }
 
             UpdateColumnVisibility();
+
+            //may not be hashing yet
+            if (poolInformation != null)
+                poolInformationResponseBindingSource.DataSource = poolInformation;
+            else
+                poolInformationResponseBindingSource.DataSource = new PoolInformationResponse();
         }
 
         private void UpdateColumnVisibility()

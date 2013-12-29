@@ -247,6 +247,7 @@
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.LogEntry.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.Responses.DeviceDetailsResponse.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.Responses.DeviceInformationResponse.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.Responses.PoolInformationResponse.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Device.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.LogLaunchArgs.datasource" />
     <None Include="Properties\Settings.settings">
