@@ -1727,7 +1727,7 @@
             // 
             // poolInfoTimer
             // 
-            this.poolInfoTimer.Interval = 60000;
+            this.poolInfoTimer.Interval = 30000;
             this.poolInfoTimer.Tick += new System.EventHandler(this.poolInfoTimer_Tick);
             // 
             // MainForm
