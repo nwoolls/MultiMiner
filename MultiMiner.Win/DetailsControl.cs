@@ -48,9 +48,20 @@ namespace MultiMiner.Win
             workersGridView.Height = this.Height - workersGridView.Top - 6;
         }
 
+        public void ClearDetails(int deviceCount)
+        {
+            deviceCountLabel.Text = deviceCount + " item";
+            if (deviceCount > 1)
+                deviceCountLabel.Text = deviceCountLabel.Text + "s";
+            noDetailsPanel.Dock = DockStyle.Fill;
+            noDetailsPanel.BringToFront();
+            noDetailsPanel.Visible = true;
+        }
+
         public void InspectDetails(Device device, CoinConfiguration coinConfiguration, CoinInformation coinInformation,
             DeviceDetailsResponse deviceDetails, List<DeviceInformationResponse> deviceInformation, PoolInformationResponse poolInformation)
         {
+            noDetailsPanel.Visible = false;
             double hashrate = 0;
             foreach (DeviceInformationResponse individualDevice in deviceInformation)
             {

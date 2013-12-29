@@ -347,6 +347,7 @@
     <None Include="Resources\settings-option.png" />
     <None Include="Resources\application-execute1.png" />
     <None Include="Resources\application-control_play.png" />
+    <None Include="Resources\computer-list.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

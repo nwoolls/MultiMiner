@@ -4197,7 +4197,7 @@ namespace MultiMiner.Win
         {
             if (deviceListView.SelectedItems.Count == 0)
             {
-                CloseDetailsArea();
+                detailsControl1.ClearDetails(devices.Count);
                 return;
             }
 
