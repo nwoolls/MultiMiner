@@ -284,6 +284,7 @@
             // 
             this.workersGridView.AllowUserToAddRows = false;
             this.workersGridView.AllowUserToDeleteRows = false;
+            this.workersGridView.AllowUserToResizeRows = false;
             this.workersGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
