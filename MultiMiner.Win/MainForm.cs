@@ -4242,7 +4242,16 @@ namespace MultiMiner.Win
             List<DeviceDetailsResponse> minerDeviceDetails = new List<DeviceDetailsResponse>();
 
             PoolInformationResponse poolInformation = null;
-            MinerProcess minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinInformation.Symbol.Equals(coinInfo.Symbol, StringComparison.OrdinalIgnoreCase));
+
+            string coinSymbol = null;
+            //Internet or Coin API could be down
+            if (coinInfo != null)
+                coinSymbol = coinInfo.Symbol;
+            //device may not be configured
+            else if (coinConfiguration != null)
+                coinSymbol = coinConfiguration.Coin.Symbol;
+
+            MinerProcess minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinInformation.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             if (minerProcess != null)
             {
                 DeviceInformationResponse deviceInformation = minerDeviceInformation.FirstOrDefault();
