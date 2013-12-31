@@ -4251,7 +4251,13 @@ namespace MultiMiner.Win
             else if (coinConfiguration != null)
                 coinSymbol = coinConfiguration.Coin.Symbol;
 
-            MinerProcess minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinInformation.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+            MinerProcess minerProcess = null;
+
+            //Internet or Coin API could be down AND device may not be configured
+            if (!String.IsNullOrEmpty(coinSymbol))
+                // p.CoinInformation is null if there is no Coin API info
+                minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinSymbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+                        
             if (minerProcess != null)
             {
                 DeviceInformationResponse deviceInformation = minerDeviceInformation.FirstOrDefault();

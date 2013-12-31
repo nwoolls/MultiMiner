@@ -546,7 +546,7 @@ namespace MultiMiner.Engine
                 {
                     Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
                     if (!process.HasExited)
-                        StoreMinerProcess(process, minerConfiguration, port);
+                        StoreMinerProcess(process, coinSymbol, minerConfiguration, port);
 
                     port++;
                 }
@@ -556,7 +556,7 @@ namespace MultiMiner.Engine
                 {
                     Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
                     if (!process.HasExited)
-                        StoreMinerProcess(process, minerConfiguration, port);
+                        StoreMinerProcess(process, coinSymbol, minerConfiguration, port);
 
                     port++;
                 }
@@ -565,13 +565,14 @@ namespace MultiMiner.Engine
             mining = true;
         }
 
-        private void StoreMinerProcess(Process process, MinerConfiguration minerConfiguration, int port)
+        private void StoreMinerProcess(Process process, string coinSymbol, MinerConfiguration minerConfiguration, int port)
         {
             MinerProcess minerProcess = new MinerProcess();
 
             minerProcess.Process = process;
             minerProcess.ApiPort = port;
             minerProcess.MinerConfiguration = minerConfiguration;
+            minerProcess.CoinSymbol = coinSymbol;
 
             setupProcessStartInfo(minerProcess);
 
