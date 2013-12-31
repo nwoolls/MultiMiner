@@ -1868,7 +1868,7 @@ namespace MultiMiner.Win
         {
             string coinName = minerProcess.MinerConfiguration.CoinName;
             //reference miningCoinConfigurations so that we get access to the mining coins
-            CoinConfiguration configuration = miningCoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            CoinConfiguration configuration = miningCoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
             if (configuration == null)
                 return;
 
@@ -1889,7 +1889,7 @@ namespace MultiMiner.Win
         {
             string coinName = minerProcess.MinerConfiguration.CoinName;
             //reference miningCoinConfigurations so that we get access to the mining coins
-            CoinConfiguration configuration = miningCoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            CoinConfiguration configuration = miningCoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
             if (configuration == null)
                 return;
 
