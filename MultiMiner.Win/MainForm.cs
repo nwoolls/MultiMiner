@@ -452,9 +452,10 @@ namespace MultiMiner.Win
         {
             Control parent = detailsAreaContainer.Panel1;
 
+            //carefully measured to fit notifications when they scroll
             const int ControlOffset = 2;
-            const int ControlHeight = 143;
-            const int ControlWidth = 320;
+            const int ControlHeight = 148;
+            const int ControlWidth = 358;
 
             this.notificationsControl = new NotificationsControl()
             {
