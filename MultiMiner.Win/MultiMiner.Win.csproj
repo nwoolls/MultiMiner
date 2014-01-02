@@ -142,6 +142,12 @@
     <Compile Include="Notifications\NotificationsControl.Designer.cs">
       <DependentUpon>NotificationsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="OnlineSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OnlineSettingsForm.Designer.cs">
+      <DependentUpon>OnlineSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PerksForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -205,6 +211,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Notifications\NotificationsControl.resx">
       <DependentUpon>NotificationsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OnlineSettingsForm.resx">
+      <DependentUpon>OnlineSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PerksForm.resx">
       <DependentUpon>PerksForm.cs</DependentUpon>
@@ -348,6 +357,7 @@
     <None Include="Resources\application-execute1.png" />
     <None Include="Resources\application-control_play.png" />
     <None Include="Resources\computer-list.png" />
+    <None Include="Resources\list-internet.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>
