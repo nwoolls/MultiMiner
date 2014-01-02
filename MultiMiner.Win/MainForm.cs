@@ -346,6 +346,14 @@ namespace MultiMiner.Win
 
         private void LogObjectToFile(object objectToLog, string logFileName)
         {
+            string logDirectory = GetLogDirectory();
+            string logFilePath = Path.Combine(logDirectory, logFileName);
+            ObjectLogger logger = new ObjectLogger(applicationConfiguration.RollOverLogFiles, applicationConfiguration.OldLogFileSets);
+            logger.LogObjectToFile(objectToLog, logFilePath);
+        }
+
+        private string GetLogDirectory()
+        {
             string logDirectory = ApplicationPaths.AppDataPath();
             if (!String.IsNullOrEmpty(applicationConfiguration.LogFilePath))
             {
@@ -353,10 +361,7 @@ namespace MultiMiner.Win
                 if (Directory.Exists(applicationConfiguration.LogFilePath))
                     logDirectory = applicationConfiguration.LogFilePath;
             }
-
-            string logFilePath = Path.Combine(logDirectory, logFileName);
-            ObjectLogger logger = new ObjectLogger(applicationConfiguration.RollOverLogFiles, applicationConfiguration.OldLogFileSets);
-            logger.LogObjectToFile(objectToLog, logFilePath);
+            return logDirectory;
         }
 
         private void LogProcessClose(object sender, LogProcessCloseArgs ea)
@@ -4311,6 +4316,24 @@ namespace MultiMiner.Win
             }
 
             return poolInformation;
+        }
+
+        private void openLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string fileName = String.Empty;
+            if (advancedTabControl.SelectedTab == apiMonitorPage)
+                fileName = "ApiLog.json";
+            else if (advancedTabControl.SelectedTab == processLogPage)
+                fileName = "ProcessLog.json";
+            else if (advancedTabControl.SelectedTab == historyPage)
+                fileName = "MiningLog.json";
+
+            if (!String.IsNullOrEmpty(fileName))
+            {
+                string logDirectory = GetLogDirectory();
+                string logFilePath = Path.Combine(logDirectory, fileName);
+                Process.Start(logFilePath);
+            }
         }
     }
 }

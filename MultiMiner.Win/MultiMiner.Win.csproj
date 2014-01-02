@@ -358,6 +358,7 @@
     <None Include="Resources\application-control_play.png" />
     <None Include="Resources\computer-list.png" />
     <None Include="Resources\list-internet.png" />
+    <None Include="Resources\document-find.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>
