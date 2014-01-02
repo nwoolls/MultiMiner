@@ -37,9 +37,21 @@ namespace MultiMiner.Win
 
         private void DetailsControl_Load(object sender, EventArgs e)
         {
+            SetupFonts();
+
             PositionControls();
         }
 
+        private void SetupFonts()
+        {
+            //do this in code so font name isn't stored in the .cs
+            hashrateLabel.Font = new Font(hashrateLabel.Font, FontStyle.Bold);
+            tempLabel.Font = new Font(tempLabel.Font, FontStyle.Bold);
+            poolLabel.Font = new Font(poolLabel.Font, FontStyle.Bold);
+            nameLabel.Font = new Font(nameLabel.Font.Name, 12.0f);
+            deviceCountLabel.Font = new Font(nameLabel.Font.Name, 12.0f);
+
+        }
         private void PositionControls()
         {
             closeDetailsButton.Size = new Size(22, 22);

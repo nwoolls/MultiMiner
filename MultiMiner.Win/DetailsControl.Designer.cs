@@ -52,6 +52,12 @@
             this.label12 = new System.Windows.Forms.Label();
             this.hashrateLabel = new System.Windows.Forms.Label();
             this.workersGridView = new System.Windows.Forms.DataGridView();
+            this.workerNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.averageHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.acceptedSharesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.utilityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.deviceInformationResponseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.workersTitleLabel = new System.Windows.Forms.Label();
             this.tempLabel = new System.Windows.Forms.Label();
@@ -71,34 +77,32 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
+            this.poolLabel = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
             this.label28 = new System.Windows.Forms.Label();
             this.noDetailsPanel = new System.Windows.Forms.Panel();
-            this.deviceCountLabel = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.deviceCountLabel = new System.Windows.Forms.Label();
             this.coinInformationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.deviceDetailsResponseBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.workerNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.averageHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.acceptedSharesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.utilityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.workersGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceInformationResponseBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.poolInformationResponseBindingSource)).BeginInit();
             this.noDetailsPanel.SuspendLayout();
+            this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.coinInformationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceDetailsResponseBindingSource)).BeginInit();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // closeDetailsButton
@@ -129,11 +133,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nameLabel.AutoEllipsis = true;
             this.nameLabel.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Name", true));
-            this.nameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nameLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.nameLabel.Location = new System.Drawing.Point(92, 3);
+            this.nameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.nameLabel.Location = new System.Drawing.Point(10, 3);
             this.nameLabel.Name = "nameLabel";
-            this.nameLabel.Size = new System.Drawing.Size(479, 25);
+            this.nameLabel.Size = new System.Drawing.Size(561, 25);
             this.nameLabel.TabIndex = 3;
             this.nameLabel.Text = "label1";
             // 
@@ -145,8 +148,8 @@
             // 
             this.label2.AutoSize = true;
             this.label2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Name", true));
-            this.label2.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label2.Location = new System.Drawing.Point(92, 28);
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.label2.Location = new System.Drawing.Point(92, 34);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(38, 15);
             this.label2.TabIndex = 4;
@@ -160,8 +163,8 @@
             // 
             this.label3.AutoSize = true;
             this.label3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Symbol", true));
-            this.label3.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label3.Location = new System.Drawing.Point(92, 43);
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.label3.Location = new System.Drawing.Point(92, 49);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(38, 15);
             this.label3.TabIndex = 5;
@@ -171,8 +174,8 @@
             // 
             this.label4.AutoSize = true;
             this.label4.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Algorithm", true));
-            this.label4.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label4.Location = new System.Drawing.Point(92, 58);
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.label4.Location = new System.Drawing.Point(92, 64);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(38, 15);
             this.label4.TabIndex = 6;
@@ -181,7 +184,8 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(183, 80);
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label1.Location = new System.Drawing.Point(183, 110);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(66, 15);
             this.label1.TabIndex = 7;
@@ -191,8 +195,8 @@
             // 
             this.label5.AutoSize = true;
             this.label5.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "ProcessorCount", true));
-            this.label5.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label5.Location = new System.Drawing.Point(255, 80);
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.label5.Location = new System.Drawing.Point(255, 110);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(38, 15);
             this.label5.TabIndex = 8;
@@ -202,8 +206,8 @@
             // 
             this.label6.AutoEllipsis = true;
             this.label6.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Driver", true));
-            this.label6.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label6.Location = new System.Drawing.Point(92, 80);
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.label6.Location = new System.Drawing.Point(92, 110);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(85, 15);
             this.label6.TabIndex = 10;
@@ -212,7 +216,8 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 80);
+            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label7.Location = new System.Drawing.Point(7, 110);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(41, 15);
             this.label7.TabIndex = 9;
@@ -222,8 +227,8 @@
             // 
             this.label8.AutoEllipsis = true;
             this.label8.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Path", true));
-            this.label8.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label8.Location = new System.Drawing.Point(92, 95);
+            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.label8.Location = new System.Drawing.Point(92, 125);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(85, 15);
             this.label8.TabIndex = 12;
@@ -232,7 +237,8 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(7, 95);
+            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label9.Location = new System.Drawing.Point(7, 125);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(34, 15);
             this.label9.TabIndex = 11;
@@ -244,8 +250,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label10.AutoEllipsis = true;
             this.label10.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Serial", true));
-            this.label10.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label10.Location = new System.Drawing.Point(255, 95);
+            this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.label10.Location = new System.Drawing.Point(255, 125);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(339, 15);
             this.label10.TabIndex = 14;
@@ -254,7 +260,8 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(183, 95);
+            this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label11.Location = new System.Drawing.Point(183, 125);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(38, 15);
             this.label11.TabIndex = 13;
@@ -263,7 +270,8 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(7, 110);
+            this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label12.Location = new System.Drawing.Point(7, 140);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(57, 15);
             this.label12.TabIndex = 15;
@@ -272,11 +280,10 @@
             // hashrateLabel
             // 
             this.hashrateLabel.AutoSize = true;
-            this.hashrateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hashrateLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.hashrateLabel.Location = new System.Drawing.Point(92, 110);
+            this.hashrateLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.hashrateLabel.Location = new System.Drawing.Point(92, 140);
             this.hashrateLabel.Name = "hashrateLabel";
-            this.hashrateLabel.Size = new System.Drawing.Size(48, 13);
+            this.hashrateLabel.Size = new System.Drawing.Size(44, 15);
             this.hashrateLabel.TabIndex = 16;
             this.hashrateLabel.Text = "label12";
             // 
@@ -302,299 +309,15 @@
             this.utilityDataGridViewTextBoxColumn});
             this.workersGridView.DataSource = this.deviceInformationResponseBindingSource;
             this.workersGridView.GridColor = System.Drawing.SystemColors.ControlLightLight;
-            this.workersGridView.Location = new System.Drawing.Point(7, 260);
+            this.workersGridView.Location = new System.Drawing.Point(7, 287);
             this.workersGridView.Name = "workersGridView";
             this.workersGridView.ReadOnly = true;
             this.workersGridView.RowHeadersVisible = false;
             this.workersGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.workersGridView.Size = new System.Drawing.Size(587, 253);
+            this.workersGridView.Size = new System.Drawing.Size(587, 226);
             this.workersGridView.TabIndex = 17;
             this.workersGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.workersGridView_CellFormatting);
             this.workersGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.workersGridView_RowsAdded);
-            // 
-            // deviceInformationResponseBindingSource
-            // 
-            this.deviceInformationResponseBindingSource.DataSource = typeof(MultiMiner.Xgminer.Api.Responses.DeviceInformationResponse);
-            // 
-            // workersTitleLabel
-            // 
-            this.workersTitleLabel.AutoSize = true;
-            this.workersTitleLabel.Location = new System.Drawing.Point(7, 242);
-            this.workersTitleLabel.Name = "workersTitleLabel";
-            this.workersTitleLabel.Size = new System.Drawing.Size(53, 15);
-            this.workersTitleLabel.TabIndex = 18;
-            this.workersTitleLabel.Text = "Workers:";
-            // 
-            // tempLabel
-            // 
-            this.tempLabel.AutoEllipsis = true;
-            this.tempLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tempLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.tempLabel.Location = new System.Drawing.Point(92, 126);
-            this.tempLabel.Name = "tempLabel";
-            this.tempLabel.Size = new System.Drawing.Size(85, 13);
-            this.tempLabel.TabIndex = 20;
-            this.tempLabel.Text = "label14";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(7, 125);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(41, 15);
-            this.label15.TabIndex = 19;
-            this.label15.Text = "Temp:";
-            // 
-            // fanLabel
-            // 
-            this.fanLabel.AutoSize = true;
-            this.fanLabel.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.fanLabel.Location = new System.Drawing.Point(255, 125);
-            this.fanLabel.Name = "fanLabel";
-            this.fanLabel.Size = new System.Drawing.Size(44, 15);
-            this.fanLabel.TabIndex = 22;
-            this.fanLabel.Text = "label16";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(183, 125);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(29, 15);
-            this.label17.TabIndex = 21;
-            this.label17.Text = "Fan:";
-            // 
-            // acceptedLabel
-            // 
-            this.acceptedLabel.AutoEllipsis = true;
-            this.acceptedLabel.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.acceptedLabel.Location = new System.Drawing.Point(92, 140);
-            this.acceptedLabel.Name = "acceptedLabel";
-            this.acceptedLabel.Size = new System.Drawing.Size(85, 15);
-            this.acceptedLabel.TabIndex = 24;
-            this.acceptedLabel.Text = "label18";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(7, 140);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(60, 15);
-            this.label19.TabIndex = 23;
-            this.label19.Text = "Accepted:";
-            // 
-            // rejectedLabel
-            // 
-            this.rejectedLabel.AutoSize = true;
-            this.rejectedLabel.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.rejectedLabel.Location = new System.Drawing.Point(255, 140);
-            this.rejectedLabel.Name = "rejectedLabel";
-            this.rejectedLabel.Size = new System.Drawing.Size(44, 15);
-            this.rejectedLabel.TabIndex = 26;
-            this.rejectedLabel.Text = "label20";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(183, 140);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(55, 15);
-            this.label21.TabIndex = 25;
-            this.label21.Text = "Rejected:";
-            // 
-            // errorsLabel
-            // 
-            this.errorsLabel.AutoSize = true;
-            this.errorsLabel.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.errorsLabel.Location = new System.Drawing.Point(255, 155);
-            this.errorsLabel.Name = "errorsLabel";
-            this.errorsLabel.Size = new System.Drawing.Size(44, 15);
-            this.errorsLabel.TabIndex = 28;
-            this.errorsLabel.Text = "label22";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(183, 155);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(40, 15);
-            this.label23.TabIndex = 27;
-            this.label23.Text = "Errors:";
-            // 
-            // utilityLabel
-            // 
-            this.utilityLabel.AutoEllipsis = true;
-            this.utilityLabel.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.utilityLabel.Location = new System.Drawing.Point(92, 155);
-            this.utilityLabel.Name = "utilityLabel";
-            this.utilityLabel.Size = new System.Drawing.Size(85, 15);
-            this.utilityLabel.TabIndex = 30;
-            this.utilityLabel.Text = "label24";
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(7, 155);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(41, 15);
-            this.label25.TabIndex = 29;
-            this.label25.Text = "Utility:";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "LastShareDifficulty", true));
-            this.label13.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label13.Location = new System.Drawing.Point(255, 185);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(44, 15);
-            this.label13.TabIndex = 36;
-            this.label13.Text = "label18";
-            // 
-            // poolInformationResponseBindingSource
-            // 
-            this.poolInformationResponseBindingSource.DataSource = typeof(MultiMiner.Xgminer.Api.Responses.PoolInformationResponse);
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(183, 185);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(58, 15);
-            this.label14.TabIndex = 35;
-            this.label14.Text = "Difficulty:";
-            // 
-            // label16
-            // 
-            this.label16.AutoEllipsis = true;
-            this.label16.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "LastShareTime", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "t"));
-            this.label16.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label16.Location = new System.Drawing.Point(92, 185);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(85, 15);
-            this.label16.TabIndex = 34;
-            this.label16.Text = "label16";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(7, 185);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(62, 15);
-            this.label18.TabIndex = 33;
-            this.label18.Text = "Last share:";
-            // 
-            // label20
-            // 
-            this.label20.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.label20.AutoEllipsis = true;
-            this.label20.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "Url", true));
-            this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label20.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label20.Location = new System.Drawing.Point(92, 170);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(502, 15);
-            this.label20.TabIndex = 32;
-            this.label20.Text = "label14";
-            this.label20.UseMnemonic = false;
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(7, 170);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(34, 15);
-            this.label22.TabIndex = 31;
-            this.label22.Text = "Pool:";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "BestShare", true));
-            this.label24.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label24.Location = new System.Drawing.Point(92, 200);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(44, 15);
-            this.label24.TabIndex = 38;
-            this.label24.Text = "label18";
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(7, 200);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(63, 15);
-            this.label26.TabIndex = 37;
-            this.label26.Text = "Best share:";
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "PoolStalePercent", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "P4"));
-            this.label27.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label27.Location = new System.Drawing.Point(92, 215);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(44, 15);
-            this.label27.TabIndex = 40;
-            this.label27.Text = "label18";
-            // 
-            // label28
-            // 
-            this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(7, 215);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(35, 15);
-            this.label28.TabIndex = 39;
-            this.label28.Text = "Stale:";
-            // 
-            // noDetailsPanel
-            // 
-            this.noDetailsPanel.Controls.Add(this.deviceCountLabel);
-            this.noDetailsPanel.Controls.Add(this.pictureBox2);
-            this.noDetailsPanel.Location = new System.Drawing.Point(95, 287);
-            this.noDetailsPanel.Name = "noDetailsPanel";
-            this.noDetailsPanel.Size = new System.Drawing.Size(338, 254);
-            this.noDetailsPanel.TabIndex = 41;
-            // 
-            // deviceCountLabel
-            // 
-            this.deviceCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.deviceCountLabel.AutoEllipsis = true;
-            this.deviceCountLabel.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Name", true));
-            this.deviceCountLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.deviceCountLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.deviceCountLabel.Location = new System.Drawing.Point(92, 3);
-            this.deviceCountLabel.Name = "deviceCountLabel";
-            this.deviceCountLabel.Size = new System.Drawing.Size(243, 25);
-            this.deviceCountLabel.TabIndex = 5;
-            this.deviceCountLabel.Text = "label1";
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Image = global::MultiMiner.Win.Properties.Resources.computer_list;
-            this.pictureBox2.Location = new System.Drawing.Point(5, 3);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(75, 74);
-            this.pictureBox2.TabIndex = 4;
-            this.pictureBox2.TabStop = false;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(5, 3);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(75, 74);
-            this.pictureBox1.TabIndex = 2;
-            this.pictureBox1.TabStop = false;
-            // 
-            // coinInformationBindingSource
-            // 
-            this.coinInformationBindingSource.DataSource = typeof(MultiMiner.Coin.Api.CoinInformation);
-            // 
-            // deviceDetailsResponseBindingSource
-            // 
-            this.deviceDetailsResponseBindingSource.DataSource = typeof(MultiMiner.Xgminer.Api.Responses.DeviceDetailsResponse);
             // 
             // workerNameColumn
             // 
@@ -647,11 +370,331 @@
             this.utilityDataGridViewTextBoxColumn.Name = "utilityDataGridViewTextBoxColumn";
             this.utilityDataGridViewTextBoxColumn.ReadOnly = true;
             // 
+            // deviceInformationResponseBindingSource
+            // 
+            this.deviceInformationResponseBindingSource.DataSource = typeof(MultiMiner.Xgminer.Api.Responses.DeviceInformationResponse);
+            // 
+            // workersTitleLabel
+            // 
+            this.workersTitleLabel.AutoSize = true;
+            this.workersTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.workersTitleLabel.Location = new System.Drawing.Point(7, 269);
+            this.workersTitleLabel.Name = "workersTitleLabel";
+            this.workersTitleLabel.Size = new System.Drawing.Size(53, 15);
+            this.workersTitleLabel.TabIndex = 18;
+            this.workersTitleLabel.Text = "Workers:";
+            // 
+            // tempLabel
+            // 
+            this.tempLabel.AutoEllipsis = true;
+            this.tempLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.tempLabel.Location = new System.Drawing.Point(92, 156);
+            this.tempLabel.Name = "tempLabel";
+            this.tempLabel.Size = new System.Drawing.Size(85, 13);
+            this.tempLabel.TabIndex = 20;
+            this.tempLabel.Text = "label14";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label15.Location = new System.Drawing.Point(7, 155);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(41, 15);
+            this.label15.TabIndex = 19;
+            this.label15.Text = "Temp:";
+            // 
+            // fanLabel
+            // 
+            this.fanLabel.AutoSize = true;
+            this.fanLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.fanLabel.Location = new System.Drawing.Point(255, 155);
+            this.fanLabel.Name = "fanLabel";
+            this.fanLabel.Size = new System.Drawing.Size(44, 15);
+            this.fanLabel.TabIndex = 22;
+            this.fanLabel.Text = "label16";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label17.Location = new System.Drawing.Point(183, 155);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(29, 15);
+            this.label17.TabIndex = 21;
+            this.label17.Text = "Fan:";
+            // 
+            // acceptedLabel
+            // 
+            this.acceptedLabel.AutoEllipsis = true;
+            this.acceptedLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.acceptedLabel.Location = new System.Drawing.Point(92, 170);
+            this.acceptedLabel.Name = "acceptedLabel";
+            this.acceptedLabel.Size = new System.Drawing.Size(85, 15);
+            this.acceptedLabel.TabIndex = 24;
+            this.acceptedLabel.Text = "label18";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label19.Location = new System.Drawing.Point(7, 170);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(60, 15);
+            this.label19.TabIndex = 23;
+            this.label19.Text = "Accepted:";
+            // 
+            // rejectedLabel
+            // 
+            this.rejectedLabel.AutoSize = true;
+            this.rejectedLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.rejectedLabel.Location = new System.Drawing.Point(255, 170);
+            this.rejectedLabel.Name = "rejectedLabel";
+            this.rejectedLabel.Size = new System.Drawing.Size(44, 15);
+            this.rejectedLabel.TabIndex = 26;
+            this.rejectedLabel.Text = "label20";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label21.Location = new System.Drawing.Point(183, 170);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(55, 15);
+            this.label21.TabIndex = 25;
+            this.label21.Text = "Rejected:";
+            // 
+            // errorsLabel
+            // 
+            this.errorsLabel.AutoSize = true;
+            this.errorsLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.errorsLabel.Location = new System.Drawing.Point(255, 185);
+            this.errorsLabel.Name = "errorsLabel";
+            this.errorsLabel.Size = new System.Drawing.Size(44, 15);
+            this.errorsLabel.TabIndex = 28;
+            this.errorsLabel.Text = "label22";
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label23.Location = new System.Drawing.Point(183, 185);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(40, 15);
+            this.label23.TabIndex = 27;
+            this.label23.Text = "Errors:";
+            // 
+            // utilityLabel
+            // 
+            this.utilityLabel.AutoEllipsis = true;
+            this.utilityLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.utilityLabel.Location = new System.Drawing.Point(92, 185);
+            this.utilityLabel.Name = "utilityLabel";
+            this.utilityLabel.Size = new System.Drawing.Size(85, 15);
+            this.utilityLabel.TabIndex = 30;
+            this.utilityLabel.Text = "label24";
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label25.Location = new System.Drawing.Point(7, 185);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(41, 15);
+            this.label25.TabIndex = 29;
+            this.label25.Text = "Utility:";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "LastShareDifficulty", true));
+            this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.label13.Location = new System.Drawing.Point(255, 215);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(44, 15);
+            this.label13.TabIndex = 36;
+            this.label13.Text = "label18";
+            // 
+            // poolInformationResponseBindingSource
+            // 
+            this.poolInformationResponseBindingSource.DataSource = typeof(MultiMiner.Xgminer.Api.Responses.PoolInformationResponse);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label14.Location = new System.Drawing.Point(183, 215);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(58, 15);
+            this.label14.TabIndex = 35;
+            this.label14.Text = "Difficulty:";
+            // 
+            // label16
+            // 
+            this.label16.AutoEllipsis = true;
+            this.label16.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "LastShareTime", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "t"));
+            this.label16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.label16.Location = new System.Drawing.Point(92, 215);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(85, 15);
+            this.label16.TabIndex = 34;
+            this.label16.Text = "label16";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label18.Location = new System.Drawing.Point(7, 215);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(62, 15);
+            this.label18.TabIndex = 33;
+            this.label18.Text = "Last share:";
+            // 
+            // poolLabel
+            // 
+            this.poolLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.poolLabel.AutoEllipsis = true;
+            this.poolLabel.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "Url", true));
+            this.poolLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.poolLabel.Location = new System.Drawing.Point(92, 200);
+            this.poolLabel.Name = "poolLabel";
+            this.poolLabel.Size = new System.Drawing.Size(502, 15);
+            this.poolLabel.TabIndex = 32;
+            this.poolLabel.Text = "label14";
+            this.poolLabel.UseMnemonic = false;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label22.Location = new System.Drawing.Point(7, 200);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(34, 15);
+            this.label22.TabIndex = 31;
+            this.label22.Text = "Pool:";
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "BestShare", true));
+            this.label24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.label24.Location = new System.Drawing.Point(92, 230);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(44, 15);
+            this.label24.TabIndex = 38;
+            this.label24.Text = "label18";
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label26.Location = new System.Drawing.Point(7, 230);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(63, 15);
+            this.label26.TabIndex = 37;
+            this.label26.Text = "Best share:";
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "PoolStalePercent", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "P4"));
+            this.label27.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.label27.Location = new System.Drawing.Point(92, 245);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(44, 15);
+            this.label27.TabIndex = 40;
+            this.label27.Text = "label18";
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label28.Location = new System.Drawing.Point(7, 245);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(35, 15);
+            this.label28.TabIndex = 39;
+            this.label28.Text = "Stale:";
+            // 
+            // noDetailsPanel
+            // 
+            this.noDetailsPanel.Controls.Add(this.panel2);
+            this.noDetailsPanel.Controls.Add(this.deviceCountLabel);
+            this.noDetailsPanel.Location = new System.Drawing.Point(95, 287);
+            this.noDetailsPanel.Name = "noDetailsPanel";
+            this.noDetailsPanel.Size = new System.Drawing.Size(338, 254);
+            this.noDetailsPanel.TabIndex = 41;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel2.Controls.Add(this.pictureBox2);
+            this.panel2.Location = new System.Drawing.Point(11, 29);
+            this.panel2.Name = "panel2";
+            this.panel2.Padding = new System.Windows.Forms.Padding(1);
+            this.panel2.Size = new System.Drawing.Size(75, 75);
+            this.panel2.TabIndex = 44;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox2.Image = global::MultiMiner.Win.Properties.Resources.computer_list;
+            this.pictureBox2.Location = new System.Drawing.Point(1, 1);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(73, 73);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBox2.TabIndex = 3;
+            this.pictureBox2.TabStop = false;
+            // 
+            // deviceCountLabel
+            // 
+            this.deviceCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.deviceCountLabel.AutoEllipsis = true;
+            this.deviceCountLabel.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Name", true));
+            this.deviceCountLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.deviceCountLabel.Location = new System.Drawing.Point(10, 3);
+            this.deviceCountLabel.Name = "deviceCountLabel";
+            this.deviceCountLabel.Size = new System.Drawing.Size(316, 25);
+            this.deviceCountLabel.TabIndex = 43;
+            this.deviceCountLabel.Text = "label1";
+            // 
+            // coinInformationBindingSource
+            // 
+            this.coinInformationBindingSource.DataSource = typeof(MultiMiner.Coin.Api.CoinInformation);
+            // 
+            // deviceDetailsResponseBindingSource
+            // 
+            this.deviceDetailsResponseBindingSource.DataSource = typeof(MultiMiner.Xgminer.Api.Responses.DeviceDetailsResponse);
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel1.Controls.Add(this.pictureBox1);
+            this.panel1.Location = new System.Drawing.Point(11, 29);
+            this.panel1.Name = "panel1";
+            this.panel1.Padding = new System.Windows.Forms.Padding(1);
+            this.panel1.Size = new System.Drawing.Size(75, 75);
+            this.panel1.TabIndex = 42;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox1.Location = new System.Drawing.Point(1, 1);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(73, 73);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBox1.TabIndex = 3;
+            this.pictureBox1.TabStop = false;
+            // 
             // DetailsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.noDetailsPanel);
             this.Controls.Add(this.label27);
             this.Controls.Add(this.label28);
@@ -661,7 +704,7 @@
             this.Controls.Add(this.label14);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label18);
-            this.Controls.Add(this.label20);
+            this.Controls.Add(this.poolLabel);
             this.Controls.Add(this.label22);
             this.Controls.Add(this.utilityLabel);
             this.Controls.Add(this.label25);
@@ -691,7 +734,6 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.nameLabel);
-            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.closeDetailsButton);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Name = "DetailsControl";
@@ -703,10 +745,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.deviceInformationResponseBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.poolInformationResponseBindingSource)).EndInit();
             this.noDetailsPanel.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.coinInformationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceDetailsResponseBindingSource)).EndInit();
+            this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -716,7 +760,6 @@
 
         private System.Windows.Forms.Button closeDetailsButton;
         private System.Windows.Forms.ImageList imageList1;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label nameLabel;
         private System.Windows.Forms.BindingSource deviceBindingSource;
         private System.Windows.Forms.Label label2;
@@ -754,7 +797,7 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label poolLabel;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.BindingSource poolInformationResponseBindingSource;
         private System.Windows.Forms.Label label24;
@@ -762,13 +805,16 @@
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Panel noDetailsPanel;
-        private System.Windows.Forms.Label deviceCountLabel;
-        private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.DataGridViewTextBoxColumn workerNameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn averageHashrateDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn currentHashrateDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn acceptedSharesDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn hardwareErrorsPercentDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn utilityDataGridViewTextBoxColumn;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Label deviceCountLabel;
     }
 }
