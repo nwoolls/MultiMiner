@@ -46,12 +46,8 @@
             this.thresholdValueLabel = new System.Windows.Forms.Label();
             this.profitabilityKindLabel = new System.Windows.Forms.Label();
             this.profitabilityKindCombo = new System.Windows.Forms.ComboBox();
-            this.intervalCombo = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.miningBasisCombo = new System.Windows.Forms.ComboBox();
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.suggestionsCombo = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -64,7 +60,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 351);
+            this.panel1.Location = new System.Drawing.Point(0, 290);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(414, 54);
             this.panel1.TabIndex = 7;
@@ -162,7 +158,7 @@
             this.groupBox1.Controls.Add(this.thresholdSymbolCombo);
             this.groupBox1.Controls.Add(this.multiCoinRadio);
             this.groupBox1.Controls.Add(this.singleCoinRadio);
-            this.groupBox1.Location = new System.Drawing.Point(14, 139);
+            this.groupBox1.Location = new System.Drawing.Point(14, 79);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(386, 198);
             this.groupBox1.TabIndex = 6;
@@ -229,40 +225,10 @@
             "Profitability Adjusted for Stales",
             "Average Profitability Past 7 Days",
             "Straight Profitability"});
-            this.profitabilityKindCombo.Location = new System.Drawing.Point(145, 43);
+            this.profitabilityKindCombo.Location = new System.Drawing.Point(145, 45);
             this.profitabilityKindCombo.Name = "profitabilityKindCombo";
             this.profitabilityKindCombo.Size = new System.Drawing.Size(234, 23);
             this.profitabilityKindCombo.TabIndex = 2;
-            // 
-            // intervalCombo
-            // 
-            this.intervalCombo.AccessibleName = "Check every";
-            this.intervalCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.intervalCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.intervalCombo.FormattingEnabled = true;
-            this.intervalCombo.Items.AddRange(new object[] {
-            "5 minutes",
-            "15 minutes",
-            "30 minutes",
-            "1 hour",
-            "2 hours",
-            "3 hours",
-            "6 hours",
-            "12 hours"});
-            this.intervalCombo.Location = new System.Drawing.Point(145, 73);
-            this.intervalCombo.Name = "intervalCombo";
-            this.intervalCombo.Size = new System.Drawing.Size(234, 23);
-            this.intervalCombo.TabIndex = 3;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(33, 77);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(74, 15);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "Check every:";
             // 
             // miningBasisCombo
             // 
@@ -285,43 +251,13 @@
             // 
             this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.ApplicationConfiguration);
             // 
-            // suggestionsCombo
-            // 
-            this.suggestionsCombo.AccessibleName = "Suggest coins";
-            this.suggestionsCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.suggestionsCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.suggestionsCombo.FormattingEnabled = true;
-            this.suggestionsCombo.Items.AddRange(new object[] {
-            "None",
-            "SHA-256",
-            "Scrypt",
-            "Both"});
-            this.suggestionsCombo.Location = new System.Drawing.Point(145, 105);
-            this.suggestionsCombo.Name = "suggestionsCombo";
-            this.suggestionsCombo.Size = new System.Drawing.Size(234, 23);
-            this.suggestionsCombo.TabIndex = 5;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(33, 108);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(83, 15);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "Suggest coins:";
-            // 
             // StrategiesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(414, 405);
-            this.Controls.Add(this.suggestionsCombo);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(414, 344);
             this.Controls.Add(this.miningBasisCombo);
-            this.Controls.Add(this.intervalCombo);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.profitabilityKindCombo);
             this.Controls.Add(this.profitabilityKindLabel);
             this.Controls.Add(this.groupBox1);
@@ -363,11 +299,7 @@
         private System.Windows.Forms.Label mineSingleOverrideLabel;
         private System.Windows.Forms.Label profitabilityKindLabel;
         private System.Windows.Forms.ComboBox profitabilityKindCombo;
-        private System.Windows.Forms.ComboBox intervalCombo;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox miningBasisCombo;
         private System.Windows.Forms.BindingSource applicationConfigurationBindingSource;
-        private System.Windows.Forms.ComboBox suggestionsCombo;
-        private System.Windows.Forms.Label label1;
     }
 }

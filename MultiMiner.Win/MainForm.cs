@@ -1521,6 +1521,8 @@ namespace MultiMiner.Win
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
                 SetupRestartTimer();
                 CheckForUpdates();
+                SetupCoinStatsTimer();
+                SuggestCoinsToMine();
 
                 //don't refresh coin stats excessively
                 if ((oldCoinWarzValue != applicationConfiguration.UseCoinWarzApi) ||
@@ -2661,10 +2663,6 @@ namespace MultiMiner.Win
 
                 engineConfiguration.SaveStrategyConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
-                SetupCoinStatsTimer();
-                
-                //so updated profitability is shown
-                RefreshCoinStats();
 
                 RefreshStrategiesLabel();
                 LoadListViewValuesFromCoinStats();
