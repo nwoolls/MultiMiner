@@ -44,7 +44,6 @@ namespace MultiMiner.Win
         private readonly Dictionary<Device, DeviceDetailsResponse> deviceDetailsMapping = new Dictionary<Device, DeviceDetailsResponse>();
 
         //currently mining information
-        private BaseCoin currentBaseCoin = BaseCoin.Bitcoin;
         private List<DeviceConfiguration> miningDeviceConfigurations;
         private List<CoinConfiguration> miningCoinConfigurations;
 
@@ -2064,11 +2063,7 @@ namespace MultiMiner.Win
                     if (coinInfo != null)
                     {
                         double coinUsd = sellPrices.Subtotal.Amount * coinInfo.Price;
-
-                        //if BaseCoin is LiteCoin, adjust the USD price accordingly
-                        if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == BaseCoin.Litecoin))
-                            coinUsd = coinUsd / btcCoinInfo.Price;
-
+                        
                         double coinDailyUsd = coinIncome * coinUsd;
                         usdTotal += coinDailyUsd;
 
@@ -2350,9 +2345,7 @@ namespace MultiMiner.Win
             try
             {
                 coinApiInformation = coinApiContext.GetCoinInformation(
-                    UserAgent.AgentString,
-                    engineConfiguration.StrategyConfiguration.BaseCoin).ToList();
-                currentBaseCoin = applicationConfiguration.UseCoinWarzApi ? BaseCoin.Bitcoin : engineConfiguration.StrategyConfiguration.BaseCoin;
+                    UserAgent.AgentString).ToList();
             }
             catch (Exception ex)
             {
@@ -2376,8 +2369,8 @@ namespace MultiMiner.Win
 
         private void ShowCoinApiErrorNotification(Exception ex)
         {
-            string siteUrl = this.coinApiContext.GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
-            string apiUrl = this.coinApiContext.GetApiUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
+            string siteUrl = this.coinApiContext.GetInfoUrl();
+            string apiUrl = this.coinApiContext.GetApiUrl();
             string apiName = this.coinApiContext.GetApiName();
 
             notificationsControl.AddNotification(ex.Message,
@@ -2456,7 +2449,7 @@ namespace MultiMiner.Win
                     break;
             }
 
-            string infoUrl = coinApiContext.GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
+            string infoUrl = coinApiContext.GetInfoUrl();
 
             notificationsControl.AddNotification(coin.Symbol,
                 String.Format("Consider mining {0} ({1} {2})",
@@ -2565,8 +2558,6 @@ namespace MultiMiner.Win
                 item.SubItems["Difficulty"].Text = coinInfo.Difficulty.ToDifficultyString();
 
                 string unit = "BTC";
-                if (currentBaseCoin == BaseCoin.Litecoin)
-                    unit = "LTC";
 
                 item.SubItems["Price"].Text = String.Format("{0} {1}", coinInfo.Price.ToFriendlyString(), unit);
 
@@ -2579,14 +2570,7 @@ namespace MultiMiner.Win
                     double btcExchangeRate = sellPrices.Subtotal.Amount;
                     double coinExchangeRate = 0.00;
 
-                    if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == BaseCoin.Litecoin))
-                    {
-                        //if BaseCoin is LiteCoin, adjust the USD price accordingly
-                        CoinInformation btcCoinInfo = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
-                        coinExchangeRate = coinInfo.Price * (btcExchangeRate / btcCoinInfo.Price);
-                    }
-                    else
-                        coinExchangeRate = coinInfo.Price * btcExchangeRate;
+                    coinExchangeRate = coinInfo.Price * btcExchangeRate;
 
                     item.SubItems["Exchange"].Tag = coinExchangeRate;
                     item.SubItems["Exchange"].Text = String.Format("${0}", coinExchangeRate.ToFriendlyString(true));
@@ -2720,7 +2704,7 @@ namespace MultiMiner.Win
 
         private void coinChooseLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(this.coinApiContext.GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin));
+            Process.Start(this.coinApiContext.GetInfoUrl());
         }
 
         private void closeApiButton_Click(object sender, EventArgs e)

@@ -37,18 +37,5 @@ namespace MultiMiner.CoinChoose.Api.Tests
             coin = coinInformation.Single(c => c.Symbol.Equals("LTC"));
             Assert.AreNotEqual(coin.Profitability, 100);
         }
-
-        [TestMethod]
-        public void GetCoinInformation_BitcoinBasis_IsBasedOnLitecoin()
-        {
-            //act
-            List<CoinInformation> coinInformation = new ApiContext().GetCoinInformation("", BaseCoin.Litecoin).ToList();
-
-            //assert
-            CoinInformation coin = coinInformation.Single(c => c.Symbol.Equals("LTC"));
-            Assert.AreEqual(coin.Profitability, 100);
-            coin = coinInformation.Single(c => c.Symbol.Equals("BTC"));
-            Assert.AreNotEqual(coin.Profitability, 100);
-        }
     }
 }

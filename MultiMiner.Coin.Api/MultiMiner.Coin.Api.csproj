@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseCoin.cs" />
     <Compile Include="CoinApiException.cs" />
     <Compile Include="CoinInformation.cs" />
     <Compile Include="IApiContext.cs" />

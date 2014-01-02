@@ -48,8 +48,6 @@
             this.profitabilityKindCombo = new System.Windows.Forms.ComboBox();
             this.intervalCombo = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.baseCoinCombo = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.miningBasisCombo = new System.Windows.Forms.ComboBox();
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.suggestionsCombo = new System.Windows.Forms.ComboBox();
@@ -66,7 +64,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 387);
+            this.panel1.Location = new System.Drawing.Point(0, 351);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(414, 54);
             this.panel1.TabIndex = 7;
@@ -164,7 +162,7 @@
             this.groupBox1.Controls.Add(this.thresholdSymbolCombo);
             this.groupBox1.Controls.Add(this.multiCoinRadio);
             this.groupBox1.Controls.Add(this.singleCoinRadio);
-            this.groupBox1.Location = new System.Drawing.Point(14, 172);
+            this.groupBox1.Location = new System.Drawing.Point(14, 139);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(386, 198);
             this.groupBox1.TabIndex = 6;
@@ -252,7 +250,7 @@
             "3 hours",
             "6 hours",
             "12 hours"});
-            this.intervalCombo.Location = new System.Drawing.Point(145, 74);
+            this.intervalCombo.Location = new System.Drawing.Point(145, 73);
             this.intervalCombo.Name = "intervalCombo";
             this.intervalCombo.Size = new System.Drawing.Size(234, 23);
             this.intervalCombo.TabIndex = 3;
@@ -265,30 +263,6 @@
             this.label5.Size = new System.Drawing.Size(74, 15);
             this.label5.TabIndex = 5;
             this.label5.Text = "Check every:";
-            // 
-            // baseCoinCombo
-            // 
-            this.baseCoinCombo.AccessibleName = "Base coin";
-            this.baseCoinCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.baseCoinCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.baseCoinCombo.FormattingEnabled = true;
-            this.baseCoinCombo.Items.AddRange(new object[] {
-            "Bitcoin",
-            "Litecoin"});
-            this.baseCoinCombo.Location = new System.Drawing.Point(145, 105);
-            this.baseCoinCombo.Name = "baseCoinCombo";
-            this.baseCoinCombo.Size = new System.Drawing.Size(234, 23);
-            this.baseCoinCombo.TabIndex = 4;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(33, 108);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(60, 15);
-            this.label6.TabIndex = 7;
-            this.label6.Text = "Base coin:";
             // 
             // miningBasisCombo
             // 
@@ -323,7 +297,7 @@
             "SHA-256",
             "Scrypt",
             "Both"});
-            this.suggestionsCombo.Location = new System.Drawing.Point(145, 136);
+            this.suggestionsCombo.Location = new System.Drawing.Point(145, 105);
             this.suggestionsCombo.Name = "suggestionsCombo";
             this.suggestionsCombo.Size = new System.Drawing.Size(234, 23);
             this.suggestionsCombo.TabIndex = 5;
@@ -331,7 +305,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(33, 140);
+            this.label1.Location = new System.Drawing.Point(33, 108);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(83, 15);
             this.label1.TabIndex = 9;
@@ -342,12 +316,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(414, 441);
+            this.ClientSize = new System.Drawing.Size(414, 405);
             this.Controls.Add(this.suggestionsCombo);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.miningBasisCombo);
-            this.Controls.Add(this.baseCoinCombo);
-            this.Controls.Add(this.label6);
             this.Controls.Add(this.intervalCombo);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.profitabilityKindCombo);
@@ -393,8 +365,6 @@
         private System.Windows.Forms.ComboBox profitabilityKindCombo;
         private System.Windows.Forms.ComboBox intervalCombo;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.ComboBox baseCoinCombo;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox miningBasisCombo;
         private System.Windows.Forms.BindingSource applicationConfigurationBindingSource;
         private System.Windows.Forms.ComboBox suggestionsCombo;
