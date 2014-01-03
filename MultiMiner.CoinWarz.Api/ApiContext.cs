@@ -27,14 +27,13 @@ namespace MultiMiner.CoinWarz.Api
             this.apiKey = apiKey;
         }
 
-        public IEnumerable<CoinInformation> GetCoinInformation(string userAgent = "",
-            BaseCoin profitabilityBasis = BaseCoin.Bitcoin)
+        public IEnumerable<CoinInformation> GetCoinInformation(string userAgent = "")
         {
             WebClient client = new ApiWebClient();
             if (!string.IsNullOrEmpty(userAgent))
                 client.Headers.Add("user-agent", userAgent);
 
-            string apiUrl = GetApiUrl(profitabilityBasis);
+            string apiUrl = GetApiUrl();
 
             string jsonString = client.DownloadString(apiUrl);
 
@@ -62,12 +61,12 @@ namespace MultiMiner.CoinWarz.Api
             return result;
         }
 
-        public string GetApiUrl(BaseCoin profitabilityBasis)
+        public string GetApiUrl()
         {
             return String.Format(@"http://www.coinwarz.com/v1/api/profitability/?apikey={0}&algo=all", apiKey);
         }
 
-        public string GetInfoUrl(BaseCoin profitabilityBasis)
+        public string GetInfoUrl()
         {
             return String.Format(@"http://www.coinwarz.com/cryptocurrency", apiKey);
         }

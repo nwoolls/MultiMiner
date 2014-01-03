@@ -19,5 +19,6 @@ namespace MultiMiner.Xgminer
         public string Username { get; set; }
         public string Password { get; set; }
         public int Quota { get; set; } //see bfgminer README about quotas
+        public bool QuotaEnabled { get; set; }
     }
 }

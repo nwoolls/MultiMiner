@@ -31,21 +31,23 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.serviceSettingsLink = new System.Windows.Forms.LinkLabel();
+            this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.apiKeyEdit = new System.Windows.Forms.TextBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.apiKeyLabel = new System.Windows.Forms.LinkLabel();
             this.label11 = new System.Windows.Forms.Label();
             this.coinApiCombo = new System.Windows.Forms.ComboBox();
-            this.httpsMobileMinerCheck = new System.Windows.Forms.CheckBox();
-            this.pushNotificationsCheck = new System.Windows.Forms.CheckBox();
             this.mobileMinerInfoLink = new System.Windows.Forms.LinkLabel();
-            this.remoteCommandsCheck = new System.Windows.Forms.CheckBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.remoteMonitoringCheck = new System.Windows.Forms.CheckBox();
             this.appKeyEdit = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.emailAddressEdit = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.advancedSettingsLink = new System.Windows.Forms.LinkLabel();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.checkBox8 = new System.Windows.Forms.CheckBox();
             this.sysTrayCheckBox = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -57,39 +59,34 @@
             this.checkBox7 = new System.Windows.Forms.CheckBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.minerSettingsLink = new System.Windows.Forms.LinkLabel();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label7 = new System.Windows.Forms.Label();
             this.priorityCombo = new System.Windows.Forms.ComboBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.advancedSettingsLink = new System.Windows.Forms.LinkLabel();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.groupBox3.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.checkBox5);
+            this.groupBox3.Controls.Add(this.serviceSettingsLink);
+            this.groupBox3.Controls.Add(this.pictureBox4);
             this.groupBox3.Controls.Add(this.apiKeyEdit);
             this.groupBox3.Controls.Add(this.apiKeyLabel);
             this.groupBox3.Controls.Add(this.label11);
             this.groupBox3.Controls.Add(this.coinApiCombo);
-            this.groupBox3.Controls.Add(this.httpsMobileMinerCheck);
-            this.groupBox3.Controls.Add(this.pushNotificationsCheck);
             this.groupBox3.Controls.Add(this.mobileMinerInfoLink);
             this.groupBox3.Controls.Add(this.pictureBox1);
-            this.groupBox3.Controls.Add(this.remoteCommandsCheck);
             this.groupBox3.Controls.Add(this.remoteMonitoringCheck);
             this.groupBox3.Controls.Add(this.appKeyEdit);
             this.groupBox3.Controls.Add(this.label8);
@@ -97,21 +94,31 @@
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Location = new System.Drawing.Point(14, 267);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(490, 215);
+            this.groupBox3.Size = new System.Drawing.Size(490, 163);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Online Services";
             // 
-            // checkBox5
+            // serviceSettingsLink
             // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "ShowApiErrors", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox5.Location = new System.Drawing.Point(14, 183);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(182, 19);
-            this.checkBox5.TabIndex = 10;
-            this.checkBox5.Text = "Display API error notifications";
-            this.checkBox5.UseVisualStyleBackColor = true;
+            this.serviceSettingsLink.AccessibleName = "Advanced service settings";
+            this.serviceSettingsLink.AutoSize = true;
+            this.serviceSettingsLink.Location = new System.Drawing.Point(36, 129);
+            this.serviceSettingsLink.Name = "serviceSettingsLink";
+            this.serviceSettingsLink.Size = new System.Drawing.Size(143, 15);
+            this.serviceSettingsLink.TabIndex = 9;
+            this.serviceSettingsLink.TabStop = true;
+            this.serviceSettingsLink.Text = "Advanced service settings";
+            this.serviceSettingsLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.serviceSettingsLink_LinkClicked);
+            // 
+            // pictureBox4
+            // 
+            this.pictureBox4.Image = global::MultiMiner.Win.Properties.Resources.list_internet;
+            this.pictureBox4.Location = new System.Drawing.Point(14, 128);
+            this.pictureBox4.Name = "pictureBox4";
+            this.pictureBox4.Size = new System.Drawing.Size(19, 18);
+            this.pictureBox4.TabIndex = 20;
+            this.pictureBox4.TabStop = false;
             // 
             // apiKeyEdit
             // 
@@ -121,6 +128,10 @@
             this.apiKeyEdit.Name = "apiKeyEdit";
             this.apiKeyEdit.Size = new System.Drawing.Size(151, 23);
             this.apiKeyEdit.TabIndex = 2;
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.ApplicationConfiguration);
             // 
             // apiKeyLabel
             // 
@@ -155,58 +166,34 @@
             this.coinApiCombo.TabIndex = 0;
             this.coinApiCombo.SelectedIndexChanged += new System.EventHandler(this.coinApiCombo_SelectedIndexChanged);
             // 
-            // httpsMobileMinerCheck
-            // 
-            this.httpsMobileMinerCheck.AutoSize = true;
-            this.httpsMobileMinerCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerUsesHttps", true));
-            this.httpsMobileMinerCheck.Location = new System.Drawing.Point(260, 91);
-            this.httpsMobileMinerCheck.Name = "httpsMobileMinerCheck";
-            this.httpsMobileMinerCheck.Size = new System.Drawing.Size(84, 19);
-            this.httpsMobileMinerCheck.TabIndex = 6;
-            this.httpsMobileMinerCheck.Text = "Use HTTPS";
-            this.httpsMobileMinerCheck.UseVisualStyleBackColor = true;
-            // 
-            // pushNotificationsCheck
-            // 
-            this.pushNotificationsCheck.AutoSize = true;
-            this.pushNotificationsCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerPushNotifications", true));
-            this.pushNotificationsCheck.Location = new System.Drawing.Point(14, 91);
-            this.pushNotificationsCheck.Name = "pushNotificationsCheck";
-            this.pushNotificationsCheck.Size = new System.Drawing.Size(183, 19);
-            this.pushNotificationsCheck.TabIndex = 5;
-            this.pushNotificationsCheck.Text = "Push MultiMiner notifications";
-            this.pushNotificationsCheck.UseVisualStyleBackColor = true;
-            // 
             // mobileMinerInfoLink
             // 
             this.mobileMinerInfoLink.AutoSize = true;
-            this.mobileMinerInfoLink.Location = new System.Drawing.Point(36, 155);
+            this.mobileMinerInfoLink.Location = new System.Drawing.Point(285, 62);
             this.mobileMinerInfoLink.Name = "mobileMinerInfoLink";
             this.mobileMinerInfoLink.Size = new System.Drawing.Size(172, 15);
-            this.mobileMinerInfoLink.TabIndex = 9;
+            this.mobileMinerInfoLink.TabIndex = 6;
             this.mobileMinerInfoLink.TabStop = true;
             this.mobileMinerInfoLink.Text = "Learn more about MobileMiner";
             this.mobileMinerInfoLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.mobileMinerInfoLink_LinkClicked);
             // 
-            // remoteCommandsCheck
+            // pictureBox1
             // 
-            this.remoteCommandsCheck.AutoSize = true;
-            this.remoteCommandsCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerRemoteCommands", true));
-            this.remoteCommandsCheck.Location = new System.Drawing.Point(260, 62);
-            this.remoteCommandsCheck.Name = "remoteCommandsCheck";
-            this.remoteCommandsCheck.Size = new System.Drawing.Size(143, 19);
-            this.remoteCommandsCheck.TabIndex = 4;
-            this.remoteCommandsCheck.Text = "Enable remote control";
-            this.remoteCommandsCheck.UseVisualStyleBackColor = true;
+            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.info;
+            this.pictureBox1.Location = new System.Drawing.Point(260, 61);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(19, 18);
+            this.pictureBox1.TabIndex = 5;
+            this.pictureBox1.TabStop = false;
             // 
             // remoteMonitoringCheck
             // 
             this.remoteMonitoringCheck.AutoSize = true;
             this.remoteMonitoringCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerMonitoring", true));
-            this.remoteMonitoringCheck.Location = new System.Drawing.Point(14, 62);
+            this.remoteMonitoringCheck.Location = new System.Drawing.Point(14, 60);
             this.remoteMonitoringCheck.Name = "remoteMonitoringCheck";
             this.remoteMonitoringCheck.Size = new System.Drawing.Size(195, 19);
-            this.remoteMonitoringCheck.TabIndex = 3;
+            this.remoteMonitoringCheck.TabIndex = 5;
             this.remoteMonitoringCheck.Text = "Enable MobileMiner monitoring";
             this.remoteMonitoringCheck.UseVisualStyleBackColor = true;
             this.remoteMonitoringCheck.CheckedChanged += new System.EventHandler(this.remoteMonitoringCheck_CheckedChanged);
@@ -216,7 +203,7 @@
             this.appKeyEdit.AccessibleName = "App key";
             this.appKeyEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "MobileMinerApplicationKey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.appKeyEdit.Enabled = false;
-            this.appKeyEdit.Location = new System.Drawing.Point(318, 120);
+            this.appKeyEdit.Location = new System.Drawing.Point(318, 91);
             this.appKeyEdit.Name = "appKeyEdit";
             this.appKeyEdit.Size = new System.Drawing.Size(151, 23);
             this.appKeyEdit.TabIndex = 8;
@@ -224,7 +211,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(11, 123);
+            this.label8.Location = new System.Drawing.Point(11, 94);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(82, 15);
             this.label8.TabIndex = 4;
@@ -235,15 +222,15 @@
             this.emailAddressEdit.AccessibleName = "Email address";
             this.emailAddressEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "MobileMinerEmailAddress", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.emailAddressEdit.Enabled = false;
-            this.emailAddressEdit.Location = new System.Drawing.Point(121, 120);
+            this.emailAddressEdit.Location = new System.Drawing.Point(120, 91);
             this.emailAddressEdit.Name = "emailAddressEdit";
-            this.emailAddressEdit.Size = new System.Drawing.Size(124, 23);
+            this.emailAddressEdit.Size = new System.Drawing.Size(121, 23);
             this.emailAddressEdit.TabIndex = 7;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(257, 123);
+            this.label6.Location = new System.Drawing.Point(257, 94);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(53, 15);
             this.label6.TabIndex = 0;
@@ -262,10 +249,31 @@
             this.groupBox2.Controls.Add(this.textBox1);
             this.groupBox2.Location = new System.Drawing.Point(14, 9);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(490, 126);
+            this.groupBox2.Size = new System.Drawing.Size(490, 122);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Application";
+            // 
+            // advancedSettingsLink
+            // 
+            this.advancedSettingsLink.AccessibleName = "Advanced application settings";
+            this.advancedSettingsLink.AutoSize = true;
+            this.advancedSettingsLink.Location = new System.Drawing.Point(36, 85);
+            this.advancedSettingsLink.Name = "advancedSettingsLink";
+            this.advancedSettingsLink.Size = new System.Drawing.Size(166, 15);
+            this.advancedSettingsLink.TabIndex = 2;
+            this.advancedSettingsLink.TabStop = true;
+            this.advancedSettingsLink.Text = "Advanced application settings";
+            this.advancedSettingsLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.advancedSettingsLink_LinkClicked);
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Image = global::MultiMiner.Win.Properties.Resources.settings_option;
+            this.pictureBox3.Location = new System.Drawing.Point(14, 82);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(19, 18);
+            this.pictureBox3.TabIndex = 20;
+            this.pictureBox3.TabStop = false;
             // 
             // checkBox8
             // 
@@ -353,7 +361,7 @@
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.priorityCombo);
             this.groupBox1.Controls.Add(this.checkBox2);
-            this.groupBox1.Location = new System.Drawing.Point(14, 143);
+            this.groupBox1.Location = new System.Drawing.Point(14, 141);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(490, 116);
             this.groupBox1.TabIndex = 1;
@@ -393,6 +401,15 @@
             this.minerSettingsLink.TabStop = true;
             this.minerSettingsLink.Text = "Advanced miner settings";
             this.minerSettingsLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Image = global::MultiMiner.Win.Properties.Resources.view_options;
+            this.pictureBox2.Location = new System.Drawing.Point(14, 81);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(19, 18);
+            this.pictureBox2.TabIndex = 18;
+            this.pictureBox2.TabStop = false;
             // 
             // label7
             // 
@@ -434,7 +451,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 497);
+            this.panel1.Location = new System.Drawing.Point(0, 445);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(518, 54);
             this.panel1.TabIndex = 3;
@@ -461,54 +478,12 @@
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
-            // advancedSettingsLink
-            // 
-            this.advancedSettingsLink.AutoSize = true;
-            this.advancedSettingsLink.Location = new System.Drawing.Point(36, 85);
-            this.advancedSettingsLink.Name = "advancedSettingsLink";
-            this.advancedSettingsLink.Size = new System.Drawing.Size(166, 15);
-            this.advancedSettingsLink.TabIndex = 2;
-            this.advancedSettingsLink.TabStop = true;
-            this.advancedSettingsLink.Text = "Advanced application settings";
-            this.advancedSettingsLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.advancedSettingsLink_LinkClicked);
-            // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.ApplicationConfiguration);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.info;
-            this.pictureBox1.Location = new System.Drawing.Point(14, 153);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(19, 18);
-            this.pictureBox1.TabIndex = 5;
-            this.pictureBox1.TabStop = false;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.Image = global::MultiMiner.Win.Properties.Resources.settings_option;
-            this.pictureBox3.Location = new System.Drawing.Point(14, 82);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(19, 18);
-            this.pictureBox3.TabIndex = 20;
-            this.pictureBox3.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Image = global::MultiMiner.Win.Properties.Resources.view_options;
-            this.pictureBox2.Location = new System.Drawing.Point(14, 81);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(19, 18);
-            this.pictureBox2.TabIndex = 18;
-            this.pictureBox2.TabStop = false;
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(518, 551);
+            this.ClientSize = new System.Drawing.Size(518, 499);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -523,15 +498,16 @@
             this.Load += new System.EventHandler(this.SettingsForm_Load);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -556,7 +532,6 @@
         private System.Windows.Forms.TextBox appKeyEdit;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox emailAddressEdit;
-        private System.Windows.Forms.CheckBox remoteCommandsCheck;
         private System.Windows.Forms.CheckBox remoteMonitoringCheck;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.LinkLabel mobileMinerInfoLink;
@@ -565,16 +540,15 @@
         private System.Windows.Forms.LinkLabel minerSettingsLink;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.CheckBox checkBox4;
-        private System.Windows.Forms.CheckBox httpsMobileMinerCheck;
-        private System.Windows.Forms.CheckBox pushNotificationsCheck;
         private System.Windows.Forms.CheckBox checkBox7;
         private System.Windows.Forms.TextBox apiKeyEdit;
         private System.Windows.Forms.LinkLabel apiKeyLabel;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.ComboBox coinApiCombo;
         private System.Windows.Forms.CheckBox checkBox8;
-        private System.Windows.Forms.CheckBox checkBox5;
         private System.Windows.Forms.LinkLabel advancedSettingsLink;
         private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.LinkLabel serviceSettingsLink;
+        private System.Windows.Forms.PictureBox pictureBox4;
     }
 }

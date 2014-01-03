@@ -22,12 +22,10 @@
         public double? MinimumProfitabilityPercentage { get; set; }
         public double? MineMostProfitableOverridePercentage { get; set; }
         public CoinProfitabilityBasis ProfitabilityBasis { get; set; }
-        public Coin.Api.BaseCoin BaseCoin { get; set; }
 
         public void StoreTo(MultiMiner.Engine.Configuration.StrategyConfiguration newConfiguration)
         {
             newConfiguration.AutomaticallyMineCoins = this.MineProfitableCoins;
-            newConfiguration.BaseCoin = this.BaseCoin;
             newConfiguration.MineSingleMostOverrideValue = this.MineMostProfitableOverridePercentage;
             newConfiguration.MinimumThresholdSymbol = this.MinimumProfitabilitySymbol;
             newConfiguration.MinimumThresholdValue = this.MinimumProfitabilityPercentage;

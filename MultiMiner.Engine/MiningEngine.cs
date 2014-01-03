@@ -546,7 +546,7 @@ namespace MultiMiner.Engine
                 {
                     Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
                     if (!process.HasExited)
-                        StoreMinerProcess(process, minerConfiguration, port);
+                        StoreMinerProcess(process, coinSymbol, minerConfiguration, port);
 
                     port++;
                 }
@@ -556,7 +556,7 @@ namespace MultiMiner.Engine
                 {
                     Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
                     if (!process.HasExited)
-                        StoreMinerProcess(process, minerConfiguration, port);
+                        StoreMinerProcess(process, coinSymbol, minerConfiguration, port);
 
                     port++;
                 }
@@ -565,13 +565,14 @@ namespace MultiMiner.Engine
             mining = true;
         }
 
-        private void StoreMinerProcess(Process process, MinerConfiguration minerConfiguration, int port)
+        private void StoreMinerProcess(Process process, string coinSymbol, MinerConfiguration minerConfiguration, int port)
         {
             MinerProcess minerProcess = new MinerProcess();
 
             minerProcess.Process = process;
             minerProcess.ApiPort = port;
             minerProcess.MinerConfiguration = minerConfiguration;
+            minerProcess.CoinSymbol = coinSymbol;
 
             setupProcessStartInfo(minerProcess);
 
@@ -595,58 +596,30 @@ namespace MultiMiner.Engine
 
             IList<DeviceConfiguration> enabledConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol)).ToList();
 
-            MinerConfiguration minerConfiguration = new MinerConfiguration();
+            MinerConfiguration minerConfiguration = new MinerConfiguration() 
+            { 
+                ExecutablePath = MinerPath.GetPathToInstalledMiner(), 
+                Algorithm = coinConfiguration.Coin.Algorithm, 
+                ApiPort = port, 
+                ApiListen = true, 
+                AllowedApiIps = engineConfiguration.XgminerConfiguration.AllowedApiIps, 
+                CoinName = coinConfiguration.Coin.Name, 
+                DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu 
+            };
 
-            minerConfiguration.ExecutablePath = MinerPath.GetPathToInstalledMiner();
+            SetupConfigurationPools(minerConfiguration, coinConfiguration);
 
-            //minerConfiguration.Pools = coinConfiguration.Pools;
-            foreach (MiningPool pool in coinConfiguration.Pools)
-            {
-                pool.Quota = 0;
-                minerConfiguration.Pools.Add(pool);
-            }
-
-            //using bfgminer quotas for failover, that way we can augment for donations
-            minerConfiguration.Pools.First().Quota = 100 - donationPercent;
-            if (donationPercent > 0)
-                AddDonationPool(coinSymbol, minerConfiguration);
-
-            minerConfiguration.Algorithm = coinConfiguration.Coin.Algorithm;
-            minerConfiguration.ApiPort = port;
-            minerConfiguration.ApiListen = true;
-            minerConfiguration.AllowedApiIps = engineConfiguration.XgminerConfiguration.AllowedApiIps;
-            minerConfiguration.CoinName = coinConfiguration.Coin.Name;
-            minerConfiguration.DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu;
-
-            int deviceCount = 0;
-            for (int i = 0; i < enabledConfigurations.Count; i++)
-            {
-                DeviceConfiguration enabledConfiguration = enabledConfigurations[i];
-
-                Device device = devices.SingleOrDefault(d => d.Equals(enabledConfiguration));
-
-                if ((includeKinds & device.Kind) == 0)
-                    continue;
-
-                deviceCount++;
-
-                //don't actually add stratum device as a device index
-                if (device.Kind != DeviceKind.PXY)
-                {
-                    minerConfiguration.DeviceDescriptors.Add(device);
-                }
-                else
-                {
-                    //only enable the stratum proxy if these devices contain the PXY device
-                    minerConfiguration.StratumProxy = engineConfiguration.XgminerConfiguration.StratumProxy;
-                    minerConfiguration.StratumProxyPort = engineConfiguration.XgminerConfiguration.StratumProxyPort;
-                    minerConfiguration.StratumProxyStratumPort = engineConfiguration.XgminerConfiguration.StratumProxyStratumPort;
-                }
-            }
-
+            int deviceCount = SetupConfigurationDevices(minerConfiguration, includeKinds, enabledConfigurations);
             if (deviceCount == 0)
                 return null;
 
+            SetupConfigurationArguments(minerConfiguration, coinConfiguration);
+
+            return minerConfiguration;
+        }
+
+        private void SetupConfigurationArguments(MinerConfiguration minerConfiguration, CoinConfiguration coinConfiguration)
+        {
             string arguments = string.Empty;
 
             //apply algorithm-specific parameters
@@ -665,8 +638,54 @@ namespace MultiMiner.Engine
                 arguments = arguments + " --load-balance";
 
             minerConfiguration.LaunchArguments = arguments;
+        }
 
-            return minerConfiguration;
+        private int SetupConfigurationDevices(MinerConfiguration minerConfiguration, DeviceKind deviceKinds, IList<DeviceConfiguration> deviceConfigurations)
+        {
+            int deviceCount = 0;
+            for (int i = 0; i < deviceConfigurations.Count; i++)
+            {
+                DeviceConfiguration enabledConfiguration = deviceConfigurations[i];
+
+                Device device = devices.SingleOrDefault(d => d.Equals(enabledConfiguration));
+
+                if ((deviceKinds & device.Kind) == 0)
+                    continue;
+
+                deviceCount++;
+
+                //don't actually add stratum device as a device index
+                if (device.Kind != DeviceKind.PXY)
+                {
+                    minerConfiguration.DeviceDescriptors.Add(device);
+                }
+                else
+                {
+                    //only enable the stratum proxy if these devices contain the PXY device
+                    minerConfiguration.StratumProxy = engineConfiguration.XgminerConfiguration.StratumProxy;
+                    minerConfiguration.StratumProxyPort = engineConfiguration.XgminerConfiguration.StratumProxyPort;
+                    minerConfiguration.StratumProxyStratumPort = engineConfiguration.XgminerConfiguration.StratumProxyStratumPort;
+                }
+            }
+            return deviceCount;
+        }
+
+        private void SetupConfigurationPools(MinerConfiguration minerConfiguration, CoinConfiguration coinConfiguration)
+        {
+            //minerConfiguration.Pools = coinConfiguration.Pools;
+            foreach (MiningPool pool in coinConfiguration.Pools)
+            {
+                pool.Quota = 0;
+                minerConfiguration.Pools.Add(pool);
+            }
+
+            //using bfgminer quotas for failover, that way we can augment for donations
+            minerConfiguration.Pools.First().Quota = 100 - donationPercent;
+            if (donationPercent > 0)
+                AddDonationPool(coinConfiguration.Coin.Symbol, minerConfiguration);
+
+            foreach (MiningPool pool in minerConfiguration.Pools)
+                pool.QuotaEnabled = donationPercent > 0;
         }
 
         private readonly List<CoinConfiguration> donationConfigurations = InitializeDonationConfigurations();

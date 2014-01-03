@@ -142,6 +142,12 @@
     <Compile Include="Notifications\NotificationsControl.Designer.cs">
       <DependentUpon>NotificationsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="OnlineSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OnlineSettingsForm.Designer.cs">
+      <DependentUpon>OnlineSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PerksForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -205,6 +211,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Notifications\NotificationsControl.resx">
       <DependentUpon>NotificationsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OnlineSettingsForm.resx">
+      <DependentUpon>OnlineSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PerksForm.resx">
       <DependentUpon>PerksForm.cs</DependentUpon>
@@ -288,6 +297,10 @@
       <Project>{70622816-5853-4470-9432-9acda2e96089}</Project>
       <Name>MultiMiner.MobileMiner.Api</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Stats.Api\MultiMiner.Stats.Api.csproj">
+      <Project>{2cf95427-df1d-4061-8580-f143f04a0439}</Project>
+      <Name>MultiMiner.Stats.Api</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
       <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
       <Name>MultiMiner.Utility</Name>
@@ -348,6 +361,8 @@
     <None Include="Resources\application-execute1.png" />
     <None Include="Resources\application-control_play.png" />
     <None Include="Resources\computer-list.png" />
+    <None Include="Resources\list-internet.png" />
+    <None Include="Resources\document-find.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

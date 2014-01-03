@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9E86F77A-68B9-4D72-82D2-855878BA8CB1}</ProjectGuid>
+    <ProjectGuid>{2CF95427-DF1D-4061-8580-F143F04A0439}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MultiMiner.Coin.Api</RootNamespace>
-    <AssemblyName>MultiMiner.Coin.Api</AssemblyName>
+    <RootNamespace>MultiMiner.Stats.Api</RootNamespace>
+    <AssemblyName>MultiMiner.Stats.Api</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -33,16 +33,15 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CoinApiException.cs" />
-    <Compile Include="CoinInformation.cs" />
-    <Compile Include="IApiContext.cs" />
+    <Compile Include="ApiContext.cs" />
+    <Compile Include="Machine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

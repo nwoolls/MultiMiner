@@ -21,6 +21,9 @@ namespace MultiMiner.Win
         //event declarations        
         public event CloseClickedHandler CloseClicked;
 
+        private List<DeviceInformationResponse> deviceInformation;
+        private List<DeviceDetailsResponse> deviceDetails;
+
         public DetailsControl()
         {
             InitializeComponent();
@@ -34,9 +37,21 @@ namespace MultiMiner.Win
 
         private void DetailsControl_Load(object sender, EventArgs e)
         {
+            SetupFonts();
+
             PositionControls();
         }
 
+        private void SetupFonts()
+        {
+            //do this in code so font name isn't stored in the .cs
+            hashrateLabel.Font = new Font(hashrateLabel.Font, FontStyle.Bold);
+            tempLabel.Font = new Font(tempLabel.Font, FontStyle.Bold);
+            poolLabel.Font = new Font(poolLabel.Font, FontStyle.Bold);
+            nameLabel.Font = new Font(nameLabel.Font.Name, 12.0f);
+            deviceCountLabel.Font = new Font(nameLabel.Font.Name, 12.0f);
+
+        }
         private void PositionControls()
         {
             closeDetailsButton.Size = new Size(22, 22);
@@ -59,8 +74,13 @@ namespace MultiMiner.Win
         }
 
         public void InspectDetails(Device device, CoinConfiguration coinConfiguration, CoinInformation coinInformation,
-            DeviceDetailsResponse deviceDetails, List<DeviceInformationResponse> deviceInformation, PoolInformationResponse poolInformation)
+            List<DeviceInformationResponse> deviceInformation, PoolInformationResponse poolInformation,
+            List<DeviceDetailsResponse> deviceDetails)
         {
+            this.deviceDetails = deviceDetails;
+            this.deviceInformation = deviceInformation;
+
+
             noDetailsPanel.Visible = false;
             double hashrate = 0;
             foreach (DeviceInformationResponse individualDevice in deviceInformation)
@@ -85,7 +105,7 @@ namespace MultiMiner.Win
                 cryptoCoinBindingSource.DataSource = new CryptoCoin();
 
             deviceInformationResponseBindingSource.DataSource = deviceInformation;
-
+            
             //may not be hashing yet
             if (deviceDetails != null)
                 deviceDetailsResponseBindingSource.DataSource = deviceDetails;
@@ -170,8 +190,7 @@ namespace MultiMiner.Win
             {
                 e.Value = ((double)e.Value).ToHashrateString();
             }
-            else if (e.ColumnIndex == rejectedSharesPercentDataGridViewTextBoxColumn.Index ||
-                e.ColumnIndex == hardwareErrorsPercentDataGridViewTextBoxColumn.Index)
+            else if (e.ColumnIndex == hardwareErrorsPercentDataGridViewTextBoxColumn.Index)
             {
                 //check for >= 0.05 so we don't show 0% (due to the format string)
                 e.Value = (double)e.Value >= 0.05 ? ((double)e.Value).ToString("0.#") + "%" : String.Empty;
@@ -179,6 +198,17 @@ namespace MultiMiner.Win
             else if (e.ColumnIndex == acceptedSharesDataGridViewTextBoxColumn.Index)
             {
                 e.Value = (int)e.Value > 0 ? ((int)e.Value).ToString() : String.Empty;
+            }
+        }
+
+        private void workersGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            for (int i = e.RowIndex; i < (e.RowIndex + e.RowCount); i++)
+            {
+                DeviceInformationResponse deviceInformation = this.deviceInformation[i];
+                DeviceDetailsResponse deviceDetails = this.deviceDetails.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name) && (d.Index == deviceInformation.Index));
+                if (deviceDetails != null)
+                    workersGridView.Rows[i].Cells[workerNameColumn.Index].Value = deviceDetails.DevicePath;
             }
         }
     }

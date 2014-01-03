@@ -111,6 +111,8 @@
             this.AcceptedShares = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.durationColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.devicesColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.openLogMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logProcessCloseArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.processLogPage = new System.Windows.Forms.TabPage();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -217,6 +219,7 @@
             this.advancedTabControl.SuspendLayout();
             this.historyPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.historyGridView)).BeginInit();
+            this.openLogMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).BeginInit();
             this.processLogPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -572,7 +575,8 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(881, 232);
-            this.detailsAreaContainer.SplitterDistance = 538;
+            this.detailsAreaContainer.SplitterDistance = 541;
+            this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
             // deviceListView
@@ -615,7 +619,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(538, 232);
+            this.deviceListView.Size = new System.Drawing.Size(541, 232);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -717,7 +721,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(339, 232);
+            this.detailsControl1.Size = new System.Drawing.Size(337, 232);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -768,6 +772,7 @@
             this.AcceptedShares,
             this.durationColumn,
             this.devicesColumn});
+            this.historyGridView.ContextMenuStrip = this.openLogMenu;
             this.historyGridView.DataSource = this.logProcessCloseArgsBindingSource;
             this.historyGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.historyGridView.Location = new System.Drawing.Point(3, 3);
@@ -843,6 +848,22 @@
             this.devicesColumn.Name = "devicesColumn";
             this.devicesColumn.ReadOnly = true;
             // 
+            // openLogMenu
+            // 
+            this.openLogMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openLogToolStripMenuItem});
+            this.openLogMenu.Name = "contextMenuStrip1";
+            this.openLogMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.openLogMenu.Size = new System.Drawing.Size(148, 26);
+            // 
+            // openLogToolStripMenuItem
+            // 
+            this.openLogToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.document_find;
+            this.openLogToolStripMenuItem.Name = "openLogToolStripMenuItem";
+            this.openLogToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.openLogToolStripMenuItem.Text = "Open Log File";
+            this.openLogToolStripMenuItem.Click += new System.EventHandler(this.openLogToolStripMenuItem_Click);
+            // 
             // logProcessCloseArgsBindingSource
             // 
             this.logProcessCloseArgsBindingSource.DataSource = typeof(MultiMiner.Engine.LogProcessCloseArgs);
@@ -877,6 +898,7 @@
             this.executablePathDataGridViewTextBoxColumn,
             this.argumentsDataGridViewTextBoxColumn,
             this.Reason});
+            this.dataGridView1.ContextMenuStrip = this.openLogMenu;
             this.dataGridView1.DataSource = this.logLaunchArgsBindingSource;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(3, 3);
@@ -959,6 +981,7 @@
             this.CoinName,
             this.requestDataGridViewTextBoxColumn,
             this.responseDataGridViewTextBoxColumn});
+            this.apiLogGridView.ContextMenuStrip = this.openLogMenu;
             this.apiLogGridView.DataSource = this.apiLogEntryBindingSource;
             this.apiLogGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.apiLogGridView.Location = new System.Drawing.Point(3, 3);
@@ -1765,6 +1788,7 @@
             this.advancedTabControl.ResumeLayout(false);
             this.historyPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.historyGridView)).EndInit();
+            this.openLogMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).EndInit();
             this.processLogPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -1969,6 +1993,8 @@
         private System.Windows.Forms.SplitContainer detailsAreaContainer;
         private DetailsControl detailsControl1;
         private System.Windows.Forms.Timer poolInfoTimer;
+        private System.Windows.Forms.ContextMenuStrip openLogMenu;
+        private System.Windows.Forms.ToolStripMenuItem openLogToolStripMenuItem;
     }
 }
 

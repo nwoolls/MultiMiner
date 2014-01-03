@@ -21,14 +21,13 @@ namespace MultiMiner.CoinChoose.Api
             }
         }
 
-        public IEnumerable<CoinInformation> GetCoinInformation(string userAgent = "",
-            BaseCoin profitabilityBasis = BaseCoin.Bitcoin)
+        public IEnumerable<CoinInformation> GetCoinInformation(string userAgent = "")
         {
             WebClient client = new ApiWebClient();
             if (!string.IsNullOrEmpty(userAgent))
                 client.Headers.Add("user-agent", userAgent);
 
-            string apiUrl = GetApiUrl(profitabilityBasis);
+            string apiUrl = GetApiUrl();
 
             string jsonString = client.DownloadString(apiUrl);
             JArray jsonArray = JArray.Parse(jsonString);
@@ -48,20 +47,15 @@ namespace MultiMiner.CoinChoose.Api
             return result;
         }
 
-        public string GetApiUrl(BaseCoin profitabilityBasis)
+        public string GetApiUrl()
         {
             string apiUrl = "http://www.coinchoose.com/api.php";
-            if (profitabilityBasis == BaseCoin.Litecoin)
-                apiUrl = apiUrl + "?base=LTC";
             return apiUrl;
         }
 
-        public string GetInfoUrl(BaseCoin profitabilityBasis)
+        public string GetInfoUrl()
         {
-            if (profitabilityBasis == BaseCoin.Litecoin)
-                return "http://coinchoose.com/litecoin.php";
-            else
-                return "http://coinchoose.com/index.php";
+            return "http://coinchoose.com/index.php";
         }
         
         public string GetApiName()

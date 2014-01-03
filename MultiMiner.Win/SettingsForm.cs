@@ -70,6 +70,7 @@ namespace MultiMiner.Win
             minerConfiguration.Priority = (ProcessPriorityClass)priorityCombo.SelectedItem;
 
             applicationConfiguration.UseCoinWarzApi = coinApiCombo.SelectedIndex == 1;
+
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -106,9 +107,6 @@ namespace MultiMiner.Win
         private void UpdateMobileMinerControls()
         {
             emailAddressEdit.Enabled = remoteMonitoringCheck.Checked;
-            remoteCommandsCheck.Enabled = remoteMonitoringCheck.Checked;
-            pushNotificationsCheck.Enabled = remoteMonitoringCheck.Checked;
-            httpsMobileMinerCheck.Enabled = remoteMonitoringCheck.Checked;
             emailAddressEdit.Enabled = remoteMonitoringCheck.Checked;
             appKeyEdit.Enabled = remoteMonitoringCheck.Checked;            
         }
@@ -138,6 +136,12 @@ namespace MultiMiner.Win
         private void advancedSettingsLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             AdvancedSettingsForm advancedSettingsForm = new AdvancedSettingsForm(applicationConfiguration, pathConfiguration);
+            advancedSettingsForm.ShowDialog();
+        }
+
+        private void serviceSettingsLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            OnlineSettingsForm advancedSettingsForm = new OnlineSettingsForm(applicationConfiguration);
             advancedSettingsForm.ShowDialog();
         }
     }

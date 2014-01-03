@@ -243,6 +243,16 @@ namespace MultiMiner.Win.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap document_find {
+            get {
+                object obj = ResourceManager.GetObject("document-find", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap hardware_find {
             get {
                 object obj = ResourceManager.GetObject("hardware-find", resourceCulture);
@@ -336,6 +346,16 @@ namespace MultiMiner.Win.Properties {
         internal static System.Drawing.Bitmap list_import {
             get {
                 object obj = ResourceManager.GetObject("list-import", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap list_internet {
+            get {
+                object obj = ResourceManager.GetObject("list-internet", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

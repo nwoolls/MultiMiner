@@ -142,8 +142,12 @@ namespace MultiMiner.Xgminer
 
             foreach (MiningPool pool in minerConfiguration.Pools)
             {
+                string argument;
                 //trim Host to ensure proper formatting
-                string argument = string.Format("--quota \"{3};{0}:{1}\" -u {2}", pool.Host.Trim(), pool.Port, pool.Username, pool.Quota);
+                if (pool.QuotaEnabled)
+                    argument = string.Format("--quota \"{3};{0}:{1}\" -u {2}", pool.Host.Trim(), pool.Port, pool.Username, pool.Quota);
+                else
+                    argument = string.Format("-o {0}:{1} -u {2}", pool.Host.Trim(), pool.Port, pool.Username);
 
                 //some pools do not require a password
                 //but the miners require some password

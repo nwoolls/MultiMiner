@@ -59,36 +59,8 @@ namespace MultiMiner.Win
                 exceptionEdit.Text = strategyConfiguration.MineSingleMostOverrideValue.ToString();
 
             profitabilityKindCombo.SelectedIndex = (int)strategyConfiguration.ProfitabilityKind;
-
-            if (applicationConfiguration.UseCoinWarzApi)
-            {
-                baseCoinCombo.SelectedIndex = 0;
-                baseCoinCombo.Enabled = false;
-            }
-            else
-            {
-                baseCoinCombo.SelectedIndex = (int)strategyConfiguration.BaseCoin;
-            }
-            
+                        
             miningBasisCombo.SelectedIndex = (int)strategyConfiguration.MiningBasis;
-
-            intervalCombo.SelectedIndex = (int)applicationConfiguration.StrategyCheckInterval;
-
-            if (applicationConfiguration.SuggestCoinsToMine)
-            {
-                if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256)
-                    suggestionsCombo.SelectedIndex = 1;
-                else if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt)
-                    suggestionsCombo.SelectedIndex = 2;
-                else if (applicationConfiguration.SuggestionsAlgorithm == (ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256 | ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt))
-                    suggestionsCombo.SelectedIndex = 3;
-                else
-                    suggestionsCombo.SelectedIndex = 0;
-            }
-            else
-            {
-                suggestionsCombo.SelectedIndex = 0;
-            }
         }
 
         private void SaveSettings()
@@ -129,29 +101,7 @@ namespace MultiMiner.Win
             }
 
             strategyConfiguration.ProfitabilityKind = (StrategyConfiguration.CoinProfitabilityKind)profitabilityKindCombo.SelectedIndex;
-            strategyConfiguration.BaseCoin = (Coin.Api.BaseCoin)baseCoinCombo.SelectedIndex;
             strategyConfiguration.MiningBasis = (StrategyConfiguration.CoinMiningBasis)miningBasisCombo.SelectedIndex;
-
-            applicationConfiguration.StrategyCheckInterval = (ApplicationConfiguration.TimerInterval)intervalCombo.SelectedIndex;
-
-            switch (suggestionsCombo.SelectedIndex)
-            {
-                case 1:
-                    applicationConfiguration.SuggestCoinsToMine = true;
-                    applicationConfiguration.SuggestionsAlgorithm = ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256;
-                    break;
-                case 2:
-                    applicationConfiguration.SuggestCoinsToMine = true;
-                    applicationConfiguration.SuggestionsAlgorithm = ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt;
-                    break;
-                case 3:
-                    applicationConfiguration.SuggestCoinsToMine = true;
-                    applicationConfiguration.SuggestionsAlgorithm = ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256 | ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt;
-                    break;
-                default:
-                    applicationConfiguration.SuggestCoinsToMine = false;
-                    break;
-            }
         }
 
         private void multiCoinRadio_CheckedChanged(object sender, EventArgs e)
@@ -163,11 +113,6 @@ namespace MultiMiner.Win
         {
             exceptionEdit.Enabled = multiCoinRadio.Checked;
             mineSingleOverrideLabel.Enabled = multiCoinRadio.Checked;
-        }
-
-        private void trackBar1_Scroll(object sender, EventArgs e)
-        {
-
         }
 
         private void miningBasisCombo_SelectedIndexChanged(object sender, EventArgs e)

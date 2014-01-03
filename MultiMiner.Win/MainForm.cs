@@ -44,7 +44,6 @@ namespace MultiMiner.Win
         private readonly Dictionary<Device, DeviceDetailsResponse> deviceDetailsMapping = new Dictionary<Device, DeviceDetailsResponse>();
 
         //currently mining information
-        private BaseCoin currentBaseCoin = BaseCoin.Bitcoin;
         private List<DeviceConfiguration> miningDeviceConfigurations;
         private List<CoinConfiguration> miningCoinConfigurations;
 
@@ -149,6 +148,8 @@ namespace MultiMiner.Win
             UpdateChangesButtons(false);
 
             RefreshDevices();
+            //after refreshing devices
+            SubmitMultiMinerStatistics();
             
             UpdateMiningButtons();
 
@@ -223,7 +224,7 @@ namespace MultiMiner.Win
                     applicationConfiguration.TipsShown++;
                     break;
                 case 3:
-                    tip = "Tip: consider enabling perks to give back to the author";
+                    tip = "Tip: enabling perks gives back to the author";
                     notificationsControl.AddNotification(tip, tip, () =>
                     {
                         ConfigurePerks();
@@ -347,6 +348,14 @@ namespace MultiMiner.Win
 
         private void LogObjectToFile(object objectToLog, string logFileName)
         {
+            string logDirectory = GetLogDirectory();
+            string logFilePath = Path.Combine(logDirectory, logFileName);
+            ObjectLogger logger = new ObjectLogger(applicationConfiguration.RollOverLogFiles, applicationConfiguration.OldLogFileSets);
+            logger.LogObjectToFile(objectToLog, logFilePath);
+        }
+
+        private string GetLogDirectory()
+        {
             string logDirectory = ApplicationPaths.AppDataPath();
             if (!String.IsNullOrEmpty(applicationConfiguration.LogFilePath))
             {
@@ -354,10 +363,7 @@ namespace MultiMiner.Win
                 if (Directory.Exists(applicationConfiguration.LogFilePath))
                     logDirectory = applicationConfiguration.LogFilePath;
             }
-
-            string logFilePath = Path.Combine(logDirectory, logFileName);
-            ObjectLogger logger = new ObjectLogger(applicationConfiguration.RollOverLogFiles, applicationConfiguration.OldLogFileSets);
-            logger.LogObjectToFile(objectToLog, logFilePath);
+            return logDirectory;
         }
 
         private void LogProcessClose(object sender, LogProcessCloseArgs ea)
@@ -452,9 +458,10 @@ namespace MultiMiner.Win
         {
             Control parent = detailsAreaContainer.Panel1;
 
+            //carefully measured to fit notifications when they scroll
             const int ControlOffset = 2;
-            const int ControlHeight = 143;
-            const int ControlWidth = 320;
+            const int ControlHeight = 148;
+            const int ControlWidth = 358;
 
             this.notificationsControl = new NotificationsControl()
             {
@@ -1384,6 +1391,7 @@ namespace MultiMiner.Win
             ClearAllMinerStats();
             RefreshIncomeSummary();
             AutoSizeListViewColumns();
+            RefreshDetailsAreaIfVisible();
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -1521,6 +1529,8 @@ namespace MultiMiner.Win
                 crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
                 SetupRestartTimer();
                 CheckForUpdates();
+                SetupCoinStatsTimer();
+                SuggestCoinsToMine();
 
                 //don't refresh coin stats excessively
                 if ((oldCoinWarzValue != applicationConfiguration.UseCoinWarzApi) ||
@@ -1868,7 +1878,7 @@ namespace MultiMiner.Win
         {
             string coinName = minerProcess.MinerConfiguration.CoinName;
             //reference miningCoinConfigurations so that we get access to the mining coins
-            CoinConfiguration configuration = miningCoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            CoinConfiguration configuration = miningCoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
             if (configuration == null)
                 return;
 
@@ -1889,7 +1899,7 @@ namespace MultiMiner.Win
         {
             string coinName = minerProcess.MinerConfiguration.CoinName;
             //reference miningCoinConfigurations so that we get access to the mining coins
-            CoinConfiguration configuration = miningCoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            CoinConfiguration configuration = miningCoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
             if (configuration == null)
                 return;
 
@@ -2063,11 +2073,7 @@ namespace MultiMiner.Win
                     if (coinInfo != null)
                     {
                         double coinUsd = sellPrices.Subtotal.Amount * coinInfo.Price;
-
-                        //if BaseCoin is LiteCoin, adjust the USD price accordingly
-                        if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == BaseCoin.Litecoin))
-                            coinUsd = coinUsd / btcCoinInfo.Price;
-
+                        
                         double coinDailyUsd = coinIncome * coinUsd;
                         usdTotal += coinDailyUsd;
 
@@ -2349,9 +2355,7 @@ namespace MultiMiner.Win
             try
             {
                 coinApiInformation = coinApiContext.GetCoinInformation(
-                    UserAgent.AgentString,
-                    engineConfiguration.StrategyConfiguration.BaseCoin).ToList();
-                currentBaseCoin = applicationConfiguration.UseCoinWarzApi ? BaseCoin.Bitcoin : engineConfiguration.StrategyConfiguration.BaseCoin;
+                    UserAgent.AgentString).ToList();
             }
             catch (Exception ex)
             {
@@ -2375,8 +2379,8 @@ namespace MultiMiner.Win
 
         private void ShowCoinApiErrorNotification(Exception ex)
         {
-            string siteUrl = this.coinApiContext.GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
-            string apiUrl = this.coinApiContext.GetApiUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
+            string siteUrl = this.coinApiContext.GetInfoUrl();
+            string apiUrl = this.coinApiContext.GetApiUrl();
             string apiName = this.coinApiContext.GetApiName();
 
             notificationsControl.AddNotification(ex.Message,
@@ -2455,7 +2459,7 @@ namespace MultiMiner.Win
                     break;
             }
 
-            string infoUrl = coinApiContext.GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin);
+            string infoUrl = coinApiContext.GetInfoUrl();
 
             notificationsControl.AddNotification(coin.Symbol,
                 String.Format("Consider mining {0} ({1} {2})",
@@ -2564,8 +2568,6 @@ namespace MultiMiner.Win
                 item.SubItems["Difficulty"].Text = coinInfo.Difficulty.ToDifficultyString();
 
                 string unit = "BTC";
-                if (currentBaseCoin == BaseCoin.Litecoin)
-                    unit = "LTC";
 
                 item.SubItems["Price"].Text = String.Format("{0} {1}", coinInfo.Price.ToFriendlyString(), unit);
 
@@ -2578,14 +2580,7 @@ namespace MultiMiner.Win
                     double btcExchangeRate = sellPrices.Subtotal.Amount;
                     double coinExchangeRate = 0.00;
 
-                    if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == BaseCoin.Litecoin))
-                    {
-                        //if BaseCoin is LiteCoin, adjust the USD price accordingly
-                        CoinInformation btcCoinInfo = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
-                        coinExchangeRate = coinInfo.Price * (btcExchangeRate / btcCoinInfo.Price);
-                    }
-                    else
-                        coinExchangeRate = coinInfo.Price * btcExchangeRate;
+                    coinExchangeRate = coinInfo.Price * btcExchangeRate;
 
                     item.SubItems["Exchange"].Tag = coinExchangeRate;
                     item.SubItems["Exchange"].Text = String.Format("${0}", coinExchangeRate.ToFriendlyString(true));
@@ -2676,10 +2671,6 @@ namespace MultiMiner.Win
 
                 engineConfiguration.SaveStrategyConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
-                SetupCoinStatsTimer();
-                
-                //so updated profitability is shown
-                RefreshCoinStats();
 
                 RefreshStrategiesLabel();
                 LoadListViewValuesFromCoinStats();
@@ -2719,7 +2710,7 @@ namespace MultiMiner.Win
 
         private void coinChooseLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(this.coinApiContext.GetInfoUrl(engineConfiguration.StrategyConfiguration.BaseCoin));
+            Process.Start(this.coinApiContext.GetInfoUrl());
         }
 
         private void closeApiButton_Click(object sender, EventArgs e)
@@ -2815,6 +2806,39 @@ namespace MultiMiner.Win
         private void stopMenuItem_Click(object sender, EventArgs e)
         {
             StopMining();
+        }
+
+        private void SubmitMultiMinerStatistics()
+        {
+            string installedVersion = Engine.Installer.GetInstalledMinerVersion();
+            if (installedVersion.Equals(applicationConfiguration.SubmittedStatsVersion))
+                return;
+
+            Stats.Api.Machine machineStat = new Stats.Api.Machine()
+            {
+                Name = Environment.MachineName,
+                MinerVersion = installedVersion
+            };
+                        
+            if (submitMinerStatisticsDelegate == null)
+                submitMinerStatisticsDelegate = SubmitMinerStatistics;
+
+            submitMinerStatisticsDelegate.BeginInvoke(machineStat, null, null);
+        }
+        private Action<Stats.Api.Machine> submitMinerStatisticsDelegate;
+
+        private void SubmitMinerStatistics(Stats.Api.Machine machineStat)
+        {
+            try
+            {
+                //plain text so users can see what we are posting - transparency
+                Stats.Api.ApiContext.SubmitMinerStatistics("http://multiminerstats.azurewebsites.net/api/", machineStat);
+                applicationConfiguration.SubmittedStatsVersion = machineStat.MinerVersion;
+            }
+            catch (WebException ex)
+            {
+                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+            }
         }
 
         private void mobileMinerTimer_Tick(object sender, EventArgs e)
@@ -3728,6 +3752,7 @@ namespace MultiMiner.Win
 
             if (briefMode)
             {
+                CloseDetailsArea();
                 HideAdvancedPanel();
                 WindowState = FormWindowState.Normal;
 
@@ -4191,6 +4216,7 @@ namespace MultiMiner.Win
 
         private void ShowDetailsArea()
         {
+            SetBriefMode(false);
             RefreshDetailsArea();
 
             detailsAreaContainer.Panel2Collapsed = false;
@@ -4220,7 +4246,9 @@ namespace MultiMiner.Win
             CoinInformation coinInfo = null;
 
             //Internet or Coin API could be down
-            if (this.coinApiInformation != null)
+            if ((this.coinApiInformation != null) &&
+                //device may not be configured
+                (coinConfiguration != null))
                 coinInfo = this.coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
 
             List<DeviceInformationResponse> minerDeviceInformation = new List<DeviceInformationResponse>();
@@ -4235,16 +4263,35 @@ namespace MultiMiner.Win
                         && (d.ID == deviceDetails.ID)).ToList();
             }
 
+            List<DeviceDetailsResponse> minerDeviceDetails = new List<DeviceDetailsResponse>();
+
             PoolInformationResponse poolInformation = null;
-            MinerProcess minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinInformation == coinInfo);
+
+            string coinSymbol = null;
+            //Internet or Coin API could be down
+            if (coinInfo != null)
+                coinSymbol = coinInfo.Symbol;
+            //device may not be configured
+            else if (coinConfiguration != null)
+                coinSymbol = coinConfiguration.Coin.Symbol;
+
+            MinerProcess minerProcess = null;
+
+            //Internet or Coin API could be down AND device may not be configured
+            if (!String.IsNullOrEmpty(coinSymbol))
+                // p.CoinInformation is null if there is no Coin API info
+                minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinSymbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+                        
             if (minerProcess != null)
             {
                 DeviceInformationResponse deviceInformation = minerDeviceInformation.FirstOrDefault();
                 if ((deviceInformation != null) && processPoolInformation.ContainsKey(minerProcess))
                     poolInformation = processPoolInformation[minerProcess].SingleOrDefault(p => p.Index == deviceInformation.PoolIndex);
+                if (processDeviceDetails.ContainsKey(minerProcess))
+                    minerDeviceDetails = processDeviceDetails[minerProcess];
             }
-            
-            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, deviceDetails, minerDeviceInformation, poolInformation);
+
+            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, minerDeviceInformation, poolInformation, minerDeviceDetails);
         }
 
         private void deviceListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -4305,6 +4352,24 @@ namespace MultiMiner.Win
             }
 
             return poolInformation;
+        }
+
+        private void openLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string fileName = String.Empty;
+            if (advancedTabControl.SelectedTab == apiMonitorPage)
+                fileName = "ApiLog.json";
+            else if (advancedTabControl.SelectedTab == processLogPage)
+                fileName = "ProcessLog.json";
+            else if (advancedTabControl.SelectedTab == historyPage)
+                fileName = "MiningLog.json";
+
+            if (!String.IsNullOrEmpty(fileName))
+            {
+                string logDirectory = GetLogDirectory();
+                string logFilePath = Path.Combine(logDirectory, fileName);
+                Process.Start(logFilePath);
+            }
         }
     }
 }
