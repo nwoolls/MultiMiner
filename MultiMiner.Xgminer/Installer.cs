@@ -141,7 +141,8 @@ namespace MultiMiner.Xgminer
         public static string GetMinerDownloadRoot()
         {
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
-                return "http://github.com/nwoolls/xgminer-osx";
+                //use https - we'll just get redirected
+                return "https://github.com/nwoolls/xgminer-osx";
             else
                 return "http://luke.dashjr.org";
         }

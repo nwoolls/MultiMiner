@@ -113,7 +113,8 @@ namespace MultiMiner.Engine
 
         public static string GetMinerDownloadRoot()
         {
-            return "http://github.com/nwoolls/multiminer";
+            //use https - we'll just get redirected
+            return "https://github.com/nwoolls/multiminer";
         }
     }
 }
