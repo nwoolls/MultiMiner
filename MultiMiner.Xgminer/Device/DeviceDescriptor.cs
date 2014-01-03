@@ -1,6 +1,7 @@
 ﻿using System;
 namespace MultiMiner.Xgminer
 {
+    [Serializable]
     public class DeviceDescriptor
     {
         public DeviceKind Kind { get; set; }

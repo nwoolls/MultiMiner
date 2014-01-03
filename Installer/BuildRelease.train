@@ -67,51 +67,6 @@ file.copy("../MultiMiner.Win/bin/Release/Miners/bfgminer/Extract bfgminer here.t
 zip.compress("Output/MultiMiner-" + shortAppVersion + ".zip", "PF/", "*.*", true);
 folder.remove("PF", true);
 
-//rebuild each .NET project - Debug configurations
-msbuild.rebuild("../MultiMiner.Coin.Api/MultiMiner.Coin.Api.csproj", { configuration: "Debug" });
-msbuild.rebuild("../MultiMiner.Coinbase.Api/MultiMiner.Coinbase.Api.csproj", { configuration: "Debug" });
-msbuild.rebuild("../MultiMiner.CoinChoose.Api/MultiMiner.CoinChoose.Api.csproj", { configuration: "Debug" });
-msbuild.rebuild("../MultiMiner.CoinWarz.Api/MultiMiner.CoinWarz.Api.csproj", { configuration: "Debug" });
-msbuild.rebuild("../MultiMiner.Engine/MultiMiner.Engine.csproj", { configuration: "Debug" });
-msbuild.rebuild("../MultiMiner.Utility/MultiMiner.Utility.csproj", { configuration: "Debug" });
-msbuild.rebuild("../MultiMiner.Win/MultiMiner.Win.csproj", { configuration: "Debug" });
-msbuild.rebuild("../MultiMiner.Update/MultiMiner.Update.csproj", { configuration: "Debug" });
-msbuild.rebuild("../MultiMiner.Xgminer/MultiMiner.Xgminer.csproj", { configuration: "Debug" });
-msbuild.rebuild("../MultiMiner.Xgminer.Api/MultiMiner.Xgminer.Api.csproj", { configuration: "Debug" });
-msbuild.rebuild("../MultiMiner.MobileMiner.Api/MultiMiner.MobileMiner.Api.csproj", { configuration: "Debug" });
-
-//create a debug Zip release
-folder.remove("PF", true);
-folder.create("PF/Miners/bfgminer");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Win.exe", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Win.pdb", "PF/");
-file.copy("../MultiMiner.Update/bin/Debug/MultiMiner.Update.exe", "PF/");
-file.copy("../MultiMiner.Update/bin/Debug/MultiMiner.Update.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/Interop.IWshRuntimeLibrary.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/Interop.Shell32.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Coin.Api.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Coin.Api.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Coinbase.Api.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Coinbase.Api.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.CoinChoose.Api.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.CoinChoose.Api.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.CoinWarz.Api.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.CoinWarz.Api.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Engine.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Engine.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Utility.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Utility.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Xgminer.Api.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Xgminer.Api.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.MobileMiner.Api.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.MobileMiner.Api.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Xgminer.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/MultiMiner.Xgminer.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/Newtonsoft.Json.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Debug/Miners/bfgminer/Extract bfgminer here.txt", "PF/Miners/bfgminer");
-zip.compress("Output/MultiMiner-Debug-" + shortAppVersion + ".zip", "PF/", "*.*", true);
-folder.remove("PF", true);
-
 //create Mac .app package (requires Mono, X11 to run)
 folder.remove("Output/MultiMiner.app", true);
 folder.remove("Output/MultiMiner.Win.app", true);

@@ -60,6 +60,24 @@
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Configuration\PathConfiguration.cs" />
+    <Compile Include="DetailsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DetailsControl.Designer.cs">
+      <DependentUpon>DetailsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DeviceListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DeviceListView.Designer.cs">
+      <DependentUpon>DeviceListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MessageBoxFontUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MessageBoxFontUserControl.Designer.cs">
+      <DependentUpon>MessageBoxFontUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="MinerSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -164,6 +182,9 @@
     <EmbeddedResource Include="AdvancedSettingsForm.resx">
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DetailsControl.resx">
+      <DependentUpon>DetailsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MinerSettingsForm.resx">
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -212,6 +233,7 @@
     </EmbeddedResource>
     <None Include="Properties\DataSources\ApiLogEntry.datasource" />
     <None Include="Properties\DataSources\ApplicationConfiguration.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Coin.Api.CoinInformation.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.CoinConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.CoinConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.StrategyConfiguration.datasource" />
@@ -223,6 +245,9 @@
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.PathConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.PerksConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.LogEntry.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.Responses.DeviceDetailsResponse.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.Responses.DeviceInformationResponse.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.Responses.PoolInformationResponse.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Device.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.LogLaunchArgs.datasource" />
     <None Include="Properties\Settings.settings">
@@ -320,6 +345,9 @@
     <None Include="Resources\info1.png" />
     <None Include="Resources\smiley_happy.png" />
     <None Include="Resources\settings-option.png" />
+    <None Include="Resources\application-execute1.png" />
+    <None Include="Resources\application-control_play.png" />
+    <None Include="Resources\computer-list.png" />
     <Content Include="window_sel.ico" />
   </ItemGroup>
   <ItemGroup>

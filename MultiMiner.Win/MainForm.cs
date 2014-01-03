@@ -23,29 +23,50 @@ namespace MultiMiner.Win
 {
     public partial class MainForm : MessageBoxFontForm
     {
-        private List<Coin.Api.CoinInformation> coinInformation;
-        private List<Device> devices;
+        //API contexts
+        private IApiContext coinApiContext = new CoinChoose.Api.ApiContext();
+        private readonly List<DeviceInformationResponse> allDeviceInformation = new List<DeviceInformationResponse>();
+        private readonly Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
+        private readonly Dictionary<MinerProcess, List<PoolInformationResponse>> processPoolInformation = new Dictionary<MinerProcess, List<PoolInformationResponse>>();
+
+        //API information
+        private List<CoinInformation> coinApiInformation;
+        private MultiMiner.Coinbase.Api.SellPrices sellPrices;
+
+        //configuration
         private EngineConfiguration engineConfiguration = new EngineConfiguration();
-        private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
-        private readonly MiningEngine miningEngine = new MiningEngine();
         private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+        private readonly PathConfiguration pathConfiguration = new PathConfiguration();
+        private PerksConfiguration perksConfiguration = new PerksConfiguration();
+
+        //hardware information
+        private List<Device> devices;
+        private readonly Dictionary<Device, DeviceDetailsResponse> deviceDetailsMapping = new Dictionary<Device, DeviceDetailsResponse>();
+
+        //currently mining information
+        private BaseCoin currentBaseCoin = BaseCoin.Bitcoin;
+        private List<DeviceConfiguration> miningDeviceConfigurations;
+        private List<CoinConfiguration> miningCoinConfigurations;
+
+        //data sources
+        private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
+        private readonly List<LogLaunchArgs> logLaunchEntries = new List<LogLaunchArgs>();
+        private readonly List<LogProcessCloseArgs> logCloseEntries = new List<LogProcessCloseArgs>();
+
+        //fields
         private int startupMiningCountdownSeconds = 0;
         private int coinStatsCountdownMinutes = 0;
-        private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
-        private bool formLoaded = false;
-        private readonly List<LogLaunchArgs> logLaunchEntries = new List<LogLaunchArgs>();
-        private readonly List<int> processedCommandIds = new List<int>();
-        private readonly List<LogProcessCloseArgs> logCloseEntries = new List<LogProcessCloseArgs>();
-        private NotificationsControl notificationsControl;
         private bool settingsLoaded = false;
-        private Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
-        private MultiMiner.Coin.Api.IApiContext coinApiContext = new CoinChoose.Api.ApiContext();
-        private List<CoinConfiguration> miningCoinConfigurations;
-        private PerksConfiguration perksConfiguration = new PerksConfiguration();
-        private MultiMiner.Coinbase.Api.SellPrices sellPrices;
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
-        private BaseCoin currentBaseCoin = BaseCoin.Bitcoin;
-        private readonly PathConfiguration pathConfiguration = new PathConfiguration();
+        private bool formLoaded = false;
+
+        //logic
+        private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
+        private readonly MiningEngine miningEngine = new MiningEngine();
+        private readonly List<int> processedCommandIds = new List<int>();
+
+        //controls
+        private NotificationsControl notificationsControl;
 
         public MainForm()
         {
@@ -84,6 +105,8 @@ namespace MultiMiner.Win
 
             const int mobileMinerInterval = 32; //seconds
             mobileMinerTimer.Interval = mobileMinerInterval * 1000;
+
+            CloseDetailsArea();
 
             FetchInitialCoinStats();
 
@@ -139,6 +162,8 @@ namespace MultiMiner.Win
                 deviceListView.Items[0].Focused = true;
             }
 
+            PositionAdvancedAreaCloseButton();
+
             SetupAccessibleMenu();
 
             ShowStartupTips();
@@ -150,6 +175,13 @@ namespace MultiMiner.Win
             SetupMiningOnStartup();
 
             formLoaded = true;
+        }
+
+        private void PositionAdvancedAreaCloseButton()
+        {
+            closeApiButton.Parent = advancedAreaContainer.Panel2;
+            closeApiButton.BringToFront();
+            panel2.Visible = false;
         }
 
         private void ShowStartupTips()
@@ -418,7 +450,7 @@ namespace MultiMiner.Win
 
         private void SetupNotificationsControl()
         {
-            Control parent = advancedAreaContainer.Panel1;
+            Control parent = detailsAreaContainer.Panel1;
 
             const int ControlOffset = 2;
             const int ControlHeight = 143;
@@ -632,6 +664,9 @@ namespace MultiMiner.Win
             //format prices in the History grid
             startPriceColumn.DefaultCellStyle.Format = ".########";
             endPriceColumn.DefaultCellStyle.Format = ".########";
+
+            //only one executable now - preserve space
+            executablePathDataGridViewTextBoxColumn.Visible = false;
         }
 
         private void PositionCoinChooseLabels()
@@ -683,6 +718,10 @@ namespace MultiMiner.Win
                 PopulateListViewFromDevices();
                 LoadListViewValuesFromConfiguration();
                 LoadListViewValuesFromCoinStats();
+                RefreshDetailsAreaIfVisible();
+
+                //clean up mappings from previous device list
+                deviceDetailsMapping.Clear();
 
                 //auto-size columns
                 AutoSizeListViewColumns();
@@ -732,56 +771,66 @@ namespace MultiMiner.Win
         {
             if (deviceListView.View != View.Details)
                 return;
-                                    
-            if (briefMode)
-            {
-                SetColumWidth(nameColumnHeader, -2);
-                SetColumWidth(driverColumnHeader, 0);
-                SetColumWidth(coinColumnHeader, -2);
-                SetColumWidth(difficultyColumnHeader, 0);
-                SetColumWidth(priceColumnHeader, 0);
-                SetColumWidth(profitabilityColumnHeader, -2);
-                SetColumWidth(poolColumnHeader, 0);
 
-                if (ListViewColumnHasValues("Temp"))
-                    SetColumWidth(tempColumnHeader, -2);
-                else if (tempColumnHeader.Width != 0)
-                    SetColumWidth(tempColumnHeader, 0);
-
-                SetColumWidth(hashrateColumnHeader, -2);
-                SetColumWidth(acceptedColumnHeader, 0);
-                SetColumWidth(rejectedColumnHeader, 0);
-                SetColumWidth(errorsColumnHeader, 0);
-                SetColumWidth(utilityColumnHeader, 0);
-                SetColumWidth(intensityColumnHeader, 0);
-                SetColumWidth(fanColumnHeader, 0);
-                SetColumWidth(incomeColumnHeader, 0);
-                SetColumWidth(exchangeColumnHeader, 0);
-            }
-            else
+            deviceListView.BeginUpdate();
+            try
             {
-                for (int i = 0; i < deviceListView.Columns.Count; i++)
+
+                if (briefMode)
                 {
-                    ColumnHeader column = deviceListView.Columns[i];
+                    SetColumWidth(nameColumnHeader, -2);
+                    SetColumWidth(driverColumnHeader, 0);
+                    SetColumWidth(coinColumnHeader, -2);
+                    SetColumWidth(difficultyColumnHeader, 0);
+                    SetColumWidth(priceColumnHeader, 0);
+                    SetColumWidth(profitabilityColumnHeader, -2);
+                    SetColumWidth(poolColumnHeader, 0);
 
-                    if (applicationConfiguration.HiddenColumns.Contains(column.Text))
+                    if (ListViewColumnHasValues("Temp"))
+                        SetColumWidth(tempColumnHeader, -2);
+                    else if (tempColumnHeader.Width != 0)
+                        SetColumWidth(tempColumnHeader, 0);
+
+                    SetColumWidth(hashrateColumnHeader, -2);
+                    SetColumWidth(acceptedColumnHeader, 0);
+                    SetColumWidth(rejectedColumnHeader, 0);
+                    SetColumWidth(errorsColumnHeader, 0);
+                    SetColumWidth(utilityColumnHeader, 0);
+                    SetColumWidth(intensityColumnHeader, 0);
+                    SetColumWidth(fanColumnHeader, 0);
+                    SetColumWidth(incomeColumnHeader, 0);
+                    SetColumWidth(exchangeColumnHeader, 0);
+                }
+                else
+                {
+                    for (int i = 0; i < deviceListView.Columns.Count; i++)
                     {
-                        SetColumWidth(column, 0);
-                        continue;
+                        ColumnHeader column = deviceListView.Columns[i];
+
+                        if (applicationConfiguration.HiddenColumns.Contains(column.Text))
+                        {
+                            SetColumWidth(column, 0);
+                            continue;
+                        }
+
+                        bool hasValue = false;
+                        if (i == 0)
+                            hasValue = true;
+                        else
+                            hasValue = ListViewColumnHasValues(column.Text);
+
+                        if (hasValue)
+                            SetColumWidth(column, -2);
+                        else
+                            SetColumWidth(column, 0);
                     }
-
-                    bool hasValue = false;
-                    if (i == 0)
-                        hasValue = true;
-                    else
-                        hasValue = ListViewColumnHasValues(column.Text);
-
-                    if (hasValue)
-                        SetColumWidth(column, -2);
-                    else
-                        SetColumWidth(column, 0);
                 }
             }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
+           
         }
         
         private bool ListViewColumnHasValues(string headerText)
@@ -1292,6 +1341,9 @@ namespace MultiMiner.Win
             stopToolStripMenuItem.Enabled = stopMenuItem.Enabled;
             restartToolStripMenuItem.Enabled = stopMenuItem.Enabled;
             scanHardwareToolStripMenuItem.Enabled = !miningEngine.Mining;
+
+            //process log menu
+            launchToolStripMenuItem.Enabled = startMenuItem.Enabled;
         }
 
         private bool MiningConfigurationValid()
@@ -1323,6 +1375,7 @@ namespace MultiMiner.Win
             deviceStatsTimer.Enabled = false;
             minerSummaryTimer.Enabled = false;
             coinStatsCountdownTimer.Enabled = false;
+            poolInfoTimer.Enabled = false;
             RefreshStrategiesCountdown();
             scryptRateLabel.Text = string.Empty;
             sha256RateLabel.Text = string.Empty;
@@ -1361,10 +1414,11 @@ namespace MultiMiner.Win
             startButton.Enabled = false; //immediately disable, update after
             startMenuItem.Enabled = false;
             
-            //create a deep clone of the mining configurations
+            //create a deep clone of the mining & device configurations
             //this is so we can accurately display e.g. the currently mining pools
             //even if the user changes pool info without restartinging mining
             this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
+            this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
 
             try
             {
@@ -1373,7 +1427,7 @@ namespace MultiMiner.Win
                     int donationPercent = 0;
                     if (perksConfiguration.PerksEnabled)
                         donationPercent = perksConfiguration.DonationPercent;
-                    miningEngine.StartMining(engineConfiguration, devices, coinInformation, donationPercent);
+                    miningEngine.StartMining(engineConfiguration, devices, coinApiInformation, donationPercent);
                 }
             }
             catch (MinerLaunchException ex)
@@ -1388,6 +1442,7 @@ namespace MultiMiner.Win
             deviceStatsTimer.Enabled = true;
             minerSummaryTimer.Enabled = true;
             coinStatsCountdownTimer.Enabled = true;
+            poolInfoTimer.Enabled = true;
             RefreshStrategiesCountdown();
 
             //to get changes from strategy config
@@ -1610,7 +1665,7 @@ namespace MultiMiner.Win
             if (!(miningEngine.Donating && perksConfiguration.ShowIncomeRates))
                 return;
 
-            if (coinInformation == null)
+            if (coinApiInformation == null)
                 //no internet or error parsing API
                 return;
 
@@ -1620,7 +1675,7 @@ namespace MultiMiner.Win
             if (coinConfiguration == null)
                 return;
 
-            CoinInformation info = coinInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
+            CoinInformation info = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
             if (info != null)
             {
                 double difficulty = (double)item.SubItems["Difficulty"].Tag;
@@ -1690,7 +1745,12 @@ namespace MultiMiner.Win
         private CoinConfiguration CoinConfigurationForDevice(Device device)
         {
             //get the actual device configuration, text in the ListViewItem may be unsaved
-            DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+            DeviceConfiguration deviceConfiguration = null;
+            if (miningEngine.Mining)
+                deviceConfiguration = miningDeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+            else
+                deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+
             if (deviceConfiguration == null)
                 return null;
 
@@ -1851,6 +1911,8 @@ namespace MultiMiner.Win
             double totalScryptRate = 0;
             double totalSha256Rate = 0;
 
+            allDeviceInformation.Clear();
+
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
                 ClearSuspectProcessFlags(minerProcess);
@@ -1862,6 +1924,8 @@ namespace MultiMiner.Win
                     minerProcess.MinerIsFrozen = true;
                     continue;
                 }
+
+                allDeviceInformation.AddRange(deviceInformationList);
 
                 //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
                 List<DeviceDetailsResponse> processDevices = GetProcessDevices(minerProcess, deviceInformationList);
@@ -1896,6 +1960,8 @@ namespace MultiMiner.Win
 
                         if (itemIndex >= 0)
                         {
+                            deviceDetailsMapping[devices[itemIndex]] = deviceDetails;
+
                             if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
                                 totalScryptRate += deviceInformation.AverageHashrate;
                             else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
@@ -1928,6 +1994,10 @@ namespace MultiMiner.Win
             AutoSizeListViewColumnsEvery(count);
 
             RefreshIncomeSummary();
+            RefreshDetailsAreaIfVisible();
+
+            if (processPoolInformation.Count == 0)
+                RefreshPoolInfo();
         }
 
         private void FlagSuspiciousMiner(MinerProcess minerProcess, DeviceInformationResponse deviceInformation)
@@ -1962,7 +2032,7 @@ namespace MultiMiner.Win
                 return;
             }
 
-            if (coinInformation == null)
+            if (coinApiInformation == null)
             {
                 //no internet or error parsing API
                 incomeSummaryLabel.Text = "";
@@ -1985,11 +2055,11 @@ namespace MultiMiner.Win
             {
                 const string addition = " + ";
                 double usdTotal = 0.00;
-                CoinInformation btcCoinInfo = coinInformation.SingleOrDefault(c => c.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
+                CoinInformation btcCoinInfo = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
                 foreach (string coinName in incomeForCoins.Keys)
                 {
                     double coinIncome = incomeForCoins[coinName];
-                    CoinInformation coinInfo = coinInformation.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+                    CoinInformation coinInfo = coinApiInformation.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
                     if (coinInfo != null)
                     {
                         double coinUsd = sellPrices.Subtotal.Amount * coinInfo.Price;
@@ -2260,7 +2330,7 @@ namespace MultiMiner.Win
                 //ensure the user isn't editing settings
                 !ShowingModalDialog())
             {
-                miningEngine.ApplyMiningStrategy(coinInformation);
+                miningEngine.ApplyMiningStrategy(coinApiInformation);
                 //save any changes made by the engine
                 engineConfiguration.SaveDeviceConfigurations();
                 //to get changes from strategy config
@@ -2278,7 +2348,7 @@ namespace MultiMiner.Win
 
             try
             {
-                coinInformation = coinApiContext.GetCoinInformation(
+                coinApiInformation = coinApiContext.GetCoinInformation(
                     UserAgent.AgentString,
                     engineConfiguration.StrategyConfiguration.BaseCoin).ToList();
                 currentBaseCoin = applicationConfiguration.UseCoinWarzApi ? BaseCoin.Bitcoin : engineConfiguration.StrategyConfiguration.BaseCoin;
@@ -2286,7 +2356,7 @@ namespace MultiMiner.Win
             catch (Exception ex)
             {
                 //don't crash if website cannot be resolved or JSON cannot be parsed
-                if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is Coin.Api.CoinApiException))
+                if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is CoinApiException))
                 {
                     if (applicationConfiguration.ShowApiErrors)
                         ShowCoinApiErrorNotification(ex);
@@ -2294,12 +2364,13 @@ namespace MultiMiner.Win
                 }
                 throw;
             }
-            
+
             LoadListViewValuesFromCoinStats();
             LoadKnownCoinsFromCoinStats();
             RefreshCoinStatsLabel();
             AutoSizeListViewColumns();
             SuggestCoinsToMine();
+            RefreshDetailsAreaIfVisible();
         }
 
         private void ShowCoinApiErrorNotification(Exception ex)
@@ -2332,42 +2403,42 @@ namespace MultiMiner.Win
                 return;
             if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.None)
                 return;
-            if (coinInformation == null) //no network connection
+            if (coinApiInformation == null) //no network connection
                 return;
 
-            IEnumerable<Coin.Api.CoinInformation> coinsToMine = GetCoinsToMine();
+            IEnumerable<CoinInformation> coinsToMine = GetCoinsToMine();
 
-            foreach (Coin.Api.CoinInformation coin in coinsToMine)
+            foreach (CoinInformation coin in coinsToMine)
                 NotifyCoinToMine(coin);
         }
 
-        private IEnumerable<Coin.Api.CoinInformation> GetCoinsToMine()
+        private IEnumerable<CoinInformation> GetCoinsToMine()
         {
-            IEnumerable<Coin.Api.CoinInformation> filteredCoins = this.coinInformation;
+            IEnumerable<CoinInformation> filteredCoins = this.coinApiInformation;
             if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256)
                 filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("SHA-256", StringComparison.OrdinalIgnoreCase));
             else if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt)
                 filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("Scrypt", StringComparison.OrdinalIgnoreCase));
 
-            IEnumerable<Coin.Api.CoinInformation> orderedCoins = filteredCoins.OrderByDescending(c => c.AverageProfitability);
+            IEnumerable<CoinInformation> orderedCoins = filteredCoins.OrderByDescending(c => c.AverageProfitability);
             switch (engineConfiguration.StrategyConfiguration.MiningBasis)
             {
                 case StrategyConfiguration.CoinMiningBasis.Difficulty:
-                    orderedCoins = coinInformation.OrderBy(c => c.Difficulty);
+                    orderedCoins = coinApiInformation.OrderBy(c => c.Difficulty);
                     break;
                 case StrategyConfiguration.CoinMiningBasis.Price:
-                    orderedCoins = coinInformation.OrderByDescending(c => c.Price);
+                    orderedCoins = coinApiInformation.OrderByDescending(c => c.Price);
                     break;
             }
 
             //added checks for coin.Symbol and coin.Exchange
             //current CoinChoose.com feed for LTC profitability has a NULL exchange for Litecoin
-            IEnumerable<Coin.Api.CoinInformation> unconfiguredCoins = orderedCoins.Where(coin => !String.IsNullOrEmpty(coin.Symbol) && !engineConfiguration.CoinConfigurations.Any(config => config.Coin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase)));
-            IEnumerable<Coin.Api.CoinInformation> coinsToMine = unconfiguredCoins.Take(3);
+            IEnumerable<CoinInformation> unconfiguredCoins = orderedCoins.Where(coin => !String.IsNullOrEmpty(coin.Symbol) && !engineConfiguration.CoinConfigurations.Any(config => config.Coin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase)));
+            IEnumerable<CoinInformation> coinsToMine = unconfiguredCoins.Take(3);
             return coinsToMine;
         }
 
-        private void NotifyCoinToMine(MultiMiner.Coin.Api.CoinInformation coin)
+        private void NotifyCoinToMine(CoinInformation coin)
         {
             string value = coin.AverageProfitability.ToString(".#") + "%";
             string noun = "average profitability";
@@ -2402,7 +2473,7 @@ namespace MultiMiner.Win
 
         private void LoadKnownCoinsFromCoinStats()
         {
-            foreach (Coin.Api.CoinInformation item in coinInformation)
+            foreach (CoinInformation item in coinApiInformation)
             {
                 //find existing known coin or create a knew one
                 CryptoCoin knownCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(item.Symbol));
@@ -2467,8 +2538,8 @@ namespace MultiMiner.Win
                 //there may be coins configured that are no longer returned in the stats
                 ClearAllCoinStats();
 
-                if (coinInformation != null) //null if no network connection
-                    foreach (Coin.Api.CoinInformation coin in coinInformation)
+                if (coinApiInformation != null) //null if no network connection
+                    foreach (CoinInformation coin in coinApiInformation)
                         foreach (ListViewItem item in deviceListView.Items)
                         {
                             CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
@@ -2484,7 +2555,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private void PopulateCoinStatsForListViewItem(Coin.Api.CoinInformation coinInfo, ListViewItem item)
+        private void PopulateCoinStatsForListViewItem(CoinInformation coinInfo, ListViewItem item)
         {
             deviceListView.BeginUpdate();
             try
@@ -2493,7 +2564,7 @@ namespace MultiMiner.Win
                 item.SubItems["Difficulty"].Text = coinInfo.Difficulty.ToDifficultyString();
 
                 string unit = "BTC";
-                if (currentBaseCoin == Coin.Api.BaseCoin.Litecoin)
+                if (currentBaseCoin == BaseCoin.Litecoin)
                     unit = "LTC";
 
                 item.SubItems["Price"].Text = String.Format("{0} {1}", coinInfo.Price.ToFriendlyString(), unit);
@@ -2510,7 +2581,7 @@ namespace MultiMiner.Win
                     if (!applicationConfiguration.UseCoinWarzApi && (engineConfiguration.StrategyConfiguration.BaseCoin == BaseCoin.Litecoin))
                     {
                         //if BaseCoin is LiteCoin, adjust the USD price accordingly
-                        CoinInformation btcCoinInfo = coinInformation.SingleOrDefault(c => c.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
+                        CoinInformation btcCoinInfo = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
                         coinExchangeRate = coinInfo.Price * (btcExchangeRate / btcCoinInfo.Price);
                     }
                     else
@@ -2531,7 +2602,7 @@ namespace MultiMiner.Win
                     case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
                         item.SubItems["Profitability"].Text = Math.Round(coinInfo.Profitability, 2) + "%";
                         break;
-                } 
+                }
             }
             finally
             {
@@ -4069,6 +4140,171 @@ namespace MultiMiner.Win
         private void quickSwitchToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             PopulateQuickSwitchMenu(quickSwitchToolStripMenuItem);
+        }
+
+        private void launchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LogLaunchArgs args = (LogLaunchArgs)logLaunchArgsBindingSource.Current;
+
+            string arguments = args.Arguments;
+            arguments = arguments.Replace("-T -q", String.Empty).Trim();
+
+            Process.Start(args.ExecutablePath, arguments);
+        }
+
+        private void dataGridView1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            // Ignore if a column or row header is clicked
+            if (e.RowIndex != -1 && e.ColumnIndex != -1)
+            {
+                if (e.Button == MouseButtons.Right)
+                {
+                    DataGridViewCell clickedCell = (sender as DataGridView).Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+                    // Here you can do whatever you want with the cell
+                    this.dataGridView1.CurrentCell = clickedCell;  // Select the clicked cell, for instance
+
+                    // Get mouse position relative to the vehicles grid
+                    var relativeMousePosition = dataGridView1.PointToClient(Cursor.Position);
+
+                    // Show the context menu
+                    this.processLogMenu.Show(dataGridView1, relativeMousePosition);
+                }
+            }
+        }
+
+        private void detailsControl1_CloseClicked(object sender)
+        {
+            CloseDetailsArea();
+        }
+
+        private void CloseDetailsArea()
+        {
+            detailsAreaContainer.Panel2.Hide();
+            detailsAreaContainer.Panel2Collapsed = true;
+        }
+
+        private void deviceListView_DoubleClick(object sender, EventArgs e)
+        {
+            ShowDetailsArea();
+        }
+
+        private void ShowDetailsArea()
+        {
+            RefreshDetailsArea();
+
+            detailsAreaContainer.Panel2Collapsed = false;
+            detailsAreaContainer.Panel2.Show();
+        }
+
+        private void RefreshDetailsAreaIfVisible()
+        {
+            if (!detailsAreaContainer.Panel2Collapsed)
+                RefreshDetailsArea();
+        }
+
+        private void RefreshDetailsArea()
+        {
+            if (deviceListView.SelectedItems.Count == 0)
+            {
+                detailsControl1.ClearDetails(devices.Count);
+                return;
+            }
+
+            int deviceIndex = deviceListView.SelectedIndices[0];
+            Device selectedDevice = devices[deviceIndex];
+            DeviceDetailsResponse deviceDetails = null;
+            if (deviceDetailsMapping.ContainsKey(selectedDevice))
+                deviceDetails = deviceDetailsMapping[selectedDevice];
+            CoinConfiguration coinConfiguration = CoinConfigurationForDevice(selectedDevice);
+            CoinInformation coinInfo = null;
+
+            //Internet or Coin API could be down
+            if (this.coinApiInformation != null)
+                coinInfo = this.coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
+
+            List<DeviceInformationResponse> minerDeviceInformation = new List<DeviceInformationResponse>();
+
+            if (deviceDetails != null)
+            {
+                if (deviceDetails.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
+                    minerDeviceInformation = allDeviceInformation.Where(d => d.Name.Equals(deviceDetails.Name, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                else
+                    minerDeviceInformation = allDeviceInformation.Where(d => d.Name.Equals(deviceDetails.Name, StringComparison.OrdinalIgnoreCase)
+                        && (d.ID == deviceDetails.ID)).ToList();
+            }
+
+            PoolInformationResponse poolInformation = null;
+            MinerProcess minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinInformation == coinInfo);
+            if (minerProcess != null)
+            {
+                DeviceInformationResponse deviceInformation = minerDeviceInformation.FirstOrDefault();
+                if ((deviceInformation != null) && processPoolInformation.ContainsKey(minerProcess))
+                    poolInformation = processPoolInformation[minerProcess].SingleOrDefault(p => p.Index == deviceInformation.PoolIndex);
+            }
+            
+            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, deviceDetails, minerDeviceInformation, poolInformation);
+        }
+
+        private void deviceListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (deviceListView.SelectedItems.Count > 0)
+                RefreshDetailsArea();
+        }
+
+        private void poolInfoTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshPoolInfo();
+            RefreshDetailsAreaIfVisible();
+        }
+
+        private void RefreshPoolInfo()
+        {
+            this.processPoolInformation.Clear();
+            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+            {
+                List<PoolInformationResponse> poolInformation = GetPoolInfoFromProcess(minerProcess);
+
+                if (poolInformation == null) //handled failure getting API info
+                {
+                    minerProcess.MinerIsFrozen = true;
+                    continue;
+                }
+
+                //...
+                processPoolInformation[minerProcess] = poolInformation;
+            }
+        }
+
+        private List<PoolInformationResponse> GetPoolInfoFromProcess(MinerProcess minerProcess)
+        {
+            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<PoolInformationResponse> poolInformation = null;
+            try
+            {
+                try
+                {
+                    poolInformation = apiContext.GetPoolInformation();
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    poolInformation = null;
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
+                poolInformation = null;
+            }
+
+            return poolInformation;
         }
     }
 }

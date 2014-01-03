@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.button3 = new System.Windows.Forms.Button();
+            this.closeButton = new System.Windows.Forms.Button();
             this.infoPicture = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.infoPicture)).BeginInit();
             this.SuspendLayout();
@@ -37,49 +37,49 @@
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(6, 6);
+            this.linkLabel1.Location = new System.Drawing.Point(7, 7);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(126, 13);
+            this.linkLabel1.Size = new System.Drawing.Size(138, 15);
             this.linkLabel1.TabIndex = 0;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "cgminer 3.4.0 is available";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
-            // button3
+            // closeButton
             // 
-            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(264, 3);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(21, 20);
-            this.button3.TabIndex = 3;
-            this.button3.Text = "x";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.closeButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.closeButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.closeButton.Location = new System.Drawing.Point(308, 3);
+            this.closeButton.Name = "closeButton";
+            this.closeButton.Size = new System.Drawing.Size(23, 23);
+            this.closeButton.TabIndex = 3;
+            this.closeButton.Text = "✖";
+            this.closeButton.UseVisualStyleBackColor = true;
+            this.closeButton.Click += new System.EventHandler(this.button3_Click);
             // 
             // infoPicture
             // 
             this.infoPicture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.infoPicture.Cursor = System.Windows.Forms.Cursors.Hand;
             this.infoPicture.Image = global::MultiMiner.Win.Properties.Resources.internet_browse;
-            this.infoPicture.Location = new System.Drawing.Point(242, 5);
+            this.infoPicture.Location = new System.Drawing.Point(286, 6);
             this.infoPicture.Name = "infoPicture";
-            this.infoPicture.Size = new System.Drawing.Size(16, 16);
+            this.infoPicture.Size = new System.Drawing.Size(19, 18);
             this.infoPicture.TabIndex = 4;
             this.infoPicture.TabStop = false;
             this.infoPicture.Click += new System.EventHandler(this.infoPicture_Click);
             // 
             // NotificationControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.Controls.Add(this.infoPicture);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.closeButton);
             this.Controls.Add(this.linkLabel1);
             this.Name = "NotificationControl";
-            this.Size = new System.Drawing.Size(288, 58);
+            this.Size = new System.Drawing.Size(336, 67);
             this.Load += new System.EventHandler(this.NotificationControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.infoPicture)).EndInit();
             this.ResumeLayout(false);
@@ -90,7 +90,7 @@
         #endregion
 
         private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button closeButton;
         private System.Windows.Forms.PictureBox infoPicture;
     }
 }

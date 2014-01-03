@@ -174,6 +174,9 @@ namespace MultiMiner.Xgminer
                     //leaving as a code-path (for now)
                     if (deviceDescriptor.Driver.Equals("hashbusterusb", StringComparison.OrdinalIgnoreCase))
                     {
+                        //FIXED IN BFGMINER 3.9
+                        //SAFE TO REMOVE THIS CODE PATH ONCE 3.9 HAS BEEN RELEASE & STABLE
+
                         //hard-coded implementation for now until the bfgminer implementation is a bit more stable
                         //3.8.1 introduced a Path for HashBuster Micro, but the path is not usable with -S -d
                         arguments = string.Format("{0} -S {1}:auto -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Serial);
@@ -187,7 +190,7 @@ namespace MultiMiner.Xgminer
 
             if (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
                 //the --scrypt param must come before the --intensity params to use over 13 in latest cgminer
-                arguments = "--scrypt " + arguments;
+                arguments = "--scrypt " + arguments.TrimStart();
 
             if (minerConfiguration.ApiListen)
             {

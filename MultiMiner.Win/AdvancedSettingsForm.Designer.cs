@@ -30,41 +30,31 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AdvancedSettingsForm));
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.label9 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.logPathEdit = new System.Windows.Forms.TextBox();
-            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.logPathButton = new System.Windows.Forms.Button();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.configPathButton = new System.Windows.Forms.Button();
             this.configPathEdit = new System.Windows.Forms.TextBox();
             this.pathConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label2 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.panel1.SuspendLayout();
+            this.logPathButton = new System.Windows.Forms.Button();
+            this.logPathEdit = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.panel1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.SystemColors.Control;
-            this.panel1.Controls.Add(this.saveButton);
-            this.panel1.Controls.Add(this.cancelButton);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 260);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(497, 62);
-            this.panel1.TabIndex = 6;
             // 
             // saveButton
             // 
@@ -88,72 +78,61 @@
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
-            // textBox2
+            // checkBox4
             // 
-            this.textBox2.AccessibleName = "Roll over logs";
-            this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "OldLogFileSets", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox2.Location = new System.Drawing.Point(148, 59);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(42, 23);
-            this.textBox2.TabIndex = 3;
-            this.textBox2.Text = "45";
-            this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "AllowMultipleInstances", true));
+            this.checkBox4.Location = new System.Drawing.Point(24, 238);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(287, 19);
+            this.checkBox4.TabIndex = 32;
+            this.checkBox4.Text = "Allow launching multiple instances of MultiMiner";
+            this.checkBox4.UseVisualStyleBackColor = true;
             // 
             // applicationConfigurationBindingSource
             // 
             this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Configuration.ApplicationConfiguration);
             // 
-            // label9
+            // checkBox3
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(208, 62);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(55, 15);
-            this.label9.TabIndex = 23;
-            this.label9.Text = "old set(s)";
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "SetGpuEnvironmentVariables", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBox3.Location = new System.Drawing.Point(24, 209);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(305, 19);
+            this.checkBox3.TabIndex = 31;
+            this.checkBox3.Text = "Automatically set GPU mining environment variables";
+            this.checkBox3.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
+            // checkBox2
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "RollOverLogFiles", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox1.Location = new System.Drawing.Point(24, 61);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(100, 19);
-            this.checkBox1.TabIndex = 2;
-            this.checkBox1.Text = "Roll over logs:";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "UseAccessibleMenu", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBox2.Location = new System.Drawing.Point(24, 180);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(272, 19);
+            this.checkBox2.TabIndex = 30;
+            this.checkBox2.Text = "Use a standard menu designed for accessibility";
+            this.checkBox2.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // pictureBox1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(21, 24);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(76, 15);
-            this.label1.TabIndex = 24;
-            this.label1.Text = "Log file path:";
+            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.info;
+            this.pictureBox1.Location = new System.Drawing.Point(24, 134);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(22, 21);
+            this.pictureBox1.TabIndex = 29;
+            this.pictureBox1.TabStop = false;
             // 
-            // logPathEdit
+            // label3
             // 
-            this.logPathEdit.AccessibleName = "Log file path";
-            this.logPathEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "LogFilePath", true));
-            this.logPathEdit.Location = new System.Drawing.Point(148, 21);
-            this.logPathEdit.Name = "logPathEdit";
-            this.logPathEdit.Size = new System.Drawing.Size(286, 23);
-            this.logPathEdit.TabIndex = 0;
-            // 
-            // logPathButton
-            // 
-            this.logPathButton.AccessibleName = "Browse";
-            this.logPathButton.BackColor = System.Drawing.SystemColors.Control;
-            this.logPathButton.Location = new System.Drawing.Point(442, 18);
-            this.logPathButton.Name = "logPathButton";
-            this.logPathButton.Size = new System.Drawing.Size(31, 27);
-            this.logPathButton.TabIndex = 1;
-            this.logPathButton.Text = "...";
-            this.logPathButton.UseVisualStyleBackColor = false;
-            this.logPathButton.Click += new System.EventHandler(this.logPathButton_Click);
+            this.label3.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label3.Location = new System.Drawing.Point(55, 134);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(418, 43);
+            this.label3.TabIndex = 28;
+            this.label3.Text = "You can change the above path to override where non device-specific configuration" +
+    "s are stored.";
             // 
             // configPathButton
             // 
@@ -189,46 +168,79 @@
             this.label2.TabIndex = 27;
             this.label2.Text = "Shared config path:";
             // 
-            // pictureBox1
+            // logPathButton
             // 
-            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.info;
-            this.pictureBox1.Location = new System.Drawing.Point(24, 134);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(22, 21);
-            this.pictureBox1.TabIndex = 29;
-            this.pictureBox1.TabStop = false;
+            this.logPathButton.AccessibleName = "Browse";
+            this.logPathButton.BackColor = System.Drawing.SystemColors.Control;
+            this.logPathButton.Location = new System.Drawing.Point(442, 18);
+            this.logPathButton.Name = "logPathButton";
+            this.logPathButton.Size = new System.Drawing.Size(31, 27);
+            this.logPathButton.TabIndex = 1;
+            this.logPathButton.Text = "...";
+            this.logPathButton.UseVisualStyleBackColor = false;
+            this.logPathButton.Click += new System.EventHandler(this.logPathButton_Click);
             // 
-            // label3
+            // logPathEdit
             // 
-            this.label3.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label3.Location = new System.Drawing.Point(55, 134);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(418, 43);
-            this.label3.TabIndex = 28;
-            this.label3.Text = "You can change the above path to override where non device-specific configuration" +
-    "s are stored.";
+            this.logPathEdit.AccessibleName = "Log file path";
+            this.logPathEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "LogFilePath", true));
+            this.logPathEdit.Location = new System.Drawing.Point(148, 21);
+            this.logPathEdit.Name = "logPathEdit";
+            this.logPathEdit.Size = new System.Drawing.Size(286, 23);
+            this.logPathEdit.TabIndex = 0;
             // 
-            // checkBox2
+            // label1
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "UseAccessibleMenu", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox2.Location = new System.Drawing.Point(24, 180);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(272, 19);
-            this.checkBox2.TabIndex = 30;
-            this.checkBox2.Text = "Use a standard menu designed for accessibility";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(21, 24);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(76, 15);
+            this.label1.TabIndex = 24;
+            this.label1.Text = "Log file path:";
             // 
-            // checkBox3
+            // textBox2
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "SetGpuEnvironmentVariables", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox3.Location = new System.Drawing.Point(24, 213);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(305, 19);
-            this.checkBox3.TabIndex = 31;
-            this.checkBox3.Text = "Automatically set GPU mining environment variables";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.textBox2.AccessibleName = "Roll over logs";
+            this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "OldLogFileSets", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox2.Location = new System.Drawing.Point(148, 59);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(42, 23);
+            this.textBox2.TabIndex = 3;
+            this.textBox2.Text = "45";
+            this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(208, 62);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(55, 15);
+            this.label9.TabIndex = 23;
+            this.label9.Text = "old set(s)";
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "RollOverLogFiles", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBox1.Location = new System.Drawing.Point(24, 61);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(100, 19);
+            this.checkBox1.TabIndex = 2;
+            this.checkBox1.Text = "Roll over logs:";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.saveButton);
+            this.panel1.Controls.Add(this.cancelButton);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 278);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(497, 62);
+            this.panel1.TabIndex = 6;
             // 
             // AdvancedSettingsForm
             // 
@@ -237,7 +249,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(497, 322);
+            this.ClientSize = new System.Drawing.Size(497, 340);
+            this.Controls.Add(this.checkBox4);
             this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.pictureBox1);
@@ -260,10 +273,10 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Configure Advanced Settings";
             this.Load += new System.EventHandler(this.AdvancedSettingsForm_Load);
-            this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).EndInit();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -290,5 +303,6 @@
         private System.Windows.Forms.BindingSource pathConfigurationBindingSource;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox checkBox4;
     }
 }

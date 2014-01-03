@@ -30,13 +30,13 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle52 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle53 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle54 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.deviceStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.startupMiningCountdownTimer = new System.Windows.Forms.Timer(this.components);
@@ -74,14 +74,13 @@
             this.quickCoinMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.columnHeaderMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.dummyToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.logProcessCloseArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.logLaunchArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.exchangeRateTimer = new System.Windows.Forms.Timer(this.components);
             this.startupMiningPanel = new System.Windows.Forms.Panel();
             this.cancelStartupMiningButton = new System.Windows.Forms.Button();
             this.countdownLabel = new System.Windows.Forms.Label();
             this.advancedAreaContainer = new System.Windows.Forms.SplitContainer();
-            this.deviceListView = new MultiMiner.Win.NoFlickerListView();
+            this.detailsAreaContainer = new System.Windows.Forms.SplitContainer();
+            this.deviceListView = new MultiMiner.Win.DeviceListView();
             this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.driverColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.coinColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -99,6 +98,7 @@
             this.errorsColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.utilityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.intensityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.detailsControl1 = new MultiMiner.Win.DetailsControl();
             this.advancedTabControl = new System.Windows.Forms.TabControl();
             this.historyPage = new System.Windows.Forms.TabPage();
             this.historyGridView = new System.Windows.Forms.DataGridView();
@@ -111,6 +111,7 @@
             this.AcceptedShares = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.durationColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.devicesColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.logProcessCloseArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.processLogPage = new System.Windows.Forms.TabPage();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.dateTimeDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -118,6 +119,7 @@
             this.executablePathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.argumentsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Reason = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.logLaunchArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.apiMonitorPage = new System.Windows.Forms.TabPage();
             this.apiLogGridView = new System.Windows.Forms.DataGridView();
             this.dateTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -127,6 +129,8 @@
             this.apiLogEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
             this.closeApiButton = new System.Windows.Forms.Button();
+            this.processLogMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.launchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.footerPanel = new System.Windows.Forms.Panel();
             this.incomeSummaryLabel = new System.Windows.Forms.Label();
             this.coinChooseSuffixLabel = new System.Windows.Forms.Label();
@@ -170,53 +174,58 @@
             this.dynamicIntensityButton = new System.Windows.Forms.ToolStripMenuItem();
             this.accessibleMenu = new System.Windows.Forms.MenuStrip();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.advancedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cancelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.coinsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.strategiesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.perksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.largeIconsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.smallIconsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.listToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.detailsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tilesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.advancedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scanHardwareToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quickSwitchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dummyToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.historyMenuSeperator = new System.Windows.Forms.ToolStripSeparator();
             this.historyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.processLogToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aPIMonitorToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.dynamicIntensityMenuSeperator = new System.Windows.Forms.ToolStripSeparator();
             this.dynamicIntensityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dummyToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.poolInfoTimer = new System.Windows.Forms.Timer(this.components);
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).BeginInit();
             this.startupMiningPanel.SuspendLayout();
             this.advancedAreaContainer.Panel1.SuspendLayout();
             this.advancedAreaContainer.Panel2.SuspendLayout();
             this.advancedAreaContainer.SuspendLayout();
+            this.detailsAreaContainer.Panel1.SuspendLayout();
+            this.detailsAreaContainer.Panel2.SuspendLayout();
+            this.detailsAreaContainer.SuspendLayout();
             this.advancedTabControl.SuspendLayout();
             this.historyPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.historyGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).BeginInit();
             this.processLogPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).BeginInit();
             this.apiMonitorPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).BeginInit();
             this.panel2.SuspendLayout();
+            this.processLogMenu.SuspendLayout();
             this.footerPanel.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.standardToolBar.SuspendLayout();
@@ -492,14 +501,6 @@
             this.dummyToolStripMenuItem2.Size = new System.Drawing.Size(117, 22);
             this.dummyToolStripMenuItem2.Text = "Dummy";
             // 
-            // logProcessCloseArgsBindingSource
-            // 
-            this.logProcessCloseArgsBindingSource.DataSource = typeof(MultiMiner.Engine.LogProcessCloseArgs);
-            // 
-            // logLaunchArgsBindingSource
-            // 
-            this.logLaunchArgsBindingSource.DataSource = typeof(MultiMiner.Xgminer.LogLaunchArgs);
-            // 
             // exchangeRateTimer
             // 
             this.exchangeRateTimer.Tick += new System.EventHandler(this.exchangeRateTimer_Tick);
@@ -544,7 +545,7 @@
             // 
             // advancedAreaContainer.Panel1
             // 
-            this.advancedAreaContainer.Panel1.Controls.Add(this.deviceListView);
+            this.advancedAreaContainer.Panel1.Controls.Add(this.detailsAreaContainer);
             // 
             // advancedAreaContainer.Panel2
             // 
@@ -555,6 +556,24 @@
             this.advancedAreaContainer.SplitterWidth = 5;
             this.advancedAreaContainer.TabIndex = 10;
             this.advancedAreaContainer.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.advancedAreaContainer_SplitterMoved);
+            // 
+            // detailsAreaContainer
+            // 
+            this.detailsAreaContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.detailsAreaContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.detailsAreaContainer.Location = new System.Drawing.Point(0, 0);
+            this.detailsAreaContainer.Name = "detailsAreaContainer";
+            // 
+            // detailsAreaContainer.Panel1
+            // 
+            this.detailsAreaContainer.Panel1.Controls.Add(this.deviceListView);
+            // 
+            // detailsAreaContainer.Panel2
+            // 
+            this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
+            this.detailsAreaContainer.Size = new System.Drawing.Size(881, 232);
+            this.detailsAreaContainer.SplitterDistance = 538;
+            this.detailsAreaContainer.TabIndex = 3;
             // 
             // deviceListView
             // 
@@ -580,23 +599,23 @@
             this.intensityColumnHeader});
             this.deviceListView.ContextMenuStrip = this.columnHeaderMenu;
             this.deviceListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            listViewGroup5.Header = "CPU";
-            listViewGroup5.Name = "cpuListViewGroup";
-            listViewGroup6.Header = "GPU";
-            listViewGroup6.Name = "gpuListViewGroup";
-            listViewGroup7.Header = "USB";
-            listViewGroup7.Name = "usbListViewGroup";
-            listViewGroup8.Header = "Proxy";
-            listViewGroup8.Name = "proxyListViewGroup";
+            listViewGroup1.Header = "CPU";
+            listViewGroup1.Name = "cpuListViewGroup";
+            listViewGroup2.Header = "GPU";
+            listViewGroup2.Name = "gpuListViewGroup";
+            listViewGroup3.Header = "USB";
+            listViewGroup3.Name = "usbListViewGroup";
+            listViewGroup4.Header = "Proxy";
+            listViewGroup4.Name = "proxyListViewGroup";
             this.deviceListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup5,
-            listViewGroup6,
-            listViewGroup7,
-            listViewGroup8});
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4});
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(881, 232);
+            this.deviceListView.Size = new System.Drawing.Size(538, 232);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -604,6 +623,8 @@
             this.deviceListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.deviceListView_ColumnClick);
             this.deviceListView.ColumnWidthChanging += new System.Windows.Forms.ColumnWidthChangingEventHandler(this.deviceListView_ColumnWidthChanging);
             this.deviceListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.deviceListView_ItemChecked);
+            this.deviceListView.SelectedIndexChanged += new System.EventHandler(this.deviceListView_SelectedIndexChanged);
+            this.deviceListView.DoubleClick += new System.EventHandler(this.deviceListView_DoubleClick);
             this.deviceListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.deviceListView_MouseClick);
             this.deviceListView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.deviceListView_MouseUp);
             // 
@@ -688,6 +709,18 @@
             // 
             this.intensityColumnHeader.Text = "Intensity";
             // 
+            // detailsControl1
+            // 
+            this.detailsControl1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.detailsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.detailsControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.detailsControl1.Location = new System.Drawing.Point(0, 0);
+            this.detailsControl1.Name = "detailsControl1";
+            this.detailsControl1.Size = new System.Drawing.Size(339, 232);
+            this.detailsControl1.TabIndex = 0;
+            this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
+            // 
             // advancedTabControl
             // 
             this.advancedTabControl.Controls.Add(this.historyPage);
@@ -695,10 +728,10 @@
             this.advancedTabControl.Controls.Add(this.apiMonitorPage);
             this.advancedTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.advancedTabControl.ImageList = this.imageList1;
-            this.advancedTabControl.Location = new System.Drawing.Point(0, 32);
+            this.advancedTabControl.Location = new System.Drawing.Point(0, 26);
             this.advancedTabControl.Name = "advancedTabControl";
             this.advancedTabControl.SelectedIndex = 0;
-            this.advancedTabControl.Size = new System.Drawing.Size(881, 106);
+            this.advancedTabControl.Size = new System.Drawing.Size(881, 112);
             this.advancedTabControl.TabIndex = 15;
             // 
             // historyPage
@@ -708,7 +741,7 @@
             this.historyPage.Location = new System.Drawing.Point(4, 24);
             this.historyPage.Name = "historyPage";
             this.historyPage.Padding = new System.Windows.Forms.Padding(3);
-            this.historyPage.Size = new System.Drawing.Size(873, 78);
+            this.historyPage.Size = new System.Drawing.Size(873, 84);
             this.historyPage.TabIndex = 2;
             this.historyPage.Text = "History";
             this.historyPage.UseVisualStyleBackColor = true;
@@ -718,8 +751,8 @@
             this.historyGridView.AllowUserToAddRows = false;
             this.historyGridView.AllowUserToDeleteRows = false;
             this.historyGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle52.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle52;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.historyGridView.AutoGenerateColumns = false;
             this.historyGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.historyGridView.BackgroundColor = System.Drawing.SystemColors.Window;
@@ -741,7 +774,7 @@
             this.historyGridView.Name = "historyGridView";
             this.historyGridView.ReadOnly = true;
             this.historyGridView.RowHeadersVisible = false;
-            this.historyGridView.Size = new System.Drawing.Size(867, 72);
+            this.historyGridView.Size = new System.Drawing.Size(867, 78);
             this.historyGridView.TabIndex = 0;
             this.historyGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.historyGridView_CellFormatting);
             this.historyGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.historyGridView_RowsAdded);
@@ -810,6 +843,10 @@
             this.devicesColumn.Name = "devicesColumn";
             this.devicesColumn.ReadOnly = true;
             // 
+            // logProcessCloseArgsBindingSource
+            // 
+            this.logProcessCloseArgsBindingSource.DataSource = typeof(MultiMiner.Engine.LogProcessCloseArgs);
+            // 
             // processLogPage
             // 
             this.processLogPage.Controls.Add(this.dataGridView1);
@@ -817,7 +854,7 @@
             this.processLogPage.Location = new System.Drawing.Point(4, 24);
             this.processLogPage.Name = "processLogPage";
             this.processLogPage.Padding = new System.Windows.Forms.Padding(3);
-            this.processLogPage.Size = new System.Drawing.Size(873, 78);
+            this.processLogPage.Size = new System.Drawing.Size(873, 84);
             this.processLogPage.TabIndex = 1;
             this.processLogPage.Text = "Process Log";
             this.processLogPage.UseVisualStyleBackColor = true;
@@ -828,8 +865,8 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToOrderColumns = true;
             this.dataGridView1.AllowUserToResizeRows = false;
-            dataGridViewCellStyle53.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle53;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.AutoGenerateColumns = false;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Window;
             this.dataGridView1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -846,9 +883,10 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(867, 72);
+            this.dataGridView1.Size = new System.Drawing.Size(867, 78);
             this.dataGridView1.TabIndex = 14;
             this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
+            this.dataGridView1.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDown);
             // 
             // dateTimeDataGridViewTextBoxColumn1
             // 
@@ -888,6 +926,10 @@
             this.Reason.Name = "Reason";
             this.Reason.ReadOnly = true;
             // 
+            // logLaunchArgsBindingSource
+            // 
+            this.logLaunchArgsBindingSource.DataSource = typeof(MultiMiner.Xgminer.LogLaunchArgs);
+            // 
             // apiMonitorPage
             // 
             this.apiMonitorPage.Controls.Add(this.apiLogGridView);
@@ -895,7 +937,7 @@
             this.apiMonitorPage.Location = new System.Drawing.Point(4, 24);
             this.apiMonitorPage.Name = "apiMonitorPage";
             this.apiMonitorPage.Padding = new System.Windows.Forms.Padding(3);
-            this.apiMonitorPage.Size = new System.Drawing.Size(873, 78);
+            this.apiMonitorPage.Size = new System.Drawing.Size(873, 84);
             this.apiMonitorPage.TabIndex = 0;
             this.apiMonitorPage.Text = "API Monitor";
             this.apiMonitorPage.UseVisualStyleBackColor = true;
@@ -906,8 +948,8 @@
             this.apiLogGridView.AllowUserToDeleteRows = false;
             this.apiLogGridView.AllowUserToOrderColumns = true;
             this.apiLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle54.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle54;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.apiLogGridView.AutoGenerateColumns = false;
             this.apiLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.apiLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -922,7 +964,7 @@
             this.apiLogGridView.Location = new System.Drawing.Point(3, 3);
             this.apiLogGridView.Name = "apiLogGridView";
             this.apiLogGridView.RowHeadersVisible = false;
-            this.apiLogGridView.Size = new System.Drawing.Size(867, 72);
+            this.apiLogGridView.Size = new System.Drawing.Size(867, 78);
             this.apiLogGridView.TabIndex = 13;
             this.apiLogGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.apiLogGridView_CellFormatting);
             // 
@@ -967,20 +1009,37 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(881, 32);
+            this.panel2.Size = new System.Drawing.Size(881, 26);
             this.panel2.TabIndex = 14;
             // 
             // closeApiButton
             // 
             this.closeApiButton.AccessibleName = "Close";
             this.closeApiButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.closeApiButton.Location = new System.Drawing.Point(848, 1);
+            this.closeApiButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.closeApiButton.Location = new System.Drawing.Point(858, 0);
             this.closeApiButton.Name = "closeApiButton";
-            this.closeApiButton.Size = new System.Drawing.Size(29, 27);
+            this.closeApiButton.Size = new System.Drawing.Size(22, 22);
             this.closeApiButton.TabIndex = 0;
-            this.closeApiButton.Text = "X";
+            this.closeApiButton.Text = "✖";
             this.closeApiButton.UseVisualStyleBackColor = true;
             this.closeApiButton.Click += new System.EventHandler(this.closeApiButton_Click);
+            // 
+            // processLogMenu
+            // 
+            this.processLogMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.launchToolStripMenuItem});
+            this.processLogMenu.Name = "processLogMenu";
+            this.processLogMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.processLogMenu.Size = new System.Drawing.Size(114, 26);
+            // 
+            // launchToolStripMenuItem
+            // 
+            this.launchToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_control_play;
+            this.launchToolStripMenuItem.Name = "launchToolStripMenuItem";
+            this.launchToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.launchToolStripMenuItem.Text = "Launch";
+            this.launchToolStripMenuItem.Click += new System.EventHandler(this.launchToolStripMenuItem_Click);
             // 
             // footerPanel
             // 
@@ -1193,7 +1252,7 @@
             this.coinsButton.AccessibleName = "Coins";
             this.coinsButton.Image = global::MultiMiner.Win.Properties.Resources.application_gear;
             this.coinsButton.Name = "coinsButton";
-            this.coinsButton.Size = new System.Drawing.Size(152, 22);
+            this.coinsButton.Size = new System.Drawing.Size(125, 22);
             this.coinsButton.Text = "Coins";
             this.coinsButton.ToolTipText = "Configure coins and pools";
             this.coinsButton.Click += new System.EventHandler(this.coinsButton_Click_1);
@@ -1203,7 +1262,7 @@
             this.strategiesButton.AccessibleName = "Strategies";
             this.strategiesButton.Image = global::MultiMiner.Win.Properties.Resources.application_execute;
             this.strategiesButton.Name = "strategiesButton";
-            this.strategiesButton.Size = new System.Drawing.Size(152, 22);
+            this.strategiesButton.Size = new System.Drawing.Size(125, 22);
             this.strategiesButton.Text = "Strategies";
             this.strategiesButton.ToolTipText = "Configure profitability strategies";
             this.strategiesButton.Click += new System.EventHandler(this.strategiesButton_Click_1);
@@ -1213,7 +1272,7 @@
             this.perksButton.AccessibleName = "Perks";
             this.perksButton.Image = global::MultiMiner.Win.Properties.Resources.application_add;
             this.perksButton.Name = "perksButton";
-            this.perksButton.Size = new System.Drawing.Size(152, 22);
+            this.perksButton.Size = new System.Drawing.Size(125, 22);
             this.perksButton.Text = "Perks";
             this.perksButton.Click += new System.EventHandler(this.perksToolStripMenuItem_Click);
             // 
@@ -1282,7 +1341,7 @@
             this.largeIconsToolStripMenuItem.AccessibleName = "Large icons";
             this.largeIconsToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.view_medium_icons;
             this.largeIconsToolStripMenuItem.Name = "largeIconsToolStripMenuItem";
-            this.largeIconsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.largeIconsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.largeIconsToolStripMenuItem.Text = "Large Icons";
             this.largeIconsToolStripMenuItem.Click += new System.EventHandler(this.largeIconsToolStripMenuItem_Click);
             // 
@@ -1291,7 +1350,7 @@
             this.smallIconsToolStripMenuItem.AccessibleName = "Small icons";
             this.smallIconsToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.view_small_icons;
             this.smallIconsToolStripMenuItem.Name = "smallIconsToolStripMenuItem";
-            this.smallIconsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.smallIconsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.smallIconsToolStripMenuItem.Text = "Small Icons";
             this.smallIconsToolStripMenuItem.Click += new System.EventHandler(this.smallIconsToolStripMenuItem_Click);
             // 
@@ -1300,7 +1359,7 @@
             this.listToolStripMenuItem.AccessibleName = "List";
             this.listToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.view_list;
             this.listToolStripMenuItem.Name = "listToolStripMenuItem";
-            this.listToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.listToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.listToolStripMenuItem.Text = "List";
             this.listToolStripMenuItem.Click += new System.EventHandler(this.listToolStripMenuItem_Click);
             // 
@@ -1309,7 +1368,7 @@
             this.detailsToolStripMenuItem.AccessibleName = "Details";
             this.detailsToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.view_details;
             this.detailsToolStripMenuItem.Name = "detailsToolStripMenuItem";
-            this.detailsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.detailsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.detailsToolStripMenuItem.Text = "Details";
             this.detailsToolStripMenuItem.Click += new System.EventHandler(this.detailsToolStripMenuItem_Click);
             // 
@@ -1318,7 +1377,7 @@
             this.tilesToolStripMenuItem.AccessibleName = "Tiles";
             this.tilesToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.view_large_icons;
             this.tilesToolStripMenuItem.Name = "tilesToolStripMenuItem";
-            this.tilesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tilesToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.tilesToolStripMenuItem.Text = "Tiles";
             this.tilesToolStripMenuItem.Click += new System.EventHandler(this.tilesToolStripMenuItem_Click);
             // 
@@ -1367,7 +1426,7 @@
             // dummyToolStripMenuItem
             // 
             this.dummyToolStripMenuItem.Name = "dummyToolStripMenuItem";
-            this.dummyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.dummyToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.dummyToolStripMenuItem.Text = "Dummy";
             // 
             // historySeperator
@@ -1448,6 +1507,46 @@
             this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
             this.actionsToolStripMenuItem.Text = "&Actions";
             // 
+            // startToolStripMenuItem
+            // 
+            this.startToolStripMenuItem.Name = "startToolStripMenuItem";
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.startToolStripMenuItem.Text = "&Start";
+            this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
+            // 
+            // stopToolStripMenuItem
+            // 
+            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.stopToolStripMenuItem.Text = "S&top";
+            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
+            // 
+            // restartToolStripMenuItem
+            // 
+            this.restartToolStripMenuItem.Name = "restartToolStripMenuItem";
+            this.restartToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.restartToolStripMenuItem.Text = "&Restart";
+            this.restartToolStripMenuItem.Click += new System.EventHandler(this.restartToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(107, 6);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.saveToolStripMenuItem.Text = "S&ave";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // cancelToolStripMenuItem
+            // 
+            this.cancelToolStripMenuItem.Name = "cancelToolStripMenuItem";
+            this.cancelToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.cancelToolStripMenuItem.Text = "&Cancel";
+            this.cancelToolStripMenuItem.Click += new System.EventHandler(this.cancelToolStripMenuItem_Click);
+            // 
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1458,6 +1557,34 @@
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.toolsToolStripMenuItem.Text = "&Tools";
+            // 
+            // settingsToolStripMenuItem1
+            // 
+            this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
+            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
+            this.settingsToolStripMenuItem1.Text = "&Settings";
+            this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click);
+            // 
+            // coinsToolStripMenuItem1
+            // 
+            this.coinsToolStripMenuItem1.Name = "coinsToolStripMenuItem1";
+            this.coinsToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
+            this.coinsToolStripMenuItem1.Text = "&Coins";
+            this.coinsToolStripMenuItem1.Click += new System.EventHandler(this.coinsToolStripMenuItem1_Click);
+            // 
+            // strategiesToolStripMenuItem1
+            // 
+            this.strategiesToolStripMenuItem1.Name = "strategiesToolStripMenuItem1";
+            this.strategiesToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
+            this.strategiesToolStripMenuItem1.Text = "S&trategies";
+            this.strategiesToolStripMenuItem1.Click += new System.EventHandler(this.strategiesToolStripMenuItem1_Click);
+            // 
+            // perksToolStripMenuItem
+            // 
+            this.perksToolStripMenuItem.Name = "perksToolStripMenuItem";
+            this.perksToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.perksToolStripMenuItem.Text = "&Perks";
+            this.perksToolStripMenuItem.Click += new System.EventHandler(this.perksToolStripMenuItem_Click_1);
             // 
             // viewToolStripMenuItem
             // 
@@ -1470,6 +1597,41 @@
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "&View";
+            // 
+            // largeIconsToolStripMenuItem1
+            // 
+            this.largeIconsToolStripMenuItem1.Name = "largeIconsToolStripMenuItem1";
+            this.largeIconsToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.largeIconsToolStripMenuItem1.Text = "&Large Icons";
+            this.largeIconsToolStripMenuItem1.Click += new System.EventHandler(this.largeIconsToolStripMenuItem1_Click);
+            // 
+            // smallIconsToolStripMenuItem1
+            // 
+            this.smallIconsToolStripMenuItem1.Name = "smallIconsToolStripMenuItem1";
+            this.smallIconsToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.smallIconsToolStripMenuItem1.Text = "&Small Icons";
+            this.smallIconsToolStripMenuItem1.Click += new System.EventHandler(this.smallIconsToolStripMenuItem1_Click);
+            // 
+            // listToolStripMenuItem1
+            // 
+            this.listToolStripMenuItem1.Name = "listToolStripMenuItem1";
+            this.listToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.listToolStripMenuItem1.Text = "L&ist";
+            this.listToolStripMenuItem1.Click += new System.EventHandler(this.listToolStripMenuItem1_Click);
+            // 
+            // detailsToolStripMenuItem1
+            // 
+            this.detailsToolStripMenuItem1.Name = "detailsToolStripMenuItem1";
+            this.detailsToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.detailsToolStripMenuItem1.Text = "&Details";
+            this.detailsToolStripMenuItem1.Click += new System.EventHandler(this.detailsToolStripMenuItem1_Click);
+            // 
+            // tilesToolStripMenuItem1
+            // 
+            this.tilesToolStripMenuItem1.Name = "tilesToolStripMenuItem1";
+            this.tilesToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.tilesToolStripMenuItem1.Text = "&Tiles";
+            this.tilesToolStripMenuItem1.Click += new System.EventHandler(this.tilesToolStripMenuItem1_Click);
             // 
             // advancedToolStripMenuItem
             // 
@@ -1487,117 +1649,6 @@
             this.advancedToolStripMenuItem.Text = "A&dvanced";
             this.advancedToolStripMenuItem.DropDownOpening += new System.EventHandler(this.advancedToolStripMenuItem_DropDownOpening);
             // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem});
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "&Help";
-            // 
-            // startToolStripMenuItem
-            // 
-            this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.startToolStripMenuItem.Text = "&Start";
-            this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
-            // 
-            // stopToolStripMenuItem
-            // 
-            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.stopToolStripMenuItem.Text = "S&top";
-            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
-            // 
-            // restartToolStripMenuItem
-            // 
-            this.restartToolStripMenuItem.Name = "restartToolStripMenuItem";
-            this.restartToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.restartToolStripMenuItem.Text = "&Restart";
-            this.restartToolStripMenuItem.Click += new System.EventHandler(this.restartToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
-            // 
-            // saveToolStripMenuItem
-            // 
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.saveToolStripMenuItem.Text = "S&ave";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
-            // 
-            // cancelToolStripMenuItem
-            // 
-            this.cancelToolStripMenuItem.Name = "cancelToolStripMenuItem";
-            this.cancelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.cancelToolStripMenuItem.Text = "&Cancel";
-            this.cancelToolStripMenuItem.Click += new System.EventHandler(this.cancelToolStripMenuItem_Click);
-            // 
-            // settingsToolStripMenuItem1
-            // 
-            this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
-            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.settingsToolStripMenuItem1.Text = "&Settings";
-            this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click);
-            // 
-            // coinsToolStripMenuItem1
-            // 
-            this.coinsToolStripMenuItem1.Name = "coinsToolStripMenuItem1";
-            this.coinsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.coinsToolStripMenuItem1.Text = "&Coins";
-            this.coinsToolStripMenuItem1.Click += new System.EventHandler(this.coinsToolStripMenuItem1_Click);
-            // 
-            // strategiesToolStripMenuItem1
-            // 
-            this.strategiesToolStripMenuItem1.Name = "strategiesToolStripMenuItem1";
-            this.strategiesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.strategiesToolStripMenuItem1.Text = "S&trategies";
-            this.strategiesToolStripMenuItem1.Click += new System.EventHandler(this.strategiesToolStripMenuItem1_Click);
-            // 
-            // perksToolStripMenuItem
-            // 
-            this.perksToolStripMenuItem.Name = "perksToolStripMenuItem";
-            this.perksToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.perksToolStripMenuItem.Text = "&Perks";
-            this.perksToolStripMenuItem.Click += new System.EventHandler(this.perksToolStripMenuItem_Click_1);
-            // 
-            // largeIconsToolStripMenuItem1
-            // 
-            this.largeIconsToolStripMenuItem1.Name = "largeIconsToolStripMenuItem1";
-            this.largeIconsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.largeIconsToolStripMenuItem1.Text = "&Large Icons";
-            this.largeIconsToolStripMenuItem1.Click += new System.EventHandler(this.largeIconsToolStripMenuItem1_Click);
-            // 
-            // smallIconsToolStripMenuItem1
-            // 
-            this.smallIconsToolStripMenuItem1.Name = "smallIconsToolStripMenuItem1";
-            this.smallIconsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.smallIconsToolStripMenuItem1.Text = "&Small Icons";
-            this.smallIconsToolStripMenuItem1.Click += new System.EventHandler(this.smallIconsToolStripMenuItem1_Click);
-            // 
-            // listToolStripMenuItem1
-            // 
-            this.listToolStripMenuItem1.Name = "listToolStripMenuItem1";
-            this.listToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.listToolStripMenuItem1.Text = "L&ist";
-            this.listToolStripMenuItem1.Click += new System.EventHandler(this.listToolStripMenuItem1_Click);
-            // 
-            // detailsToolStripMenuItem1
-            // 
-            this.detailsToolStripMenuItem1.Name = "detailsToolStripMenuItem1";
-            this.detailsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.detailsToolStripMenuItem1.Text = "&Details";
-            this.detailsToolStripMenuItem1.Click += new System.EventHandler(this.detailsToolStripMenuItem1_Click);
-            // 
-            // tilesToolStripMenuItem1
-            // 
-            this.tilesToolStripMenuItem1.Name = "tilesToolStripMenuItem1";
-            this.tilesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.tilesToolStripMenuItem1.Text = "&Tiles";
-            this.tilesToolStripMenuItem1.Click += new System.EventHandler(this.tilesToolStripMenuItem1_Click);
-            // 
             // scanHardwareToolStripMenuItem
             // 
             this.scanHardwareToolStripMenuItem.Name = "scanHardwareToolStripMenuItem";
@@ -1613,6 +1664,12 @@
             this.quickSwitchToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.quickSwitchToolStripMenuItem.Text = "&Quick Switch";
             this.quickSwitchToolStripMenuItem.DropDownOpening += new System.EventHandler(this.quickSwitchToolStripMenuItem_DropDownOpening);
+            // 
+            // dummyToolStripMenuItem3
+            // 
+            this.dummyToolStripMenuItem3.Name = "dummyToolStripMenuItem3";
+            this.dummyToolStripMenuItem3.Size = new System.Drawing.Size(117, 22);
+            this.dummyToolStripMenuItem3.Text = "Dummy";
             // 
             // historyMenuSeperator
             // 
@@ -1653,18 +1710,25 @@
             this.dynamicIntensityToolStripMenuItem.Text = "&Dynamic Intensity";
             this.dynamicIntensityToolStripMenuItem.Click += new System.EventHandler(this.dynamicIntensityToolStripMenuItem_Click);
             // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "&Help";
+            // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // dummyToolStripMenuItem3
+            // poolInfoTimer
             // 
-            this.dummyToolStripMenuItem3.Name = "dummyToolStripMenuItem3";
-            this.dummyToolStripMenuItem3.Size = new System.Drawing.Size(152, 22);
-            this.dummyToolStripMenuItem3.Text = "Dummy";
+            this.poolInfoTimer.Interval = 30000;
+            this.poolInfoTimer.Tick += new System.EventHandler(this.poolInfoTimer_Tick);
             // 
             // MainForm
             // 
@@ -1690,22 +1754,26 @@
             this.notifyIconMenuStrip.ResumeLayout(false);
             this.deviceListContextMenu.ResumeLayout(false);
             this.columnHeaderMenu.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).EndInit();
             this.startupMiningPanel.ResumeLayout(false);
             this.startupMiningPanel.PerformLayout();
             this.advancedAreaContainer.Panel1.ResumeLayout(false);
             this.advancedAreaContainer.Panel2.ResumeLayout(false);
             this.advancedAreaContainer.ResumeLayout(false);
+            this.detailsAreaContainer.Panel1.ResumeLayout(false);
+            this.detailsAreaContainer.Panel2.ResumeLayout(false);
+            this.detailsAreaContainer.ResumeLayout(false);
             this.advancedTabControl.ResumeLayout(false);
             this.historyPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.historyGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).EndInit();
             this.processLogPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).EndInit();
             this.apiMonitorPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).EndInit();
             this.panel2.ResumeLayout(false);
+            this.processLogMenu.ResumeLayout(false);
             this.footerPanel.ResumeLayout(false);
             this.footerPanel.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -1747,7 +1815,6 @@
         private System.Windows.Forms.ToolStripSeparator settingsSeparator;
         private System.Windows.Forms.SplitContainer advancedAreaContainer;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Button closeApiButton;
         private System.Windows.Forms.BindingSource apiLogEntryBindingSource;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.ContextMenuStrip notifyIconMenuStrip;
@@ -1854,7 +1921,7 @@
         private System.Windows.Forms.ToolStripMenuItem smallIconsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem largeIconsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tilesToolStripMenuItem;
-        private NoFlickerListView deviceListView;
+        private DeviceListView deviceListView;
         private System.Windows.Forms.ToolStripMenuItem restartButton;
         private System.Windows.Forms.ToolStripMenuItem perksButton;
         private System.Windows.Forms.ToolStripMenuItem perksToolStripMenuItem1;
@@ -1896,6 +1963,12 @@
         private System.Windows.Forms.ToolStripMenuItem dynamicIntensityToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dummyToolStripMenuItem3;
+        private System.Windows.Forms.ContextMenuStrip processLogMenu;
+        private System.Windows.Forms.ToolStripMenuItem launchToolStripMenuItem;
+        private System.Windows.Forms.Button closeApiButton;
+        private System.Windows.Forms.SplitContainer detailsAreaContainer;
+        private DetailsControl detailsControl1;
+        private System.Windows.Forms.Timer poolInfoTimer;
     }
 }
 
