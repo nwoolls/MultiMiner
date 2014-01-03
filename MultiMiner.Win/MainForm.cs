@@ -148,6 +148,8 @@ namespace MultiMiner.Win
             UpdateChangesButtons(false);
 
             RefreshDevices();
+            //after refreshing devices
+            SubmitMultiMinerStatistics();
             
             UpdateMiningButtons();
 
@@ -2804,6 +2806,39 @@ namespace MultiMiner.Win
         private void stopMenuItem_Click(object sender, EventArgs e)
         {
             StopMining();
+        }
+
+        private void SubmitMultiMinerStatistics()
+        {
+            string installedVersion = Engine.Installer.GetInstalledMinerVersion();
+            if (installedVersion.Equals(applicationConfiguration.SubmittedStatsVersion))
+                return;
+
+            Stats.Api.Machine machineStat = new Stats.Api.Machine()
+            {
+                Name = Environment.MachineName,
+                MinerVersion = installedVersion
+            };
+                        
+            if (submitMinerStatisticsDelegate == null)
+                submitMinerStatisticsDelegate = SubmitMinerStatistics;
+
+            submitMinerStatisticsDelegate.BeginInvoke(machineStat, null, null);
+        }
+        private Action<Stats.Api.Machine> submitMinerStatisticsDelegate;
+
+        private void SubmitMinerStatistics(Stats.Api.Machine machineStat)
+        {
+            try
+            {
+                //plain text so users can see what we are posting - transparency
+                Stats.Api.ApiContext.SubmitMinerStatistics("http://multiminerstats.azurewebsites.net/api/", machineStat);
+                applicationConfiguration.SubmittedStatsVersion = machineStat.MinerVersion;
+            }
+            catch (WebException ex)
+            {
+                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+            }
         }
 
         private void mobileMinerTimer_Tick(object sender, EventArgs e)

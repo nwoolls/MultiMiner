@@ -297,6 +297,10 @@
       <Project>{70622816-5853-4470-9432-9acda2e96089}</Project>
       <Name>MultiMiner.MobileMiner.Api</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Stats.Api\MultiMiner.Stats.Api.csproj">
+      <Project>{2cf95427-df1d-4061-8580-f143f04a0439}</Project>
+      <Name>MultiMiner.Stats.Api</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
       <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
       <Name>MultiMiner.Utility</Name>
