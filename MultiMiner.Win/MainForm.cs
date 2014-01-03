@@ -1389,6 +1389,7 @@ namespace MultiMiner.Win
             ClearAllMinerStats();
             RefreshIncomeSummary();
             AutoSizeListViewColumns();
+            RefreshDetailsAreaIfVisible();
         }
 
         private void startButton_Click(object sender, EventArgs e)
