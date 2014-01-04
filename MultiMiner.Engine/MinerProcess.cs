@@ -25,6 +25,8 @@ namespace MultiMiner.Engine
         public bool HasPoorPerformingDevice { get; set; }
         public long FoundBlocks { get; set; }
         public long AcceptedShares { get; set; }
+        //set TerminateProcess to True to skip using the QUIT RPC API command
+        public bool TerminateProcess { get; set; }
 
         private ApiContext apiContext;
         public ApiContext ApiContext 
@@ -41,24 +43,26 @@ namespace MultiMiner.Engine
         {
             if (!Process.HasExited)
             {
-                try
+                if (!TerminateProcess)
                 {
-
-                    ApiContext.QuitMining();
-
-                    //try to give the miner time to close
-                    //killing it could leave (Win)USB devices tied up
-                    int count = 0;
-                    const int max = 10;
-                    while (!Process.HasExited && (count < max))
+                    try
                     {
-                        Thread.Sleep(500);
-                        count++;
+                        ApiContext.QuitMining();
+
+                        //try to give the miner time to close
+                        //killing it could leave (Win)USB devices tied up
+                        int count = 0;
+                        const int max = 10;
+                        while (!Process.HasExited && (count < max))
+                        {
+                            Thread.Sleep(500);
+                            count++;
+                        }
                     }
-                }
-                catch (SocketException ex)
-                {
-                    //won't be able to connect for the first 5s or so
+                    catch (SocketException ex)
+                    {
+                        //won't be able to connect for the first 5s or so
+                    }
                 }
 
                 KillProcess(Process);

@@ -22,6 +22,7 @@ namespace MultiMiner.Engine.Configuration
         public ProcessPriorityClass Priority { get; set; }
         public int StartingApiPort { get; set; }
         public string AllowedApiIps { get; set; }
+        public bool TerminateGpuMiners { get; set; }
 
         //bfgminer-specific
         public bool StratumProxy { get; set; }

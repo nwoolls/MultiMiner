@@ -546,7 +546,10 @@ namespace MultiMiner.Engine
                 {
                     Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
                     if (!process.HasExited)
-                        StoreMinerProcess(process, coinSymbol, minerConfiguration, port);
+                    {
+                        MinerProcess minerProcess = StoreMinerProcess(process, coinSymbol, minerConfiguration, port);
+                        minerProcess.TerminateProcess = engineConfiguration.XgminerConfiguration.TerminateGpuMiners;
+                    }
 
                     port++;
                 }
@@ -565,7 +568,7 @@ namespace MultiMiner.Engine
             mining = true;
         }
 
-        private void StoreMinerProcess(Process process, string coinSymbol, MinerConfiguration minerConfiguration, int port)
+        private MinerProcess StoreMinerProcess(Process process, string coinSymbol, MinerConfiguration minerConfiguration, int port)
         {
             MinerProcess minerProcess = new MinerProcess();
 
@@ -577,6 +580,8 @@ namespace MultiMiner.Engine
             setupProcessStartInfo(minerProcess);
 
             minerProcesses.Add(minerProcess);
+
+            return minerProcess;
         }
 
         private Process LaunchMinerProcess(MinerConfiguration minerConfiguration, string reason)
@@ -606,7 +611,7 @@ namespace MultiMiner.Engine
                 CoinName = coinConfiguration.Coin.Name, 
                 DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu 
             };
-
+            
             SetupConfigurationPools(minerConfiguration, coinConfiguration);
 
             int deviceCount = SetupConfigurationDevices(minerConfiguration, includeKinds, enabledConfigurations);
