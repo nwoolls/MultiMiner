@@ -1039,9 +1039,7 @@ namespace MultiMiner.Win
             }
             else
                 HideAdvancedPanel();
-
-            startupMiningPanel.Visible = applicationConfiguration.StartMiningOnStartup;
-
+            
             crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
 
             SetupCoinStatsTimer();
@@ -1093,7 +1091,8 @@ namespace MultiMiner.Win
 
         private void RefreshCountdownLabel()
         {
-            countdownLabel.Text = string.Format("Mining will start automatically in {0} seconds...", startupMiningCountdownSeconds);    
+            countdownLabel.Text = string.Format("Mining will start automatically in {0} seconds...", startupMiningCountdownSeconds);
+            startupMiningPanel.Visible = true;
         }
 
         private List<Device> GetDevices()
