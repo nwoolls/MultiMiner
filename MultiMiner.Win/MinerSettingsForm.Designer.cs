@@ -84,7 +84,7 @@
             this.groupBox3.Controls.Add(this.scryptParamsEdit);
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Location = new System.Drawing.Point(14, 72);
+            this.groupBox3.Location = new System.Drawing.Point(14, 76);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(444, 158);
             this.groupBox3.TabIndex = 5;
@@ -270,7 +270,7 @@
             this.autoDesktopCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "AutoSetDesktopMode", true));
             this.autoDesktopCheckBox.Location = new System.Drawing.Point(291, 6);
             this.autoDesktopCheckBox.Name = "autoDesktopCheckBox";
-            this.autoDesktopCheckBox.Size = new System.Drawing.Size(155, 34);
+            this.autoDesktopCheckBox.Size = new System.Drawing.Size(162, 36);
             this.autoDesktopCheckBox.TabIndex = 3;
             this.autoDesktopCheckBox.Text = "Set Dynamic Intensity based on computer use";
             this.autoDesktopCheckBox.UseVisualStyleBackColor = true;
@@ -284,7 +284,7 @@
             this.groupBox1.Controls.Add(this.textBox2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Location = new System.Drawing.Point(14, 238);
+            this.groupBox1.Location = new System.Drawing.Point(14, 240);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(445, 119);
             this.groupBox1.TabIndex = 6;
