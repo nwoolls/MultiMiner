@@ -1616,6 +1616,7 @@ namespace MultiMiner.Win
 
             item.SubItems["Intensity"].Text = String.Empty;
             item.SubItems["Pool"].Text = String.Empty;
+            item.SubItems["Fan"].Text = String.Empty;
 
             item.SubItems["Daily"].Text = String.Empty;
             item.SubItems["Daily"].Tag = 0.00;
