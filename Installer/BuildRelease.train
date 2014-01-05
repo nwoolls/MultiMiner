@@ -14,6 +14,7 @@ msbuild.updateAssemblyVersion("../MultiMiner.Update/Properties/AssemblyInfo.cs",
 msbuild.updateAssemblyVersion("../MultiMiner.Xgminer/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Xgminer.Api/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.MobileMiner.Api/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.Stats.Api/Properties/AssemblyInfo.cs", appVersion);
 
 //rebuild each .NET project - Release configurations
 msbuild.rebuild("../MultiMiner.Coin.Api/MultiMiner.Coin.Api.csproj", { configuration: "Release" });
@@ -27,6 +28,7 @@ msbuild.rebuild("../MultiMiner.Update/MultiMiner.Update.csproj", { configuration
 msbuild.rebuild("../MultiMiner.Xgminer/MultiMiner.Xgminer.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Xgminer.Api/MultiMiner.Xgminer.Api.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.MobileMiner.Api/MultiMiner.MobileMiner.Api.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.Stats.Api/MultiMiner.Stats.Api.csproj", { configuration: "Release" });
 
 //export environment variable for InnoSetup to use for app version
 export("MM_AppVersion", shortAppVersion);
@@ -60,6 +62,8 @@ file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Api.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Api.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Api.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Api.pdb", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Stats.Api.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Stats.Api.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll", "PF/");
@@ -96,6 +100,8 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Api.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Api.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Api.pdb,\
+../MultiMiner.Win/bin/Release/MultiMiner.Stats.Api.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.Stats.Api.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.pdb,\
 ../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll,\
