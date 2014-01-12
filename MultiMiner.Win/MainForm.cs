@@ -3907,7 +3907,7 @@ namespace MultiMiner.Win
             return String.Format("{0} {1}", dateTime.ToReallyShortDateString(), dateTime.ToShortTimeString());
         }
 
-        private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void processLogGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (e.ColumnIndex == 0)
             {
@@ -4179,7 +4179,7 @@ namespace MultiMiner.Win
             Process.Start(args.ExecutablePath, arguments);
         }
 
-        private void dataGridView1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        private void processLogGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
             // Ignore if a column or row header is clicked
             if (e.RowIndex != -1 && e.ColumnIndex != -1)
@@ -4189,14 +4189,26 @@ namespace MultiMiner.Win
                     DataGridViewCell clickedCell = (sender as DataGridView).Rows[e.RowIndex].Cells[e.ColumnIndex];
 
                     // Here you can do whatever you want with the cell
-                    this.dataGridView1.CurrentCell = clickedCell;  // Select the clicked cell, for instance
+                    this.processLogGridView.CurrentCell = clickedCell;  // Select the clicked cell, for instance
 
-                    // Get mouse position relative to the vehicles grid
-                    var relativeMousePosition = dataGridView1.PointToClient(Cursor.Position);
+                    // Get mouse position relative to the grid
+                    var relativeMousePosition = processLogGridView.PointToClient(Cursor.Position);
 
                     // Show the context menu
-                    this.processLogMenu.Show(dataGridView1, relativeMousePosition);
+                    this.processLogMenu.Show(processLogGridView, relativeMousePosition);
                 }
+            }
+        }
+
+        private void processLogGridView_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // Get mouse position relative to the grid
+                var relativeMousePosition = processLogGridView.PointToClient(Cursor.Position);
+
+                // Show the context menu
+                this.openLogMenu.Show(processLogGridView, relativeMousePosition);
             }
         }
 

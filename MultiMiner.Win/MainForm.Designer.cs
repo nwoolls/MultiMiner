@@ -115,7 +115,7 @@
             this.openLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logProcessCloseArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.processLogPage = new System.Windows.Forms.TabPage();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.processLogGridView = new System.Windows.Forms.DataGridView();
             this.dateTimeDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.executablePathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -222,7 +222,7 @@
             this.openLogMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).BeginInit();
             this.processLogPage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.processLogGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).BeginInit();
             this.apiMonitorPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).BeginInit();
@@ -575,7 +575,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(881, 232);
-            this.detailsAreaContainer.SplitterDistance = 541;
+            this.detailsAreaContainer.SplitterDistance = 542;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -619,7 +619,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(541, 232);
+            this.deviceListView.Size = new System.Drawing.Size(542, 232);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -721,7 +721,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(337, 232);
+            this.detailsControl1.Size = new System.Drawing.Size(336, 232);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -870,7 +870,7 @@
             // 
             // processLogPage
             // 
-            this.processLogPage.Controls.Add(this.dataGridView1);
+            this.processLogPage.Controls.Add(this.processLogGridView);
             this.processLogPage.ImageIndex = 1;
             this.processLogPage.Location = new System.Drawing.Point(4, 24);
             this.processLogPage.Name = "processLogPage";
@@ -880,35 +880,35 @@
             this.processLogPage.Text = "Process Log";
             this.processLogPage.UseVisualStyleBackColor = true;
             // 
-            // dataGridView1
+            // processLogGridView
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AllowUserToOrderColumns = true;
-            this.dataGridView1.AllowUserToResizeRows = false;
+            this.processLogGridView.AllowUserToAddRows = false;
+            this.processLogGridView.AllowUserToDeleteRows = false;
+            this.processLogGridView.AllowUserToOrderColumns = true;
+            this.processLogGridView.AllowUserToResizeRows = false;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
-            this.dataGridView1.AutoGenerateColumns = false;
-            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Window;
-            this.dataGridView1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.processLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            this.processLogGridView.AutoGenerateColumns = false;
+            this.processLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.processLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.processLogGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.processLogGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dateTimeDataGridViewTextBoxColumn1,
             this.dataGridViewTextBoxColumn1,
             this.executablePathDataGridViewTextBoxColumn,
             this.argumentsDataGridViewTextBoxColumn,
             this.Reason});
-            this.dataGridView1.ContextMenuStrip = this.openLogMenu;
-            this.dataGridView1.DataSource = this.logLaunchArgsBindingSource;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(867, 78);
-            this.dataGridView1.TabIndex = 14;
-            this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
-            this.dataGridView1.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDown);
+            this.processLogGridView.DataSource = this.logLaunchArgsBindingSource;
+            this.processLogGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.processLogGridView.Location = new System.Drawing.Point(3, 3);
+            this.processLogGridView.Name = "processLogGridView";
+            this.processLogGridView.ReadOnly = true;
+            this.processLogGridView.RowHeadersVisible = false;
+            this.processLogGridView.Size = new System.Drawing.Size(867, 78);
+            this.processLogGridView.TabIndex = 14;
+            this.processLogGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.processLogGridView_CellFormatting);
+            this.processLogGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.processLogGridView_CellMouseDown);
+            this.processLogGridView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.processLogGridView_MouseDown);
             // 
             // dateTimeDataGridViewTextBoxColumn1
             // 
@@ -1791,7 +1791,7 @@
             this.openLogMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).EndInit();
             this.processLogPage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.processLogGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).EndInit();
             this.apiMonitorPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).EndInit();
@@ -1856,7 +1856,7 @@
         private System.Windows.Forms.TabPage apiMonitorPage;
         private System.Windows.Forms.DataGridView apiLogGridView;
         private System.Windows.Forms.TabPage processLogPage;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView processLogGridView;
         private System.Windows.Forms.BindingSource logLaunchArgsBindingSource;
         private System.Windows.Forms.ToolStripMenuItem historyButton;
         private System.Windows.Forms.TabPage historyPage;
