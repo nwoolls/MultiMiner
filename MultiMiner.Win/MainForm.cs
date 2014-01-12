@@ -2019,9 +2019,11 @@ namespace MultiMiner.Win
             if (deviceInformation.CurrentHashrate == 0)
                 minerProcess.HasZeroHashrateDevice = true;
 
-            //don't check average hashrate if using dynamic intensity and its a GPU
-            if (!engineConfiguration.XgminerConfiguration.DesktopMode ||
-                (!deviceInformation.Kind.Equals("GPU", StringComparison.OrdinalIgnoreCase)))
+            //only check GPUs for subpar hashrate
+            //ASICs spike too much for this to be reliable there
+            //don't check average hashrate if using dynamic intensity
+            if (deviceInformation.Kind.Equals("GPU", StringComparison.OrdinalIgnoreCase) &&
+                !engineConfiguration.XgminerConfiguration.DesktopMode)
             {
                 //avoid div by 0
                 if (deviceInformation.AverageHashrate > 0)
