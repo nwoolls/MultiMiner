@@ -34,8 +34,15 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     PoolInformationResponse newPool = new PoolInformationResponse();
 
                     newPool.Index = int.Parse(keyValuePairs["POOL"]);
-                    newPool.Url = keyValuePairs["URL"];
-                    newPool.Status = keyValuePairs["Status"];
+
+                    //user bug reports indicate this key may not exist
+                    if (keyValuePairs.ContainsKey("URL"))
+                        newPool.Url = keyValuePairs["URL"];
+
+                    //user bug reports indicate this key may not exist
+                    if (keyValuePairs.ContainsKey("Status"))
+                        newPool.Status = keyValuePairs["Status"];
+
                     newPool.Priority = TryToParseInt(keyValuePairs, "Priority", 0);
                     newPool.Quota = TryToParseInt(keyValuePairs, "Quota", 0);
 
