@@ -358,7 +358,7 @@
             this.userNameEdit.Name = "userNameEdit";
             this.userNameEdit.Size = new System.Drawing.Size(200, 23);
             this.userNameEdit.TabIndex = 11;
-            this.userNameEdit.Validating += new System.ComponentModel.CancelEventHandler(this.textBox4_Validating);
+            
             // 
             // hostEdit
             // 

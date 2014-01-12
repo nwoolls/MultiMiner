@@ -192,11 +192,6 @@ namespace MultiMiner.Win
                 AddCoinConfiguration(coinChooseForm.SelectedCoin);
         }
 
-        private void textBox4_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = String.IsNullOrEmpty(userNameEdit.Text);
-        }
-
         private void saveButton_Click(object sender, EventArgs e)
         {
             if (this.ValidateChildren())
