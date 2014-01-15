@@ -121,7 +121,7 @@ FAQ
 
 Support
 -------
-The official forum thread for MultiMiner can be found [here][15].
+The official forums for MultiMiner can be found [here][15].
         
 Source Code
 -----------
@@ -299,7 +299,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [12]: https://github.com/nwoolls/MultiMiner/releases
 [13]: http://xgminer.com
 [14]: http://www.mobileminerapp.com
-[15]: http://thread.multiminerapp.com
+[15]: http://talk.multiminerapp.com
 [16]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Xgminer
 [17]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Xgminer.Api
 [18]: https://github.com/luke-jr/bfgminer/blob/bfgminer/README.RPC
