@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace MultiMiner.Utility
@@ -12,7 +13,20 @@ namespace MultiMiner.Utility
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
                 using (TextReader reader = new StreamReader(fileName))
-                    return (T)serializer.Deserialize(reader);
+                {
+                    T result;
+                    try
+                    {
+                        result = (T)serializer.Deserialize(reader);
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        MessageBox.Show(String.Format("The file {0} was 0 bytes (likely due to a previous crash).\n\nDefault settings for this file have been loaded.", 
+                            Path.GetFileName(fileName)), "Invalid Configuration", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        result = new T();
+                    }
+                    return result;
+                }
             }
 
             return new T();
