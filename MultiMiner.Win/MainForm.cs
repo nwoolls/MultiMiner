@@ -734,6 +734,9 @@ namespace MultiMiner.Win
                 AutoSizeListViewColumns();
 
                 deviceTotalLabel.Text = String.Format("{0} device(s)", devices.Count);
+
+                //it may not be possible to mine after discovering devices
+                UpdateMiningButtons();
             }
             finally
             {
@@ -1506,6 +1509,7 @@ namespace MultiMiner.Win
         {
             bool oldCoinWarzValue = applicationConfiguration.UseCoinWarzApi;
             string oldCoinWarzKey = applicationConfiguration.CoinWarzApiKey;
+            string oldConfigPath = pathConfiguration.SharedConfigPath;
 
             SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration, pathConfiguration);
             DialogResult dialogResult = settingsForm.ShowDialog();
@@ -1519,11 +1523,29 @@ namespace MultiMiner.Win
                 //save settings as the "shared" config path may have changed
                 //these are settings not considered machine/device-specific
                 //e.g. no device settings, no miner settings
+                string newConfigPath = pathConfiguration.SharedConfigPath;
+
+                //if the shared config path changed, and there are already settings
+                //in that path, load those settings (so they aren't overwritten)
+                //idea being the user has shared settings already there they want to use
+                if (!Path.Equals(oldConfigPath, newConfigPath))
+                {
+                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(applicationConfiguration.ApplicationConfigurationFileName()))))
+                        applicationConfiguration.LoadApplicationConfiguration(newConfigPath);
+                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(perksConfiguration.PerksConfigurationFileName()))))
+                        perksConfiguration.LoadPerksConfiguration(newConfigPath);
+                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(engineConfiguration.CoinConfigurationsFileName()))))
+                        engineConfiguration.LoadCoinConfigurations(newConfigPath);
+                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(engineConfiguration.StrategyConfigurationsFileName()))))
+                        engineConfiguration.LoadStrategyConfiguration(newConfigPath);
+                }
+
+                applicationConfiguration.SaveApplicationConfiguration(newConfigPath);
+                perksConfiguration.SavePerksConfiguration(newConfigPath);
+                engineConfiguration.SaveCoinConfigurations(newConfigPath);
+                engineConfiguration.SaveStrategyConfiguration(newConfigPath);
+
                 engineConfiguration.SaveMinerConfiguration();
-                applicationConfiguration.SaveApplicationConfiguration(pathConfiguration.SharedConfigPath);
-                perksConfiguration.SavePerksConfiguration(pathConfiguration.SharedConfigPath);
-                engineConfiguration.SaveCoinConfigurations(pathConfiguration.SharedConfigPath);
-                engineConfiguration.SaveStrategyConfiguration(pathConfiguration.SharedConfigPath);
                 SaveKnownCoinsToFile();
 
                 SetupCoinApi();

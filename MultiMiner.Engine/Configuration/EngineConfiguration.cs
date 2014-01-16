@@ -47,7 +47,7 @@ namespace MultiMiner.Engine.Configuration
             LoadStrategyConfiguration(configDirectory);
         }
 
-        private string StrategyConfigurationsFileName()
+        public string StrategyConfigurationsFileName()
         {
             return Path.Combine(configDirectory, "StrategyConfiguration.xml");
         }
