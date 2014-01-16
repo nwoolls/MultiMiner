@@ -2625,6 +2625,11 @@ namespace MultiMiner.Win
                 startupMiningCountdownTimer.Enabled = false;
                 Application.DoEvents();
 
+                //refresh devices so that we are sure we have all devices 
+                //otherwise scanning could happen too early on startup,
+                //before Windows has recognized all devices
+                RefreshDevices();
+                Application.DoEvents();
                 StartMining();
             }
         }
