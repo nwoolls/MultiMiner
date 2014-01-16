@@ -1106,7 +1106,7 @@ namespace MultiMiner.Win
 
             Miner miner = new Miner(minerConfiguration);
 
-            List<Device> detectedDevices = miner.ListDevices();
+            List<Device> detectedDevices = miner.ListDevices(true);
 
             if (engineConfiguration.XgminerConfiguration.StratumProxy)
             {

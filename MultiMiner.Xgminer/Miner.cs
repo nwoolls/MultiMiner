@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Linq;
+using System.Globalization;
 
 namespace MultiMiner.Xgminer
 {
@@ -51,7 +53,7 @@ namespace MultiMiner.Xgminer
         }
 
         //uses -d?, returns driver information
-        public List<Device> ListDevices()
+        public List<Device> ListDevices(bool prettyNames = false)
         {
             string arguments = MinerParameter.DeviceList;
             bool redirectOutput = true;
@@ -92,7 +94,30 @@ namespace MultiMiner.Xgminer
             List<Device> result = new List<Device>();
             DeviceListParser.ParseTextForDevices(output, result);
 
+            if (prettyNames)
+                MakeNamesPretty(result);
+
             return result;
+        }
+
+        private readonly string[] genericNames = 
+        { 
+            "Device",
+            "CP2102 USB to UART Bridge Controller by Silicon Labs"
+        };
+
+        private void MakeNamesPretty(List<Device> devices)
+        {
+            foreach (Device device in devices)
+                if (genericNames.Contains(device.Name) && !String.IsNullOrEmpty(device.Driver))
+                {
+                    if (device.Driver.Equals("erupter", StringComparison.OrdinalIgnoreCase))
+                        device.Name = "Block Erupter";
+                    else if (device.Driver.Equals("antminer", StringComparison.OrdinalIgnoreCase))
+                        device.Name = "AntMiner U1";
+                    else
+                        device.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(device.Driver);
+                }
         }
 
         private string GetListSerialArguments()
