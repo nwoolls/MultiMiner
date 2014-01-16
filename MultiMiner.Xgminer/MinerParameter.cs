@@ -7,6 +7,7 @@
         public const string DeviceList = "--device ?";
         public const string ScanSerialAll = "--scan all";
         public const string ScanSerialErupterAll = "--scan erupter:all";
+        public const string ScanSerialAntminerAll = "--scan antminer:all";
         public const string ScanSerialErupterNoAuto = "--scan erupter:noauto";
         public const string ScanSerialOpenCL = "--scan opencl:auto";
         public const string ScanSerialOpenCLNoAuto = "--scan opencl:noauto";
