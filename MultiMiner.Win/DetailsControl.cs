@@ -82,12 +82,11 @@ namespace MultiMiner.Win
 
 
             noDetailsPanel.Visible = false;
-            double hashrate = 0;
-            foreach (DeviceInformationResponse individualDevice in deviceInformation)
-            {
-                hashrate += individualDevice.AverageHashrate;
-            }
+            double hashrate = deviceInformation.Sum(di => di.AverageHashrate);
+            double currentRate = deviceInformation.Sum(di => di.CurrentHashrate);
+            
             hashrateLabel.Text = hashrate.ToHashrateString();
+            currentRateLabel.Text = currentRate.ToHashrateString();
 
             workersGridView.Visible = (device.Kind == DeviceKind.PXY) &&
                 (deviceInformation.Count > 0);

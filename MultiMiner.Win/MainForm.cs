@@ -799,6 +799,7 @@ namespace MultiMiner.Win
                         SetColumWidth(tempColumnHeader, 0);
 
                     SetColumWidth(hashrateColumnHeader, -2);
+                    SetColumWidth(currentRateColumnHeader, 0);
                     SetColumWidth(acceptedColumnHeader, 0);
                     SetColumWidth(rejectedColumnHeader, 0);
                     SetColumWidth(errorsColumnHeader, 0);
@@ -1598,8 +1599,11 @@ namespace MultiMiner.Win
         {
             item.SubItems["Temp"].Text = String.Empty;
 
-            item.SubItems["Hashrate"].Text = String.Empty;
-            item.SubItems["Hashrate"].Tag = 0.00;
+            item.SubItems["Average"].Text = String.Empty;
+            item.SubItems["Average"].Tag = 0.00;
+
+            item.SubItems["Current"].Text = String.Empty;
+            item.SubItems["Current"].Tag = 0.00;
 
             item.SubItems["Accepted"].Text = String.Empty;
             item.SubItems["Accepted"].Tag = 0;
@@ -1629,7 +1633,8 @@ namespace MultiMiner.Win
                 //stratum devices get lumped together, so we sum those
                 if (deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
                 {
-                    item.SubItems["Hashrate"].Tag = (double)(item.SubItems["Hashrate"].Tag ?? 0.00) + deviceInformation.AverageHashrate;
+                    item.SubItems["Average"].Tag = (double)(item.SubItems["Average"].Tag ?? 0.00) + deviceInformation.AverageHashrate;
+                    item.SubItems["Current"].Tag = (double)(item.SubItems["Current"].Tag ?? 0.00) + deviceInformation.CurrentHashrate;
                     item.SubItems["Rejected"].Tag = (double)(item.SubItems["Rejected"].Tag ?? 0.00) + deviceInformation.RejectedSharesPercent;
                     item.SubItems["Errors"].Tag = (double)(item.SubItems["Errors"].Tag ?? 0.00) + deviceInformation.HardwareErrorsPercent;
                     item.SubItems["Accepted"].Tag = (int)(item.SubItems["Accepted"].Tag ?? 0) + deviceInformation.AcceptedShares;
@@ -1637,14 +1642,16 @@ namespace MultiMiner.Win
                 }
                 else
                 {
-                    item.SubItems["Hashrate"].Tag = deviceInformation.AverageHashrate;
+                    item.SubItems["Average"].Tag = deviceInformation.AverageHashrate;
+                    item.SubItems["Current"].Tag = deviceInformation.CurrentHashrate;
                     item.SubItems["Rejected"].Tag = deviceInformation.RejectedSharesPercent;
                     item.SubItems["Errors"].Tag = deviceInformation.HardwareErrorsPercent;
                     item.SubItems["Accepted"].Tag = deviceInformation.AcceptedShares;
                     item.SubItems["Utility"].Tag = deviceInformation.Utility;
                 }
 
-                item.SubItems["Hashrate"].Text = ((double)item.SubItems["Hashrate"].Tag).ToHashrateString();
+                item.SubItems["Average"].Text = ((double)item.SubItems["Average"].Tag).ToHashrateString();
+                item.SubItems["Current"].Text = ((double)item.SubItems["Current"].Tag).ToHashrateString();
 
                 //check for >= 0.05 so we don't show 0% (due to the format string)
                 item.SubItems["Rejected"].Text = (double)item.SubItems["Rejected"].Tag >= 0.05 ? ((double)item.SubItems["Rejected"].Tag).ToString("0.#") + "%" : String.Empty;
@@ -1689,7 +1696,7 @@ namespace MultiMiner.Win
             if (info != null)
             {
                 double difficulty = (double)item.SubItems["Difficulty"].Tag;
-                double hashrate = (double)item.SubItems["Hashrate"].Tag * 1000;
+                double hashrate = (double)item.SubItems["Average"].Tag * 1000;
                 double fullDifficulty = difficulty * difficultyMuliplier;
                 double secondsToCalcShare = fullDifficulty / hashrate;
                 const double secondsPerDay = 86400;

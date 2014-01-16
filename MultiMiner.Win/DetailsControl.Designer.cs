@@ -91,6 +91,8 @@
             this.deviceDetailsResponseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.currentRateLabel = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.workersGridView)).BeginInit();
@@ -273,9 +275,9 @@
             this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
             this.label12.Location = new System.Drawing.Point(7, 140);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(57, 15);
+            this.label12.Size = new System.Drawing.Size(53, 15);
             this.label12.TabIndex = 15;
-            this.label12.Text = "Hashrate:";
+            this.label12.Text = "Average:";
             // 
             // hashrateLabel
             // 
@@ -689,11 +691,33 @@
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
             // 
+            // currentRateLabel
+            // 
+            this.currentRateLabel.AutoSize = true;
+            this.currentRateLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.currentRateLabel.Location = new System.Drawing.Point(255, 140);
+            this.currentRateLabel.Name = "currentRateLabel";
+            this.currentRateLabel.Size = new System.Drawing.Size(44, 15);
+            this.currentRateLabel.TabIndex = 44;
+            this.currentRateLabel.Text = "label12";
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label29.Location = new System.Drawing.Point(183, 140);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(50, 15);
+            this.label29.TabIndex = 43;
+            this.label29.Text = "Current:";
+            // 
             // DetailsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Controls.Add(this.currentRateLabel);
+            this.Controls.Add(this.label29);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.noDetailsPanel);
             this.Controls.Add(this.label27);
@@ -816,5 +840,7 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Label deviceCountLabel;
+        private System.Windows.Forms.Label currentRateLabel;
+        private System.Windows.Forms.Label label29;
     }
 }
