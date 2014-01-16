@@ -856,6 +856,8 @@ namespace MultiMiner.Win
             {
                 deviceListView.Items.Clear();
 
+                utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
+
                 foreach (Device device in devices)
                 {
                     ListViewItem listViewItem = new ListViewItem();
@@ -1595,7 +1597,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private static void ClearDeviceInfoForListViewItem(ListViewItem item)
+        private void ClearDeviceInfoForListViewItem(ListViewItem item)
         {
             item.SubItems["Temp"].Text = String.Empty;
 
@@ -1614,8 +1616,8 @@ namespace MultiMiner.Win
             item.SubItems["Errors"].Text = String.Empty;
             item.SubItems["Errors"].Tag = 0.00;
 
-            item.SubItems["Utility"].Text = String.Empty;
-            item.SubItems["Utility"].Tag = 0.00;
+            item.SubItems[utilityColumnHeader.Text].Text = String.Empty;
+            item.SubItems[utilityColumnHeader.Text].Tag = 0.00;
 
             item.SubItems["Intensity"].Text = String.Empty;
             item.SubItems["Pool"].Text = String.Empty;
@@ -1638,7 +1640,11 @@ namespace MultiMiner.Win
                     item.SubItems["Rejected"].Tag = (double)(item.SubItems["Rejected"].Tag ?? 0.00) + deviceInformation.RejectedSharesPercent;
                     item.SubItems["Errors"].Tag = (double)(item.SubItems["Errors"].Tag ?? 0.00) + deviceInformation.HardwareErrorsPercent;
                     item.SubItems["Accepted"].Tag = (int)(item.SubItems["Accepted"].Tag ?? 0) + deviceInformation.AcceptedShares;
-                    item.SubItems["Utility"].Tag = (double)(item.SubItems["Utility"].Tag ?? 0.00) + deviceInformation.Utility;
+
+                    if (applicationConfiguration.ShowWorkUtility)
+                        item.SubItems[utilityColumnHeader.Text].Tag = (double)(item.SubItems[utilityColumnHeader.Text].Tag ?? 0.00) + deviceInformation.WorkUtility;
+                    else
+                        item.SubItems[utilityColumnHeader.Text].Tag = (double)(item.SubItems[utilityColumnHeader.Text].Tag ?? 0.00) + deviceInformation.Utility;
                 }
                 else
                 {
@@ -1647,7 +1653,11 @@ namespace MultiMiner.Win
                     item.SubItems["Rejected"].Tag = deviceInformation.RejectedSharesPercent;
                     item.SubItems["Errors"].Tag = deviceInformation.HardwareErrorsPercent;
                     item.SubItems["Accepted"].Tag = deviceInformation.AcceptedShares;
-                    item.SubItems["Utility"].Tag = deviceInformation.Utility;
+
+                    if (applicationConfiguration.ShowWorkUtility)
+                        item.SubItems[utilityColumnHeader.Text].Tag = deviceInformation.WorkUtility;
+                    else
+                        item.SubItems[utilityColumnHeader.Text].Tag = deviceInformation.Utility;
                 }
 
                 item.SubItems["Average"].Text = ((double)item.SubItems["Average"].Tag).ToHashrateString();
@@ -1659,7 +1669,7 @@ namespace MultiMiner.Win
 
                 item.SubItems["Accepted"].Text = (int)item.SubItems["Accepted"].Tag > 0 ? ((int)item.SubItems["Accepted"].Tag).ToString() : String.Empty;
 
-                item.SubItems["Utility"].Text = (double)item.SubItems["Utility"].Tag >= 0.00 ? ((double)item.SubItems["Utility"].Tag).ToString("0.###") : String.Empty;
+                item.SubItems[utilityColumnHeader.Text].Text = (double)item.SubItems[utilityColumnHeader.Text].Tag >= 0.00 ? ((double)item.SubItems[utilityColumnHeader.Text].Tag).ToString("0.###") : String.Empty;
 
                 item.SubItems["Temp"].Text = deviceInformation.Temperature > 0 ? deviceInformation.Temperature + "°" : String.Empty;
                 item.SubItems["Fan"].Text = deviceInformation.FanPercent > 0 ? deviceInformation.FanPercent + "%" : String.Empty;
@@ -4006,6 +4016,25 @@ namespace MultiMiner.Win
                     AutoSizeListViewColumns();
                 }
             }
+            else if (e.Column == utilityColumnHeader.Index)
+            {
+                applicationConfiguration.ShowWorkUtility = !applicationConfiguration.ShowWorkUtility;
+                applicationConfiguration.SaveApplicationConfiguration();
+
+                UpdateUtilityColumnHeader();
+
+                RefreshDeviceStats();
+                AutoSizeListViewColumns();
+                RefreshDetailsAreaIfVisible();
+            }
+        }
+
+        private void UpdateUtilityColumnHeader()
+        {
+            string oldValue = utilityColumnHeader.Text;
+            utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
+            foreach (ListViewItem item in deviceListView.Items)
+                item.SubItems[oldValue].Name = utilityColumnHeader.Text;
         }
 
         private void columnHeaderMenu_Opening(object sender, CancelEventArgs e)
@@ -4317,7 +4346,8 @@ namespace MultiMiner.Win
                     minerDeviceDetails = processDeviceDetails[minerProcess];
             }
 
-            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, minerDeviceInformation, poolInformation, minerDeviceDetails);
+            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, minerDeviceInformation, poolInformation, 
+                minerDeviceDetails, applicationConfiguration.ShowWorkUtility);
         }
 
         private void deviceListView_SelectedIndexChanged(object sender, EventArgs e)

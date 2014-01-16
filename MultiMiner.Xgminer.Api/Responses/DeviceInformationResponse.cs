@@ -30,6 +30,7 @@ namespace MultiMiner.Xgminer.Api.Responses
         public int RejectedShares { get; set; }
         public int HardwareErrors { get; set; }
         public double Utility { get; set; }
+        public double WorkUtility { get; set; }
         public string Intensity { get; set; } //string, might be D
         public int PoolIndex { get; set; }
         public double RejectedSharesPercent { get; set; }
