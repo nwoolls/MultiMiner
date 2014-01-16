@@ -734,6 +734,9 @@ namespace MultiMiner.Win
                 AutoSizeListViewColumns();
 
                 deviceTotalLabel.Text = String.Format("{0} device(s)", devices.Count);
+
+                //it may not be possible to mine after discovering devices
+                UpdateMiningButtons();
             }
             finally
             {
