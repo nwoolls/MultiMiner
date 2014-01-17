@@ -3329,7 +3329,8 @@ namespace MultiMiner.Win
                 ListViewItem listViewItem = deviceListView.Items[i];
 
                 Device device = devices[i];
-                CryptoCoin currentCoin = knownCoins.SingleOrDefault(c => c.Name.Equals(listViewItem.SubItems["Coin"].Text));
+                //don't use KnownCoins as it may have dupes by coin name
+                CoinConfiguration existingConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(listViewItem.SubItems["Coin"].Text));
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
@@ -3340,7 +3341,7 @@ namespace MultiMiner.Win
                     if (device.Kind == DeviceKind.GPU)
                         deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
                     else
-                        deviceConfiguration.CoinSymbol = currentCoin == null ? String.Empty : currentCoin.Symbol;
+                        deviceConfiguration.CoinSymbol = existingConfiguration == null ? String.Empty : existingConfiguration.Coin.Symbol;
                 }
                 else
                 {
