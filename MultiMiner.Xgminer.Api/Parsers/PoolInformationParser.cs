@@ -57,10 +57,18 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     newPool.Stale = TryToParseInt(keyValuePairs, "Stale", 0);
                     newPool.GetFailures = TryToParseInt(keyValuePairs, "Get Failures", 0);
                     newPool.RemoteFailures = TryToParseInt(keyValuePairs, "Remote Failures", 0);
-                    newPool.User = keyValuePairs["User"];
+
+                    //user bug reports indicate this key may not exist
+                    if (keyValuePairs.ContainsKey("User"))
+                        newPool.User = keyValuePairs["User"];
+
                     newPool.LastShareTime = TryToParseInt(keyValuePairs, "Last Share Time", 0).UnixTimeToDateTime();
                     newPool.Diff1Shares = TryToParseInt(keyValuePairs, "Diff1 Shares", 0);
-                    newPool.Proxy = keyValuePairs["Proxy"];
+
+                    //user bug reports indicate this key may not exist
+                    if (keyValuePairs.ContainsKey("Proxy"))
+                        newPool.Proxy = keyValuePairs["Proxy"];
+
                     newPool.DifficultyAccepted = TryToParseDouble(keyValuePairs, "Difficulty Accepted", 0.0);
                     newPool.DifficultyRejected = TryToParseDouble(keyValuePairs, "Difficulty Rejected", 0.0);
                     newPool.DifficultyStale = TryToParseDouble(keyValuePairs, "Difficulty Stale", 0.0);
