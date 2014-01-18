@@ -103,10 +103,10 @@ namespace MultiMiner.Engine
             }
         }
         
-        public void RelaunchCrashedMiners()
+        public bool RelaunchCrashedMiners()
         {
             if (stoppingMining || startingMining)
-                return; //don't try to relaunch miners we are stopping or starting
+                return false; //don't try to relaunch miners we are stopping or starting
 
             foreach (MinerProcess minerProcess in MinerProcesses)
             {
@@ -115,6 +115,7 @@ namespace MultiMiner.Engine
                     logProcessClose(minerProcess);
                     minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Process crashed");
                     setupProcessStartInfo(minerProcess);
+                    return true;
                 }
 
                 else if (minerProcess.HasDeadDevice)
@@ -123,6 +124,7 @@ namespace MultiMiner.Engine
                     minerProcess.StopMining();
                     minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Dead device");
                     setupProcessStartInfo(minerProcess);
+                    return true;
                 }
 
                 else if (minerProcess.HasSickDevice)
@@ -131,6 +133,7 @@ namespace MultiMiner.Engine
                     minerProcess.StopMining();
                     minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Sick device");
                     setupProcessStartInfo(minerProcess);
+                    return true;
                 }
 
                 else if (minerProcess.HasZeroHashrateDevice || minerProcess.MinerIsFrozen || minerProcess.HasPoorPerformingDevice)
@@ -146,9 +149,11 @@ namespace MultiMiner.Engine
                         string reason = minerProcess.HasZeroHashrateDevice ? "Zero hashrate" : minerProcess.HasPoorPerformingDevice ? "Subpar hashrate" : "Frozen miner";
                         minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, reason);
                         setupProcessStartInfo(minerProcess);
+                        return true;
                     }
                 }
             }
+            return false;
         }
 
         private void setupProcessStartInfo(MinerProcess minerProcess)

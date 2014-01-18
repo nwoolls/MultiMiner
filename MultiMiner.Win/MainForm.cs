@@ -1384,6 +1384,7 @@ namespace MultiMiner.Win
             }
 
             processDeviceDetails.Clear();
+            processPoolInformation.Clear();
             deviceStatsTimer.Enabled = false;
             minerSummaryTimer.Enabled = false;
             coinStatsCountdownTimer.Enabled = false;
@@ -1426,12 +1427,6 @@ namespace MultiMiner.Win
 
             startButton.Enabled = false; //immediately disable, update after
             startMenuItem.Enabled = false;
-            
-            //create a deep clone of the mining & device configurations
-            //this is so we can accurately display e.g. the currently mining pools
-            //even if the user changes pool info without restartinging mining
-            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
-            this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
 
             try
             {
@@ -1449,6 +1444,14 @@ namespace MultiMiner.Win
                 return;
             }
 
+            //do this AFTER we start mining to pick up any Auto-Mining changes
+
+            //create a deep clone of the mining & device configurations
+            //this is so we can accurately display e.g. the currently mining pools
+            //even if the user changes pool info without restartinging mining
+            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
+            this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
+            
             if (!donate)
                 engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
 
@@ -2380,6 +2383,13 @@ namespace MultiMiner.Win
                 miningEngine.ApplyMiningStrategy(coinApiInformation);
                 //save any changes made by the engine
                 engineConfiguration.SaveDeviceConfigurations();
+                
+                //create a deep clone of the mining & device configurations
+                //this is so we can accurately display e.g. the currently mining pools
+                //even if the user changes pool info without restartinging mining
+                this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
+                this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
+
                 //to get changes from strategy config
                 LoadListViewValuesFromConfiguration();
                 //to refresh coin stats due to changed coin selections
@@ -2681,7 +2691,12 @@ namespace MultiMiner.Win
 
         private void crashRecoveryTimer_Tick(object sender, EventArgs e)
         {
-            miningEngine.RelaunchCrashedMiners();
+            if (miningEngine.RelaunchCrashedMiners())
+            {
+                //clear any details stored correlated to processes - they could all be invalid after this
+                processDeviceDetails.Clear();
+                processPoolInformation.Clear();
+            }
         }
 
         private void detectDevicesButton_Click(object sender, EventArgs e)
@@ -3351,7 +3366,8 @@ namespace MultiMiner.Win
                 ListViewItem listViewItem = deviceListView.Items[i];
 
                 Device device = devices[i];
-                CryptoCoin currentCoin = knownCoins.SingleOrDefault(c => c.Name.Equals(listViewItem.SubItems["Coin"].Text));
+                //don't use KnownCoins as it may have dupes by coin name
+                CoinConfiguration existingConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(listViewItem.SubItems["Coin"].Text));
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
@@ -3362,7 +3378,7 @@ namespace MultiMiner.Win
                     if (device.Kind == DeviceKind.GPU)
                         deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
                     else
-                        deviceConfiguration.CoinSymbol = currentCoin == null ? String.Empty : currentCoin.Symbol;
+                        deviceConfiguration.CoinSymbol = existingConfiguration == null ? String.Empty : existingConfiguration.Coin.Symbol;
                 }
                 else
                 {
