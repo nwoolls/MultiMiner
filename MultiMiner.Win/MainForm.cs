@@ -1423,12 +1423,6 @@ namespace MultiMiner.Win
 
             startButton.Enabled = false; //immediately disable, update after
             startMenuItem.Enabled = false;
-            
-            //create a deep clone of the mining & device configurations
-            //this is so we can accurately display e.g. the currently mining pools
-            //even if the user changes pool info without restartinging mining
-            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
-            this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
 
             try
             {
@@ -1446,6 +1440,14 @@ namespace MultiMiner.Win
                 return;
             }
 
+            //do this AFTER we start mining to pick up any Auto-Mining changes
+
+            //create a deep clone of the mining & device configurations
+            //this is so we can accurately display e.g. the currently mining pools
+            //even if the user changes pool info without restartinging mining
+            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
+            this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
+            
             if (!donate)
                 engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
 
@@ -2363,6 +2365,13 @@ namespace MultiMiner.Win
                 miningEngine.ApplyMiningStrategy(coinApiInformation);
                 //save any changes made by the engine
                 engineConfiguration.SaveDeviceConfigurations();
+                
+                //create a deep clone of the mining & device configurations
+                //this is so we can accurately display e.g. the currently mining pools
+                //even if the user changes pool info without restartinging mining
+                this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
+                this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
+
                 //to get changes from strategy config
                 LoadListViewValuesFromConfiguration();
                 //to refresh coin stats due to changed coin selections
