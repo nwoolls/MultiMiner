@@ -73,9 +73,19 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     newPool.DifficultyRejected = TryToParseDouble(keyValuePairs, "Difficulty Rejected", 0.0);
                     newPool.DifficultyStale = TryToParseDouble(keyValuePairs, "Difficulty Stale", 0.0);
                     newPool.LastShareDifficulty = TryToParseDouble(keyValuePairs, "Last Share Difficulty", 0.0);
-                    newPool.HasStratum = keyValuePairs["Has Stratum"].Equals("true", StringComparison.OrdinalIgnoreCase);
-                    newPool.StratumActive = keyValuePairs["Stratum Active"].Equals("true", StringComparison.OrdinalIgnoreCase);
-                    newPool.StratumUrl = keyValuePairs["Stratum URL"];
+
+                    //user bug reports indicate this key may not exist
+                    if (keyValuePairs.ContainsKey("Has Stratum"))
+                        newPool.HasStratum = keyValuePairs["Has Stratum"].Equals("true", StringComparison.OrdinalIgnoreCase);
+
+                    //user bug reports indicate this key may not exist
+                    if (keyValuePairs.ContainsKey("Stratum Active"))
+                        newPool.StratumActive = keyValuePairs["Stratum Active"].Equals("true", StringComparison.OrdinalIgnoreCase);
+
+                    //user bug reports indicate this key may not exist
+                    if (keyValuePairs.ContainsKey("Stratum URL"))
+                        newPool.StratumUrl = keyValuePairs["Stratum URL"];
+
                     newPool.BestShare = TryToParseInt(keyValuePairs, "Best Share", 0);
                     newPool.PoolRejectedPercent = TryToParseDouble(keyValuePairs, "Pool Rejected%", 0.0);
                     newPool.PoolStalePercent = TryToParseDouble(keyValuePairs, "Pool Stale%", 0.0);
