@@ -232,8 +232,12 @@ namespace MultiMiner.Engine
 
             if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
             {
-                //get a list of the coins that are enabled and have at least one pool
-                IEnumerable<string> configuredSymbols = engineConfiguration.CoinConfigurations.Where(c => c.Enabled && (c.Pools.Count > 0)).Select(c => c.Coin.Symbol);
+                //get a list of the coins that are enabled and have at least one pool and pools aren't flagged down
+                IEnumerable<string> configuredSymbols = engineConfiguration.CoinConfigurations.Where(
+                    c => c.Enabled && 
+                        !c.PoolsDown && 
+                        (c.Pools.Count > 0)
+                    ).Select(c => c.Coin.Symbol);
 
                 //filter the coin info by that list
                 //use the copy here

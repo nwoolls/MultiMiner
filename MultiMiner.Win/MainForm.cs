@@ -515,13 +515,13 @@ namespace MultiMiner.Win
                     if (enabledConfigurationCount > 1)
                     {
 
-                        //if auto mining is enabled, disable the coin configuration and display a notification
+                        //if auto mining is enabled, flag pools down in the coin configuration and display a notification
                         CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(config => config.Coin.Name.Equals(ea.CoinName, StringComparison.OrdinalIgnoreCase));
-                        coinConfiguration.Enabled = false;
+                        coinConfiguration.PoolsDown = true;
                         engineConfiguration.SaveCoinConfigurations();
 
                         //if no enabled configurations, stop mining
-                        int enabledConfigurations = engineConfiguration.CoinConfigurations.Count(config => config.Enabled);
+                        int enabledConfigurations = engineConfiguration.CoinConfigurations.Count(config => config.Enabled && !config.PoolsDown);
                         if (enabledConfigurations == 0)
                             StopMining();
                         else
@@ -1053,6 +1053,10 @@ namespace MultiMiner.Win
             idleTimer.Interval = 15 * 1000; //check every 15s
             idleTimer.Enabled = true;
 
+            poolsDownFlagTimer.Interval = 1000 * 60 * 60; //1 hour
+            poolsDownFlagTimer.Enabled = true;
+            ClearPoolsFlaggedDown();
+
             //allow resize/maximize/etc to render
             Application.DoEvents();
 
@@ -1398,6 +1402,7 @@ namespace MultiMiner.Win
             RefreshIncomeSummary();
             AutoSizeListViewColumns();
             RefreshDetailsAreaIfVisible();
+            ClearPoolsFlaggedDown();
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -2378,6 +2383,13 @@ namespace MultiMiner.Win
             CheckAndApplyMiningStrategy();
 
             coinStatsCountdownMinutes = coinStatsTimer.Interval / 1000 / 60;
+        }
+
+        private void ClearPoolsFlaggedDown()
+        {
+            foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations)
+                coinConfiguration.PoolsDown = false;
+            engineConfiguration.SaveCoinConfigurations();
         }
 
         private void CheckAndApplyMiningStrategy()
@@ -4470,6 +4482,11 @@ namespace MultiMiner.Win
                 string logFilePath = Path.Combine(logDirectory, fileName);
                 Process.Start(logFilePath);
             }
+        }
+
+        private void poolsDownFlagTimer_Tick(object sender, EventArgs e)
+        {
+            ClearPoolsFlaggedDown();
         }
     }
 }
