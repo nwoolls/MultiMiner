@@ -1697,7 +1697,17 @@ namespace MultiMiner.Win
 
                 item.SubItems["Average"].Text = ((double)item.SubItems["Average"].Tag).ToHashrateString();
                 item.SubItems["Current"].Text = ((double)item.SubItems["Current"].Tag).ToHashrateString();
-                item.SubItems["Effective"].Text = ((double)item.SubItems["Effective"].Tag * 71582.788).ToHashrateString();
+
+                double shaMultiplier = 71582788 / 1000;
+                double scryptMultiplier = 0.0043;
+                double workUtility = (double)item.SubItems["Effective"].Tag;
+                double hashrate = workUtility * shaMultiplier;
+                CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
+                if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
+                    hashrate = hashrate * scryptMultiplier;
+
+                item.SubItems["Effective"].Text = hashrate.ToHashrateString();
+
 
                 //check for >= 0.05 so we don't show 0% (due to the format string)
                 item.SubItems["Rejected"].Text = (double)item.SubItems["Rejected"].Tag >= 0.05 ? ((double)item.SubItems["Rejected"].Tag).ToString("0.#") + "%" : String.Empty;
