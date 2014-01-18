@@ -122,7 +122,12 @@ namespace MultiMiner.Xgminer
 
         private string GetListSerialArguments()
         {
-            string serialArg = MinerParameter.ScanSerialLittlefuryAll + " " + MinerParameter.ScanSerialAntminerAll + " " + MinerParameter.ScanSerialErupterAll;
+            string serialArg = String.Empty;
+
+            if (minerConfiguration.DisableUsbProbe)
+                serialArg = MinerParameter.ScanSerialAuto;
+            else
+                serialArg = MinerParameter.ScanSerialLittlefuryAll + " " + MinerParameter.ScanSerialAntminerAll + " " + MinerParameter.ScanSerialErupterAll;
 
             if (!minerConfiguration.DisableGpu)
                 //openCL disabled by default in bfgminer 3.3.0+

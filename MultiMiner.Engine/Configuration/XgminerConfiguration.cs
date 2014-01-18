@@ -19,6 +19,7 @@ namespace MultiMiner.Engine.Configuration
         public string ScanArguments { get; set; }
         public bool DesktopMode { get; set; }
         public bool DisableGpu { get; set; }
+        public bool DisableUsbProbe { get; set; }
         public ProcessPriorityClass Priority { get; set; }
         public int StartingApiPort { get; set; }
         public string AllowedApiIps { get; set; }

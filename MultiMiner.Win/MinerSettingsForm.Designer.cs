@@ -61,6 +61,7 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).BeginInit();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -76,6 +77,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.checkBox3);
             this.groupBox3.Controls.Add(this.textBox4);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.scryptConfigLink);
@@ -97,7 +99,7 @@
             this.textBox4.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "ScanArguments", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox4.Location = new System.Drawing.Point(121, 121);
             this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(301, 23);
+            this.textBox4.Size = new System.Drawing.Size(131, 23);
             this.textBox4.TabIndex = 16;
             // 
             // label8
@@ -194,7 +196,7 @@
             this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "StratumProxyStratumPort", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox3.Location = new System.Drawing.Point(124, 90);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(126, 23);
+            this.textBox3.Size = new System.Drawing.Size(128, 23);
             this.textBox3.TabIndex = 4;
             // 
             // label4
@@ -214,7 +216,7 @@
             this.proxyPortEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "StratumProxyPort", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.proxyPortEdit.Location = new System.Drawing.Point(124, 60);
             this.proxyPortEdit.Name = "proxyPortEdit";
-            this.proxyPortEdit.Size = new System.Drawing.Size(126, 23);
+            this.proxyPortEdit.Size = new System.Drawing.Size(128, 23);
             this.proxyPortEdit.TabIndex = 3;
             // 
             // proxyCheckBox
@@ -261,7 +263,7 @@
             "12 hours"});
             this.intervalCombo.Location = new System.Drawing.Point(171, 44);
             this.intervalCombo.Name = "intervalCombo";
-            this.intervalCombo.Size = new System.Drawing.Size(93, 23);
+            this.intervalCombo.Size = new System.Drawing.Size(95, 23);
             this.intervalCombo.TabIndex = 2;
             // 
             // autoDesktopCheckBox
@@ -397,6 +399,17 @@
             this.checkBox2.Text = "Terminate GPU miners";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.xgminerConfigurationBindingSource, "DisableUsbProbe", true));
+            this.checkBox3.Location = new System.Drawing.Point(277, 123);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(133, 19);
+            this.checkBox3.TabIndex = 18;
+            this.checkBox3.Text = "Disable USB probing";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
             // MinerSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -468,5 +481,6 @@
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox checkBox3;
     }
 }

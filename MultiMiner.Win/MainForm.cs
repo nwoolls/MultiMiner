@@ -1111,6 +1111,7 @@ namespace MultiMiner.Win
             { 
                 ExecutablePath = MinerPath.GetPathToInstalledMiner(), 
                 DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu,
+                DisableUsbProbe = engineConfiguration.XgminerConfiguration.DisableUsbProbe,
                 ScanArguments = engineConfiguration.XgminerConfiguration.ScanArguments
             };
 
