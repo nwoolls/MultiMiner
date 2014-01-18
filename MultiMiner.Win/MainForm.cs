@@ -1381,6 +1381,7 @@ namespace MultiMiner.Win
             }
 
             processDeviceDetails.Clear();
+            processPoolInformation.Clear();
             deviceStatsTimer.Enabled = false;
             minerSummaryTimer.Enabled = false;
             coinStatsCountdownTimer.Enabled = false;
@@ -2668,7 +2669,12 @@ namespace MultiMiner.Win
 
         private void crashRecoveryTimer_Tick(object sender, EventArgs e)
         {
-            miningEngine.RelaunchCrashedMiners();
+            if (miningEngine.RelaunchCrashedMiners())
+            {
+                //clear any details stored correlated to processes - they could all be invalid after this
+                processDeviceDetails.Clear();
+                processPoolInformation.Clear();
+            }
         }
 
         private void detectDevicesButton_Click(object sender, EventArgs e)
