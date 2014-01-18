@@ -1632,6 +1632,9 @@ namespace MultiMiner.Win
             item.SubItems["Current"].Text = String.Empty;
             item.SubItems["Current"].Tag = 0.00;
 
+            item.SubItems["Effective"].Text = String.Empty;
+            item.SubItems["Effective"].Tag = 0.00;
+
             item.SubItems["Accepted"].Text = String.Empty;
             item.SubItems["Accepted"].Tag = 0;
 
@@ -1662,6 +1665,7 @@ namespace MultiMiner.Win
                 {
                     item.SubItems["Average"].Tag = (double)(item.SubItems["Average"].Tag ?? 0.00) + deviceInformation.AverageHashrate;
                     item.SubItems["Current"].Tag = (double)(item.SubItems["Current"].Tag ?? 0.00) + deviceInformation.CurrentHashrate;
+                    item.SubItems["Effective"].Tag = (double)(item.SubItems["Effective"].Tag ?? 0.00) + deviceInformation.WorkUtility;
                     item.SubItems["Rejected"].Tag = (double)(item.SubItems["Rejected"].Tag ?? 0.00) + deviceInformation.RejectedSharesPercent;
                     item.SubItems["Errors"].Tag = (double)(item.SubItems["Errors"].Tag ?? 0.00) + deviceInformation.HardwareErrorsPercent;
                     item.SubItems["Accepted"].Tag = (int)(item.SubItems["Accepted"].Tag ?? 0) + deviceInformation.AcceptedShares;
@@ -1675,6 +1679,7 @@ namespace MultiMiner.Win
                 {
                     item.SubItems["Average"].Tag = deviceInformation.AverageHashrate;
                     item.SubItems["Current"].Tag = deviceInformation.CurrentHashrate;
+                    item.SubItems["Effective"].Tag = deviceInformation.WorkUtility;
                     item.SubItems["Rejected"].Tag = deviceInformation.RejectedSharesPercent;
                     item.SubItems["Errors"].Tag = deviceInformation.HardwareErrorsPercent;
                     item.SubItems["Accepted"].Tag = deviceInformation.AcceptedShares;
@@ -1687,6 +1692,7 @@ namespace MultiMiner.Win
 
                 item.SubItems["Average"].Text = ((double)item.SubItems["Average"].Tag).ToHashrateString();
                 item.SubItems["Current"].Text = ((double)item.SubItems["Current"].Tag).ToHashrateString();
+                item.SubItems["Effective"].Text = ((double)item.SubItems["Effective"].Tag * 71582.788).ToHashrateString();
 
                 //check for >= 0.05 so we don't show 0% (due to the format string)
                 item.SubItems["Rejected"].Text = (double)item.SubItems["Rejected"].Tag >= 0.05 ? ((double)item.SubItems["Rejected"].Tag).ToString("0.#") + "%" : String.Empty;

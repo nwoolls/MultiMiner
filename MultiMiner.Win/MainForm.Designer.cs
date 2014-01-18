@@ -207,6 +207,7 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.poolInfoTimer = new System.Windows.Forms.Timer(this.components);
+            this.effectiveColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -576,7 +577,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(1293, 232);
-            this.detailsAreaContainer.SplitterDistance = 957;
+            this.detailsAreaContainer.SplitterDistance = 958;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -597,6 +598,7 @@
             this.fanColumnHeader,
             this.hashrateColumnHeader,
             this.currentRateColumnHeader,
+            this.effectiveColumnHeader,
             this.incomeColumnHeader,
             this.acceptedColumnHeader,
             this.rejectedColumnHeader,
@@ -621,7 +623,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(957, 232);
+            this.deviceListView.Size = new System.Drawing.Size(958, 232);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -728,7 +730,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(333, 232);
+            this.detailsControl1.Size = new System.Drawing.Size(332, 232);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -1760,6 +1762,11 @@
             this.poolInfoTimer.Interval = 30000;
             this.poolInfoTimer.Tick += new System.EventHandler(this.poolInfoTimer_Tick);
             // 
+            // effectiveColumnHeader
+            // 
+            this.effectiveColumnHeader.Text = "Effective";
+            this.effectiveColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -2003,6 +2010,7 @@
         private System.Windows.Forms.ContextMenuStrip openLogMenu;
         private System.Windows.Forms.ToolStripMenuItem openLogToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader currentRateColumnHeader;
+        private System.Windows.Forms.ColumnHeader effectiveColumnHeader;
     }
 }
 
