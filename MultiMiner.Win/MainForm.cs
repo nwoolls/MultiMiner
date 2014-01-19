@@ -18,6 +18,9 @@ using MultiMiner.Xgminer.Api.Responses;
 using MultiMiner.Win.Extensions;
 using MultiMiner.Win.Configuration;
 using MultiMiner.Coin.Api;
+using MultiMiner.Remoting.Server;
+using MultiMiner.Remoting.Client;
+using MultiMiner.Services;
 
 namespace MultiMiner.Win
 {
@@ -67,6 +70,10 @@ namespace MultiMiner.Win
         //controls
         private NotificationsControl notificationsControl;
 
+        //remoting
+        private RemotingServer remotingServer;
+        private RemotingClient remotingClient;
+        
         public MainForm()
         {
             InitializeComponent();
@@ -86,7 +93,7 @@ namespace MultiMiner.Win
             }
 
             accessibleMenu.Visible = false;
-
+            
             SetupLookAndFeel();
 
             //make it easier for users to understand there are selected items
@@ -693,7 +700,7 @@ namespace MultiMiner.Win
                 {
                     using (new HourGlass())
                     {
-                        devices = GetDevices();
+                        devices = new DevicesService(engineConfiguration.XgminerConfiguration).GetDevices();
                     }
                 }
                 catch (Win32Exception ex)
@@ -1057,10 +1064,23 @@ namespace MultiMiner.Win
             poolsDownFlagTimer.Enabled = true;
             ClearPoolsFlaggedDown();
 
+            SetupRemoting();
+
             //allow resize/maximize/etc to render
             Application.DoEvents();
 
             this.settingsLoaded = true;
+        }
+
+        private void SetupRemoting()
+        {
+            if (perksConfiguration.EnableRemoting)
+            {
+                remotingServer = new RemotingServer();
+                remotingServer.Initialize();
+                remotingClient = new RemotingClient();
+                remotingClient.Initialize();
+            }
         }
 
         private void RefreshExchangeRates()
@@ -1103,59 +1123,6 @@ namespace MultiMiner.Win
         {
             countdownLabel.Text = string.Format("Mining will start automatically in {0} seconds...", startupMiningCountdownSeconds);
             startupMiningPanel.Visible = true;
-        }
-
-        private List<Device> GetDevices()
-        {
-            MinerConfiguration minerConfiguration = new MinerConfiguration() 
-            { 
-                ExecutablePath = MinerPath.GetPathToInstalledMiner(), 
-                DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu,
-                DisableUsbProbe = engineConfiguration.XgminerConfiguration.DisableUsbProbe,
-                ScanArguments = engineConfiguration.XgminerConfiguration.ScanArguments
-            };
-
-            Miner miner = new Miner(minerConfiguration);
-
-            List<Device> detectedDevices = miner.ListDevices(true);
-
-            if (engineConfiguration.XgminerConfiguration.StratumProxy)
-            {
-                detectedDevices.Add(new Device() 
-                { 
-                    Kind = DeviceKind.PXY, 
-                    Driver = "proxy", 
-                    Name = "Stratum Proxy" 
-                });
-            }
-
-            SortDevices(detectedDevices);
-
-            return detectedDevices;
-        }
-
-        private static void SortDevices(List<Device> detectedDevices)
-        {
-            detectedDevices.Sort((d1, d2) =>
-                {
-                    int result = 0;
-
-                    result = d1.Kind.CompareTo(d2.Kind);
-
-                    if (result == 0)
-                        result = d1.Driver.CompareTo(d2.Driver);
-
-                    if (result == 0)
-                        result = d1.Name.CompareTo(d2.Name);
-
-                    if (result == 0)
-                        result = d1.Path.CompareTo(d2.Path);
-
-                    if (result == 0)
-                        result = d1.RelativeIndex.CompareTo(d2.RelativeIndex);
-
-                    return result;
-                });
         }
 
         private void ConfigureCoins()

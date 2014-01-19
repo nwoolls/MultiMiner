@@ -305,6 +305,10 @@
       <Project>{db1b318b-b57f-4bf4-8e05-befe7970f64c}</Project>
       <Name>MultiMiner.Remoting.Server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Services\MultiMiner.Services.csproj">
+      <Project>{cffa60ec-9486-4f45-bef2-05c1a3d68ea6}</Project>
+      <Name>MultiMiner.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Stats.Api\MultiMiner.Stats.Api.csproj">
       <Project>{2cf95427-df1d-4061-8580-f143f04a0439}</Project>
       <Name>MultiMiner.Stats.Api</Name>
