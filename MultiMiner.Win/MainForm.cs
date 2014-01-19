@@ -1458,6 +1458,10 @@ namespace MultiMiner.Win
             poolInfoTimer.Enabled = true;
             RefreshStrategiesCountdown();
 
+            //so restart timer based on when mining started, not a constantly ticking timer
+            //see https://bitcointalk.org/index.php?topic=248173.msg4593795#msg4593795
+            SetupRestartTimer();
+
             //to get changes from strategy config
             LoadListViewValuesFromConfiguration();
             //to get updated coin stats for coin changes
@@ -1591,6 +1595,8 @@ namespace MultiMiner.Win
 
         private void SetupRestartTimer()
         {
+            //if enabled, we want to restart it so this can be used when we start mining
+            restartTimer.Enabled = false;
             restartTimer.Interval = applicationConfiguration.ScheduledRestartMiningInterval.ToMinutes() * 60 * 1000;
             restartTimer.Enabled = applicationConfiguration.ScheduledRestartMining;
         }
