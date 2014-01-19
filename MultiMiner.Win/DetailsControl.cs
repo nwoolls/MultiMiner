@@ -75,19 +75,18 @@ namespace MultiMiner.Win
 
         public void InspectDetails(Device device, CoinConfiguration coinConfiguration, CoinInformation coinInformation,
             List<DeviceInformationResponse> deviceInformation, PoolInformationResponse poolInformation,
-            List<DeviceDetailsResponse> deviceDetails)
+            List<DeviceDetailsResponse> deviceDetails, bool showWorkUtility)
         {
             this.deviceDetails = deviceDetails;
             this.deviceInformation = deviceInformation;
 
 
             noDetailsPanel.Visible = false;
-            double hashrate = 0;
-            foreach (DeviceInformationResponse individualDevice in deviceInformation)
-            {
-                hashrate += individualDevice.AverageHashrate;
-            }
+            double hashrate = deviceInformation.Sum(di => di.AverageHashrate);
+            double currentRate = deviceInformation.Sum(di => di.CurrentHashrate);
+            
             hashrateLabel.Text = hashrate.ToHashrateString();
+            currentRateLabel.Text = currentRate.ToHashrateString();
 
             workersGridView.Visible = (device.Kind == DeviceKind.PXY) &&
                 (deviceInformation.Count > 0);
@@ -135,7 +134,18 @@ namespace MultiMiner.Win
             acceptedLabel.Text = deviceInformation.Sum(d => d.AcceptedShares).ToString();
             rejectedLabel.Text = deviceInformation.Sum(d => d.RejectedShares).ToString();
             errorsLabel.Text = deviceInformation.Sum(d => d.HardwareErrors).ToString();
-            utilityLabel.Text = deviceInformation.Sum(d => d.Utility).ToString();
+
+            if (showWorkUtility)
+            {
+                utilityLabel.Text = deviceInformation.Sum(d => d.WorkUtility).ToString();
+                utilityDataGridViewTextBoxColumn.DataPropertyName = "WorkUtility";
+            }
+            else
+            {
+                utilityLabel.Text = deviceInformation.Sum(d => d.Utility).ToString();
+                utilityDataGridViewTextBoxColumn.DataPropertyName = "Utility";
+            }
+            utilityPrefixLabel.Text = showWorkUtility ? "Work utility:" : "Utility:";
 
             DeviceInformationResponse deviceInfo = (DeviceInformationResponse)deviceInformationResponseBindingSource.Current;
             if (deviceInfo != null)

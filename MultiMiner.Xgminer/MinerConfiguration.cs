@@ -25,6 +25,7 @@ namespace MultiMiner.Xgminer
         public string ScanArguments { get; set; }
         public string CoinName { get; set; }
         public bool DisableGpu { get; set; }
+        public bool DisableUsbProbe { get; set; }
         public ProcessPriorityClass Priority { get; set; }
 
         //bfgminer-specific

@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Linq;
+using System.Globalization;
 
 namespace MultiMiner.Xgminer
 {
@@ -51,7 +53,7 @@ namespace MultiMiner.Xgminer
         }
 
         //uses -d?, returns driver information
-        public List<Device> ListDevices()
+        public List<Device> ListDevices(bool prettyNames = false)
         {
             string arguments = MinerParameter.DeviceList;
             bool redirectOutput = true;
@@ -92,12 +94,40 @@ namespace MultiMiner.Xgminer
             List<Device> result = new List<Device>();
             DeviceListParser.ParseTextForDevices(output, result);
 
+            if (prettyNames)
+                MakeNamesPretty(result);
+
             return result;
+        }
+
+        private readonly string[] genericNames = 
+        { 
+            "Device",
+            "CP2102 USB to UART Bridge Controller by Silicon Labs"
+        };
+
+        private void MakeNamesPretty(List<Device> devices)
+        {
+            foreach (Device device in devices)
+                if (genericNames.Contains(device.Name) && !String.IsNullOrEmpty(device.Driver))
+                {
+                    if (device.Driver.Equals("erupter", StringComparison.OrdinalIgnoreCase))
+                        device.Name = "Block Erupter";
+                    else if (device.Driver.Equals("antminer", StringComparison.OrdinalIgnoreCase))
+                        device.Name = "AntMiner U1";
+                    else
+                        device.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(device.Driver);
+                }
         }
 
         private string GetListSerialArguments()
         {
-            string serialArg = MinerParameter.ScanSerialErupterAll;
+            string serialArg = String.Empty;
+
+            if (minerConfiguration.DisableUsbProbe)
+                serialArg = MinerParameter.ScanSerialAuto;
+            else
+                serialArg = MinerParameter.ScanSerialLittlefuryAll + " " + MinerParameter.ScanSerialAntminerAll + " " + MinerParameter.ScanSerialErupterAll;
 
             if (!minerConfiguration.DisableGpu)
                 //openCL disabled by default in bfgminer 3.3.0+
@@ -156,6 +186,9 @@ namespace MultiMiner.Xgminer
                     password = pool.Password;
 
                 argument = String.Format("{0} -p {1}", argument, password);
+
+                if (!String.IsNullOrEmpty(pool.MinerFlags))
+                    argument = String.Format("{0} {1}", argument, pool.MinerFlags);
 
                 arguments = string.Format("{0} {1}", arguments, argument);
             }

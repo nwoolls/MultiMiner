@@ -76,8 +76,9 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     
                     newDevice.AcceptedShares = TryToParseInt(keyValuePairs, "Accepted", 0);                    
                     newDevice.RejectedShares = TryToParseInt(keyValuePairs, "Rejected", 0);                    
-                    newDevice.HardwareErrors = TryToParseInt(keyValuePairs, "Hardware Errors", 0);                    
-                    newDevice.Utility = TryToParseDouble(keyValuePairs, "Utility", 0.00);                    
+                    newDevice.HardwareErrors = TryToParseInt(keyValuePairs, "Hardware Errors", 0);
+                    newDevice.Utility = TryToParseDouble(keyValuePairs, "Utility", 0.00);
+                    newDevice.WorkUtility = TryToParseDouble(keyValuePairs, "Work Utility", 0.00);                
                     newDevice.PoolIndex = TryToParseInt(keyValuePairs, "Last Share Pool", -1);
                     newDevice.HardwareErrorsPercent = TryToParseDouble(keyValuePairs, "Device Hardware%", 0.00);
                     newDevice.RejectedSharesPercent = TryToParseDouble(keyValuePairs, "Device Rejected%", 0.00);

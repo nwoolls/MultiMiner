@@ -515,13 +515,13 @@ namespace MultiMiner.Win
                     if (enabledConfigurationCount > 1)
                     {
 
-                        //if auto mining is enabled, disable the coin configuration and display a notification
+                        //if auto mining is enabled, flag pools down in the coin configuration and display a notification
                         CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(config => config.Coin.Name.Equals(ea.CoinName, StringComparison.OrdinalIgnoreCase));
-                        coinConfiguration.Enabled = false;
+                        coinConfiguration.PoolsDown = true;
                         engineConfiguration.SaveCoinConfigurations();
 
                         //if no enabled configurations, stop mining
-                        int enabledConfigurations = engineConfiguration.CoinConfigurations.Count(config => config.Enabled);
+                        int enabledConfigurations = engineConfiguration.CoinConfigurations.Count(config => config.Enabled && !config.PoolsDown);
                         if (enabledConfigurations == 0)
                             StopMining();
                         else
@@ -802,6 +802,7 @@ namespace MultiMiner.Win
                         SetColumWidth(tempColumnHeader, 0);
 
                     SetColumWidth(hashrateColumnHeader, -2);
+                    SetColumWidth(currentRateColumnHeader, 0);
                     SetColumWidth(acceptedColumnHeader, 0);
                     SetColumWidth(rejectedColumnHeader, 0);
                     SetColumWidth(errorsColumnHeader, 0);
@@ -857,6 +858,8 @@ namespace MultiMiner.Win
             try
             {
                 deviceListView.Items.Clear();
+
+                utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
 
                 foreach (Device device in devices)
                 {
@@ -1050,6 +1053,10 @@ namespace MultiMiner.Win
             idleTimer.Interval = 15 * 1000; //check every 15s
             idleTimer.Enabled = true;
 
+            poolsDownFlagTimer.Interval = 1000 * 60 * 60; //1 hour
+            poolsDownFlagTimer.Enabled = true;
+            ClearPoolsFlaggedDown();
+
             //allow resize/maximize/etc to render
             Application.DoEvents();
 
@@ -1104,12 +1111,13 @@ namespace MultiMiner.Win
             { 
                 ExecutablePath = MinerPath.GetPathToInstalledMiner(), 
                 DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu,
+                DisableUsbProbe = engineConfiguration.XgminerConfiguration.DisableUsbProbe,
                 ScanArguments = engineConfiguration.XgminerConfiguration.ScanArguments
             };
 
             Miner miner = new Miner(minerConfiguration);
 
-            List<Device> detectedDevices = miner.ListDevices();
+            List<Device> detectedDevices = miner.ListDevices(true);
 
             if (engineConfiguration.XgminerConfiguration.StratumProxy)
             {
@@ -1395,6 +1403,7 @@ namespace MultiMiner.Win
             RefreshIncomeSummary();
             AutoSizeListViewColumns();
             RefreshDetailsAreaIfVisible();
+            ClearPoolsFlaggedDown();
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -1408,10 +1417,10 @@ namespace MultiMiner.Win
                 EnableDesktopMode(true);
 
             SaveChanges();
-            StartMining(true);
+            StartMining();
         }
 
-        private void StartMining(bool donate = false)
+        private void StartMining()
         {
             if (!MiningConfigurationValid())
                 return;
@@ -1449,8 +1458,7 @@ namespace MultiMiner.Win
             this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
             this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
             
-            if (!donate)
-                engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
+            engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
 
             deviceStatsTimer.Enabled = true;
             minerSummaryTimer.Enabled = true;
@@ -1625,12 +1633,18 @@ namespace MultiMiner.Win
             }
         }
 
-        private static void ClearDeviceInfoForListViewItem(ListViewItem item)
+        private void ClearDeviceInfoForListViewItem(ListViewItem item)
         {
             item.SubItems["Temp"].Text = String.Empty;
 
-            item.SubItems["Hashrate"].Text = String.Empty;
-            item.SubItems["Hashrate"].Tag = 0.00;
+            item.SubItems["Average"].Text = String.Empty;
+            item.SubItems["Average"].Tag = 0.00;
+
+            item.SubItems["Current"].Text = String.Empty;
+            item.SubItems["Current"].Tag = 0.00;
+
+            item.SubItems["Effective"].Text = String.Empty;
+            item.SubItems["Effective"].Tag = 0.00;
 
             item.SubItems["Accepted"].Text = String.Empty;
             item.SubItems["Accepted"].Tag = 0;
@@ -1641,8 +1655,8 @@ namespace MultiMiner.Win
             item.SubItems["Errors"].Text = String.Empty;
             item.SubItems["Errors"].Tag = 0.00;
 
-            item.SubItems["Utility"].Text = String.Empty;
-            item.SubItems["Utility"].Tag = 0.00;
+            item.SubItems[utilityColumnHeader.Text].Text = String.Empty;
+            item.SubItems[utilityColumnHeader.Text].Tag = 0.00;
 
             item.SubItems["Intensity"].Text = String.Empty;
             item.SubItems["Pool"].Text = String.Empty;
@@ -1660,22 +1674,42 @@ namespace MultiMiner.Win
                 //stratum devices get lumped together, so we sum those
                 if (deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
                 {
-                    item.SubItems["Hashrate"].Tag = (double)(item.SubItems["Hashrate"].Tag ?? 0.00) + deviceInformation.AverageHashrate;
+                    item.SubItems["Average"].Tag = (double)(item.SubItems["Average"].Tag ?? 0.00) + deviceInformation.AverageHashrate;
+                    item.SubItems["Current"].Tag = (double)(item.SubItems["Current"].Tag ?? 0.00) + deviceInformation.CurrentHashrate;
+                    item.SubItems["Effective"].Tag = (double)(item.SubItems["Effective"].Tag ?? 0.00) + deviceInformation.WorkUtility;
                     item.SubItems["Rejected"].Tag = (double)(item.SubItems["Rejected"].Tag ?? 0.00) + deviceInformation.RejectedSharesPercent;
                     item.SubItems["Errors"].Tag = (double)(item.SubItems["Errors"].Tag ?? 0.00) + deviceInformation.HardwareErrorsPercent;
                     item.SubItems["Accepted"].Tag = (int)(item.SubItems["Accepted"].Tag ?? 0) + deviceInformation.AcceptedShares;
-                    item.SubItems["Utility"].Tag = (double)(item.SubItems["Utility"].Tag ?? 0.00) + deviceInformation.Utility;
+
+                    if (applicationConfiguration.ShowWorkUtility)
+                        item.SubItems[utilityColumnHeader.Text].Tag = (double)(item.SubItems[utilityColumnHeader.Text].Tag ?? 0.00) + deviceInformation.WorkUtility;
+                    else
+                        item.SubItems[utilityColumnHeader.Text].Tag = (double)(item.SubItems[utilityColumnHeader.Text].Tag ?? 0.00) + deviceInformation.Utility;
                 }
                 else
                 {
-                    item.SubItems["Hashrate"].Tag = deviceInformation.AverageHashrate;
+                    item.SubItems["Average"].Tag = deviceInformation.AverageHashrate;
+                    item.SubItems["Current"].Tag = deviceInformation.CurrentHashrate;
+                    item.SubItems["Effective"].Tag = deviceInformation.WorkUtility;
                     item.SubItems["Rejected"].Tag = deviceInformation.RejectedSharesPercent;
                     item.SubItems["Errors"].Tag = deviceInformation.HardwareErrorsPercent;
                     item.SubItems["Accepted"].Tag = deviceInformation.AcceptedShares;
-                    item.SubItems["Utility"].Tag = deviceInformation.Utility;
+
+                    if (applicationConfiguration.ShowWorkUtility)
+                        item.SubItems[utilityColumnHeader.Text].Tag = deviceInformation.WorkUtility;
+                    else
+                        item.SubItems[utilityColumnHeader.Text].Tag = deviceInformation.Utility;
                 }
 
-                item.SubItems["Hashrate"].Text = ((double)item.SubItems["Hashrate"].Tag).ToHashrateString();
+                item.SubItems["Average"].Text = ((double)item.SubItems["Average"].Tag).ToHashrateString();
+                item.SubItems["Current"].Text = ((double)item.SubItems["Current"].Tag).ToHashrateString();
+
+                //this will be wrong for Scrypt until 3.10.1
+                double shaMultiplier = 71582788 / 1000;
+                double workUtility = (double)item.SubItems["Effective"].Tag;
+                double hashrate = workUtility * shaMultiplier;
+                
+                item.SubItems["Effective"].Text = hashrate.ToHashrateString();
 
                 //check for >= 0.05 so we don't show 0% (due to the format string)
                 item.SubItems["Rejected"].Text = (double)item.SubItems["Rejected"].Tag >= 0.05 ? ((double)item.SubItems["Rejected"].Tag).ToString("0.#") + "%" : String.Empty;
@@ -1683,7 +1717,7 @@ namespace MultiMiner.Win
 
                 item.SubItems["Accepted"].Text = (int)item.SubItems["Accepted"].Tag > 0 ? ((int)item.SubItems["Accepted"].Tag).ToString() : String.Empty;
 
-                item.SubItems["Utility"].Text = (double)item.SubItems["Utility"].Tag >= 0.00 ? ((double)item.SubItems["Utility"].Tag).ToString("0.###") : String.Empty;
+                item.SubItems[utilityColumnHeader.Text].Text = (double)item.SubItems[utilityColumnHeader.Text].Tag >= 0.00 ? ((double)item.SubItems[utilityColumnHeader.Text].Tag).ToString("0.###") : String.Empty;
 
                 item.SubItems["Temp"].Text = deviceInformation.Temperature > 0 ? deviceInformation.Temperature + "°" : String.Empty;
                 item.SubItems["Fan"].Text = deviceInformation.FanPercent > 0 ? deviceInformation.FanPercent + "%" : String.Empty;
@@ -1720,7 +1754,7 @@ namespace MultiMiner.Win
             if (info != null)
             {
                 double difficulty = (double)item.SubItems["Difficulty"].Tag;
-                double hashrate = (double)item.SubItems["Hashrate"].Tag * 1000;
+                double hashrate = (double)item.SubItems["Average"].Tag * 1000;
                 double fullDifficulty = difficulty * difficultyMuliplier;
                 double secondsToCalcShare = fullDifficulty / hashrate;
                 const double secondsPerDay = 86400;
@@ -2363,6 +2397,13 @@ namespace MultiMiner.Win
             coinStatsCountdownMinutes = coinStatsTimer.Interval / 1000 / 60;
         }
 
+        private void ClearPoolsFlaggedDown()
+        {
+            foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations)
+                coinConfiguration.PoolsDown = false;
+            engineConfiguration.SaveCoinConfigurations();
+        }
+
         private void CheckAndApplyMiningStrategy()
         {
             if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
@@ -2656,6 +2697,11 @@ namespace MultiMiner.Win
                 startupMiningCountdownTimer.Enabled = false;
                 Application.DoEvents();
 
+                //refresh devices so that we are sure we have all devices 
+                //otherwise scanning could happen too early on startup,
+                //before Windows has recognized all devices
+                RefreshDevices();
+                Application.DoEvents();
                 StartMining();
             }
         }
@@ -4038,6 +4084,25 @@ namespace MultiMiner.Win
                     AutoSizeListViewColumns();
                 }
             }
+            else if (e.Column == utilityColumnHeader.Index)
+            {
+                applicationConfiguration.ShowWorkUtility = !applicationConfiguration.ShowWorkUtility;
+                applicationConfiguration.SaveApplicationConfiguration();
+
+                UpdateUtilityColumnHeader();
+
+                RefreshDeviceStats();
+                AutoSizeListViewColumns();
+                RefreshDetailsAreaIfVisible();
+            }
+        }
+
+        private void UpdateUtilityColumnHeader()
+        {
+            string oldValue = utilityColumnHeader.Text;
+            utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
+            foreach (ListViewItem item in deviceListView.Items)
+                item.SubItems[oldValue].Name = utilityColumnHeader.Text;
         }
 
         private void columnHeaderMenu_Opening(object sender, CancelEventArgs e)
@@ -4349,7 +4414,8 @@ namespace MultiMiner.Win
                     minerDeviceDetails = processDeviceDetails[minerProcess];
             }
 
-            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, minerDeviceInformation, poolInformation, minerDeviceDetails);
+            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, minerDeviceInformation, poolInformation, 
+                minerDeviceDetails, applicationConfiguration.ShowWorkUtility);
         }
 
         private void deviceListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -4428,6 +4494,11 @@ namespace MultiMiner.Win
                 string logFilePath = Path.Combine(logDirectory, fileName);
                 Process.Start(logFilePath);
             }
+        }
+
+        private void poolsDownFlagTimer_Tick(object sender, EventArgs e)
+        {
+            ClearPoolsFlaggedDown();
         }
     }
 }

@@ -65,6 +65,7 @@ namespace MultiMiner.Win.Configuration
         public int TipsShown { get; set; }
         public bool AllowMultipleInstances { get; set; }
         public string SubmittedStatsVersion { get; set; }
+        public bool ShowWorkUtility { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }

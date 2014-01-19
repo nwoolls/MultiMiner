@@ -38,7 +38,6 @@
             this.nameLabel = new System.Windows.Forms.Label();
             this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label2 = new System.Windows.Forms.Label();
-            this.cryptoCoinBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -53,12 +52,6 @@
             this.hashrateLabel = new System.Windows.Forms.Label();
             this.workersGridView = new System.Windows.Forms.DataGridView();
             this.workerNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.averageHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.acceptedSharesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.utilityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.deviceInformationResponseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.workersTitleLabel = new System.Windows.Forms.Label();
             this.tempLabel = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
@@ -71,9 +64,8 @@
             this.errorsLabel = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.utilityLabel = new System.Windows.Forms.Label();
-            this.label25 = new System.Windows.Forms.Label();
+            this.utilityPrefixLabel = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.poolInformationResponseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label14 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
@@ -88,21 +80,31 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.deviceCountLabel = new System.Windows.Forms.Label();
             this.coinInformationBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.deviceDetailsResponseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.currentRateLabel = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
+            this.poolInformationResponseBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.averageHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.acceptedSharesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.utilityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.deviceInformationResponseBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.cryptoCoinBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.deviceDetailsResponseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.workersGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceInformationResponseBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.poolInformationResponseBindingSource)).BeginInit();
             this.noDetailsPanel.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.coinInformationBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceDetailsResponseBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.poolInformationResponseBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deviceInformationResponseBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deviceDetailsResponseBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // closeDetailsButton
@@ -154,10 +156,6 @@
             this.label2.Size = new System.Drawing.Size(38, 15);
             this.label2.TabIndex = 4;
             this.label2.Text = "label2";
-            // 
-            // cryptoCoinBindingSource
-            // 
-            this.cryptoCoinBindingSource.DataSource = typeof(MultiMiner.Engine.CryptoCoin);
             // 
             // label3
             // 
@@ -273,9 +271,9 @@
             this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
             this.label12.Location = new System.Drawing.Point(7, 140);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(57, 15);
+            this.label12.Size = new System.Drawing.Size(53, 15);
             this.label12.TabIndex = 15;
-            this.label12.Text = "Hashrate:";
+            this.label12.Text = "Average:";
             // 
             // hashrateLabel
             // 
@@ -325,54 +323,6 @@
             this.workerNameColumn.HeaderText = "Name";
             this.workerNameColumn.Name = "workerNameColumn";
             this.workerNameColumn.ReadOnly = true;
-            // 
-            // averageHashrateDataGridViewTextBoxColumn
-            // 
-            this.averageHashrateDataGridViewTextBoxColumn.DataPropertyName = "AverageHashrate";
-            this.averageHashrateDataGridViewTextBoxColumn.HeaderText = "Average";
-            this.averageHashrateDataGridViewTextBoxColumn.Name = "averageHashrateDataGridViewTextBoxColumn";
-            this.averageHashrateDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // currentHashrateDataGridViewTextBoxColumn
-            // 
-            this.currentHashrateDataGridViewTextBoxColumn.DataPropertyName = "CurrentHashrate";
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.currentHashrateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
-            this.currentHashrateDataGridViewTextBoxColumn.HeaderText = "Current";
-            this.currentHashrateDataGridViewTextBoxColumn.Name = "currentHashrateDataGridViewTextBoxColumn";
-            this.currentHashrateDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // acceptedSharesDataGridViewTextBoxColumn
-            // 
-            this.acceptedSharesDataGridViewTextBoxColumn.DataPropertyName = "AcceptedShares";
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.acceptedSharesDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
-            this.acceptedSharesDataGridViewTextBoxColumn.FillWeight = 55F;
-            this.acceptedSharesDataGridViewTextBoxColumn.HeaderText = "Acc.";
-            this.acceptedSharesDataGridViewTextBoxColumn.Name = "acceptedSharesDataGridViewTextBoxColumn";
-            this.acceptedSharesDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // hardwareErrorsPercentDataGridViewTextBoxColumn
-            // 
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DataPropertyName = "HardwareErrorsPercent";
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.FillWeight = 60F;
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.HeaderText = "Errors";
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.Name = "hardwareErrorsPercentDataGridViewTextBoxColumn";
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // utilityDataGridViewTextBoxColumn
-            // 
-            this.utilityDataGridViewTextBoxColumn.DataPropertyName = "Utility";
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.utilityDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
-            this.utilityDataGridViewTextBoxColumn.FillWeight = 60F;
-            this.utilityDataGridViewTextBoxColumn.HeaderText = "Utility";
-            this.utilityDataGridViewTextBoxColumn.Name = "utilityDataGridViewTextBoxColumn";
-            this.utilityDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // deviceInformationResponseBindingSource
-            // 
-            this.deviceInformationResponseBindingSource.DataSource = typeof(MultiMiner.Xgminer.Api.Responses.DeviceInformationResponse);
             // 
             // workersTitleLabel
             // 
@@ -494,15 +444,15 @@
             this.utilityLabel.TabIndex = 30;
             this.utilityLabel.Text = "label24";
             // 
-            // label25
+            // utilityPrefixLabel
             // 
-            this.label25.AutoSize = true;
-            this.label25.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
-            this.label25.Location = new System.Drawing.Point(7, 185);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(41, 15);
-            this.label25.TabIndex = 29;
-            this.label25.Text = "Utility:";
+            this.utilityPrefixLabel.AutoSize = true;
+            this.utilityPrefixLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.utilityPrefixLabel.Location = new System.Drawing.Point(7, 185);
+            this.utilityPrefixLabel.Name = "utilityPrefixLabel";
+            this.utilityPrefixLabel.Size = new System.Drawing.Size(41, 15);
+            this.utilityPrefixLabel.TabIndex = 29;
+            this.utilityPrefixLabel.Text = "Utility:";
             // 
             // label13
             // 
@@ -514,10 +464,6 @@
             this.label13.Size = new System.Drawing.Size(44, 15);
             this.label13.TabIndex = 36;
             this.label13.Text = "label18";
-            // 
-            // poolInformationResponseBindingSource
-            // 
-            this.poolInformationResponseBindingSource.DataSource = typeof(MultiMiner.Xgminer.Api.Responses.PoolInformationResponse);
             // 
             // label14
             // 
@@ -664,10 +610,6 @@
             // 
             this.coinInformationBindingSource.DataSource = typeof(MultiMiner.Coin.Api.CoinInformation);
             // 
-            // deviceDetailsResponseBindingSource
-            // 
-            this.deviceDetailsResponseBindingSource.DataSource = typeof(MultiMiner.Xgminer.Api.Responses.DeviceDetailsResponse);
-            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -689,11 +631,93 @@
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
             // 
+            // currentRateLabel
+            // 
+            this.currentRateLabel.AutoSize = true;
+            this.currentRateLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.currentRateLabel.Location = new System.Drawing.Point(255, 140);
+            this.currentRateLabel.Name = "currentRateLabel";
+            this.currentRateLabel.Size = new System.Drawing.Size(44, 15);
+            this.currentRateLabel.TabIndex = 44;
+            this.currentRateLabel.Text = "label12";
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label29.Location = new System.Drawing.Point(183, 140);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(50, 15);
+            this.label29.TabIndex = 43;
+            this.label29.Text = "Current:";
+            // 
+            // poolInformationResponseBindingSource
+            // 
+            this.poolInformationResponseBindingSource.DataSource = typeof(MultiMiner.Xgminer.Api.Responses.PoolInformationResponse);
+            // 
+            // averageHashrateDataGridViewTextBoxColumn
+            // 
+            this.averageHashrateDataGridViewTextBoxColumn.DataPropertyName = "AverageHashrate";
+            this.averageHashrateDataGridViewTextBoxColumn.HeaderText = "Average";
+            this.averageHashrateDataGridViewTextBoxColumn.Name = "averageHashrateDataGridViewTextBoxColumn";
+            this.averageHashrateDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // currentHashrateDataGridViewTextBoxColumn
+            // 
+            this.currentHashrateDataGridViewTextBoxColumn.DataPropertyName = "CurrentHashrate";
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.currentHashrateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            this.currentHashrateDataGridViewTextBoxColumn.HeaderText = "Current";
+            this.currentHashrateDataGridViewTextBoxColumn.Name = "currentHashrateDataGridViewTextBoxColumn";
+            this.currentHashrateDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // acceptedSharesDataGridViewTextBoxColumn
+            // 
+            this.acceptedSharesDataGridViewTextBoxColumn.DataPropertyName = "AcceptedShares";
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.acceptedSharesDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            this.acceptedSharesDataGridViewTextBoxColumn.FillWeight = 55F;
+            this.acceptedSharesDataGridViewTextBoxColumn.HeaderText = "Acc.";
+            this.acceptedSharesDataGridViewTextBoxColumn.Name = "acceptedSharesDataGridViewTextBoxColumn";
+            this.acceptedSharesDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // hardwareErrorsPercentDataGridViewTextBoxColumn
+            // 
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DataPropertyName = "HardwareErrorsPercent";
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.FillWeight = 60F;
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.HeaderText = "Errors";
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.Name = "hardwareErrorsPercentDataGridViewTextBoxColumn";
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // utilityDataGridViewTextBoxColumn
+            // 
+            this.utilityDataGridViewTextBoxColumn.DataPropertyName = "Utility";
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.utilityDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            this.utilityDataGridViewTextBoxColumn.FillWeight = 60F;
+            this.utilityDataGridViewTextBoxColumn.HeaderText = "Utility";
+            this.utilityDataGridViewTextBoxColumn.Name = "utilityDataGridViewTextBoxColumn";
+            this.utilityDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // deviceInformationResponseBindingSource
+            // 
+            this.deviceInformationResponseBindingSource.DataSource = typeof(MultiMiner.Xgminer.Api.Responses.DeviceInformationResponse);
+            // 
+            // cryptoCoinBindingSource
+            // 
+            this.cryptoCoinBindingSource.DataSource = typeof(MultiMiner.Engine.CryptoCoin);
+            // 
+            // deviceDetailsResponseBindingSource
+            // 
+            this.deviceDetailsResponseBindingSource.DataSource = typeof(MultiMiner.Xgminer.Api.Responses.DeviceDetailsResponse);
+            // 
             // DetailsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Controls.Add(this.currentRateLabel);
+            this.Controls.Add(this.label29);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.noDetailsPanel);
             this.Controls.Add(this.label27);
@@ -707,7 +731,7 @@
             this.Controls.Add(this.poolLabel);
             this.Controls.Add(this.label22);
             this.Controls.Add(this.utilityLabel);
-            this.Controls.Add(this.label25);
+            this.Controls.Add(this.utilityPrefixLabel);
             this.Controls.Add(this.errorsLabel);
             this.Controls.Add(this.label23);
             this.Controls.Add(this.rejectedLabel);
@@ -740,17 +764,17 @@
             this.Size = new System.Drawing.Size(601, 517);
             this.Load += new System.EventHandler(this.DetailsControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.workersGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceInformationResponseBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.poolInformationResponseBindingSource)).EndInit();
             this.noDetailsPanel.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.coinInformationBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceDetailsResponseBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.poolInformationResponseBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deviceInformationResponseBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deviceDetailsResponseBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -792,7 +816,7 @@
         private System.Windows.Forms.Label errorsLabel;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label utilityLabel;
-        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label utilityPrefixLabel;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label16;
@@ -816,5 +840,7 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Label deviceCountLabel;
+        private System.Windows.Forms.Label currentRateLabel;
+        private System.Windows.Forms.Label label29;
     }
 }
