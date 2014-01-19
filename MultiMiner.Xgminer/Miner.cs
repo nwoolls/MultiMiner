@@ -187,6 +187,9 @@ namespace MultiMiner.Xgminer
 
                 argument = String.Format("{0} -p {1}", argument, password);
 
+                if (!String.IsNullOrEmpty(pool.MinerFlags))
+                    argument = String.Format("{0} {1}", argument, pool.MinerFlags);
+
                 arguments = string.Format("{0} {1}", arguments, argument);
             }
 
