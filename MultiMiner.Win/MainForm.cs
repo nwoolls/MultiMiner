@@ -1417,10 +1417,10 @@ namespace MultiMiner.Win
                 EnableDesktopMode(true);
 
             SaveChanges();
-            StartMining(true);
+            StartMining();
         }
 
-        private void StartMining(bool donate = false)
+        private void StartMining()
         {
             if (!MiningConfigurationValid())
                 return;
@@ -1458,8 +1458,7 @@ namespace MultiMiner.Win
             this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
             this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
             
-            if (!donate)
-                engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
+            engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
 
             deviceStatsTimer.Enabled = true;
             minerSummaryTimer.Enabled = true;
