@@ -1708,7 +1708,6 @@ namespace MultiMiner.Win
                 double shaMultiplier = 71582788 / 1000;
                 double workUtility = (double)item.SubItems["Effective"].Tag;
                 double hashrate = workUtility * shaMultiplier;
-                CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
                 
                 item.SubItems["Effective"].Text = hashrate.ToHashrateString();
 
