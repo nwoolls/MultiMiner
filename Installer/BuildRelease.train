@@ -15,7 +15,6 @@ msbuild.updateAssemblyVersion("../MultiMiner.Xgminer/Properties/AssemblyInfo.cs"
 msbuild.updateAssemblyVersion("../MultiMiner.Xgminer.Api/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.MobileMiner.Api/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Stats.Api/Properties/AssemblyInfo.cs", appVersion);
-msbuild.updateAssemblyVersion("../MultiMiner.Remoting.Client/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Remoting.Server/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Services/Properties/AssemblyInfo.cs", appVersion);
 
@@ -32,7 +31,6 @@ msbuild.rebuild("../MultiMiner.Xgminer/MultiMiner.Xgminer.csproj", { configurati
 msbuild.rebuild("../MultiMiner.Xgminer.Api/MultiMiner.Xgminer.Api.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.MobileMiner.Api/MultiMiner.MobileMiner.Api.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Stats.Api/MultiMiner.Stats.Api.csproj", { configuration: "Release" });
-msbuild.rebuild("../MultiMiner.Remoting.Client/MultiMiner.Remoting.Client.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Remoting.Server/MultiMiner.Remoting.Server.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Services/MultiMiner.Services.csproj", { configuration: "Release" });
 
@@ -72,8 +70,6 @@ file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Stats.Api.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Stats.Api.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Remoting.Client.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Remoting.Client.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Remoting.Server.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Remoting.Server.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Services.dll", "PF/");
@@ -116,8 +112,6 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.Stats.Api.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.pdb,\
-../MultiMiner.Win/bin/Release/MultiMiner.Remoting.Client.dll,\
-../MultiMiner.Win/bin/Release/MultiMiner.Remoting.Client.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Remoting.Server.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Remoting.Server.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Services.dll,\

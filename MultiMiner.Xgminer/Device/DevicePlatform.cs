@@ -1,5 +1,8 @@
-﻿namespace MultiMiner.Xgminer
+﻿using System;
+
+namespace MultiMiner.Xgminer
 {
+    [Serializable]
     public class DevicePlatform
     {
         public string Vendor { get; set; }

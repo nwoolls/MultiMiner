@@ -57,8 +57,6 @@ Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Xgminer.Api.dll"; DestDir: "{a
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Xgminer.Api.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Xgminer.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Xgminer.pdb"; DestDir: "{app}"; Flags: ignoreversion       
-Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Remoting.Client.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Remoting.Client.pdb"; DestDir: "{app}"; Flags: ignoreversion    
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Remoting.Server.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Remoting.Server.pdb"; DestDir: "{app}"; Flags: ignoreversion    
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Services.dll"; DestDir: "{app}"; Flags: ignoreversion

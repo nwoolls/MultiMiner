@@ -297,10 +297,6 @@
       <Project>{70622816-5853-4470-9432-9acda2e96089}</Project>
       <Name>MultiMiner.MobileMiner.Api</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MultiMiner.Remoting.Client\MultiMiner.Remoting.Client.csproj">
-      <Project>{a729edf7-0b79-42e6-8fde-73df7f2b624d}</Project>
-      <Name>MultiMiner.Remoting.Client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Remoting.Server\MultiMiner.Remoting.Server.csproj">
       <Project>{db1b318b-b57f-4bf4-8e05-befe7970f64c}</Project>
       <Name>MultiMiner.Remoting.Server</Name>

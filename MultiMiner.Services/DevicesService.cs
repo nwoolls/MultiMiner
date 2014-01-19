@@ -1,11 +1,8 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Engine.Configuration;
-using MultiMiner.Utility;
 using MultiMiner.Xgminer;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MultiMiner.Services
 {

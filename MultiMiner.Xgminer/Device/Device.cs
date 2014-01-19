@@ -1,5 +1,8 @@
-﻿namespace MultiMiner.Xgminer
+﻿using System;
+
+namespace MultiMiner.Xgminer
 {
+    [Serializable]
     public class Device : DeviceDescriptor
     {
         public Device()

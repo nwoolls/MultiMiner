@@ -46,8 +46,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Stats.Api", "Mul
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Remoting.Server", "MultiMiner.Remoting.Server\MultiMiner.Remoting.Server.csproj", "{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Remoting.Client", "MultiMiner.Remoting.Client\MultiMiner.Remoting.Client.csproj", "{A729EDF7-0B79-42E6-8FDE-73DF7F2B624D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Services", "MultiMiner.Services\MultiMiner.Services.csproj", "{CFFA60EC-9486-4F45-BEF2-05C1A3D68EA6}"
 EndProject
 Global
@@ -132,10 +130,6 @@ Global
 		{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A729EDF7-0B79-42E6-8FDE-73DF7F2B624D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A729EDF7-0B79-42E6-8FDE-73DF7F2B624D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A729EDF7-0B79-42E6-8FDE-73DF7F2B624D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A729EDF7-0B79-42E6-8FDE-73DF7F2B624D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CFFA60EC-9486-4F45-BEF2-05C1A3D68EA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CFFA60EC-9486-4F45-BEF2-05C1A3D68EA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFFA60EC-9486-4F45-BEF2-05C1A3D68EA6}.Release|Any CPU.ActiveCfg = Release|Any CPU

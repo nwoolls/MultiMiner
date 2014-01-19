@@ -19,7 +19,6 @@ using MultiMiner.Win.Extensions;
 using MultiMiner.Win.Configuration;
 using MultiMiner.Coin.Api;
 using MultiMiner.Remoting.Server;
-using MultiMiner.Remoting.Client;
 using MultiMiner.Services;
 
 namespace MultiMiner.Win
@@ -72,7 +71,6 @@ namespace MultiMiner.Win
 
         //remoting
         private RemotingServer remotingServer;
-        private RemotingClient remotingClient;
         
         public MainForm()
         {
@@ -700,7 +698,11 @@ namespace MultiMiner.Win
                 {
                     using (new HourGlass())
                     {
-                        devices = new DevicesService(engineConfiguration.XgminerConfiguration).GetDevices();
+                        //DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
+                        Type remotable = typeof(DevicesService);
+                        string remoteUri = "tcp://127.0.0.1:" + RemotingServer.Port + "/" + remotable.Name;
+                        DevicesService devicesService = (DevicesService)Activator.GetObject(remotable, remoteUri);
+                        devices = devicesService.GetDevices();
                     }
                 }
                 catch (Win32Exception ex)
@@ -1078,8 +1080,6 @@ namespace MultiMiner.Win
             {
                 remotingServer = new RemotingServer();
                 remotingServer.Initialize();
-                remotingClient = new RemotingClient();
-                remotingClient.Initialize();
             }
         }
 
