@@ -136,12 +136,6 @@ namespace MultiMiner.Win
 
             UpdateChangesButtons(false);
             
-            if (!HasMinersInstalled())
-                CancelMiningOnStartup();
-
-            if (!MiningConfigurationValid())
-                CancelMiningOnStartup();
-
             //check for disowned miners before refreshing devices
             if (applicationConfiguration.DetectDisownedMiners)
                 CheckForDisownedMiners();
@@ -181,6 +175,10 @@ namespace MultiMiner.Win
 
             //do this after all other data has loaded to prevent errors when the delay is set very low (1s)
             SetupMiningOnStartup();
+            if (!HasMinersInstalled())
+                CancelMiningOnStartup();
+            if (!MiningConfigurationValid())
+                CancelMiningOnStartup();
 
             formLoaded = true;
         }
