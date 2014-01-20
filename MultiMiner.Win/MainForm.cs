@@ -1081,28 +1081,34 @@ namespace MultiMiner.Win
             using (new HourGlass())
             {
                 if (perksConfiguration.EnableRemoting)
-                {
-                    SetupDiscovery();
-
-                    remotingServer = new RemotingServer();
-                    remotingServer.Startup();
-
-                    instancesControl1.Visible = true;
-                    instancesContainer.Panel1Collapsed = false;
-                }
+                    EnableRemoting();
                 else
-                {
-                    StopDiscovery();
-
-                    if (remotingServer != null)
-                        remotingServer.Shutdown();
-
-                    instancesControl1.Visible = false;
-                    instancesContainer.Panel1Collapsed = true;
-
-                    instancesControl1.UnregisterInstances();
-                }
+                    DisableRemoting();
             }
+        }
+
+        private void DisableRemoting()
+        {
+            StopDiscovery();
+
+            if (remotingServer != null)
+                remotingServer.Shutdown();
+
+            instancesControl1.Visible = false;
+            instancesContainer.Panel1Collapsed = true;
+
+            instancesControl1.UnregisterInstances();
+        }
+
+        private void EnableRemoting()
+        {
+            SetupDiscovery();
+
+            remotingServer = new RemotingServer();
+            remotingServer.Startup();
+
+            instancesControl1.Visible = true;
+            instancesContainer.Panel1Collapsed = false;
         }
 
         private void SetupDiscovery()
@@ -2402,6 +2408,7 @@ namespace MultiMiner.Win
         {
             SaveSettings();
             StopMining();
+            DisableRemoting();
         }
 
         private void SaveSettings()
