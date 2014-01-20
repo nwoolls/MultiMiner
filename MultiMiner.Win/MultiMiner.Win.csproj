@@ -72,6 +72,12 @@
     <Compile Include="DeviceListView.Designer.cs">
       <DependentUpon>DeviceListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="InstancesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="InstancesControl.Designer.cs">
+      <DependentUpon>InstancesControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="MessageBoxFontUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -190,6 +196,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DetailsControl.resx">
       <DependentUpon>DetailsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InstancesControl.resx">
+      <DependentUpon>InstancesControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MinerSettingsForm.resx">
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>

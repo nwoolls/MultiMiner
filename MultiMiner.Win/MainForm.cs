@@ -700,10 +700,10 @@ namespace MultiMiner.Win
                 {
                     using (new HourGlass())
                     {
-                        //DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
-                        Type remotable = typeof(DevicesService);
-                        string remoteUri = "tcp://127.0.0.1:" + RemotingServer.Port + "/" + remotable.Name;
-                        DevicesService devicesService = (DevicesService)Activator.GetObject(remotable, remoteUri);
+                        DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
+                        //Type remotable = typeof(DevicesService);
+                        //string remoteUri = "tcp://127.0.0.1:" + RemotingServer.Port + "/" + remotable.Name;
+                        //DevicesService devicesService = (DevicesService)Activator.GetObject(remotable, remoteUri);
                         devices = devicesService.GetDevices();
                     }
                 }
@@ -1083,15 +1083,52 @@ namespace MultiMiner.Win
                 SetupDiscovery();
 
                 remotingServer = new RemotingServer();
-                remotingServer.Initialize();
+                remotingServer.Startup();
+
+                instancesControl1.Visible = true;
+                instancesContainer.Panel1Collapsed = false;
+            }
+            else
+            {
+                StopDiscovery();
+
+                if (remotingServer != null)
+                    remotingServer.Shutdown();
+
+                instancesControl1.Visible = false;
+                instancesContainer.Panel1Collapsed = true;
+
+                instancesControl1.UnregisterInstances();
             }
         }
 
         private void SetupDiscovery()
         {
+            StopDiscovery();
+            StartDiscovery();
+        }
+
+        private void StartDiscovery()
+        {
             listener = new Listener();
+            listener.InstanceDiscovered += HandleInstanceDiscovered;
             listener.Listen();
             Broadcaster.Broadcast();
+        }
+
+        private void StopDiscovery()
+        {
+            if (listener != null)
+                listener.Stop();
+        }
+
+        private void HandleInstanceDiscovered(object sender, InstanceDiscoveredArgs ea)
+        {
+            BeginInvoke((Action)(() =>
+            {
+                //code to update UI
+                instancesControl1.RegisterInstance(ea.IpAddress);
+            }));
         }
 
         private void RefreshExchangeRates()
@@ -4035,6 +4072,7 @@ namespace MultiMiner.Win
                 LoadListViewValuesFromCoinStats();
                 RefreshIncomeSummary();
                 AutoSizeListViewColumns();
+                SetupRemoting();
             }
             else
                 perksConfiguration.LoadPerksConfiguration(pathConfiguration.SharedConfigPath);

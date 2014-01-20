@@ -8,20 +8,38 @@ namespace MultiMiner.Discovery
 {
     public class Listener
     {
-        private readonly UdpClient udpClient = new UdpClient(Keys.Port);
+        //events
+        //delegate declarations
+        public delegate void InstanceDiscoveredHandler(object sender, InstanceDiscoveredArgs ea);
+
+        //event declarations        
+        public event InstanceDiscoveredHandler InstanceDiscovered;
+
+        private UdpClient udpClient;
 
         private readonly List<string> instances = new List<string>();
 
         public void Listen()
         {
-            udpClient.BeginReceive(Receive, new object());
+            udpClient = new UdpClient(Keys.Port);
+            udpClient.BeginReceive(Receive, null);
+        }
+
+        public void Stop()
+        {
+            if (udpClient != null)
+                udpClient.Close();
+            udpClient = null;
         }
 
         private void Receive(IAsyncResult ar)
         {
+            if (udpClient == null)
+                return;
+
             IPEndPoint ip = new IPEndPoint(IPAddress.Any, Keys.Port);
             byte[] bytes = udpClient.EndReceive(ar, ref ip);
-            Listen();
+            udpClient.BeginReceive(Receive, null);
 
             ProcessReceived(ip, bytes);
         }
@@ -36,6 +54,9 @@ namespace MultiMiner.Discovery
                 {
                     instances.Add(ipAddress);
                     Sender.Send(source.Address);
+
+                    if (InstanceDiscovered != null)
+                        InstanceDiscovered(this, new InstanceDiscoveredArgs { IpAddress = ipAddress });
                 }
             }
         }

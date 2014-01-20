@@ -10,17 +10,29 @@ namespace MultiMiner.Remoting.Server
     {
         private const int UserPortMin = 49152;
         public const int Port = UserPortMin + 1473;
+        private TcpChannel tcpChannel;
 
-        public void Initialize()
+        public void Startup()
         {
-
-            ChannelServices.RegisterChannel(new TcpChannel(Port), true);
+            tcpChannel = new TcpChannel(Port);
+            ChannelServices.RegisterChannel(tcpChannel, true);
 
             Type remotable = typeof(DevicesService);
 
             WellKnownServiceTypeEntry WKSTE = new WellKnownServiceTypeEntry(remotable, remotable.Name, WellKnownObjectMode.SingleCall);
-            RemotingConfiguration.ApplicationName = "MultiMiner.Remoting.Server";
+            if (String.IsNullOrEmpty(RemotingConfiguration.ApplicationName))
+                RemotingConfiguration.ApplicationName = "MultiMiner.Remoting.Server";
             RemotingConfiguration.RegisterWellKnownServiceType(WKSTE);
+        }
+
+        public void Shutdown()
+        {
+            if (tcpChannel != null)
+            {
+                ChannelServices.UnregisterChannel(tcpChannel);
+                tcpChannel.StopListening(null);
+                tcpChannel = null;
+            }
         }
     }
 }

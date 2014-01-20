@@ -79,6 +79,7 @@
             this.cancelStartupMiningButton = new System.Windows.Forms.Button();
             this.countdownLabel = new System.Windows.Forms.Label();
             this.advancedAreaContainer = new System.Windows.Forms.SplitContainer();
+            this.instancesContainer = new System.Windows.Forms.SplitContainer();
             this.detailsAreaContainer = new System.Windows.Forms.SplitContainer();
             this.deviceListView = new MultiMiner.Win.DeviceListView();
             this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -93,6 +94,7 @@
             this.fanColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.hashrateColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.currentRateColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.effectiveColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.incomeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.acceptedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.rejectedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -207,8 +209,8 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.poolInfoTimer = new System.Windows.Forms.Timer(this.components);
-            this.effectiveColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.poolsDownFlagTimer = new System.Windows.Forms.Timer(this.components);
+            this.instancesControl1 = new MultiMiner.Win.InstancesControl();
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -216,6 +218,9 @@
             this.advancedAreaContainer.Panel1.SuspendLayout();
             this.advancedAreaContainer.Panel2.SuspendLayout();
             this.advancedAreaContainer.SuspendLayout();
+            this.instancesContainer.Panel1.SuspendLayout();
+            this.instancesContainer.Panel2.SuspendLayout();
+            this.instancesContainer.SuspendLayout();
             this.detailsAreaContainer.Panel1.SuspendLayout();
             this.detailsAreaContainer.Panel2.SuspendLayout();
             this.detailsAreaContainer.SuspendLayout();
@@ -551,7 +556,7 @@
             // 
             // advancedAreaContainer.Panel1
             // 
-            this.advancedAreaContainer.Panel1.Controls.Add(this.detailsAreaContainer);
+            this.advancedAreaContainer.Panel1.Controls.Add(this.instancesContainer);
             // 
             // advancedAreaContainer.Panel2
             // 
@@ -562,6 +567,23 @@
             this.advancedAreaContainer.SplitterWidth = 5;
             this.advancedAreaContainer.TabIndex = 10;
             this.advancedAreaContainer.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.advancedAreaContainer_SplitterMoved);
+            // 
+            // instancesContainer
+            // 
+            this.instancesContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.instancesContainer.Location = new System.Drawing.Point(0, 0);
+            this.instancesContainer.Name = "instancesContainer";
+            // 
+            // instancesContainer.Panel1
+            // 
+            this.instancesContainer.Panel1.Controls.Add(this.instancesControl1);
+            // 
+            // instancesContainer.Panel2
+            // 
+            this.instancesContainer.Panel2.Controls.Add(this.detailsAreaContainer);
+            this.instancesContainer.Size = new System.Drawing.Size(1293, 232);
+            this.instancesContainer.SplitterDistance = 230;
+            this.instancesContainer.TabIndex = 4;
             // 
             // detailsAreaContainer
             // 
@@ -577,8 +599,8 @@
             // detailsAreaContainer.Panel2
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
-            this.detailsAreaContainer.Size = new System.Drawing.Size(1293, 232);
-            this.detailsAreaContainer.SplitterDistance = 958;
+            this.detailsAreaContainer.Size = new System.Drawing.Size(1059, 232);
+            this.detailsAreaContainer.SplitterDistance = 989;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -624,7 +646,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(958, 232);
+            this.deviceListView.Size = new System.Drawing.Size(989, 232);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -694,6 +716,11 @@
             this.currentRateColumnHeader.Text = "Current";
             this.currentRateColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
+            // effectiveColumnHeader
+            // 
+            this.effectiveColumnHeader.Text = "Effective";
+            this.effectiveColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // incomeColumnHeader
             // 
             this.incomeColumnHeader.Text = "Daily";
@@ -731,7 +758,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(332, 232);
+            this.detailsControl1.Size = new System.Drawing.Size(67, 232);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -1255,7 +1282,7 @@
             this.restartButton.AccessibleName = "Restart";
             this.restartButton.Image = global::MultiMiner.Win.Properties.Resources.computer_update;
             this.restartButton.Name = "restartButton";
-            this.restartButton.Size = new System.Drawing.Size(152, 22);
+            this.restartButton.Size = new System.Drawing.Size(110, 22);
             this.restartButton.Text = "Restart";
             this.restartButton.ToolTipText = "Restart mining";
             this.restartButton.Click += new System.EventHandler(this.restartButton_Click);
@@ -1763,14 +1790,18 @@
             this.poolInfoTimer.Interval = 30000;
             this.poolInfoTimer.Tick += new System.EventHandler(this.poolInfoTimer_Tick);
             // 
-            // effectiveColumnHeader
-            // 
-            this.effectiveColumnHeader.Text = "Effective";
-            this.effectiveColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
             // poolsDownFlagTimer
             // 
             this.poolsDownFlagTimer.Tick += new System.EventHandler(this.poolsDownFlagTimer_Tick);
+            // 
+            // instancesControl1
+            // 
+            this.instancesControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.instancesControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.instancesControl1.Location = new System.Drawing.Point(0, 0);
+            this.instancesControl1.Name = "instancesControl1";
+            this.instancesControl1.Size = new System.Drawing.Size(230, 232);
+            this.instancesControl1.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -1801,6 +1832,9 @@
             this.advancedAreaContainer.Panel1.ResumeLayout(false);
             this.advancedAreaContainer.Panel2.ResumeLayout(false);
             this.advancedAreaContainer.ResumeLayout(false);
+            this.instancesContainer.Panel1.ResumeLayout(false);
+            this.instancesContainer.Panel2.ResumeLayout(false);
+            this.instancesContainer.ResumeLayout(false);
             this.detailsAreaContainer.Panel1.ResumeLayout(false);
             this.detailsAreaContainer.Panel2.ResumeLayout(false);
             this.detailsAreaContainer.ResumeLayout(false);
@@ -2017,6 +2051,8 @@
         private System.Windows.Forms.ColumnHeader currentRateColumnHeader;
         private System.Windows.Forms.ColumnHeader effectiveColumnHeader;
         private System.Windows.Forms.Timer poolsDownFlagTimer;
+        private System.Windows.Forms.SplitContainer instancesContainer;
+        private InstancesControl instancesControl1;
     }
 }
 
