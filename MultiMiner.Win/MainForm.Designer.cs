@@ -562,6 +562,7 @@
             // 
             this.advancedAreaContainer.Panel2.Controls.Add(this.advancedTabControl);
             this.advancedAreaContainer.Panel2.Controls.Add(this.panel2);
+            this.advancedAreaContainer.Panel2Collapsed = true;
             this.advancedAreaContainer.Size = new System.Drawing.Size(1293, 375);
             this.advancedAreaContainer.SplitterDistance = 232;
             this.advancedAreaContainer.SplitterWidth = 5;
@@ -577,11 +578,12 @@
             // instancesContainer.Panel1
             // 
             this.instancesContainer.Panel1.Controls.Add(this.instancesControl1);
+            this.instancesContainer.Panel1Collapsed = true;
             // 
             // instancesContainer.Panel2
             // 
             this.instancesContainer.Panel2.Controls.Add(this.detailsAreaContainer);
-            this.instancesContainer.Size = new System.Drawing.Size(1293, 232);
+            this.instancesContainer.Size = new System.Drawing.Size(1293, 375);
             this.instancesContainer.SplitterDistance = 186;
             this.instancesContainer.TabIndex = 4;
             // 
@@ -608,8 +610,8 @@
             // detailsAreaContainer.Panel2
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
-            this.detailsAreaContainer.Size = new System.Drawing.Size(1103, 232);
-            this.detailsAreaContainer.SplitterDistance = 1035;
+            this.detailsAreaContainer.Size = new System.Drawing.Size(1293, 375);
+            this.detailsAreaContainer.SplitterDistance = 982;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -655,7 +657,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(1035, 232);
+            this.deviceListView.Size = new System.Drawing.Size(982, 375);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -767,7 +769,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(65, 232);
+            this.detailsControl1.Size = new System.Drawing.Size(308, 375);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -1321,7 +1323,7 @@
             this.coinsButton.AccessibleName = "Coins";
             this.coinsButton.Image = global::MultiMiner.Win.Properties.Resources.application_gear;
             this.coinsButton.Name = "coinsButton";
-            this.coinsButton.Size = new System.Drawing.Size(125, 22);
+            this.coinsButton.Size = new System.Drawing.Size(152, 22);
             this.coinsButton.Text = "Coins";
             this.coinsButton.ToolTipText = "Configure coins and pools";
             this.coinsButton.Click += new System.EventHandler(this.coinsButton_Click_1);
@@ -1331,7 +1333,7 @@
             this.strategiesButton.AccessibleName = "Strategies";
             this.strategiesButton.Image = global::MultiMiner.Win.Properties.Resources.application_execute;
             this.strategiesButton.Name = "strategiesButton";
-            this.strategiesButton.Size = new System.Drawing.Size(125, 22);
+            this.strategiesButton.Size = new System.Drawing.Size(152, 22);
             this.strategiesButton.Text = "Strategies";
             this.strategiesButton.ToolTipText = "Configure profitability strategies";
             this.strategiesButton.Click += new System.EventHandler(this.strategiesButton_Click_1);
@@ -1341,7 +1343,7 @@
             this.perksButton.AccessibleName = "Perks";
             this.perksButton.Image = global::MultiMiner.Win.Properties.Resources.application_add;
             this.perksButton.Name = "perksButton";
-            this.perksButton.Size = new System.Drawing.Size(125, 22);
+            this.perksButton.Size = new System.Drawing.Size(152, 22);
             this.perksButton.Text = "Perks";
             this.perksButton.Click += new System.EventHandler(this.perksToolStripMenuItem_Click);
             // 
