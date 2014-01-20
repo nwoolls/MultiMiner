@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Web.Script.Serialization;
 
 namespace MultiMiner.Discovery
 {
@@ -52,8 +53,12 @@ namespace MultiMiner.Discovery
 
         private void ProcessReceived(IPEndPoint source, byte[] bytes)
         {
-            string verb = Encoding.ASCII.GetString(bytes);
-            if (verb.Equals(Verbs.Online))
+            string jsonData = Encoding.ASCII.GetString(bytes);
+
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            Packet packet = serializer.Deserialize<Packet>(jsonData);
+
+            if (packet.Verb.Equals(Verbs.Online))
             {
                 string ipAddress = source.Address.ToString();
                 if (!instances.Contains(ipAddress))
@@ -65,7 +70,7 @@ namespace MultiMiner.Discovery
                         InstanceOnline(this, new InstanceDiscoveredArgs { IpAddress = ipAddress });
                 }
             }
-            else if (verb.Equals(Verbs.Offline))
+            else if (packet.Verb.Equals(Verbs.Offline))
             {
                 string ipAddress = source.Address.ToString();
                 if (instances.Contains(ipAddress))
