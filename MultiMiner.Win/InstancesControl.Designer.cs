@@ -61,6 +61,7 @@
             this.imageList1.Images.SetKeyName(1, "computer_network.png");
             this.imageList1.Images.SetKeyName(2, "computer_network_green.png");
             this.imageList1.Images.SetKeyName(3, "computer_network_red.png");
+            this.imageList1.Images.SetKeyName(4, "computer-user.png");
             // 
             // InstancesControl
             // 

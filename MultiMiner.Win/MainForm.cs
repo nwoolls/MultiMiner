@@ -1127,21 +1127,21 @@ namespace MultiMiner.Win
                 listener.Stop();
         }
 
-        private void HandleInstanceOnline(object sender, InstanceDiscoveredArgs ea)
+        private void HandleInstanceOnline(object sender, InstanceChangedArgs ea)
         {
             BeginInvoke((Action)(() =>
             {
                 //code to update UI
-                instancesControl1.RegisterInstance(ea.IpAddress);
+                instancesControl1.RegisterInstance(ea.Instance);
             }));
         }
 
-        private void HandleInstanceOffline(object sender, InstanceDiscoveredArgs ea)
+        private void HandleInstanceOffline(object sender, InstanceChangedArgs ea)
         {
             BeginInvoke((Action)(() =>
             {
                 //code to update UI
-                instancesControl1.UnregisterInstance(ea.IpAddress);
+                instancesControl1.UnregisterInstance(ea.Instance);
             }));
         }
 

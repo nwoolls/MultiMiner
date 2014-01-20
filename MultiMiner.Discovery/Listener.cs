@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Web.Script.Serialization;
+using System.Linq;
 
 namespace MultiMiner.Discovery
 {
@@ -11,7 +12,7 @@ namespace MultiMiner.Discovery
     {
         //events
         //delegate declarations
-        public delegate void InstanceChangedHandler(object sender, InstanceDiscoveredArgs ea);
+        public delegate void InstanceChangedHandler(object sender, InstanceChangedArgs ea);
 
         //event declarations        
         public event InstanceChangedHandler InstanceOnline;
@@ -20,7 +21,7 @@ namespace MultiMiner.Discovery
         private UdpClient udpClient;
         public bool listening { get; set; }
 
-        private readonly List<string> instances = new List<string>();
+        private readonly List<Instance> instances = new List<Instance>();
 
         public void Listen()
         {
@@ -61,24 +62,26 @@ namespace MultiMiner.Discovery
             if (packet.Verb.Equals(Verbs.Online))
             {
                 string ipAddress = source.Address.ToString();
-                if (!instances.Contains(ipAddress))
+                if (!instances.Any(i => i.IpAddress.Equals(ipAddress)))
                 {
-                    instances.Add(ipAddress);
+                    Instance instance = new Instance { IpAddress = ipAddress, MachineName = packet.MachineName };
+                    instances.Add(instance);
                     Sender.Send(source.Address, Verbs.Online);
 
                     if (InstanceOnline != null)
-                        InstanceOnline(this, new InstanceDiscoveredArgs { IpAddress = ipAddress });
+                        InstanceOnline(this, new InstanceChangedArgs { Instance = instance });
                 }
             }
             else if (packet.Verb.Equals(Verbs.Offline))
             {
                 string ipAddress = source.Address.ToString();
-                if (instances.Contains(ipAddress))
+                Instance instance = instances.SingleOrDefault(i => i.IpAddress.Equals(ipAddress));
+                if (instance != null)
                 {
-                    instances.Remove(ipAddress);
+                    instances.Remove(instance);
 
                     if (InstanceOffline != null)
-                        InstanceOffline(this, new InstanceDiscoveredArgs { IpAddress = ipAddress });
+                        InstanceOffline(this, new InstanceChangedArgs { Instance = instance });
                 }
             }
         }
