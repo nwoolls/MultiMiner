@@ -20,6 +20,7 @@ using MultiMiner.Win.Configuration;
 using MultiMiner.Coin.Api;
 using MultiMiner.Remoting.Server;
 using MultiMiner.Services;
+using MultiMiner.Discovery;
 
 namespace MultiMiner.Win
 {
@@ -71,6 +72,7 @@ namespace MultiMiner.Win
 
         //remoting
         private RemotingServer remotingServer;
+        private Listener listener;
         
         public MainForm()
         {
@@ -1078,9 +1080,18 @@ namespace MultiMiner.Win
         {
             if (perksConfiguration.EnableRemoting)
             {
+                SetupDiscovery();
+
                 remotingServer = new RemotingServer();
                 remotingServer.Initialize();
             }
+        }
+
+        private void SetupDiscovery()
+        {
+            listener = new Listener();
+            listener.Listen();
+            Broadcaster.Broadcast();
         }
 
         private void RefreshExchangeRates()
