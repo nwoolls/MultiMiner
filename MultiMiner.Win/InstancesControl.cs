@@ -18,11 +18,15 @@ namespace MultiMiner.Win
 
         public void RegisterInstance(string ipAddress)
         {
-            TreeNode node = new TreeNode(ipAddress);
+            TreeNode node = treeView1.Nodes[0].Nodes.Add(ipAddress, ipAddress);
             node.ImageIndex = 1;
             node.SelectedImageIndex = 1;
-            treeView1.Nodes[0].Nodes.Add(node);
             treeView1.Nodes[0].ExpandAll();
+        }
+
+        public void UnregisterInstance(string ipAddress)
+        {
+            treeView1.Nodes[0].Nodes.RemoveByKey(ipAddress);
         }
 
         public void UnregisterInstances()

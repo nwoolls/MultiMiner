@@ -10,34 +10,40 @@ namespace MultiMiner.Discovery
     {
         //events
         //delegate declarations
-        public delegate void InstanceDiscoveredHandler(object sender, InstanceDiscoveredArgs ea);
+        public delegate void InstanceChangedHandler(object sender, InstanceDiscoveredArgs ea);
 
         //event declarations        
-        public event InstanceDiscoveredHandler InstanceDiscovered;
+        public event InstanceChangedHandler InstanceOnline;
+        public event InstanceChangedHandler InstanceOffline;
 
         private UdpClient udpClient;
+        public bool listening { get; set; }
 
         private readonly List<string> instances = new List<string>();
 
         public void Listen()
         {
-            udpClient = new UdpClient(Keys.Port);
+            if (udpClient == null)
+                udpClient = new UdpClient(Config.Port);
             udpClient.BeginReceive(Receive, null);
+            listening = true;
         }
 
         public void Stop()
         {
+            //set first
+            listening = false;
+
             if (udpClient != null)
                 udpClient.Close();
-            udpClient = null;
         }
 
         private void Receive(IAsyncResult ar)
         {
-            if (udpClient == null)
+            if (!listening)
                 return;
 
-            IPEndPoint ip = new IPEndPoint(IPAddress.Any, Keys.Port);
+            IPEndPoint ip = new IPEndPoint(IPAddress.Any, Config.Port);
             byte[] bytes = udpClient.EndReceive(ar, ref ip);
             udpClient.BeginReceive(Receive, null);
 
@@ -46,17 +52,28 @@ namespace MultiMiner.Discovery
 
         private void ProcessReceived(IPEndPoint source, byte[] bytes)
         {
-            string message = Encoding.ASCII.GetString(bytes);
-            if (message.Equals(Keys.Identifier))
+            string verb = Encoding.ASCII.GetString(bytes);
+            if (verb.Equals(Verbs.Online))
             {
                 string ipAddress = source.Address.ToString();
                 if (!instances.Contains(ipAddress))
                 {
                     instances.Add(ipAddress);
-                    Sender.Send(source.Address);
+                    Sender.Send(source.Address, Verbs.Online);
 
-                    if (InstanceDiscovered != null)
-                        InstanceDiscovered(this, new InstanceDiscoveredArgs { IpAddress = ipAddress });
+                    if (InstanceOnline != null)
+                        InstanceOnline(this, new InstanceDiscoveredArgs { IpAddress = ipAddress });
+                }
+            }
+            else if (verb.Equals(Verbs.Offline))
+            {
+                string ipAddress = source.Address.ToString();
+                if (instances.Contains(ipAddress))
+                {
+                    instances.Remove(ipAddress);
+
+                    if (InstanceOffline != null)
+                        InstanceOffline(this, new InstanceDiscoveredArgs { IpAddress = ipAddress });
                 }
             }
         }

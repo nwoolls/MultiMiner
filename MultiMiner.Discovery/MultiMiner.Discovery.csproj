@@ -41,9 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Broadcaster.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="InstanceDiscoveredArgs.cs" />
     <Compile Include="Listener.cs" />
-    <Compile Include="Keys.cs" />
+    <Compile Include="Verbs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sender.cs" />
   </ItemGroup>

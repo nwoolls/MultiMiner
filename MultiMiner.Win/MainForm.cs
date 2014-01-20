@@ -1078,27 +1078,30 @@ namespace MultiMiner.Win
 
         private void SetupRemoting()
         {
-            if (perksConfiguration.EnableRemoting)
+            using (new HourGlass())
             {
-                SetupDiscovery();
+                if (perksConfiguration.EnableRemoting)
+                {
+                    SetupDiscovery();
 
-                remotingServer = new RemotingServer();
-                remotingServer.Startup();
+                    remotingServer = new RemotingServer();
+                    remotingServer.Startup();
 
-                instancesControl1.Visible = true;
-                instancesContainer.Panel1Collapsed = false;
-            }
-            else
-            {
-                StopDiscovery();
+                    instancesControl1.Visible = true;
+                    instancesContainer.Panel1Collapsed = false;
+                }
+                else
+                {
+                    StopDiscovery();
 
-                if (remotingServer != null)
-                    remotingServer.Shutdown();
+                    if (remotingServer != null)
+                        remotingServer.Shutdown();
 
-                instancesControl1.Visible = false;
-                instancesContainer.Panel1Collapsed = true;
+                    instancesControl1.Visible = false;
+                    instancesContainer.Panel1Collapsed = true;
 
-                instancesControl1.UnregisterInstances();
+                    instancesControl1.UnregisterInstances();
+                }
             }
         }
 
@@ -1111,23 +1114,34 @@ namespace MultiMiner.Win
         private void StartDiscovery()
         {
             listener = new Listener();
-            listener.InstanceDiscovered += HandleInstanceDiscovered;
+            listener.InstanceOnline += HandleInstanceOnline;
+            listener.InstanceOffline += HandleInstanceOffline;
             listener.Listen();
-            Broadcaster.Broadcast();
+            Broadcaster.Broadcast(Verbs.Online);
         }
 
         private void StopDiscovery()
         {
+            Broadcaster.Broadcast(Verbs.Offline);
             if (listener != null)
                 listener.Stop();
         }
 
-        private void HandleInstanceDiscovered(object sender, InstanceDiscoveredArgs ea)
+        private void HandleInstanceOnline(object sender, InstanceDiscoveredArgs ea)
         {
             BeginInvoke((Action)(() =>
             {
                 //code to update UI
                 instancesControl1.RegisterInstance(ea.IpAddress);
+            }));
+        }
+
+        private void HandleInstanceOffline(object sender, InstanceDiscoveredArgs ea)
+        {
+            BeginInvoke((Action)(() =>
+            {
+                //code to update UI
+                instancesControl1.UnregisterInstance(ea.IpAddress);
             }));
         }
 
