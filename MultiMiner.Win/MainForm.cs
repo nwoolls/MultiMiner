@@ -27,6 +27,7 @@ namespace MultiMiner.Win
 {
     public partial class MainForm : MessageBoxFontForm
     {
+        #region Private fields
         //API contexts
         private IApiContext coinApiContext = new CoinChoose.Api.ApiContext();
         private readonly List<DeviceInformationResponse> allDeviceInformation = new List<DeviceInformationResponse>();
@@ -77,7 +78,9 @@ namespace MultiMiner.Win
 
         //view models
         private MainFormViewModel mainFormViewModel = new MainFormViewModel();
-        
+        #endregion
+
+        #region Constructor
         public MainForm()
         {
             InitializeComponent();
@@ -87,7 +90,9 @@ namespace MultiMiner.Win
             if (applicationConfiguration.StartupMinimized)
                 this.WindowState = FormWindowState.Minimized;
         }
+        #endregion
 
+        #region View life-cycle
         private void MainForm_Load(object sender, EventArgs e)
         {
             if (applicationConfiguration.StartupMinimized && applicationConfiguration.MinimizeToNotificationArea)
@@ -189,62 +194,25 @@ namespace MultiMiner.Win
             formLoaded = true;
         }
 
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            deviceListView.Focus();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveSettings();
+            StopMining();
+            DisableRemoting();
+        }
+        #endregion
+
+        #region View initialization
         private void PositionAdvancedAreaCloseButton()
         {
             closeApiButton.Parent = advancedAreaContainer.Panel2;
             closeApiButton.BringToFront();
             panel2.Visible = false;
-        }
-
-        private void ShowStartupTips()
-        {
-            string tip = null;
-
-            switch (applicationConfiguration.TipsShown)
-            {
-                case 0:
-                    tip = "Tip: right-click device names to change coins";
-                    notificationsControl.AddNotification(tip, tip, () =>
-                    {
-                        if (deviceListView.Items.Count > 0)
-                        {
-                            string currentCoin = GetCurrentlySelectedCoinName();
-                            CheckCoinInPopupMenu(currentCoin);
-
-                            ListViewItem firstItem = deviceListView.Items[0];
-                            Point popupPosition = firstItem.Position;
-                            popupPosition.Offset(14, 6);
-                            coinPopupMenu.Show(deviceListView, popupPosition);
-                        }
-                    }, "");
-                    applicationConfiguration.TipsShown++;
-                    break;
-                case 1:
-                    tip = "Tip: right-click the main window for common tasks";
-                    notificationsControl.AddNotification(tip, tip, () =>
-                    {
-                            deviceListContextMenu.Show(deviceListView, 150, 100);
-                    }, "");
-                    applicationConfiguration.TipsShown++;
-                    break;
-                case 2:
-                    tip = "Tip: restart mining after changing any settings";
-                    notificationsControl.AddNotification(tip, tip, () =>
-                    {
-                    }, "");
-                    applicationConfiguration.TipsShown++;
-                    break;
-                case 3:
-                    tip = "Tip: enabling perks gives back to the author";
-                    notificationsControl.AddNotification(tip, tip, () =>
-                    {
-                        ConfigurePerks();
-                    }, "");
-                    applicationConfiguration.TipsShown++;
-                    break;
-            }
-
-            applicationConfiguration.SaveApplicationConfiguration();
         }
 
         private void SetupLookAndFeel()
@@ -272,17 +240,6 @@ namespace MultiMiner.Win
             }
         }
 
-        private void SetupMiningOnStartup()
-        {
-            if (applicationConfiguration.StartMiningOnStartup)
-            {
-                //minimum 1s delay for mining on startup - 0 not allowed
-                startupMiningCountdownSeconds = Math.Max(1, applicationConfiguration.StartupMiningDelay);
-                startupMiningCountdownTimer.Enabled = true;
-                RefreshCountdownLabel();
-            }
-        }
-
         private void SetupAccessibleMenu()
         {
             if (accessibleMenu.Visible != applicationConfiguration.UseAccessibleMenu)
@@ -292,177 +249,12 @@ namespace MultiMiner.Win
             }
         }
 
-        //required for GPU mining
-        private void SetGpuEnvironmentVariables()
-        {
-            if (applicationConfiguration.SetGpuEnvironmentVariables)
-            {
-                using (new HourGlass())
-                {
-                    const string GpuMaxAllocPercent = "GPU_MAX_ALLOC_PERCENT";
-                    const string GpuUseSyncObjects = "GPU_USE_SYNC_OBJECTS";
-
-                    SetEnvironmentVariableIfNotSet(GpuMaxAllocPercent, "100");
-                    SetEnvironmentVariableIfNotSet(GpuUseSyncObjects, "1");
-                }
-            }
-        }
-
-        private static void SetEnvironmentVariableIfNotSet(string name, string value)
-        {
-            string currentValue = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.User);
-            if (String.IsNullOrEmpty(currentValue))
-                Environment.SetEnvironmentVariable(name, value, EnvironmentVariableTarget.User);
-        }
-
-        private void FetchInitialCoinStats()
-        {
-            engineConfiguration.LoadStrategyConfiguration(pathConfiguration.SharedConfigPath); //needed before refreshing coins
-            engineConfiguration.LoadCoinConfigurations(pathConfiguration.SharedConfigPath); //needed before refreshing coins
-            //already done in ctor applicationConfiguration.LoadApplicationConfiguration(); //needed before refreshing coins
-            SetupNotificationsControl(); //needed before refreshing coins
-            SetupCoinApi(); //so we target the correct API
-            RefreshCoinStats();
-        }
-
-        private void SetupMiningEngineEvents()
-        {
-            miningEngine.LogProcessClose += LogProcessClose;
-            miningEngine.LogProcessLaunch += LogProcessLaunch;
-            miningEngine.ProcessLaunchFailed += ProcessLaunchFailed;
-            miningEngine.ProcessAuthenticationFailed += ProcessAuthenticationFailed;
-        }
-
         private void SetupInitialButtonVisibility()
         {
             saveButton.Visible = false;
             cancelButton.Visible = false;
             saveSeparator.Visible = false;
             stopButton.Visible = false;
-        }
-
-        private void LogProcessLaunch(object sender, LogLaunchArgs ea)
-        {
-            logLaunchArgsBindingSource.Position = logLaunchArgsBindingSource.Add(ea);
-
-            while (logLaunchArgsBindingSource.Count > 1000)
-                logLaunchArgsBindingSource.RemoveAt(0);
-
-            LogProcessLaunchToFile(ea);
-        }
-
-        private void LogProcessLaunchToFile(LogLaunchArgs ea)
-        {
-            const string logFileName = "ProcessLog.json";
-            LogObjectToFile(ea, logFileName);
-        }
-
-        private void LogObjectToFile(object objectToLog, string logFileName)
-        {
-            string logDirectory = GetLogDirectory();
-            string logFilePath = Path.Combine(logDirectory, logFileName);
-            ObjectLogger logger = new ObjectLogger(applicationConfiguration.RollOverLogFiles, applicationConfiguration.OldLogFileSets);
-            logger.LogObjectToFile(objectToLog, logFilePath);
-        }
-
-        private string GetLogDirectory()
-        {
-            string logDirectory = ApplicationPaths.AppDataPath();
-            if (!String.IsNullOrEmpty(applicationConfiguration.LogFilePath))
-            {
-                Directory.CreateDirectory(applicationConfiguration.LogFilePath);
-                if (Directory.Exists(applicationConfiguration.LogFilePath))
-                    logDirectory = applicationConfiguration.LogFilePath;
-            }
-            return logDirectory;
-        }
-
-        private void LogProcessClose(object sender, LogProcessCloseArgs ea)
-        {
-            CheckAndAddStratumDeviceIndex(ea);
-
-            logProcessCloseArgsBindingSource.Position = logProcessCloseArgsBindingSource.Add(ea);
-
-            while (logProcessCloseArgsBindingSource.Count > MaxHistoryOnScreen)
-                logProcessCloseArgsBindingSource.RemoveAt(0);
-
-            LogProcessCloseToFile(ea);
-        }
-
-        private void CheckAndAddStratumDeviceIndex(LogProcessCloseArgs ea)
-        {
-            //check and include the index of the virtual stratum proxy "device"
-            if (ea.MinerConfiguration.StratumProxy)
-            {
-                Device proxyDevice = devices.SingleOrDefault(d => d.Kind == DeviceKind.PXY);
-                if (proxyDevice != null)
-                    ea.DeviceDescriptors.Add(proxyDevice);
-            }
-        }
-
-        private void LogProcessCloseToFile(LogProcessCloseArgs ea)
-        {
-            const string logFileName = "MiningLog.json";
-            //log an anonymous type so MinerConfiguration is ommitted
-            LogObjectToFile(
-                new
-                {
-                    StartDate = ea.StartDate,
-                    EndDate = ea.EndDate,
-                    CoinName = ea.CoinName,
-                    CoinSymbol = ea.CoinSymbol,
-                    StartPrice = ea.StartPrice,
-                    EndPrice = ea.EndPrice,
-                    AcceptedShares = ea.AcceptedShares,
-                    DeviceDescriptors = ea.DeviceDescriptors
-                }, logFileName);
-        }
-
-        private const int MaxHistoryOnScreen = 1000;
-        private void LoadPreviousHistory()
-        {
-            const string logFileName = "MiningLog.json";
-            string logDirectory = ApplicationPaths.AppDataPath();
-            if (Directory.Exists(applicationConfiguration.LogFilePath))
-                logDirectory = applicationConfiguration.LogFilePath;
-            string logFilePath = Path.Combine(logDirectory, logFileName);
-            if (File.Exists(logFilePath))
-            {
-                try
-                {
-                    List<LogProcessCloseArgs> loadLogFile = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
-                    loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - MaxHistoryOnScreen));
-                    logCloseEntries.AddRange(loadLogFile);
-                }
-                catch (ArgumentException ex)
-                {
-                    //old MiningLog.json file - wrong format serialized
-                    //MiningLog.json rolls over so we will eventually be able to
-                    //load the previous log file
-                    return;
-                }
-            }
-        }
-
-        private void UpdateChangesButtons(bool hasChanges)
-        {
-            saveButton.Visible = hasChanges;
-            cancelButton.Visible = hasChanges;
-            saveSeparator.Visible = hasChanges;
-
-            saveButton.Enabled = hasChanges;
-            cancelButton.Enabled = hasChanges;
-
-            //accessible menu
-            saveToolStripMenuItem.Enabled = hasChanges;
-            cancelToolStripMenuItem.Enabled = hasChanges;
-        }
-
-        private void SetupAutoUpdates()
-        {
-            updateCheckTimer.Interval = 3600000; //1h
-            updateCheckTimer.Enabled = true;
-            CheckForUpdates();
         }
 
         private void SetupNotificationsControl()
@@ -496,187 +288,6 @@ namespace MultiMiner.Win
             notificationsControl.Top = parent.Height - notificationsControl.Height - ControlOffset;
         }
 
-        private void notificationsControl1_NotificationAdded(string text)
-        {
-            LogNotificationToFile(text);
-            SubmitMobileMinerNotification(text);
-        }
-
-        private void LogNotificationToFile(string text)
-        {
-            const string logFileName = "NotificationLog.json";
-            LogObjectToFile(new 
-            {
-                DateTime = DateTime.Now,
-                Notification = text
-            }, logFileName);
-        }
-
-        private void ProcessLaunchFailed(object sender, LaunchFailedArgs ea)
-        {
-            this.BeginInvoke((Action)(() =>
-            {
-                if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
-                {
-                    string notificationReason = String.Empty;
-
-                    int enabledConfigurationCount = engineConfiguration.CoinConfigurations.Count(c => c.Enabled);
-                    
-                    //only disable the configuration if there are others enabled - otherwise left idling
-                    if (enabledConfigurationCount > 1)
-                    {
-
-                        //if auto mining is enabled, flag pools down in the coin configuration and display a notification
-                        CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(config => config.Coin.Name.Equals(ea.CoinName, StringComparison.OrdinalIgnoreCase));
-                        coinConfiguration.PoolsDown = true;
-                        engineConfiguration.SaveCoinConfigurations();
-
-                        //if no enabled configurations, stop mining
-                        int enabledConfigurations = engineConfiguration.CoinConfigurations.Count(config => config.Enabled && !config.PoolsDown);
-                        if (enabledConfigurations == 0)
-                            StopMining();
-                        else
-                            //if there are enabled configurations, apply mining strategy
-                            CheckAndApplyMiningStrategy();
-
-                        notificationReason = String.Format("Configuration for {0} disabled - all pools down", ea.CoinName);
-                    }
-                    else
-                    {
-                        //otherwise just notify - relaunching option will take care of the rest
-                        notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
-                    }
-
-                    notificationsControl.AddNotification(notificationReason, notificationReason, () =>
-                    {
-                        ConfigureCoins();
-                    }, "");
-                }
-                else
-                {
-                    if (!applicationConfiguration.RestartCrashedMiners)
-                    {     
-                        //if we are not restarting miners, display a dialog
-                        MessageBox.Show(ea.Reason, "Launching Miner Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    else
-                    {
-                        //just notify - relaunching option will take care of the rest
-                        string notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
-                        notificationsControl.AddNotification(notificationReason, notificationReason, () =>
-                        {
-                            ConfigureCoins();
-                        }, "");
-                    }
-                }
-            }));
-        }
-
-        private void ProcessAuthenticationFailed(object sender, AuthenticationFailedArgs ea)
-        {
-            this.BeginInvoke((Action)(() =>
-            {
-                //code to update UI
-                notificationsControl.AddNotification(ea.Reason, ea.Reason, () =>
-                        {
-                            ConfigureCoins();
-                        }, "");
-            }));
-        }
-
-        private void CheckAndShowGettingStarted()
-        {
-            //only show if there's no settings yet
-            if (File.Exists(applicationConfiguration.ApplicationConfigurationFileName()))
-                return;
-
-            WizardForm wizardForm = new WizardForm(this.knownCoins);
-            DialogResult dialogResult = wizardForm.ShowDialog();
-            if (dialogResult == System.Windows.Forms.DialogResult.OK)
-            {
-                EngineConfiguration newEngineConfiguration;
-                ApplicationConfiguration newApplicationConfiguration;
-                PerksConfiguration newPerksConfiguration;
-                wizardForm.CreateConfigurations(out newEngineConfiguration, out newApplicationConfiguration, out newPerksConfiguration);
-                
-                this.engineConfiguration = newEngineConfiguration;
-                this.applicationConfiguration = newApplicationConfiguration;
-                this.perksConfiguration = newPerksConfiguration;
-
-                this.engineConfiguration.SaveCoinConfigurations();
-                this.engineConfiguration.SaveMinerConfiguration();
-                this.applicationConfiguration.SaveApplicationConfiguration();
-                this.perksConfiguration.SavePerksConfiguration();
-
-                SetBriefMode(applicationConfiguration.BriefUserInterface);
-            }
-        }
-
-        private static void CheckAndDownloadMiners()
-        {
-            if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
-                return; //can't auto download binaries on Linux
-
-            bool hasMiners = HasMinersInstalled();
-
-            if (!hasMiners)
-                InstallMiner();
-        }
-        
-        private static void InstallMiner()
-        {
-            string minerName = MinerPath.GetMinerName();
-
-            ProgressForm progressForm = new ProgressForm(String.Format("Downloading and installing {0} from {1}", minerName, Xgminer.Installer.GetMinerDownloadRoot()));
-            progressForm.Show();
-
-            //for Mono - show the UI
-            Application.DoEvents();
-            Thread.Sleep(25); 
-            Application.DoEvents();
-            try
-            {
-                string minerPath = Path.Combine("Miners", minerName);
-                string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
-                Xgminer.Installer.InstallMiner(destinationFolder);
-            }
-            finally
-            {
-                progressForm.Close();
-            }
-        }
-
-        private static bool HasMinersInstalled()
-        {
-            return MinerIsInstalled();
-        }
-        
-        private static bool MinerIsInstalled()
-        {
-            string path = MinerPath.GetPathToInstalledMiner();
-            return File.Exists(path);
-        }
-
-        private void CheckForDisownedMiners()
-        {
-            string minerName = MinerPath.GetMinerName();
-
-            List<Process> disownedMiners = Process.GetProcessesByName(minerName).ToList();
-
-            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
-                disownedMiners.Remove(minerProcess.Process);
-
-            if (disownedMiners.Count > 0)
-            {
-                DialogResult messageBoxResult = MessageBox.Show("MultiMiner has detected running miners that it does not own. Would you like to kill them?", 
-                    "Disowned Miners Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (messageBoxResult == System.Windows.Forms.DialogResult.Yes)
-                    foreach (Process disownedMiner in disownedMiners)
-                        MinerProcess.KillProcess(disownedMiner);
-            }
-        }
-
         private void SetupGridColumns()
         {
             //format prices in the History grid
@@ -694,74 +305,20 @@ namespace MultiMiner.Win
             coinChooseSuffixLabel.Left = coinApiLinkLabel.Left + coinApiLinkLabel.Width;
         }
 
-        private bool updatingListView = false;
-        private void RefreshDevices()
+        private void SetupStatusBarLabelLayouts()
         {
-            updatingListView = true;
-            try
-            {
-                try
-                {
-                    using (new HourGlass())
-                    {
-                        DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
-                        //Type remotable = typeof(DevicesService);
-                        //string remoteUri = "tcp://127.0.0.1:" + RemotingServer.Port + "/" + remotable.Name;
-                        //DevicesService devicesService = (DevicesService)Activator.GetObject(remotable, remoteUri);
-                        devices = devicesService.GetDevices();
+            sha256RateLabel.AutoSize = true;
+            sha256RateLabel.Spring = true;
 
-                        ApplyDevicesToViewModel();
-                        ApplyDeviceConfigurationsToViewModel();
-                        ApplyCoinInformationToViewModel();
-                    }
-                }
-                catch (Win32Exception ex)
-                {
-                    //miner not installed/not launched
-                    devices = new List<Device>(); //dummy empty device list
+            scryptRateLabel.AutoSize = true;
+            scryptRateLabel.Padding = new Padding(12, 0, 0, 0);
 
-                    ShowNotInstalledMinerWarning();
-                }
-
-                if ((devices.Count > 0) && (engineConfiguration.DeviceConfigurations.Count == 0) &&
-                    (engineConfiguration.CoinConfigurations.Count == 1))
-                {
-                    //setup devices for a brand new user
-                    ConfigureDevicesForNewUser();
-                }
-
-                //first try to match up devices without configurations with configurations without devices
-                //could happen if, for instance, a COM port changes for a device
-                FixOrphanedDeviceConfigurations();
-
-                //there needs to be a device config for each device
-                AddMissingDeviceConfigurations();
-                //but no configurations for devices that have gone missing
-                RemoveExcessDeviceConfigurations();
-                //remove any duplicate configurations
-                engineConfiguration.RemoveDuplicateDeviceConfigurations();
-
-                PopulateListViewFromDevices();
-                RefreshListViewFromViewModel();
-                RefreshDetailsAreaIfVisible();
-
-                //clean up mappings from previous device list
-                deviceDetailsMapping.Clear();
-
-                //auto-size columns
-                AutoSizeListViewColumns();
-
-                deviceTotalLabel.Text = String.Format("{0} device(s)", devices.Count);
-
-                //it may not be possible to mine after discovering devices
-                UpdateMiningButtons();
-            }
-            finally
-            {
-                updatingListView = false;
-            }
+            deviceTotalLabel.AutoSize = true;
+            deviceTotalLabel.Padding = new Padding(12, 0, 0, 0);
         }
+        #endregion
 
+        #region Model / ViewModel behavior
         private void ApplyDevicesToViewModel()
         {
             //clear to ensure we have a 1-to-1 with listview items
@@ -769,7 +326,7 @@ namespace MultiMiner.Win
 
             mainFormViewModel.ApplyDeviceModels(devices);
         }
-        
+
         private void ApplyDeviceConfigurationsToViewModel()
         {
             foreach (DeviceViewModel deviceViewModel in mainFormViewModel.Devices)
@@ -803,115 +360,47 @@ namespace MultiMiner.Win
                 mainFormViewModel.ApplyCoinInformationModels(coinApiInformation);
         }
 
-        //try to match up devices without configurations with configurations without devices
-        //could happen if, for instance, a COM port changes for a device
-        private void FixOrphanedDeviceConfigurations()
+        private int GetDeviceIndexForDeviceDetails(DeviceDetailsResponse deviceDetails)
         {
-            foreach (Device device in devices)
+            for (int i = 0; i < devices.Count; i++)
             {
-                DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations.FirstOrDefault(
-                    c => (c.Equals(device)));
+                Device device = devices[i];
 
-                //if there is no configuration specifically for the device
-                if (existingConfiguration == null)
+                if (device.Driver.Equals(deviceDetails.Driver, StringComparison.OrdinalIgnoreCase)
+                    &&
+                    (
+                    //serial == serial && path == path (serial may not be unique)
+                    (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
+                      && !String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
+
+                    //serial == serial && path == String.Empty - WinUSB/LibUSB has no path, but has a serial #
+                    || (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
+                      && String.IsNullOrEmpty(device.Path) && String.IsNullOrEmpty(deviceDetails.DevicePath))
+
+                    //path == path
+                    || (!String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
+
+                    //proxy == proxy
+                    || (device.Driver.Equals("proxy", StringComparison.OrdinalIgnoreCase))
+
+                    //opencl = opencl && ID = RelativeIndex
+                    || (device.Driver.Equals("opencl", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+
+                    //cpu = cpu && ID = RelativeIndex
+                    || (device.Driver.Equals("cpu", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+
+                    ))
                 {
-                    //find a configuration that uses the same driver and that, itself, has no specifically matching device
-                    DeviceConfiguration orphanedConfiguration = engineConfiguration.DeviceConfigurations.FirstOrDefault(
-                        c => c.Driver.Equals(device.Driver, StringComparison.OrdinalIgnoreCase) &&
-                                !devices.Exists(d => d.Equals(c)));
-
-                    if (orphanedConfiguration != null)
-                        orphanedConfiguration.Assign(device);
+                    return i;
                 }
             }
+
+            return -1;
         }
+        #endregion
 
-        private const int maxColumnWidth = 195;
-        //optimized for speed        
-        private static void SetColumWidth(ColumnHeader column, int width)
-        {
-            if ((width < 0) || (column.Width != width))
-                column.Width = width;
-            if (column.Width > maxColumnWidth)
-                column.Width = maxColumnWidth;
-        }
-
-        private void AutoSizeListViewColumns()
-        {
-            if (deviceListView.View != View.Details)
-                return;
-
-            deviceListView.BeginUpdate();
-            try
-            {
-
-                if (briefMode)
-                {
-                    SetColumWidth(nameColumnHeader, -2);
-                    SetColumWidth(driverColumnHeader, 0);
-                    SetColumWidth(coinColumnHeader, -2);
-                    SetColumWidth(difficultyColumnHeader, 0);
-                    SetColumWidth(priceColumnHeader, 0);
-                    SetColumWidth(profitabilityColumnHeader, -2);
-                    SetColumWidth(poolColumnHeader, 0);
-
-                    if (ListViewColumnHasValues("Temp"))
-                        SetColumWidth(tempColumnHeader, -2);
-                    else if (tempColumnHeader.Width != 0)
-                        SetColumWidth(tempColumnHeader, 0);
-
-                    SetColumWidth(hashrateColumnHeader, -2);
-                    SetColumWidth(currentRateColumnHeader, 0);
-                    SetColumWidth(acceptedColumnHeader, 0);
-                    SetColumWidth(rejectedColumnHeader, 0);
-                    SetColumWidth(errorsColumnHeader, 0);
-                    SetColumWidth(utilityColumnHeader, 0);
-                    SetColumWidth(intensityColumnHeader, 0);
-                    SetColumWidth(fanColumnHeader, 0);
-                    SetColumWidth(incomeColumnHeader, 0);
-                    SetColumWidth(exchangeColumnHeader, 0);
-                }
-                else
-                {
-                    for (int i = 0; i < deviceListView.Columns.Count; i++)
-                    {
-                        ColumnHeader column = deviceListView.Columns[i];
-
-                        if (applicationConfiguration.HiddenColumns.Contains(column.Text))
-                        {
-                            SetColumWidth(column, 0);
-                            continue;
-                        }
-
-                        bool hasValue = false;
-                        if (i == 0)
-                            hasValue = true;
-                        else
-                            hasValue = ListViewColumnHasValues(column.Text);
-
-                        if (hasValue)
-                            SetColumWidth(column, -2);
-                        else
-                            SetColumWidth(column, 0);
-                    }
-                }
-            }
-            finally
-            {
-                deviceListView.EndUpdate();
-            }
-           
-        }
-        
-        private bool ListViewColumnHasValues(string headerText)
-        {
-            foreach (ListViewItem item in deviceListView.Items)
-                if (!String.IsNullOrEmpty(item.SubItems[headerText].Text))
-                    return true;
-            return false;
-        }
-
-        private void PopulateListViewFromDevices()
+        #region View / ViewModel behavior
+        private void PopulateListViewFromViewModel()
         {
             deviceListView.BeginUpdate();
             try
@@ -943,16 +432,16 @@ namespace MultiMiner.Win
                             listViewItem.ImageIndex = 2;
                             break;
                     }
-                    
+
                     listViewItem.Text = deviceViewModel.Name;
 
                     //start at i = 1, skip the first column
                     for (int i = 1; i < deviceListView.Columns.Count; i++)
                     {
-                        listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, String.Empty) 
-                        { 
-                            Name = deviceListView.Columns[i].Text, 
-                            ForeColor = SystemColors.WindowFrame 
+                        listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, String.Empty)
+                        {
+                            Name = deviceListView.Columns[i].Text,
+                            ForeColor = SystemColors.WindowFrame
                         });
                     }
 
@@ -973,9 +462,9 @@ namespace MultiMiner.Win
                 deviceListView.EndUpdate();
             }
         }
-        
+
         private void RefreshListViewFromViewModel()
-        {        
+        {
             deviceListView.BeginUpdate();
             try
             {
@@ -1005,7 +494,7 @@ namespace MultiMiner.Win
                     else
                     {
                         listViewItem.ForeColor = SystemColors.GrayText;
-                        listViewItem.UseItemStyleForSubItems = true; 
+                        listViewItem.UseItemStyleForSubItems = true;
                     }
 
                     /* Coin info
@@ -1105,7 +594,7 @@ namespace MultiMiner.Win
                     PopulateIncomeForListViewItem(listViewItem);
 
                 }
-                
+
 
             }
             finally
@@ -1113,343 +602,9 @@ namespace MultiMiner.Win
                 deviceListView.EndUpdate();
             }
         }
+        #endregion
 
-        //each device needs to have a DeviceConfiguration
-        //this will remove any access ones after populating devices
-        //for instance if the user starts up the app with missing devices
-        private void RemoveExcessDeviceConfigurations()
-        {
-            engineConfiguration.DeviceConfigurations.RemoveAll(c => !devices.Exists(d => d.Equals(c)));
-        }
-
-        //each device needs to have a DeviceConfiguration
-        //this will add any missing ones after populating devices
-        //for instance if the user starts up the app with a new device
-        private void AddMissingDeviceConfigurations()
-        {
-            foreach (Device device in devices)
-            {
-                DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations.FirstOrDefault(
-                    c => (c.Equals(device)));
-                if (existingConfiguration == null)
-                {
-                    DeviceConfiguration newConfiguration = new DeviceConfiguration();
-
-                    newConfiguration.Assign(device);
-
-                    //if the user has BTC configured, default to that
-                    string btcSymbol = "BTC";
-                    bool hasBtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.Coin.Symbol.Equals(btcSymbol, StringComparison.OrdinalIgnoreCase));
-                    if (hasBtcConfigured)
-                        newConfiguration.CoinSymbol = btcSymbol;
-
-                    newConfiguration.Enabled = true;
-                    engineConfiguration.DeviceConfigurations.Add(newConfiguration);
-                }
-            }
-        }
-        
-        private void ShowNotInstalledMinerWarning()
-        {
-            bool showWarning = true;
-
-            if (OSVersionPlatform.GetConcretePlatform() != PlatformID.Unix)
-            {
-                string minerName = MinerPath.GetMinerName();
-
-                DialogResult dialogResult = MessageBox.Show(String.Format(
-                    "No copy of bfgminer was detected. " +
-                    "Would you like to download and install {0} now?", minerName), "Miner Not Found",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-
-                if (dialogResult == System.Windows.Forms.DialogResult.Yes)
-                {
-                    InstallMiner();
-                    RefreshDevices();
-                    showWarning = false;
-                }
-            }
-
-            if (showWarning)
-                MessageBox.Show("No copy of bfgminer was detected. Please go to https://github.com/nwoolls/multiminer for instructions on installing bfgminer.",
-                        "Miner Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
-
-        private void ConfigureDevicesForNewUser()
-        {
-            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single();
-
-            for (int i = 0; i < devices.Count; i++)
-            {
-                DeviceConfiguration deviceConfiguration = new DeviceConfiguration() 
-                { 
-                    CoinSymbol = coinConfiguration.Coin.Symbol, 
-                    Enabled = true 
-                };
-
-                deviceConfiguration.Assign(devices[i]);
-                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
-            }
-
-            engineConfiguration.SaveDeviceConfigurations();
-            UpdateMiningButtons();
-        }
-        
-        private void LoadSettings()
-        {
-            engineConfiguration.LoadAllConfigurations(pathConfiguration.SharedConfigPath);
-
-            SetupCoinApi();
-
-            RefreshStrategiesLabel();
-            RefreshStrategiesCountdown();
-
-            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
-
-            //already done in ctor //applicationConfiguration.LoadApplicationConfiguration();
-
-            perksConfiguration.LoadPerksConfiguration(pathConfiguration.SharedConfigPath);
-            exchangeRateTimer.Interval = 1000 * 60 * 30; //30 minutes
-            exchangeRateTimer.Enabled = perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates;
-            RefreshExchangeRates();
-
-            SetListViewStyle(applicationConfiguration.ListViewStyle);
-
-            //load brief mode first, then location
-            SetBriefMode(applicationConfiguration.BriefUserInterface);
-
-            //now location so we pick up the customizations
-            if ((applicationConfiguration.AppPosition != null) &&
-                (applicationConfiguration.AppPosition.Height > 0) &&
-                (applicationConfiguration.AppPosition.Width > 9))
-            {
-                this.Location = new Point(applicationConfiguration.AppPosition.Left, applicationConfiguration.AppPosition.Top);
-                this.Size = new Size(applicationConfiguration.AppPosition.Width, applicationConfiguration.AppPosition.Height);                
-            }
-
-            if (applicationConfiguration.Maximized)
-                this.WindowState = FormWindowState.Maximized;
-
-            if (applicationConfiguration.LogAreaVisible)
-            {
-                ShowApiMonitor();
-                if ((applicationConfiguration.LogAreaTabIndex >= 0) &&
-                    (applicationConfiguration.LogAreaTabIndex < advancedTabControl.TabCount))
-                    advancedTabControl.SelectedIndex = applicationConfiguration.LogAreaTabIndex;
-                if ((applicationConfiguration.LogAreaDistance > 0) &&
-                    //can't set splitter distance with the app minimized :( InvalidOperationException
-                    !applicationConfiguration.StartupMinimized)
-                    advancedAreaContainer.SplitterDistance = applicationConfiguration.LogAreaDistance;
-            }
-            else
-                HideAdvancedPanel();
-            
-            crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
-
-            SetupCoinStatsTimer();
-
-            idleTimer.Interval = 15 * 1000; //check every 15s
-            idleTimer.Enabled = true;
-
-            poolsDownFlagTimer.Interval = 1000 * 60 * 60; //1 hour
-            poolsDownFlagTimer.Enabled = true;
-            ClearPoolsFlaggedDown();
-
-            //allow resize/maximize/etc to render
-            Application.DoEvents();
-
-            this.settingsLoaded = true;
-        }
-
-        private void SetupRemoting()
-        {
-            using (new HourGlass())
-            {
-                if (perksConfiguration.EnableRemoting)
-                    EnableRemoting();
-                else
-                    DisableRemoting();
-            }
-        }
-
-        private void DisableRemoting()
-        {
-            StopDiscovery();
-
-            if (remotingServer != null)
-                remotingServer.Shutdown();
-
-            instancesControl1.Visible = false;
-            instancesContainer.Panel1Collapsed = true;
-
-            instancesControl1.UnregisterInstances();
-        }
-
-        private void EnableRemoting()
-        {
-            SetupDiscovery();
-
-            remotingServer = new RemotingServer();
-            remotingServer.Startup();
-
-            instancesControl1.Visible = true;
-            instancesContainer.Panel1Collapsed = false;
-        }
-
-        private void SetupDiscovery()
-        {
-            StopDiscovery();
-            StartDiscovery();
-        }
-
-        private void StartDiscovery()
-        {
-            listener = new Listener();
-            listener.InstanceOnline += HandleInstanceOnline;
-            listener.InstanceOffline += HandleInstanceOffline;
-            listener.Listen();
-            Broadcaster.Broadcast(Verbs.Online);
-        }
-
-        private void StopDiscovery()
-        {
-            Broadcaster.Broadcast(Verbs.Offline);
-            if (listener != null)
-                listener.Stop();
-        }
-
-        private void HandleInstanceOnline(object sender, InstanceChangedArgs ea)
-        {
-            BeginInvoke((Action)(() =>
-            {
-                //code to update UI
-                instancesControl1.RegisterInstance(ea.Instance);
-            }));
-        }
-
-        private void HandleInstanceOffline(object sender, InstanceChangedArgs ea)
-        {
-            BeginInvoke((Action)(() =>
-            {
-                //code to update UI
-                instancesControl1.UnregisterInstance(ea.Instance);
-            }));
-        }
-
-        private void RefreshExchangeRates()
-        {
-            if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
-            {
-                try
-                {
-                    sellPrices = Coinbase.Api.ApiContext.GetSellPrices();
-                }
-                catch (Exception ex)
-                {
-                    //don't crash if website cannot be resolved or JSON cannot be parsed
-                    if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException))
-                    {
-                        if (applicationConfiguration.ShowApiErrors)
-                            ShowCoinbaseApiErrorNotification(ex);
-                        return;
-                    }
-                    throw;
-                }
-            }
-        }
-
-        private void ShowCoinbaseApiErrorNotification(Exception ex)
-        {
-            string siteUrl = Coinbase.Api.ApiContext.GetInfoUrl();
-            string apiUrl = Coinbase.Api.ApiContext.GetApiUrl();
-            string apiName = Coinbase.Api.ApiContext.GetApiName();
-
-            notificationsControl.AddNotification(ex.Message,
-                String.Format("Error parsing the {0} JSON API", apiName), () =>
-                {
-                    Process.Start(apiUrl);
-                },
-                siteUrl);
-        }
-
-        private void RefreshCountdownLabel()
-        {
-            countdownLabel.Text = string.Format("Mining will start automatically in {0} seconds...", startupMiningCountdownSeconds);
-            startupMiningPanel.Visible = true;
-        }
-
-        private void ConfigureCoins()
-        {
-            CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins, engineConfiguration.CoinConfigurationsFileName());
-            DialogResult dialogResult = coinsForm.ShowDialog();
-            if (dialogResult == System.Windows.Forms.DialogResult.OK)
-            {
-                Application.DoEvents();
-
-                engineConfiguration.SaveCoinConfigurations();
-
-                RemoveInvalidCoinValuesFromListView();
-
-                RefreshCoinPopupMenu();
-
-                //SaveChanges() will restart mining if needed
-                SaveChanges();
-            }
-            else
-                engineConfiguration.LoadCoinConfigurations(pathConfiguration.SharedConfigPath);
-        }
-
-        private void RemoveInvalidCoinValuesFromListView()
-        {
-            foreach (ListViewItem item in deviceListView.Items)
-                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.Coin.Name.Equals(item.SubItems["Coin"].Text)) == null)
-                    item.SubItems["Coin"].Text = String.Empty;
-
-            ClearCoinStatsForDisabledCoins();
-        }
-
-        private void ClearCoinStatsForDisabledCoins()
-        {
-            foreach (ListViewItem item in deviceListView.Items)
-                if (string.IsNullOrEmpty(item.SubItems["Coin"].Text))
-                    ClearCoinStatsForGridListViewItem(item);
-        }
-
-        private void RefreshCoinPopupMenu()
-        {
-            coinPopupMenu.Items.Clear();
-            foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
-            {
-                ToolStripItem menuItem = coinPopupMenu.Items.Add(configuration.Coin.Name);
-                menuItem.Click += CoinMenuItemClick;
-            }
-        }
-
-        private void CoinMenuItemClick(object sender, EventArgs e)
-        {
-            ToolStripItem menuItem = (ToolStripItem)sender;
-
-            foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
-            {
-                DeviceViewModel deviceViewModel = mainFormViewModel.Devices[selectedItem.Index];
-                deviceViewModel.Coin = engineConfiguration.CoinConfigurations.Single(cc => cc.Coin.Name.Equals(menuItem.Text)).Coin;
-                //selectedItem.SubItems["Coin"].Text = menuItem.Text;
-            }
-
-            RefreshListViewFromViewModel();
-
-            AutoSizeListViewColumns();
-
-            UpdateChangesButtons(true);
-        }
-
-        private void saveButton_Click(object sender, EventArgs e)
-        {
-            //SaveChanges() will restart mining if needed
-            SaveChanges();
-        }
-
+        #region View / Model behavior
         private void SaveChanges()
         {
             SaveListViewValuesToConfiguration();
@@ -1471,11 +626,6 @@ namespace MultiMiner.Win
             AutoSizeListViewColumns();
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
-        {
-            CancelChanges();
-        }
-
         private void CancelChanges()
         {
             engineConfiguration.LoadDeviceConfigurations();
@@ -1485,32 +635,239 @@ namespace MultiMiner.Win
             UpdateChangesButtons(false);
             AutoSizeListViewColumns();
         }
+        #endregion
 
-        private void SaveListViewValuesToConfiguration()
+        #region View population
+        private void UpdateChangesButtons(bool hasChanges)
         {
-            engineConfiguration.DeviceConfigurations.Clear();
+            saveButton.Visible = hasChanges;
+            cancelButton.Visible = hasChanges;
+            saveSeparator.Visible = hasChanges;
 
-            for (int i = 0; i < devices.Count; i++)
+            saveButton.Enabled = hasChanges;
+            cancelButton.Enabled = hasChanges;
+
+            //accessible menu
+            saveToolStripMenuItem.Enabled = hasChanges;
+            cancelToolStripMenuItem.Enabled = hasChanges;
+        }
+
+        private void RefreshDetailsAreaIfVisible()
+        {
+            if (!detailsAreaContainer.Panel2Collapsed)
+                RefreshDetailsArea();
+        }
+
+        private void RefreshDetailsArea()
+        {
+            if (deviceListView.SelectedItems.Count == 0)
             {
-                ListViewItem listViewItem = deviceListView.Items[i];
+                detailsControl1.ClearDetails(devices.Count);
+                return;
+            }
 
-                //pull this from coin configurations, not known coins, may not be in CoinChoose
-                string coinValue = listViewItem.SubItems["Coin"].Text;
-                CryptoCoin coin = null;
-                if (!String.IsNullOrEmpty(coinValue))
-                    coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinValue, StringComparison.OrdinalIgnoreCase)).Coin;
+            int deviceIndex = deviceListView.SelectedIndices[0];
+            Device selectedDevice = devices[deviceIndex];
+            DeviceDetailsResponse deviceDetails = null;
+            if (deviceDetailsMapping.ContainsKey(selectedDevice))
+                deviceDetails = deviceDetailsMapping[selectedDevice];
+            CoinConfiguration coinConfiguration = CoinConfigurationForDevice(selectedDevice);
+            CoinInformation coinInfo = null;
 
-                DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+            //Internet or Coin API could be down
+            if ((this.coinApiInformation != null) &&
+                //device may not be configured
+                (coinConfiguration != null))
+                coinInfo = this.coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
 
-                deviceConfiguration.Assign(devices[i]);
+            List<DeviceInformationResponse> minerDeviceInformation = new List<DeviceInformationResponse>();
 
-                deviceConfiguration.Enabled = listViewItem.Checked;
-                deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
+            if (deviceDetails != null)
+            {
+                if (deviceDetails.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
+                    minerDeviceInformation = allDeviceInformation.Where(d => d.Name.Equals(deviceDetails.Name, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                else
+                    minerDeviceInformation = allDeviceInformation.Where(d => d.Name.Equals(deviceDetails.Name, StringComparison.OrdinalIgnoreCase)
+                        && (d.ID == deviceDetails.ID)).ToList();
+            }
 
-                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+            List<DeviceDetailsResponse> minerDeviceDetails = new List<DeviceDetailsResponse>();
+
+            PoolInformationResponse poolInformation = null;
+
+            string coinSymbol = null;
+            //Internet or Coin API could be down
+            if (coinInfo != null)
+                coinSymbol = coinInfo.Symbol;
+            //device may not be configured
+            else if (coinConfiguration != null)
+                coinSymbol = coinConfiguration.Coin.Symbol;
+
+            MinerProcess minerProcess = null;
+
+            //Internet or Coin API could be down AND device may not be configured
+            if (!String.IsNullOrEmpty(coinSymbol))
+                // p.CoinInformation is null if there is no Coin API info
+                minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinSymbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+
+            if (minerProcess != null)
+            {
+                DeviceInformationResponse deviceInformation = minerDeviceInformation.FirstOrDefault();
+                if ((deviceInformation != null) && processPoolInformation.ContainsKey(minerProcess))
+                    poolInformation = processPoolInformation[minerProcess].SingleOrDefault(p => p.Index == deviceInformation.PoolIndex);
+                if (processDeviceDetails.ContainsKey(minerProcess))
+                    minerDeviceDetails = processDeviceDetails[minerProcess];
+            }
+
+            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, minerDeviceInformation, poolInformation,
+                minerDeviceDetails, applicationConfiguration.ShowWorkUtility);
+        }
+
+        private void RefreshCoinPopupMenu()
+        {
+            coinPopupMenu.Items.Clear();
+            foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
+            {
+                ToolStripItem menuItem = coinPopupMenu.Items.Add(configuration.Coin.Name);
+                menuItem.Click += CoinMenuItemClick;
             }
         }
-        
+
+        private void RefreshCountdownLabel()
+        {
+            countdownLabel.Text = string.Format("Mining will start automatically in {0} seconds...", startupMiningCountdownSeconds);
+            startupMiningPanel.Visible = true;
+        }
+
+        private void UpdateUtilityColumnHeader()
+        {
+            string oldValue = utilityColumnHeader.Text;
+            utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
+            foreach (ListViewItem item in deviceListView.Items)
+                item.SubItems[oldValue].Name = utilityColumnHeader.Text;
+        }
+
+        private void SetupColumnHeaderMenu()
+        {
+            columnHeaderMenu.Items.Clear();
+
+            foreach (ColumnHeader column in deviceListView.Columns)
+            {
+                if ((column == nameColumnHeader)
+                    || (column == coinColumnHeader))
+                    continue;
+
+                string columnText = column.Text;
+
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)columnHeaderMenu.Items.Add(columnText);
+                menuItem.Checked = !applicationConfiguration.HiddenColumns.Contains(columnText);
+
+                menuItem.Click += ColumnHeaderMenuClick;
+            }
+        }
+
+        private const int maxColumnWidth = 195;
+        //optimized for speed        
+        private static void SetColumWidth(ColumnHeader column, int width)
+        {
+            if ((width < 0) || (column.Width != width))
+                column.Width = width;
+            if (column.Width > maxColumnWidth)
+                column.Width = maxColumnWidth;
+        }
+
+        private void AutoSizeListViewColumns()
+        {
+            if (deviceListView.View != View.Details)
+                return;
+
+            deviceListView.BeginUpdate();
+            try
+            {
+                if (briefMode)
+                {
+                    SetColumWidth(nameColumnHeader, -2);
+                    SetColumWidth(driverColumnHeader, 0);
+                    SetColumWidth(coinColumnHeader, -2);
+                    SetColumWidth(difficultyColumnHeader, 0);
+                    SetColumWidth(priceColumnHeader, 0);
+                    SetColumWidth(profitabilityColumnHeader, -2);
+                    SetColumWidth(poolColumnHeader, 0);
+
+                    if (ListViewColumnHasValues("Temp"))
+                        SetColumWidth(tempColumnHeader, -2);
+                    else if (tempColumnHeader.Width != 0)
+                        SetColumWidth(tempColumnHeader, 0);
+
+                    SetColumWidth(hashrateColumnHeader, -2);
+                    SetColumWidth(currentRateColumnHeader, 0);
+                    SetColumWidth(acceptedColumnHeader, 0);
+                    SetColumWidth(rejectedColumnHeader, 0);
+                    SetColumWidth(errorsColumnHeader, 0);
+                    SetColumWidth(utilityColumnHeader, 0);
+                    SetColumWidth(intensityColumnHeader, 0);
+                    SetColumWidth(fanColumnHeader, 0);
+                    SetColumWidth(incomeColumnHeader, 0);
+                    SetColumWidth(exchangeColumnHeader, 0);
+                }
+                else
+                {
+                    for (int i = 0; i < deviceListView.Columns.Count; i++)
+                    {
+                        ColumnHeader column = deviceListView.Columns[i];
+
+                        if (applicationConfiguration.HiddenColumns.Contains(column.Text))
+                        {
+                            SetColumWidth(column, 0);
+                            continue;
+                        }
+
+                        bool hasValue = false;
+                        if (i == 0)
+                            hasValue = true;
+                        else
+                            hasValue = ListViewColumnHasValues(column.Text);
+
+                        if (hasValue)
+                            SetColumWidth(column, -2);
+                        else
+                            SetColumWidth(column, 0);
+                    }
+                }
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
+        }
+
+        private bool ListViewColumnHasValues(string headerText)
+        {
+            foreach (ListViewItem item in deviceListView.Items)
+                if (!String.IsNullOrEmpty(item.SubItems[headerText].Text))
+                    return true;
+            return false;
+        }
+
+        private void AutoSizeListViewColumnsEvery(int count)
+        {
+            autoSizeColumnsFlag++;
+            if (autoSizeColumnsFlag == count)
+            {
+                autoSizeColumnsFlag = 0;
+                AutoSizeListViewColumns();
+            }
+        }
+        private ushort autoSizeColumnsFlag = 0;
+
+        private void RefreshCoinApiLabel()
+        {
+            coinApiLinkLabel.Text = this.coinApiContext.GetApiName();
+
+            PositionCoinChooseLabels();
+        }
+
         private void UpdateMiningButtons()
         {
             startButton.Enabled = MiningConfigurationValid() && !miningEngine.Mining;
@@ -1531,7 +888,7 @@ namespace MultiMiner.Win
             //sys tray menu
             startMenuItem.Visible = startMenuItem.Enabled;
             stopMenuItem.Visible = stopMenuItem.Enabled;
-            
+
             //accessible menu
             startToolStripMenuItem.Enabled = startMenuItem.Enabled;
             stopToolStripMenuItem.Enabled = stopMenuItem.Enabled;
@@ -1542,255 +899,115 @@ namespace MultiMiner.Win
             launchToolStripMenuItem.Enabled = startMenuItem.Enabled;
         }
 
-        private bool MiningConfigurationValid()
+        private void PopulateQuickSwitchMenu(ToolStripDropDownItem parent)
         {
-            bool miningConfigurationValid = engineConfiguration.DeviceConfigurations.Count(
-                c => c.Enabled && !string.IsNullOrEmpty(c.CoinSymbol)) > 0;
-            if (!miningConfigurationValid)
-            {
-                miningConfigurationValid = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
-                    (engineConfiguration.CoinConfigurations.Count(c => c.Enabled) > 0) &&
-                    (engineConfiguration.DeviceConfigurations.Count(c => c.Enabled) > 0);
-            }
-            return miningConfigurationValid;
-        }
+            quickCoinMenu.Items.Clear();
 
-        private void stopButton_Click(object sender, EventArgs e)
-        {
-            StopMining();
-        }
 
-        private void StopMining()
-        {
-            using (new HourGlass())
+            foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
             {
-                miningEngine.StopMining();
+                ToolStripMenuItem coinSwitchItem = new ToolStripMenuItem()
+                {
+                    Text = coinConfiguration.Coin.Name,
+                    Tag = coinConfiguration.Coin.Symbol
+                };
+                coinSwitchItem.Click += HandleQuickSwitchClick;
+
+                quickCoinMenu.Items.Add(coinSwitchItem);
             }
 
-            processDeviceDetails.Clear();
-            processPoolInformation.Clear();
-            deviceStatsTimer.Enabled = false;
-            minerSummaryTimer.Enabled = false;
-            coinStatsCountdownTimer.Enabled = false;
-            poolInfoTimer.Enabled = false;
-            RefreshStrategiesCountdown();
-            scryptRateLabel.Text = string.Empty;
-            sha256RateLabel.Text = string.Empty;
-            notifyIcon1.Text = "MultiMiner - Stopped";
-            UpdateMiningButtons();
-            ClearAllMinerStats();
-            RefreshIncomeSummary();
-            AutoSizeListViewColumns();
-            RefreshDetailsAreaIfVisible();
-            ClearPoolsFlaggedDown();
+            //Mono under Linux absolutely doesn't like having one context menu assigned to multiple
+            //toolstrip items' DropDown property at once, so we have to target a single one here
+            parent.DropDown = quickCoinMenu;
         }
 
-        private void startButton_Click(object sender, EventArgs e)
+        private void PopulatePoolForListViewItem(int poolIndex, ListViewItem item)
         {
-            HandleStartButtonClick();
+            item.SubItems["Pool"].Text = GetPoolNameByIndex(poolIndex, deviceListView.Items.IndexOf(item));
         }
 
-        private void HandleStartButtonClick()
+        private string GetPoolNameByIndex(int poolIndex, int deviceIndex)
         {
-            if (applicationConfiguration.AutoSetDesktopMode)
-                EnableDesktopMode(true);
+            string result = String.Empty;
 
-            SaveChanges();
-            StartMining();
+            if (poolIndex >= 0)
+            {
+                Device device = devices[deviceIndex];
+                CoinConfiguration coinConfiguration = CoinConfigurationForDevice(device);
+                if (coinConfiguration != null)
+                {
+                    //the poolIndex may be greater than the Pools count if the user edits
+                    //their pools while mining
+                    if (poolIndex < coinConfiguration.Pools.Count)
+                    {
+                        string poolHost = coinConfiguration.Pools[poolIndex].Host;
+                        string poolDomain = poolHost.DomainFromHost();
+
+                        result = poolDomain;
+                    }
+                    else
+                    {
+                        if (miningEngine.Donating)
+                            result = "donation"; //donation pool won't be in list
+                    }
+                }
+            }
+
+            return result;
         }
 
-        private void StartMining()
+        private void ClearAllMinerStats()
         {
-            if (!MiningConfigurationValid())
-                return;
-
-            if (miningEngine.Mining)
-                return;
-
-            if (!ConfigFileHandled())
-                return;
-
-            startButton.Enabled = false; //immediately disable, update after
-            startMenuItem.Enabled = false;
-
+            deviceListView.BeginUpdate();
             try
             {
-                using (new HourGlass())
-                {
-                    int donationPercent = 0;
-                    if (perksConfiguration.PerksEnabled)
-                        donationPercent = perksConfiguration.DonationPercent;
-                    miningEngine.StartMining(engineConfiguration, devices, coinApiInformation, donationPercent);
-                }
+                foreach (ListViewItem item in deviceListView.Items)
+                    ClearDeviceInfoForListViewItem(item);
             }
-            catch (MinerLaunchException ex)
+            finally
             {
-                MessageBox.Show(ex.Message, "Error Launching Miner", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                deviceListView.EndUpdate();
             }
-
-            //do this AFTER we start mining to pick up any Auto-Mining changes
-
-            //create a deep clone of the mining & device configurations
-            //this is so we can accurately display e.g. the currently mining pools
-            //even if the user changes pool info without restartinging mining
-            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
-            this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
-            
-            engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
-
-            deviceStatsTimer.Enabled = true;
-            minerSummaryTimer.Enabled = true;
-            coinStatsCountdownTimer.Enabled = true;
-            poolInfoTimer.Enabled = true;
-            RefreshStrategiesCountdown();
-
-            //so restart timer based on when mining started, not a constantly ticking timer
-            //see https://bitcointalk.org/index.php?topic=248173.msg4593795#msg4593795
-            SetupRestartTimer();
-
-            //to get changes from strategy config
-            //to get updated coin stats for coin changes
-            RefreshListViewFromViewModel();
-
-            AutoSizeListViewColumns();
-
-            UpdateMiningButtons();
         }
 
-        private static bool ConfigFileHandled()
+        private void ClearAllCoinStats()
         {
-            const string bakExtension = ".mmbak";
-
-            string minerName = MinerPath.GetMinerName();
-            string minerExecutablePath = MinerPath.GetPathToInstalledMiner();
-            string confFileFilePath = String.Empty;
-
-            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+            deviceListView.BeginUpdate();
+            try
             {
-                string minerFolderName = "." + minerName;
-                string minerFileName = minerName + ".conf";
-                confFileFilePath = Path.Combine(Path.Combine(OSVersionPlatform.GetHomeDirectoryPath(), minerFolderName), minerFileName);
+                foreach (ListViewItem item in deviceListView.Items)
+                    ClearCoinStatsForGridListViewItem(item);
             }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
+        }
+
+        private void RefreshStrategiesLabel()
+        {
+            if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+                strategiesLabel.Text = " Strategies: enabled";
             else
-            {
-                confFileFilePath = Path.ChangeExtension(minerExecutablePath, ".conf");
-            }
-
-            if (File.Exists(confFileFilePath))
-            {
-                string confFileName = Path.GetFileName(confFileFilePath);
-                string confBakFileName = confFileName + bakExtension;
-
-                DialogResult dialogResult = MessageBox.Show(String.Format("A {0} file has been detected in your miner directory. This file interferes with the arguments supplied by MultiMiner. Can MultiMiner rename this file to {1}?",
-                    confFileName, confBakFileName), "External Configuration Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (dialogResult == System.Windows.Forms.DialogResult.No)
-                    return false;
-
-                string confBakFileFilePath = confFileFilePath + bakExtension;
-                File.Delete(confBakFileFilePath);
-                File.Move(confFileFilePath, confBakFileFilePath);
-            }
-
-            return true;           
+                strategiesLabel.Text = " Strategies: disabled";
         }
-        
-        private void ConfigureSettings()
+
+        private void RefreshStrategiesCountdown()
         {
-            bool oldCoinWarzValue = applicationConfiguration.UseCoinWarzApi;
-            string oldCoinWarzKey = applicationConfiguration.CoinWarzApiKey;
-            string oldConfigPath = pathConfiguration.SharedConfigPath;
-
-            SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration, pathConfiguration);
-            DialogResult dialogResult = settingsForm.ShowDialog();
-
-            if (dialogResult == System.Windows.Forms.DialogResult.OK)
-            {
-                Application.DoEvents();
-
-                pathConfiguration.SavePathConfiguration();
-
-                //save settings as the "shared" config path may have changed
-                //these are settings not considered machine/device-specific
-                //e.g. no device settings, no miner settings
-                string newConfigPath = pathConfiguration.SharedConfigPath;
-
-                //if the shared config path changed, and there are already settings
-                //in that path, load those settings (so they aren't overwritten)
-                //idea being the user has shared settings already there they want to use
-                if (!Path.Equals(oldConfigPath, newConfigPath))
-                {
-                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(applicationConfiguration.ApplicationConfigurationFileName()))))
-                        applicationConfiguration.LoadApplicationConfiguration(newConfigPath);
-                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(perksConfiguration.PerksConfigurationFileName()))))
-                        perksConfiguration.LoadPerksConfiguration(newConfigPath);
-                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(engineConfiguration.CoinConfigurationsFileName()))))
-                        engineConfiguration.LoadCoinConfigurations(newConfigPath);
-                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(engineConfiguration.StrategyConfigurationsFileName()))))
-                        engineConfiguration.LoadStrategyConfiguration(newConfigPath);
-                }
-
-                applicationConfiguration.SaveApplicationConfiguration(newConfigPath);
-                perksConfiguration.SavePerksConfiguration(newConfigPath);
-                engineConfiguration.SaveCoinConfigurations(newConfigPath);
-                engineConfiguration.SaveStrategyConfiguration(newConfigPath);
-
-                engineConfiguration.SaveMinerConfiguration();
-                SaveKnownCoinsToFile();
-
-                SetupCoinApi();
-                RefreshCoinApiLabel();
-                crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
-                SetupRestartTimer();
-                CheckForUpdates();
-                SetupCoinStatsTimer();
-                SuggestCoinsToMine();
-
-                //don't refresh coin stats excessively
-                if ((oldCoinWarzValue != applicationConfiguration.UseCoinWarzApi) ||
-                    !oldCoinWarzKey.Equals(applicationConfiguration.CoinWarzApiKey))
-                    RefreshCoinStats();
-                
-                SetupAccessibleMenu();
-                SetGpuEnvironmentVariables();
-                
-                Application.DoEvents();
-            }
+            //Time until strategy check: 60s
+            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+                strategyCountdownLabel.Text = string.Format("Time until strategy check: {0}m", coinStatsCountdownMinutes);
             else
-            {
-                engineConfiguration.LoadMinerConfiguration();
-                pathConfiguration.LoadPathConfiguration();
-                applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
-            }
+                strategyCountdownLabel.Text = "";
         }
 
-        private void SetupCoinApi()
+        private void RemoveInvalidCoinValuesFromListView()
         {
-            if (applicationConfiguration.UseCoinWarzApi)
-                this.coinApiContext = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey);
-            else
-                this.coinApiContext = new CoinChoose.Api.ApiContext();
-        }
+            foreach (ListViewItem item in deviceListView.Items)
+                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.Coin.Name.Equals(item.SubItems["Coin"].Text)) == null)
+                    item.SubItems["Coin"].Text = String.Empty;
 
-        private void RefreshCoinApiLabel()
-        {
-            coinApiLinkLabel.Text = this.coinApiContext.GetApiName();
-
-            PositionCoinChooseLabels();
-        }
-
-        private void SetupRestartTimer()
-        {
-            //if enabled, we want to restart it so this can be used when we start mining
-            restartTimer.Enabled = false;
-            restartTimer.Interval = applicationConfiguration.ScheduledRestartMiningInterval.ToMinutes() * 60 * 1000;
-            restartTimer.Enabled = applicationConfiguration.ScheduledRestartMining;
-        }
-
-        private void statsTimer_Tick(object sender, EventArgs e)
-        {
-            ClearMinerStatsForDisabledCoins();
-            RefreshDeviceStats();
+            ClearCoinStatsForDisabledCoins();
         }
 
         private void ClearMinerStatsForDisabledCoins()
@@ -1886,334 +1103,12 @@ namespace MultiMiner.Win
             }
         }
 
-        private string GetPoolNameByIndex(int poolIndex, int deviceIndex)
+        private void RefreshDetailsToggleButton()
         {
-            string result = String.Empty;
-
-            if (poolIndex >= 0)
-            {
-                Device device = devices[deviceIndex];
-                CoinConfiguration coinConfiguration = CoinConfigurationForDevice(device);
-                if (coinConfiguration != null)
-                {
-                    //the poolIndex may be greater than the Pools count if the user edits
-                    //their pools while mining
-                    if (poolIndex < coinConfiguration.Pools.Count)
-                    {
-                        string poolHost = coinConfiguration.Pools[poolIndex].Host;
-                        string poolDomain = poolHost.DomainFromHost();
-
-                        result = poolDomain;
-                    }
-                    else
-                    {
-                        if (miningEngine.Donating)
-                            result = "donation"; //donation pool won't be in list
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        private void PopulatePoolForListViewItem(int poolIndex, ListViewItem item)
-        {
-            item.SubItems["Pool"].Text = GetPoolNameByIndex(poolIndex, deviceListView.Items.IndexOf(item));
-        }
-
-        private CoinConfiguration CoinConfigurationForListViewItem(ListViewItem item)
-        {
-            int itemIndex = deviceListView.Items.IndexOf(item);
-            Device device = devices[itemIndex];
-            return CoinConfigurationForDevice(device);
-        }
-
-        private CoinConfiguration CoinConfigurationForDevice(Device device)
-        {
-            //get the actual device configuration, text in the ListViewItem may be unsaved
-            DeviceConfiguration deviceConfiguration = null;
-            if (miningEngine.Mining)
-                deviceConfiguration = miningDeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+            if (briefMode)
+                detailsToggleButton.Text = "▾ More details";
             else
-                deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
-
-            if (deviceConfiguration == null)
-                return null;
-
-            string itemCoinSymbol = deviceConfiguration.CoinSymbol;
-
-            List<CoinConfiguration> configurations;
-            if (miningEngine.Mining)
-                configurations = this.miningCoinConfigurations;
-            else
-                configurations = engineConfiguration.CoinConfigurations;
-
-            CoinConfiguration coinConfiguration = configurations.SingleOrDefault(c => c.Coin.Symbol.Equals(itemCoinSymbol, StringComparison.OrdinalIgnoreCase));
-            return coinConfiguration;
-        }
-
-        private void ClearAllMinerStats()
-        {
-            deviceListView.BeginUpdate();
-            try
-            {
-                foreach (ListViewItem item in deviceListView.Items)
-                    ClearDeviceInfoForListViewItem(item);
-            }
-            finally
-            {
-                deviceListView.EndUpdate();
-            }
-        }
-
-        private void ClearAllCoinStats()
-        {
-            deviceListView.BeginUpdate();
-            try
-            {
-                foreach (ListViewItem item in deviceListView.Items)
-                    ClearCoinStatsForGridListViewItem(item);
-            }
-            finally
-            {
-                deviceListView.EndUpdate();
-            }
-        }
-
-        private static void ClearCoinStatsForGridListViewItem(ListViewItem item)
-        {
-            item.SubItems["Difficulty"].Tag = 0.0;
-            item.SubItems["Difficulty"].Text = String.Empty;
-
-            item.SubItems["Price"].Text = String.Empty;
-            item.SubItems["Profitability"].Text = String.Empty;
-
-            item.SubItems["Exchange"].Tag = 0.0;
-            item.SubItems["Exchange"].Text = String.Empty;
-        }
-
-        private void LogApiEvent(object sender, Xgminer.Api.LogEventArgs eventArgs)
-        {
-            ApiLogEntry logEntry = new ApiLogEntry();
-
-            logEntry.DateTime = eventArgs.DateTime;
-            logEntry.Request = eventArgs.Request;
-            logEntry.Response = eventArgs.Response;
-            logEntry.CoinName = GetCoinNameForApiContext((Xgminer.Api.ApiContext)sender);
-
-            apiLogEntryBindingSource.Position = apiLogEntryBindingSource.Add(logEntry);
-
-            while (apiLogEntryBindingSource.Count > 1000)
-                apiLogEntryBindingSource.RemoveAt(0);
-
-            LogApiEventToFile(logEntry);
-        }
-
-        private void LogApiEventToFile(ApiLogEntry logEntry)
-        {
-            const string logFileName = "ApiLog.json";
-            LogObjectToFile(logEntry, logFileName);
-        }
-        
-        private string GetCoinNameForApiContext(Xgminer.Api.ApiContext apiContext)
-        {
-            string coinName = string.Empty;
-
-            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
-            {
-                Xgminer.Api.ApiContext loopContext = minerProcess.ApiContext;
-                if (loopContext == apiContext)
-                {
-                    coinName = minerProcess.MinerConfiguration.CoinName;
-                    break;
-                }
-            }
-
-            return coinName;
-        }
-
-        private void PopulateSummaryInfoFromProcesses()
-        {
-            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
-            {
-                SummaryInformationResponse summaryInformation = GetSummaryInfoFromProcess(minerProcess);
-
-                if (summaryInformation == null) //handled failure getting API info
-                {
-                    minerProcess.MinerIsFrozen = true;
-                    continue;
-                }
-
-                CheckAndNotifyFoundBlocks(minerProcess, summaryInformation.FoundBlocks);
-
-                CheckAndNotifyAcceptedShares(minerProcess, summaryInformation.AcceptedShares);
-            }
-        }
-
-        private void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
-        {
-            string coinName = minerProcess.MinerConfiguration.CoinName;
-            //reference miningCoinConfigurations so that we get access to the mining coins
-            CoinConfiguration configuration = miningCoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
-            if (configuration == null)
-                return;
-
-            if (configuration.NotifyOnBlockFound && (foundBlocks > minerProcess.FoundBlocks))
-            {
-                minerProcess.FoundBlocks = foundBlocks;
-                
-                string notificationReason = String.Format("Block(s) found for {0} (block {1})",
-                    coinName, minerProcess.FoundBlocks);
-
-                notificationsControl.AddNotification(notificationReason, notificationReason, () =>
-                {
-                }, "");
-            }
-        }
-
-        private void CheckAndNotifyAcceptedShares(MinerProcess minerProcess, long acceptedShares)
-        {
-            string coinName = minerProcess.MinerConfiguration.CoinName;
-            //reference miningCoinConfigurations so that we get access to the mining coins
-            CoinConfiguration configuration = miningCoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
-            if (configuration == null)
-                return;
-
-            if (configuration.NotifyOnShareAccepted && (acceptedShares > minerProcess.AcceptedShares))
-            {
-                minerProcess.AcceptedShares = acceptedShares;
-
-                string notificationReason = String.Format("Share(s) accepted for {0} (share {1})",
-                    coinName, minerProcess.AcceptedShares);
-
-                notificationsControl.AddNotification(notificationReason, notificationReason, () =>
-                {
-                }, "");
-            }
-        }
-
-        private void RefreshDeviceStats()
-        {
-            double totalScryptRate = 0;
-            double totalSha256Rate = 0;
-
-            allDeviceInformation.Clear();
-
-            deviceListView.BeginUpdate();
-            try
-            {
-                foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
-                {
-                    ClearSuspectProcessFlags(minerProcess);
-
-                    List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
-
-                    if (deviceInformationList == null) //handled failure getting API info
-                    {
-                        minerProcess.MinerIsFrozen = true;
-                        continue;
-                    }
-
-                    allDeviceInformation.AddRange(deviceInformationList);
-
-                    //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
-                    List<DeviceDetailsResponse> processDevices = GetProcessDevices(minerProcess, deviceInformationList);
-
-                    //first clear stats for each row
-                    //this is because the PXY row stats get summed 
-                    foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
-                    {
-                        DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
-                            && (d.ID == deviceInformation.ID));
-                        int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
-                        if (deviceIndex >= 0)
-                            //could legitimately be -1 if the API is returning a device we don't know about
-                            ClearDeviceInfoForListViewItem(deviceListView.Items[deviceIndex]);
-                    }
-
-                    //clear accepted shares as we'll be summing that as well
-                    minerProcess.AcceptedShares = 0;
-
-                    foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
-                    {
-                        //don't consider a standalone miner suspect - restarting the proxy doesn't help and often hurts
-                        if (!deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
-                            FlagSuspiciousMiner(minerProcess, deviceInformation);
-
-                        DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
-                            && (d.ID == deviceInformation.ID));
-                        int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
-
-                        if (deviceIndex >= 0)
-                        {
-                            Device device = devices[deviceIndex];
-                            deviceDetailsMapping[device] = deviceDetails;
-
-                            if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
-                                totalScryptRate += deviceInformation.AverageHashrate;
-                            else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
-                                totalSha256Rate += deviceInformation.AverageHashrate;
-
-                            //replaces these calls => PopulateDeviceStatsForListViewItem(deviceInformation, deviceListView.Items[deviceIndex]);
-
-                            minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
-
-                            mainFormViewModel.ApplyDeviceInformationResponseModel(device, deviceInformation);
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                deviceListView.EndUpdate();
-            }
-
-            RefreshListViewFromViewModel();
-
-            //Mh not mh, mh is milli
-            scryptRateLabel.Text = totalScryptRate == 0 ? String.Empty : String.Format("Scrypt: {0}", totalScryptRate.ToHashrateString());
-            //spacing used to pad out the status bar item
-            sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}", totalSha256Rate.ToHashrateString());
-
-            scryptRateLabel.AutoSize = true;
-            sha256RateLabel.AutoSize = true;
-
-            notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
-
-            int count = 3;
-            //auto sizing the columns is moderately CPU intensive, so only do it every /count/ times
-            AutoSizeListViewColumnsEvery(count);
-
-            RefreshIncomeSummary();
-            RefreshDetailsAreaIfVisible();
-
-            if (processPoolInformation.Count == 0)
-                RefreshPoolInfo();
-        }
-
-        private void FlagSuspiciousMiner(MinerProcess minerProcess, DeviceInformationResponse deviceInformation)
-        {
-            if (deviceInformation.Status.ToLower().Contains("sick"))
-                minerProcess.HasSickDevice = true;
-            if (deviceInformation.Status.ToLower().Contains("dead"))
-                minerProcess.HasDeadDevice = true;
-            if (deviceInformation.CurrentHashrate == 0)
-                minerProcess.HasZeroHashrateDevice = true;
-
-            //only check GPUs for subpar hashrate
-            //ASICs spike too much for this to be reliable there
-            //don't check average hashrate if using dynamic intensity
-            if (deviceInformation.Kind.Equals("GPU", StringComparison.OrdinalIgnoreCase) &&
-                !engineConfiguration.XgminerConfiguration.DesktopMode)
-            {
-                //avoid div by 0
-                if (deviceInformation.AverageHashrate > 0)
-                {
-                    double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
-                    if (performanceRatio <= 0.50)
-                        minerProcess.HasPoorPerformingDevice = true;
-                }
-            }
+                detailsToggleButton.Text = "▴ Fewer details";
         }
 
         private void RefreshIncomeSummary()
@@ -2256,7 +1151,7 @@ namespace MultiMiner.Win
                     if (coinInfo != null)
                     {
                         double coinUsd = sellPrices.Subtotal.Amount * coinInfo.Price;
-                        
+
                         double coinDailyUsd = coinIncome * coinUsd;
                         usdTotal += coinDailyUsd;
 
@@ -2308,188 +1203,248 @@ namespace MultiMiner.Win
             return coinsIncome;
         }
 
-        private static void ClearSuspectProcessFlags(MinerProcess minerProcess)
+        private static void ClearCoinStatsForGridListViewItem(ListViewItem item)
         {
-            minerProcess.HasDeadDevice = false;
-            minerProcess.HasSickDevice = false;
-            minerProcess.HasZeroHashrateDevice = false;
-            minerProcess.MinerIsFrozen = false;
-            minerProcess.HasPoorPerformingDevice = false;
+            item.SubItems["Difficulty"].Tag = 0.0;
+            item.SubItems["Difficulty"].Text = String.Empty;
+
+            item.SubItems["Price"].Text = String.Empty;
+            item.SubItems["Profitability"].Text = String.Empty;
+
+            item.SubItems["Exchange"].Tag = 0.0;
+            item.SubItems["Exchange"].Text = String.Empty;
         }
 
-        private void AutoSizeListViewColumnsEvery(int count)
+        private void ClearCoinStatsForDisabledCoins()
         {
-            autoSizeColumnsFlag++;
-            if (autoSizeColumnsFlag == count)
-            {
-                autoSizeColumnsFlag = 0;
-                AutoSizeListViewColumns();
-            }
+            foreach (ListViewItem item in deviceListView.Items)
+                if (string.IsNullOrEmpty(item.SubItems["Coin"].Text))
+                    ClearCoinStatsForGridListViewItem(item);
         }
-        private ushort autoSizeColumnsFlag = 0;
 
-        private List<DeviceDetailsResponse> GetProcessDevices(MinerProcess minerProcess, List<DeviceInformationResponse> deviceInformationList)
+        private void CheckCoinInPopupMenu(string currentCoin)
         {
-            List<DeviceDetailsResponse> processDevices = null;
-            if (processDeviceDetails.ContainsKey(minerProcess))
-            {
-                processDevices = processDeviceDetails[minerProcess];
+            foreach (ToolStripItem item in coinPopupMenu.Items)
+                ((ToolStripMenuItem)item).Checked = false;
 
-                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
-                {
-                    DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
-                        && (d.ID == deviceInformation.ID));
-                    if (deviceDetails == null)
+            if (!String.IsNullOrEmpty(currentCoin))
+            {
+                foreach (ToolStripItem item in coinPopupMenu.Items)
+                    if (item.Text.Equals(currentCoin))
                     {
-                        //devs API returned a device not in the previous DEVDETAILS response
-                        //need to clear our previous response and get a new one
-                        processDevices = null;
+                        ((ToolStripMenuItem)item).Checked = true;
                         break;
                     }
-                }
             }
-
-            if (processDevices == null)
-            {
-                processDevices = GetDeviceDetailsFromProcess(minerProcess);
-                processDeviceDetails[minerProcess] = processDevices;
-            }
-            return processDevices;
         }
 
-        private List<DeviceInformationResponse> GetDeviceInfoFromProcess(MinerProcess minerProcess)
+        private void RefreshCoinStatsLabel()
         {
-            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
-
-            //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
-
-            List<DeviceInformationResponse> deviceInformationList = null;
-            try
-            {
-                try
-                {
-                    deviceInformationList = apiContext.GetDeviceInformation().Where(d => d.Enabled).ToList();
-                }
-                catch (IOException ex)
-                {
-                    //don't fail and crash out due to any issues communicating via the API
-                    deviceInformationList = null;
-                }
-            }
-            catch (SocketException ex)
-            {
-                //won't be able to connect for the first 5s or so
-                deviceInformationList = null;
-            }
-
-            return deviceInformationList;
+            coinChooseSuffixLabel.Text = string.Format("at {0}", DateTime.Now.ToShortTimeString());
         }
-
-        private List<DeviceDetailsResponse> GetDeviceDetailsFromProcess(MinerProcess minerProcess)
-        {
-            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
-
-            //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
-
-            List<DeviceDetailsResponse> deviceDetailsList = null;
-            try
-            {
-                try
-                {
-                    deviceDetailsList = apiContext.GetDeviceDetails().ToList();
-                }
-                catch (IOException ex)
-                {
-                    //don't fail and crash out due to any issues communicating via the API
-                    deviceDetailsList = null;
-                }
-            }
-            catch (SocketException ex)
-            {
-                //won't be able to connect for the first 5s or so
-                deviceDetailsList = null;
-            }
-
-            return deviceDetailsList;
-        }
-
-        private SummaryInformationResponse GetSummaryInfoFromProcess(MinerProcess minerProcess)
-        {
-            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
-
-            //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
-
-            SummaryInformationResponse summaryInformation = null;
-            try
-            {
-                try
-                {
-                    summaryInformation = apiContext.GetSummaryInformation();
-                }
-                catch (IOException ex)
-                {
-                    //don't fail and crash out due to any issues communicating via the API
-                    summaryInformation = null;
-                }
-            }
-            catch (SocketException ex)
-            {
-                //won't be able to connect for the first 5s or so
-                summaryInformation = null;
-            }
-
-            return summaryInformation;
-        }
+        #endregion
         
-        private int GetDeviceIndexForDeviceDetails(DeviceDetailsResponse deviceDetails)
-        {            
-            for (int i = 0; i < devices.Count; i++)
+        #region Settings dialogs
+        private void ConfigureSettings()
+        {
+            bool oldCoinWarzValue = applicationConfiguration.UseCoinWarzApi;
+            string oldCoinWarzKey = applicationConfiguration.CoinWarzApiKey;
+            string oldConfigPath = pathConfiguration.SharedConfigPath;
+
+            SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration, pathConfiguration);
+            DialogResult dialogResult = settingsForm.ShowDialog();
+
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                Device device = devices[i];
-                
-                if (device.Driver.Equals(deviceDetails.Driver, StringComparison.OrdinalIgnoreCase)
-                    &&
-                    (
-                    //serial == serial && path == path (serial may not be unique)
-                    (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
-                      && !String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
+                Application.DoEvents();
 
-                    //serial == serial && path == String.Empty - WinUSB/LibUSB has no path, but has a serial #
-                    || (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
-                      && String.IsNullOrEmpty(device.Path) && String.IsNullOrEmpty(deviceDetails.DevicePath))
+                pathConfiguration.SavePathConfiguration();
 
-                    //path == path
-                    || (!String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
-                    
-                    //proxy == proxy
-                    || (device.Driver.Equals("proxy", StringComparison.OrdinalIgnoreCase))
-                    
-                    //opencl = opencl && ID = RelativeIndex
-                    || (device.Driver.Equals("opencl", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+                //save settings as the "shared" config path may have changed
+                //these are settings not considered machine/device-specific
+                //e.g. no device settings, no miner settings
+                string newConfigPath = pathConfiguration.SharedConfigPath;
 
-                    //cpu = cpu && ID = RelativeIndex
-                    || (device.Driver.Equals("cpu", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
-
-                    ))
+                //if the shared config path changed, and there are already settings
+                //in that path, load those settings (so they aren't overwritten)
+                //idea being the user has shared settings already there they want to use
+                if (!Path.Equals(oldConfigPath, newConfigPath))
                 {
-                    return i;
+                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(applicationConfiguration.ApplicationConfigurationFileName()))))
+                        applicationConfiguration.LoadApplicationConfiguration(newConfigPath);
+                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(perksConfiguration.PerksConfigurationFileName()))))
+                        perksConfiguration.LoadPerksConfiguration(newConfigPath);
+                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(engineConfiguration.CoinConfigurationsFileName()))))
+                        engineConfiguration.LoadCoinConfigurations(newConfigPath);
+                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(engineConfiguration.StrategyConfigurationsFileName()))))
+                        engineConfiguration.LoadStrategyConfiguration(newConfigPath);
                 }
-            }
 
-            return -1;
+                applicationConfiguration.SaveApplicationConfiguration(newConfigPath);
+                perksConfiguration.SavePerksConfiguration(newConfigPath);
+                engineConfiguration.SaveCoinConfigurations(newConfigPath);
+                engineConfiguration.SaveStrategyConfiguration(newConfigPath);
+
+                engineConfiguration.SaveMinerConfiguration();
+                SaveKnownCoinsToFile();
+
+                SetupCoinApi();
+                RefreshCoinApiLabel();
+                crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
+                SetupRestartTimer();
+                CheckForUpdates();
+                SetupCoinStatsTimer();
+                SuggestCoinsToMine();
+
+                //don't refresh coin stats excessively
+                if ((oldCoinWarzValue != applicationConfiguration.UseCoinWarzApi) ||
+                    !oldCoinWarzKey.Equals(applicationConfiguration.CoinWarzApiKey))
+                    RefreshCoinStats();
+
+                SetupAccessibleMenu();
+                SetGpuEnvironmentVariables();
+
+                Application.DoEvents();
+            }
+            else
+            {
+                engineConfiguration.LoadMinerConfiguration();
+                pathConfiguration.LoadPathConfiguration();
+                applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
+            }
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void ConfigureCoins()
         {
-            SaveSettings();
-            StopMining();
-            DisableRemoting();
+            CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins, engineConfiguration.CoinConfigurationsFileName());
+            DialogResult dialogResult = coinsForm.ShowDialog();
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                Application.DoEvents();
+
+                engineConfiguration.SaveCoinConfigurations();
+
+                RemoveInvalidCoinValuesFromListView();
+
+                RefreshCoinPopupMenu();
+
+                //SaveChanges() will restart mining if needed
+                SaveChanges();
+            }
+            else
+                engineConfiguration.LoadCoinConfigurations(pathConfiguration.SharedConfigPath);
+        }
+
+        private void ConfigureStrategies()
+        {
+            StrategiesForm strategiesForm = new StrategiesForm(engineConfiguration.StrategyConfiguration, knownCoins,
+                applicationConfiguration);
+            DialogResult dialogResult = strategiesForm.ShowDialog();
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                Application.DoEvents();
+
+                engineConfiguration.SaveStrategyConfiguration();
+                applicationConfiguration.SaveApplicationConfiguration();
+
+                RefreshStrategiesLabel();
+                RefreshListViewFromViewModel();
+                UpdateMiningButtons();
+
+                Application.DoEvents();
+            }
+            else
+            {
+                engineConfiguration.LoadStrategyConfiguration(pathConfiguration.SharedConfigPath);
+                applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
+            }
+        }
+
+        private void ConfigurePerks()
+        {
+            PerksForm perksForm = new PerksForm(perksConfiguration);
+            DialogResult dialogResult = perksForm.ShowDialog();
+
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                perksConfiguration.SavePerksConfiguration();
+                if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
+                    RefreshExchangeRates();
+                RefreshListViewFromViewModel();
+                RefreshIncomeSummary();
+                AutoSizeListViewColumns();
+                SetupRemoting();
+            }
+            else
+                perksConfiguration.LoadPerksConfiguration(pathConfiguration.SharedConfigPath);
+        }
+        #endregion
+
+        #region Settings logic
+        private void LoadSettings()
+        {
+            engineConfiguration.LoadAllConfigurations(pathConfiguration.SharedConfigPath);
+
+            SetupCoinApi();
+
+            RefreshStrategiesLabel();
+            RefreshStrategiesCountdown();
+
+            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
+
+            //already done in ctor //applicationConfiguration.LoadApplicationConfiguration();
+
+            perksConfiguration.LoadPerksConfiguration(pathConfiguration.SharedConfigPath);
+            exchangeRateTimer.Interval = 1000 * 60 * 30; //30 minutes
+            exchangeRateTimer.Enabled = perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates;
+            RefreshExchangeRates();
+
+            SetListViewStyle(applicationConfiguration.ListViewStyle);
+
+            //load brief mode first, then location
+            SetBriefMode(applicationConfiguration.BriefUserInterface);
+
+            //now location so we pick up the customizations
+            if ((applicationConfiguration.AppPosition != null) &&
+                (applicationConfiguration.AppPosition.Height > 0) &&
+                (applicationConfiguration.AppPosition.Width > 9))
+            {
+                this.Location = new Point(applicationConfiguration.AppPosition.Left, applicationConfiguration.AppPosition.Top);
+                this.Size = new Size(applicationConfiguration.AppPosition.Width, applicationConfiguration.AppPosition.Height);
+            }
+
+            if (applicationConfiguration.Maximized)
+                this.WindowState = FormWindowState.Maximized;
+
+            if (applicationConfiguration.LogAreaVisible)
+            {
+                ShowApiMonitor();
+                if ((applicationConfiguration.LogAreaTabIndex >= 0) &&
+                    (applicationConfiguration.LogAreaTabIndex < advancedTabControl.TabCount))
+                    advancedTabControl.SelectedIndex = applicationConfiguration.LogAreaTabIndex;
+                if ((applicationConfiguration.LogAreaDistance > 0) &&
+                    //can't set splitter distance with the app minimized :( InvalidOperationException
+                    !applicationConfiguration.StartupMinimized)
+                    advancedAreaContainer.SplitterDistance = applicationConfiguration.LogAreaDistance;
+            }
+            else
+                HideAdvancedPanel();
+
+            crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
+
+            SetupCoinStatsTimer();
+
+            idleTimer.Interval = 15 * 1000; //check every 15s
+            idleTimer.Enabled = true;
+
+            poolsDownFlagTimer.Interval = 1000 * 60 * 60; //1 hour
+            poolsDownFlagTimer.Enabled = true;
+            ClearPoolsFlaggedDown();
+
+            //allow resize/maximize/etc to render
+            Application.DoEvents();
+
+            this.settingsLoaded = true;
         }
 
         private void SaveSettings()
@@ -2505,172 +1460,106 @@ namespace MultiMiner.Win
                 this.applicationConfiguration.AppPosition = new Rectangle(this.Location, this.Size);
         }
 
-        private void coinStatsTimer_Tick(object sender, EventArgs e)
+        //try to match up devices without configurations with configurations without devices
+        //could happen if, for instance, a COM port changes for a device
+        private void FixOrphanedDeviceConfigurations()
         {
-            RefreshCoinStats();
-
-            CheckAndApplyMiningStrategy();
-
-            coinStatsCountdownMinutes = coinStatsTimer.Interval / 1000 / 60;
-        }
-
-        private void ClearPoolsFlaggedDown()
-        {
-            foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations)
-                coinConfiguration.PoolsDown = false;
-            engineConfiguration.SaveCoinConfigurations();
-        }
-
-        private void CheckAndApplyMiningStrategy()
-        {
-            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
-                //ensure the user isn't editing settings
-                !ShowingModalDialog())
+            foreach (Device device in devices)
             {
-                miningEngine.ApplyMiningStrategy(coinApiInformation);
-                //save any changes made by the engine
-                engineConfiguration.SaveDeviceConfigurations();
-                
-                //create a deep clone of the mining & device configurations
-                //this is so we can accurately display e.g. the currently mining pools
-                //even if the user changes pool info without restartinging mining
-                this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
-                this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
+                DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations.FirstOrDefault(
+                    c => (c.Equals(device)));
 
-                //to get changes from strategy config
-                //to refresh coin stats due to changed coin selections
-                RefreshListViewFromViewModel();
-            }
-        }
-
-        private void RefreshCoinStats()
-        {
-            //always load known coins from file
-            //CoinChoose may not shown coins it once did if there are no orders
-            LoadKnownCoinsFromFile();
-
-            try
-            {
-                coinApiInformation = coinApiContext.GetCoinInformation(
-                    UserAgent.AgentString).ToList();
-                ApplyCoinInformationToViewModel();
-            }
-            catch (Exception ex)
-            {
-                //don't crash if website cannot be resolved or JSON cannot be parsed
-                if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is CoinApiException))
+                //if there is no configuration specifically for the device
+                if (existingConfiguration == null)
                 {
-                    if (applicationConfiguration.ShowApiErrors)
-                        ShowCoinApiErrorNotification(ex);
-                    return;
+                    //find a configuration that uses the same driver and that, itself, has no specifically matching device
+                    DeviceConfiguration orphanedConfiguration = engineConfiguration.DeviceConfigurations.FirstOrDefault(
+                        c => c.Driver.Equals(device.Driver, StringComparison.OrdinalIgnoreCase) &&
+                                !devices.Exists(d => d.Equals(c)));
+
+                    if (orphanedConfiguration != null)
+                        orphanedConfiguration.Assign(device);
                 }
-                throw;
             }
-
-            RefreshListViewFromViewModel();
-            LoadKnownCoinsFromCoinStats();
-            RefreshCoinStatsLabel();
-            AutoSizeListViewColumns();
-            SuggestCoinsToMine();
-            RefreshDetailsAreaIfVisible();
         }
 
-        private void ShowCoinApiErrorNotification(Exception ex)
+        //each device needs to have a DeviceConfiguration
+        //this will remove any access ones after populating devices
+        //for instance if the user starts up the app with missing devices
+        private void RemoveExcessDeviceConfigurations()
         {
-            string siteUrl = this.coinApiContext.GetInfoUrl();
-            string apiUrl = this.coinApiContext.GetApiUrl();
-            string apiName = this.coinApiContext.GetApiName();
-
-            notificationsControl.AddNotification(ex.Message,
-                String.Format("Error parsing the {0} JSON API", apiName), () =>
-                {
-                    Process.Start(apiUrl);
-                }, 
-                siteUrl);
+            engineConfiguration.DeviceConfigurations.RemoveAll(c => !devices.Exists(d => d.Equals(c)));
         }
 
-        private void ShowMobileMinerApiErrorNotification(WebException ex)
+        //each device needs to have a DeviceConfiguration
+        //this will add any missing ones after populating devices
+        //for instance if the user starts up the app with a new device
+        private void AddMissingDeviceConfigurations()
         {
-            notificationsControl.AddNotification(ex.Message,
-                String.Format("Error accessing the MobileMiner API ({0})",  (int)((HttpWebResponse)ex.Response).StatusCode), () =>
-                {
-                    Process.Start("http://mobileminerapp.com");
-                },
-                "");
-        }
-
-        private void SuggestCoinsToMine()
-        {
-            if (!applicationConfiguration.SuggestCoinsToMine)
-                return;
-            if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.None)
-                return;
-            if (coinApiInformation == null) //no network connection
-                return;
-
-            IEnumerable<CoinInformation> coinsToMine = GetCoinsToMine();
-
-            foreach (CoinInformation coin in coinsToMine)
-                NotifyCoinToMine(coin);
-        }
-
-        private IEnumerable<CoinInformation> GetCoinsToMine()
-        {
-            IEnumerable<CoinInformation> filteredCoins = this.coinApiInformation;
-            if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256)
-                filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("SHA-256", StringComparison.OrdinalIgnoreCase));
-            else if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt)
-                filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("Scrypt", StringComparison.OrdinalIgnoreCase));
-
-            IEnumerable<CoinInformation> orderedCoins = filteredCoins.OrderByDescending(c => c.AverageProfitability);
-            switch (engineConfiguration.StrategyConfiguration.MiningBasis)
+            foreach (Device device in devices)
             {
-                case StrategyConfiguration.CoinMiningBasis.Difficulty:
-                    orderedCoins = coinApiInformation.OrderBy(c => c.Difficulty);
-                    break;
-                case StrategyConfiguration.CoinMiningBasis.Price:
-                    orderedCoins = coinApiInformation.OrderByDescending(c => c.Price);
-                    break;
-            }
+                DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations.FirstOrDefault(
+                    c => (c.Equals(device)));
+                if (existingConfiguration == null)
+                {
+                    DeviceConfiguration newConfiguration = new DeviceConfiguration();
 
-            //added checks for coin.Symbol and coin.Exchange
-            //current CoinChoose.com feed for LTC profitability has a NULL exchange for Litecoin
-            IEnumerable<CoinInformation> unconfiguredCoins = orderedCoins.Where(coin => !String.IsNullOrEmpty(coin.Symbol) && !engineConfiguration.CoinConfigurations.Any(config => config.Coin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase)));
-            IEnumerable<CoinInformation> coinsToMine = unconfiguredCoins.Take(3);
-            return coinsToMine;
+                    newConfiguration.Assign(device);
+
+                    //if the user has BTC configured, default to that
+                    string btcSymbol = "BTC";
+                    bool hasBtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.Coin.Symbol.Equals(btcSymbol, StringComparison.OrdinalIgnoreCase));
+                    if (hasBtcConfigured)
+                        newConfiguration.CoinSymbol = btcSymbol;
+
+                    newConfiguration.Enabled = true;
+                    engineConfiguration.DeviceConfigurations.Add(newConfiguration);
+                }
+            }
         }
 
-        private void NotifyCoinToMine(CoinInformation coin)
+        private bool MiningConfigurationValid()
         {
-            string value = coin.AverageProfitability.ToString(".#") + "%";
-            string noun = "average profitability";
-
-            switch (engineConfiguration.StrategyConfiguration.MiningBasis)
+            bool miningConfigurationValid = engineConfiguration.DeviceConfigurations.Count(
+                c => c.Enabled && !string.IsNullOrEmpty(c.CoinSymbol)) > 0;
+            if (!miningConfigurationValid)
             {
-                case StrategyConfiguration.CoinMiningBasis.Difficulty:
-                    value = coin.Difficulty.ToString(".####");
-                    noun = "difficulty";
-                    break;
-                case StrategyConfiguration.CoinMiningBasis.Price:
-                    value = coin.Price.ToString(".########");
-                    noun = "price";
-                    break;
+                miningConfigurationValid = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
+                    (engineConfiguration.CoinConfigurations.Count(c => c.Enabled) > 0) &&
+                    (engineConfiguration.DeviceConfigurations.Count(c => c.Enabled) > 0);
             }
-
-            string infoUrl = coinApiContext.GetInfoUrl();
-
-            notificationsControl.AddNotification(coin.Symbol,
-                String.Format("Consider mining {0} ({1} {2})",
-                    coin.Symbol, value, noun), () =>
-                    {
-                        Process.Start(String.Format("https://www.google.com/search?q={0}+{1}+mining+pools",
-                            coin.Symbol, coin.Name));
-                    }, infoUrl);
+            return miningConfigurationValid;
         }
 
-        private void RefreshCoinStatsLabel()
+        private CoinConfiguration CoinConfigurationForListViewItem(ListViewItem item)
         {
-            coinChooseSuffixLabel.Text = string.Format("at {0}", DateTime.Now.ToShortTimeString());
+            int itemIndex = deviceListView.Items.IndexOf(item);
+            Device device = devices[itemIndex];
+            return CoinConfigurationForDevice(device);
+        }
+
+        private CoinConfiguration CoinConfigurationForDevice(Device device)
+        {
+            //get the actual device configuration, text in the ListViewItem may be unsaved
+            DeviceConfiguration deviceConfiguration = null;
+            if (miningEngine.Mining)
+                deviceConfiguration = miningDeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+            else
+                deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+
+            if (deviceConfiguration == null)
+                return null;
+
+            string itemCoinSymbol = deviceConfiguration.CoinSymbol;
+
+            List<CoinConfiguration> configurations;
+            if (miningEngine.Mining)
+                configurations = this.miningCoinConfigurations;
+            else
+                configurations = engineConfiguration.CoinConfigurations;
+
+            CoinConfiguration coinConfiguration = configurations.SingleOrDefault(c => c.Coin.Symbol.Equals(itemCoinSymbol, StringComparison.OrdinalIgnoreCase));
+            return coinConfiguration;
         }
 
         private void LoadKnownCoinsFromCoinStats()
@@ -2697,7 +1586,7 @@ namespace MultiMiner.Win
             }
             SaveKnownCoinsToFile();
         }
-        
+
         private string KnownCoinsFileName()
         {
             string filePath;
@@ -2730,707 +1619,8 @@ namespace MultiMiner.Win
         {
             ConfigurationReaderWriter.WriteConfiguration(knownCoins, KnownCoinsFileName());
         }
-        
-        private void countdownTimer_Tick(object sender, EventArgs e)
-        {
-            startupMiningCountdownSeconds--;
-            RefreshCountdownLabel();
-            if (startupMiningCountdownSeconds == 0)
-            {
-                startupMiningPanel.Visible = false;
-                startupMiningCountdownTimer.Enabled = false;
-                Application.DoEvents();
 
-                //refresh devices so that we are sure we have all devices 
-                //otherwise scanning could happen too early on startup,
-                //before Windows has recognized all devices
-                RefreshDevices();
-                Application.DoEvents();
-                StartMining();
-            }
-        }
-
-        private void cancelStartupMiningButton_Click(object sender, EventArgs e)
-        {
-            CancelMiningOnStartup();
-        }
-
-        private void CancelMiningOnStartup()
-        {
-            startupMiningCountdownTimer.Enabled = false;
-            startupMiningPanel.Visible = false;
-            countdownLabel.Visible = false; //or remains visible under Mono
-            cancelStartupMiningButton.Visible = false; //or remains visible under Mono
-        }
-
-        private void crashRecoveryTimer_Tick(object sender, EventArgs e)
-        {
-            if (miningEngine.RelaunchCrashedMiners())
-            {
-                //clear any details stored correlated to processes - they could all be invalid after this
-                processDeviceDetails.Clear();
-                processPoolInformation.Clear();
-            }
-        }
-
-        private void detectDevicesButton_Click(object sender, EventArgs e)
-        {
-            RefreshDevices();
-        }
-
-        private void RefreshStrategiesLabel()
-        {
-            if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
-                strategiesLabel.Text = " Strategies: enabled";
-            else
-                strategiesLabel.Text = " Strategies: disabled";
-        }
-
-        private void RefreshStrategiesCountdown()
-        {
-            //Time until strategy check: 60s
-            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
-                strategyCountdownLabel.Text = string.Format("Time until strategy check: {0}m", coinStatsCountdownMinutes);
-            else
-                strategyCountdownLabel.Text = "";
-        }
-
-        private void ConfigureStrategies()
-        {
-            StrategiesForm strategiesForm = new StrategiesForm(engineConfiguration.StrategyConfiguration, knownCoins, 
-                applicationConfiguration);
-            DialogResult dialogResult = strategiesForm.ShowDialog();
-            if (dialogResult == System.Windows.Forms.DialogResult.OK)
-            {
-                Application.DoEvents();
-
-                engineConfiguration.SaveStrategyConfiguration();
-                applicationConfiguration.SaveApplicationConfiguration();
-
-                RefreshStrategiesLabel();
-                RefreshListViewFromViewModel();
-                UpdateMiningButtons();
-
-                Application.DoEvents();
-            }
-            else
-            {
-                engineConfiguration.LoadStrategyConfiguration(pathConfiguration.SharedConfigPath);
-                applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
-            }
-        }
-
-        private void SetupCoinStatsTimer()
-        {
-            int coinStatsMinutes = 15;
-            ApplicationConfiguration.TimerInterval timerInterval = applicationConfiguration.StrategyCheckInterval;
-
-            coinStatsMinutes = timerInterval.ToMinutes();
-
-            coinStatsTimer.Enabled = false;
-            coinStatsCountdownTimer.Enabled = false;
-
-            coinStatsCountdownMinutes = coinStatsMinutes;
-            coinStatsTimer.Interval = coinStatsMinutes * 60 * 1000;
-
-            coinStatsTimer.Enabled = true;
-            coinStatsCountdownTimer.Enabled = true;
-        }
-
-        private void coinStatsCountdownTimer_Tick(object sender, EventArgs e)
-        {
-            coinStatsCountdownMinutes--;
-            RefreshStrategiesCountdown();
-        }
-
-        private void coinChooseLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start(this.coinApiContext.GetInfoUrl());
-        }
-
-        private void closeApiButton_Click(object sender, EventArgs e)
-        {
-            HideAdvancedPanel();
-        }
-
-        private void HideAdvancedPanel()
-        {
-            advancedAreaContainer.Panel2.Hide();
-            advancedAreaContainer.Panel2Collapsed = true;
-            //hide all controls or they will show/flicker under OS X/mono
-            closeApiButton.Visible = false;
-            apiLogGridView.Visible = false;
-
-            applicationConfiguration.LogAreaVisible = false;
-            applicationConfiguration.SaveApplicationConfiguration();
-        }
-
-        private void ShowAdvancedPanel()
-        {
-            if (briefMode)
-                SetBriefMode(false);
-
-            closeApiButton.Visible = true;
-            apiLogGridView.Visible = true;
-            advancedAreaContainer.Panel2Collapsed = false;
-            advancedAreaContainer.Panel2.Show();
-        }
-
-        private void ShowApiMonitor()
-        {
-            advancedTabControl.SelectedTab = apiMonitorPage;
-            ShowAdvancedPanel();
-
-            applicationConfiguration.LogAreaVisible = true;
-            applicationConfiguration.SaveApplicationConfiguration();
-        }
-
-        private void apiMonitorButton_Click(object sender, EventArgs e)
-        {
-            ShowApiMonitor();
-        }
-
-        private void MainForm_Resize(object sender, EventArgs e)
-        {
-            if (formLoaded)
-            {
-                //handling for minimizing to notifcation area
-                if (applicationConfiguration.MinimizeToNotificationArea && (this.WindowState == FormWindowState.Minimized))
-                {
-                    notifyIcon1.Visible = true;
-                    this.Hide();
-                }
-                else if (this.WindowState == FormWindowState.Normal)
-                {
-                    notifyIcon1.Visible = false;
-                }
-
-                //handling for saving Maximized state
-                if (this.WindowState == FormWindowState.Maximized)
-                    applicationConfiguration.Maximized = true;
-
-                if (this.WindowState == FormWindowState.Normal) //don't set to false for minimizing
-                    applicationConfiguration.Maximized = false;
-
-                SavePosition();
-            }
-        }
-
-        private void notifyIcon1_DoubleClick(object sender, EventArgs e)
-        {
-            this.Show();
-            this.WindowState = FormWindowState.Normal;
-        }
-
-        private void showAppMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Show();
-            this.WindowState = FormWindowState.Normal;
-        }
-
-        private void quitAppMenuItem_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
-        private void startMenuItem_Click(object sender, EventArgs e)
-        {
-            StartMining();
-        }
-
-        private void stopMenuItem_Click(object sender, EventArgs e)
-        {
-            StopMining();
-        }
-
-        private void SubmitMultiMinerStatistics()
-        {
-            string installedVersion = Engine.Installer.GetInstalledMinerVersion();
-            if (installedVersion.Equals(applicationConfiguration.SubmittedStatsVersion))
-                return;
-
-            Stats.Api.Machine machineStat = new Stats.Api.Machine()
-            {
-                Name = Environment.MachineName,
-                MinerVersion = installedVersion
-            };
-                        
-            if (submitMinerStatisticsDelegate == null)
-                submitMinerStatisticsDelegate = SubmitMinerStatistics;
-
-            submitMinerStatisticsDelegate.BeginInvoke(machineStat, null, null);
-        }
-        private Action<Stats.Api.Machine> submitMinerStatisticsDelegate;
-
-        private void SubmitMinerStatistics(Stats.Api.Machine machineStat)
-        {
-            try
-            {
-                //plain text so users can see what we are posting - transparency
-                Stats.Api.ApiContext.SubmitMinerStatistics("http://multiminerstats.azurewebsites.net/api/", machineStat);
-                applicationConfiguration.SubmittedStatsVersion = machineStat.MinerVersion;
-            }
-            catch (WebException ex)
-            {
-                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
-            }
-        }
-
-        private void mobileMinerTimer_Tick(object sender, EventArgs e)
-        {
-            //if we do this with the Settings dialog open the user may have partially entered credentials
-            if (!ShowingModalDialog())
-            {
-                //check for commands first so we can report mining activity after
-                CheckForMobileMinerCommands();
-                SubmitMobileMinerStatistics();
-            }
-        }
-        
-        private string GetMobileMinerUrl()
-        {
-            string prefix = "https://";
-            if (!applicationConfiguration.MobileMinerUsesHttps)
-                prefix = "http://";
-
-            //deprecate api.mobileminerapp.com starting 11/28
-            //more expensive for no functional benefit
-            //string result = prefix + "api.mobileminerapp.com";
-
-            //if (!OSVersionPlatform.IsWindowsVistaOrHigher())
-            //    //SNI SSL not supported on XP
-            
-            string result = prefix + "mobileminer.azurewebsites.net/api";
-
-            return result;
-        }
-
-        private const string mobileMinerApiKey = "P3mVX95iP7xfoI";
-        
-        //don't show a dialog for a 403 after successful submissions.
-        //it's not ideal but there have been two reports now of this
-        //being triggered by someone who has valid credentials, and
-        //i've seen it myself as well
-        private bool mobileMinerSuccess = false;
-        private void SubmitMobileMinerStatistics()
-        {
-            //are remote monitoring enabled?
-            if (!applicationConfiguration.MobileMinerMonitoring)
-                return;
-
-            //is MobileMiner configured?
-            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
-                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
-                return;
-
-            List<MultiMiner.MobileMiner.Api.MiningStatistics> statisticsList = new List<MobileMiner.Api.MiningStatistics>();
-
-            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
-            {
-                List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
-
-                if (deviceInformationList == null) //handled failure getting API info
-                    continue;
-
-                //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
-                List<DeviceDetailsResponse> processDevices = GetProcessDevices(minerProcess, deviceInformationList);
-
-                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
-                {
-                    MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics = new MobileMiner.Api.MiningStatistics();
-
-                    PopulateMiningStatistics(miningStatistics, deviceInformation, GetCoinNameForApiContext(minerProcess.ApiContext));
-                                        
-                    DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
-                        && (d.ID == deviceInformation.ID));
-                    int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
-                    Device device = devices[deviceIndex];
-
-                    miningStatistics.FullName = device.Name;
-                    miningStatistics.PoolName = GetPoolNameByIndex(deviceInformation.PoolIndex, deviceIndex);
-
-                    statisticsList.Add(miningStatistics);
-                }
-            }
-
-            if (statisticsList.Count > 0)
-            {
-                if (submitMiningStatisticsDelegate == null)
-                    submitMiningStatisticsDelegate = SubmitMiningStatistics;
-
-                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, null, null);
-            }
-        }
-
-        private void PopulateMiningStatistics(MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics, DeviceInformationResponse deviceInformation,
-            string coinName)
-        {
-            miningStatistics.MinerName = "MultiMiner";
-            miningStatistics.CoinName = coinName;
-            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinName));
-            CryptoCoin coin = coinConfiguration.Coin;
-            miningStatistics.CoinSymbol = coin.Symbol;
-
-            if (coin.Algorithm == CoinAlgorithm.Scrypt)
-                miningStatistics.Algorithm = "scrypt";
-            else if (coin.Algorithm == CoinAlgorithm.SHA256)
-                miningStatistics.Algorithm = "SHA-256";
-
-            miningStatistics.PopulateFrom(deviceInformation);
-        }
-
-        private Action<List<MultiMiner.MobileMiner.Api.MiningStatistics>> submitMiningStatisticsDelegate;
-
-        private void SubmitMiningStatistics(List<MultiMiner.MobileMiner.Api.MiningStatistics> statisticsList)
-        {
-            try
-            {
-                MobileMiner.Api.ApiContext.SubmitMiningStatistics(GetMobileMinerUrl(), mobileMinerApiKey,
-                    applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                    Environment.MachineName, statisticsList);
-                mobileMinerSuccess = true;
-            }
-            catch (WebException ex)
-            {
-                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
-                HttpWebResponse response = ex.Response as HttpWebResponse;
-                if (response != null)
-                {
-                    if (response.StatusCode == HttpStatusCode.Forbidden)
-                    {
-                        if (!mobileMinerSuccess)
-                        {
-                            applicationConfiguration.MobileMinerMonitoring = false;
-                            applicationConfiguration.SaveApplicationConfiguration();
-                            MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
-                                Environment.NewLine + Environment.NewLine +
-                                "MobileMiner remote monitoring will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                            //check to make sure there are no modal windows already
-                            if (!ShowingModalDialog())
-                            {
-                                if (InvokeRequired)
-                                    BeginInvoke((Action)(() =>
-                                    {
-                                        //code to update UI
-                                        ConfigureSettings();
-                                    }));
-                                else
-                                    ConfigureSettings();
-                            }
-                        }
-                    }
-                    else if (applicationConfiguration.ShowApiErrors)
-                    {
-                        if (InvokeRequired)
-                            BeginInvoke((Action)(() =>
-                            {
-                                //code to update UI
-                                ShowMobileMinerApiErrorNotification(ex);
-                            }));
-                        else
-                            ShowMobileMinerApiErrorNotification(ex);
-                    }
-                }
-            }
-        }
-
-        private void SubmitMobileMinerNotification(string text)
-        {
-            //are remote notifications enabled?
-            if (!applicationConfiguration.MobileMinerPushNotifications)
-                return;
-
-            //is MobileMiner configured?
-            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
-                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
-                return;
-
-            if (submitNotificationDelegate == null)
-                submitNotificationDelegate = SubmitNotification;
-
-            submitNotificationDelegate.BeginInvoke(text, null, null);
-        }
-
-        private Action<string> submitNotificationDelegate;
-
-        private void SubmitNotification(string text)
-        {
-            try
-            {
-                string notificationText = String.Format("{0}: {1}", Environment.MachineName, text);
-                MobileMiner.Api.ApiContext.SubmitNotifications(GetMobileMinerUrl(), mobileMinerApiKey,
-                        applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                        new List<string> { notificationText });
-            }
-            catch (Exception ex)
-            {
-                if ((ex is WebException) || (ex is ArgumentException))
-                {
-                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
-                    //could also be a json parsing error
-                    return;
-                }
-                throw;
-            }
-        }
-
-        private static bool ShowingModalDialog()
-        {
-            foreach (Form f in Application.OpenForms)
-                if (f.Modal)
-                    return true;
-
-            return false;
-        }
-
-        private void CheckForMobileMinerCommands()
-        {
-            //are remote commands enabled?
-            if (!applicationConfiguration.MobileMinerRemoteCommands)
-                return;
-
-            //is MobileMiner configured?
-            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
-                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
-                return;
-
-            if (checkForRemoteCommandsDelegate == null)
-                checkForRemoteCommandsDelegate = GetRemoteCommands;
-
-            checkForRemoteCommandsDelegate.BeginInvoke(null, null);
-        }
-
-        private Action checkForRemoteCommandsDelegate;
-
-        private void GetRemoteCommands()
-        {
-            List<MobileMiner.Api.RemoteCommand> commands = new List<MobileMiner.Api.RemoteCommand>();
-
-            try
-            {
-                commands = MobileMiner.Api.ApiContext.GetCommands(GetMobileMinerUrl(), mobileMinerApiKey,
-                    applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                    Environment.MachineName);
-                mobileMinerSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                if ((ex is WebException) || (ex is ArgumentException))
-                {
-                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
-                    //could also be a json parsing error
-                    if (ex is WebException)
-                    {
-                        WebException webException = (WebException)ex;
-
-                        HttpWebResponse response = webException.Response as HttpWebResponse;
-                        if (response != null)
-                        {
-                            if (response.StatusCode == HttpStatusCode.Forbidden)
-                            {
-                                if (!mobileMinerSuccess)
-                                {
-                                    this.applicationConfiguration.MobileMinerRemoteCommands = false;
-                                    this.applicationConfiguration.SaveApplicationConfiguration();
-                                    MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
-                                        Environment.NewLine + Environment.NewLine +
-                                        "MobileMiner remote commands will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                                    //check to make sure there are no modal windows already
-                                    if (!ShowingModalDialog())
-                                    {
-                                        if (InvokeRequired)
-                                            BeginInvoke((Action)(() =>
-                                            {
-                                                //code to update UI
-                                                ConfigureSettings();
-                                            }));
-                                        else
-                                            ConfigureSettings();
-                                    }
-                                }
-                            }
-                            else if (applicationConfiguration.ShowApiErrors)
-                            {
-                                if (InvokeRequired)
-                                    BeginInvoke((Action)(() =>
-                                    {
-                                        //code to update UI
-                                        ShowMobileMinerApiErrorNotification(webException);
-                                    }));
-                                else
-                                    ShowMobileMinerApiErrorNotification(webException);
-                            }
-                        }
-                    }
-
-                    return;
-                }
-                throw;
-            }
-
-            if (InvokeRequired)
-                BeginInvoke((Action<List<MobileMiner.Api.RemoteCommand>>)((c) => ProcessRemoteCommands(c)), commands);
-            else
-                ProcessRemoteCommands(commands);
-        }
-
-        private void ProcessRemoteCommands(List<MobileMiner.Api.RemoteCommand> commands)
-        {
-            if (commands.Count > 0)
-            {
-                MobileMiner.Api.RemoteCommand command = commands.First();
-
-                //check this before actually executing the command
-                //point being, say for some reason it takes 2 minutes to restart mining
-                //if we check for commands again in that time, we don't want to process it again
-                if (processedCommandIds.Contains(command.Id))
-                    return;
-
-                processedCommandIds.Add(command.Id);
-
-                if (command.CommandText.Equals("START", StringComparison.OrdinalIgnoreCase))
-                {
-                    SaveChanges(); //necessary to ensure device configurations exist for devices
-                    StartMining();
-                }
-                else if (command.CommandText.Equals("STOP", StringComparison.OrdinalIgnoreCase))
-                    StopMining();
-                else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
-                {
-                    StopMining();
-                    SaveChanges(); //necessary to ensure device configurations exist for devices
-                    StartMining();
-                }
-
-                if (deleteRemoteCommandDelegate == null)
-                    deleteRemoteCommandDelegate = DeleteRemoteCommand;
-
-                deleteRemoteCommandDelegate.BeginInvoke(command, null, null);
-            }
-        }
-
-        private Action<MobileMiner.Api.RemoteCommand> deleteRemoteCommandDelegate;
-
-        private void DeleteRemoteCommand(MobileMiner.Api.RemoteCommand command)
-        {
-            MobileMiner.Api.ApiContext.DeleteCommand(GetMobileMinerUrl(), mobileMinerApiKey,
-                                applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                                Environment.MachineName, command.Id);
-        }
-
-        private void processLogButton_Click(object sender, EventArgs e)
-        {
-            ShowProcessLog();
-        }
-
-        private void ShowProcessLog()
-        {
-            advancedTabControl.SelectedTab = processLogPage;
-            ShowAdvancedPanel();
-
-            applicationConfiguration.LogAreaVisible = true;
-            applicationConfiguration.SaveApplicationConfiguration();
-        }
-
-        private void historyButton_Click(object sender, EventArgs e)
-        {
-            ShowHistory();
-        }
-
-        private void ShowHistory()
-        {
-            advancedTabControl.SelectedTab = historyPage;
-            ShowAdvancedPanel();
-
-            applicationConfiguration.LogAreaVisible = true;
-            applicationConfiguration.SaveApplicationConfiguration();
-        }
-
-        private void historyGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            //do unbound data in RowsAdded or it won't show until the DataGridView has been on-screen
-            for (int i = 0; i < e.RowCount; i++)
-            {
-                int index = e.RowIndex + i;
-                
-                LogProcessCloseArgs ea = this.logCloseEntries[index];
-
-                string devicesString = "??";
-                //convert device descriptors to homan readable string
-                //check for NULL because the history JSON is reloaded on startup and older
-                //versions didn't have this property serialized
-                if (ea.DeviceDescriptors != null)
-                    devicesString = GetFormattedDevicesString(ea.DeviceDescriptors);
-                
-                historyGridView.Rows[index].Cells[devicesColumn.Index].Value = devicesString;
-
-                TimeSpan timeSpan = ea.EndDate - ea.StartDate;
-                historyGridView.Rows[index].Cells[durationColumn.Index].Value = String.Format("{0:0.##} minutes", timeSpan.TotalMinutes);
-            }
-        }
-
-        private static string GetFormattedDevicesString(List<DeviceDescriptor> deviceDescriptors)
-        {
-            return String.Join(" ", deviceDescriptors.Select(d => d.ToString()).ToArray());
-        }
-
-        private void quickSwitchItem_DropDownOpening(object sender, EventArgs e)
-        {
-            PopulateQuickSwitchMenu(quickSwitchItem);
-        }
-
-        private void PopulateQuickSwitchMenu(ToolStripDropDownItem parent)
-        {
-            quickCoinMenu.Items.Clear();
-
-            
-            foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
-            {
-                ToolStripMenuItem coinSwitchItem = new ToolStripMenuItem() 
-                { 
-                    Text = coinConfiguration.Coin.Name, 
-                    Tag = coinConfiguration.Coin.Symbol 
-                };
-                coinSwitchItem.Click += HandleQuickSwitchClick;
-
-                quickCoinMenu.Items.Add(coinSwitchItem);
-            }
-
-            //Mono under Linux absolutely doesn't like having one context menu assigned to multiple
-            //toolstrip items' DropDown property at once, so we have to target a single one here
-            parent.DropDown = quickCoinMenu;
-        }
-
-        private void HandleQuickSwitchClick(object sender, EventArgs e)
-        {
-            bool wasMining = miningEngine.Mining;
-            StopMining();
-            
-            string coinSymbol = (string)((ToolStripMenuItem)sender).Tag;
-
-            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(coinSymbol));
-
-            SetAllDevicesToCoin(coinConfiguration);
-
-            engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false; 
-
-            engineConfiguration.SaveDeviceConfigurations();
-            engineConfiguration.SaveStrategyConfiguration();
-
-            RefreshListViewFromViewModel();
-
-            AutoSizeListViewColumns();
-
-            if (wasMining)
-                StartMining();
-            else
-                //so the Start button becomes enabled if we now have a valid config
-                UpdateMiningButtons();
-        }
-
-        private void SetAllDevicesToCoin(CoinConfiguration coinConfiguration)
+        private void SaveListViewValuesToConfiguration()
         {
             engineConfiguration.DeviceConfigurations.Clear();
 
@@ -3438,776 +1628,82 @@ namespace MultiMiner.Win
             {
                 ListViewItem listViewItem = deviceListView.Items[i];
 
-                Device device = devices[i];
-                //don't use KnownCoins as it may have dupes by coin name
-                CoinConfiguration existingConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(listViewItem.SubItems["Coin"].Text));
+                //pull this from coin configurations, not known coins, may not be in CoinChoose
+                string coinValue = listViewItem.SubItems["Coin"].Text;
+                CryptoCoin coin = null;
+                if (!String.IsNullOrEmpty(coinValue))
+                    coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinValue, StringComparison.OrdinalIgnoreCase)).Coin;
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
-                deviceConfiguration.Assign(device);
-
-                if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
-                {
-                    if (device.Kind == DeviceKind.GPU)
-                        deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
-                    else
-                        deviceConfiguration.CoinSymbol = existingConfiguration == null ? String.Empty : existingConfiguration.Coin.Symbol;
-                }
-                else
-                {
-                    deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
-                }
+                deviceConfiguration.Assign(devices[i]);
 
                 deviceConfiguration.Enabled = listViewItem.Checked;
+                deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
 
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
-
-            ApplyDeviceConfigurationsToViewModel();
-            ApplyCoinInformationToViewModel();
         }
+        #endregion
 
-        private void advancedMenuItem_DropDownOpening(object sender, EventArgs e)
+        #region UI event handlers
+        private void CoinMenuItemClick(object sender, EventArgs e)
         {
-            //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
-            quickSwitchItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
-            //
-            dynamicIntensityButton.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
-            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
-            dynamicIntensitySeparator.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
-        }
+            ToolStripItem menuItem = (ToolStripItem)sender;
 
-        private void notificationsControl1_NotificationsChanged(object sender)
-        {
-            notificationsControl.Visible = notificationsControl.NotificationCount() > 0;
-            if (notificationsControl.Visible)
-                notificationsControl.BringToFront();
-        }
-
-        private void updateCheckTimer_Tick(object sender, EventArgs e)
-        {
-            CheckForUpdates();
-        }
-        
-        private void CheckForUpdates()
-        {
-            PlatformID concretePlatform = OSVersionPlatform.GetConcretePlatform();
-
-            //we cannot auto update the .app file (yet)
-            CheckForMultiMinerUpdates();
-
-            //we cannot auto install miners on Unix (yet)
-            if (applicationConfiguration.CheckForMinerUpdates && (concretePlatform != PlatformID.Unix))
-                TryToCheckForMinerUpdates();
-        }
-
-        private void TryToCheckForMinerUpdates()
-        {
-            try
-            {
-                CheckForMinerUpdates();
-            }
-            catch (ArgumentException ex)
-            {
-                string error = String.Format("Error checking for {0} updates", "bfgminer");
-                notificationsControl.AddNotification(error, error, () =>
-                {
-                }, "");
-            }
-        }
-
-        private const int bfgminerNotificationId = 100;
-        private const int multiMinerNotificationId = 102;
-
-        private void CheckForMultiMinerUpdates()
-        {
-            string availableMinerVersion = String.Empty;
-            try
-            {
-                using (new HourGlass())
-                {
-                    availableMinerVersion = Engine.Installer.GetAvailableMinerVersion();
-                }
-            }
-            catch (WebException ex)
-            {
-                //downloads website is down
-                return;
-            }
-
-            string installedMinerVersion = Engine.Installer.GetInstalledMinerVersion();
-            
-            if (!AutomaticUpgradeAllowed(installedMinerVersion, availableMinerVersion))
-                return;
-
-            if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
-            {
-                notificationsControl.AddNotification(multiMinerNotificationId.ToString(),
-                    String.Format("MultiMiner version {0} is available ({1} installed)",
-                        availableMinerVersion, installedMinerVersion), () =>
-                        {
-                            bool wasMining = miningEngine.Mining;
-                            StopMining();
-                            InstallMultiMiner();
-                            if (wasMining)
-                                StartMining();
-                        }, "http://releases.multiminerapp.com");
-            }
-        }
-
-        private static bool AutomaticUpgradeAllowed(string installedMinerVersion, string availableMinerVersion)
-        {
-            //don't automatically prompt to upgrade from 1.0 to 2.0
-            Version sourceVersion = new Version(installedMinerVersion);
-            Version targetVersion = new Version(availableMinerVersion);
-            return sourceVersion.Major == targetVersion.Major;
-        }
-
-        private static bool ThisVersionGreater(string thisVersion, string thatVersion)
-        {
-            Version thisVersionObj = new Version(thisVersion);
-            Version thatVersionObj = new Version(thatVersion);
-
-            return thisVersionObj > thatVersionObj;
-        }
-
-        private void CheckForMinerUpdates()
-        {
-            if (!MinerIsInstalled())
-                return;
-
-            string availableMinerVersion = null;
-            using (new HourGlass())
-            {
-                availableMinerVersion = GetAvailableBackendVersion();
-            }
-
-            if (String.IsNullOrEmpty(availableMinerVersion))
-                return;
-
-            string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner());
-            if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
-                DisplayMinerUpdateNotification(availableMinerVersion, installedMinerVersion);
-        }
-
-        private void DisplayMinerUpdateNotification(string availableMinerVersion, string installedMinerVersion)
-        {
-            int notificationId = bfgminerNotificationId;
-
-            string informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
-
-            string minerName = MinerPath.GetMinerName();
-            notificationsControl.AddNotification(notificationId.ToString(),
-                String.Format("{0} version {1} is available ({2} installed)",
-                    minerName, availableMinerVersion, installedMinerVersion), () =>
-                {
-                    bool wasMining = miningEngine.Mining;
-
-                    //only stop mining if this is the engine being used
-                    if (wasMining)
-                        StopMining();
-
-                    InstallMiner();
-
-                    //only start mining if we stopped mining
-                    if (wasMining)
-                        StartMining();
-                }, informationUrl);
-        }
-
-        private static string GetAvailableBackendVersion()
-        {
-            string result = String.Empty;
-            try
-            {
-                result = Xgminer.Installer.GetAvailableMinerVersion();
-            }
-            catch (WebException ex)
-            {
-                //downloads website is down
-            }
-            return result;
-        }
-
-        private static void InstallMultiMiner()
-        {
-            ProgressForm progressForm = new ProgressForm("Downloading and installing MultiMiner from " + Engine.Installer.GetMinerDownloadRoot());
-            progressForm.Show();
-
-            //for Mono - show the UI
-            Application.DoEvents();
-            Thread.Sleep(25);
-            Application.DoEvents();
-            try
-            {
-                MultiMiner.Engine.Installer.InstallMiner(Path.GetDirectoryName(Application.ExecutablePath));
-            }
-            finally
-            {
-                progressForm.Close();
-            }
-        }
-
-        private void aboutButton_Click(object sender, EventArgs e)
-        {
-            ShowAboutDialog();
-        }
-
-        private static void ShowAboutDialog()
-        {
-            AboutForm aboutForm = new AboutForm();
-            aboutForm.ShowDialog();
-        }
-
-        private void idleTimer_Tick(object sender, EventArgs e)
-        {
-            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
-                return; //idle detection code uses User32.dll
-
-            if (applicationConfiguration.AutoSetDesktopMode && miningEngine.Mining)
-            {
-                TimeSpan idleTimeSpan = TimeSpan.FromMilliseconds(Environment.TickCount - IdleTimeFinder.GetLastInputTime());
-
-                const int idleMinutesForDesktopMode = 2;
-
-                //if idle for more than 1 minute, disable Desktop Mode
-                if (idleTimeSpan.TotalMinutes > idleMinutesForDesktopMode)
-                {
-                    if (engineConfiguration.XgminerConfiguration.DesktopMode)
-                    {
-                        EnableDesktopMode(false);
-                        RestartMiningIfMining();
-                    }
-                }
-                //else if idle for less than the idleTimer interval, enable Desktop Mode
-                else if (idleTimeSpan.TotalMilliseconds <= idleTimer.Interval)
-                {
-                    if (!engineConfiguration.XgminerConfiguration.DesktopMode)
-                    {
-                        EnableDesktopMode(true);
-                        RestartMiningIfMining();
-                    }
-                }
-            }
-        }
-
-        private void EnableDesktopMode(bool enabled)
-        {
-            engineConfiguration.XgminerConfiguration.DesktopMode = enabled;
-            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
-            engineConfiguration.SaveMinerConfiguration();
-        }
-
-        private void advancedAreaContainer_SplitterMoved(object sender, SplitterEventArgs e)
-        {
-            if (settingsLoaded)
-                applicationConfiguration.LogAreaDistance = e.SplitY;
-        }
-
-        private void settingsButton_ButtonClick(object sender, EventArgs e)
-        {
-            ConfigureSettings();
-        }
-
-        private void coinsButton_Click_1(object sender, EventArgs e)
-        {
-            ConfigureCoins();
-        }
-
-        private void strategiesButton_Click_1(object sender, EventArgs e)
-        {
-            ConfigureStrategies();
-        }
-
-        private void restartTimer_Tick(object sender, EventArgs e)
-        {
-            RestartMiningIfMining();
-        }
-
-        private void RestartMiningIfMining()
-        {
-            if (miningEngine.Mining)
-            {
-                StopMining();
-                StartMining();
-            }
-        }
-
-        private void minerSummaryTimer_Tick(object sender, EventArgs e)
-        {
-            PopulateSummaryInfoFromProcesses();
-        }
-
-        private void deviceListView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
-        {
-            //don't allow 0-width (hidden) columns to be resized
-            if (deviceListView.Columns[e.ColumnIndex].Width == 0)
-            {
-                e.Cancel = true;
-                e.NewWidth = 0;
-            }
-        }
-        
-        private void deviceListView_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-                if (deviceListView.FocusedItem.Bounds.Contains(e.Location) == true)
-                {
-                    string currentCoin = GetCurrentlySelectedCoinName();
-
-                    CheckCoinInPopupMenu(currentCoin);
-
-                    coinPopupMenu.Show(Cursor.Position);
-                }
-        }
-
-        private void CheckCoinInPopupMenu(string currentCoin)
-        {
-            foreach (ToolStripItem item in coinPopupMenu.Items)
-                ((ToolStripMenuItem)item).Checked = false;
-
-            if (!String.IsNullOrEmpty(currentCoin))
-            {
-                foreach (ToolStripItem item in coinPopupMenu.Items)
-                    if (item.Text.Equals(currentCoin))
-                    {
-                        ((ToolStripMenuItem)item).Checked = true;
-                        break;
-                    }
-            }
-        }
-
-        private string GetCurrentlySelectedCoinName()
-        {
-            string currentCoin = null;
             foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
             {
-                string itemValue = selectedItem.SubItems["Coin"].Text;
-                if (!String.IsNullOrEmpty(itemValue))
-                {
-                    currentCoin = itemValue;
-                    break;
-                }
+                DeviceViewModel deviceViewModel = mainFormViewModel.Devices[selectedItem.Index];
+                deviceViewModel.Coin = engineConfiguration.CoinConfigurations.Single(cc => cc.Coin.Name.Equals(menuItem.Text)).Coin;
+                //selectedItem.SubItems["Coin"].Text = menuItem.Text;
             }
-            return currentCoin;
+
+            RefreshListViewFromViewModel();
+
+            AutoSizeListViewColumns();
+
+            UpdateChangesButtons(true);
         }
 
-        private void deviceListView_ItemChecked(object sender, ItemCheckedEventArgs e)
+        private void saveButton_Click(object sender, EventArgs e)
         {
-            if (!updatingListView)
-                UpdateChangesButtons(true);
+            //SaveChanges() will restart mining if needed
+            SaveChanges();
         }
 
-        private void dynamicIntensityButton_Click(object sender, EventArgs e)
+        private void cancelButton_Click(object sender, EventArgs e)
         {
-            ToggleDynamicIntensity(dynamicIntensityButton.Checked);
+            CancelChanges();
         }
 
-        private void ToggleDynamicIntensity(bool enabled)
+        private void stopButton_Click(object sender, EventArgs e)
         {
-            engineConfiguration.XgminerConfiguration.DesktopMode = enabled;
-            engineConfiguration.SaveMinerConfiguration();
+            StopMining();
         }
 
-        private void deviceListView_MouseUp(object sender, MouseEventArgs e)
+        private void startButton_Click(object sender, EventArgs e)
         {
-            //display the devices context menu when no item is selected
-            if (e.Button == MouseButtons.Right)
-                if ((deviceListView.FocusedItem == null) || !deviceListView.FocusedItem.Bounds.Contains(e.Location))
-                {
-                    deviceListContextMenu.Show(Cursor.Position);
-                }
+            HandleStartButtonClick();
         }
 
-        private void detectDevicesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void cancelStartupMiningButton_Click(object sender, EventArgs e)
+        {
+            CancelMiningOnStartup();
+        }
+
+        private void detectDevicesButton_Click(object sender, EventArgs e)
         {
             RefreshDevices();
         }
 
-        private void historyToolStripMenuItem_Click(object sender, EventArgs e)
+        private void coinChooseLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            ShowHistory();
+            Process.Start(this.coinApiContext.GetInfoUrl());
         }
 
-        private void processLogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ShowProcessLog();
-        }
-
-        private void aPIMonitorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void apiMonitorButton_Click(object sender, EventArgs e)
         {
             ShowApiMonitor();
-        }
-
-        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ConfigureSettings();
-        }
-
-        private void coinsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ConfigureCoins();
-        }
-
-        private void strategiesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ConfigureStrategies();
-        }
-
-        private void deviceListContextMenu_Opening(object sender, CancelEventArgs e)
-        {
-            //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
-            quickSwitchPopupItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
-        }
-
-        private void quickSwitchPopupItem_DropDownOpening(object sender, EventArgs e)
-        {
-            PopulateQuickSwitchMenu(quickSwitchPopupItem);
-        }
-
-        private bool briefMode = false;
-        private void detailsToggleButton_ButtonClick(object sender, EventArgs e)
-        {
-            SetBriefMode(!briefMode);
-            RefreshDetailsToggleButton();
-        }
-
-        private void RefreshDetailsToggleButton()
-        {
-            if (briefMode)
-                detailsToggleButton.Text = "▾ More details";
-            else
-                detailsToggleButton.Text = "▴ Fewer details";
-        }
-
-        private void SetBriefMode(bool newBriefMode)
-        {
-            briefMode = newBriefMode;
-            RefreshDetailsToggleButton();
-
-            //do this before adjusting the window size so we can base it on column widths
-            AutoSizeListViewColumns();
-
-            if (briefMode)
-            {
-                CloseDetailsArea();
-                HideAdvancedPanel();
-                WindowState = FormWindowState.Normal;
-
-                int newWidth = 0;
-
-                foreach (ColumnHeader column in deviceListView.Columns)
-                    newWidth += column.Width;
-                newWidth += 40; //needs to be pretty wide for e.g. Aero Basic
-
-                newWidth = Math.Max(newWidth, 300);
-
-                //don't (automatically) set the width to crop notifications
-                newWidth = Math.Max(newWidth, notificationsControl.Width + 24);
-
-                Size = new Size(newWidth, 400);
-
-            } else
-            {
-                if (WindowState != FormWindowState.Maximized)
-                {
-                    //use Math.Max so it won't size smaller to show more
-                    Size = new Size(Math.Max(Size.Width, 720), Math.Max(Size.Height, 500));
-                }
-            }
-
-            strategiesLabel.Visible = !briefMode;
-            strategyCountdownLabel.Visible = !briefMode;
-            deviceTotalLabel.Visible = !briefMode;
-
-            advancedMenuItem.Visible = !briefMode;
-            //don't hide settings - the wizard talks about the button
-            //settingsButton.Visible = !briefMode;
-            //settingsSeparator.Visible = !briefMode;
-
-            footerPanel.Visible = !briefMode;
-
-            applicationConfiguration.BriefUserInterface = briefMode;
-            applicationConfiguration.SaveApplicationConfiguration();
-        }
-
-        private void SetupStatusBarLabelLayouts()
-        {
-            sha256RateLabel.AutoSize = true;
-            sha256RateLabel.Spring = true;
-
-            scryptRateLabel.AutoSize = true;
-            scryptRateLabel.Padding = new Padding(12, 0, 0, 0);
-
-            deviceTotalLabel.AutoSize = true;
-            deviceTotalLabel.Padding = new Padding(12, 0, 0, 0);
-        }
-
-        private void largeIconsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SetListViewStyle(View.LargeIcon);
-        }
-
-        private void smallIconsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SetListViewStyle(View.SmallIcon);
-        }
-
-        private void listToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SetListViewStyle(View.List);
-        }
-
-        private void detailsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SetListViewStyle(View.Details);
-        }
-
-        private void tilesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SetListViewStyle(View.Tile);
-        }
-
-        private void SetListViewStyle(View view)
-        {
-            updatingListView = true;
-            try
-            {
-                deviceListView.CheckBoxes = false;
-                deviceListView.View = view;
-                deviceListView.CheckBoxes = view != View.Tile;
-
-                switch (view)
-                {
-                    case View.LargeIcon:
-                        listViewStyleButton.Image = Properties.Resources.view_medium_icons;
-                        break;
-                    case View.Details:
-                        listViewStyleButton.Image = Properties.Resources.view_details;
-                        break;
-                    case View.SmallIcon:
-                        listViewStyleButton.Image = Properties.Resources.view_small_icons;
-                        break;
-                    case View.List:
-                        listViewStyleButton.Image = Properties.Resources.view_list;
-                        break;
-                    case View.Tile:
-                        listViewStyleButton.Image = Properties.Resources.view_large_icons;
-                        break;
-                }
-
-                applicationConfiguration.ListViewStyle = view;
-
-                if (view == View.Details)
-                    AutoSizeListViewColumns();
-            }
-            finally
-            {
-                updatingListView = false;
-            }
-        }
-
-        private void listViewStyleButton_ButtonClick(object sender, EventArgs e)
-        {
-            switch (deviceListView.View)
-            {
-                case View.LargeIcon:
-                    SetListViewStyle(View.SmallIcon);
-                    break;
-                case View.Details:
-                    SetListViewStyle(View.Tile);
-                    break;
-                case View.SmallIcon:
-                    SetListViewStyle(View.List);
-                    break;
-                case View.List:
-                    SetListViewStyle(View.Details);
-                    break;
-                case View.Tile:
-                    SetListViewStyle(View.LargeIcon);
-                    break;
-            }
-        }
-
-        private void historyGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-            if ((e.ColumnIndex == 0) || (e.ColumnIndex == 1))
-            {
-                e.Value = GetReallyShortDateTimeFormat((DateTime)e.Value);
-                e.FormattingApplied = true;
-            }
-        }
-
-        private static string GetReallyShortDateTimeFormat(DateTime dateTime)
-        {
-            return String.Format("{0} {1}", dateTime.ToReallyShortDateString(), dateTime.ToShortTimeString());
-        }
-
-        private void processLogGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-            if (e.ColumnIndex == 0)
-            {
-                if (e.Value != null)
-                {
-                    e.Value = GetReallyShortDateTimeFormat((DateTime)e.Value);
-                    e.FormattingApplied = true;
-                }
-            }
-        }
-
-        private void apiLogGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-            if (e.ColumnIndex == 0)
-            {
-                e.Value = GetReallyShortDateTimeFormat((DateTime)e.Value);
-                e.FormattingApplied = true;
-            }
-        }
-
-        private void MainForm_ResizeEnd(object sender, EventArgs e)
-        {
-            AutoSizeListViewColumns();
-        }
-
-        private void restartButton_Click(object sender, EventArgs e)
-        {
-            RestartMining();
-        }
-
-        private void RestartMining()
-        {
-            StopMining();
-
-            //refresh stats from Coin API so the Restart button can be used as a way to
-            //force MultiMiner to apply updated mining strategies
-            RefreshCoinStats();
-
-            StartMining();
-        }
-
-        private void perksToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ConfigurePerks();
-        }
-
-        private void ConfigurePerks()
-        {
-            PerksForm perksForm = new PerksForm(perksConfiguration);
-            DialogResult dialogResult = perksForm.ShowDialog();
-
-            if (dialogResult == System.Windows.Forms.DialogResult.OK)
-            {
-                perksConfiguration.SavePerksConfiguration();
-                if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
-                    RefreshExchangeRates();
-                RefreshListViewFromViewModel();
-                RefreshIncomeSummary();
-                AutoSizeListViewColumns();
-                SetupRemoting();
-            }
-            else
-                perksConfiguration.LoadPerksConfiguration(pathConfiguration.SharedConfigPath);
-        }
-
-        private void perksToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            ConfigurePerks();
-        }
-
-        private void exchangeRateTimer_Tick(object sender, EventArgs e)
-        {
-            RefreshExchangeRates();
-        }
-
-        private void deviceListView_ColumnClick(object sender, ColumnClickEventArgs e)
-        {
-            if (e.Column == incomeColumnHeader.Index)
-            {
-                using (new HourGlass())
-                {
-                    perksConfiguration.ShowIncomeInUsd = !perksConfiguration.ShowIncomeInUsd;
-                    RefreshDeviceStats();
-                    perksConfiguration.SavePerksConfiguration();
-                    AutoSizeListViewColumns();
-                }
-            }
-            else if (e.Column == utilityColumnHeader.Index)
-            {
-                applicationConfiguration.ShowWorkUtility = !applicationConfiguration.ShowWorkUtility;
-                applicationConfiguration.SaveApplicationConfiguration();
-
-                UpdateUtilityColumnHeader();
-
-                RefreshDeviceStats();
-                AutoSizeListViewColumns();
-                RefreshDetailsAreaIfVisible();
-            }
-        }
-
-        private void UpdateUtilityColumnHeader()
-        {
-            string oldValue = utilityColumnHeader.Text;
-            utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
-            foreach (ListViewItem item in deviceListView.Items)
-                item.SubItems[oldValue].Name = utilityColumnHeader.Text;
-        }
-
-        private void columnHeaderMenu_Opening(object sender, CancelEventArgs e)
-        {
-            if (deviceListView.View != View.Details)
-            {
-                e.Cancel = true;
-                return;
-            }
-
-            Rectangle headerRect = new Rectangle(0, 0, deviceListView.Width, 20);
-            if (!headerRect.Contains(deviceListView.PointToClient(Control.MousePosition)))
-                e.Cancel = true;
-
-            if (!e.Cancel)
-            {
-                if (columnHeaderMenu.Items.Count <= 1) //1 dummy item so it opens
-                    SetupColumnHeaderMenu();
-            }
-        }
-
-        private void SetupColumnHeaderMenu()
-        {
-            columnHeaderMenu.Items.Clear();
-
-            foreach (ColumnHeader column in deviceListView.Columns)
-            {
-                if ((column == nameColumnHeader)
-                    || (column == coinColumnHeader))
-                    continue;
-
-                string columnText = column.Text;
-
-                ToolStripMenuItem menuItem = (ToolStripMenuItem)columnHeaderMenu.Items.Add(columnText);
-                menuItem.Checked = !applicationConfiguration.HiddenColumns.Contains(columnText);
-
-                menuItem.Click += ColumnHeaderMenuClick;
-            }
-        }
-
-        private void ColumnHeaderMenuClick(object sender, EventArgs e)
-        {
-            using (new HourGlass())
-            {
-                ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-                menuItem.Checked = !menuItem.Checked;
-                if (menuItem.Checked)
-                    applicationConfiguration.HiddenColumns.Remove(menuItem.Text);
-                else
-                    applicationConfiguration.HiddenColumns.Add(menuItem.Text);
-                applicationConfiguration.SaveApplicationConfiguration();
-                AutoSizeListViewColumns();
-            }
-        }
-
-        private void MainForm_Shown(object sender, EventArgs e)
-        {
-            deviceListView.Focus();
         }
 
         private void advancedToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
@@ -4373,96 +1869,27 @@ namespace MultiMiner.Win
             CloseDetailsArea();
         }
 
-        private void CloseDetailsArea()
-        {
-            detailsAreaContainer.Panel2.Hide();
-            detailsAreaContainer.Panel2Collapsed = true;
-        }
-
         private void deviceListView_DoubleClick(object sender, EventArgs e)
         {
             ShowDetailsArea();
         }
 
-        private void ShowDetailsArea()
+        private void openLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SetBriefMode(false);
-            RefreshDetailsArea();
+            string fileName = String.Empty;
+            if (advancedTabControl.SelectedTab == apiMonitorPage)
+                fileName = "ApiLog.json";
+            else if (advancedTabControl.SelectedTab == processLogPage)
+                fileName = "ProcessLog.json";
+            else if (advancedTabControl.SelectedTab == historyPage)
+                fileName = "MiningLog.json";
 
-            detailsAreaContainer.Panel2Collapsed = false;
-            detailsAreaContainer.Panel2.Show();
-        }
-
-        private void RefreshDetailsAreaIfVisible()
-        {
-            if (!detailsAreaContainer.Panel2Collapsed)
-                RefreshDetailsArea();
-        }
-
-        private void RefreshDetailsArea()
-        {
-            if (deviceListView.SelectedItems.Count == 0)
+            if (!String.IsNullOrEmpty(fileName))
             {
-                detailsControl1.ClearDetails(devices.Count);
-                return;
+                string logDirectory = GetLogDirectory();
+                string logFilePath = Path.Combine(logDirectory, fileName);
+                Process.Start(logFilePath);
             }
-
-            int deviceIndex = deviceListView.SelectedIndices[0];
-            Device selectedDevice = devices[deviceIndex];
-            DeviceDetailsResponse deviceDetails = null;
-            if (deviceDetailsMapping.ContainsKey(selectedDevice))
-                deviceDetails = deviceDetailsMapping[selectedDevice];
-            CoinConfiguration coinConfiguration = CoinConfigurationForDevice(selectedDevice);
-            CoinInformation coinInfo = null;
-
-            //Internet or Coin API could be down
-            if ((this.coinApiInformation != null) &&
-                //device may not be configured
-                (coinConfiguration != null))
-                coinInfo = this.coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
-
-            List<DeviceInformationResponse> minerDeviceInformation = new List<DeviceInformationResponse>();
-
-            if (deviceDetails != null)
-            {
-                if (deviceDetails.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
-                    minerDeviceInformation = allDeviceInformation.Where(d => d.Name.Equals(deviceDetails.Name, StringComparison.OrdinalIgnoreCase))
-                        .ToList();
-                else
-                    minerDeviceInformation = allDeviceInformation.Where(d => d.Name.Equals(deviceDetails.Name, StringComparison.OrdinalIgnoreCase)
-                        && (d.ID == deviceDetails.ID)).ToList();
-            }
-
-            List<DeviceDetailsResponse> minerDeviceDetails = new List<DeviceDetailsResponse>();
-
-            PoolInformationResponse poolInformation = null;
-
-            string coinSymbol = null;
-            //Internet or Coin API could be down
-            if (coinInfo != null)
-                coinSymbol = coinInfo.Symbol;
-            //device may not be configured
-            else if (coinConfiguration != null)
-                coinSymbol = coinConfiguration.Coin.Symbol;
-
-            MinerProcess minerProcess = null;
-
-            //Internet or Coin API could be down AND device may not be configured
-            if (!String.IsNullOrEmpty(coinSymbol))
-                // p.CoinInformation is null if there is no Coin API info
-                minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinSymbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
-                        
-            if (minerProcess != null)
-            {
-                DeviceInformationResponse deviceInformation = minerDeviceInformation.FirstOrDefault();
-                if ((deviceInformation != null) && processPoolInformation.ContainsKey(minerProcess))
-                    poolInformation = processPoolInformation[minerProcess].SingleOrDefault(p => p.Index == deviceInformation.PoolIndex);
-                if (processDeviceDetails.ContainsKey(minerProcess))
-                    minerDeviceDetails = processDeviceDetails[minerProcess];
-            }
-
-            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, minerDeviceInformation, poolInformation, 
-                minerDeviceDetails, applicationConfiguration.ShowWorkUtility);
         }
 
         private void deviceListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -4471,10 +1898,1289 @@ namespace MultiMiner.Win
                 RefreshDetailsArea();
         }
 
+        private void listViewStyleButton_ButtonClick(object sender, EventArgs e)
+        {
+            switch (deviceListView.View)
+            {
+                case View.LargeIcon:
+                    SetListViewStyle(View.SmallIcon);
+                    break;
+                case View.Details:
+                    SetListViewStyle(View.Tile);
+                    break;
+                case View.SmallIcon:
+                    SetListViewStyle(View.List);
+                    break;
+                case View.List:
+                    SetListViewStyle(View.Details);
+                    break;
+                case View.Tile:
+                    SetListViewStyle(View.LargeIcon);
+                    break;
+            }
+        }
+
+        private void historyGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if ((e.ColumnIndex == 0) || (e.ColumnIndex == 1))
+            {
+                e.Value = ((DateTime)e.Value).ToReallyShortDateTimeString();
+                e.FormattingApplied = true;
+            }
+        }
+
+        private void processLogGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.ColumnIndex == 0)
+            {
+                if (e.Value != null)
+                {
+                    e.Value = ((DateTime)e.Value).ToReallyShortDateTimeString();
+                    e.FormattingApplied = true;
+                }
+            }
+        }
+
+        private void apiLogGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.ColumnIndex == 0)
+            {
+                e.Value = ((DateTime)e.Value).ToReallyShortDateTimeString();
+                e.FormattingApplied = true;
+            }
+        }
+
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            AutoSizeListViewColumns();
+        }
+
+        private void restartButton_Click(object sender, EventArgs e)
+        {
+            RestartMining();
+        }
+
+        private void perksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConfigurePerks();
+        }
+
+        private void perksToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ConfigurePerks();
+        }
+
+        private void deviceListView_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (e.Column == incomeColumnHeader.Index)
+            {
+                using (new HourGlass())
+                {
+                    perksConfiguration.ShowIncomeInUsd = !perksConfiguration.ShowIncomeInUsd;
+                    RefreshDeviceStats();
+                    perksConfiguration.SavePerksConfiguration();
+                    AutoSizeListViewColumns();
+                }
+            }
+            else if (e.Column == utilityColumnHeader.Index)
+            {
+                applicationConfiguration.ShowWorkUtility = !applicationConfiguration.ShowWorkUtility;
+                applicationConfiguration.SaveApplicationConfiguration();
+
+                UpdateUtilityColumnHeader();
+
+                RefreshDeviceStats();
+                AutoSizeListViewColumns();
+                RefreshDetailsAreaIfVisible();
+            }
+        }
+
+        private void columnHeaderMenu_Opening(object sender, CancelEventArgs e)
+        {
+            if (deviceListView.View != View.Details)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            Rectangle headerRect = new Rectangle(0, 0, deviceListView.Width, 20);
+            if (!headerRect.Contains(deviceListView.PointToClient(Control.MousePosition)))
+                e.Cancel = true;
+
+            if (!e.Cancel)
+            {
+                if (columnHeaderMenu.Items.Count <= 1) //1 dummy item so it opens
+                    SetupColumnHeaderMenu();
+            }
+        }
+
+        private void largeIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.LargeIcon);
+        }
+
+        private void smallIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.SmallIcon);
+        }
+
+        private void listToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.List);
+        }
+
+        private void detailsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.Details);
+        }
+
+        private void tilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetListViewStyle(View.Tile);
+        }
+
+        private void deviceListView_MouseUp(object sender, MouseEventArgs e)
+        {
+            //display the devices context menu when no item is selected
+            if (e.Button == MouseButtons.Right)
+                if ((deviceListView.FocusedItem == null) || !deviceListView.FocusedItem.Bounds.Contains(e.Location))
+                {
+                    deviceListContextMenu.Show(Cursor.Position);
+                }
+        }
+
+        private void detectDevicesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RefreshDevices();
+        }
+
+        private void historyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowHistory();
+        }
+
+        private void processLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowProcessLog();
+        }
+
+        private void aPIMonitorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowApiMonitor();
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConfigureSettings();
+        }
+
+        private void coinsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConfigureCoins();
+        }
+
+        private void strategiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConfigureStrategies();
+        }
+
+        private void deviceListContextMenu_Opening(object sender, CancelEventArgs e)
+        {
+            //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
+            quickSwitchPopupItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
+        }
+
+        private void quickSwitchPopupItem_DropDownOpening(object sender, EventArgs e)
+        {
+            PopulateQuickSwitchMenu(quickSwitchPopupItem);
+        }
+
+        private bool briefMode = false;
+        private void detailsToggleButton_ButtonClick(object sender, EventArgs e)
+        {
+            SetBriefMode(!briefMode);
+            RefreshDetailsToggleButton();
+        }
+
+        private void deviceListView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
+        {
+            //don't allow 0-width (hidden) columns to be resized
+            if (deviceListView.Columns[e.ColumnIndex].Width == 0)
+            {
+                e.Cancel = true;
+                e.NewWidth = 0;
+            }
+        }
+
+        private void deviceListView_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+                if (deviceListView.FocusedItem.Bounds.Contains(e.Location) == true)
+                {
+                    string currentCoin = GetCurrentlySelectedCoinName();
+
+                    CheckCoinInPopupMenu(currentCoin);
+
+                    coinPopupMenu.Show(Cursor.Position);
+                }
+        }
+
+        private string GetCurrentlySelectedCoinName()
+        {
+            string currentCoin = null;
+            foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
+            {
+                string itemValue = selectedItem.SubItems["Coin"].Text;
+                if (!String.IsNullOrEmpty(itemValue))
+                {
+                    currentCoin = itemValue;
+                    break;
+                }
+            }
+            return currentCoin;
+        }
+
+        private void deviceListView_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            if (!updatingListView)
+                UpdateChangesButtons(true);
+        }
+
+        private void dynamicIntensityButton_Click(object sender, EventArgs e)
+        {
+            ToggleDynamicIntensity(dynamicIntensityButton.Checked);
+        }
+
+        private void aboutButton_Click(object sender, EventArgs e)
+        {
+            ShowAboutDialog();
+        }
+
+        private void advancedAreaContainer_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            if (settingsLoaded)
+                applicationConfiguration.LogAreaDistance = e.SplitY;
+        }
+
+        private void settingsButton_ButtonClick(object sender, EventArgs e)
+        {
+            ConfigureSettings();
+        }
+
+        private void coinsButton_Click_1(object sender, EventArgs e)
+        {
+            ConfigureCoins();
+        }
+
+        private void strategiesButton_Click_1(object sender, EventArgs e)
+        {
+            ConfigureStrategies();
+        }
+
+        private void advancedMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
+            quickSwitchItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
+            //
+            dynamicIntensityButton.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
+            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
+            dynamicIntensitySeparator.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
+        }
+
+        private void notificationsControl1_NotificationsChanged(object sender)
+        {
+            notificationsControl.Visible = notificationsControl.NotificationCount() > 0;
+            if (notificationsControl.Visible)
+                notificationsControl.BringToFront();
+        }
+
+        private void processLogButton_Click(object sender, EventArgs e)
+        {
+            ShowProcessLog();
+        }
+
+        private void historyButton_Click(object sender, EventArgs e)
+        {
+            ShowHistory();
+        }
+
+        private void historyGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            //do unbound data in RowsAdded or it won't show until the DataGridView has been on-screen
+            for (int i = 0; i < e.RowCount; i++)
+            {
+                int index = e.RowIndex + i;
+
+                LogProcessCloseArgs ea = this.logCloseEntries[index];
+
+                string devicesString = "??";
+                //convert device descriptors to homan readable string
+                //check for NULL because the history JSON is reloaded on startup and older
+                //versions didn't have this property serialized
+                if (ea.DeviceDescriptors != null)
+                    devicesString = GetFormattedDevicesString(ea.DeviceDescriptors);
+
+                historyGridView.Rows[index].Cells[devicesColumn.Index].Value = devicesString;
+
+                TimeSpan timeSpan = ea.EndDate - ea.StartDate;
+                historyGridView.Rows[index].Cells[durationColumn.Index].Value = String.Format("{0:0.##} minutes", timeSpan.TotalMinutes);
+            }
+        }
+
+        private static string GetFormattedDevicesString(List<DeviceDescriptor> deviceDescriptors)
+        {
+            return String.Join(" ", deviceDescriptors.Select(d => d.ToString()).ToArray());
+        }
+
+        private void quickSwitchItem_DropDownOpening(object sender, EventArgs e)
+        {
+            PopulateQuickSwitchMenu(quickSwitchItem);
+        }
+
+        private void notificationsControl1_NotificationAdded(string text)
+        {
+            LogNotificationToFile(text);
+            SubmitMobileMinerNotification(text);
+        }
+
+        private void closeApiButton_Click(object sender, EventArgs e)
+        {
+            HideAdvancedPanel();
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (formLoaded)
+            {
+                //handling for minimizing to notifcation area
+                if (applicationConfiguration.MinimizeToNotificationArea && (this.WindowState == FormWindowState.Minimized))
+                {
+                    notifyIcon1.Visible = true;
+                    this.Hide();
+                }
+                else if (this.WindowState == FormWindowState.Normal)
+                {
+                    notifyIcon1.Visible = false;
+                }
+
+                //handling for saving Maximized state
+                if (this.WindowState == FormWindowState.Maximized)
+                    applicationConfiguration.Maximized = true;
+
+                if (this.WindowState == FormWindowState.Normal) //don't set to false for minimizing
+                    applicationConfiguration.Maximized = false;
+
+                SavePosition();
+            }
+        }
+
+        private void notifyIcon1_DoubleClick(object sender, EventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void showAppMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void quitAppMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void startMenuItem_Click(object sender, EventArgs e)
+        {
+            StartMining();
+        }
+
+        private void stopMenuItem_Click(object sender, EventArgs e)
+        {
+            StopMining();
+        }
+
+        private void ColumnHeaderMenuClick(object sender, EventArgs e)
+        {
+            using (new HourGlass())
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+                menuItem.Checked = !menuItem.Checked;
+                if (menuItem.Checked)
+                    applicationConfiguration.HiddenColumns.Remove(menuItem.Text);
+                else
+                    applicationConfiguration.HiddenColumns.Add(menuItem.Text);
+                applicationConfiguration.SaveApplicationConfiguration();
+                AutoSizeListViewColumns();
+            }
+        }
+
+        private void HandleQuickSwitchClick(object sender, EventArgs e)
+        {
+            bool wasMining = miningEngine.Mining;
+            StopMining();
+
+            string coinSymbol = (string)((ToolStripMenuItem)sender).Tag;
+
+            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(coinSymbol));
+
+            SetAllDevicesToCoin(coinConfiguration);
+
+            engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false;
+
+            engineConfiguration.SaveDeviceConfigurations();
+            engineConfiguration.SaveStrategyConfiguration();
+
+            RefreshListViewFromViewModel();
+
+            AutoSizeListViewColumns();
+
+            if (wasMining)
+                StartMining();
+            else
+                //so the Start button becomes enabled if we now have a valid config
+                UpdateMiningButtons();
+        }
+        #endregion
+
+        #region Timer setup
+        private void SetupMiningOnStartup()
+        {
+            if (applicationConfiguration.StartMiningOnStartup)
+            {
+                //minimum 1s delay for mining on startup - 0 not allowed
+                startupMiningCountdownSeconds = Math.Max(1, applicationConfiguration.StartupMiningDelay);
+                startupMiningCountdownTimer.Enabled = true;
+                RefreshCountdownLabel();
+            }
+        }
+
+        private void SetupRestartTimer()
+        {
+            //if enabled, we want to restart it so this can be used when we start mining
+            restartTimer.Enabled = false;
+            restartTimer.Interval = applicationConfiguration.ScheduledRestartMiningInterval.ToMinutes() * 60 * 1000;
+            restartTimer.Enabled = applicationConfiguration.ScheduledRestartMining;
+        }
+
+        private void SetupCoinStatsTimer()
+        {
+            int coinStatsMinutes = 15;
+            ApplicationConfiguration.TimerInterval timerInterval = applicationConfiguration.StrategyCheckInterval;
+
+            coinStatsMinutes = timerInterval.ToMinutes();
+
+            coinStatsTimer.Enabled = false;
+            coinStatsCountdownTimer.Enabled = false;
+
+            coinStatsCountdownMinutes = coinStatsMinutes;
+            coinStatsTimer.Interval = coinStatsMinutes * 60 * 1000;
+
+            coinStatsTimer.Enabled = true;
+            coinStatsCountdownTimer.Enabled = true;
+        }
+
+        private void SetupAutoUpdates()
+        {
+            updateCheckTimer.Interval = 3600000; //1h
+            updateCheckTimer.Enabled = true;
+            CheckForUpdates();
+        }
+        #endregion
+
+        #region Timer event handlers
+        private void coinStatsCountdownTimer_Tick(object sender, EventArgs e)
+        {
+            coinStatsCountdownMinutes--;
+            RefreshStrategiesCountdown();
+        }
+
+        private void coinStatsTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshCoinStats();
+
+            CheckAndApplyMiningStrategy();
+
+            coinStatsCountdownMinutes = coinStatsTimer.Interval / 1000 / 60;
+        }
+
+        private void countdownTimer_Tick(object sender, EventArgs e)
+        {
+            startupMiningCountdownSeconds--;
+            RefreshCountdownLabel();
+            if (startupMiningCountdownSeconds == 0)
+            {
+                startupMiningPanel.Visible = false;
+                startupMiningCountdownTimer.Enabled = false;
+                Application.DoEvents();
+
+                //refresh devices so that we are sure we have all devices 
+                //otherwise scanning could happen too early on startup,
+                //before Windows has recognized all devices
+                RefreshDevices();
+                Application.DoEvents();
+                StartMining();
+            }
+        }
+
+        private void crashRecoveryTimer_Tick(object sender, EventArgs e)
+        {
+            if (miningEngine.RelaunchCrashedMiners())
+            {
+                //clear any details stored correlated to processes - they could all be invalid after this
+                processDeviceDetails.Clear();
+                processPoolInformation.Clear();
+            }
+        }
+
+        private void exchangeRateTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshExchangeRates();
+        }
+
+        private void updateCheckTimer_Tick(object sender, EventArgs e)
+        {
+            CheckForUpdates();
+        }
+
+        private void idleTimer_Tick(object sender, EventArgs e)
+        {
+            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+                return; //idle detection code uses User32.dll
+
+            if (applicationConfiguration.AutoSetDesktopMode && miningEngine.Mining)
+            {
+                TimeSpan idleTimeSpan = TimeSpan.FromMilliseconds(Environment.TickCount - IdleTimeFinder.GetLastInputTime());
+
+                const int idleMinutesForDesktopMode = 2;
+
+                //if idle for more than 1 minute, disable Desktop Mode
+                if (idleTimeSpan.TotalMinutes > idleMinutesForDesktopMode)
+                {
+                    if (engineConfiguration.XgminerConfiguration.DesktopMode)
+                    {
+                        ToggleDynamicIntensity(false);
+                        RestartMiningIfMining();
+                    }
+                }
+                //else if idle for less than the idleTimer interval, enable Desktop Mode
+                else if (idleTimeSpan.TotalMilliseconds <= idleTimer.Interval)
+                {
+                    if (!engineConfiguration.XgminerConfiguration.DesktopMode)
+                    {
+                        ToggleDynamicIntensity(true);
+                        RestartMiningIfMining();
+                    }
+                }
+            }
+        }
+
+        private void minerSummaryTimer_Tick(object sender, EventArgs e)
+        {
+            PopulateSummaryInfoFromProcesses();
+        }
+
+        private void mobileMinerTimer_Tick(object sender, EventArgs e)
+        {
+            //if we do this with the Settings dialog open the user may have partially entered credentials
+            if (!ShowingModalDialog())
+            {
+                //check for commands first so we can report mining activity after
+                CheckForMobileMinerCommands();
+                SubmitMobileMinerStatistics();
+            }
+        }
+
+        private static bool ShowingModalDialog()
+        {
+            foreach (Form f in Application.OpenForms)
+                if (f.Modal)
+                    return true;
+
+            return false;
+        }
+
         private void poolInfoTimer_Tick(object sender, EventArgs e)
         {
             RefreshPoolInfo();
             RefreshDetailsAreaIfVisible();
+        }
+
+        private void poolsDownFlagTimer_Tick(object sender, EventArgs e)
+        {
+            ClearPoolsFlaggedDown();
+        }
+
+        private void statsTimer_Tick(object sender, EventArgs e)
+        {
+            ClearMinerStatsForDisabledCoins();
+            RefreshDeviceStats();
+        }
+
+        private void restartTimer_Tick(object sender, EventArgs e)
+        {
+            RestartMiningIfMining();
+        }
+        #endregion
+
+        #region MultiMiner remoting
+        private void SetupRemoting()
+        {
+            using (new HourGlass())
+            {
+                if (perksConfiguration.EnableRemoting)
+                    EnableRemoting();
+                else
+                    DisableRemoting();
+            }
+        }
+
+        private void DisableRemoting()
+        {
+            StopDiscovery();
+
+            if (remotingServer != null)
+                remotingServer.Shutdown();
+
+            instancesControl1.Visible = false;
+            instancesContainer.Panel1Collapsed = true;
+
+            instancesControl1.UnregisterInstances();
+        }
+
+        private void EnableRemoting()
+        {
+            SetupDiscovery();
+
+            remotingServer = new RemotingServer();
+            remotingServer.Startup();
+
+            instancesControl1.Visible = true;
+            instancesContainer.Panel1Collapsed = false;
+        }
+
+        private void SetupDiscovery()
+        {
+            StopDiscovery();
+            StartDiscovery();
+        }
+
+        private void StartDiscovery()
+        {
+            listener = new Listener();
+            listener.InstanceOnline += HandleInstanceOnline;
+            listener.InstanceOffline += HandleInstanceOffline;
+            listener.Listen();
+            Broadcaster.Broadcast(Verbs.Online);
+        }
+
+        private void StopDiscovery()
+        {
+            Broadcaster.Broadcast(Verbs.Offline);
+            if (listener != null)
+                listener.Stop();
+        }
+
+        private void HandleInstanceOnline(object sender, InstanceChangedArgs ea)
+        {
+            BeginInvoke((Action)(() =>
+            {
+                //code to update UI
+                instancesControl1.RegisterInstance(ea.Instance);
+            }));
+        }
+
+        private void HandleInstanceOffline(object sender, InstanceChangedArgs ea)
+        {
+            BeginInvoke((Action)(() =>
+            {
+                //code to update UI
+                instancesControl1.UnregisterInstance(ea.Instance);
+            }));
+        }
+        #endregion
+
+        #region Coin API
+        private void SetupCoinApi()
+        {
+            if (applicationConfiguration.UseCoinWarzApi)
+                this.coinApiContext = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey);
+            else
+                this.coinApiContext = new CoinChoose.Api.ApiContext();
+        }
+
+        private void ShowCoinApiErrorNotification(Exception ex)
+        {
+            string siteUrl = this.coinApiContext.GetInfoUrl();
+            string apiUrl = this.coinApiContext.GetApiUrl();
+            string apiName = this.coinApiContext.GetApiName();
+
+            notificationsControl.AddNotification(ex.Message,
+                String.Format("Error parsing the {0} JSON API", apiName), () =>
+                {
+                    Process.Start(apiUrl);
+                },
+                siteUrl);
+        }
+
+        private void RefreshCoinStats()
+        {
+            //always load known coins from file
+            //CoinChoose may not shown coins it once did if there are no orders
+            LoadKnownCoinsFromFile();
+
+            try
+            {
+                coinApiInformation = coinApiContext.GetCoinInformation(
+                    UserAgent.AgentString).ToList();
+                ApplyCoinInformationToViewModel();
+            }
+            catch (Exception ex)
+            {
+                //don't crash if website cannot be resolved or JSON cannot be parsed
+                if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is CoinApiException))
+                {
+                    if (applicationConfiguration.ShowApiErrors)
+                        ShowCoinApiErrorNotification(ex);
+                    return;
+                }
+                throw;
+            }
+
+            RefreshListViewFromViewModel();
+            LoadKnownCoinsFromCoinStats();
+            RefreshCoinStatsLabel();
+            AutoSizeListViewColumns();
+            SuggestCoinsToMine();
+            RefreshDetailsAreaIfVisible();
+        }
+        #endregion
+
+        #region Exchange API
+        private void RefreshExchangeRates()
+        {
+            if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
+            {
+                try
+                {
+                    sellPrices = Coinbase.Api.ApiContext.GetSellPrices();
+                }
+                catch (Exception ex)
+                {
+                    //don't crash if website cannot be resolved or JSON cannot be parsed
+                    if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException))
+                    {
+                        if (applicationConfiguration.ShowApiErrors)
+                            ShowCoinbaseApiErrorNotification(ex);
+                        return;
+                    }
+                    throw;
+                }
+            }
+        }
+
+        private void ShowCoinbaseApiErrorNotification(Exception ex)
+        {
+            string siteUrl = Coinbase.Api.ApiContext.GetInfoUrl();
+            string apiUrl = Coinbase.Api.ApiContext.GetApiUrl();
+            string apiName = Coinbase.Api.ApiContext.GetApiName();
+
+            notificationsControl.AddNotification(ex.Message,
+                String.Format("Error parsing the {0} JSON API", apiName), () =>
+                {
+                    Process.Start(apiUrl);
+                },
+                siteUrl);
+        }
+        #endregion
+
+        #region MobileMiner API
+        private string GetMobileMinerUrl()
+        {
+            string prefix = "https://";
+            if (!applicationConfiguration.MobileMinerUsesHttps)
+                prefix = "http://";
+
+            //deprecate api.mobileminerapp.com starting 11/28
+            //more expensive for no functional benefit
+            //string result = prefix + "api.mobileminerapp.com";
+
+            //if (!OSVersionPlatform.IsWindowsVistaOrHigher())
+            //    //SNI SSL not supported on XP
+
+            string result = prefix + "mobileminer.azurewebsites.net/api";
+
+            return result;
+        }
+
+        private const string mobileMinerApiKey = "P3mVX95iP7xfoI";
+
+        //don't show a dialog for a 403 after successful submissions.
+        //it's not ideal but there have been two reports now of this
+        //being triggered by someone who has valid credentials, and
+        //i've seen it myself as well
+        private bool mobileMinerSuccess = false;
+        private void SubmitMobileMinerStatistics()
+        {
+            //are remote monitoring enabled?
+            if (!applicationConfiguration.MobileMinerMonitoring)
+                return;
+
+            //is MobileMiner configured?
+            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
+                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
+                return;
+
+            List<MultiMiner.MobileMiner.Api.MiningStatistics> statisticsList = new List<MobileMiner.Api.MiningStatistics>();
+
+            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+            {
+                List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
+
+                if (deviceInformationList == null) //handled failure getting API info
+                    continue;
+
+                //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
+                List<DeviceDetailsResponse> processDevices = GetProcessDeviceDetails(minerProcess, deviceInformationList);
+
+                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                {
+                    MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics = new MobileMiner.Api.MiningStatistics();
+
+                    PopulateMiningStatistics(miningStatistics, deviceInformation, GetCoinNameForApiContext(minerProcess.ApiContext));
+
+                    DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+                        && (d.ID == deviceInformation.ID));
+                    int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
+                    Device device = devices[deviceIndex];
+
+                    miningStatistics.FullName = device.Name;
+                    miningStatistics.PoolName = GetPoolNameByIndex(deviceInformation.PoolIndex, deviceIndex);
+
+                    statisticsList.Add(miningStatistics);
+                }
+            }
+
+            if (statisticsList.Count > 0)
+            {
+                if (submitMiningStatisticsDelegate == null)
+                    submitMiningStatisticsDelegate = SubmitMiningStatistics;
+
+                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, null, null);
+            }
+        }
+
+        private string GetCoinNameForApiContext(Xgminer.Api.ApiContext apiContext)
+        {
+            string coinName = string.Empty;
+
+            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+            {
+                Xgminer.Api.ApiContext loopContext = minerProcess.ApiContext;
+                if (loopContext == apiContext)
+                {
+                    coinName = minerProcess.MinerConfiguration.CoinName;
+                    break;
+                }
+            }
+
+            return coinName;
+        }
+
+        private void PopulateMiningStatistics(MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics, DeviceInformationResponse deviceInformation,
+            string coinName)
+        {
+            miningStatistics.MinerName = "MultiMiner";
+            miningStatistics.CoinName = coinName;
+            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinName));
+            CryptoCoin coin = coinConfiguration.Coin;
+            miningStatistics.CoinSymbol = coin.Symbol;
+
+            if (coin.Algorithm == CoinAlgorithm.Scrypt)
+                miningStatistics.Algorithm = "scrypt";
+            else if (coin.Algorithm == CoinAlgorithm.SHA256)
+                miningStatistics.Algorithm = "SHA-256";
+
+            miningStatistics.PopulateFrom(deviceInformation);
+        }
+
+        private Action<List<MultiMiner.MobileMiner.Api.MiningStatistics>> submitMiningStatisticsDelegate;
+
+        private void SubmitMiningStatistics(List<MultiMiner.MobileMiner.Api.MiningStatistics> statisticsList)
+        {
+            try
+            {
+                MobileMiner.Api.ApiContext.SubmitMiningStatistics(GetMobileMinerUrl(), mobileMinerApiKey,
+                    applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                    Environment.MachineName, statisticsList);
+                mobileMinerSuccess = true;
+            }
+            catch (WebException ex)
+            {
+                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+                HttpWebResponse response = ex.Response as HttpWebResponse;
+                if (response != null)
+                {
+                    if (response.StatusCode == HttpStatusCode.Forbidden)
+                    {
+                        if (!mobileMinerSuccess)
+                        {
+                            applicationConfiguration.MobileMinerMonitoring = false;
+                            applicationConfiguration.SaveApplicationConfiguration();
+                            MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
+                                Environment.NewLine + Environment.NewLine +
+                                "MobileMiner remote monitoring will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                            //check to make sure there are no modal windows already
+                            if (!ShowingModalDialog())
+                            {
+                                if (InvokeRequired)
+                                    BeginInvoke((Action)(() =>
+                                    {
+                                        //code to update UI
+                                        ConfigureSettings();
+                                    }));
+                                else
+                                    ConfigureSettings();
+                            }
+                        }
+                    }
+                    else if (applicationConfiguration.ShowApiErrors)
+                    {
+                        if (InvokeRequired)
+                            BeginInvoke((Action)(() =>
+                            {
+                                //code to update UI
+                                ShowMobileMinerApiErrorNotification(ex);
+                            }));
+                        else
+                            ShowMobileMinerApiErrorNotification(ex);
+                    }
+                }
+            }
+        }
+
+        private void SubmitMobileMinerNotification(string text)
+        {
+            //are remote notifications enabled?
+            if (!applicationConfiguration.MobileMinerPushNotifications)
+                return;
+
+            //is MobileMiner configured?
+            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
+                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
+                return;
+
+            if (submitNotificationDelegate == null)
+                submitNotificationDelegate = SubmitNotification;
+
+            submitNotificationDelegate.BeginInvoke(text, null, null);
+        }
+
+        private Action<string> submitNotificationDelegate;
+
+        private void SubmitNotification(string text)
+        {
+            try
+            {
+                string notificationText = String.Format("{0}: {1}", Environment.MachineName, text);
+                MobileMiner.Api.ApiContext.SubmitNotifications(GetMobileMinerUrl(), mobileMinerApiKey,
+                        applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                        new List<string> { notificationText });
+            }
+            catch (Exception ex)
+            {
+                if ((ex is WebException) || (ex is ArgumentException))
+                {
+                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+                    //could also be a json parsing error
+                    return;
+                }
+                throw;
+            }
+        }
+
+        private void CheckForMobileMinerCommands()
+        {
+            //are remote commands enabled?
+            if (!applicationConfiguration.MobileMinerRemoteCommands)
+                return;
+
+            //is MobileMiner configured?
+            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
+                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
+                return;
+
+            if (checkForRemoteCommandsDelegate == null)
+                checkForRemoteCommandsDelegate = GetRemoteCommands;
+
+            checkForRemoteCommandsDelegate.BeginInvoke(null, null);
+        }
+
+        private Action checkForRemoteCommandsDelegate;
+
+        private void GetRemoteCommands()
+        {
+            List<MobileMiner.Api.RemoteCommand> commands = new List<MobileMiner.Api.RemoteCommand>();
+
+            try
+            {
+                commands = MobileMiner.Api.ApiContext.GetCommands(GetMobileMinerUrl(), mobileMinerApiKey,
+                    applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                    Environment.MachineName);
+                mobileMinerSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                if ((ex is WebException) || (ex is ArgumentException))
+                {
+                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+                    //could also be a json parsing error
+                    if (ex is WebException)
+                    {
+                        WebException webException = (WebException)ex;
+
+                        HttpWebResponse response = webException.Response as HttpWebResponse;
+                        if (response != null)
+                        {
+                            if (response.StatusCode == HttpStatusCode.Forbidden)
+                            {
+                                if (!mobileMinerSuccess)
+                                {
+                                    this.applicationConfiguration.MobileMinerRemoteCommands = false;
+                                    this.applicationConfiguration.SaveApplicationConfiguration();
+                                    MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
+                                        Environment.NewLine + Environment.NewLine +
+                                        "MobileMiner remote commands will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                                    //check to make sure there are no modal windows already
+                                    if (!ShowingModalDialog())
+                                    {
+                                        if (InvokeRequired)
+                                            BeginInvoke((Action)(() =>
+                                            {
+                                                //code to update UI
+                                                ConfigureSettings();
+                                            }));
+                                        else
+                                            ConfigureSettings();
+                                    }
+                                }
+                            }
+                            else if (applicationConfiguration.ShowApiErrors)
+                            {
+                                if (InvokeRequired)
+                                    BeginInvoke((Action)(() =>
+                                    {
+                                        //code to update UI
+                                        ShowMobileMinerApiErrorNotification(webException);
+                                    }));
+                                else
+                                    ShowMobileMinerApiErrorNotification(webException);
+                            }
+                        }
+                    }
+
+                    return;
+                }
+                throw;
+            }
+
+            if (InvokeRequired)
+                BeginInvoke((Action<List<MobileMiner.Api.RemoteCommand>>)((c) => ProcessRemoteCommands(c)), commands);
+            else
+                ProcessRemoteCommands(commands);
+        }
+
+        private void ProcessRemoteCommands(List<MobileMiner.Api.RemoteCommand> commands)
+        {
+            if (commands.Count > 0)
+            {
+                MobileMiner.Api.RemoteCommand command = commands.First();
+
+                //check this before actually executing the command
+                //point being, say for some reason it takes 2 minutes to restart mining
+                //if we check for commands again in that time, we don't want to process it again
+                if (processedCommandIds.Contains(command.Id))
+                    return;
+
+                processedCommandIds.Add(command.Id);
+
+                if (command.CommandText.Equals("START", StringComparison.OrdinalIgnoreCase))
+                {
+                    SaveChanges(); //necessary to ensure device configurations exist for devices
+                    StartMining();
+                }
+                else if (command.CommandText.Equals("STOP", StringComparison.OrdinalIgnoreCase))
+                    StopMining();
+                else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
+                {
+                    StopMining();
+                    SaveChanges(); //necessary to ensure device configurations exist for devices
+                    StartMining();
+                }
+
+                if (deleteRemoteCommandDelegate == null)
+                    deleteRemoteCommandDelegate = DeleteRemoteCommand;
+
+                deleteRemoteCommandDelegate.BeginInvoke(command, null, null);
+            }
+        }
+
+        private Action<MobileMiner.Api.RemoteCommand> deleteRemoteCommandDelegate;
+
+        private void DeleteRemoteCommand(MobileMiner.Api.RemoteCommand command)
+        {
+            MobileMiner.Api.ApiContext.DeleteCommand(GetMobileMinerUrl(), mobileMinerApiKey,
+                                applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                                Environment.MachineName, command.Id);
+        }
+
+        private void ShowMobileMinerApiErrorNotification(WebException ex)
+        {
+            notificationsControl.AddNotification(ex.Message,
+                String.Format("Error accessing the MobileMiner API ({0})", (int)((HttpWebResponse)ex.Response).StatusCode), () =>
+                {
+                    Process.Start("http://mobileminerapp.com");
+                },
+                "");
+        }
+        #endregion
+
+        #region Stats API
+        private void SubmitMultiMinerStatistics()
+        {
+            string installedVersion = Engine.Installer.GetInstalledMinerVersion();
+            if (installedVersion.Equals(applicationConfiguration.SubmittedStatsVersion))
+                return;
+
+            Stats.Api.Machine machineStat = new Stats.Api.Machine()
+            {
+                Name = Environment.MachineName,
+                MinerVersion = installedVersion
+            };
+
+            if (submitMinerStatisticsDelegate == null)
+                submitMinerStatisticsDelegate = SubmitMinerStatistics;
+
+            submitMinerStatisticsDelegate.BeginInvoke(machineStat, null, null);
+        }
+        private Action<Stats.Api.Machine> submitMinerStatisticsDelegate;
+
+        private void SubmitMinerStatistics(Stats.Api.Machine machineStat)
+        {
+            try
+            {
+                //plain text so users can see what we are posting - transparency
+                Stats.Api.ApiContext.SubmitMinerStatistics("http://multiminerstats.azurewebsites.net/api/", machineStat);
+                applicationConfiguration.SubmittedStatsVersion = machineStat.MinerVersion;
+            }
+            catch (WebException ex)
+            {
+                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+            }
+        }
+        #endregion
+
+        #region RPC API
+        private void RefreshDeviceStats()
+        {
+            double totalScryptRate = 0;
+            double totalSha256Rate = 0;
+
+            allDeviceInformation.Clear();
+
+            deviceListView.BeginUpdate();
+            try
+            {
+                foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+                {
+                    ClearSuspectProcessFlags(minerProcess);
+
+                    List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
+
+                    if (deviceInformationList == null) //handled failure getting API info
+                    {
+                        minerProcess.MinerIsFrozen = true;
+                        continue;
+                    }
+
+                    allDeviceInformation.AddRange(deviceInformationList);
+
+                    //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
+                    List<DeviceDetailsResponse> processDevices = GetProcessDeviceDetails(minerProcess, deviceInformationList);
+
+                    //first clear stats for each row
+                    //this is because the PXY row stats get summed 
+                    foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                    {
+                        DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+                            && (d.ID == deviceInformation.ID));
+                        int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
+                        if (deviceIndex >= 0)
+                            //could legitimately be -1 if the API is returning a device we don't know about
+                            ClearDeviceInfoForListViewItem(deviceListView.Items[deviceIndex]);
+                    }
+
+                    //clear accepted shares as we'll be summing that as well
+                    minerProcess.AcceptedShares = 0;
+
+                    foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                    {
+                        //don't consider a standalone miner suspect - restarting the proxy doesn't help and often hurts
+                        if (!deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
+                            FlagSuspiciousMiner(minerProcess, deviceInformation);
+
+                        DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+                            && (d.ID == deviceInformation.ID));
+                        int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
+
+                        if (deviceIndex >= 0)
+                        {
+                            Device device = devices[deviceIndex];
+                            deviceDetailsMapping[device] = deviceDetails;
+
+                            if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
+                                totalScryptRate += deviceInformation.AverageHashrate;
+                            else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
+                                totalSha256Rate += deviceInformation.AverageHashrate;
+
+                            //replaces these calls => PopulateDeviceStatsForListViewItem(deviceInformation, deviceListView.Items[deviceIndex]);
+
+                            minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
+
+                            mainFormViewModel.ApplyDeviceInformationResponseModel(device, deviceInformation);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
+
+            RefreshListViewFromViewModel();
+
+            //Mh not mh, mh is milli
+            scryptRateLabel.Text = totalScryptRate == 0 ? String.Empty : String.Format("Scrypt: {0}", totalScryptRate.ToHashrateString());
+            //spacing used to pad out the status bar item
+            sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}", totalSha256Rate.ToHashrateString());
+
+            scryptRateLabel.AutoSize = true;
+            sha256RateLabel.AutoSize = true;
+
+            notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
+
+            int count = 3;
+            //auto sizing the columns is moderately CPU intensive, so only do it every /count/ times
+            AutoSizeListViewColumnsEvery(count);
+
+            RefreshIncomeSummary();
+            RefreshDetailsAreaIfVisible();
+
+            if (processPoolInformation.Count == 0)
+                RefreshPoolInfo();
         }
 
         private void RefreshPoolInfo()
@@ -4525,27 +3231,1356 @@ namespace MultiMiner.Win
             return poolInformation;
         }
 
-        private void openLogToolStripMenuItem_Click(object sender, EventArgs e)
+        private void PopulateSummaryInfoFromProcesses()
         {
-            string fileName = String.Empty;
-            if (advancedTabControl.SelectedTab == apiMonitorPage)
-                fileName = "ApiLog.json";
-            else if (advancedTabControl.SelectedTab == processLogPage)
-                fileName = "ProcessLog.json";
-            else if (advancedTabControl.SelectedTab == historyPage)
-                fileName = "MiningLog.json";
-
-            if (!String.IsNullOrEmpty(fileName))
+            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
-                string logDirectory = GetLogDirectory();
-                string logFilePath = Path.Combine(logDirectory, fileName);
-                Process.Start(logFilePath);
+                SummaryInformationResponse summaryInformation = GetSummaryInfoFromProcess(minerProcess);
+
+                if (summaryInformation == null) //handled failure getting API info
+                {
+                    minerProcess.MinerIsFrozen = true;
+                    continue;
+                }
+
+                CheckAndNotifyFoundBlocks(minerProcess, summaryInformation.FoundBlocks);
+
+                CheckAndNotifyAcceptedShares(minerProcess, summaryInformation.AcceptedShares);
             }
         }
 
-        private void poolsDownFlagTimer_Tick(object sender, EventArgs e)
+        private List<DeviceDetailsResponse> GetProcessDeviceDetails(MinerProcess minerProcess, List<DeviceInformationResponse> deviceInformationList)
         {
+            List<DeviceDetailsResponse> processDevices = null;
+            if (processDeviceDetails.ContainsKey(minerProcess))
+            {
+                processDevices = processDeviceDetails[minerProcess];
+
+                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                {
+                    DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+                        && (d.ID == deviceInformation.ID));
+                    if (deviceDetails == null)
+                    {
+                        //devs API returned a device not in the previous DEVDETAILS response
+                        //need to clear our previous response and get a new one
+                        processDevices = null;
+                        break;
+                    }
+                }
+            }
+
+            if (processDevices == null)
+            {
+                processDevices = GetDeviceDetailsFromProcess(minerProcess);
+                processDeviceDetails[minerProcess] = processDevices;
+            }
+            return processDevices;
+        }
+
+        private List<DeviceInformationResponse> GetDeviceInfoFromProcess(MinerProcess minerProcess)
+        {
+            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<DeviceInformationResponse> deviceInformationList = null;
+            try
+            {
+                try
+                {
+                    deviceInformationList = apiContext.GetDeviceInformation().Where(d => d.Enabled).ToList();
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    deviceInformationList = null;
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
+                deviceInformationList = null;
+            }
+
+            return deviceInformationList;
+        }
+
+        private List<DeviceDetailsResponse> GetDeviceDetailsFromProcess(MinerProcess minerProcess)
+        {
+            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<DeviceDetailsResponse> deviceDetailsList = null;
+            try
+            {
+                try
+                {
+                    deviceDetailsList = apiContext.GetDeviceDetails().ToList();
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    deviceDetailsList = null;
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
+                deviceDetailsList = null;
+            }
+
+            return deviceDetailsList;
+        }
+
+        private SummaryInformationResponse GetSummaryInfoFromProcess(MinerProcess minerProcess)
+        {
+            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            SummaryInformationResponse summaryInformation = null;
+            try
+            {
+                try
+                {
+                    summaryInformation = apiContext.GetSummaryInformation();
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    summaryInformation = null;
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
+                summaryInformation = null;
+            }
+
+            return summaryInformation;
+        }
+        #endregion
+
+        #region Logging logic
+        private void LogProcessLaunch(object sender, LogLaunchArgs ea)
+        {
+            logLaunchArgsBindingSource.Position = logLaunchArgsBindingSource.Add(ea);
+
+            while (logLaunchArgsBindingSource.Count > 1000)
+                logLaunchArgsBindingSource.RemoveAt(0);
+
+            LogProcessLaunchToFile(ea);
+        }
+
+        private void LogProcessLaunchToFile(LogLaunchArgs ea)
+        {
+            const string logFileName = "ProcessLog.json";
+            LogObjectToFile(ea, logFileName);
+        }
+
+        private void LogObjectToFile(object objectToLog, string logFileName)
+        {
+            string logDirectory = GetLogDirectory();
+            string logFilePath = Path.Combine(logDirectory, logFileName);
+            ObjectLogger logger = new ObjectLogger(applicationConfiguration.RollOverLogFiles, applicationConfiguration.OldLogFileSets);
+            logger.LogObjectToFile(objectToLog, logFilePath);
+        }
+
+        private string GetLogDirectory()
+        {
+            string logDirectory = ApplicationPaths.AppDataPath();
+            if (!String.IsNullOrEmpty(applicationConfiguration.LogFilePath))
+            {
+                Directory.CreateDirectory(applicationConfiguration.LogFilePath);
+                if (Directory.Exists(applicationConfiguration.LogFilePath))
+                    logDirectory = applicationConfiguration.LogFilePath;
+            }
+            return logDirectory;
+        }
+
+        private void LogProcessClose(object sender, LogProcessCloseArgs ea)
+        {
+            CheckAndAddStratumDeviceIndex(ea);
+
+            logProcessCloseArgsBindingSource.Position = logProcessCloseArgsBindingSource.Add(ea);
+
+            while (logProcessCloseArgsBindingSource.Count > MaxHistoryOnScreen)
+                logProcessCloseArgsBindingSource.RemoveAt(0);
+
+            LogProcessCloseToFile(ea);
+        }
+
+        private void CheckAndAddStratumDeviceIndex(LogProcessCloseArgs ea)
+        {
+            //check and include the index of the virtual stratum proxy "device"
+            if (ea.MinerConfiguration.StratumProxy)
+            {
+                Device proxyDevice = devices.SingleOrDefault(d => d.Kind == DeviceKind.PXY);
+                if (proxyDevice != null)
+                    ea.DeviceDescriptors.Add(proxyDevice);
+            }
+        }
+
+        private void LogProcessCloseToFile(LogProcessCloseArgs ea)
+        {
+            const string logFileName = "MiningLog.json";
+            //log an anonymous type so MinerConfiguration is ommitted
+            LogObjectToFile(
+                new
+                {
+                    StartDate = ea.StartDate,
+                    EndDate = ea.EndDate,
+                    CoinName = ea.CoinName,
+                    CoinSymbol = ea.CoinSymbol,
+                    StartPrice = ea.StartPrice,
+                    EndPrice = ea.EndPrice,
+                    AcceptedShares = ea.AcceptedShares,
+                    DeviceDescriptors = ea.DeviceDescriptors
+                }, logFileName);
+        }
+
+        private void LogNotificationToFile(string text)
+        {
+            const string logFileName = "NotificationLog.json";
+            LogObjectToFile(new
+            {
+                DateTime = DateTime.Now,
+                Notification = text
+            }, logFileName);
+        }
+
+        private void LogApiEventToFile(ApiLogEntry logEntry)
+        {
+            const string logFileName = "ApiLog.json";
+            LogObjectToFile(logEntry, logFileName);
+        }
+        #endregion
+
+        #region Mining event handlers
+        private void ProcessLaunchFailed(object sender, LaunchFailedArgs ea)
+        {
+            this.BeginInvoke((Action)(() =>
+            {
+                if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+                {
+                    string notificationReason = String.Empty;
+
+                    int enabledConfigurationCount = engineConfiguration.CoinConfigurations.Count(c => c.Enabled);
+
+                    //only disable the configuration if there are others enabled - otherwise left idling
+                    if (enabledConfigurationCount > 1)
+                    {
+
+                        //if auto mining is enabled, flag pools down in the coin configuration and display a notification
+                        CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(config => config.Coin.Name.Equals(ea.CoinName, StringComparison.OrdinalIgnoreCase));
+                        coinConfiguration.PoolsDown = true;
+                        engineConfiguration.SaveCoinConfigurations();
+
+                        //if no enabled configurations, stop mining
+                        int enabledConfigurations = engineConfiguration.CoinConfigurations.Count(config => config.Enabled && !config.PoolsDown);
+                        if (enabledConfigurations == 0)
+                            StopMining();
+                        else
+                            //if there are enabled configurations, apply mining strategy
+                            CheckAndApplyMiningStrategy();
+
+                        notificationReason = String.Format("Configuration for {0} disabled - all pools down", ea.CoinName);
+                    }
+                    else
+                    {
+                        //otherwise just notify - relaunching option will take care of the rest
+                        notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
+                    }
+
+                    notificationsControl.AddNotification(notificationReason, notificationReason, () =>
+                    {
+                        ConfigureCoins();
+                    }, "");
+                }
+                else
+                {
+                    if (!applicationConfiguration.RestartCrashedMiners)
+                    {
+                        //if we are not restarting miners, display a dialog
+                        MessageBox.Show(ea.Reason, "Launching Miner Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        //just notify - relaunching option will take care of the rest
+                        string notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
+                        notificationsControl.AddNotification(notificationReason, notificationReason, () =>
+                        {
+                            ConfigureCoins();
+                        }, "");
+                    }
+                }
+            }));
+        }
+
+        private void ProcessAuthenticationFailed(object sender, AuthenticationFailedArgs ea)
+        {
+            this.BeginInvoke((Action)(() =>
+            {
+                //code to update UI
+                notificationsControl.AddNotification(ea.Reason, ea.Reason, () =>
+                {
+                    ConfigureCoins();
+                }, "");
+            }));
+        }
+
+        private void LogApiEvent(object sender, Xgminer.Api.LogEventArgs eventArgs)
+        {
+            ApiLogEntry logEntry = new ApiLogEntry();
+
+            logEntry.DateTime = eventArgs.DateTime;
+            logEntry.Request = eventArgs.Request;
+            logEntry.Response = eventArgs.Response;
+            logEntry.CoinName = GetCoinNameForApiContext((Xgminer.Api.ApiContext)sender);
+
+            apiLogEntryBindingSource.Position = apiLogEntryBindingSource.Add(logEntry);
+
+            while (apiLogEntryBindingSource.Count > 1000)
+                apiLogEntryBindingSource.RemoveAt(0);
+
+            LogApiEventToFile(logEntry);
+        }
+        #endregion
+
+        #region Application startup / setup
+        private void ShowStartupTips()
+        {
+            string tip = null;
+
+            switch (applicationConfiguration.TipsShown)
+            {
+                case 0:
+                    tip = "Tip: right-click device names to change coins";
+                    notificationsControl.AddNotification(tip, tip, () =>
+                    {
+                        if (deviceListView.Items.Count > 0)
+                        {
+                            string currentCoin = GetCurrentlySelectedCoinName();
+                            CheckCoinInPopupMenu(currentCoin);
+
+                            ListViewItem firstItem = deviceListView.Items[0];
+                            Point popupPosition = firstItem.Position;
+                            popupPosition.Offset(14, 6);
+                            coinPopupMenu.Show(deviceListView, popupPosition);
+                        }
+                    }, "");
+                    applicationConfiguration.TipsShown++;
+                    break;
+                case 1:
+                    tip = "Tip: right-click the main window for common tasks";
+                    notificationsControl.AddNotification(tip, tip, () =>
+                    {
+                        deviceListContextMenu.Show(deviceListView, 150, 100);
+                    }, "");
+                    applicationConfiguration.TipsShown++;
+                    break;
+                case 2:
+                    tip = "Tip: restart mining after changing any settings";
+                    notificationsControl.AddNotification(tip, tip, () =>
+                    {
+                    }, "");
+                    applicationConfiguration.TipsShown++;
+                    break;
+                case 3:
+                    tip = "Tip: enabling perks gives back to the author";
+                    notificationsControl.AddNotification(tip, tip, () =>
+                    {
+                        ConfigurePerks();
+                    }, "");
+                    applicationConfiguration.TipsShown++;
+                    break;
+            }
+
+            applicationConfiguration.SaveApplicationConfiguration();
+        }
+
+        //required for GPU mining
+        private void SetGpuEnvironmentVariables()
+        {
+            if (applicationConfiguration.SetGpuEnvironmentVariables)
+            {
+                using (new HourGlass())
+                {
+                    const string GpuMaxAllocPercent = "GPU_MAX_ALLOC_PERCENT";
+                    const string GpuUseSyncObjects = "GPU_USE_SYNC_OBJECTS";
+
+                    SetEnvironmentVariableIfNotSet(GpuMaxAllocPercent, "100");
+                    SetEnvironmentVariableIfNotSet(GpuUseSyncObjects, "1");
+                }
+            }
+        }
+
+        private static void SetEnvironmentVariableIfNotSet(string name, string value)
+        {
+            string currentValue = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.User);
+            if (String.IsNullOrEmpty(currentValue))
+                Environment.SetEnvironmentVariable(name, value, EnvironmentVariableTarget.User);
+        }
+
+        private void FetchInitialCoinStats()
+        {
+            engineConfiguration.LoadStrategyConfiguration(pathConfiguration.SharedConfigPath); //needed before refreshing coins
+            engineConfiguration.LoadCoinConfigurations(pathConfiguration.SharedConfigPath); //needed before refreshing coins
+            //already done in ctor applicationConfiguration.LoadApplicationConfiguration(); //needed before refreshing coins
+            SetupNotificationsControl(); //needed before refreshing coins
+            SetupCoinApi(); //so we target the correct API
+            RefreshCoinStats();
+        }
+
+        private void SetupMiningEngineEvents()
+        {
+            miningEngine.LogProcessClose += LogProcessClose;
+            miningEngine.LogProcessLaunch += LogProcessLaunch;
+            miningEngine.ProcessLaunchFailed += ProcessLaunchFailed;
+            miningEngine.ProcessAuthenticationFailed += ProcessAuthenticationFailed;
+        }
+
+        private const int MaxHistoryOnScreen = 1000;
+        private void LoadPreviousHistory()
+        {
+            const string logFileName = "MiningLog.json";
+            string logDirectory = ApplicationPaths.AppDataPath();
+            if (Directory.Exists(applicationConfiguration.LogFilePath))
+                logDirectory = applicationConfiguration.LogFilePath;
+            string logFilePath = Path.Combine(logDirectory, logFileName);
+            if (File.Exists(logFilePath))
+            {
+                try
+                {
+                    List<LogProcessCloseArgs> loadLogFile = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
+                    loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - MaxHistoryOnScreen));
+                    logCloseEntries.AddRange(loadLogFile);
+                }
+                catch (ArgumentException ex)
+                {
+                    //old MiningLog.json file - wrong format serialized
+                    //MiningLog.json rolls over so we will eventually be able to
+                    //load the previous log file
+                    return;
+                }
+            }
+        }
+
+        private void CheckAndShowGettingStarted()
+        {
+            //only show if there's no settings yet
+            if (File.Exists(applicationConfiguration.ApplicationConfigurationFileName()))
+                return;
+
+            WizardForm wizardForm = new WizardForm(this.knownCoins);
+            DialogResult dialogResult = wizardForm.ShowDialog();
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                EngineConfiguration newEngineConfiguration;
+                ApplicationConfiguration newApplicationConfiguration;
+                PerksConfiguration newPerksConfiguration;
+                wizardForm.CreateConfigurations(out newEngineConfiguration, out newApplicationConfiguration, out newPerksConfiguration);
+
+                this.engineConfiguration = newEngineConfiguration;
+                this.applicationConfiguration = newApplicationConfiguration;
+                this.perksConfiguration = newPerksConfiguration;
+
+                this.engineConfiguration.SaveCoinConfigurations();
+                this.engineConfiguration.SaveMinerConfiguration();
+                this.applicationConfiguration.SaveApplicationConfiguration();
+                this.perksConfiguration.SavePerksConfiguration();
+
+                SetBriefMode(applicationConfiguration.BriefUserInterface);
+            }
+        }
+
+        private static void CheckAndDownloadMiners()
+        {
+            if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
+                return; //can't auto download binaries on Linux
+
+            bool hasMiners = HasMinersInstalled();
+
+            if (!hasMiners)
+                InstallMiner();
+        }
+
+        private static void InstallMiner()
+        {
+            string minerName = MinerPath.GetMinerName();
+
+            ProgressForm progressForm = new ProgressForm(String.Format("Downloading and installing {0} from {1}", minerName, Xgminer.Installer.GetMinerDownloadRoot()));
+            progressForm.Show();
+
+            //for Mono - show the UI
+            Application.DoEvents();
+            Thread.Sleep(25);
+            Application.DoEvents();
+            try
+            {
+                string minerPath = Path.Combine("Miners", minerName);
+                string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
+                Xgminer.Installer.InstallMiner(destinationFolder);
+            }
+            finally
+            {
+                progressForm.Close();
+            }
+        }
+
+        private static bool HasMinersInstalled()
+        {
+            return MinerIsInstalled();
+        }
+
+        private static bool MinerIsInstalled()
+        {
+            string path = MinerPath.GetPathToInstalledMiner();
+            return File.Exists(path);
+        }
+
+        private void CheckForDisownedMiners()
+        {
+            string minerName = MinerPath.GetMinerName();
+
+            List<Process> disownedMiners = Process.GetProcessesByName(minerName).ToList();
+
+            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+                disownedMiners.Remove(minerProcess.Process);
+
+            if (disownedMiners.Count > 0)
+            {
+                DialogResult messageBoxResult = MessageBox.Show("MultiMiner has detected running miners that it does not own. Would you like to kill them?",
+                    "Disowned Miners Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (messageBoxResult == System.Windows.Forms.DialogResult.Yes)
+                    foreach (Process disownedMiner in disownedMiners)
+                        MinerProcess.KillProcess(disownedMiner);
+            }
+        }
+
+        private void ShowNotInstalledMinerWarning()
+        {
+            bool showWarning = true;
+
+            if (OSVersionPlatform.GetConcretePlatform() != PlatformID.Unix)
+            {
+                string minerName = MinerPath.GetMinerName();
+
+                DialogResult dialogResult = MessageBox.Show(String.Format(
+                    "No copy of bfgminer was detected. " +
+                    "Would you like to download and install {0} now?", minerName), "Miner Not Found",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+
+                if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                {
+                    InstallMiner();
+                    RefreshDevices();
+                    showWarning = false;
+                }
+            }
+
+            if (showWarning)
+                MessageBox.Show("No copy of bfgminer was detected. Please go to https://github.com/nwoolls/multiminer for instructions on installing bfgminer.",
+                        "Miner Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        private void ConfigureDevicesForNewUser()
+        {
+            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single();
+
+            for (int i = 0; i < devices.Count; i++)
+            {
+                DeviceConfiguration deviceConfiguration = new DeviceConfiguration()
+                {
+                    CoinSymbol = coinConfiguration.Coin.Symbol,
+                    Enabled = true
+                };
+
+                deviceConfiguration.Assign(devices[i]);
+                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+            }
+
+            engineConfiguration.SaveDeviceConfigurations();
+            UpdateMiningButtons();
+        }
+
+        private static bool ConfigFileHandled()
+        {
+            const string bakExtension = ".mmbak";
+
+            string minerName = MinerPath.GetMinerName();
+            string minerExecutablePath = MinerPath.GetPathToInstalledMiner();
+            string confFileFilePath = String.Empty;
+
+            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+            {
+                string minerFolderName = "." + minerName;
+                string minerFileName = minerName + ".conf";
+                confFileFilePath = Path.Combine(Path.Combine(OSVersionPlatform.GetHomeDirectoryPath(), minerFolderName), minerFileName);
+            }
+            else
+            {
+                confFileFilePath = Path.ChangeExtension(minerExecutablePath, ".conf");
+            }
+
+            if (File.Exists(confFileFilePath))
+            {
+                string confFileName = Path.GetFileName(confFileFilePath);
+                string confBakFileName = confFileName + bakExtension;
+
+                DialogResult dialogResult = MessageBox.Show(String.Format("A {0} file has been detected in your miner directory. This file interferes with the arguments supplied by MultiMiner. Can MultiMiner rename this file to {1}?",
+                    confFileName, confBakFileName), "External Configuration Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (dialogResult == System.Windows.Forms.DialogResult.No)
+                    return false;
+
+                string confBakFileFilePath = confFileFilePath + bakExtension;
+                File.Delete(confBakFileFilePath);
+                File.Move(confFileFilePath, confBakFileFilePath);
+            }
+
+            return true;
+        }
+        #endregion
+        
+        #region Primary application logic
+        private void SetBriefMode(bool newBriefMode)
+        {
+            briefMode = newBriefMode;
+            RefreshDetailsToggleButton();
+
+            //do this before adjusting the window size so we can base it on column widths
+            AutoSizeListViewColumns();
+
+            if (briefMode)
+            {
+                CloseDetailsArea();
+                HideAdvancedPanel();
+                WindowState = FormWindowState.Normal;
+
+                int newWidth = 0;
+
+                foreach (ColumnHeader column in deviceListView.Columns)
+                    newWidth += column.Width;
+                newWidth += 40; //needs to be pretty wide for e.g. Aero Basic
+
+                newWidth = Math.Max(newWidth, 300);
+
+                //don't (automatically) set the width to crop notifications
+                newWidth = Math.Max(newWidth, notificationsControl.Width + 24);
+
+                Size = new Size(newWidth, 400);
+
+            }
+            else
+            {
+                if (WindowState != FormWindowState.Maximized)
+                {
+                    //use Math.Max so it won't size smaller to show more
+                    Size = new Size(Math.Max(Size.Width, 720), Math.Max(Size.Height, 500));
+                }
+            }
+
+            strategiesLabel.Visible = !briefMode;
+            strategyCountdownLabel.Visible = !briefMode;
+            deviceTotalLabel.Visible = !briefMode;
+
+            advancedMenuItem.Visible = !briefMode;
+            //don't hide settings - the wizard talks about the button
+            //settingsButton.Visible = !briefMode;
+            //settingsSeparator.Visible = !briefMode;
+
+            footerPanel.Visible = !briefMode;
+
+            applicationConfiguration.BriefUserInterface = briefMode;
+            applicationConfiguration.SaveApplicationConfiguration();
+        }
+
+        private void SetListViewStyle(View view)
+        {
+            updatingListView = true;
+            try
+            {
+                deviceListView.CheckBoxes = false;
+                deviceListView.View = view;
+                deviceListView.CheckBoxes = view != View.Tile;
+
+                switch (view)
+                {
+                    case View.LargeIcon:
+                        listViewStyleButton.Image = Properties.Resources.view_medium_icons;
+                        break;
+                    case View.Details:
+                        listViewStyleButton.Image = Properties.Resources.view_details;
+                        break;
+                    case View.SmallIcon:
+                        listViewStyleButton.Image = Properties.Resources.view_small_icons;
+                        break;
+                    case View.List:
+                        listViewStyleButton.Image = Properties.Resources.view_list;
+                        break;
+                    case View.Tile:
+                        listViewStyleButton.Image = Properties.Resources.view_large_icons;
+                        break;
+                }
+
+                applicationConfiguration.ListViewStyle = view;
+
+                if (view == View.Details)
+                    AutoSizeListViewColumns();
+            }
+            finally
+            {
+                updatingListView = false;
+            }
+        }
+
+        private const int bfgminerNotificationId = 100;
+        private const int multiMinerNotificationId = 102;
+
+        private void CheckForMultiMinerUpdates()
+        {
+            string availableMinerVersion = String.Empty;
+            try
+            {
+                using (new HourGlass())
+                {
+                    availableMinerVersion = Engine.Installer.GetAvailableMinerVersion();
+                }
+            }
+            catch (WebException ex)
+            {
+                //downloads website is down
+                return;
+            }
+
+            string installedMinerVersion = Engine.Installer.GetInstalledMinerVersion();
+
+            if (!AutomaticUpgradeAllowed(installedMinerVersion, availableMinerVersion))
+                return;
+
+            if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
+            {
+                notificationsControl.AddNotification(multiMinerNotificationId.ToString(),
+                    String.Format("MultiMiner version {0} is available ({1} installed)",
+                        availableMinerVersion, installedMinerVersion), () =>
+                        {
+                            bool wasMining = miningEngine.Mining;
+                            StopMining();
+                            InstallMultiMiner();
+                            if (wasMining)
+                                StartMining();
+                        }, "http://releases.multiminerapp.com");
+            }
+        }
+
+        private static bool AutomaticUpgradeAllowed(string installedMinerVersion, string availableMinerVersion)
+        {
+            //don't automatically prompt to upgrade from 1.0 to 2.0
+            Version sourceVersion = new Version(installedMinerVersion);
+            Version targetVersion = new Version(availableMinerVersion);
+            return sourceVersion.Major == targetVersion.Major;
+        }
+
+        private static bool ThisVersionGreater(string thisVersion, string thatVersion)
+        {
+            Version thisVersionObj = new Version(thisVersion);
+            Version thatVersionObj = new Version(thatVersion);
+
+            return thisVersionObj > thatVersionObj;
+        }
+
+        private void CheckForMinerUpdates()
+        {
+            if (!MinerIsInstalled())
+                return;
+
+            string availableMinerVersion = null;
+            using (new HourGlass())
+            {
+                availableMinerVersion = GetAvailableBackendVersion();
+            }
+
+            if (String.IsNullOrEmpty(availableMinerVersion))
+                return;
+
+            string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner());
+            if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
+                DisplayMinerUpdateNotification(availableMinerVersion, installedMinerVersion);
+        }
+
+        private void DisplayMinerUpdateNotification(string availableMinerVersion, string installedMinerVersion)
+        {
+            int notificationId = bfgminerNotificationId;
+
+            string informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
+
+            string minerName = MinerPath.GetMinerName();
+            notificationsControl.AddNotification(notificationId.ToString(),
+                String.Format("{0} version {1} is available ({2} installed)",
+                    minerName, availableMinerVersion, installedMinerVersion), () =>
+                    {
+                        bool wasMining = miningEngine.Mining;
+
+                        //only stop mining if this is the engine being used
+                        if (wasMining)
+                            StopMining();
+
+                        InstallMiner();
+
+                        //only start mining if we stopped mining
+                        if (wasMining)
+                            StartMining();
+                    }, informationUrl);
+        }
+
+        private static string GetAvailableBackendVersion()
+        {
+            string result = String.Empty;
+            try
+            {
+                result = Xgminer.Installer.GetAvailableMinerVersion();
+            }
+            catch (WebException ex)
+            {
+                //downloads website is down
+            }
+            return result;
+        }
+
+        private static void InstallMultiMiner()
+        {
+            ProgressForm progressForm = new ProgressForm("Downloading and installing MultiMiner from " + Engine.Installer.GetMinerDownloadRoot());
+            progressForm.Show();
+
+            //for Mono - show the UI
+            Application.DoEvents();
+            Thread.Sleep(25);
+            Application.DoEvents();
+            try
+            {
+                MultiMiner.Engine.Installer.InstallMiner(Path.GetDirectoryName(Application.ExecutablePath));
+            }
+            finally
+            {
+                progressForm.Close();
+            }
+        }
+
+        private void SetAllDevicesToCoin(CoinConfiguration coinConfiguration)
+        {
+            engineConfiguration.DeviceConfigurations.Clear();
+
+            for (int i = 0; i < devices.Count; i++)
+            {
+                ListViewItem listViewItem = deviceListView.Items[i];
+
+                Device device = devices[i];
+                //don't use KnownCoins as it may have dupes by coin name
+                CoinConfiguration existingConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(listViewItem.SubItems["Coin"].Text));
+
+                DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
+
+                deviceConfiguration.Assign(device);
+
+                if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
+                {
+                    if (device.Kind == DeviceKind.GPU)
+                        deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
+                    else
+                        deviceConfiguration.CoinSymbol = existingConfiguration == null ? String.Empty : existingConfiguration.Coin.Symbol;
+                }
+                else
+                {
+                    deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
+                }
+
+                deviceConfiguration.Enabled = listViewItem.Checked;
+
+                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+            }
+
+            ApplyDeviceConfigurationsToViewModel();
+            ApplyCoinInformationToViewModel();
+        }
+
+        private void CheckForUpdates()
+        {
+            PlatformID concretePlatform = OSVersionPlatform.GetConcretePlatform();
+
+            //we cannot auto update the .app file (yet)
+            CheckForMultiMinerUpdates();
+
+            //we cannot auto install miners on Unix (yet)
+            if (applicationConfiguration.CheckForMinerUpdates && (concretePlatform != PlatformID.Unix))
+                TryToCheckForMinerUpdates();
+        }
+
+        private void TryToCheckForMinerUpdates()
+        {
+            try
+            {
+                CheckForMinerUpdates();
+            }
+            catch (ArgumentException ex)
+            {
+                string error = String.Format("Error checking for {0} updates", "bfgminer");
+                notificationsControl.AddNotification(error, error, () =>
+                {
+                }, "");
+            }
+        }
+
+        private void CloseDetailsArea()
+        {
+            detailsAreaContainer.Panel2.Hide();
+            detailsAreaContainer.Panel2Collapsed = true;
+        }
+
+        private void ShowDetailsArea()
+        {
+            SetBriefMode(false);
+            RefreshDetailsArea();
+
+            detailsAreaContainer.Panel2Collapsed = false;
+            detailsAreaContainer.Panel2.Show();
+        }
+
+        private void HideAdvancedPanel()
+        {
+            advancedAreaContainer.Panel2.Hide();
+            advancedAreaContainer.Panel2Collapsed = true;
+            //hide all controls or they will show/flicker under OS X/mono
+            closeApiButton.Visible = false;
+            apiLogGridView.Visible = false;
+
+            applicationConfiguration.LogAreaVisible = false;
+            applicationConfiguration.SaveApplicationConfiguration();
+        }
+
+        private void ShowAdvancedPanel()
+        {
+            if (briefMode)
+                SetBriefMode(false);
+
+            closeApiButton.Visible = true;
+            apiLogGridView.Visible = true;
+            advancedAreaContainer.Panel2Collapsed = false;
+            advancedAreaContainer.Panel2.Show();
+        }
+
+        private void ShowApiMonitor()
+        {
+            advancedTabControl.SelectedTab = apiMonitorPage;
+            ShowAdvancedPanel();
+
+            applicationConfiguration.LogAreaVisible = true;
+            applicationConfiguration.SaveApplicationConfiguration();
+        }
+
+        private void ShowProcessLog()
+        {
+            advancedTabControl.SelectedTab = processLogPage;
+            ShowAdvancedPanel();
+
+            applicationConfiguration.LogAreaVisible = true;
+            applicationConfiguration.SaveApplicationConfiguration();
+        }
+
+        private void ShowHistory()
+        {
+            advancedTabControl.SelectedTab = historyPage;
+            ShowAdvancedPanel();
+
+            applicationConfiguration.LogAreaVisible = true;
+            applicationConfiguration.SaveApplicationConfiguration();
+        }
+
+        private static void ShowAboutDialog()
+        {
+            AboutForm aboutForm = new AboutForm();
+            aboutForm.ShowDialog();
+        }
+        #endregion
+
+        #region Primary mining logic
+        private void StartMining()
+        {
+            if (!MiningConfigurationValid())
+                return;
+
+            if (miningEngine.Mining)
+                return;
+
+            if (!ConfigFileHandled())
+                return;
+
+            startButton.Enabled = false; //immediately disable, update after
+            startMenuItem.Enabled = false;
+
+            try
+            {
+                using (new HourGlass())
+                {
+                    int donationPercent = 0;
+                    if (perksConfiguration.PerksEnabled)
+                        donationPercent = perksConfiguration.DonationPercent;
+                    miningEngine.StartMining(engineConfiguration, devices, coinApiInformation, donationPercent);
+                }
+            }
+            catch (MinerLaunchException ex)
+            {
+                MessageBox.Show(ex.Message, "Error Launching Miner", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //do this AFTER we start mining to pick up any Auto-Mining changes
+
+            //create a deep clone of the mining & device configurations
+            //this is so we can accurately display e.g. the currently mining pools
+            //even if the user changes pool info without restartinging mining
+            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
+            this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
+
+            engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
+
+            deviceStatsTimer.Enabled = true;
+            minerSummaryTimer.Enabled = true;
+            coinStatsCountdownTimer.Enabled = true;
+            poolInfoTimer.Enabled = true;
+            RefreshStrategiesCountdown();
+
+            //so restart timer based on when mining started, not a constantly ticking timer
+            //see https://bitcointalk.org/index.php?topic=248173.msg4593795#msg4593795
+            SetupRestartTimer();
+
+            //to get changes from strategy config
+            //to get updated coin stats for coin changes
+            RefreshListViewFromViewModel();
+
+            AutoSizeListViewColumns();
+
+            UpdateMiningButtons();
+        }
+
+        private void StopMining()
+        {
+            using (new HourGlass())
+            {
+                miningEngine.StopMining();
+            }
+
+            processDeviceDetails.Clear();
+            processPoolInformation.Clear();
+            deviceStatsTimer.Enabled = false;
+            minerSummaryTimer.Enabled = false;
+            coinStatsCountdownTimer.Enabled = false;
+            poolInfoTimer.Enabled = false;
+            RefreshStrategiesCountdown();
+            scryptRateLabel.Text = string.Empty;
+            sha256RateLabel.Text = string.Empty;
+            notifyIcon1.Text = "MultiMiner - Stopped";
+            UpdateMiningButtons();
+            ClearAllMinerStats();
+            RefreshIncomeSummary();
+            AutoSizeListViewColumns();
+            RefreshDetailsAreaIfVisible();
             ClearPoolsFlaggedDown();
         }
+
+        private void RestartMining()
+        {
+            StopMining();
+
+            //refresh stats from Coin API so the Restart button can be used as a way to
+            //force MultiMiner to apply updated mining strategies
+            RefreshCoinStats();
+
+            StartMining();
+        }
+
+        private void RestartMiningIfMining()
+        {
+            if (miningEngine.Mining)
+            {
+                StopMining();
+                StartMining();
+            }
+        }
+
+        private void CheckAndApplyMiningStrategy()
+        {
+            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
+                //ensure the user isn't editing settings
+                !ShowingModalDialog())
+            {
+                miningEngine.ApplyMiningStrategy(coinApiInformation);
+                //save any changes made by the engine
+                engineConfiguration.SaveDeviceConfigurations();
+
+                //create a deep clone of the mining & device configurations
+                //this is so we can accurately display e.g. the currently mining pools
+                //even if the user changes pool info without restartinging mining
+                this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
+                this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
+
+                //to get changes from strategy config
+                //to refresh coin stats due to changed coin selections
+                RefreshListViewFromViewModel();
+            }
+        }
+
+        private void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
+        {
+            string coinName = minerProcess.MinerConfiguration.CoinName;
+            //reference miningCoinConfigurations so that we get access to the mining coins
+            CoinConfiguration configuration = miningCoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            if (configuration == null)
+                return;
+
+            if (configuration.NotifyOnBlockFound && (foundBlocks > minerProcess.FoundBlocks))
+            {
+                minerProcess.FoundBlocks = foundBlocks;
+
+                string notificationReason = String.Format("Block(s) found for {0} (block {1})",
+                    coinName, minerProcess.FoundBlocks);
+
+                notificationsControl.AddNotification(notificationReason, notificationReason, () =>
+                {
+                }, "");
+            }
+        }
+
+        private void CheckAndNotifyAcceptedShares(MinerProcess minerProcess, long acceptedShares)
+        {
+            string coinName = minerProcess.MinerConfiguration.CoinName;
+            //reference miningCoinConfigurations so that we get access to the mining coins
+            CoinConfiguration configuration = miningCoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            if (configuration == null)
+                return;
+
+            if (configuration.NotifyOnShareAccepted && (acceptedShares > minerProcess.AcceptedShares))
+            {
+                minerProcess.AcceptedShares = acceptedShares;
+
+                string notificationReason = String.Format("Share(s) accepted for {0} (share {1})",
+                    coinName, minerProcess.AcceptedShares);
+
+                notificationsControl.AddNotification(notificationReason, notificationReason, () =>
+                {
+                }, "");
+            }
+        }
+
+        private bool updatingListView = false;
+        private void RefreshDevices()
+        {
+            updatingListView = true;
+            try
+            {
+                try
+                {
+                    using (new HourGlass())
+                    {
+                        DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
+                        //Type remotable = typeof(DevicesService);
+                        //string remoteUri = "tcp://127.0.0.1:" + RemotingServer.Port + "/" + remotable.Name;
+                        //DevicesService devicesService = (DevicesService)Activator.GetObject(remotable, remoteUri);
+                        devices = devicesService.GetDevices();
+
+                        ApplyDevicesToViewModel();
+                        ApplyDeviceConfigurationsToViewModel();
+                        ApplyCoinInformationToViewModel();
+                    }
+                }
+                catch (Win32Exception ex)
+                {
+                    //miner not installed/not launched
+                    devices = new List<Device>(); //dummy empty device list
+
+                    ShowNotInstalledMinerWarning();
+                }
+
+                if ((devices.Count > 0) && (engineConfiguration.DeviceConfigurations.Count == 0) &&
+                    (engineConfiguration.CoinConfigurations.Count == 1))
+                {
+                    //setup devices for a brand new user
+                    ConfigureDevicesForNewUser();
+                }
+
+                //first try to match up devices without configurations with configurations without devices
+                //could happen if, for instance, a COM port changes for a device
+                FixOrphanedDeviceConfigurations();
+
+                //there needs to be a device config for each device
+                AddMissingDeviceConfigurations();
+                //but no configurations for devices that have gone missing
+                RemoveExcessDeviceConfigurations();
+                //remove any duplicate configurations
+                engineConfiguration.RemoveDuplicateDeviceConfigurations();
+
+                PopulateListViewFromViewModel();
+                RefreshListViewFromViewModel();
+                RefreshDetailsAreaIfVisible();
+
+                //clean up mappings from previous device list
+                deviceDetailsMapping.Clear();
+
+                //auto-size columns
+                AutoSizeListViewColumns();
+
+                deviceTotalLabel.Text = String.Format("{0} device(s)", devices.Count);
+
+                //it may not be possible to mine after discovering devices
+                UpdateMiningButtons();
+            }
+            finally
+            {
+                updatingListView = false;
+            }
+        }
+
+        private void HandleStartButtonClick()
+        {
+            if (applicationConfiguration.AutoSetDesktopMode)
+                ToggleDynamicIntensity(true);
+
+            SaveChanges();
+            StartMining();
+        }
+
+        private void ToggleDynamicIntensity(bool enabled)
+        {
+            engineConfiguration.XgminerConfiguration.DesktopMode = enabled;
+            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
+            engineConfiguration.SaveMinerConfiguration();
+        }
+
+        private void FlagSuspiciousMiner(MinerProcess minerProcess, DeviceInformationResponse deviceInformation)
+        {
+            if (deviceInformation.Status.ToLower().Contains("sick"))
+                minerProcess.HasSickDevice = true;
+            if (deviceInformation.Status.ToLower().Contains("dead"))
+                minerProcess.HasDeadDevice = true;
+            if (deviceInformation.CurrentHashrate == 0)
+                minerProcess.HasZeroHashrateDevice = true;
+
+            //only check GPUs for subpar hashrate
+            //ASICs spike too much for this to be reliable there
+            //don't check average hashrate if using dynamic intensity
+            if (deviceInformation.Kind.Equals("GPU", StringComparison.OrdinalIgnoreCase) &&
+                !engineConfiguration.XgminerConfiguration.DesktopMode)
+            {
+                //avoid div by 0
+                if (deviceInformation.AverageHashrate > 0)
+                {
+                    double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
+                    if (performanceRatio <= 0.50)
+                        minerProcess.HasPoorPerformingDevice = true;
+                }
+            }
+        }
+
+        private static void ClearSuspectProcessFlags(MinerProcess minerProcess)
+        {
+            minerProcess.HasDeadDevice = false;
+            minerProcess.HasSickDevice = false;
+            minerProcess.HasZeroHashrateDevice = false;
+            minerProcess.MinerIsFrozen = false;
+            minerProcess.HasPoorPerformingDevice = false;
+        }
+        private void ClearPoolsFlaggedDown()
+        {
+            foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations)
+                coinConfiguration.PoolsDown = false;
+            engineConfiguration.SaveCoinConfigurations();
+        }
+
+        private void SuggestCoinsToMine()
+        {
+            if (!applicationConfiguration.SuggestCoinsToMine)
+                return;
+            if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.None)
+                return;
+            if (coinApiInformation == null) //no network connection
+                return;
+
+            IEnumerable<CoinInformation> coinsToMine = GetCoinsToMine();
+
+            foreach (CoinInformation coin in coinsToMine)
+                NotifyCoinToMine(coin);
+        }
+
+        private IEnumerable<CoinInformation> GetCoinsToMine()
+        {
+            IEnumerable<CoinInformation> filteredCoins = this.coinApiInformation;
+            if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256)
+                filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("SHA-256", StringComparison.OrdinalIgnoreCase));
+            else if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt)
+                filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("Scrypt", StringComparison.OrdinalIgnoreCase));
+
+            IEnumerable<CoinInformation> orderedCoins = filteredCoins.OrderByDescending(c => c.AverageProfitability);
+            switch (engineConfiguration.StrategyConfiguration.MiningBasis)
+            {
+                case StrategyConfiguration.CoinMiningBasis.Difficulty:
+                    orderedCoins = coinApiInformation.OrderBy(c => c.Difficulty);
+                    break;
+                case StrategyConfiguration.CoinMiningBasis.Price:
+                    orderedCoins = coinApiInformation.OrderByDescending(c => c.Price);
+                    break;
+            }
+
+            //added checks for coin.Symbol and coin.Exchange
+            //current CoinChoose.com feed for LTC profitability has a NULL exchange for Litecoin
+            IEnumerable<CoinInformation> unconfiguredCoins = orderedCoins.Where(coin => !String.IsNullOrEmpty(coin.Symbol) && !engineConfiguration.CoinConfigurations.Any(config => config.Coin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase)));
+            IEnumerable<CoinInformation> coinsToMine = unconfiguredCoins.Take(3);
+            return coinsToMine;
+        }
+
+        private void NotifyCoinToMine(CoinInformation coin)
+        {
+            string value = coin.AverageProfitability.ToString(".#") + "%";
+            string noun = "average profitability";
+
+            switch (engineConfiguration.StrategyConfiguration.MiningBasis)
+            {
+                case StrategyConfiguration.CoinMiningBasis.Difficulty:
+                    value = coin.Difficulty.ToString(".####");
+                    noun = "difficulty";
+                    break;
+                case StrategyConfiguration.CoinMiningBasis.Price:
+                    value = coin.Price.ToString(".########");
+                    noun = "price";
+                    break;
+            }
+
+            string infoUrl = coinApiContext.GetInfoUrl();
+
+            notificationsControl.AddNotification(coin.Symbol,
+                String.Format("Consider mining {0} ({1} {2})",
+                    coin.Symbol, value, noun), () =>
+                    {
+                        Process.Start(String.Format("https://www.google.com/search?q={0}+{1}+mining+pools",
+                            coin.Symbol, coin.Name));
+                    }, infoUrl);
+        }
+
+        private void CancelMiningOnStartup()
+        {
+            startupMiningCountdownTimer.Enabled = false;
+            startupMiningPanel.Visible = false;
+            countdownLabel.Visible = false; //or remains visible under Mono
+            cancelStartupMiningButton.Visible = false; //or remains visible under Mono
+        }
+        #endregion
     }
 }

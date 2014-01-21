@@ -17,5 +17,10 @@ namespace MultiMiner.Win.Extensions
 
             return shortDateString.Replace(value1, String.Empty).Replace(value2, String.Empty);
         }
+
+        public static string ToReallyShortDateTimeString(this DateTime dateTime)
+        {
+            return String.Format("{0} {1}", dateTime.ToReallyShortDateString(), dateTime.ToShortTimeString());
+        }
     }
 }
