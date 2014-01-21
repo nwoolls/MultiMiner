@@ -181,6 +181,8 @@
       <DependentUpon>StrategiesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UserAgent.cs" />
+    <Compile Include="ViewModels\DeviceViewModel.cs" />
+    <Compile Include="ViewModels\MainFormViewModel.cs" />
     <Compile Include="WindowsStartupShortcut.cs" />
     <Compile Include="WizardForm.cs">
       <SubType>Form</SubType>

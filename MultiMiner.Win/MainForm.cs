@@ -21,6 +21,7 @@ using MultiMiner.Coin.Api;
 using MultiMiner.Remoting.Server;
 using MultiMiner.Services;
 using MultiMiner.Discovery;
+using MultiMiner.Win.ViewModels;
 
 namespace MultiMiner.Win
 {
@@ -73,6 +74,9 @@ namespace MultiMiner.Win
         //remoting
         private RemotingServer remotingServer;
         private Listener listener;
+
+        //view models
+        private MainFormViewModel mainFormViewModel = new MainFormViewModel();
         
         public MainForm()
         {
@@ -139,6 +143,8 @@ namespace MultiMiner.Win
             //check for disowned miners before refreshing devices
             if (applicationConfiguration.DetectDisownedMiners)
                 CheckForDisownedMiners();
+
+            SetupRemoting();
 
             SetupStatusBarLabelLayouts();
 
@@ -703,6 +709,10 @@ namespace MultiMiner.Win
                         //string remoteUri = "tcp://127.0.0.1:" + RemotingServer.Port + "/" + remotable.Name;
                         //DevicesService devicesService = (DevicesService)Activator.GetObject(remotable, remoteUri);
                         devices = devicesService.GetDevices();
+
+                        ApplyDevicesToViewModel();
+                        ApplyDeviceConfigurationsToViewModel();
+                        ApplyCoinInformationToViewModel();
                     }
                 }
                 catch (Win32Exception ex)
@@ -732,8 +742,7 @@ namespace MultiMiner.Win
                 engineConfiguration.RemoveDuplicateDeviceConfigurations();
 
                 PopulateListViewFromDevices();
-                LoadListViewValuesFromConfiguration();
-                LoadListViewValuesFromCoinStats();
+                RefreshListViewFromViewModel();
                 RefreshDetailsAreaIfVisible();
 
                 //clean up mappings from previous device list
@@ -751,6 +760,47 @@ namespace MultiMiner.Win
             {
                 updatingListView = false;
             }
+        }
+
+        private void ApplyDevicesToViewModel()
+        {
+            //clear to ensure we have a 1-to-1 with listview items
+            mainFormViewModel.Devices.Clear();
+
+            mainFormViewModel.ApplyDeviceModels(devices);
+        }
+        
+        private void ApplyDeviceConfigurationsToViewModel()
+        {
+            foreach (DeviceViewModel deviceViewModel in mainFormViewModel.Devices)
+            {
+                DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(deviceViewModel));
+                if (deviceConfiguration != null)
+                {
+                    deviceViewModel.Enabled = deviceConfiguration.Enabled;
+                    if (!String.IsNullOrEmpty(deviceConfiguration.CoinSymbol))
+                    {
+                        CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(
+                            cc => cc.Coin.Symbol.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+                        if (coinConfiguration != null)
+                            deviceViewModel.Coin = coinConfiguration.Coin;
+                    }
+                }
+                else
+                {
+                    deviceViewModel.Enabled = true;
+                    CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(
+                        cc => cc.Coin.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
+                    if (coinConfiguration != null)
+                        deviceViewModel.Coin = coinConfiguration.Coin;
+                }
+            }
+        }
+
+        private void ApplyCoinInformationToViewModel()
+        {
+            if (coinApiInformation != null)
+                mainFormViewModel.ApplyCoinInformationModels(coinApiInformation);
         }
 
         //try to match up devices without configurations with configurations without devices
@@ -870,11 +920,11 @@ namespace MultiMiner.Win
 
                 utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
 
-                foreach (Device device in devices)
+                foreach (DeviceViewModel deviceViewModel in mainFormViewModel.Devices)
                 {
                     ListViewItem listViewItem = new ListViewItem();
 
-                    switch (device.Kind)
+                    switch (deviceViewModel.Kind)
                     {
                         case DeviceKind.CPU:
                             listViewItem.Group = deviceListView.Groups["cpuListViewGroup"];
@@ -894,7 +944,7 @@ namespace MultiMiner.Win
                             break;
                     }
                     
-                    listViewItem.Text = device.Name;
+                    listViewItem.Text = deviceViewModel.Name;
 
                     //start at i = 1, skip the first column
                     for (int i = 1; i < deviceListView.Columns.Count; i++)
@@ -913,10 +963,150 @@ namespace MultiMiner.Win
                     listViewItem.UseItemStyleForSubItems = false;
 
 
-                    listViewItem.SubItems["Driver"].Text = device.Driver;
+                    listViewItem.SubItems["Driver"].Text = deviceViewModel.Driver;
 
                     deviceListView.Items.Add(listViewItem);
                 }
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
+        }
+        
+        private void RefreshListViewFromViewModel()
+        {        
+            deviceListView.BeginUpdate();
+            try
+            {
+                //clear all coin stats first
+                //there may be coins configured that are no longer returned in the stats
+                ClearAllCoinStats();
+
+                for (int i = 0; i < mainFormViewModel.Devices.Count; i++)
+                {
+                    ListViewItem listViewItem = deviceListView.Items[i];
+                    DeviceViewModel deviceViewModel = mainFormViewModel.Devices[i];
+
+                    /* configuration info
+                     * */
+
+
+                    //ensure the coin configuration still exists
+                    listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
+
+                    listViewItem.Checked = deviceViewModel.Enabled;
+
+                    if (listViewItem.Checked)
+                    {
+                        listViewItem.ForeColor = SystemColors.WindowText;
+                        listViewItem.UseItemStyleForSubItems = false;
+                    }
+                    else
+                    {
+                        listViewItem.ForeColor = SystemColors.GrayText;
+                        listViewItem.UseItemStyleForSubItems = true; 
+                    }
+
+                    /* Coin info
+                     * */
+
+                    listViewItem.SubItems["Difficulty"].Tag = deviceViewModel.Difficulty;
+                    listViewItem.SubItems["Difficulty"].Text = deviceViewModel.Difficulty.ToDifficultyString();
+
+                    string unit = "BTC";
+
+                    listViewItem.SubItems["Price"].Text = String.Format("{0} {1}", deviceViewModel.Price.ToFriendlyString(), unit);
+
+                    if (miningEngine.Donating && perksConfiguration.ShowExchangeRates
+                        //ensure Coinbase is available:
+                        && (sellPrices != null))
+                    {
+                        double btcExchangeRate = sellPrices.Subtotal.Amount;
+                        double coinExchangeRate = 0.00;
+
+                        coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
+
+                        listViewItem.SubItems["Exchange"].Tag = coinExchangeRate;
+                        listViewItem.SubItems["Exchange"].Text = String.Format("${0}", coinExchangeRate.ToFriendlyString(true));
+                    }
+
+                    switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+                    {
+                        case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
+                            listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AdjustedProfitability, 2) + "%";
+                            break;
+                        case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
+                            listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AverageProfitability, 2) + "%";
+                            break;
+                        case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
+                            listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.Profitability, 2) + "%";
+                            break;
+                    }
+
+                    /* device info
+                     * */
+
+
+                    //stratum devices get lumped together, so we sum those
+                    if (deviceViewModel.Kind == DeviceKind.PXY)
+                    {
+                        listViewItem.SubItems["Average"].Tag = (double)(listViewItem.SubItems["Average"].Tag ?? 0.00) + deviceViewModel.AverageHashrate;
+                        listViewItem.SubItems["Current"].Tag = (double)(listViewItem.SubItems["Current"].Tag ?? 0.00) + deviceViewModel.CurrentHashrate;
+                        listViewItem.SubItems["Effective"].Tag = (double)(listViewItem.SubItems["Effective"].Tag ?? 0.00) + deviceViewModel.WorkUtility;
+                        listViewItem.SubItems["Rejected"].Tag = (double)(listViewItem.SubItems["Rejected"].Tag ?? 0.00) + deviceViewModel.RejectedSharesPercent;
+                        listViewItem.SubItems["Errors"].Tag = (double)(listViewItem.SubItems["Errors"].Tag ?? 0.00) + deviceViewModel.HardwareErrorsPercent;
+                        listViewItem.SubItems["Accepted"].Tag = (int)(listViewItem.SubItems["Accepted"].Tag ?? 0) + deviceViewModel.AcceptedShares;
+
+                        if (applicationConfiguration.ShowWorkUtility)
+                            listViewItem.SubItems[utilityColumnHeader.Text].Tag = (double)(listViewItem.SubItems[utilityColumnHeader.Text].Tag ?? 0.00) + deviceViewModel.WorkUtility;
+                        else
+                            listViewItem.SubItems[utilityColumnHeader.Text].Tag = (double)(listViewItem.SubItems[utilityColumnHeader.Text].Tag ?? 0.00) + deviceViewModel.Utility;
+                    }
+                    else
+                    {
+                        listViewItem.SubItems["Average"].Tag = deviceViewModel.AverageHashrate;
+                        listViewItem.SubItems["Current"].Tag = deviceViewModel.CurrentHashrate;
+                        listViewItem.SubItems["Effective"].Tag = deviceViewModel.WorkUtility;
+                        listViewItem.SubItems["Rejected"].Tag = deviceViewModel.RejectedSharesPercent;
+                        listViewItem.SubItems["Errors"].Tag = deviceViewModel.HardwareErrorsPercent;
+                        listViewItem.SubItems["Accepted"].Tag = deviceViewModel.AcceptedShares;
+
+                        if (applicationConfiguration.ShowWorkUtility)
+                            listViewItem.SubItems[utilityColumnHeader.Text].Tag = deviceViewModel.WorkUtility;
+                        else
+                            listViewItem.SubItems[utilityColumnHeader.Text].Tag = deviceViewModel.Utility;
+                    }
+
+                    listViewItem.SubItems["Average"].Text = ((double)listViewItem.SubItems["Average"].Tag).ToHashrateString();
+                    listViewItem.SubItems["Current"].Text = ((double)listViewItem.SubItems["Current"].Tag).ToHashrateString();
+
+                    //this will be wrong for Scrypt until 3.10.1
+                    double shaMultiplier = 71582788 / 1000;
+                    double workUtility = (double)listViewItem.SubItems["Effective"].Tag;
+                    double hashrate = workUtility * shaMultiplier;
+
+                    listViewItem.SubItems["Effective"].Text = hashrate.ToHashrateString();
+
+                    //check for >= 0.05 so we don't show 0% (due to the format string)
+                    listViewItem.SubItems["Rejected"].Text = (double)listViewItem.SubItems["Rejected"].Tag >= 0.05 ? ((double)listViewItem.SubItems["Rejected"].Tag).ToString("0.#") + "%" : String.Empty;
+                    listViewItem.SubItems["Errors"].Text = (double)listViewItem.SubItems["Errors"].Tag >= 0.05 ? ((double)listViewItem.SubItems["Errors"].Tag).ToString("0.#") + "%" : String.Empty;
+
+                    listViewItem.SubItems["Accepted"].Text = (int)listViewItem.SubItems["Accepted"].Tag > 0 ? ((int)listViewItem.SubItems["Accepted"].Tag).ToString() : String.Empty;
+
+                    listViewItem.SubItems[utilityColumnHeader.Text].Text = (double)listViewItem.SubItems[utilityColumnHeader.Text].Tag >= 0.00 ? ((double)listViewItem.SubItems[utilityColumnHeader.Text].Tag).ToString("0.###") : String.Empty;
+
+                    listViewItem.SubItems["Temp"].Text = deviceViewModel.Temperature > 0 ? deviceViewModel.Temperature + "°" : String.Empty;
+                    listViewItem.SubItems["Fan"].Text = deviceViewModel.FanPercent > 0 ? deviceViewModel.FanPercent + "%" : String.Empty;
+                    listViewItem.SubItems["Intensity"].Text = deviceViewModel.Intensity;
+
+                    PopulatePoolForListViewItem(deviceViewModel.PoolIndex, listViewItem);
+
+                    PopulateIncomeForListViewItem(listViewItem);
+
+                }
+                
+
             }
             finally
             {
@@ -1065,8 +1255,6 @@ namespace MultiMiner.Win
             poolsDownFlagTimer.Interval = 1000 * 60 * 60; //1 hour
             poolsDownFlagTimer.Enabled = true;
             ClearPoolsFlaggedDown();
-
-            SetupRemoting();
 
             //allow resize/maximize/etc to render
             Application.DoEvents();
@@ -1243,9 +1431,13 @@ namespace MultiMiner.Win
             ToolStripItem menuItem = (ToolStripItem)sender;
 
             foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
-                selectedItem.SubItems["Coin"].Text = menuItem.Text;
+            {
+                DeviceViewModel deviceViewModel = mainFormViewModel.Devices[selectedItem.Index];
+                deviceViewModel.Coin = engineConfiguration.CoinConfigurations.Single(cc => cc.Coin.Name.Equals(menuItem.Text)).Coin;
+                //selectedItem.SubItems["Coin"].Text = menuItem.Text;
+            }
 
-            LoadListViewValuesFromCoinStats();
+            RefreshListViewFromViewModel();
 
             AutoSizeListViewColumns();
 
@@ -1262,7 +1454,8 @@ namespace MultiMiner.Win
         {
             SaveListViewValuesToConfiguration();
             engineConfiguration.SaveDeviceConfigurations();
-            LoadListViewValuesFromConfiguration();
+
+            ApplyDeviceConfigurationsToViewModel();
 
             UpdateChangesButtons(false);
 
@@ -1270,9 +1463,9 @@ namespace MultiMiner.Win
 
             UpdateMiningButtons();
             ClearMinerStatsForDisabledCoins();
-            
+
             //update coin stats now that we saved coin changes
-            LoadListViewValuesFromCoinStats();
+            RefreshListViewFromViewModel();
 
             //take into account above changes
             AutoSizeListViewColumns();
@@ -1286,8 +1479,8 @@ namespace MultiMiner.Win
         private void CancelChanges()
         {
             engineConfiguration.LoadDeviceConfigurations();
-            LoadListViewValuesFromConfiguration();
-            LoadListViewValuesFromCoinStats();
+            ApplyDeviceConfigurationsToViewModel();
+            RefreshListViewFromViewModel();
 
             UpdateChangesButtons(false);
             AutoSizeListViewColumns();
@@ -1315,54 +1508,7 @@ namespace MultiMiner.Win
                 deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
 
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
-
             }
-        }
-
-        private void LoadListViewValuesFromConfiguration()
-        {
-            bool saveEnabled = saveButton.Enabled;
-
-            deviceListView.BeginUpdate();
-
-            for (int i = 0; i < devices.Count; i++)
-            {
-                DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(c => (c.Equals(devices[i])));
-                ListViewItem listViewItem = deviceListView.Items[i];
-
-                if (deviceConfiguration != null)
-                {
-                    //ensure the coin configuration still exists
-                    CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(deviceConfiguration.CoinSymbol));
-                    if (coinConfiguration != null)
-                        listViewItem.SubItems["Coin"].Text = coinConfiguration.Coin.Name;
-                    else
-                        listViewItem.SubItems["Coin"].Text = string.Empty;
-
-                    listViewItem.Checked = deviceConfiguration.Enabled;
-
-                    if (listViewItem.Checked)
-                    {
-                        listViewItem.ForeColor = SystemColors.WindowText;
-                        listViewItem.UseItemStyleForSubItems = false;
-                    }
-                    else
-                    {
-                        listViewItem.ForeColor = SystemColors.GrayText;
-                        listViewItem.UseItemStyleForSubItems = true; 
-                    }
-                }
-                else
-                {
-                    listViewItem.SubItems["Coin"].Text = string.Empty;
-                    listViewItem.Checked = true;
-                }
-            }
-
-            //restore button states after
-            UpdateChangesButtons(saveEnabled);
-
-            deviceListView.EndUpdate();
         }
         
         private void UpdateMiningButtons()
@@ -1504,9 +1650,8 @@ namespace MultiMiner.Win
             SetupRestartTimer();
 
             //to get changes from strategy config
-            LoadListViewValuesFromConfiguration();
             //to get updated coin stats for coin changes
-            LoadListViewValuesFromCoinStats();
+            RefreshListViewFromViewModel();
 
             AutoSizeListViewColumns();
 
@@ -1697,73 +1842,6 @@ namespace MultiMiner.Win
 
             item.SubItems["Daily"].Text = String.Empty;
             item.SubItems["Daily"].Tag = 0.00;
-        }
-
-        private void PopulateDeviceStatsForListViewItem(DeviceInformationResponse deviceInformation, ListViewItem item)
-        {
-            deviceListView.BeginUpdate();
-            try
-            {
-                //stratum devices get lumped together, so we sum those
-                if (deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
-                {
-                    item.SubItems["Average"].Tag = (double)(item.SubItems["Average"].Tag ?? 0.00) + deviceInformation.AverageHashrate;
-                    item.SubItems["Current"].Tag = (double)(item.SubItems["Current"].Tag ?? 0.00) + deviceInformation.CurrentHashrate;
-                    item.SubItems["Effective"].Tag = (double)(item.SubItems["Effective"].Tag ?? 0.00) + deviceInformation.WorkUtility;
-                    item.SubItems["Rejected"].Tag = (double)(item.SubItems["Rejected"].Tag ?? 0.00) + deviceInformation.RejectedSharesPercent;
-                    item.SubItems["Errors"].Tag = (double)(item.SubItems["Errors"].Tag ?? 0.00) + deviceInformation.HardwareErrorsPercent;
-                    item.SubItems["Accepted"].Tag = (int)(item.SubItems["Accepted"].Tag ?? 0) + deviceInformation.AcceptedShares;
-
-                    if (applicationConfiguration.ShowWorkUtility)
-                        item.SubItems[utilityColumnHeader.Text].Tag = (double)(item.SubItems[utilityColumnHeader.Text].Tag ?? 0.00) + deviceInformation.WorkUtility;
-                    else
-                        item.SubItems[utilityColumnHeader.Text].Tag = (double)(item.SubItems[utilityColumnHeader.Text].Tag ?? 0.00) + deviceInformation.Utility;
-                }
-                else
-                {
-                    item.SubItems["Average"].Tag = deviceInformation.AverageHashrate;
-                    item.SubItems["Current"].Tag = deviceInformation.CurrentHashrate;
-                    item.SubItems["Effective"].Tag = deviceInformation.WorkUtility;
-                    item.SubItems["Rejected"].Tag = deviceInformation.RejectedSharesPercent;
-                    item.SubItems["Errors"].Tag = deviceInformation.HardwareErrorsPercent;
-                    item.SubItems["Accepted"].Tag = deviceInformation.AcceptedShares;
-
-                    if (applicationConfiguration.ShowWorkUtility)
-                        item.SubItems[utilityColumnHeader.Text].Tag = deviceInformation.WorkUtility;
-                    else
-                        item.SubItems[utilityColumnHeader.Text].Tag = deviceInformation.Utility;
-                }
-
-                item.SubItems["Average"].Text = ((double)item.SubItems["Average"].Tag).ToHashrateString();
-                item.SubItems["Current"].Text = ((double)item.SubItems["Current"].Tag).ToHashrateString();
-
-                //this will be wrong for Scrypt until 3.10.1
-                double shaMultiplier = 71582788 / 1000;
-                double workUtility = (double)item.SubItems["Effective"].Tag;
-                double hashrate = workUtility * shaMultiplier;
-                
-                item.SubItems["Effective"].Text = hashrate.ToHashrateString();
-
-                //check for >= 0.05 so we don't show 0% (due to the format string)
-                item.SubItems["Rejected"].Text = (double)item.SubItems["Rejected"].Tag >= 0.05 ? ((double)item.SubItems["Rejected"].Tag).ToString("0.#") + "%" : String.Empty;
-                item.SubItems["Errors"].Text = (double)item.SubItems["Errors"].Tag >= 0.05 ? ((double)item.SubItems["Errors"].Tag).ToString("0.#") + "%" : String.Empty;
-
-                item.SubItems["Accepted"].Text = (int)item.SubItems["Accepted"].Tag > 0 ? ((int)item.SubItems["Accepted"].Tag).ToString() : String.Empty;
-
-                item.SubItems[utilityColumnHeader.Text].Text = (double)item.SubItems[utilityColumnHeader.Text].Tag >= 0.00 ? ((double)item.SubItems[utilityColumnHeader.Text].Tag).ToString("0.###") : String.Empty;
-
-                item.SubItems["Temp"].Text = deviceInformation.Temperature > 0 ? deviceInformation.Temperature + "°" : String.Empty;
-                item.SubItems["Fan"].Text = deviceInformation.FanPercent > 0 ? deviceInformation.FanPercent + "%" : String.Empty;
-                item.SubItems["Intensity"].Text = deviceInformation.Intensity;
-
-                PopulatePoolForListViewItem(deviceInformation.PoolIndex, item);
-
-                PopulateIncomeForListViewItem(item);
-            }
-            finally
-            {
-                deviceListView.EndUpdate();
-            }
         }
 
         private void PopulateIncomeForListViewItem(ListViewItem item)
@@ -2021,36 +2099,36 @@ namespace MultiMiner.Win
 
             allDeviceInformation.Clear();
 
-            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+            deviceListView.BeginUpdate();
+            try
             {
-                ClearSuspectProcessFlags(minerProcess);
-
-                List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
-
-                if (deviceInformationList == null) //handled failure getting API info
+                foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
                 {
-                    minerProcess.MinerIsFrozen = true;
-                    continue;
-                }
+                    ClearSuspectProcessFlags(minerProcess);
 
-                allDeviceInformation.AddRange(deviceInformationList);
+                    List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
 
-                //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
-                List<DeviceDetailsResponse> processDevices = GetProcessDevices(minerProcess, deviceInformationList);
+                    if (deviceInformationList == null) //handled failure getting API info
+                    {
+                        minerProcess.MinerIsFrozen = true;
+                        continue;
+                    }
 
-                //first clear stats for each row
-                //this is because the PXY row stats get summed  
-                deviceListView.BeginUpdate();
-                try
-                {
+                    allDeviceInformation.AddRange(deviceInformationList);
+
+                    //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
+                    List<DeviceDetailsResponse> processDevices = GetProcessDevices(minerProcess, deviceInformationList);
+
+                    //first clear stats for each row
+                    //this is because the PXY row stats get summed 
                     foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                     {
                         DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
                             && (d.ID == deviceInformation.ID));
-                        int itemIndex = GetItemIndexForDeviceDetails(deviceDetails);
-                        if (itemIndex >= 0)
+                        int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
+                        if (deviceIndex >= 0)
                             //could legitimately be -1 if the API is returning a device we don't know about
-                            ClearDeviceInfoForListViewItem(deviceListView.Items[itemIndex]);
+                            ClearDeviceInfoForListViewItem(deviceListView.Items[deviceIndex]);
                     }
 
                     //clear accepted shares as we'll be summing that as well
@@ -2064,39 +2142,44 @@ namespace MultiMiner.Win
 
                         DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
                             && (d.ID == deviceInformation.ID));
-                        int itemIndex = GetItemIndexForDeviceDetails(deviceDetails);
+                        int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
 
-                        if (itemIndex >= 0)
+                        if (deviceIndex >= 0)
                         {
-                            deviceDetailsMapping[devices[itemIndex]] = deviceDetails;
+                            Device device = devices[deviceIndex];
+                            deviceDetailsMapping[device] = deviceDetails;
 
                             if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
                                 totalScryptRate += deviceInformation.AverageHashrate;
                             else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
                                 totalSha256Rate += deviceInformation.AverageHashrate;
 
-                            PopulateDeviceStatsForListViewItem(deviceInformation, deviceListView.Items[itemIndex]);
+                            //replaces these calls => PopulateDeviceStatsForListViewItem(deviceInformation, deviceListView.Items[deviceIndex]);
 
                             minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
+
+                            mainFormViewModel.ApplyDeviceInformationResponseModel(device, deviceInformation);
                         }
                     }
                 }
-                finally
-                {
-                    deviceListView.EndUpdate();
-                }
             }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
+
+            RefreshListViewFromViewModel();
 
             //Mh not mh, mh is milli
             scryptRateLabel.Text = totalScryptRate == 0 ? String.Empty : String.Format("Scrypt: {0}", totalScryptRate.ToHashrateString());
             //spacing used to pad out the status bar item
-            sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}", totalSha256Rate.ToHashrateString()); 
+            sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}", totalSha256Rate.ToHashrateString());
 
             scryptRateLabel.AutoSize = true;
             sha256RateLabel.AutoSize = true;
 
             notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
-            
+
             int count = 3;
             //auto sizing the columns is moderately CPU intensive, so only do it every /count/ times
             AutoSizeListViewColumnsEvery(count);
@@ -2364,7 +2447,7 @@ namespace MultiMiner.Win
             return summaryInformation;
         }
         
-        private int GetItemIndexForDeviceDetails(DeviceDetailsResponse deviceDetails)
+        private int GetDeviceIndexForDeviceDetails(DeviceDetailsResponse deviceDetails)
         {            
             for (int i = 0; i < devices.Count; i++)
             {
@@ -2455,9 +2538,8 @@ namespace MultiMiner.Win
                 this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
 
                 //to get changes from strategy config
-                LoadListViewValuesFromConfiguration();
                 //to refresh coin stats due to changed coin selections
-                LoadListViewValuesFromCoinStats();
+                RefreshListViewFromViewModel();
             }
         }
 
@@ -2471,6 +2553,7 @@ namespace MultiMiner.Win
             {
                 coinApiInformation = coinApiContext.GetCoinInformation(
                     UserAgent.AgentString).ToList();
+                ApplyCoinInformationToViewModel();
             }
             catch (Exception ex)
             {
@@ -2484,7 +2567,7 @@ namespace MultiMiner.Win
                 throw;
             }
 
-            LoadListViewValuesFromCoinStats();
+            RefreshListViewFromViewModel();
             LoadKnownCoinsFromCoinStats();
             RefreshCoinStatsLabel();
             AutoSizeListViewColumns();
@@ -2647,80 +2730,7 @@ namespace MultiMiner.Win
         {
             ConfigurationReaderWriter.WriteConfiguration(knownCoins, KnownCoinsFileName());
         }
-
-        private void LoadListViewValuesFromCoinStats()
-        {
-            deviceListView.BeginUpdate();
-            try
-            {
-                //clear all coin stats first
-                //there may be coins configured that are no longer returned in the stats
-                ClearAllCoinStats();
-
-                if (coinApiInformation != null) //null if no network connection
-                    foreach (CoinInformation coin in coinApiInformation)
-                        foreach (ListViewItem item in deviceListView.Items)
-                        {
-                            CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
-                            if ((coinConfiguration != null) && coin.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase))
-                            {
-                                PopulateCoinStatsForListViewItem(coin, item);
-                            }
-                        }
-            }
-            finally
-            {
-                deviceListView.EndUpdate();
-            }
-        }
-
-        private void PopulateCoinStatsForListViewItem(CoinInformation coinInfo, ListViewItem item)
-        {
-            deviceListView.BeginUpdate();
-            try
-            {
-                item.SubItems["Difficulty"].Tag = coinInfo.Difficulty;
-                item.SubItems["Difficulty"].Text = coinInfo.Difficulty.ToDifficultyString();
-
-                string unit = "BTC";
-
-                item.SubItems["Price"].Text = String.Format("{0} {1}", coinInfo.Price.ToFriendlyString(), unit);
-
-                if (miningEngine.Donating && perksConfiguration.ShowExchangeRates
-                    //ensure Coinbase is available:
-                    && (sellPrices != null)
-                    //ensure coin API is available:
-                    && (coinInfo != null))
-                {
-                    double btcExchangeRate = sellPrices.Subtotal.Amount;
-                    double coinExchangeRate = 0.00;
-
-                    coinExchangeRate = coinInfo.Price * btcExchangeRate;
-
-                    item.SubItems["Exchange"].Tag = coinExchangeRate;
-                    item.SubItems["Exchange"].Text = String.Format("${0}", coinExchangeRate.ToFriendlyString(true));
-                }
-
-                switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
-                {
-                    case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
-                        item.SubItems["Profitability"].Text = Math.Round(coinInfo.AdjustedProfitability, 2) + "%";
-                        break;
-                    case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
-                        item.SubItems["Profitability"].Text = Math.Round(coinInfo.AverageProfitability, 2) + "%";
-                        break;
-                    case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
-                        item.SubItems["Profitability"].Text = Math.Round(coinInfo.Profitability, 2) + "%";
-                        break;
-                }
-            }
-            finally
-            {
-                deviceListView.EndUpdate();
-            }
-        }
-
-
+        
         private void countdownTimer_Tick(object sender, EventArgs e)
         {
             startupMiningCountdownSeconds--;
@@ -2798,7 +2808,7 @@ namespace MultiMiner.Win
                 applicationConfiguration.SaveApplicationConfiguration();
 
                 RefreshStrategiesLabel();
-                LoadListViewValuesFromCoinStats();
+                RefreshListViewFromViewModel();
                 UpdateMiningButtons();
 
                 Application.DoEvents();
@@ -3033,7 +3043,7 @@ namespace MultiMiner.Win
                                         
                     DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
                         && (d.ID == deviceInformation.ID));
-                    int deviceIndex = GetItemIndexForDeviceDetails(deviceDetails);
+                    int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
                     Device device = devices[deviceIndex];
 
                     miningStatistics.FullName = device.Name;
@@ -3409,8 +3419,7 @@ namespace MultiMiner.Win
             engineConfiguration.SaveDeviceConfigurations();
             engineConfiguration.SaveStrategyConfiguration();
 
-            LoadListViewValuesFromConfiguration();
-            LoadListViewValuesFromCoinStats(); 
+            RefreshListViewFromViewModel();
 
             AutoSizeListViewColumns();
 
@@ -3452,7 +3461,10 @@ namespace MultiMiner.Win
                 deviceConfiguration.Enabled = listViewItem.Checked;
 
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
-            }           
+            }
+
+            ApplyDeviceConfigurationsToViewModel();
+            ApplyCoinInformationToViewModel();
         }
 
         private void advancedMenuItem_DropDownOpening(object sender, EventArgs e)
@@ -3543,7 +3555,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private bool AutomaticUpgradeAllowed(string installedMinerVersion, string availableMinerVersion)
+        private static bool AutomaticUpgradeAllowed(string installedMinerVersion, string availableMinerVersion)
         {
             //don't automatically prompt to upgrade from 1.0 to 2.0
             Version sourceVersion = new Version(installedMinerVersion);
@@ -4088,7 +4100,7 @@ namespace MultiMiner.Win
                 perksConfiguration.SavePerksConfiguration();
                 if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
                     RefreshExchangeRates();
-                LoadListViewValuesFromCoinStats();
+                RefreshListViewFromViewModel();
                 RefreshIncomeSummary();
                 AutoSizeListViewColumns();
                 SetupRemoting();
