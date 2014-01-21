@@ -1,11 +1,11 @@
 ﻿using MultiMiner.Coin.Api;
+using MultiMiner.Engine.Configuration;
 using MultiMiner.Utility;
 using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Api.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace MultiMiner.Win.ViewModels
 {
@@ -52,6 +52,33 @@ namespace MultiMiner.Win.ViewModels
             DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Equals(deviceModel));
             if (deviceViewModel != null)
                 ObjectCopier.CopyObject(deviceInformationResponseModel, deviceViewModel, true);         
+        }
+
+        public void ApplyDeviceConfigurationModels(List<DeviceConfiguration> deviceConfigurations, List<CoinConfiguration> coinConfigurations)
+        {
+            foreach (DeviceViewModel deviceViewModel in Devices)
+            {
+                DeviceConfiguration deviceConfiguration = deviceConfigurations.SingleOrDefault(dc => dc.Equals(deviceViewModel));
+                if (deviceConfiguration != null)
+                {
+                    deviceViewModel.Enabled = deviceConfiguration.Enabled;
+                    if (!String.IsNullOrEmpty(deviceConfiguration.CoinSymbol))
+                    {
+                        CoinConfiguration coinConfiguration = coinConfigurations.SingleOrDefault(
+                            cc => cc.Coin.Symbol.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+                        if (coinConfiguration != null)
+                            deviceViewModel.Coin = coinConfiguration.Coin;
+                    }
+                }
+                else
+                {
+                    deviceViewModel.Enabled = true;
+                    CoinConfiguration coinConfiguration = coinConfigurations.SingleOrDefault(
+                        cc => cc.Coin.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
+                    if (coinConfiguration != null)
+                        deviceViewModel.Coin = coinConfiguration.Coin;
+                }
+            }
         }
     }
 }

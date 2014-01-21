@@ -95,11 +95,7 @@ namespace MultiMiner.Win
         #region View life-cycle
         private void MainForm_Load(object sender, EventArgs e)
         {
-            if (applicationConfiguration.StartupMinimized && applicationConfiguration.MinimizeToNotificationArea)
-            {
-                notifyIcon1.Visible = true;
-                this.Hide();
-            }
+            HandleStartupMinimizedToNotificationArea();
 
             accessibleMenu.Visible = false;
             
@@ -118,8 +114,7 @@ namespace MultiMiner.Win
             LoadPreviousHistory();
             logLaunchArgsBindingSource.DataSource = logCloseEntries;
 
-            const int mobileMinerInterval = 32; //seconds
-            mobileMinerTimer.Interval = mobileMinerInterval * 1000;
+            SetupMobileMinerTimer();
 
             CloseDetailsArea();
 
@@ -207,7 +202,7 @@ namespace MultiMiner.Win
         }
         #endregion
 
-        #region View initialization
+        #region View setup
         private void PositionAdvancedAreaCloseButton()
         {
             closeApiButton.Parent = advancedAreaContainer.Panel2;
@@ -319,6 +314,14 @@ namespace MultiMiner.Win
         #endregion
 
         #region Model / ViewModel behavior
+        private void ApplyModelsToViewModel()
+        {
+            ApplyDevicesToViewModel();
+            mainFormViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations, 
+                engineConfiguration.CoinConfigurations);
+            ApplyCoinInformationToViewModel();
+        }
+        
         private void ApplyDevicesToViewModel()
         {
             //clear to ensure we have a 1-to-1 with listview items
@@ -326,34 +329,7 @@ namespace MultiMiner.Win
 
             mainFormViewModel.ApplyDeviceModels(devices);
         }
-
-        private void ApplyDeviceConfigurationsToViewModel()
-        {
-            foreach (DeviceViewModel deviceViewModel in mainFormViewModel.Devices)
-            {
-                DeviceConfiguration deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(deviceViewModel));
-                if (deviceConfiguration != null)
-                {
-                    deviceViewModel.Enabled = deviceConfiguration.Enabled;
-                    if (!String.IsNullOrEmpty(deviceConfiguration.CoinSymbol))
-                    {
-                        CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(
-                            cc => cc.Coin.Symbol.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
-                        if (coinConfiguration != null)
-                            deviceViewModel.Coin = coinConfiguration.Coin;
-                    }
-                }
-                else
-                {
-                    deviceViewModel.Enabled = true;
-                    CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(
-                        cc => cc.Coin.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
-                    if (coinConfiguration != null)
-                        deviceViewModel.Coin = coinConfiguration.Coin;
-                }
-            }
-        }
-
+        
         private void ApplyCoinInformationToViewModel()
         {
             if (coinApiInformation != null)
@@ -610,7 +586,7 @@ namespace MultiMiner.Win
             SaveListViewValuesToConfiguration();
             engineConfiguration.SaveDeviceConfigurations();
 
-            ApplyDeviceConfigurationsToViewModel();
+            ApplyModelsToViewModel();
 
             UpdateChangesButtons(false);
 
@@ -629,7 +605,7 @@ namespace MultiMiner.Win
         private void CancelChanges()
         {
             engineConfiguration.LoadDeviceConfigurations();
-            ApplyDeviceConfigurationsToViewModel();
+            ApplyModelsToViewModel();
             RefreshListViewFromViewModel();
 
             UpdateChangesButtons(false);
@@ -2387,6 +2363,12 @@ namespace MultiMiner.Win
             updateCheckTimer.Enabled = true;
             CheckForUpdates();
         }
+
+        private void SetupMobileMinerTimer()
+        {
+            const int mobileMinerInterval = 32; //seconds
+            mobileMinerTimer.Interval = mobileMinerInterval * 1000;
+        }
         #endregion
 
         #region Timer event handlers
@@ -2634,7 +2616,7 @@ namespace MultiMiner.Win
             {
                 coinApiInformation = coinApiContext.GetCoinInformation(
                     UserAgent.AgentString).ToList();
-                ApplyCoinInformationToViewModel();
+                ApplyModelsToViewModel();
             }
             catch (Exception ex)
             {
@@ -3183,6 +3165,40 @@ namespace MultiMiner.Win
                 RefreshPoolInfo();
         }
 
+        private void FlagSuspiciousMiner(MinerProcess minerProcess, DeviceInformationResponse deviceInformation)
+        {
+            if (deviceInformation.Status.ToLower().Contains("sick"))
+                minerProcess.HasSickDevice = true;
+            if (deviceInformation.Status.ToLower().Contains("dead"))
+                minerProcess.HasDeadDevice = true;
+            if (deviceInformation.CurrentHashrate == 0)
+                minerProcess.HasZeroHashrateDevice = true;
+
+            //only check GPUs for subpar hashrate
+            //ASICs spike too much for this to be reliable there
+            //don't check average hashrate if using dynamic intensity
+            if (deviceInformation.Kind.Equals("GPU", StringComparison.OrdinalIgnoreCase) &&
+                !engineConfiguration.XgminerConfiguration.DesktopMode)
+            {
+                //avoid div by 0
+                if (deviceInformation.AverageHashrate > 0)
+                {
+                    double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
+                    if (performanceRatio <= 0.50)
+                        minerProcess.HasPoorPerformingDevice = true;
+                }
+            }
+        }
+
+        private static void ClearSuspectProcessFlags(MinerProcess minerProcess)
+        {
+            minerProcess.HasDeadDevice = false;
+            minerProcess.HasSickDevice = false;
+            minerProcess.HasZeroHashrateDevice = false;
+            minerProcess.MinerIsFrozen = false;
+            minerProcess.HasPoorPerformingDevice = false;
+        }
+
         private void RefreshPoolInfo()
         {
             this.processPoolInformation.Clear();
@@ -3556,6 +3572,15 @@ namespace MultiMiner.Win
         #endregion
 
         #region Application startup / setup
+        private void HandleStartupMinimizedToNotificationArea()
+        {
+            if (applicationConfiguration.StartupMinimized && applicationConfiguration.MinimizeToNotificationArea)
+            {
+                notifyIcon1.Visible = true;
+                this.Hide();
+            }
+        }
+
         private void ShowStartupTips()
         {
             string tip = null;
@@ -4109,8 +4134,7 @@ namespace MultiMiner.Win
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
 
-            ApplyDeviceConfigurationsToViewModel();
-            ApplyCoinInformationToViewModel();
+            ApplyModelsToViewModel();
         }
 
         private void CheckForUpdates()
@@ -4392,14 +4416,9 @@ namespace MultiMiner.Win
                     using (new HourGlass())
                     {
                         DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
-                        //Type remotable = typeof(DevicesService);
-                        //string remoteUri = "tcp://127.0.0.1:" + RemotingServer.Port + "/" + remotable.Name;
-                        //DevicesService devicesService = (DevicesService)Activator.GetObject(remotable, remoteUri);
                         devices = devicesService.GetDevices();
 
-                        ApplyDevicesToViewModel();
-                        ApplyDeviceConfigurationsToViewModel();
-                        ApplyCoinInformationToViewModel();
+                        ApplyModelsToViewModel();
                     }
                 }
                 catch (Win32Exception ex)
@@ -4465,39 +4484,6 @@ namespace MultiMiner.Win
             engineConfiguration.SaveMinerConfiguration();
         }
 
-        private void FlagSuspiciousMiner(MinerProcess minerProcess, DeviceInformationResponse deviceInformation)
-        {
-            if (deviceInformation.Status.ToLower().Contains("sick"))
-                minerProcess.HasSickDevice = true;
-            if (deviceInformation.Status.ToLower().Contains("dead"))
-                minerProcess.HasDeadDevice = true;
-            if (deviceInformation.CurrentHashrate == 0)
-                minerProcess.HasZeroHashrateDevice = true;
-
-            //only check GPUs for subpar hashrate
-            //ASICs spike too much for this to be reliable there
-            //don't check average hashrate if using dynamic intensity
-            if (deviceInformation.Kind.Equals("GPU", StringComparison.OrdinalIgnoreCase) &&
-                !engineConfiguration.XgminerConfiguration.DesktopMode)
-            {
-                //avoid div by 0
-                if (deviceInformation.AverageHashrate > 0)
-                {
-                    double performanceRatio = deviceInformation.CurrentHashrate / deviceInformation.AverageHashrate;
-                    if (performanceRatio <= 0.50)
-                        minerProcess.HasPoorPerformingDevice = true;
-                }
-            }
-        }
-
-        private static void ClearSuspectProcessFlags(MinerProcess minerProcess)
-        {
-            minerProcess.HasDeadDevice = false;
-            minerProcess.HasSickDevice = false;
-            minerProcess.HasZeroHashrateDevice = false;
-            minerProcess.MinerIsFrozen = false;
-            minerProcess.HasPoorPerformingDevice = false;
-        }
         private void ClearPoolsFlaggedDown()
         {
             foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations)
