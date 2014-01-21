@@ -18,6 +18,7 @@ using MultiMiner.Xgminer.Api.Responses;
 using MultiMiner.Win.Extensions;
 using MultiMiner.Win.Configuration;
 using MultiMiner.Coin.Api;
+using Newtonsoft.Json;
 
 namespace MultiMiner.Win
 {
@@ -2441,7 +2442,8 @@ namespace MultiMiner.Win
             catch (Exception ex)
             {
                 //don't crash if website cannot be resolved or JSON cannot be parsed
-                if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is CoinApiException))
+                if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is CoinApiException) ||
+                    (ex is JsonReaderException))
                 {
                     if (applicationConfiguration.ShowApiErrors)
                         ShowCoinApiErrorNotification(ex);
