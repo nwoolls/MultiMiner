@@ -78,7 +78,8 @@ namespace MultiMiner.Win
         private Listener listener;
 
         //view models
-        private MainFormViewModel mainFormViewModel = new MainFormViewModel();
+        private MainFormViewModel localViewModel = new MainFormViewModel();
+        private MainFormViewModel remoteViewModel = new MainFormViewModel();
         #endregion
 
         #region Constructor
@@ -318,33 +319,33 @@ namespace MultiMiner.Win
         private void ApplyModelsToViewModel()
         {
             ApplyDevicesToViewModel();
-            mainFormViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations, 
+            localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
                 engineConfiguration.CoinConfigurations);
             ApplyCoinInformationToViewModel();
-            
+                        
             List<Remoting.Server.Data.Transfer.Device> newList = new List<Remoting.Server.Data.Transfer.Device>();
-            foreach (DeviceViewModel viewModel in mainFormViewModel.Devices)
+            foreach (DeviceViewModel viewModel in localViewModel.Devices)
             {
                 MultiMiner.Remoting.Server.Data.Transfer.Device dto = new Remoting.Server.Data.Transfer.Device();
                 ObjectCopier.CopyObject(viewModel, dto);
                 newList.Add(dto);
             }
-            Remoting.Server.ApplicationProxy.Instance.Devices = newList;
+            ApplicationProxy.Instance.Devices = newList;
         }
         
         private void ApplyDevicesToViewModel()
         {
             //clear to ensure we have a 1-to-1 with listview items
-            mainFormViewModel.Devices.Clear();
+            localViewModel.Devices.Clear();
 
             if (devices != null)
-                mainFormViewModel.ApplyDeviceModels(devices);
+                localViewModel.ApplyDeviceModels(devices);
         }
         
         private void ApplyCoinInformationToViewModel()
         {
             if (coinApiInformation != null)
-                mainFormViewModel.ApplyCoinInformationModels(coinApiInformation);
+                localViewModel.ApplyCoinInformationModels(coinApiInformation);
         }
 
         private int GetDeviceIndexForDeviceDetails(DeviceDetailsResponse deviceDetails)
@@ -396,7 +397,7 @@ namespace MultiMiner.Win
 
                 utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
 
-                foreach (DeviceViewModel deviceViewModel in mainFormViewModel.Devices)
+                foreach (DeviceViewModel deviceViewModel in localViewModel.Devices)
                 {
                     ListViewItem listViewItem = new ListViewItem();
 
@@ -459,10 +460,10 @@ namespace MultiMiner.Win
                 //there may be coins configured that are no longer returned in the stats
                 ClearAllCoinStats();
 
-                for (int i = 0; i < mainFormViewModel.Devices.Count; i++)
+                for (int i = 0; i < localViewModel.Devices.Count; i++)
                 {
                     ListViewItem listViewItem = deviceListView.Items[i];
-                    DeviceViewModel deviceViewModel = mainFormViewModel.Devices[i];
+                    DeviceViewModel deviceViewModel = localViewModel.Devices[i];
 
                     /* configuration info
                      * */
@@ -1640,7 +1641,7 @@ namespace MultiMiner.Win
 
             foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
             {
-                DeviceViewModel deviceViewModel = mainFormViewModel.Devices[selectedItem.Index];
+                DeviceViewModel deviceViewModel = localViewModel.Devices[selectedItem.Index];
                 deviceViewModel.Coin = engineConfiguration.CoinConfigurations.Single(cc => cc.Coin.Name.Equals(menuItem.Text)).Coin;
                 //selectedItem.SubItems["Coin"].Text = menuItem.Text;
             }
@@ -3143,7 +3144,7 @@ namespace MultiMiner.Win
 
                             minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
 
-                            mainFormViewModel.ApplyDeviceInformationResponseModel(device, deviceInformation);
+                            localViewModel.ApplyDeviceInformationResponseModel(device, deviceInformation);
                         }
                     }
                 }
@@ -4585,16 +4586,16 @@ namespace MultiMiner.Win
             EndpointAddress address = new EndpointAddress(new Uri("net.tcp://127.0.0.1:" + RemotingServer.Port + "/RemotingService"));
             NetTcpBinding binding = new NetTcpBinding();
 
-            ChannelFactory<Remoting.Server.IRemotingService> factory = new ChannelFactory<Remoting.Server.IRemotingService>(binding, address);
+            ChannelFactory<IRemotingService> factory = new ChannelFactory<IRemotingService>(binding, address);
             IRemotingService serviceChannel = factory.CreateChannel();
             IEnumerable<Remoting.Server.Data.Transfer.Device> devices = serviceChannel.GetDevices();
 
-            mainFormViewModel.Devices.Clear();
+            remoteViewModel.Devices.Clear();
             foreach (Remoting.Server.Data.Transfer.Device dto in devices)
             {
                 DeviceViewModel viewModel = new DeviceViewModel();
                 ObjectCopier.CopyObject(dto, viewModel);
-                mainFormViewModel.Devices.Add(viewModel);
+                remoteViewModel.Devices.Add(viewModel);
             }
 
             RefreshListViewFromViewModel();
