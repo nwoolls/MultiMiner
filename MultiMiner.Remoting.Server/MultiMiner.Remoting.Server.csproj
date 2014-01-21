@@ -33,17 +33,26 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationProxy.cs" />
+    <Compile Include="Data\Transfer\Device.cs" />
+    <Compile Include="IRemotingService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemotingServer.cs" />
+    <Compile Include="RemotingService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MultiMiner.Engine\MultiMiner.Engine.csproj">
+      <Project>{845687bb-ec47-46d3-ac9d-6fcfb63de8f5}</Project>
+      <Name>MultiMiner.Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Services\MultiMiner.Services.csproj">
       <Project>{cffa60ec-9486-4f45-bef2-05c1a3d68ea6}</Project>
       <Name>MultiMiner.Services</Name>

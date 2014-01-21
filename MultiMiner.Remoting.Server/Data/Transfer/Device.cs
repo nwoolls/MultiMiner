@@ -1,9 +1,9 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Xgminer;
 
-namespace MultiMiner.Win.ViewModels
+namespace MultiMiner.Remoting.Server.Data.Transfer
 {
-    class DeviceViewModel : DeviceDescriptor
+    public class Device
     {
         //device info
         public bool Enabled { get; set; }

@@ -1,38 +1,36 @@
 ﻿using System;
-using System.Runtime.Remoting;
-using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Channels.Tcp;
-using MultiMiner.Services;
+using System.ServiceModel;
 
 namespace MultiMiner.Remoting.Server
 {
     public class RemotingServer
     {
+        private bool serviceStarted = false;
+        private ServiceHost myServiceHost = null;
         private const int UserPortMin = 49152;
+
+        
         public const int Port = UserPortMin + 1473;
-        private TcpChannel tcpChannel;
 
         public void Startup()
         {
-            tcpChannel = new TcpChannel(Port);
-            ChannelServices.RegisterChannel(tcpChannel, true);
+            Uri baseAddress = new Uri("net.tcp://localhost:" + Port + "/RemotingService");
 
-            Type remotable = typeof(DevicesService);
+            NetTcpBinding binding = new NetTcpBinding();
 
-            WellKnownServiceTypeEntry WKSTE = new WellKnownServiceTypeEntry(remotable, remotable.Name, WellKnownObjectMode.SingleCall);
-            if (String.IsNullOrEmpty(RemotingConfiguration.ApplicationName))
-                RemotingConfiguration.ApplicationName = "MultiMiner.Remoting.Server";
-            RemotingConfiguration.RegisterWellKnownServiceType(WKSTE);
+            myServiceHost = new ServiceHost(typeof(RemotingService), baseAddress);
+            myServiceHost.AddServiceEndpoint(typeof(IRemotingService), binding, baseAddress);
+
+            myServiceHost.Open();
+
+            serviceStarted = true;
         }
 
         public void Shutdown()
         {
-            if (tcpChannel != null)
-            {
-                ChannelServices.UnregisterChannel(tcpChannel);
-                tcpChannel.StopListening(null);
-                tcpChannel = null;
-            }
+            myServiceHost.Close();
+            myServiceHost = null;
+            serviceStarted = false;
         }
     }
 }

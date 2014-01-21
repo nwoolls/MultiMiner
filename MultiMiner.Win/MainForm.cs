@@ -22,6 +22,7 @@ using MultiMiner.Remoting.Server;
 using MultiMiner.Services;
 using MultiMiner.Discovery;
 using MultiMiner.Win.ViewModels;
+using System.ServiceModel;
 
 namespace MultiMiner.Win
 {
@@ -320,6 +321,15 @@ namespace MultiMiner.Win
             mainFormViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations, 
                 engineConfiguration.CoinConfigurations);
             ApplyCoinInformationToViewModel();
+            
+            List<Remoting.Server.Data.Transfer.Device> newList = new List<Remoting.Server.Data.Transfer.Device>();
+            foreach (DeviceViewModel viewModel in mainFormViewModel.Devices)
+            {
+                MultiMiner.Remoting.Server.Data.Transfer.Device dto = new Remoting.Server.Data.Transfer.Device();
+                ObjectCopier.CopyObject(viewModel, dto);
+                newList.Add(dto);
+            }
+            Remoting.Server.ApplicationProxy.Instance.Devices = newList;
         }
         
         private void ApplyDevicesToViewModel()
@@ -327,7 +337,8 @@ namespace MultiMiner.Win
             //clear to ensure we have a 1-to-1 with listview items
             mainFormViewModel.Devices.Clear();
 
-            mainFormViewModel.ApplyDeviceModels(devices);
+            if (devices != null)
+                mainFormViewModel.ApplyDeviceModels(devices);
         }
         
         private void ApplyCoinInformationToViewModel()
@@ -4568,5 +4579,25 @@ namespace MultiMiner.Win
             cancelStartupMiningButton.Visible = false; //or remains visible under Mono
         }
         #endregion
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            EndpointAddress address = new EndpointAddress(new Uri("net.tcp://127.0.0.1:" + RemotingServer.Port + "/RemotingService"));
+            NetTcpBinding binding = new NetTcpBinding();
+
+            ChannelFactory<Remoting.Server.IRemotingService> factory = new ChannelFactory<Remoting.Server.IRemotingService>(binding, address);
+            IRemotingService serviceChannel = factory.CreateChannel();
+            IEnumerable<Remoting.Server.Data.Transfer.Device> devices = serviceChannel.GetDevices();
+
+            mainFormViewModel.Devices.Clear();
+            foreach (Remoting.Server.Data.Transfer.Device dto in devices)
+            {
+                DeviceViewModel viewModel = new DeviceViewModel();
+                ObjectCopier.CopyObject(dto, viewModel);
+                mainFormViewModel.Devices.Add(viewModel);
+            }
+
+            RefreshListViewFromViewModel();
+        }
     }
 }
