@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using MultiMiner.Discovery;
+using MultiMiner.Win.Extensions;
 
 namespace MultiMiner.Win
 {
@@ -16,6 +17,8 @@ namespace MultiMiner.Win
         {
             InitializeComponent();
         }
+
+        private readonly List<Instance> instances = new List<Instance>();
 
         public void RegisterInstance(Instance instance)
         {
@@ -37,6 +40,8 @@ namespace MultiMiner.Win
                 node.SelectedImageIndex = 1;
             }
 
+            instances.Add(instance);
+
             treeView1.Nodes[0].ExpandAll();
 
             if (isThisPc)
@@ -48,11 +53,55 @@ namespace MultiMiner.Win
         public void UnregisterInstance(Instance instance)
         {
             treeView1.Nodes[0].Nodes.RemoveByKey(instance.IpAddress);
+            instances.Remove(instance);
         }
 
         public void UnregisterInstances()
         {
+            instances.Clear();
             treeView1.Nodes[0].Nodes.Clear();
+        }
+
+        private string GetMachineName(string ipAddress)
+        {
+            Instance instance = instances.Single(i => i.IpAddress.Equals(ipAddress));
+            return GetMachineName(instance);
+        }
+
+        private string GetMachineName(Instance instance)
+        {
+            string result = instance.MachineName;
+            bool isThisPc = result.Equals(Environment.MachineName);
+            if (isThisPc)
+                result = "This PC";
+            return result;
+        }
+
+        public void ApplyMachineInformation(string ipAddress, Remoting.Server.Data.Transfer.Machine machine)
+        {
+            TreeNode[] nodes = treeView1.Nodes[0].Nodes.Find(ipAddress, false);
+            if (nodes.Length > 0)
+            {
+                if ((machine.TotalSha256Hashrate > 0) && (machine.TotalScryptHashrate > 0))
+                {
+                    nodes[0].Text = String.Format("{0} ({1}, {2})",
+                        GetMachineName(ipAddress),
+                        machine.TotalSha256Hashrate.ToHashrateString(),
+                        machine.TotalScryptHashrate.ToHashrateString());
+                }
+                else if (machine.TotalSha256Hashrate > 0)
+                {
+                    nodes[0].Text = String.Format("{0} ({1})",
+                        GetMachineName(ipAddress),
+                        machine.TotalSha256Hashrate.ToHashrateString());
+                }
+                else if (machine.TotalScryptHashrate > 0)
+                {
+                    nodes[0].Text = String.Format("{0} ({1})",
+                        GetMachineName(ipAddress),
+                        machine.TotalScryptHashrate.ToHashrateString());
+                }
+            }
         }
     }
 }

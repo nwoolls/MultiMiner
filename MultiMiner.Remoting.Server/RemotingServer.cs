@@ -7,14 +7,10 @@ namespace MultiMiner.Remoting.Server
     {
         private bool serviceStarted = false;
         private ServiceHost myServiceHost = null;
-        private const int UserPortMin = 49152;
-
         
-        public const int Port = UserPortMin + 1473;
-
         public void Startup()
         {
-            Uri baseAddress = new Uri("net.tcp://localhost:" + Port + "/RemotingService");
+            Uri baseAddress = new Uri("net.tcp://localhost:" + Config.RemotingPort + "/RemotingService");
 
             NetTcpBinding binding = new NetTcpBinding();
 

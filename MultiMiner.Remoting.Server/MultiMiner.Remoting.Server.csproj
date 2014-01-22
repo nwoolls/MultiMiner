@@ -35,6 +35,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -42,7 +43,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationProxy.cs" />
+    <Compile Include="Broadcast\Broadcaster.cs" />
+    <Compile Include="Broadcast\PacketReceivedArgs.cs" />
+    <Compile Include="Broadcast\Listener.cs" />
+    <Compile Include="Broadcast\Packet.cs" />
+    <Compile Include="Broadcast\Sender.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Data\Transfer\Device.cs" />
+    <Compile Include="Data\Transfer\Machine.cs" />
     <Compile Include="IRemotingService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemotingServer.cs" />

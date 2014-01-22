@@ -24,6 +24,7 @@ using MultiMiner.Discovery;
 using MultiMiner.Win.ViewModels;
 using System.ServiceModel;
 using Newtonsoft.Json;
+using System.Web.Script.Serialization;
 
 namespace MultiMiner.Win
 {
@@ -53,7 +54,7 @@ namespace MultiMiner.Win
         //currently mining information
         private List<DeviceConfiguration> miningDeviceConfigurations;
         private List<CoinConfiguration> miningCoinConfigurations;
-
+        
         //data sources
         private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
         private readonly List<LogLaunchArgs> logLaunchEntries = new List<LogLaunchArgs>();
@@ -65,6 +66,8 @@ namespace MultiMiner.Win
         private bool settingsLoaded = false;
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
         private bool formLoaded = false;
+        private double totalScryptRate;
+        private double totalSha256Rate;
 
         //logic
         private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
@@ -76,7 +79,8 @@ namespace MultiMiner.Win
 
         //remoting
         private RemotingServer remotingServer;
-        private Listener listener;
+        private Discovery.Listener discoveryListener;
+        private Remoting.Server.Broadcast.Listener broadcastListener; 
 
         //view models
         private MainFormViewModel localViewModel = new MainFormViewModel();
@@ -2382,6 +2386,11 @@ namespace MultiMiner.Win
             const int mobileMinerInterval = 32; //seconds
             mobileMinerTimer.Interval = mobileMinerInterval * 1000;
         }
+
+        private void SetupRemotingBroadcastTimer()
+        {
+            remotingBroadcastTimer.Interval = 1 * 60 * 1000; //1min
+        }
         #endregion
 
         #region Timer event handlers
@@ -2517,6 +2526,14 @@ namespace MultiMiner.Win
         {
             RestartMiningIfMining();
         }
+
+        private void remotingBroadcastTimer_Tick(object sender, EventArgs e)
+        {
+            if (perksConfiguration.EnableRemoting)
+            {
+                BroadcastHashrate();
+            }
+        }
         #endregion
 
         #region MultiMiner remoting
@@ -2531,9 +2548,19 @@ namespace MultiMiner.Win
             }
         }
 
+        private void BroadcastHashrate()
+        {
+            Remoting.Server.Data.Transfer.Machine machine = new Remoting.Server.Data.Transfer.Machine();
+            machine.TotalScryptHashrate = this.totalScryptRate;
+            machine.TotalSha256Hashrate = this.totalSha256Rate;
+            Remoting.Server.Broadcast.Broadcaster.Broadcast(machine);
+        }
+
         private void DisableRemoting()
         {
             StopDiscovery();
+
+            remotingBroadcastTimer.Enabled = false;
 
             if (remotingServer != null)
                 remotingServer.Shutdown();
@@ -2548,11 +2575,35 @@ namespace MultiMiner.Win
         {
             SetupDiscovery();
 
+            SetupRemotingBroadcastTimer();
+
+            remotingBroadcastTimer.Enabled = true;
+
             remotingServer = new RemotingServer();
             remotingServer.Startup();
 
+            broadcastListener = new Remoting.Server.Broadcast.Listener();
+            broadcastListener.PacketReceived += HandlePacketReceived;
+            broadcastListener.Listen();
+
             instancesControl1.Visible = true;
             instancesContainer.Panel1Collapsed = false;
+        }
+
+        private void HandlePacketReceived(object sender, Remoting.Server.Broadcast.PacketReceivedArgs ea)
+        {
+            Type type = typeof(Remoting.Server.Data.Transfer.Machine);
+            if (ea.Packet.Descriptor.Equals(type.FullName))
+            {
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                Remoting.Server.Data.Transfer.Machine dto = serializer.Deserialize<Remoting.Server.Data.Transfer.Machine>(ea.Packet.Payload);
+
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    instancesControl1.ApplyMachineInformation(ea.IpAddress, dto);
+                }));
+            }
         }
 
         private void SetupDiscovery()
@@ -2563,18 +2614,18 @@ namespace MultiMiner.Win
 
         private void StartDiscovery()
         {
-            listener = new Listener();
-            listener.InstanceOnline += HandleInstanceOnline;
-            listener.InstanceOffline += HandleInstanceOffline;
-            listener.Listen();
+            discoveryListener = new Listener();
+            discoveryListener.InstanceOnline += HandleInstanceOnline;
+            discoveryListener.InstanceOffline += HandleInstanceOffline;
+            discoveryListener.Listen();
             Broadcaster.Broadcast(Verbs.Online);
         }
 
         private void StopDiscovery()
         {
             Broadcaster.Broadcast(Verbs.Offline);
-            if (listener != null)
-                listener.Stop();
+            if (discoveryListener != null)
+                discoveryListener.Stop();
         }
 
         private void HandleInstanceOnline(object sender, InstanceChangedArgs ea)
@@ -2593,6 +2644,26 @@ namespace MultiMiner.Win
                 //code to update UI
                 instancesControl1.UnregisterInstance(ea.Instance);
             }));
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            EndpointAddress address = new EndpointAddress(new Uri("net.tcp://127.0.0.1:" + Config.RemotingPort + "/RemotingService"));
+            NetTcpBinding binding = new NetTcpBinding();
+
+            ChannelFactory<IRemotingService> factory = new ChannelFactory<IRemotingService>(binding, address);
+            IRemotingService serviceChannel = factory.CreateChannel();
+            IEnumerable<Remoting.Server.Data.Transfer.Device> devices = serviceChannel.GetDevices();
+
+            remoteViewModel.Devices.Clear();
+            foreach (Remoting.Server.Data.Transfer.Device dto in devices)
+            {
+                DeviceViewModel viewModel = new DeviceViewModel();
+                ObjectCopier.CopyObject(dto, viewModel);
+                remoteViewModel.Devices.Add(viewModel);
+            }
+
+            RefreshListViewFromViewModel();
         }
         #endregion
 
@@ -3083,8 +3154,8 @@ namespace MultiMiner.Win
         #region RPC API
         private void RefreshDeviceStats()
         {
-            double totalScryptRate = 0;
-            double totalSha256Rate = 0;
+            totalScryptRate = 0;
+            totalSha256Rate = 0;
 
             allDeviceInformation.Clear();
 
@@ -4325,6 +4396,8 @@ namespace MultiMiner.Win
             coinStatsCountdownTimer.Enabled = false;
             poolInfoTimer.Enabled = false;
             RefreshStrategiesCountdown();
+            totalScryptRate = 0;
+            totalSha256Rate = 0;
             scryptRateLabel.Text = string.Empty;
             sha256RateLabel.Text = string.Empty;
             notifyIcon1.Text = "MultiMiner - Stopped";
@@ -4584,24 +4657,5 @@ namespace MultiMiner.Win
         }
         #endregion
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            EndpointAddress address = new EndpointAddress(new Uri("net.tcp://127.0.0.1:" + RemotingServer.Port + "/RemotingService"));
-            NetTcpBinding binding = new NetTcpBinding();
-
-            ChannelFactory<IRemotingService> factory = new ChannelFactory<IRemotingService>(binding, address);
-            IRemotingService serviceChannel = factory.CreateChannel();
-            IEnumerable<Remoting.Server.Data.Transfer.Device> devices = serviceChannel.GetDevices();
-
-            remoteViewModel.Devices.Clear();
-            foreach (Remoting.Server.Data.Transfer.Device dto in devices)
-            {
-                DeviceViewModel viewModel = new DeviceViewModel();
-                ObjectCopier.CopyObject(dto, viewModel);
-                remoteViewModel.Devices.Add(viewModel);
-            }
-
-            RefreshListViewFromViewModel();
-        }
     }
 }

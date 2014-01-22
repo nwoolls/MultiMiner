@@ -186,6 +186,7 @@
             this.apiMonitorButton = new System.Windows.Forms.ToolStripMenuItem();
             this.dynamicIntensitySeparator = new System.Windows.Forms.ToolStripSeparator();
             this.dynamicIntensityButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.accessibleMenu = new System.Windows.Forms.MenuStrip();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -219,7 +220,7 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.poolInfoTimer = new System.Windows.Forms.Timer(this.components);
             this.poolsDownFlagTimer = new System.Windows.Forms.Timer(this.components);
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.remotingBroadcastTimer = new System.Windows.Forms.Timer(this.components);
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -620,7 +621,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(1293, 375);
-            this.detailsAreaContainer.SplitterDistance = 983;
+            this.detailsAreaContainer.SplitterDistance = 985;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -666,7 +667,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(983, 375);
+            this.deviceListView.Size = new System.Drawing.Size(985, 375);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -778,7 +779,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(307, 375);
+            this.detailsControl1.Size = new System.Drawing.Size(305, 375);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -1558,6 +1559,15 @@
             this.dynamicIntensityButton.ToolTipText = "Dynamic GPU intensity";
             this.dynamicIntensityButton.Click += new System.EventHandler(this.dynamicIntensityButton_Click);
             // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(130, 22);
+            this.toolStripButton1.Text = "Call Remoting Host";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
             // accessibleMenu
             // 
             this.accessibleMenu.AccessibleRole = System.Windows.Forms.AccessibleRole.MenuBar;
@@ -1815,14 +1825,9 @@
             // 
             this.poolsDownFlagTimer.Tick += new System.EventHandler(this.poolsDownFlagTimer_Tick);
             // 
-            // toolStripButton1
+            // remotingBroadcastTimer
             // 
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(130, 22);
-            this.toolStripButton1.Text = "Call Remoting Host";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            this.remotingBroadcastTimer.Tick += new System.EventHandler(this.remotingBroadcastTimer_Tick);
             // 
             // MainForm
             // 
@@ -2075,6 +2080,7 @@
         private System.Windows.Forms.SplitContainer instancesContainer;
         private InstancesControl instancesControl1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.Timer remotingBroadcastTimer;
     }
 }
 
