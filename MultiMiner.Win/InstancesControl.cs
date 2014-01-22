@@ -16,12 +16,13 @@ namespace MultiMiner.Win
         //event declarations        
         public event SelectedInstanceChangedHandler SelectedInstanceChanged;
 
+        public List<Instance> Instances { get; set; }
+
         public InstancesControl()
         {
             InitializeComponent();
+            Instances = new List<Instance>();
         }
-
-        private readonly List<Instance> instances = new List<Instance>();
 
         public void RegisterInstance(Instance instance)
         {
@@ -51,7 +52,7 @@ namespace MultiMiner.Win
                 node.SelectedImageIndex = 1;
             }
 
-            instances.Add(instance);
+            Instances.Add(instance);
 
             treeView1.Nodes[0].ExpandAll();
 
@@ -64,18 +65,18 @@ namespace MultiMiner.Win
         public void UnregisterInstance(Instance instance)
         {
             treeView1.Nodes[0].Nodes.RemoveByKey(instance.IpAddress);
-            instances.Remove(instance);
+            Instances.Remove(instance);
         }
 
         public void UnregisterInstances()
         {
-            instances.Clear();
+            Instances.Clear();
             treeView1.Nodes[0].Nodes.Clear();
         }
 
         private string GetMachineName(string ipAddress)
         {
-            Instance instance = instances.Single(i => i.IpAddress.Equals(ipAddress));
+            Instance instance = Instances.Single(i => i.IpAddress.Equals(ipAddress));
             return GetMachineName(instance);
         }
 
@@ -119,7 +120,7 @@ namespace MultiMiner.Win
         {
             if (SelectedInstanceChanged != null)
             {
-                Instance instance = instances.SingleOrDefault(i => i.IpAddress.Equals(e.Node.Name));
+                Instance instance = Instances.SingleOrDefault(i => i.IpAddress.Equals(e.Node.Name));
                 if (instance != null)
                 {
                     SelectedInstanceChanged(this, instance);

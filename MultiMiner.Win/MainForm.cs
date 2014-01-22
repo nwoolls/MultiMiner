@@ -2622,6 +2622,8 @@ namespace MultiMiner.Win
 
             instancesControl1.Visible = true;
             instancesContainer.Panel1Collapsed = false;
+
+            UpdateInstancesVisibility();
         }
 
         private void HandlePacketReceived(object sender, Remoting.Server.Broadcast.PacketReceivedArgs ea)
@@ -2668,6 +2670,7 @@ namespace MultiMiner.Win
             {
                 //code to update UI
                 instancesControl1.RegisterInstance(ea.Instance);
+                UpdateInstancesVisibility();
             }));
         }
 
@@ -2677,7 +2680,13 @@ namespace MultiMiner.Win
             {
                 //code to update UI
                 instancesControl1.UnregisterInstance(ea.Instance);
+                UpdateInstancesVisibility();
             }));
+        }
+
+        private void UpdateInstancesVisibility()
+        {
+            instancesContainer.Panel1Collapsed = !perksConfiguration.EnableRemoting || (instancesControl1.Instances.Count <= 1);
         }
 
         private void instancesControl1_SelectedInstanceChanged(object sender, Instance instance)
