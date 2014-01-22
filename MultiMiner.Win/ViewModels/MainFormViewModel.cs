@@ -51,7 +51,11 @@ namespace MultiMiner.Win.ViewModels
         {
             DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Equals(deviceModel));
             if (deviceViewModel != null)
-                ObjectCopier.CopyObject(deviceInformationResponseModel, deviceViewModel, true);         
+            {
+                string oldName = deviceViewModel.Name;
+                ObjectCopier.CopyObject(deviceInformationResponseModel, deviceViewModel, true);
+                deviceViewModel.Name = oldName;
+            }        
         }
 
         public void ApplyDeviceConfigurationModels(List<DeviceConfiguration> deviceConfigurations, List<CoinConfiguration> coinConfigurations)
