@@ -3,7 +3,7 @@ using MultiMiner.Xgminer;
 
 namespace MultiMiner.Remoting.Server.Data.Transfer
 {
-    public class Device
+    public class Device : DeviceDescriptor
     {
         //device info
         public bool Enabled { get; set; }
