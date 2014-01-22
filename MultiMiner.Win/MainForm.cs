@@ -85,6 +85,7 @@ namespace MultiMiner.Win
         //view models
         private MainFormViewModel localViewModel = new MainFormViewModel();
         private MainFormViewModel remoteViewModel = new MainFormViewModel();
+        private Instance selectedRemoteInstance = null;
         #endregion
 
         #region Constructor
@@ -327,7 +328,12 @@ namespace MultiMiner.Win
             localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
                 engineConfiguration.CoinConfigurations);
             ApplyCoinInformationToViewModel();
-                        
+
+            PushViewModelsOutForRemoting();
+        }
+
+        private void PushViewModelsOutForRemoting()
+        {
             List<Remoting.Server.Data.Transfer.Device> newList = new List<Remoting.Server.Data.Transfer.Device>();
             foreach (DeviceViewModel viewModel in localViewModel.Devices)
             {
@@ -337,7 +343,7 @@ namespace MultiMiner.Win
             }
             ApplicationProxy.Instance.Devices = newList;
         }
-        
+
         private void ApplyDevicesToViewModel()
         {
             //clear to ensure we have a 1-to-1 with listview items
@@ -402,7 +408,11 @@ namespace MultiMiner.Win
 
                 utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
 
-                foreach (DeviceViewModel deviceViewModel in localViewModel.Devices)
+                MainFormViewModel viewModelToView = localViewModel;
+                if (this.selectedRemoteInstance != null)
+                    viewModelToView = remoteViewModel;
+
+                foreach (DeviceViewModel deviceViewModel in viewModelToView.Devices)
                 {
                     ListViewItem listViewItem = new ListViewItem();
 
@@ -465,10 +475,14 @@ namespace MultiMiner.Win
                 //there may be coins configured that are no longer returned in the stats
                 ClearAllCoinStats();
 
-                for (int i = 0; i < localViewModel.Devices.Count; i++)
+                MainFormViewModel viewModelToView = localViewModel;
+                if (this.selectedRemoteInstance != null)
+                    viewModelToView = remoteViewModel;
+
+                for (int i = 0; i < viewModelToView.Devices.Count; i++)
                 {
                     ListViewItem listViewItem = deviceListView.Items[i];
-                    DeviceViewModel deviceViewModel = localViewModel.Devices[i];
+                    DeviceViewModel deviceViewModel = viewModelToView.Devices[i];
 
                     /* configuration info
                      * */
@@ -582,10 +596,9 @@ namespace MultiMiner.Win
                     listViewItem.SubItems["Fan"].Text = deviceViewModel.FanPercent > 0 ? deviceViewModel.FanPercent + "%" : String.Empty;
                     listViewItem.SubItems["Intensity"].Text = deviceViewModel.Intensity;
 
-                    PopulatePoolForListViewItem(deviceViewModel.PoolIndex, listViewItem);
+                    listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
 
-                    PopulateIncomeForListViewItem(listViewItem);
-
+                    PopulateIncomeForListViewItem(listViewItem, deviceViewModel);
                 }
 
 
@@ -914,11 +927,6 @@ namespace MultiMiner.Win
             parent.DropDown = quickCoinMenu;
         }
 
-        private void PopulatePoolForListViewItem(int poolIndex, ListViewItem item)
-        {
-            item.SubItems["Pool"].Text = GetPoolNameByIndex(poolIndex, deviceListView.Items.IndexOf(item));
-        }
-
         private string GetPoolNameByIndex(int poolIndex, int deviceIndex)
         {
             string result = String.Empty;
@@ -1054,7 +1062,7 @@ namespace MultiMiner.Win
             item.SubItems["Daily"].Tag = 0.00;
         }
 
-        private void PopulateIncomeForListViewItem(ListViewItem item)
+        private void PopulateIncomeForListViewItem(ListViewItem item, DeviceViewModel deviceViewModel)
         {
             item.SubItems["Daily"].Text = String.Empty;
 
@@ -1065,13 +1073,7 @@ namespace MultiMiner.Win
                 //no internet or error parsing API
                 return;
 
-            //base this off the active configuration, not the text in the ListView (may be unsaved)
-            CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(item);
-            //guard against null-ref if the device has no configuration
-            if (coinConfiguration == null)
-                return;
-
-            CoinInformation info = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
+            CoinInformation info = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(deviceViewModel.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
             if (info != null)
             {
                 double difficulty = (double)item.SubItems["Difficulty"].Tag;
@@ -1171,20 +1173,26 @@ namespace MultiMiner.Win
         {
             Dictionary<string, double> coinsIncome = new Dictionary<string, double>();
 
+            MainFormViewModel viewModelToView = this.localViewModel;
+            if (this.selectedRemoteInstance != null)
+                viewModelToView = this.remoteViewModel;
+
             for (int i = 0; i < deviceListView.Items.Count; i++)
             {
                 ListViewItem listItem = deviceListView.Items[i];
+                DeviceViewModel deviceViewModel = viewModelToView.Devices[i];
+
                 if (listItem.SubItems["Daily"].Tag != null)
                 {
                     //report on the actual, mining coin, not just what is in the ListView
                     //e.g. we may be donating
-                    CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(listItem);
+                    //CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(listItem);
 
-                    if (coinConfiguration == null)
-                        //no configuration for list item, continue to next
-                        continue;
+                    //if (coinConfiguration == null)
+                    //    //no configuration for list item, continue to next
+                    //    continue;
 
-                    string coinName = coinConfiguration.Coin.Name;
+                    string coinName = deviceViewModel.Coin.Name;
                     double coinIncome = (double)listItem.SubItems["Daily"].Tag;
 
                     if (coinsIncome.ContainsKey(coinName))
@@ -2387,9 +2395,10 @@ namespace MultiMiner.Win
             mobileMinerTimer.Interval = mobileMinerInterval * 1000;
         }
 
-        private void SetupRemotingBroadcastTimer()
+        private void SetupRemotingTimers()
         {
             remotingBroadcastTimer.Interval = 1 * 60 * 1000; //1min
+            remotingServerTimer.Interval = 1 * 30 * 1000; //30s
         }
         #endregion
 
@@ -2534,6 +2543,28 @@ namespace MultiMiner.Win
                 BroadcastHashrate();
             }
         }
+
+        private void remotingServerTimer_Tick(object sender, EventArgs e)
+        {
+            if (this.selectedRemoteInstance == null)
+                return;
+
+
+            FetchRemoteViewModels(this.selectedRemoteInstance);
+
+            updatingListView = true;
+            try
+            {
+                PopulateListViewFromViewModel();
+                RefreshListViewFromViewModel();
+            }
+            finally
+            {
+                updatingListView = false;
+            }
+
+            AutoSizeListViewColumns();
+        }
         #endregion
 
         #region MultiMiner remoting
@@ -2565,6 +2596,8 @@ namespace MultiMiner.Win
             if (remotingServer != null)
                 remotingServer.Shutdown();
 
+            broadcastListener.Stop();
+
             instancesControl1.Visible = false;
             instancesContainer.Panel1Collapsed = true;
 
@@ -2575,9 +2608,10 @@ namespace MultiMiner.Win
         {
             SetupDiscovery();
 
-            SetupRemotingBroadcastTimer();
+            SetupRemotingTimers();
 
             remotingBroadcastTimer.Enabled = true;
+            remotingServerTimer.Enabled = true;
 
             remotingServer = new RemotingServer();
             remotingServer.Startup();
@@ -2646,24 +2680,51 @@ namespace MultiMiner.Win
             }));
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
+        private void instancesControl1_SelectedInstanceChanged(object sender, Instance instance)
         {
-            EndpointAddress address = new EndpointAddress(new Uri("net.tcp://127.0.0.1:" + Config.RemotingPort + "/RemotingService"));
-            NetTcpBinding binding = new NetTcpBinding();
+            bool isThisPc = instance.MachineName.Equals(Environment.MachineName);
 
-            ChannelFactory<IRemotingService> factory = new ChannelFactory<IRemotingService>(binding, address);
-            IRemotingService serviceChannel = factory.CreateChannel();
-            IEnumerable<Remoting.Server.Data.Transfer.Device> devices = serviceChannel.GetDevices();
+            if (isThisPc)
+                this.selectedRemoteInstance = null;
+            else
+                this.selectedRemoteInstance = instance;
 
-            remoteViewModel.Devices.Clear();
-            foreach (Remoting.Server.Data.Transfer.Device dto in devices)
+            if (!isThisPc)
+                FetchRemoteViewModels(instance);
+
+            updatingListView = true;
+            try
             {
-                DeviceViewModel viewModel = new DeviceViewModel();
-                ObjectCopier.CopyObject(dto, viewModel);
-                remoteViewModel.Devices.Add(viewModel);
+                PopulateListViewFromViewModel();
+                RefreshListViewFromViewModel();
+                AutoSizeListViewColumns();
             }
+            finally
+            {
+                updatingListView = false;
+            }
+            RefreshIncomeSummary();
+        }
 
-            RefreshListViewFromViewModel();
+        private void FetchRemoteViewModels(Instance instance)
+        {
+            using (new HourGlass())
+            {
+                EndpointAddress address = new EndpointAddress(new Uri(String.Format("net.tcp://{0}:{1}/RemotingService", instance.IpAddress, Config.RemotingPort)));
+                NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
+
+                ChannelFactory<IRemotingService> factory = new ChannelFactory<IRemotingService>(binding, address);
+                IRemotingService serviceChannel = factory.CreateChannel();
+                IEnumerable<Remoting.Server.Data.Transfer.Device> devices = serviceChannel.GetDevices();
+
+                remoteViewModel.Devices.Clear();
+                foreach (Remoting.Server.Data.Transfer.Device dto in devices)
+                {
+                    DeviceViewModel viewModel = new DeviceViewModel();
+                    ObjectCopier.CopyObject(dto, viewModel);
+                    remoteViewModel.Devices.Add(viewModel);
+                }
+            }
         }
         #endregion
 
@@ -3228,6 +3289,7 @@ namespace MultiMiner.Win
                 deviceListView.EndUpdate();
             }
 
+            PushViewModelsOutForRemoting();
             RefreshListViewFromViewModel();
 
             //Mh not mh, mh is milli

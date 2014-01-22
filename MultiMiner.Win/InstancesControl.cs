@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using MultiMiner.Discovery;
 using MultiMiner.Win.Extensions;
@@ -13,6 +9,13 @@ namespace MultiMiner.Win
 {
     public partial class InstancesControl : MessageBoxFontUserControl
     {
+        //events
+        //delegate declarations
+        public delegate void SelectedInstanceChangedHandler(object sender, Instance instance);
+
+        //event declarations        
+        public event SelectedInstanceChangedHandler SelectedInstanceChanged;
+
         public InstancesControl()
         {
             InitializeComponent();
@@ -24,10 +27,18 @@ namespace MultiMiner.Win
         {
             string nodeText = instance.MachineName;
             bool isThisPc = instance.MachineName.Equals(Environment.MachineName);
-            if (isThisPc)
-                nodeText = "This PC";
 
-            TreeNode node = treeView1.Nodes[0].Nodes.Add(instance.IpAddress, nodeText);
+            TreeNode node;
+
+            if (isThisPc)
+            {
+                nodeText = "This PC";
+                node = treeView1.Nodes[0].Nodes.Insert(0, instance.IpAddress, nodeText);
+            }
+            else
+            {
+                node = treeView1.Nodes[0].Nodes.Add(instance.IpAddress, nodeText);
+            }
 
             if (isThisPc)
             {
@@ -100,6 +111,18 @@ namespace MultiMiner.Win
                     nodes[0].Text = String.Format("{0} ({1})",
                         GetMachineName(ipAddress),
                         machine.TotalScryptHashrate.ToHashrateString());
+                }
+            }
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (SelectedInstanceChanged != null)
+            {
+                Instance instance = instances.SingleOrDefault(i => i.IpAddress.Equals(e.Node.Name));
+                if (instance != null)
+                {
+                    SelectedInstanceChanged(this, instance);
                 }
             }
         }

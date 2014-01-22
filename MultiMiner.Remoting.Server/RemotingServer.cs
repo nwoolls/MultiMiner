@@ -12,7 +12,7 @@ namespace MultiMiner.Remoting.Server
         {
             Uri baseAddress = new Uri("net.tcp://localhost:" + Config.RemotingPort + "/RemotingService");
 
-            NetTcpBinding binding = new NetTcpBinding();
+            NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
 
             myServiceHost = new ServiceHost(typeof(RemotingService), baseAddress);
             myServiceHost.AddServiceEndpoint(typeof(IRemotingService), binding, baseAddress);
