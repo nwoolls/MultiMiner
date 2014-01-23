@@ -47,14 +47,56 @@ namespace MultiMiner.Win.ViewModels
             }
         }
 
+        public void ClearDeviceInformationResponseModel()
+        {
+            foreach (DeviceViewModel deviceViewModel in Devices)
+            {
+                deviceViewModel.AverageHashrate = 0;
+                deviceViewModel.CurrentHashrate = 0;
+                deviceViewModel.AcceptedShares = 0;
+                deviceViewModel.RejectedShares = 0;
+                deviceViewModel.HardwareErrors = 0;
+                deviceViewModel.Utility = 0;
+                deviceViewModel.WorkUtility = 0;
+                deviceViewModel.RejectedSharesPercent = 0;
+                deviceViewModel.HardwareErrorsPercent = 0;
+            }
+        }
+
         public void ApplyDeviceInformationResponseModel(Device deviceModel, DeviceInformationResponse deviceInformationResponseModel)
         {
             DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Equals(deviceModel));
             if (deviceViewModel != null)
             {
                 string oldName = deviceViewModel.Name;
-                ObjectCopier.CopyObject(deviceInformationResponseModel, deviceViewModel, true);
-                deviceViewModel.Name = oldName;
+                try
+                {
+                    if (deviceModel.Kind == DeviceKind.PXY)
+                    {
+                        deviceViewModel.PoolIndex = deviceInformationResponseModel.PoolIndex;
+
+                        //we will get multiple deviceInformationResponseModels for the same deviceModel in the case of a Stratum Proxy
+                        //bfgminer will report back for each Proxy Worker, but we only show a single entry in the ViewModel that rolls
+                        //up the stats for individual Proxy Workers
+                        deviceViewModel.AverageHashrate += deviceInformationResponseModel.AverageHashrate;
+                        deviceViewModel.CurrentHashrate += deviceInformationResponseModel.AverageHashrate;
+                        deviceViewModel.AcceptedShares += deviceInformationResponseModel.AcceptedShares;
+                        deviceViewModel.RejectedShares += deviceInformationResponseModel.RejectedShares;
+                        deviceViewModel.HardwareErrors += deviceInformationResponseModel.HardwareErrors;
+                        deviceViewModel.Utility += deviceInformationResponseModel.Utility;
+                        deviceViewModel.WorkUtility += deviceInformationResponseModel.WorkUtility;
+                        deviceViewModel.RejectedSharesPercent += deviceInformationResponseModel.RejectedSharesPercent;
+                        deviceViewModel.HardwareErrorsPercent += deviceInformationResponseModel.HardwareErrorsPercent;
+                    }
+                    else
+                    {
+                        ObjectCopier.CopyObject(deviceInformationResponseModel, deviceViewModel, true);
+                    }
+                }
+                finally
+                {
+                    deviceViewModel.Name = oldName;
+                }
             }        
         }
 

@@ -542,37 +542,17 @@ namespace MultiMiner.Win
 
                     /* device info
                      * */
+                    listViewItem.SubItems["Average"].Tag = deviceViewModel.AverageHashrate;
+                    listViewItem.SubItems["Current"].Tag = deviceViewModel.CurrentHashrate;
+                    listViewItem.SubItems["Effective"].Tag = deviceViewModel.WorkUtility;
+                    listViewItem.SubItems["Rejected"].Tag = deviceViewModel.RejectedSharesPercent;
+                    listViewItem.SubItems["Errors"].Tag = deviceViewModel.HardwareErrorsPercent;
+                    listViewItem.SubItems["Accepted"].Tag = deviceViewModel.AcceptedShares;
 
-
-                    //stratum devices get lumped together, so we sum those
-                    if (deviceViewModel.Kind == DeviceKind.PXY)
-                    {
-                        listViewItem.SubItems["Average"].Tag = (double)(listViewItem.SubItems["Average"].Tag ?? 0.00) + deviceViewModel.AverageHashrate;
-                        listViewItem.SubItems["Current"].Tag = (double)(listViewItem.SubItems["Current"].Tag ?? 0.00) + deviceViewModel.CurrentHashrate;
-                        listViewItem.SubItems["Effective"].Tag = (double)(listViewItem.SubItems["Effective"].Tag ?? 0.00) + deviceViewModel.WorkUtility;
-                        listViewItem.SubItems["Rejected"].Tag = (double)(listViewItem.SubItems["Rejected"].Tag ?? 0.00) + deviceViewModel.RejectedSharesPercent;
-                        listViewItem.SubItems["Errors"].Tag = (double)(listViewItem.SubItems["Errors"].Tag ?? 0.00) + deviceViewModel.HardwareErrorsPercent;
-                        listViewItem.SubItems["Accepted"].Tag = (int)(listViewItem.SubItems["Accepted"].Tag ?? 0) + deviceViewModel.AcceptedShares;
-
-                        if (applicationConfiguration.ShowWorkUtility)
-                            listViewItem.SubItems[utilityColumnHeader.Text].Tag = (double)(listViewItem.SubItems[utilityColumnHeader.Text].Tag ?? 0.00) + deviceViewModel.WorkUtility;
-                        else
-                            listViewItem.SubItems[utilityColumnHeader.Text].Tag = (double)(listViewItem.SubItems[utilityColumnHeader.Text].Tag ?? 0.00) + deviceViewModel.Utility;
-                    }
+                    if (applicationConfiguration.ShowWorkUtility)
+                        listViewItem.SubItems[utilityColumnHeader.Text].Tag = deviceViewModel.WorkUtility;
                     else
-                    {
-                        listViewItem.SubItems["Average"].Tag = deviceViewModel.AverageHashrate;
-                        listViewItem.SubItems["Current"].Tag = deviceViewModel.CurrentHashrate;
-                        listViewItem.SubItems["Effective"].Tag = deviceViewModel.WorkUtility;
-                        listViewItem.SubItems["Rejected"].Tag = deviceViewModel.RejectedSharesPercent;
-                        listViewItem.SubItems["Errors"].Tag = deviceViewModel.HardwareErrorsPercent;
-                        listViewItem.SubItems["Accepted"].Tag = deviceViewModel.AcceptedShares;
-
-                        if (applicationConfiguration.ShowWorkUtility)
-                            listViewItem.SubItems[utilityColumnHeader.Text].Tag = deviceViewModel.WorkUtility;
-                        else
-                            listViewItem.SubItems[utilityColumnHeader.Text].Tag = deviceViewModel.Utility;
-                    }
+                        listViewItem.SubItems[utilityColumnHeader.Text].Tag = deviceViewModel.Utility;
 
                     listViewItem.SubItems["Average"].Text = ((double)listViewItem.SubItems["Average"].Tag).ToHashrateString();
                     listViewItem.SubItems["Current"].Text = ((double)listViewItem.SubItems["Current"].Tag).ToHashrateString();
@@ -3229,6 +3209,10 @@ namespace MultiMiner.Win
 
             allDeviceInformation.Clear();
 
+            //first clear stats for each row
+            //this is because the PXY row stats get summed 
+            localViewModel.ClearDeviceInformationResponseModel();
+
             deviceListView.BeginUpdate();
             try
             {
@@ -3248,18 +3232,6 @@ namespace MultiMiner.Win
 
                     //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
                     List<DeviceDetailsResponse> processDevices = GetProcessDeviceDetails(minerProcess, deviceInformationList);
-
-                    //first clear stats for each row
-                    //this is because the PXY row stats get summed 
-                    foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
-                    {
-                        DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
-                            && (d.ID == deviceInformation.ID));
-                        int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
-                        if (deviceIndex >= 0)
-                            //could legitimately be -1 if the API is returning a device we don't know about
-                            ClearDeviceInfoForListViewItem(deviceListView.Items[deviceIndex]);
-                    }
 
                     //clear accepted shares as we'll be summing that as well
                     minerProcess.AcceptedShares = 0;
