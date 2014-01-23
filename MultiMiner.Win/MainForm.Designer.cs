@@ -89,7 +89,6 @@
             this.countdownLabel = new System.Windows.Forms.Label();
             this.advancedAreaContainer = new System.Windows.Forms.SplitContainer();
             this.instancesContainer = new System.Windows.Forms.SplitContainer();
-            this.instancesControl1 = new MultiMiner.Win.InstancesControl();
             this.detailsAreaContainer = new System.Windows.Forms.SplitContainer();
             this.deviceListView = new MultiMiner.Win.DeviceListView();
             this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -222,6 +221,7 @@
             this.poolsDownFlagTimer = new System.Windows.Forms.Timer(this.components);
             this.remotingBroadcastTimer = new System.Windows.Forms.Timer(this.components);
             this.remotingServerTimer = new System.Windows.Forms.Timer(this.components);
+            this.instancesControl1 = new MultiMiner.Win.InstancesControl();
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -608,17 +608,6 @@
             this.instancesContainer.SplitterDistance = 186;
             this.instancesContainer.TabIndex = 4;
             // 
-            // instancesControl1
-            // 
-            this.instancesControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.instancesControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.instancesControl1.Instances = ((System.Collections.Generic.List<MultiMiner.Discovery.Instance>)(resources.GetObject("instancesControl1.Instances")));
-            this.instancesControl1.Location = new System.Drawing.Point(0, 0);
-            this.instancesControl1.Name = "instancesControl1";
-            this.instancesControl1.Size = new System.Drawing.Size(186, 375);
-            this.instancesControl1.TabIndex = 0;
-            this.instancesControl1.SelectedInstanceChanged += new MultiMiner.Win.InstancesControl.SelectedInstanceChangedHandler(this.instancesControl1_SelectedInstanceChanged);
-            // 
             // detailsAreaContainer
             // 
             this.detailsAreaContainer.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -634,7 +623,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(1103, 375);
-            this.detailsAreaContainer.SplitterDistance = 804;
+            this.detailsAreaContainer.SplitterDistance = 807;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -680,7 +669,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(804, 375);
+            this.deviceListView.Size = new System.Drawing.Size(807, 375);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -792,7 +781,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(296, 375);
+            this.detailsControl1.Size = new System.Drawing.Size(293, 375);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -1836,6 +1825,17 @@
             // 
             this.remotingServerTimer.Tick += new System.EventHandler(this.remotingServerTimer_Tick);
             // 
+            // instancesControl1
+            // 
+            this.instancesControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.instancesControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.instancesControl1.Instances = ((System.Collections.Generic.List<MultiMiner.Discovery.Instance>)(resources.GetObject("instancesControl1.Instances")));
+            this.instancesControl1.Location = new System.Drawing.Point(0, 0);
+            this.instancesControl1.Name = "instancesControl1";
+            this.instancesControl1.Size = new System.Drawing.Size(186, 375);
+            this.instancesControl1.TabIndex = 0;
+            this.instancesControl1.SelectedInstanceChanged += new MultiMiner.Win.InstancesControl.SelectedInstanceChangedHandler(this.instancesControl1_SelectedInstanceChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -2085,10 +2085,10 @@
         private System.Windows.Forms.ColumnHeader effectiveColumnHeader;
         private System.Windows.Forms.Timer poolsDownFlagTimer;
         private System.Windows.Forms.SplitContainer instancesContainer;
-        private InstancesControl instancesControl1;
         private System.Windows.Forms.Timer remotingBroadcastTimer;
         private System.Windows.Forms.Timer remotingServerTimer;
         private System.Windows.Forms.Button startStartupMiningButton;
+        private InstancesControl instancesControl1;
     }
 }
 
