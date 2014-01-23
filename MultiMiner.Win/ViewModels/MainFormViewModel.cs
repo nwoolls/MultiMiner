@@ -41,7 +41,7 @@ namespace MultiMiner.Win.ViewModels
                 if (coinInformationModel != null)
                 {
                     string oldName = deviceViewModel.Name;
-                    ObjectCopier.CopyObject(coinInformationModel, deviceViewModel, true);
+                    ObjectCopier.CopyObject(coinInformationModel, deviceViewModel, "Exchange");
                     deviceViewModel.Name = oldName;
                 }
             }
@@ -68,34 +68,31 @@ namespace MultiMiner.Win.ViewModels
             DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Equals(deviceModel));
             if (deviceViewModel != null)
             {
-                string oldName = deviceViewModel.Name;
-                try
+                if (deviceModel.Kind == DeviceKind.PXY)
                 {
-                    if (deviceModel.Kind == DeviceKind.PXY)
-                    {
-                        deviceViewModel.PoolIndex = deviceInformationResponseModel.PoolIndex;
+                    deviceViewModel.PoolIndex = deviceInformationResponseModel.PoolIndex;
 
-                        //we will get multiple deviceInformationResponseModels for the same deviceModel in the case of a Stratum Proxy
-                        //bfgminer will report back for each Proxy Worker, but we only show a single entry in the ViewModel that rolls
-                        //up the stats for individual Proxy Workers
-                        deviceViewModel.AverageHashrate += deviceInformationResponseModel.AverageHashrate;
-                        deviceViewModel.CurrentHashrate += deviceInformationResponseModel.AverageHashrate;
-                        deviceViewModel.AcceptedShares += deviceInformationResponseModel.AcceptedShares;
-                        deviceViewModel.RejectedShares += deviceInformationResponseModel.RejectedShares;
-                        deviceViewModel.HardwareErrors += deviceInformationResponseModel.HardwareErrors;
-                        deviceViewModel.Utility += deviceInformationResponseModel.Utility;
-                        deviceViewModel.WorkUtility += deviceInformationResponseModel.WorkUtility;
-                        deviceViewModel.RejectedSharesPercent += deviceInformationResponseModel.RejectedSharesPercent;
-                        deviceViewModel.HardwareErrorsPercent += deviceInformationResponseModel.HardwareErrorsPercent;
-                    }
-                    else
-                    {
-                        ObjectCopier.CopyObject(deviceInformationResponseModel, deviceViewModel, true);
-                    }
+                    //we will get multiple deviceInformationResponseModels for the same deviceModel in the case of a Stratum Proxy
+                    //bfgminer will report back for each Proxy Worker, but we only show a single entry in the ViewModel that rolls
+                    //up the stats for individual Proxy Workers
+                    deviceViewModel.AverageHashrate += deviceInformationResponseModel.AverageHashrate;
+                    deviceViewModel.CurrentHashrate += deviceInformationResponseModel.AverageHashrate;
+                    deviceViewModel.AcceptedShares += deviceInformationResponseModel.AcceptedShares;
+                    deviceViewModel.RejectedShares += deviceInformationResponseModel.RejectedShares;
+                    deviceViewModel.HardwareErrors += deviceInformationResponseModel.HardwareErrors;
+                    deviceViewModel.Utility += deviceInformationResponseModel.Utility;
+                    deviceViewModel.WorkUtility += deviceInformationResponseModel.WorkUtility;
+                    deviceViewModel.RejectedSharesPercent += deviceInformationResponseModel.RejectedSharesPercent;
+                    deviceViewModel.HardwareErrorsPercent += deviceInformationResponseModel.HardwareErrorsPercent;
+
+                    //now add as a worker
+                    DeviceViewModel workerViewModel = new DeviceViewModel();
+                    ObjectCopier.CopyObject(deviceInformationResponseModel, workerViewModel, "Name", "Kind");
+                    deviceViewModel.Workers.Add(workerViewModel);
                 }
-                finally
+                else
                 {
-                    deviceViewModel.Name = oldName;
+                    ObjectCopier.CopyObject(deviceInformationResponseModel, deviceViewModel);
                 }
             }
             return deviceViewModel;

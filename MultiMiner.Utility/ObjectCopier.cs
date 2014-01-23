@@ -8,46 +8,39 @@ namespace MultiMiner.Utility
 {
     public static class ObjectCopier
     {
-        public static void CopyObject<TSource, TDestination>(TSource source, TDestination destination, bool compatibleOnly = false)
+        public static void CopyObject<TSource, TDestination>(TSource source, TDestination destination, params string[] excludedProperties)
         {
             var sourceProperties = TypeDescriptor.GetProperties(typeof(TSource)).Cast<PropertyDescriptor>();
             var destinationProperties = TypeDescriptor.GetProperties(typeof(TDestination)).Cast<PropertyDescriptor>();
 
             foreach (var sourceProperty in sourceProperties)
             {
+                if (excludedProperties.Contains(sourceProperty.Name))
+                    continue;
+
                 var destinationProperty = destinationProperties.FirstOrDefault(prop => prop.Name == sourceProperty.Name);
                 if (destinationProperty != null)
                 {
-                    try
-                    {
-                        object sourceValue = sourceProperty.GetValue(source);
-                        object destinationValue;
-                        Type destinationPropertyType = destinationProperty.PropertyType;
+                    object sourceValue = sourceProperty.GetValue(source);
+                    object destinationValue;
+                    Type destinationPropertyType = destinationProperty.PropertyType;
 
-                        //special handling for nullable types
-                        Type underlyingType = Nullable.GetUnderlyingType(destinationPropertyType);
-                        if (underlyingType != null)
-                        {
-                            if (sourceValue == null)
-                                destinationValue = null;
-                            else
-                            {
-                                destinationValue = Convert.ChangeType(sourceValue, underlyingType);
-                                destinationProperty.SetValue(destination, destinationValue);
-                            }
-                        }
+                    //special handling for nullable types
+                    Type underlyingType = Nullable.GetUnderlyingType(destinationPropertyType);
+                    if (underlyingType != null)
+                    {
+                        if (sourceValue == null)
+                            destinationValue = null;
                         else
                         {
-                            destinationValue = Convert.ChangeType(sourceValue, destinationPropertyType);
+                            destinationValue = Convert.ChangeType(sourceValue, underlyingType);
                             destinationProperty.SetValue(destination, destinationValue);
                         }
-
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        if (compatibleOnly && ((ex is InvalidCastException) || (ex is FormatException)))
-                            continue;
-                        throw;
+                        destinationValue = Convert.ChangeType(sourceValue, destinationPropertyType);
+                        destinationProperty.SetValue(destination, destinationValue);
                     }
                 }
             }
