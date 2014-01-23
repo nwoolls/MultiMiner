@@ -143,6 +143,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
+            this.label2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Name", true));
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
             this.label2.Location = new System.Drawing.Point(92, 34);
             this.label2.Name = "label2";
@@ -153,6 +154,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
+            this.label3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Symbol", true));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
             this.label3.Location = new System.Drawing.Point(92, 49);
             this.label3.Name = "label3";
@@ -163,6 +165,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
+            this.label4.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Algorithm", true));
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
             this.label4.Location = new System.Drawing.Point(92, 64);
             this.label4.Name = "label4";
