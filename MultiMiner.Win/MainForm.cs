@@ -542,35 +542,23 @@ namespace MultiMiner.Win
 
                     /* device info
                      * */
-                    listViewItem.SubItems["Average"].Tag = deviceViewModel.AverageHashrate;
-                    listViewItem.SubItems["Current"].Tag = deviceViewModel.CurrentHashrate;
-                    listViewItem.SubItems["Effective"].Tag = deviceViewModel.WorkUtility;
-                    listViewItem.SubItems["Rejected"].Tag = deviceViewModel.RejectedSharesPercent;
-                    listViewItem.SubItems["Errors"].Tag = deviceViewModel.HardwareErrorsPercent;
-                    listViewItem.SubItems["Accepted"].Tag = deviceViewModel.AcceptedShares;
-
-                    if (applicationConfiguration.ShowWorkUtility)
-                        listViewItem.SubItems[utilityColumnHeader.Text].Tag = deviceViewModel.WorkUtility;
-                    else
-                        listViewItem.SubItems[utilityColumnHeader.Text].Tag = deviceViewModel.Utility;
-
-                    listViewItem.SubItems["Average"].Text = ((double)listViewItem.SubItems["Average"].Tag).ToHashrateString();
-                    listViewItem.SubItems["Current"].Text = ((double)listViewItem.SubItems["Current"].Tag).ToHashrateString();
+                    listViewItem.SubItems["Average"].Text = deviceViewModel.AverageHashrate.ToHashrateString();
+                    listViewItem.SubItems["Current"].Text = deviceViewModel.CurrentHashrate.ToHashrateString();
 
                     //this will be wrong for Scrypt until 3.10.1
                     double shaMultiplier = 71582788 / 1000;
-                    double workUtility = (double)listViewItem.SubItems["Effective"].Tag;
-                    double hashrate = workUtility * shaMultiplier;
-
+                    double hashrate = deviceViewModel.WorkUtility * shaMultiplier;
                     listViewItem.SubItems["Effective"].Text = hashrate.ToHashrateString();
 
                     //check for >= 0.05 so we don't show 0% (due to the format string)
-                    listViewItem.SubItems["Rejected"].Text = (double)listViewItem.SubItems["Rejected"].Tag >= 0.05 ? ((double)listViewItem.SubItems["Rejected"].Tag).ToString("0.#") + "%" : String.Empty;
-                    listViewItem.SubItems["Errors"].Text = (double)listViewItem.SubItems["Errors"].Tag >= 0.05 ? ((double)listViewItem.SubItems["Errors"].Tag).ToString("0.#") + "%" : String.Empty;
+                    listViewItem.SubItems["Rejected"].Text = deviceViewModel.RejectedSharesPercent >= 0.05 ? deviceViewModel.RejectedSharesPercent.ToString("0.#") + "%" : String.Empty;
+                    listViewItem.SubItems["Errors"].Text = deviceViewModel.HardwareErrorsPercent >= 0.05 ? deviceViewModel.HardwareErrorsPercent.ToString("0.#") + "%" : String.Empty;
+                    listViewItem.SubItems["Accepted"].Text = deviceViewModel.AcceptedShares > 0 ? deviceViewModel.AcceptedShares.ToString() : String.Empty;
 
-                    listViewItem.SubItems["Accepted"].Text = (int)listViewItem.SubItems["Accepted"].Tag > 0 ? ((int)listViewItem.SubItems["Accepted"].Tag).ToString() : String.Empty;
-
-                    listViewItem.SubItems[utilityColumnHeader.Text].Text = (double)listViewItem.SubItems[utilityColumnHeader.Text].Tag >= 0.00 ? ((double)listViewItem.SubItems[utilityColumnHeader.Text].Tag).ToString("0.###") : String.Empty;
+                    if (applicationConfiguration.ShowWorkUtility)
+                        listViewItem.SubItems[utilityColumnHeader.Text].Text = deviceViewModel.WorkUtility >= 0.00 ? deviceViewModel.WorkUtility.ToString("0.###") : String.Empty;
+                    else
+                        listViewItem.SubItems[utilityColumnHeader.Text].Text = deviceViewModel.Utility >= 0.00 ? deviceViewModel.Utility.ToString("0.###") : String.Empty;
 
                     listViewItem.SubItems["Temp"].Text = deviceViewModel.Temperature > 0 ? deviceViewModel.Temperature + "°" : String.Empty;
                     listViewItem.SubItems["Fan"].Text = deviceViewModel.FanPercent > 0 ? deviceViewModel.FanPercent + "%" : String.Empty;
@@ -580,8 +568,6 @@ namespace MultiMiner.Win
 
                     PopulateIncomeForListViewItem(listViewItem, deviceViewModel);
                 }
-
-
             }
             finally
             {
@@ -1012,28 +998,13 @@ namespace MultiMiner.Win
         private void ClearDeviceInfoForListViewItem(ListViewItem item)
         {
             item.SubItems["Temp"].Text = String.Empty;
-
             item.SubItems["Average"].Text = String.Empty;
-            item.SubItems["Average"].Tag = 0.00;
-
             item.SubItems["Current"].Text = String.Empty;
-            item.SubItems["Current"].Tag = 0.00;
-
             item.SubItems["Effective"].Text = String.Empty;
-            item.SubItems["Effective"].Tag = 0.00;
-
             item.SubItems["Accepted"].Text = String.Empty;
-            item.SubItems["Accepted"].Tag = 0;
-
             item.SubItems["Rejected"].Text = String.Empty;
-            item.SubItems["Rejected"].Tag = 0.00;
-
             item.SubItems["Errors"].Text = String.Empty;
-            item.SubItems["Errors"].Tag = 0.00;
-
             item.SubItems[utilityColumnHeader.Text].Text = String.Empty;
-            item.SubItems[utilityColumnHeader.Text].Tag = 0.00;
-
             item.SubItems["Intensity"].Text = String.Empty;
             item.SubItems["Pool"].Text = String.Empty;
             item.SubItems["Fan"].Text = String.Empty;
@@ -1057,7 +1028,7 @@ namespace MultiMiner.Win
             if (info != null)
             {
                 double difficulty = (double)item.SubItems["Difficulty"].Tag;
-                double hashrate = (double)item.SubItems["Average"].Tag * 1000;
+                double hashrate = deviceViewModel.AverageHashrate * 1000;
                 double fullDifficulty = difficulty * difficultyMuliplier;
                 double secondsToCalcShare = fullDifficulty / hashrate;
                 const double secondsPerDay = 86400;
