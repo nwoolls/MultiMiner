@@ -64,7 +64,7 @@ namespace MultiMiner.Win
         private int coinStatsCountdownMinutes = 0;
         private bool settingsLoaded = false;
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
-        private bool formLoaded = false;
+        private bool applicationSetup = false;
         private double totalScryptRate;
         private double totalSha256Rate;
 
@@ -103,110 +103,17 @@ namespace MultiMiner.Win
         #region View life-cycle
         private void MainForm_Load(object sender, EventArgs e)
         {
-            HandleStartupMinimizedToNotificationArea();
+            SetupApplication();
+        }
 
-            accessibleMenu.Visible = false;
-            
-            SetupLookAndFeel();
-
-            //make it easier for users to understand there are selected items
-            //trying to make the context menu discoverable
-            deviceListView.HideSelection = false;
-
-            incomeSummaryLabel.Text = String.Empty;
-
-            SetupInitialButtonVisibility();
-
-            SetupGridColumns();
-
-            LoadPreviousHistory();
-            logLaunchArgsBindingSource.DataSource = logCloseEntries;
-
-            SetupMobileMinerTimer();
-
-            CloseDetailsArea();
-
-            FetchInitialCoinStats();
-
-            CheckAndShowGettingStarted();
-            
-            LoadSettings();
-
-            RefreshDetailsToggleButton();
-
-            RefreshCoinApiLabel();
-
-            RefreshCoinPopupMenu();
-
-            PositionCoinChooseLabels();
-
-            apiLogEntryBindingSource.DataSource = apiLogEntries;
-
-            SetupMiningEngineEvents();
-            logLaunchArgsBindingSource.DataSource = logLaunchEntries;
-            logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
-
-            UpdateChangesButtons(false);
-            
-            //check for disowned miners before refreshing devices
-            if (applicationConfiguration.DetectDisownedMiners)
-                CheckForDisownedMiners();
-
-            SetupRemoting();
-
-            SetupStatusBarLabelLayouts();
-
-            CheckAndDownloadMiners();
-            
-            SetupAutoUpdates();
-
-            UpdateChangesButtons(false);
-
-            RefreshDevices();
-            //after refreshing devices
-            SubmitMultiMinerStatistics();
-            
-            UpdateMiningButtons();
-
-            AutoSizeListViewColumns();
-
-            logProcessCloseArgsBindingSource.MoveLast();
-
-            if (deviceListView.Items.Count > 0)
-            {
-                deviceListView.Items[0].Selected = true;
-                deviceListView.Items[0].Focused = true;
-            }
-
-            PositionAdvancedAreaCloseButton();
-
-            SetupAccessibleMenu();
-
-            ShowStartupTips();
-
-            //do this last as it can take a few seconds
-            SetGpuEnvironmentVariables();
-
-            //do this after all other data has loaded to prevent errors when the delay is set very low (1s)
-            SetupMiningOnStartup();
-            if (!HasMinersInstalled())
-                CancelMiningOnStartup();
-            if (!MiningConfigurationValid())
-                CancelMiningOnStartup();
-
-            formLoaded = true;
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            TearDownApplication();
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
             deviceListView.Focus();
-        }
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            SaveSettings();
-            StopMining();
-            DisableRemoting();
         }
         #endregion
 
@@ -2167,7 +2074,7 @@ namespace MultiMiner.Win
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            if (formLoaded)
+            if (applicationSetup)
             {
                 //handling for minimizing to notifcation area
                 if (applicationConfiguration.MinimizeToNotificationArea && (this.WindowState == FormWindowState.Minimized))
@@ -3665,6 +3572,109 @@ namespace MultiMiner.Win
         #endregion
 
         #region Application startup / setup
+        private void SetupApplication()
+        {
+            HandleStartupMinimizedToNotificationArea();
+
+            accessibleMenu.Visible = false;
+
+            SetupLookAndFeel();
+
+            //make it easier for users to understand there are selected items
+            //trying to make the context menu discoverable
+            deviceListView.HideSelection = false;
+
+            incomeSummaryLabel.Text = String.Empty;
+
+            SetupInitialButtonVisibility();
+
+            SetupGridColumns();
+
+            LoadPreviousHistory();
+            logLaunchArgsBindingSource.DataSource = logCloseEntries;
+
+            SetupMobileMinerTimer();
+
+            CloseDetailsArea();
+
+            FetchInitialCoinStats();
+
+            CheckAndShowGettingStarted();
+
+            LoadSettings();
+
+            RefreshDetailsToggleButton();
+
+            RefreshCoinApiLabel();
+
+            RefreshCoinPopupMenu();
+
+            PositionCoinChooseLabels();
+
+            apiLogEntryBindingSource.DataSource = apiLogEntries;
+
+            SetupMiningEngineEvents();
+            logLaunchArgsBindingSource.DataSource = logLaunchEntries;
+            logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
+
+            UpdateChangesButtons(false);
+
+            //check for disowned miners before refreshing devices
+            if (applicationConfiguration.DetectDisownedMiners)
+                CheckForDisownedMiners();
+
+            SetupRemoting();
+
+            SetupStatusBarLabelLayouts();
+
+            CheckAndDownloadMiners();
+
+            SetupAutoUpdates();
+
+            UpdateChangesButtons(false);
+
+            RefreshDevices();
+            //after refreshing devices
+            SubmitMultiMinerStatistics();
+
+            UpdateMiningButtons();
+
+            AutoSizeListViewColumns();
+
+            logProcessCloseArgsBindingSource.MoveLast();
+
+            if (deviceListView.Items.Count > 0)
+            {
+                deviceListView.Items[0].Selected = true;
+                deviceListView.Items[0].Focused = true;
+            }
+
+            PositionAdvancedAreaCloseButton();
+
+            SetupAccessibleMenu();
+
+            ShowStartupTips();
+
+            //do this last as it can take a few seconds
+            SetGpuEnvironmentVariables();
+
+            //do this after all other data has loaded to prevent errors when the delay is set very low (1s)
+            SetupMiningOnStartup();
+            if (!HasMinersInstalled())
+                CancelMiningOnStartup();
+            if (!MiningConfigurationValid())
+                CancelMiningOnStartup();
+
+            applicationSetup = true;
+        }
+
+        private void TearDownApplication()
+        {
+            SaveSettings();
+            StopMining();
+            DisableRemoting();
+        }
+
         private void HandleStartupMinimizedToNotificationArea()
         {
             if (applicationConfiguration.StartupMinimized && applicationConfiguration.MinimizeToNotificationArea)
@@ -3969,7 +3979,7 @@ namespace MultiMiner.Win
             return true;
         }
         #endregion
-        
+
         #region Primary application logic
         private void SetBriefMode(bool newBriefMode)
         {
