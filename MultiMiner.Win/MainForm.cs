@@ -49,7 +49,7 @@ namespace MultiMiner.Win
 
         //hardware information
         private List<Device> devices;
-        private readonly Dictionary<Device, DeviceDetailsResponse> deviceDetailsMapping = new Dictionary<Device, DeviceDetailsResponse>();
+        private readonly Dictionary<DeviceViewModel, DeviceDetailsResponse> deviceDetailsMapping = new Dictionary<DeviceViewModel, DeviceDetailsResponse>();
 
         //currently mining information
         private List<DeviceConfiguration> miningDeviceConfigurations;
@@ -632,31 +632,29 @@ namespace MultiMiner.Win
 
         private void RefreshDetailsArea()
         {
+            MainFormViewModel viewModelToView = localViewModel;
+            if (this.selectedRemoteInstance != null)
+                viewModelToView = remoteViewModel;
+
             if (deviceListView.SelectedItems.Count == 0)
             {
-                detailsControl1.ClearDetails(devices.Count);
+                detailsControl1.ClearDetails(viewModelToView.Devices.Count);
                 return;
             }
 
             int deviceIndex = deviceListView.SelectedIndices[0];
-            Device selectedDevice = devices[deviceIndex];
+
+
+            DeviceViewModel selectedDevice = viewModelToView.Devices[deviceIndex];
             DeviceDetailsResponse deviceDetails = null;
             if (deviceDetailsMapping.ContainsKey(selectedDevice))
                 deviceDetails = deviceDetailsMapping[selectedDevice];
-            CoinConfiguration coinConfiguration = CoinConfigurationForDevice(selectedDevice);
-            CoinInformation coinInfo = null;
-
-            //Internet or Coin API could be down
-            if ((this.coinApiInformation != null) &&
-                //device may not be configured
-                (coinConfiguration != null))
-                coinInfo = this.coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinConfiguration.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
-
+            
             List<DeviceInformationResponse> minerDeviceInformation = new List<DeviceInformationResponse>();
 
             if (deviceDetails != null)
             {
-                if (deviceDetails.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
+                if (selectedDevice.Kind == DeviceKind.PXY)
                     minerDeviceInformation = allDeviceInformation.Where(d => d.Name.Equals(deviceDetails.Name, StringComparison.OrdinalIgnoreCase))
                         .ToList();
                 else
@@ -664,24 +662,17 @@ namespace MultiMiner.Win
                         && (d.ID == deviceDetails.ID)).ToList();
             }
 
+            //needed for worker names for Proxy Workers
             List<DeviceDetailsResponse> minerDeviceDetails = new List<DeviceDetailsResponse>();
 
             PoolInformationResponse poolInformation = null;
-
-            string coinSymbol = null;
-            //Internet or Coin API could be down
-            if (coinInfo != null)
-                coinSymbol = coinInfo.Symbol;
-            //device may not be configured
-            else if (coinConfiguration != null)
-                coinSymbol = coinConfiguration.Coin.Symbol;
-
+            
             MinerProcess minerProcess = null;
 
             //Internet or Coin API could be down AND device may not be configured
-            if (!String.IsNullOrEmpty(coinSymbol))
+            if (!String.IsNullOrEmpty(selectedDevice.Coin.Symbol))
                 // p.CoinInformation is null if there is no Coin API info
-                minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinSymbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+                minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinSymbol.Equals(selectedDevice.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
 
             if (minerProcess != null)
             {
@@ -692,7 +683,7 @@ namespace MultiMiner.Win
                     minerDeviceDetails = processDeviceDetails[minerProcess];
             }
 
-            detailsControl1.InspectDetails(selectedDevice, coinConfiguration, coinInfo, minerDeviceInformation, poolInformation,
+            detailsControl1.InspectDetails(selectedDevice, minerDeviceInformation, poolInformation,
                 minerDeviceDetails, applicationConfiguration.ShowWorkUtility);
         }
 
@@ -3220,19 +3211,16 @@ namespace MultiMiner.Win
 
                         if (deviceIndex >= 0)
                         {
-                            Device device = devices[deviceIndex];
-                            deviceDetailsMapping[device] = deviceDetails;
-
                             if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
                                 totalScryptRate += deviceInformation.AverageHashrate;
                             else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
                                 totalSha256Rate += deviceInformation.AverageHashrate;
-
-                            //replaces these calls => PopulateDeviceStatsForListViewItem(deviceInformation, deviceListView.Items[deviceIndex]);
-
+                            
                             minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
 
-                            localViewModel.ApplyDeviceInformationResponseModel(device, deviceInformation);
+                            Device device = devices[deviceIndex];
+                            DeviceViewModel deviceViewModel = localViewModel.ApplyDeviceInformationResponseModel(device, deviceInformation);
+                            deviceDetailsMapping[deviceViewModel] = deviceDetails;
                         }
                     }
                 }

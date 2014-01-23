@@ -63,7 +63,7 @@ namespace MultiMiner.Win.ViewModels
             }
         }
 
-        public void ApplyDeviceInformationResponseModel(Device deviceModel, DeviceInformationResponse deviceInformationResponseModel)
+        public DeviceViewModel ApplyDeviceInformationResponseModel(Device deviceModel, DeviceInformationResponse deviceInformationResponseModel)
         {
             DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Equals(deviceModel));
             if (deviceViewModel != null)
@@ -97,7 +97,8 @@ namespace MultiMiner.Win.ViewModels
                 {
                     deviceViewModel.Name = oldName;
                 }
-            }        
+            }
+            return deviceViewModel;
         }
 
         public void ApplyDeviceConfigurationModels(List<DeviceConfiguration> deviceConfigurations, List<CoinConfiguration> coinConfigurations)

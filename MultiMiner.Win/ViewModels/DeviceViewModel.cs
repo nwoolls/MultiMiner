@@ -3,7 +3,7 @@ using MultiMiner.Xgminer;
 
 namespace MultiMiner.Win.ViewModels
 {
-    class DeviceViewModel : DeviceDescriptor
+    public class DeviceViewModel : DeviceDescriptor
     {
         //device info
         public bool Enabled { get; set; }

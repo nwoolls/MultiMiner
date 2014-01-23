@@ -9,6 +9,7 @@ using MultiMiner.Engine.Configuration;
 using MultiMiner.Engine;
 using MultiMiner.Xgminer.Api.Responses;
 using MultiMiner.Win.Extensions;
+using MultiMiner.Win.ViewModels;
 
 namespace MultiMiner.Win
 {
@@ -73,47 +74,33 @@ namespace MultiMiner.Win
             noDetailsPanel.Visible = true;
         }
 
-        public void InspectDetails(Device device, CoinConfiguration coinConfiguration, CoinInformation coinInformation,
+        public void InspectDetails(DeviceViewModel deviceViewModel,
             List<DeviceInformationResponse> deviceInformation, PoolInformationResponse poolInformation,
             List<DeviceDetailsResponse> deviceDetails, bool showWorkUtility)
         {
             this.deviceDetails = deviceDetails;
             this.deviceInformation = deviceInformation;
-
-
-            noDetailsPanel.Visible = false;
-            double hashrate = deviceInformation.Sum(di => di.AverageHashrate);
-            double currentRate = deviceInformation.Sum(di => di.CurrentHashrate);
             
-            hashrateLabel.Text = hashrate.ToHashrateString();
-            currentRateLabel.Text = currentRate.ToHashrateString();
+            noDetailsPanel.Visible = false;
+            
+            hashrateLabel.Text = deviceViewModel.AverageHashrate.ToHashrateString();
+            currentRateLabel.Text = deviceViewModel.CurrentHashrate.ToHashrateString();
 
-            workersGridView.Visible = (device.Kind == DeviceKind.PXY) &&
+            workersGridView.Visible = (deviceViewModel.Kind == DeviceKind.PXY) &&
                 (deviceInformation.Count > 0);
             workersTitleLabel.Visible = workersGridView.Visible;
-
-            //Internet or Coin API could be down
-            if (coinInformation != null)
-            {
-            }
-
+            
             //device may not be configured
-            if (coinConfiguration != null)
-                cryptoCoinBindingSource.DataSource = coinConfiguration.Coin;
+            if (deviceViewModel.Coin != null)
+                cryptoCoinBindingSource.DataSource = deviceViewModel.Coin;
             else
                 cryptoCoinBindingSource.DataSource = new CryptoCoin();
 
             deviceInformationResponseBindingSource.DataSource = deviceInformation;
             
-            //may not be hashing yet
-            if (deviceDetails != null)
-                deviceDetailsResponseBindingSource.DataSource = deviceDetails;
-            else
-                deviceDetailsResponseBindingSource.DataSource = new DeviceDetailsResponse();
+            deviceBindingSource.DataSource = deviceViewModel;
 
-            deviceBindingSource.DataSource = device;
-
-            switch (device.Kind)
+            switch (deviceViewModel.Kind)
             {
                 case DeviceKind.CPU:
                     pictureBox1.Image = imageList1.Images[3];
@@ -131,18 +118,18 @@ namespace MultiMiner.Win
 
             nameLabel.Width = this.Width - nameLabel.Left - closeDetailsButton.Width;
 
-            acceptedLabel.Text = deviceInformation.Sum(d => d.AcceptedShares).ToString();
-            rejectedLabel.Text = deviceInformation.Sum(d => d.RejectedShares).ToString();
-            errorsLabel.Text = deviceInformation.Sum(d => d.HardwareErrors).ToString();
+            acceptedLabel.Text = deviceViewModel.AcceptedShares.ToString();
+            rejectedLabel.Text = deviceViewModel.RejectedShares.ToString();
+            errorsLabel.Text = deviceViewModel.HardwareErrors.ToString();
 
             if (showWorkUtility)
             {
-                utilityLabel.Text = deviceInformation.Sum(d => d.WorkUtility).ToString();
+                utilityLabel.Text = deviceViewModel.WorkUtility.ToString();
                 utilityDataGridViewTextBoxColumn.DataPropertyName = "WorkUtility";
             }
             else
             {
-                utilityLabel.Text = deviceInformation.Sum(d => d.Utility).ToString();
+                utilityLabel.Text = deviceViewModel.Utility.ToString();
                 utilityDataGridViewTextBoxColumn.DataPropertyName = "Utility";
             }
             utilityPrefixLabel.Text = showWorkUtility ? "Work utility:" : "Utility:";
