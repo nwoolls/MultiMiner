@@ -542,13 +542,13 @@ namespace MultiMiner.Win
 
                     /* device info
                      * */
-                    listViewItem.SubItems["Average"].Text = deviceViewModel.AverageHashrate.ToHashrateString();
-                    listViewItem.SubItems["Current"].Text = deviceViewModel.CurrentHashrate.ToHashrateString();
+                    listViewItem.SubItems["Average"].Text = deviceViewModel.AverageHashrate == 0 ? String.Empty : deviceViewModel.AverageHashrate.ToHashrateString();
+                    listViewItem.SubItems["Current"].Text = deviceViewModel.CurrentHashrate == 0 ? String.Empty : deviceViewModel.CurrentHashrate.ToHashrateString();
 
                     //this will be wrong for Scrypt until 3.10.1
                     double shaMultiplier = 71582788 / 1000;
                     double hashrate = deviceViewModel.WorkUtility * shaMultiplier;
-                    listViewItem.SubItems["Effective"].Text = hashrate.ToHashrateString();
+                    listViewItem.SubItems["Effective"].Text = hashrate == 0 ? String.Empty : hashrate.ToHashrateString();
 
                     //check for >= 0.05 so we don't show 0% (due to the format string)
                     listViewItem.SubItems["Rejected"].Text = deviceViewModel.RejectedSharesPercent >= 0.05 ? deviceViewModel.RejectedSharesPercent.ToString("0.#") + "%" : String.Empty;
@@ -556,9 +556,9 @@ namespace MultiMiner.Win
                     listViewItem.SubItems["Accepted"].Text = deviceViewModel.AcceptedShares > 0 ? deviceViewModel.AcceptedShares.ToString() : String.Empty;
 
                     if (applicationConfiguration.ShowWorkUtility)
-                        listViewItem.SubItems[utilityColumnHeader.Text].Text = deviceViewModel.WorkUtility >= 0.00 ? deviceViewModel.WorkUtility.ToString("0.###") : String.Empty;
+                        listViewItem.SubItems[utilityColumnHeader.Text].Text = deviceViewModel.WorkUtility > 0.00 ? deviceViewModel.WorkUtility.ToString("0.###") : String.Empty;
                     else
-                        listViewItem.SubItems[utilityColumnHeader.Text].Text = deviceViewModel.Utility >= 0.00 ? deviceViewModel.Utility.ToString("0.###") : String.Empty;
+                        listViewItem.SubItems[utilityColumnHeader.Text].Text = deviceViewModel.Utility > 0.00 ? deviceViewModel.Utility.ToString("0.###") : String.Empty;
 
                     listViewItem.SubItems["Temp"].Text = deviceViewModel.Temperature > 0 ? deviceViewModel.Temperature + "°" : String.Empty;
                     listViewItem.SubItems["Fan"].Text = deviceViewModel.FanPercent > 0 ? deviceViewModel.FanPercent + "%" : String.Empty;
