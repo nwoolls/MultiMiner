@@ -113,6 +113,10 @@ namespace MultiMiner.Win
                         GetMachineName(ipAddress),
                         machine.TotalScryptHashrate.ToHashrateString());
                 }
+                else
+                {
+                    nodes[0].Text = GetMachineName(ipAddress);
+                }
             }
         }
 
