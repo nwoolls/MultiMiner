@@ -2635,7 +2635,8 @@ namespace MultiMiner.Win
                 PopulateListViewFromViewModel();
                 RefreshListViewFromViewModel();
                 AutoSizeListViewColumns();
-                deviceListView.CheckBoxes = this.selectedRemoteInstance == null;
+
+                deviceListView.CheckBoxes = (deviceListView.View != View.Tile) && this.selectedRemoteInstance == null;
             }
             finally
             {
