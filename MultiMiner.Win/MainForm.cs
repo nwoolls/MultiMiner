@@ -2503,6 +2503,7 @@ namespace MultiMiner.Win
             {
                 PopulateListViewFromViewModel();
                 RefreshListViewFromViewModel();
+                RefreshIncomeSummary();
             }
             finally
             {
