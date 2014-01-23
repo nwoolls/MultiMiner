@@ -2673,13 +2673,14 @@ namespace MultiMiner.Win
         {
             bool isThisPc = instance.MachineName.Equals(Environment.MachineName);
 
+            if (!isThisPc)
+                FetchRemoteViewModels(instance);
+
+            //don't set flags until remote VM is fetched
             if (isThisPc)
                 this.selectedRemoteInstance = null;
             else
                 this.selectedRemoteInstance = instance;
-
-            if (!isThisPc)
-                FetchRemoteViewModels(instance);
 
             updatingListView = true;
             try
