@@ -35,7 +35,6 @@ namespace MultiMiner.Win
         private IApiContext coinApiContext = new CoinChoose.Api.ApiContext();
         private readonly List<DeviceInformationResponse> allDeviceInformation = new List<DeviceInformationResponse>();
         private readonly Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
-        private readonly Dictionary<MinerProcess, List<PoolInformationResponse>> processPoolInformation = new Dictionary<MinerProcess, List<PoolInformationResponse>>();
 
         //API information
         private List<CoinInformation> coinApiInformation;
@@ -673,9 +672,7 @@ namespace MultiMiner.Win
 
             //needed for worker names for Proxy Workers
             List<DeviceDetailsResponse> minerDeviceDetails = new List<DeviceDetailsResponse>();
-
-            PoolInformationResponse poolInformation = null;
-            
+                        
             MinerProcess minerProcess = null;
 
             //Internet or Coin API could be down AND device may not be configured
@@ -686,13 +683,11 @@ namespace MultiMiner.Win
             if (minerProcess != null)
             {
                 DeviceInformationResponse deviceInformation = minerDeviceInformation.FirstOrDefault();
-                if ((deviceInformation != null) && processPoolInformation.ContainsKey(minerProcess))
-                    poolInformation = processPoolInformation[minerProcess].SingleOrDefault(p => p.Index == deviceInformation.PoolIndex);
                 if (processDeviceDetails.ContainsKey(minerProcess))
                     minerDeviceDetails = processDeviceDetails[minerProcess];
             }
 
-            detailsControl1.InspectDetails(selectedDevice, minerDeviceInformation, poolInformation,
+            detailsControl1.InspectDetails(selectedDevice, minerDeviceInformation, 
                 minerDeviceDetails, applicationConfiguration.ShowWorkUtility);
         }
 
@@ -874,7 +869,6 @@ namespace MultiMiner.Win
         private void PopulateQuickSwitchMenu(ToolStripDropDownItem parent)
         {
             quickCoinMenu.Items.Clear();
-
 
             foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
             {
@@ -1086,7 +1080,6 @@ namespace MultiMiner.Win
             {
                 const string addition = " + ";
                 double usdTotal = 0.00;
-                CoinInformation btcCoinInfo = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
                 foreach (string coinName in incomeForCoins.Keys)
                 {
                     double coinIncome = incomeForCoins[coinName];
@@ -1132,14 +1125,6 @@ namespace MultiMiner.Win
 
                 if (listItem.SubItems["Daily"].Tag != null)
                 {
-                    //report on the actual, mining coin, not just what is in the ListView
-                    //e.g. we may be donating
-                    //CoinConfiguration coinConfiguration = CoinConfigurationForListViewItem(listItem);
-
-                    //if (coinConfiguration == null)
-                    //    //no configuration for list item, continue to next
-                    //    continue;
-
                     string coinName = deviceViewModel.Coin.Name;
                     double coinIncome = (double)listItem.SubItems["Daily"].Tag;
 
@@ -2391,7 +2376,6 @@ namespace MultiMiner.Win
             {
                 //clear any details stored correlated to processes - they could all be invalid after this
                 processDeviceDetails.Clear();
-                processPoolInformation.Clear();
             }
         }
 
@@ -3261,9 +3245,6 @@ namespace MultiMiner.Win
 
             RefreshIncomeSummary();
             RefreshDetailsAreaIfVisible();
-
-            if (processPoolInformation.Count == 0)
-                RefreshPoolInfo();
         }
 
         private void FlagSuspiciousMiner(MinerProcess minerProcess, DeviceInformationResponse deviceInformation)
@@ -3302,7 +3283,6 @@ namespace MultiMiner.Win
 
         private void RefreshPoolInfo()
         {
-            this.processPoolInformation.Clear();
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
                 List<PoolInformationResponse> poolInformation = GetPoolInfoFromProcess(minerProcess);
@@ -3313,8 +3293,8 @@ namespace MultiMiner.Win
                     continue;
                 }
 
-                //...
-                processPoolInformation[minerProcess] = poolInformation;
+                localViewModel.ApplyPoolInformationResponseModels(minerProcess.CoinSymbol, poolInformation);
+                RefreshDetailsAreaIfVisible();
             }
         }
 
@@ -4405,7 +4385,6 @@ namespace MultiMiner.Win
             }
 
             processDeviceDetails.Clear();
-            processPoolInformation.Clear();
             deviceStatsTimer.Enabled = false;
             minerSummaryTimer.Enabled = false;
             coinStatsCountdownTimer.Enabled = false;

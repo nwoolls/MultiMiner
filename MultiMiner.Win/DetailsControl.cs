@@ -75,7 +75,7 @@ namespace MultiMiner.Win
         }
 
         public void InspectDetails(DeviceViewModel deviceViewModel,
-            List<DeviceInformationResponse> deviceInformation, PoolInformationResponse poolInformation,
+            List<DeviceInformationResponse> deviceInformation,
             List<DeviceDetailsResponse> deviceDetails, bool showWorkUtility)
         {
             this.deviceDetails = deviceDetails;
@@ -154,12 +154,6 @@ namespace MultiMiner.Win
             }
 
             UpdateColumnVisibility();
-
-            //may not be hashing yet
-            if (poolInformation != null)
-                poolInformationResponseBindingSource.DataSource = poolInformation;
-            else
-                poolInformationResponseBindingSource.DataSource = new PoolInformationResponse();
         }
 
         private void UpdateColumnVisibility()

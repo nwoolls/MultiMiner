@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Xgminer;
+using System;
 
 namespace MultiMiner.Win.ViewModels
 {
@@ -38,5 +39,12 @@ namespace MultiMiner.Win.ViewModels
         public int PoolIndex { get; set; }
         public double RejectedSharesPercent { get; set; }
         public double HardwareErrorsPercent { get; set; }
+
+        //pool info
+        public double LastShareDifficulty { get; set; }
+        public DateTime? LastShareTime { get; set; }
+        public string Url { get; set; }
+        public int BestShare { get; set; }
+        public double PoolStalePercent { get; set; }
     }
 }

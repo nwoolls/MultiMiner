@@ -38,7 +38,6 @@
             this.nameLabel = new System.Windows.Forms.Label();
             this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label2 = new System.Windows.Forms.Label();
-            this.cryptoCoinBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -73,9 +72,8 @@
             this.utilityLabel = new System.Windows.Forms.Label();
             this.utilityPrefixLabel = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.poolInformationResponseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label14 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
+            this.lastShareLabel = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.poolLabel = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
@@ -87,22 +85,20 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.deviceCountLabel = new System.Windows.Forms.Label();
-            this.coinInformationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.currentRateLabel = new System.Windows.Forms.Label();
             this.label29 = new System.Windows.Forms.Label();
+            this.cryptoCoinBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.workersGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceInformationResponseBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.poolInformationResponseBindingSource)).BeginInit();
             this.noDetailsPanel.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.coinInformationBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // closeDetailsButton
@@ -142,12 +138,11 @@
             // 
             // deviceBindingSource
             // 
-            this.deviceBindingSource.DataSource = typeof(MultiMiner.Xgminer.Device);
+            this.deviceBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Name", true));
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
             this.label2.Location = new System.Drawing.Point(92, 34);
             this.label2.Name = "label2";
@@ -155,14 +150,9 @@
             this.label2.TabIndex = 4;
             this.label2.Text = "label2";
             // 
-            // cryptoCoinBindingSource
-            // 
-            this.cryptoCoinBindingSource.DataSource = typeof(MultiMiner.Engine.CryptoCoin);
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Symbol", true));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
             this.label3.Location = new System.Drawing.Point(92, 49);
             this.label3.Name = "label3";
@@ -173,7 +163,6 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Algorithm", true));
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
             this.label4.Location = new System.Drawing.Point(92, 64);
             this.label4.Name = "label4";
@@ -507,17 +496,13 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "LastShareDifficulty", true));
+            this.label13.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "LastShareDifficulty", true));
             this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
             this.label13.Location = new System.Drawing.Point(255, 215);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(44, 15);
             this.label13.TabIndex = 36;
             this.label13.Text = "label18";
-            // 
-            // poolInformationResponseBindingSource
-            // 
-            this.poolInformationResponseBindingSource.DataSource = typeof(MultiMiner.Xgminer.Api.Responses.PoolInformationResponse);
             // 
             // label14
             // 
@@ -529,16 +514,16 @@
             this.label14.TabIndex = 35;
             this.label14.Text = "Difficulty:";
             // 
-            // label16
+            // lastShareLabel
             // 
-            this.label16.AutoEllipsis = true;
-            this.label16.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "LastShareTime", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "t"));
-            this.label16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
-            this.label16.Location = new System.Drawing.Point(92, 215);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(85, 15);
-            this.label16.TabIndex = 34;
-            this.label16.Text = "label16";
+            this.lastShareLabel.AutoEllipsis = true;
+            this.lastShareLabel.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "LastShareTime", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "t"));
+            this.lastShareLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.lastShareLabel.Location = new System.Drawing.Point(92, 215);
+            this.lastShareLabel.Name = "lastShareLabel";
+            this.lastShareLabel.Size = new System.Drawing.Size(85, 15);
+            this.lastShareLabel.TabIndex = 34;
+            this.lastShareLabel.Text = "label16";
             // 
             // label18
             // 
@@ -555,7 +540,7 @@
             this.poolLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.poolLabel.AutoEllipsis = true;
-            this.poolLabel.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "Url", true));
+            this.poolLabel.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Url", true));
             this.poolLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
             this.poolLabel.Location = new System.Drawing.Point(92, 200);
             this.poolLabel.Name = "poolLabel";
@@ -577,7 +562,7 @@
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "BestShare", true));
+            this.label24.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "BestShare", true));
             this.label24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
             this.label24.Location = new System.Drawing.Point(92, 230);
             this.label24.Name = "label24";
@@ -598,7 +583,7 @@
             // label27
             // 
             this.label27.AutoSize = true;
-            this.label27.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.poolInformationResponseBindingSource, "PoolStalePercent", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "P4"));
+            this.label27.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "PoolStalePercent", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "P4"));
             this.label27.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
             this.label27.Location = new System.Drawing.Point(92, 245);
             this.label27.Name = "label27";
@@ -660,10 +645,6 @@
             this.deviceCountLabel.TabIndex = 43;
             this.deviceCountLabel.Text = "label1";
             // 
-            // coinInformationBindingSource
-            // 
-            this.coinInformationBindingSource.DataSource = typeof(MultiMiner.Coin.Api.CoinInformation);
-            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -705,6 +686,10 @@
             this.label29.TabIndex = 43;
             this.label29.Text = "Current:";
             // 
+            // cryptoCoinBindingSource
+            // 
+            this.cryptoCoinBindingSource.DataSource = typeof(MultiMiner.Engine.CryptoCoin);
+            // 
             // DetailsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -720,7 +705,7 @@
             this.Controls.Add(this.label26);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label14);
-            this.Controls.Add(this.label16);
+            this.Controls.Add(this.lastShareLabel);
             this.Controls.Add(this.label18);
             this.Controls.Add(this.poolLabel);
             this.Controls.Add(this.label22);
@@ -758,16 +743,14 @@
             this.Size = new System.Drawing.Size(601, 517);
             this.Load += new System.EventHandler(this.DetailsControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.workersGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceInformationResponseBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.poolInformationResponseBindingSource)).EndInit();
             this.noDetailsPanel.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.coinInformationBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -780,8 +763,6 @@
         private System.Windows.Forms.Label nameLabel;
         private System.Windows.Forms.BindingSource deviceBindingSource;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.BindingSource coinInformationBindingSource;
-        private System.Windows.Forms.BindingSource cryptoCoinBindingSource;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label1;
@@ -811,11 +792,10 @@
         private System.Windows.Forms.Label utilityPrefixLabel;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label lastShareLabel;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label poolLabel;
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.BindingSource poolInformationResponseBindingSource;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label27;
@@ -834,5 +814,6 @@
         private System.Windows.Forms.Label deviceCountLabel;
         private System.Windows.Forms.Label currentRateLabel;
         private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.BindingSource cryptoCoinBindingSource;
     }
 }
