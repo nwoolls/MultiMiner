@@ -1035,11 +1035,13 @@ namespace MultiMiner.Win
                 if (perksConfiguration.ShowExchangeRates && perksConfiguration.ShowIncomeInUsd)
                 {
                     double fiatPerDay = rewardPerDay * (double)item.SubItems["Exchange"].Tag;
-                    item.SubItems["Daily"].Text = String.Format("${0}", fiatPerDay.ToFriendlyString(true));
+                    if (fiatPerDay > 0.00)
+                        item.SubItems["Daily"].Text = String.Format("${0}", fiatPerDay.ToFriendlyString(true));
                 }
                 else
                 {
-                    item.SubItems["Daily"].Text = String.Format("{0} {1}", rewardPerDay.ToFriendlyString(), info.Symbol);
+                    if (rewardPerDay > 0.00)
+                        item.SubItems["Daily"].Text = String.Format("{0} {1}", rewardPerDay.ToFriendlyString(), info.Symbol);
                 }
             }
         }
