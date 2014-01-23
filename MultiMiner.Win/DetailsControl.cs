@@ -4,8 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using MultiMiner.Xgminer;
-using MultiMiner.Coin.Api;
-using MultiMiner.Engine.Configuration;
 using MultiMiner.Engine;
 using MultiMiner.Xgminer.Api.Responses;
 using MultiMiner.Win.Extensions;
@@ -95,10 +93,13 @@ namespace MultiMiner.Win
                 cryptoCoinBindingSource.DataSource = deviceViewModel.Coin;
             else
                 cryptoCoinBindingSource.DataSource = new CryptoCoin();
+            cryptoCoinBindingSource.ResetBindings(false);
 
             deviceInformationResponseBindingSource.DataSource = deviceInformation;
-            
+            deviceInformationResponseBindingSource.ResetBindings(false);
+
             deviceBindingSource.DataSource = deviceViewModel;
+            deviceBindingSource.ResetBindings(false);
 
             switch (deviceViewModel.Kind)
             {
