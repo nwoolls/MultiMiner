@@ -2553,7 +2553,8 @@ namespace MultiMiner.Win
             RefreshIncomeSummary();
             UpdateMiningButtons();
 
-            //disable actions in the Accessible menu (for now, until remote commands are done)
+            //disable actions in the menu (for now, until remote commands are done)
+            advancedMenuItem.Enabled = this.selectedRemoteInstance == null;
             settingsButton.Enabled = this.selectedRemoteInstance == null;
             toolsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
             advancedToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
