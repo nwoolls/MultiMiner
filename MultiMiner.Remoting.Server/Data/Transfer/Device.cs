@@ -29,7 +29,6 @@ namespace MultiMiner.Remoting.Server.Data.Transfer
         public int FanPercent { get; set; }
         public double AverageHashrate { get; set; }
         public double CurrentHashrate { get; set; }
-        public double DailyIncome { get; set; }
         public int AcceptedShares { get; set; }
         public int RejectedShares { get; set; }
         public int HardwareErrors { get; set; }
