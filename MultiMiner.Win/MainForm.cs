@@ -810,14 +810,14 @@ namespace MultiMiner.Win
 
         private void UpdateMiningButtons()
         {
-            startButton.Enabled = MiningConfigurationValid() && !miningEngine.Mining;
+            startButton.Enabled = MiningConfigurationValid() && !miningEngine.Mining && (this.selectedRemoteInstance == null);
 
-            stopButton.Enabled = miningEngine.Mining;
+            stopButton.Enabled = miningEngine.Mining && (this.selectedRemoteInstance == null);
             startMenuItem.Enabled = startButton.Enabled;
             stopMenuItem.Enabled = stopButton.Enabled;
             //allow clicking Detect Devices with invalid configuration
-            detectDevicesButton.Enabled = !miningEngine.Mining;
-            detectDevicesToolStripMenuItem.Enabled = !miningEngine.Mining;
+            detectDevicesButton.Enabled = !miningEngine.Mining && (this.selectedRemoteInstance == null);
+            detectDevicesToolStripMenuItem.Enabled = detectDevicesButton.Enabled;
 
             startButton.Visible = startButton.Enabled;
             stopButton.Visible = stopButton.Enabled;
@@ -833,7 +833,7 @@ namespace MultiMiner.Win
             startToolStripMenuItem.Enabled = startMenuItem.Enabled;
             stopToolStripMenuItem.Enabled = stopMenuItem.Enabled;
             restartToolStripMenuItem.Enabled = stopMenuItem.Enabled;
-            scanHardwareToolStripMenuItem.Enabled = !miningEngine.Mining;
+            scanHardwareToolStripMenuItem.Enabled = detectDevicesButton.Enabled;
 
             //process log menu
             launchToolStripMenuItem.Enabled = startMenuItem.Enabled;
@@ -1952,6 +1952,9 @@ namespace MultiMiner.Win
 
         private void deviceListView_MouseUp(object sender, MouseEventArgs e)
         {
+            if (this.selectedRemoteInstance != null)
+                return;
+
             //display the devices context menu when no item is selected
             if (e.Button == MouseButtons.Right)
                 if ((deviceListView.FocusedItem == null) || !deviceListView.FocusedItem.Bounds.Contains(e.Location))
@@ -2025,6 +2028,9 @@ namespace MultiMiner.Win
 
         private void deviceListView_MouseClick(object sender, MouseEventArgs e)
         {
+            if (this.selectedRemoteInstance != null)
+                return;
+
             if (e.Button == MouseButtons.Right)
                 if (deviceListView.FocusedItem.Bounds.Contains(e.Location) == true)
                 {
@@ -2629,12 +2635,21 @@ namespace MultiMiner.Win
                 PopulateListViewFromViewModel();
                 RefreshListViewFromViewModel();
                 AutoSizeListViewColumns();
+                deviceListView.CheckBoxes = this.selectedRemoteInstance == null;
             }
             finally
             {
                 updatingListView = false;
             }
+
             RefreshIncomeSummary();
+            UpdateMiningButtons();
+
+            //disable actions in the Accessible menu (for now, until remote commands are done)
+            settingsButton.Enabled = this.selectedRemoteInstance == null;
+            toolsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
+            advancedToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
+            actionsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
         }
 
         private void FetchRemoteViewModels(Instance instance)
