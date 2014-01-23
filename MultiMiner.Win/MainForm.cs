@@ -85,6 +85,7 @@ namespace MultiMiner.Win
         private MainFormViewModel localViewModel = new MainFormViewModel();
         private MainFormViewModel remoteViewModel = new MainFormViewModel();
         private Instance selectedRemoteInstance = null;
+        public bool remotingEnabled { get; set; }
         #endregion
 
         #region Constructor
@@ -337,7 +338,13 @@ namespace MultiMiner.Win
             foreach (DeviceViewModel viewModel in localViewModel.Devices)
             {
                 MultiMiner.Remoting.Server.Data.Transfer.Device dto = new Remoting.Server.Data.Transfer.Device();
-                ObjectCopier.CopyObject(viewModel, dto);
+                ObjectCopier.CopyObject(viewModel, dto, "Workers");
+                foreach (DeviceViewModel source in viewModel.Workers)
+                {
+                    Remoting.Server.Data.Transfer.Device destination = new Remoting.Server.Data.Transfer.Device();
+                    ObjectCopier.CopyObject(source, destination, "Workers");
+                    dto.Workers.Add(destination);                    
+                }
                 newList.Add(dto);
             }
             ApplicationProxy.Instance.Devices = newList;
@@ -464,7 +471,7 @@ namespace MultiMiner.Win
                 }
 
                 foreach (int selectedIndex in selectedIndexes)
-                    if (selectedIndex <= viewModelToView.Devices.Count)
+                    if (selectedIndex <= deviceListView.Items.Count)
                         deviceListView.Items[selectedIndex].Selected = true;
             }
             finally
@@ -520,8 +527,9 @@ namespace MultiMiner.Win
                     string unit = "BTC";
 
                     listViewItem.SubItems["Price"].Text = String.Format("{0} {1}", deviceViewModel.Price.ToFriendlyString(), unit);
-
-                    if (miningEngine.Donating && perksConfiguration.ShowExchangeRates
+                    
+                    //check .Mining to allow perks for Remoting when local PC is not mining
+                    if ((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowExchangeRates
                         //ensure Coinbase is available:
                         && (sellPrices != null))
                     {
@@ -651,44 +659,9 @@ namespace MultiMiner.Win
             }
 
             int deviceIndex = deviceListView.SelectedIndices[0];
-
-
             DeviceViewModel selectedDevice = viewModelToView.Devices[deviceIndex];
-            DeviceDetailsResponse deviceDetails = null;
-            if (deviceDetailsMapping.ContainsKey(selectedDevice))
-                deviceDetails = deviceDetailsMapping[selectedDevice];
-            
-            List<DeviceInformationResponse> minerDeviceInformation = new List<DeviceInformationResponse>();
 
-            if (deviceDetails != null)
-            {
-                if (selectedDevice.Kind == DeviceKind.PXY)
-                    minerDeviceInformation = allDeviceInformation.Where(d => d.Name.Equals(deviceDetails.Name, StringComparison.OrdinalIgnoreCase))
-                        .ToList();
-                else
-                    minerDeviceInformation = allDeviceInformation.Where(d => d.Name.Equals(deviceDetails.Name, StringComparison.OrdinalIgnoreCase)
-                        && (d.ID == deviceDetails.ID)).ToList();
-            }
-
-            //needed for worker names for Proxy Workers
-            List<DeviceDetailsResponse> minerDeviceDetails = new List<DeviceDetailsResponse>();
-                        
-            MinerProcess minerProcess = null;
-
-            //Internet or Coin API could be down AND device may not be configured
-            if (!String.IsNullOrEmpty(selectedDevice.Coin.Symbol))
-                // p.CoinInformation is null if there is no Coin API info
-                minerProcess = miningEngine.MinerProcesses.FirstOrDefault(p => p.CoinSymbol.Equals(selectedDevice.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
-
-            if (minerProcess != null)
-            {
-                DeviceInformationResponse deviceInformation = minerDeviceInformation.FirstOrDefault();
-                if (processDeviceDetails.ContainsKey(minerProcess))
-                    minerDeviceDetails = processDeviceDetails[minerProcess];
-            }
-
-            detailsControl1.InspectDetails(selectedDevice, minerDeviceInformation, 
-                minerDeviceDetails, applicationConfiguration.ShowWorkUtility);
+            detailsControl1.InspectDetails(selectedDevice, applicationConfiguration.ShowWorkUtility);
         }
 
         private void RefreshCoinPopupMenu()
@@ -903,7 +876,8 @@ namespace MultiMiner.Win
                     }
                     else
                     {
-                        if (miningEngine.Donating)
+                        //check .Mining to allow perks for Remoting when local PC is not mining
+                        if (miningEngine.Donating || !miningEngine.Mining)
                             result = "donation"; //donation pool won't be in list
                     }
                 }
@@ -1005,8 +979,9 @@ namespace MultiMiner.Win
         private void PopulateIncomeForListViewItem(ListViewItem item, DeviceViewModel deviceViewModel)
         {
             item.SubItems["Daily"].Text = String.Empty;
-
-            if (!(miningEngine.Donating && perksConfiguration.ShowIncomeRates))
+            
+            //check .Mining to allow perks for Remoting when local PC is not mining
+            if (!((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowIncomeRates))
                 return;
 
             if (coinApiInformation == null)
@@ -1064,7 +1039,9 @@ namespace MultiMiner.Win
                 return;
             }
 
-            if (!miningEngine.Donating || !perksConfiguration.ShowIncomeRates)
+            //check .Mining to allow perks for Remoting when local PC is not mining
+            if ((!miningEngine.Donating && miningEngine.Mining)
+                || !perksConfiguration.ShowIncomeRates)
             {
                 incomeSummaryLabel.Text = "";
                 return;
@@ -2511,9 +2488,9 @@ namespace MultiMiner.Win
         {
             using (new HourGlass())
             {
-                if (perksConfiguration.EnableRemoting)
+                if (perksConfiguration.EnableRemoting && !remotingEnabled)
                     EnableRemoting();
-                else
+                else if (!perksConfiguration.EnableRemoting && remotingEnabled)
                     DisableRemoting();
             }
         }
@@ -2531,6 +2508,7 @@ namespace MultiMiner.Win
             StopDiscovery();
 
             remotingBroadcastTimer.Enabled = false;
+            remotingServerTimer.Enabled = false;
 
             if (remotingServer != null)
                 remotingServer.Shutdown();
@@ -2541,6 +2519,8 @@ namespace MultiMiner.Win
             instancesContainer.Panel1Collapsed = true;
 
             instancesControl1.UnregisterInstances();
+
+            remotingEnabled = false;
         }
 
         private void EnableRemoting()
@@ -2563,6 +2543,8 @@ namespace MultiMiner.Win
             instancesContainer.Panel1Collapsed = false;
 
             UpdateInstancesVisibility();
+
+            remotingEnabled = true;
         }
 
         private void HandlePacketReceived(object sender, Remoting.Server.Broadcast.PacketReceivedArgs ea)
@@ -2670,7 +2652,13 @@ namespace MultiMiner.Win
                 foreach (Remoting.Server.Data.Transfer.Device dto in devices)
                 {
                     DeviceViewModel viewModel = new DeviceViewModel();
-                    ObjectCopier.CopyObject(dto, viewModel);
+                    ObjectCopier.CopyObject(dto, viewModel, "Workers");
+                    foreach (Remoting.Server.Data.Transfer.Device source in dto.Workers)
+                    {
+                        DeviceViewModel destination = new DeviceViewModel();
+                        ObjectCopier.CopyObject(source, destination, "Workers");
+                        viewModel.Workers.Add(destination);
+                    }
                     remoteViewModel.Devices.Add(viewModel);
                 }
             }
@@ -3172,7 +3160,7 @@ namespace MultiMiner.Win
 
             //first clear stats for each row
             //this is because the PXY row stats get summed 
-            localViewModel.ClearDeviceInformationResponseModel();
+            localViewModel.ClearDeviceInformationFromViewModel();
 
             deviceListView.BeginUpdate();
             try
@@ -3225,6 +3213,8 @@ namespace MultiMiner.Win
                                 deviceViewModel.Pool = GetPoolNameByIndex(coinConfiguration, deviceViewModel.PoolIndex);
                         }
                     }
+
+                    localViewModel.ApplyDeviceDetailsResponseModels(minerProcess.CoinSymbol, processDevices);
                 }
             }
             finally

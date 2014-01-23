@@ -20,9 +20,6 @@ namespace MultiMiner.Win
         //event declarations        
         public event CloseClickedHandler CloseClicked;
 
-        private List<DeviceInformationResponse> deviceInformation;
-        private List<DeviceDetailsResponse> deviceDetails;
-
         public DetailsControl()
         {
             InitializeComponent();
@@ -72,20 +69,15 @@ namespace MultiMiner.Win
             noDetailsPanel.Visible = true;
         }
 
-        public void InspectDetails(DeviceViewModel deviceViewModel,
-            List<DeviceInformationResponse> deviceInformation,
-            List<DeviceDetailsResponse> deviceDetails, bool showWorkUtility)
-        {
-            this.deviceDetails = deviceDetails;
-            this.deviceInformation = deviceInformation;
-            
+        public void InspectDetails(DeviceViewModel deviceViewModel, bool showWorkUtility)
+        {            
             noDetailsPanel.Visible = false;
             
             hashrateLabel.Text = deviceViewModel.AverageHashrate.ToHashrateString();
             currentRateLabel.Text = deviceViewModel.CurrentHashrate.ToHashrateString();
 
             workersGridView.Visible = (deviceViewModel.Kind == DeviceKind.PXY) &&
-                (deviceInformation.Count > 0);
+                (deviceViewModel.Workers.Count > 0);
             workersTitleLabel.Visible = workersGridView.Visible;
             
             //device may not be configured
@@ -95,11 +87,11 @@ namespace MultiMiner.Win
                 cryptoCoinBindingSource.DataSource = new CryptoCoin();
             cryptoCoinBindingSource.ResetBindings(false);
 
-            deviceInformationResponseBindingSource.DataSource = deviceInformation;
-            deviceInformationResponseBindingSource.ResetBindings(false);
-
             deviceBindingSource.DataSource = deviceViewModel;
             deviceBindingSource.ResetBindings(false);
+
+            workerBindingSource.DataSource = deviceViewModel.Workers;
+            workerBindingSource.ResetBindings(false);
 
             switch (deviceViewModel.Kind)
             {
@@ -135,24 +127,15 @@ namespace MultiMiner.Win
             }
             utilityPrefixLabel.Text = showWorkUtility ? "Work utility:" : "Utility:";
 
-            DeviceInformationResponse deviceInfo = (DeviceInformationResponse)deviceInformationResponseBindingSource.Current;
-            if (deviceInfo != null)
-            {
-                if (deviceInfo.Temperature > 0)
-                    tempLabel.Text = deviceInfo.Temperature + "°";
-                else
-                    tempLabel.Text = String.Empty;
-
-                if (deviceInfo.FanPercent > 0)
-                    fanLabel.Text = deviceInfo.FanPercent + "%";
-                else
-                    fanLabel.Text = String.Empty;
-            }
+            if (deviceViewModel.Temperature > 0)
+                tempLabel.Text = deviceViewModel.Temperature + "°";
             else
-            {
                 tempLabel.Text = String.Empty;
+
+            if (deviceViewModel.FanPercent > 0)
+                fanLabel.Text = deviceViewModel.FanPercent + "%";
+            else
                 fanLabel.Text = String.Empty;
-            }
 
             UpdateColumnVisibility();
         }
@@ -193,15 +176,5 @@ namespace MultiMiner.Win
             }
         }
 
-        private void workersGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            for (int i = e.RowIndex; i < (e.RowIndex + e.RowCount); i++)
-            {
-                DeviceInformationResponse deviceInformation = this.deviceInformation[i];
-                DeviceDetailsResponse deviceDetails = this.deviceDetails.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name) && (d.Index == deviceInformation.Index));
-                if (deviceDetails != null)
-                    workersGridView.Rows[i].Cells[workerNameColumn.Index].Value = deviceDetails.DevicePath;
-            }
-        }
     }
 }

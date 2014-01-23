@@ -1,11 +1,17 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Xgminer;
 using System;
+using System.Collections.Generic;
 
 namespace MultiMiner.Win.ViewModels
 {
     public class DeviceViewModel : DeviceDescriptor
     {
+        public DeviceViewModel()
+        {
+            Workers = new List<DeviceViewModel>();
+        }
+
         //device info
         public bool Enabled { get; set; }
         public string Name { get; set; }
@@ -46,5 +52,10 @@ namespace MultiMiner.Win.ViewModels
         public string Url { get; set; }
         public int BestShare { get; set; }
         public double PoolStalePercent { get; set; }
+
+        //worker info
+        public string WorkerName { get; set; }
+        public int Index { get; set; }
+        public List<DeviceViewModel> Workers { get; set; }
     }
 }

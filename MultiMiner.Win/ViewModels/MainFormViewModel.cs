@@ -47,7 +47,7 @@ namespace MultiMiner.Win.ViewModels
             }
         }
 
-        public void ClearDeviceInformationResponseModel()
+        public void ClearDeviceInformationFromViewModel()
         {
             foreach (DeviceViewModel deviceViewModel in Devices)
             {
@@ -60,6 +60,7 @@ namespace MultiMiner.Win.ViewModels
                 deviceViewModel.WorkUtility = 0;
                 deviceViewModel.RejectedSharesPercent = 0;
                 deviceViewModel.HardwareErrorsPercent = 0;
+                deviceViewModel.Workers.Clear();
             }
         }
 
@@ -92,7 +93,7 @@ namespace MultiMiner.Win.ViewModels
                 }
                 else
                 {
-                    ObjectCopier.CopyObject(deviceInformationResponseModel, deviceViewModel);
+                    ObjectCopier.CopyObject(deviceInformationResponseModel, deviceViewModel, "Name", "Kind");
                 }
             }
             return deviceViewModel;
@@ -110,6 +111,25 @@ namespace MultiMiner.Win.ViewModels
                 relevantDevice.Url = poolInformation.Url;
                 relevantDevice.BestShare = poolInformation.BestShare;
                 relevantDevice.PoolStalePercent = poolInformation.PoolStalePercent;
+            }
+        }
+
+        public void ApplyDeviceDetailsResponseModels(string coinSymbol, List<DeviceDetailsResponse> deviceDetailsList)
+        {
+            //for getting Proxy worker names
+            DeviceViewModel proxyDevice = Devices.SingleOrDefault(d => (d.Kind == DeviceKind.PXY) && d.Coin.Symbol.Equals(coinSymbol));
+
+            if (proxyDevice != null)
+            {
+                foreach (DeviceDetailsResponse deviceDetailsResponse in deviceDetailsList)
+                {
+                    if (deviceDetailsResponse.Name.Equals("PXY"))
+                    {
+                        DeviceViewModel worker = proxyDevice.Workers.SingleOrDefault(w => w.Index == deviceDetailsResponse.Index);
+                        if (worker != null)
+                            worker.WorkerName = deviceDetailsResponse.DevicePath;
+                    }
+                }
             }
         }
 

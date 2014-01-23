@@ -1,11 +1,17 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Xgminer;
 using System;
+using System.Collections.Generic;
 
 namespace MultiMiner.Remoting.Server.Data.Transfer
 {
     public class Device : DeviceDescriptor
     {
+        public Device()
+        {
+            Workers = new List<Device>();
+        }
+
         //device info
         public bool Enabled { get; set; }
         public string Name { get; set; }
@@ -46,5 +52,10 @@ namespace MultiMiner.Remoting.Server.Data.Transfer
         public string Url { get; set; }
         public int BestShare { get; set; }
         public double PoolStalePercent { get; set; }
+
+        //worker info
+        public string WorkerName { get; set; }
+        public int Index { get; set; }
+        public List<Device> Workers { get; set; }
     }
 }
