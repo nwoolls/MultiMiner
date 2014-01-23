@@ -573,6 +573,7 @@ namespace MultiMiner.Win
                     listViewItem.SubItems["Intensity"].Text = deviceViewModel.Intensity;
 
                     listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
+                    listViewItem.SubItems["Pool"].Text = deviceViewModel.Pool.DomainFromHost();
 
                     PopulateIncomeForListViewItem(listViewItem, deviceViewModel);
                 }
@@ -892,24 +893,19 @@ namespace MultiMiner.Win
             parent.DropDown = quickCoinMenu;
         }
 
-        private string GetPoolNameByIndex(int poolIndex, int deviceIndex)
+        private string GetPoolNameByIndex(CoinConfiguration coinConfiguration, int poolIndex)
         {
             string result = String.Empty;
 
             if (poolIndex >= 0)
             {
-                Device device = devices[deviceIndex];
-                CoinConfiguration coinConfiguration = CoinConfigurationForDevice(device);
                 if (coinConfiguration != null)
                 {
                     //the poolIndex may be greater than the Pools count if the user edits
                     //their pools while mining
                     if (poolIndex < coinConfiguration.Pools.Count)
                     {
-                        string poolHost = coinConfiguration.Pools[poolIndex].Host;
-                        string poolDomain = poolHost.DomainFromHost();
-
-                        result = poolDomain;
+                        result = coinConfiguration.Pools[poolIndex].Host;
                     }
                     else
                     {
@@ -2843,9 +2839,10 @@ namespace MultiMiner.Win
                         && (d.ID == deviceInformation.ID));
                     int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
                     Device device = devices[deviceIndex];
+                    CoinConfiguration coinConfiguration = CoinConfigurationForDevice(device);
 
                     miningStatistics.FullName = device.Name;
-                    miningStatistics.PoolName = GetPoolNameByIndex(deviceInformation.PoolIndex, deviceIndex);
+                    miningStatistics.PoolName = GetPoolNameByIndex(coinConfiguration, deviceInformation.PoolIndex).DomainFromHost();
 
                     statisticsList.Add(miningStatistics);
                 }
@@ -3229,6 +3226,10 @@ namespace MultiMiner.Win
                             Device device = devices[deviceIndex];
                             DeviceViewModel deviceViewModel = localViewModel.ApplyDeviceInformationResponseModel(device, deviceInformation);
                             deviceDetailsMapping[deviceViewModel] = deviceDetails;
+
+                            CoinConfiguration coinConfiguration = CoinConfigurationForDevice(device);
+                            if (coinConfiguration != null)
+                                deviceViewModel.Pool = GetPoolNameByIndex(coinConfiguration, deviceViewModel.PoolIndex);
                         }
                     }
                 }

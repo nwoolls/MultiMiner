@@ -10,6 +10,9 @@ namespace MultiMiner.Win.Extensions
 
         public static string DomainFromHost(this string host)
         {
+            if (String.IsNullOrEmpty(host))
+                return String.Empty;
+
             if (hostDomainNames.ContainsKey(host))
                 return hostDomainNames[host];
 
