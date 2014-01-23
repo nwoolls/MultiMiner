@@ -38,13 +38,13 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.deviceStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.startupMiningCountdownTimer = new System.Windows.Forms.Timer(this.components);
@@ -84,6 +84,7 @@
             this.dummyToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.exchangeRateTimer = new System.Windows.Forms.Timer(this.components);
             this.startupMiningPanel = new System.Windows.Forms.Panel();
+            this.startStartupMiningButton = new System.Windows.Forms.Button();
             this.cancelStartupMiningButton = new System.Windows.Forms.Button();
             this.countdownLabel = new System.Windows.Forms.Label();
             this.advancedAreaContainer = new System.Windows.Forms.SplitContainer();
@@ -530,6 +531,7 @@
             // 
             this.startupMiningPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.startupMiningPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.startupMiningPanel.Controls.Add(this.startStartupMiningButton);
             this.startupMiningPanel.Controls.Add(this.cancelStartupMiningButton);
             this.startupMiningPanel.Controls.Add(this.countdownLabel);
             this.startupMiningPanel.Location = new System.Drawing.Point(460, 220);
@@ -538,11 +540,21 @@
             this.startupMiningPanel.TabIndex = 6;
             this.startupMiningPanel.Visible = false;
             // 
+            // startStartupMiningButton
+            // 
+            this.startStartupMiningButton.Location = new System.Drawing.Point(336, 7);
+            this.startStartupMiningButton.Name = "startStartupMiningButton";
+            this.startStartupMiningButton.Size = new System.Drawing.Size(24, 27);
+            this.startStartupMiningButton.TabIndex = 6;
+            this.startStartupMiningButton.Text = "▶";
+            this.startStartupMiningButton.UseVisualStyleBackColor = true;
+            this.startStartupMiningButton.Click += new System.EventHandler(this.startStartupMiningButton_Click);
+            // 
             // cancelStartupMiningButton
             // 
             this.cancelStartupMiningButton.Location = new System.Drawing.Point(269, 7);
             this.cancelStartupMiningButton.Name = "cancelStartupMiningButton";
-            this.cancelStartupMiningButton.Size = new System.Drawing.Size(87, 27);
+            this.cancelStartupMiningButton.Size = new System.Drawing.Size(68, 27);
             this.cancelStartupMiningButton.TabIndex = 5;
             this.cancelStartupMiningButton.Text = "Cancel";
             this.cancelStartupMiningButton.UseVisualStyleBackColor = true;
@@ -600,6 +612,7 @@
             // 
             this.instancesControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.instancesControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.instancesControl1.Instances = ((System.Collections.Generic.List<MultiMiner.Discovery.Instance>)(resources.GetObject("instancesControl1.Instances")));
             this.instancesControl1.Location = new System.Drawing.Point(0, 0);
             this.instancesControl1.Name = "instancesControl1";
             this.instancesControl1.Size = new System.Drawing.Size(186, 375);
@@ -621,7 +634,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(1103, 375);
-            this.detailsAreaContainer.SplitterDistance = 799;
+            this.detailsAreaContainer.SplitterDistance = 804;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -651,23 +664,23 @@
             this.intensityColumnHeader});
             this.deviceListView.ContextMenuStrip = this.columnHeaderMenu;
             this.deviceListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            listViewGroup5.Header = "CPU";
-            listViewGroup5.Name = "cpuListViewGroup";
-            listViewGroup6.Header = "GPU";
-            listViewGroup6.Name = "gpuListViewGroup";
-            listViewGroup7.Header = "USB";
-            listViewGroup7.Name = "usbListViewGroup";
-            listViewGroup8.Header = "Proxy";
-            listViewGroup8.Name = "proxyListViewGroup";
+            listViewGroup1.Header = "CPU";
+            listViewGroup1.Name = "cpuListViewGroup";
+            listViewGroup2.Header = "GPU";
+            listViewGroup2.Name = "gpuListViewGroup";
+            listViewGroup3.Header = "USB";
+            listViewGroup3.Name = "usbListViewGroup";
+            listViewGroup4.Header = "Proxy";
+            listViewGroup4.Name = "proxyListViewGroup";
             this.deviceListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup5,
-            listViewGroup6,
-            listViewGroup7,
-            listViewGroup8});
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4});
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(799, 375);
+            this.deviceListView.Size = new System.Drawing.Size(804, 375);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -779,7 +792,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(301, 375);
+            this.detailsControl1.Size = new System.Drawing.Size(296, 375);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -813,8 +826,8 @@
             this.historyGridView.AllowUserToAddRows = false;
             this.historyGridView.AllowUserToDeleteRows = false;
             this.historyGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.historyGridView.AutoGenerateColumns = false;
             this.historyGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.historyGridView.BackgroundColor = System.Drawing.SystemColors.Window;
@@ -944,8 +957,8 @@
             this.processLogGridView.AllowUserToDeleteRows = false;
             this.processLogGridView.AllowUserToOrderColumns = true;
             this.processLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.processLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.processLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.processLogGridView.AutoGenerateColumns = false;
             this.processLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.processLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -1028,8 +1041,8 @@
             this.apiLogGridView.AllowUserToDeleteRows = false;
             this.apiLogGridView.AllowUserToOrderColumns = true;
             this.apiLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.apiLogGridView.AutoGenerateColumns = false;
             this.apiLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.apiLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -2075,6 +2088,7 @@
         private InstancesControl instancesControl1;
         private System.Windows.Forms.Timer remotingBroadcastTimer;
         private System.Windows.Forms.Timer remotingServerTimer;
+        private System.Windows.Forms.Button startStartupMiningButton;
     }
 }
 

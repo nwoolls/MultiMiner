@@ -2276,6 +2276,12 @@ namespace MultiMiner.Win
                 //so the Start button becomes enabled if we now have a valid config
                 UpdateMiningButtons();
         }
+
+        private void startStartupMiningButton_Click(object sender, EventArgs e)
+        {
+            CancelMiningOnStartup();
+            HandleStartButtonClick();
+        }
         #endregion
 
         #region Timer setup
@@ -3294,8 +3300,8 @@ namespace MultiMiner.Win
                 }
 
                 localViewModel.ApplyPoolInformationResponseModels(minerProcess.CoinSymbol, poolInformation);
-                RefreshDetailsAreaIfVisible();
             }
+            RefreshDetailsAreaIfVisible();
         }
 
         private List<PoolInformationResponse> GetPoolInfoFromProcess(MinerProcess minerProcess)
@@ -4555,6 +4561,7 @@ namespace MultiMiner.Win
             if (applicationConfiguration.AutoSetDesktopMode)
                 ToggleDynamicIntensity(true);
 
+            CancelMiningOnStartup(); //in case clicked during countdown
             SaveChanges();
             StartMining();
         }
@@ -4650,6 +4657,5 @@ namespace MultiMiner.Win
             cancelStartupMiningButton.Visible = false; //or remains visible under Mono
         }
         #endregion
-
     }
 }
