@@ -402,6 +402,10 @@ namespace MultiMiner.Win
         private void PopulateListViewFromViewModel()
         {
             deviceListView.BeginUpdate();
+            List<int> selectedIndexes = new List<int>();
+            foreach (int selectedIndex in deviceListView.SelectedIndices)
+                selectedIndexes.Add(selectedIndex);
+
             try
             {
                 deviceListView.Items.Clear();
@@ -459,6 +463,10 @@ namespace MultiMiner.Win
 
                     deviceListView.Items.Add(listViewItem);
                 }
+
+                foreach (int selectedIndex in selectedIndexes)
+                    if (selectedIndex <= viewModelToView.Devices.Count)
+                        deviceListView.Items[selectedIndex].Selected = true;
             }
             finally
             {
