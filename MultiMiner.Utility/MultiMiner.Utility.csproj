@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -45,6 +46,7 @@
     <Compile Include="ConfigurationReaderWriter.cs" />
     <Compile Include="FileCopier.cs" />
     <Compile Include="IdleTimeFinder.cs" />
+    <Compile Include="Networking.cs" />
     <Compile Include="ObjectCopier.cs" />
     <Compile Include="ObjectLogger.cs" />
     <Compile Include="OSVersionPlatform.cs" />
