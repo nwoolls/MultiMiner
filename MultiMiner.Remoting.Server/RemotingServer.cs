@@ -24,6 +24,9 @@ namespace MultiMiner.Remoting.Server
 
         public void Shutdown()
         {
+            if (!serviceStarted)
+                return;
+
             myServiceHost.Close();
             myServiceHost = null;
             serviceStarted = false;
