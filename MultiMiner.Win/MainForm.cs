@@ -2544,10 +2544,7 @@ namespace MultiMiner.Win
 
             remotingServer = new RemotingServer();
             remotingServer.Startup();
-
-            instancesControl.Visible = true;
-            instancesContainer.Panel1Collapsed = false;
-
+            
             UpdateInstancesVisibility();
 
             remotingEnabled = true;
@@ -2626,6 +2623,7 @@ namespace MultiMiner.Win
         private void UpdateInstancesVisibility()
         {
             instancesContainer.Panel1Collapsed = !perksConfiguration.EnableRemoting || (instancesControl.Instances.Count <= 1);
+            instancesControl.Visible = !instancesContainer.Panel1Collapsed;
         }
 
         private void instancesControl1_SelectedInstanceChanged(object sender, Instance instance)
@@ -3941,10 +3939,8 @@ namespace MultiMiner.Win
 
         private void TearDownApplication()
         {
-            //don't do anything inadvertent to a remote instance during shutdown
             SaveSettings();
-            if (this.remoteInstanceMining == null)
-                StopMining();
+            StopMiningLocally();
             DisableRemoting();
         }
 
@@ -4644,6 +4640,8 @@ namespace MultiMiner.Win
                 miningEngine.StopMining();
             }
 
+            localViewModel.ClearDeviceInformationFromViewModel();
+            PushViewModelsOutForRemoting();
             ApplicationProxy.Instance.Mining = false;
 
             processDeviceDetails.Clear();
@@ -4830,7 +4828,9 @@ namespace MultiMiner.Win
                 ToggleDynamicIntensity(true);
 
             CancelMiningOnStartup(); //in case clicked during countdown
-            SaveChanges();
+
+            if (this.selectedRemoteInstance == null)
+                SaveChanges();
 
             if (!MiningConfigurationValid())
                 return;
