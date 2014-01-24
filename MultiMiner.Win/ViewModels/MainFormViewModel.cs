@@ -61,6 +61,13 @@ namespace MultiMiner.Win.ViewModels
                 deviceViewModel.WorkUtility = 0;
                 deviceViewModel.RejectedSharesPercent = 0;
                 deviceViewModel.HardwareErrorsPercent = 0;
+
+                deviceViewModel.Pool = String.Empty;
+                deviceViewModel.PoolIndex = -1;
+                deviceViewModel.FanPercent = 0;
+                deviceViewModel.Temperature = 0;
+                deviceViewModel.Intensity = String.Empty;
+
                 deviceViewModel.Workers.Clear();
             }
         }
