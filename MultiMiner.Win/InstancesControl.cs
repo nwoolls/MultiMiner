@@ -77,22 +77,20 @@ namespace MultiMiner.Win
 
             Instances.Add(instance);
 
+            SortTree();
+
             treeView1.Nodes[0].ExpandAll();
 
             if (isThisPc)
             {
                 treeView1.SelectedNode = node;
             }
-
-            treeView1.Sort();
         }
 
         public void UnregisterInstance(Instance instance)
         {
             treeView1.Nodes[0].Nodes.RemoveByKey(instance.IpAddress);
             Instances.Remove(instance);
-
-            treeView1.Sort();
         }
 
         public void UnregisterInstances()
@@ -145,8 +143,22 @@ namespace MultiMiner.Win
                     nodes[0].Text = GetMachineName(ipAddress);
                 }
             }
+        }
 
+        private void SortTree()
+        {
+            treeView1.BeginUpdate();
+            try
+            {
+            string key = treeView1.SelectedNode == null ? null : treeView1.SelectedNode.Name;
             treeView1.Sort();
+            if (!String.IsNullOrEmpty(key))
+                treeView1.SelectedNode = treeView1.Nodes[0].Nodes.Find(key, false).First();
+            }
+            finally
+            {
+                treeView1.EndUpdate();
+            }
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
