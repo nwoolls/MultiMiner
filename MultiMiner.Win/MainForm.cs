@@ -2366,7 +2366,8 @@ namespace MultiMiner.Win
 
         private void remotingBroadcastTimer_Tick(object sender, EventArgs e)
         {
-            if (perksConfiguration.EnableRemoting)
+            //only broadcast if there are other instances (not just us)
+            if (perksConfiguration.EnableRemoting && (instancesControl1.Instances.Count > 1))
             {
                 BroadcastHashrate();
             }
