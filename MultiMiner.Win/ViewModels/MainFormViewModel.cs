@@ -112,13 +112,24 @@ namespace MultiMiner.Win.ViewModels
             IEnumerable<DeviceViewModel> relevantDevices = Devices.Where(d => d.Coin.Symbol.Equals(coinSymbol));
             foreach (DeviceViewModel relevantDevice in relevantDevices)
             {
-            	PoolInformationResponse poolInformation = poolInformationResonseModels.Single(p => p.Index == relevantDevice.PoolIndex);
-
-                relevantDevice.LastShareDifficulty = poolInformation.LastShareDifficulty;
-                relevantDevice.LastShareTime = poolInformation.LastShareTime;
-                relevantDevice.Url = poolInformation.Url;
-                relevantDevice.BestShare = poolInformation.BestShare;
-                relevantDevice.PoolStalePercent = poolInformation.PoolStalePercent;
+            	PoolInformationResponse poolInformation = poolInformationResonseModels.SingleOrDefault(p => p.Index == relevantDevice.PoolIndex);
+                if (poolInformation == null)
+                {
+                    //device not mining, or crashed, or no pool details
+                    relevantDevice.LastShareDifficulty = 0;
+                    relevantDevice.LastShareTime = null;
+                    relevantDevice.Url = String.Empty;
+                    relevantDevice.BestShare = 0;
+                    relevantDevice.PoolStalePercent = 0;
+                }
+                else
+                {
+                    relevantDevice.LastShareDifficulty = poolInformation.LastShareDifficulty;
+                    relevantDevice.LastShareTime = poolInformation.LastShareTime;
+                    relevantDevice.Url = poolInformation.Url;
+                    relevantDevice.BestShare = poolInformation.BestShare;
+                    relevantDevice.PoolStalePercent = poolInformation.PoolStalePercent;
+                }
             }
         }
 
