@@ -19,9 +19,9 @@ namespace MultiMiner.Win
                 TreeNode thisNode = thisObj as TreeNode;
                 TreeNode thatNode = thatObj as TreeNode;
 
-                if (thisNode.Text.Equals(ThisPCText))
+                if (thisNode.Tag != null)
                     return -1;
-                else if (thatNode.Text.Equals(ThisPCText))
+                else if (thatNode.Tag != null)
                     return 1;
 
                 //alphabetically sorting
@@ -64,11 +64,13 @@ namespace MultiMiner.Win
 
             if (isThisPc)
             {
+                node.Tag = 1;
                 node.ImageIndex = 4;
                 node.SelectedImageIndex = 4;
             }
             else
             {
+                node.Tag = null;
                 node.ImageIndex = 1;
                 node.SelectedImageIndex = 1;
             }
