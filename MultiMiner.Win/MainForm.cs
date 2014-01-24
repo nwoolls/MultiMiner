@@ -688,6 +688,13 @@ namespace MultiMiner.Win
             else
             {
                 UpdateMiningButtonsForRemote();
+
+                //disable actions in the menu (for now, until remote commands are done)
+                advancedMenuItem.Enabled = this.selectedRemoteInstance == null;
+                settingsButton.Enabled = this.selectedRemoteInstance == null;
+                toolsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
+                advancedToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
+                actionsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
             }
         }
 
@@ -2656,13 +2663,6 @@ namespace MultiMiner.Win
 
             RefreshIncomeSummary();
             UpdateMiningButtons();
-
-            //disable actions in the menu (for now, until remote commands are done)
-            //advancedMenuItem.Enabled = this.selectedRemoteInstance == null;
-            //settingsButton.Enabled = this.selectedRemoteInstance == null;
-            //toolsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
-            //advancedToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
-            //actionsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
         }
 
         private static IRemotingService GetServiceChannelForInstance(Instance instance)
