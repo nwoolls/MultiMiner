@@ -4929,6 +4929,9 @@ namespace MultiMiner.Win
 
             engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
 
+            //update ViewModel with potential changes 
+            ApplyModelsToViewModel();
+
             deviceStatsTimer.Enabled = true;
             minerSummaryTimer.Enabled = true;
             coinStatsCountdownTimer.Enabled = true;
