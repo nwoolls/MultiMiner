@@ -2583,9 +2583,10 @@ namespace MultiMiner.Win
 
         private void StopDiscovery()
         {
-            Broadcaster.Broadcast(Verbs.Offline, fingerprint);
             if (discoveryListener != null)
                 discoveryListener.Stop();
+            //broadcast after so we aren't needless processing our own message
+            Broadcaster.Broadcast(Verbs.Offline, fingerprint);
         }
 
         private void HandleInstanceOnline(object sender, InstanceChangedArgs ea)
