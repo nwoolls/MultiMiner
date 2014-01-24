@@ -6,7 +6,7 @@ using System.Web.Script.Serialization;
 
 namespace MultiMiner.Remoting.Server.Broadcast
 {
-    class Sender
+    public class Sender
     {
         public static void Send(IPAddress ipAddress, object payload)
         {

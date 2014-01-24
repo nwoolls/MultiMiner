@@ -2387,6 +2387,12 @@ namespace MultiMiner.Win
 
         private void EnableRemoting()
         {
+            //start Broadcast Listener before Discovery so we can
+            //get initial info (hashrates) sent by other instances
+            broadcastListener = new Remoting.Server.Broadcast.Listener();
+            broadcastListener.PacketReceived += HandlePacketReceived;
+            broadcastListener.Listen();
+
             SetupDiscovery();
 
             SetupRemotingTimers();
@@ -2396,10 +2402,6 @@ namespace MultiMiner.Win
 
             remotingServer = new RemotingServer();
             remotingServer.Startup();
-
-            broadcastListener = new Remoting.Server.Broadcast.Listener();
-            broadcastListener.PacketReceived += HandlePacketReceived;
-            broadcastListener.Listen();
 
             instancesControl1.Visible = true;
             instancesContainer.Panel1Collapsed = false;
@@ -2455,6 +2457,18 @@ namespace MultiMiner.Win
                 instancesControl1.RegisterInstance(ea.Instance);
                 UpdateInstancesVisibility();
             }));
+
+            //send our hashrate back to the machine that is now Online
+            if (!ea.Instance.MachineName.Equals(Environment.MachineName))
+                SendHashrate(ea.Instance.IpAddress);
+        }
+
+        private void SendHashrate(string ipAddress)
+        {
+            Remoting.Server.Data.Transfer.Machine machine = new Remoting.Server.Data.Transfer.Machine();
+            machine.TotalScryptHashrate = this.totalScryptRate;
+            machine.TotalSha256Hashrate = this.totalSha256Rate;
+            Remoting.Server.Broadcast.Sender.Send(IPAddress.Parse(ipAddress), machine);
         }
 
         private void HandleInstanceOffline(object sender, InstanceChangedArgs ea)
