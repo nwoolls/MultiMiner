@@ -335,7 +335,7 @@ namespace MultiMiner.Win
                 }
 
                 foreach (int selectedIndex in selectedIndexes)
-                    if (selectedIndex <= deviceListView.Items.Count)
+                    if (selectedIndex < deviceListView.Items.Count)
                         deviceListView.Items[selectedIndex].Selected = true;
             }
             finally
