@@ -351,12 +351,6 @@ namespace MultiMiner.Win
 
                     /* configuration info
                      * */
-                    //check for Coin != null, device may not have a coin configured
-                    if (deviceViewModel.Coin == null)
-                        listViewItem.SubItems["Coin"].Text = String.Empty;
-                    else
-                        listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
-
                     listViewItem.Checked = deviceViewModel.Enabled;
 
                     if (listViewItem.Checked)
@@ -372,38 +366,52 @@ namespace MultiMiner.Win
 
                     /* Coin info
                      * */
-                    listViewItem.SubItems["Difficulty"].Tag = deviceViewModel.Difficulty;
-                    listViewItem.SubItems["Difficulty"].Text = deviceViewModel.Difficulty.ToDifficultyString();
-
-                    string unit = "BTC";
-
-                    listViewItem.SubItems["Price"].Text = String.Format("{0} {1}", deviceViewModel.Price.ToFriendlyString(), unit);
-                    
-                    //check .Mining to allow perks for Remoting when local PC is not mining
-                    if ((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowExchangeRates
-                        //ensure Coinbase is available:
-                        && (sellPrices != null))
+                    //check for Coin != null, device may not have a coin configured
+                    if (deviceViewModel.Coin == null)
                     {
-                        double btcExchangeRate = sellPrices.Subtotal.Amount;
-                        double coinExchangeRate = 0.00;
-
-                        coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
-
-                        listViewItem.SubItems["Exchange"].Tag = coinExchangeRate;
-                        listViewItem.SubItems["Exchange"].Text = String.Format("${0}", coinExchangeRate.ToFriendlyString(true));
+                        listViewItem.SubItems["Coin"].Text = String.Empty;
+                        listViewItem.SubItems["Difficulty"].Text = String.Empty;
+                        listViewItem.SubItems["Price"].Text = String.Empty;
+                        listViewItem.SubItems["Exchange"].Text = String.Empty;
+                        listViewItem.SubItems["Profitability"].Text = String.Empty;
                     }
-
-                    switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+                    else
                     {
-                        case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
-                            listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AdjustedProfitability, 2) + "%";
-                            break;
-                        case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
-                            listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AverageProfitability, 2) + "%";
-                            break;
-                        case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
-                            listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.Profitability, 2) + "%";
-                            break;
+                        listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
+
+                        listViewItem.SubItems["Difficulty"].Tag = deviceViewModel.Difficulty;
+                        listViewItem.SubItems["Difficulty"].Text = deviceViewModel.Difficulty.ToDifficultyString();
+
+                        string unit = "BTC";
+
+                        listViewItem.SubItems["Price"].Text = String.Format("{0} {1}", deviceViewModel.Price.ToFriendlyString(), unit);
+
+                        //check .Mining to allow perks for Remoting when local PC is not mining
+                        if ((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowExchangeRates
+                            //ensure Coinbase is available:
+                            && (sellPrices != null))
+                        {
+                            double btcExchangeRate = sellPrices.Subtotal.Amount;
+                            double coinExchangeRate = 0.00;
+
+                            coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
+
+                            listViewItem.SubItems["Exchange"].Tag = coinExchangeRate;
+                            listViewItem.SubItems["Exchange"].Text = String.Format("${0}", coinExchangeRate.ToFriendlyString(true));
+                        }
+
+                        switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+                        {
+                            case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
+                                listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AdjustedProfitability, 2) + "%";
+                                break;
+                            case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
+                                listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AverageProfitability, 2) + "%";
+                                break;
+                            case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
+                                listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.Profitability, 2) + "%";
+                                break;
+                        }
                     }
 
                     /* device info
