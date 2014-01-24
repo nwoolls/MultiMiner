@@ -1514,7 +1514,7 @@ namespace MultiMiner.Win
 
         private void startButton_Click(object sender, EventArgs e)
         {
-            HandleStartButtonClick();
+            StartMining();
         }
 
         private void cancelStartupMiningButton_Click(object sender, EventArgs e)
@@ -1624,7 +1624,7 @@ namespace MultiMiner.Win
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            HandleStartButtonClick();
+            StartMining();
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2183,7 +2183,7 @@ namespace MultiMiner.Win
         private void startStartupMiningButton_Click(object sender, EventArgs e)
         {
             CancelMiningOnStartup();
-            HandleStartButtonClick();
+            StartMining();
         }
         #endregion
 
@@ -2388,9 +2388,13 @@ namespace MultiMiner.Win
 
         private void remotingServerTimer_Tick(object sender, EventArgs e)
         {
+            UpdateLocalViewFromRemoteInstance();
+        }
+
+        private void UpdateLocalViewFromRemoteInstance()
+        {
             if (this.selectedRemoteInstance == null)
                 return;
-
 
             FetchRemoteViewModels(this.selectedRemoteInstance);
 
@@ -2736,19 +2740,37 @@ namespace MultiMiner.Win
             {
                 IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
                 serviceChannel.StartMining(GetSendingSignature(instance));
-                FetchRemoteViewModels(instance);
-                UpdateMiningButtons();
+
+                UpdateViewFromRemoteInTheFuture(5);
             }
         }
 
+        private void UpdateViewFromRemoteInTheFuture(int seconds)
+        {
+            timer = new System.Threading.Timer(
+                                (object state) =>
+                                {
+                                    BeginInvoke((Action)(() =>
+                                    {
+                                        //code to update UI
+                                        UpdateLocalViewFromRemoteInstance();
+                                        timer.Dispose();
+                                    }));
+                                }
+                                , null // no state required
+                                , TimeSpan.FromSeconds(seconds) // Do it in x seconds
+                                , TimeSpan.FromMilliseconds(-1)); // don't repeat
+        }
+
+        private System.Threading.Timer timer = null;
         private void StopMiningRemotely(Instance instance)
         {
             using (new HourGlass())
             {
                 IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
                 serviceChannel.StopMining(GetSendingSignature(instance));
-                FetchRemoteViewModels(instance);
-                UpdateMiningButtons();
+
+                UpdateViewFromRemoteInTheFuture(5);
             }
         }
 
@@ -2758,8 +2780,6 @@ namespace MultiMiner.Win
             {
                 IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
                 serviceChannel.RestartMining(GetSendingSignature(instance));
-                FetchRemoteViewModels(instance);
-                UpdateMiningButtons();
             }
         }
 
@@ -4595,61 +4615,14 @@ namespace MultiMiner.Win
         #region Primary mining logic
         private void StartMining()
         {
-            if (!MiningConfigurationValid())
-                return;
-
-            if (miningEngine.Mining)
-                return;
-
-            if (!ConfigFileHandled())
-                return;
-
-            startButton.Enabled = false; //immediately disable, update after
-            startMenuItem.Enabled = false;
-
-            try
+            if (this.selectedRemoteInstance == null)
             {
-                using (new HourGlass())
-                {
-                    int donationPercent = 0;
-                    if (perksConfiguration.PerksEnabled)
-                        donationPercent = perksConfiguration.DonationPercent;
-                    miningEngine.StartMining(engineConfiguration, devices, coinApiInformation, donationPercent);
-                }
+                StartMiningLocally();
             }
-            catch (MinerLaunchException ex)
+            else
             {
-                MessageBox.Show(ex.Message, "Error Launching Miner", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                StartMiningRemotely(this.selectedRemoteInstance);
             }
-
-            //do this AFTER we start mining to pick up any Auto-Mining changes
-
-            //create a deep clone of the mining & device configurations
-            //this is so we can accurately display e.g. the currently mining pools
-            //even if the user changes pool info without restartinging mining
-            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
-            this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
-
-            engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
-
-            deviceStatsTimer.Enabled = true;
-            minerSummaryTimer.Enabled = true;
-            coinStatsCountdownTimer.Enabled = true;
-            poolInfoTimer.Enabled = true;
-            RefreshStrategiesCountdown();
-
-            //so restart timer based on when mining started, not a constantly ticking timer
-            //see https://bitcointalk.org/index.php?topic=248173.msg4593795#msg4593795
-            SetupRestartTimer();
-
-            //to get changes from strategy config
-            //to get updated coin stats for coin changes
-            RefreshListViewFromViewModel();
-
-            AutoSizeListViewColumns();
-
-            UpdateMiningButtons();
         }
 
         private void StopMining()
@@ -4851,18 +4824,6 @@ namespace MultiMiner.Win
             }
         }
 
-        private void HandleStartButtonClick()
-        {
-            if (this.selectedRemoteInstance == null)
-            {
-                StartMiningLocally();
-            }
-            else
-            {
-                StartMiningRemotely(this.selectedRemoteInstance);
-            }
-        }
-
         private void StartMiningLocally()
         {
             if (applicationConfiguration.AutoSetDesktopMode)
@@ -4870,9 +4831,64 @@ namespace MultiMiner.Win
 
             CancelMiningOnStartup(); //in case clicked during countdown
             SaveChanges();
-            StartMining();
+
+            if (!MiningConfigurationValid())
+                return;
+
+            if (miningEngine.Mining)
+                return;
+
+            if (!ConfigFileHandled())
+                return;
+
+            startButton.Enabled = false; //immediately disable, update after
+            startMenuItem.Enabled = false;
+
+            try
+            {
+                using (new HourGlass())
+                {
+                    int donationPercent = 0;
+                    if (perksConfiguration.PerksEnabled)
+                        donationPercent = perksConfiguration.DonationPercent;
+                    miningEngine.StartMining(engineConfiguration, devices, coinApiInformation, donationPercent);
+                }
+            }
+            catch (MinerLaunchException ex)
+            {
+                MessageBox.Show(ex.Message, "Error Launching Miner", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             ApplicationProxy.Instance.Mining = true;
+
+            //do this AFTER we start mining to pick up any Auto-Mining changes
+
+            //create a deep clone of the mining & device configurations
+            //this is so we can accurately display e.g. the currently mining pools
+            //even if the user changes pool info without restartinging mining
+            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
+            this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
+
+            engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
+
+            deviceStatsTimer.Enabled = true;
+            minerSummaryTimer.Enabled = true;
+            coinStatsCountdownTimer.Enabled = true;
+            poolInfoTimer.Enabled = true;
+            RefreshStrategiesCountdown();
+
+            //so restart timer based on when mining started, not a constantly ticking timer
+            //see https://bitcointalk.org/index.php?topic=248173.msg4593795#msg4593795
+            SetupRestartTimer();
+
+            //to get changes from strategy config
+            //to get updated coin stats for coin changes
+            RefreshListViewFromViewModel();
+
+            AutoSizeListViewColumns();
+
+            UpdateMiningButtons();
         }
 
         private void ToggleDynamicIntensity(bool enabled)
