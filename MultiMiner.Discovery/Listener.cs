@@ -61,6 +61,11 @@ namespace MultiMiner.Discovery
 
         private void ProcessReceived(IPEndPoint source, byte[] bytes)
         {
+            //only response to discovery on the local network since we transfer fingerprints
+            if ((source.AddressFamily != AddressFamily.InterNetwork) &&
+                (source.AddressFamily != AddressFamily.InterNetworkV6))
+                return;
+
             string jsonData = Encoding.ASCII.GetString(bytes);
 
             JavaScriptSerializer serializer = new JavaScriptSerializer();
