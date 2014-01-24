@@ -116,6 +116,9 @@ namespace MultiMiner.Win
 
         public void ApplyMachineInformation(string ipAddress, Remoting.Server.Data.Transfer.Machine machine)
         {
+            if (ipAddress.Equals("localhost"))
+                ipAddress = Instances.Single(i => i.MachineName.Equals(Environment.MachineName)).IpAddress;
+
             TreeNode[] nodes = treeView1.Nodes[0].Nodes.Find(ipAddress, false);
             if (nodes.Length > 0)
             {

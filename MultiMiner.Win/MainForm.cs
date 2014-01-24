@@ -3393,8 +3393,21 @@ namespace MultiMiner.Win
             //auto sizing the columns is moderately CPU intensive, so only do it every /count/ times
             AutoSizeListViewColumnsEvery(count);
 
+            UpdateInstancesStatsFromLocal();
+
             RefreshIncomeSummary();
             RefreshDetailsAreaIfVisible();
+        }
+
+        private void UpdateInstancesStatsFromLocal()
+        {
+            if (instancesControl.Visible)
+            {
+                Remoting.Server.Data.Transfer.Machine machine = new Remoting.Server.Data.Transfer.Machine();
+                machine.TotalScryptHashrate = this.totalScryptRate;
+                machine.TotalSha256Hashrate = this.totalSha256Rate;
+                instancesControl.ApplyMachineInformation("localhost", machine);
+            }
         }
 
         private int GetDeviceIndexForDeviceDetails(DeviceDetailsResponse deviceDetails)
