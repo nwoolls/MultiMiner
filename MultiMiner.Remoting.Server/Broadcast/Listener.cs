@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Web.Script.Serialization;
 
 namespace MultiMiner.Remoting.Server.Broadcast
@@ -17,13 +18,36 @@ namespace MultiMiner.Remoting.Server.Broadcast
 
         private UdpClient udpClient;
         public bool listening { get; set; }
-        
+
         public void Listen()
         {
             if (udpClient == null)
-                udpClient = new UdpClient(Config.BroadcastPort);
+            {
+                const int MaxTries = 2;
+                TryToAllocateClient(MaxTries);
+            }
             udpClient.BeginReceive(Receive, null);
             listening = true;
+        }
+
+        private void TryToAllocateClient(int maxTries)
+        {
+            int tryCount = 0;
+            while (udpClient == null) //try twice
+            {
+                try
+                {
+                    tryCount++;
+                    udpClient = new UdpClient(Config.BroadcastPort);
+                }
+                catch (SocketException ex)
+                {
+                    if (tryCount == maxTries)
+                        throw;
+                    else
+                        Thread.Sleep(500);
+                }
+            }
         }
 
         public void Stop()

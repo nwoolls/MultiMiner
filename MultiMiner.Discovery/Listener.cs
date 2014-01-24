@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Web.Script.Serialization;
 using System.Linq;
+using System.Threading;
 
 namespace MultiMiner.Discovery
 {
@@ -27,10 +28,34 @@ namespace MultiMiner.Discovery
         public void Listen(int fingerprint)
         {
             if (udpClient == null)
-                udpClient = new UdpClient(Config.Port);
+            {
+                const int MaxTries = 2;
+                TryToAllocateClient(MaxTries);
+            }
+            udpClient.BeginReceive(Receive, null);
             this.fingerprint = fingerprint;
             udpClient.BeginReceive(Receive, null);
             listening = true;
+        }
+
+        private void TryToAllocateClient(int maxTries)
+        {
+            int tryCount = 0;
+            while (udpClient == null) //try twice
+            {
+                try
+                {
+                    tryCount++;
+                    udpClient = new UdpClient(Config.Port);
+                }
+                catch (SocketException ex)
+                {
+                    if (tryCount == maxTries)
+                        throw;
+                    else
+                        Thread.Sleep(500);
+                }
+            }
         }
 
         public void Stop()
