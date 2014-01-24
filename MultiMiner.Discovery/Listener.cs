@@ -32,7 +32,6 @@ namespace MultiMiner.Discovery
                 const int MaxTries = 2;
                 TryToAllocateClient(MaxTries);
             }
-            udpClient.BeginReceive(Receive, null);
             this.fingerprint = fingerprint;
             udpClient.BeginReceive(Receive, null);
             listening = true;
