@@ -35,7 +35,8 @@ namespace MultiMiner.Win.ViewModels
 
         public void ApplyCoinInformationModels(List<CoinInformation> coinInformationModels)
         {
-            foreach (DeviceViewModel deviceViewModel in Devices)
+            //check for Coin != null, device may not have a coin configured
+            foreach (DeviceViewModel deviceViewModel in Devices.Where(d => d.Coin != null))
             {
                 CoinInformation coinInformationModel = coinInformationModels.SingleOrDefault(c => c.Symbol.Equals(deviceViewModel.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
                 if (coinInformationModel != null)

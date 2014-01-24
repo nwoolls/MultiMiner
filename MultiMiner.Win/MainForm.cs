@@ -407,10 +407,11 @@ namespace MultiMiner.Win
 
                     /* configuration info
                      * */
-
-
-                    //ensure the coin configuration still exists
-                    listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
+                    //check for Coin != null, device may not have a coin configured
+                    if (deviceViewModel.Coin == null)
+                        listViewItem.SubItems["Coin"].Text = String.Empty;
+                    else
+                        listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
 
                     listViewItem.Checked = deviceViewModel.Enabled;
 
@@ -486,7 +487,6 @@ namespace MultiMiner.Win
                     listViewItem.SubItems["Fan"].Text = deviceViewModel.FanPercent > 0 ? deviceViewModel.FanPercent + "%" : String.Empty;
                     listViewItem.SubItems["Intensity"].Text = deviceViewModel.Intensity;
 
-                    listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
                     listViewItem.SubItems["Pool"].Text = deviceViewModel.Pool.DomainFromHost();
 
                     PopulateIncomeForListViewItem(listViewItem, deviceViewModel);
@@ -886,6 +886,10 @@ namespace MultiMiner.Win
         private void PopulateIncomeForListViewItem(ListViewItem item, DeviceViewModel deviceViewModel)
         {
             item.SubItems["Daily"].Text = String.Empty;
+
+            //check for Coin != null, device may not have a coin configured
+            if (deviceViewModel.Coin == null)
+                return;
             
             //check .Mining to allow perks for Remoting when local PC is not mining
             if (!((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowIncomeRates))
@@ -1007,7 +1011,8 @@ namespace MultiMiner.Win
                 ListViewItem listItem = deviceListView.Items[i];
                 DeviceViewModel deviceViewModel = viewModelToView.Devices[i];
 
-                if (listItem.SubItems["Daily"].Tag != null)
+                //check for Coin != null, device may not have a coin configured
+                if ((deviceViewModel.Coin != null) && (listItem.SubItems["Daily"].Tag != null))
                 {
                     string coinName = deviceViewModel.Coin.Name;
                     double coinIncome = (double)listItem.SubItems["Daily"].Tag;
