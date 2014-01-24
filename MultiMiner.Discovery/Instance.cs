@@ -7,5 +7,6 @@ namespace MultiMiner.Discovery
     {
         public string IpAddress { get; set; }
         public string MachineName { get; set; }
+        public int Fingerprint { get; set; }
     }
 }

@@ -71,7 +71,7 @@ namespace MultiMiner.Discovery
                 string ipAddress = source.Address.ToString();
                 if (!instances.Any(i => i.IpAddress.Equals(ipAddress)))
                 {
-                    Instance instance = new Instance { IpAddress = ipAddress, MachineName = packet.MachineName };
+                    Instance instance = new Instance { IpAddress = ipAddress, MachineName = packet.MachineName, Fingerprint = packet.Fingerprint };
                     instances.Add(instance);
                     Sender.Send(source.Address, Verbs.Online, fingerprint);
 

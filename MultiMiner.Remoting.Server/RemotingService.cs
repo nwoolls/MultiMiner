@@ -1,16 +1,42 @@
 ﻿using System.Collections.Generic;
 using System.ServiceModel;
 using System.Linq;
+using System.ServiceModel.Channels;
+using System;
 
 namespace MultiMiner.Remoting.Server
 {
     [ServiceBehavior(IncludeExceptionDetailInFaults = true, UseSynchronizationContext = false)]
-    class RemotingService : IRemotingService
+    public class RemotingService : IRemotingService
     {
-        public IEnumerable<Data.Transfer.Device> GetDevices()
+        public void GetDevices(out IEnumerable<Data.Transfer.Device> devices, out bool mining)
         {
-            List<Data.Transfer.Device> result = ApplicationProxy.Instance.Devices.ToList();
-            return result;
+            devices = ApplicationProxy.Instance.Devices.ToList();
+            mining = ApplicationProxy.Instance.Mining;
+        }
+
+        private static string GetClientIpAddress()
+        {
+            OperationContext currentContext = OperationContext.Current;
+            MessageProperties messageProperties = currentContext.IncomingMessageProperties;
+            RemoteEndpointMessageProperty endpoint = messageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
+            return endpoint.Address;
+        }
+
+        public void StopMining(string signature)
+        {
+            ApplicationProxy.Instance.StopMining(this, GetClientIpAddress(), signature);       
+        }
+
+        public void StartMining(string signature)
+        {
+            ApplicationProxy.Instance.StartMining(this, GetClientIpAddress(), signature);
+        }
+
+        public void RestartMining(string signature)
+        {
+            bool result = true;
+            ApplicationProxy.Instance.RestartMining(this, GetClientIpAddress(), signature);
         }
     }
 }

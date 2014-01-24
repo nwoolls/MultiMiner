@@ -7,6 +7,12 @@ namespace MultiMiner.Remoting.Server
     public interface IRemotingService
     {
         [OperationContract]
-        IEnumerable<Data.Transfer.Device> GetDevices();
+        void GetDevices(out IEnumerable<Data.Transfer.Device> devices, out bool mining);
+        [OperationContract]
+        void StopMining(string signature);
+        [OperationContract]
+        void StartMining(string signature);
+        [OperationContract]
+        void RestartMining(string signature);
     }
 }

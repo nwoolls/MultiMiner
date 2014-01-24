@@ -25,6 +25,7 @@ using MultiMiner.Win.ViewModels;
 using System.ServiceModel;
 using Newtonsoft.Json;
 using System.Web.Script.Serialization;
+using System.Security.Cryptography;
 
 namespace MultiMiner.Win
 {
@@ -83,12 +84,13 @@ namespace MultiMiner.Win
         private Remoting.Server.Broadcast.Listener broadcastListener;
         private int fingerprint;
         private Random random = new Random();
+        private Instance selectedRemoteInstance = null;
+        public bool remotingEnabled { get; set; }
+        public bool remoteInstanceMining { get; set; }
 
         //view models
         private MainFormViewModel localViewModel = new MainFormViewModel();
         private MainFormViewModel remoteViewModel = new MainFormViewModel();
-        private Instance selectedRemoteInstance = null;
-        public bool remotingEnabled { get; set; }
         #endregion
 
         #region Constructor
@@ -679,9 +681,53 @@ namespace MultiMiner.Win
 
         private void UpdateMiningButtons()
         {
-            startButton.Enabled = MiningConfigurationValid() && !miningEngine.Mining && (this.selectedRemoteInstance == null);
+            if (this.selectedRemoteInstance == null)
+            {
+                UpdateMiningButtonsForLocal();
+            }
+            else
+            {
+                UpdateMiningButtonsForRemote();
+            }
+        }
 
-            stopButton.Enabled = miningEngine.Mining && (this.selectedRemoteInstance == null);
+        private void UpdateMiningButtonsForRemote()
+        {
+            startButton.Enabled = !remoteInstanceMining;
+
+            stopButton.Enabled = remoteInstanceMining;
+            startMenuItem.Enabled = startButton.Enabled;
+            stopMenuItem.Enabled = stopButton.Enabled;
+
+            //no remote detecting devices (yet)
+            detectDevicesButton.Enabled = false;
+            detectDevicesToolStripMenuItem.Enabled = false;
+
+            startButton.Visible = startButton.Enabled;
+            stopButton.Visible = stopButton.Enabled;
+
+            if (!startButton.Visible && !stopButton.Visible)
+                startButton.Visible = true; //show something, even if disabled
+
+            //sys tray menu
+            startMenuItem.Visible = startMenuItem.Enabled;
+            stopMenuItem.Visible = stopMenuItem.Enabled;
+
+            //accessible menu
+            startToolStripMenuItem.Enabled = startMenuItem.Enabled;
+            stopToolStripMenuItem.Enabled = stopMenuItem.Enabled;
+            restartToolStripMenuItem.Enabled = stopMenuItem.Enabled;
+            scanHardwareToolStripMenuItem.Enabled = detectDevicesButton.Enabled;
+
+            //process log menu
+            launchToolStripMenuItem.Enabled = startMenuItem.Enabled;
+        }
+
+        private void UpdateMiningButtonsForLocal()
+        {
+            startButton.Enabled = MiningConfigurationValid() && !miningEngine.Mining;// && (this.selectedRemoteInstance == null);
+
+            stopButton.Enabled = miningEngine.Mining;// && (this.selectedRemoteInstance == null);
             startMenuItem.Enabled = startButton.Enabled;
             stopMenuItem.Enabled = stopButton.Enabled;
             //allow clicking Detect Devices with invalid configuration
@@ -2361,6 +2407,7 @@ namespace MultiMiner.Win
             }
 
             AutoSizeListViewColumns();
+            UpdateMiningButtons();
         }
         #endregion
 
@@ -2404,9 +2451,79 @@ namespace MultiMiner.Win
             remotingEnabled = false;
         }
 
+        private void PerformRequestedCommand(string clientAddress, string signature, Action action)
+        {
+            Instance remoteInstance = instancesControl.Instances.SingleOrDefault(i => i.IpAddress.Equals(clientAddress));
+            if (remoteInstance == null)
+                return;
+
+            string expectedSignature = GetReceivingSignature(remoteInstance);
+            if (!expectedSignature.Equals(signature))
+            {
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    string message = "MultiMiner Remoting signature verification failed";
+                    notificationsControl.AddNotification(message,
+                        message, () =>
+                        {
+                        });
+                }));
+
+                return;
+            }
+
+            BeginInvoke((Action)(() =>
+            {
+                //code to update UI
+                action();
+            }));
+        }
+
+        private void StartMiningRequested(object sender, RemoteCommandEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                StartMiningLocally();
+            });
+        }
+
+        private void StopMiningRequested(object sender, RemoteCommandEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                StopMiningLocally();
+            });
+        }
+
+        private void RestartMiningRequested(object sender, RemoteCommandEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                RestartMiningLocally();
+            });
+        }
+
+        private void SetupRemotingEventHandlers()
+        {
+            ApplicationProxy.Instance.StartMiningRequested -= StartMiningRequested;
+            ApplicationProxy.Instance.StartMiningRequested += StartMiningRequested;
+
+            ApplicationProxy.Instance.StopMiningRequested -= StopMiningRequested;
+            ApplicationProxy.Instance.StopMiningRequested += StopMiningRequested;
+
+            ApplicationProxy.Instance.RestartMiningRequested -= RestartMiningRequested;
+            ApplicationProxy.Instance.RestartMiningRequested += RestartMiningRequested;
+        }
+
         private void EnableRemoting()
         {
+            SetupRemotingEventHandlers();
+
             fingerprint = random.Next();
+
+            if (workGroupName == null)
+                this.workGroupName = Utility.Networking.GetWorkGroup();
 
             //start Broadcast Listener before Discovery so we can
             //get initial info (hashrates) sent by other instances
@@ -2538,37 +2655,128 @@ namespace MultiMiner.Win
             UpdateMiningButtons();
 
             //disable actions in the menu (for now, until remote commands are done)
-            advancedMenuItem.Enabled = this.selectedRemoteInstance == null;
-            settingsButton.Enabled = this.selectedRemoteInstance == null;
-            toolsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
-            advancedToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
-            actionsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
+            //advancedMenuItem.Enabled = this.selectedRemoteInstance == null;
+            //settingsButton.Enabled = this.selectedRemoteInstance == null;
+            //toolsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
+            //advancedToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
+            //actionsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
+        }
+
+        private static IRemotingService GetServiceChannelForInstance(Instance instance)
+        {
+            EndpointAddress address = new EndpointAddress(new Uri(String.Format("net.tcp://{0}:{1}/RemotingService", instance.IpAddress, Config.RemotingPort)));
+            NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
+
+            ChannelFactory<IRemotingService> factory = new ChannelFactory<IRemotingService>(binding, address);
+            IRemotingService serviceChannel = factory.CreateChannel();
+            return serviceChannel;
         }
 
         private void FetchRemoteViewModels(Instance instance)
         {
             using (new HourGlass())
             {
-                EndpointAddress address = new EndpointAddress(new Uri(String.Format("net.tcp://{0}:{1}/RemotingService", instance.IpAddress, Config.RemotingPort)));
-                NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
+                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
+                IEnumerable<Remoting.Server.Data.Transfer.Device> devices;
+                bool mining;
+                serviceChannel.GetDevices(out devices, out mining);
+                this.remoteInstanceMining = mining;
+                SaveDeviceTransferObjects(devices);
+            }
+        }
 
-                ChannelFactory<IRemotingService> factory = new ChannelFactory<IRemotingService>(binding, address);
-                IRemotingService serviceChannel = factory.CreateChannel();
-                IEnumerable<Remoting.Server.Data.Transfer.Device> devices = serviceChannel.GetDevices();
+        private const uint remotingPepper = 4108157753;
+        private string workGroupName = null;
 
-                remoteViewModel.Devices.Clear();
-                foreach (Remoting.Server.Data.Transfer.Device dto in devices)
+        private string GetStringHash(string text)
+        {
+            byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(text);
+
+            // this is where you get the actual binary hash
+            SHA256Managed hasher = new SHA256Managed();
+            byte[] inputHashedBytes = hasher.ComputeHash(inputBytes);
+
+            // but you want it in a string format, similar to a variety of UNIX tools
+            string result = BitConverter.ToString(inputHashedBytes)
+                // this will remove all the dashes in between each two characters
+               .Replace("-", string.Empty)
+                // and make it lowercase
+               .ToLower();
+
+            return result;
+        }
+
+        private string GetSendingSignature(Instance destination)
+        {
+            string signature = String.Format("{0}{1}{2}{3}{4}{5}", 
+                Environment.MachineName, 
+                this.fingerprint, 
+                destination.MachineName, 
+                destination.Fingerprint, 
+                remotingPepper, 
+                workGroupName);
+            return GetStringHash(signature);
+        }
+
+        private string GetReceivingSignature(Instance source)
+        {
+            string signature = String.Format("{0}{1}{2}{3}{4}{5}",
+                source.MachineName,
+                source.Fingerprint,
+                Environment.MachineName,
+                this.fingerprint,
+                remotingPepper,
+                workGroupName);
+            return GetStringHash(signature);
+        }
+
+        private void StartMiningRemotely(Instance instance)
+        {
+            using (new HourGlass())
+            {
+                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
+                serviceChannel.StartMining(GetSendingSignature(instance));
+                FetchRemoteViewModels(instance);
+                UpdateMiningButtons();
+            }
+        }
+
+        private void StopMiningRemotely(Instance instance)
+        {
+            using (new HourGlass())
+            {
+                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
+                serviceChannel.StopMining(GetSendingSignature(instance));
+                FetchRemoteViewModels(instance);
+                UpdateMiningButtons();
+            }
+        }
+
+        private void RestartMiningRemotely(Instance instance)
+        {
+            using (new HourGlass())
+            {
+                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
+                serviceChannel.RestartMining(GetSendingSignature(instance));
+                FetchRemoteViewModels(instance);
+                UpdateMiningButtons();
+            }
+        }
+
+        private void SaveDeviceTransferObjects(IEnumerable<Remoting.Server.Data.Transfer.Device> devices)
+        {
+            remoteViewModel.Devices.Clear();
+            foreach (Remoting.Server.Data.Transfer.Device dto in devices)
+            {
+                DeviceViewModel viewModel = new DeviceViewModel();
+                ObjectCopier.CopyObject(dto, viewModel, "Workers");
+                foreach (Remoting.Server.Data.Transfer.Device source in dto.Workers)
                 {
-                    DeviceViewModel viewModel = new DeviceViewModel();
-                    ObjectCopier.CopyObject(dto, viewModel, "Workers");
-                    foreach (Remoting.Server.Data.Transfer.Device source in dto.Workers)
-                    {
-                        DeviceViewModel destination = new DeviceViewModel();
-                        ObjectCopier.CopyObject(source, destination, "Workers");
-                        viewModel.Workers.Add(destination);
-                    }
-                    remoteViewModel.Devices.Add(viewModel);
+                    DeviceViewModel destination = new DeviceViewModel();
+                    ObjectCopier.CopyObject(source, destination, "Workers");
+                    viewModel.Workers.Add(destination);
                 }
+                remoteViewModel.Devices.Add(viewModel);
             }
         }
 
@@ -3713,8 +3921,10 @@ namespace MultiMiner.Win
 
         private void TearDownApplication()
         {
+            //don't do anything inadvertent to a remote instance during shutdown
             SaveSettings();
-            StopMining();
+            if (this.remoteInstanceMining == null)
+                StopMining();
             DisableRemoting();
         }
 
@@ -4444,10 +4654,24 @@ namespace MultiMiner.Win
 
         private void StopMining()
         {
+            if (this.selectedRemoteInstance == null)
+            {
+                StopMiningLocally();
+            }
+            else
+            {
+                StopMiningRemotely(this.selectedRemoteInstance);
+            }
+        }
+
+        private void StopMiningLocally()
+        {
             using (new HourGlass())
             {
                 miningEngine.StopMining();
             }
+
+            ApplicationProxy.Instance.Mining = false;
 
             processDeviceDetails.Clear();
             deviceStatsTimer.Enabled = false;
@@ -4469,6 +4693,18 @@ namespace MultiMiner.Win
         }
 
         private void RestartMining()
+        {
+            if (this.selectedRemoteInstance == null)
+            {
+                RestartMiningLocally();
+            }
+            else
+            {
+                RestartMiningRemotely(this.selectedRemoteInstance);
+            }
+        }
+
+        private void RestartMiningLocally()
         {
             StopMining();
 
@@ -4617,12 +4853,26 @@ namespace MultiMiner.Win
 
         private void HandleStartButtonClick()
         {
+            if (this.selectedRemoteInstance == null)
+            {
+                StartMiningLocally();
+            }
+            else
+            {
+                StartMiningRemotely(this.selectedRemoteInstance);
+            }
+        }
+
+        private void StartMiningLocally()
+        {
             if (applicationConfiguration.AutoSetDesktopMode)
                 ToggleDynamicIntensity(true);
 
             CancelMiningOnStartup(); //in case clicked during countdown
             SaveChanges();
             StartMining();
+
+            ApplicationProxy.Instance.Mining = true;
         }
 
         private void ToggleDynamicIntensity(bool enabled)
