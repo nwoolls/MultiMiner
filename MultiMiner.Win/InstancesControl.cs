@@ -4,11 +4,31 @@ using System.Linq;
 using System.Windows.Forms;
 using MultiMiner.Discovery;
 using MultiMiner.Win.Extensions;
+using System.Collections;
 
 namespace MultiMiner.Win
 {
     public partial class InstancesControl : MessageBoxFontUserControl
     {
+        private const string ThisPCText = "This PC";
+        public class InstanceSorter : IComparer
+        {
+            // compare between two tree nodes
+            public int Compare(object thisObj, object thatObj)
+            {
+                TreeNode thisNode = thisObj as TreeNode;
+                TreeNode thatNode = thatObj as TreeNode;
+
+                if (thisNode.Text.Equals(ThisPCText))
+                    return -1;
+                else if (thatNode.Text.Equals(ThisPCText))
+                    return 1;
+
+                //alphabetically sorting
+                return thisNode.Text.CompareTo(thatNode.Text);
+            }
+        } 
+
         //events
         //delegate declarations
         public delegate void SelectedInstanceChangedHandler(object sender, Instance instance);
@@ -22,6 +42,7 @@ namespace MultiMiner.Win
         {
             InitializeComponent();
             Instances = new List<Instance>();
+            treeView1.TreeViewNodeSorter = new InstanceSorter();
         }
 
         public void RegisterInstance(Instance instance)
@@ -33,13 +54,15 @@ namespace MultiMiner.Win
 
             if (isThisPc)
             {
-                nodeText = "This PC";
+                nodeText = ThisPCText;
                 node = treeView1.Nodes[0].Nodes.Insert(0, instance.IpAddress, nodeText);
             }
             else
             {
                 node = treeView1.Nodes[0].Nodes.Add(instance.IpAddress, nodeText);
             }
+
+            treeView1.Sort();
 
             if (isThisPc)
             {
@@ -85,7 +108,7 @@ namespace MultiMiner.Win
             string result = instance.MachineName;
             bool isThisPc = result.Equals(Environment.MachineName);
             if (isThisPc)
-                result = "This PC";
+                result = ThisPCText;
             return result;
         }
 
