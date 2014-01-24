@@ -2682,10 +2682,31 @@ namespace MultiMiner.Win
                 IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
                 IEnumerable<Remoting.Server.Data.Transfer.Device> devices;
                 bool mining;
-                serviceChannel.GetDevices(out devices, out mining);
-                this.remoteInstanceMining = mining;
-                SaveDeviceTransferObjects(devices);
+                try
+                {
+                    serviceChannel.GetDevices(out devices, out mining);
+                    this.remoteInstanceMining = mining;
+                    SaveDeviceTransferObjects(devices);
+                }
+                catch (CommunicationException ex)
+                {
+                    ShowMultiMinerRemotingError(ex);
+                }
             }
+        }
+
+        private void ShowMultiMinerRemotingError(CommunicationException ex)
+        {
+            BeginInvoke((Action)(() =>
+            {
+                //code to update UI
+                string message = "MultiMiner Remoting communication failed";
+                notificationsControl.AddNotification(message,
+                    message, () =>
+                    {
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    });
+            }));            
         }
 
         private const uint remotingPepper = 4108157753;
@@ -2740,9 +2761,16 @@ namespace MultiMiner.Win
             using (new HourGlass())
             {
                 IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                serviceChannel.StartMining(GetSendingSignature(instance));
 
-                UpdateViewFromRemoteInTheFuture(5);
+                try
+                {
+                    serviceChannel.StartMining(GetSendingSignature(instance));
+                    UpdateViewFromRemoteInTheFuture(5);
+                }
+                catch (CommunicationException ex)
+                {
+                    ShowMultiMinerRemotingError(ex);
+                }
             }
         }
 
@@ -2769,9 +2797,15 @@ namespace MultiMiner.Win
             using (new HourGlass())
             {
                 IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                serviceChannel.StopMining(GetSendingSignature(instance));
-
-                UpdateViewFromRemoteInTheFuture(5);
+                try
+                {
+                    serviceChannel.StopMining(GetSendingSignature(instance));
+                    UpdateViewFromRemoteInTheFuture(5);
+                }
+                catch (CommunicationException ex)
+                {
+                    ShowMultiMinerRemotingError(ex);
+                }
             }
         }
 
@@ -2780,7 +2814,14 @@ namespace MultiMiner.Win
             using (new HourGlass())
             {
                 IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                serviceChannel.RestartMining(GetSendingSignature(instance));
+                try
+                {
+                    serviceChannel.RestartMining(GetSendingSignature(instance));
+                }
+                catch (CommunicationException ex)
+                {
+                    ShowMultiMinerRemotingError(ex);
+                }
             }
         }
 
