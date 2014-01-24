@@ -23,7 +23,7 @@ namespace MultiMiner.Remoting.Server.Broadcast
         {
             if (udpClient == null)
             {
-                const int MaxTries = 2;
+                const int MaxTries = 5;
                 TryToAllocateClient(MaxTries);
             }
             udpClient.BeginReceive(Receive, null);

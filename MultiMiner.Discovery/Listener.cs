@@ -29,7 +29,7 @@ namespace MultiMiner.Discovery
         {
             if (udpClient == null)
             {
-                const int MaxTries = 2;
+                const int MaxTries = 5;
                 TryToAllocateClient(MaxTries);
             }
             this.fingerprint = fingerprint;
