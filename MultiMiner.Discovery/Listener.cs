@@ -47,6 +47,11 @@ namespace MultiMiner.Discovery
 
             IPEndPoint ip = new IPEndPoint(IPAddress.Any, Config.Port);
             byte[] bytes = udpClient.EndReceive(ar, ref ip);
+
+            //both checks necessary
+            if (!listening)
+                return;
+
             udpClient.BeginReceive(Receive, null);
 
             ProcessReceived(ip, bytes);
