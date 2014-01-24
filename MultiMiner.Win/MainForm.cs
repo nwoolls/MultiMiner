@@ -239,24 +239,6 @@ namespace MultiMiner.Win
             PushViewModelsOutForRemoting();
         }
 
-        private void PushViewModelsOutForRemoting()
-        {
-            List<Remoting.Server.Data.Transfer.Device> newList = new List<Remoting.Server.Data.Transfer.Device>();
-            foreach (DeviceViewModel viewModel in localViewModel.Devices)
-            {
-                MultiMiner.Remoting.Server.Data.Transfer.Device dto = new Remoting.Server.Data.Transfer.Device();
-                ObjectCopier.CopyObject(viewModel, dto, "Workers");
-                foreach (DeviceViewModel source in viewModel.Workers)
-                {
-                    Remoting.Server.Data.Transfer.Device destination = new Remoting.Server.Data.Transfer.Device();
-                    ObjectCopier.CopyObject(source, destination, "Workers");
-                    dto.Workers.Add(destination);                    
-                }
-                newList.Add(dto);
-            }
-            ApplicationProxy.Instance.Devices = newList;
-        }
-
         private void ApplyDevicesToViewModel()
         {
             //clear to ensure we have a 1-to-1 with listview items
@@ -270,44 +252,6 @@ namespace MultiMiner.Win
         {
             if (coinApiInformation != null)
                 localViewModel.ApplyCoinInformationModels(coinApiInformation);
-        }
-
-        private int GetDeviceIndexForDeviceDetails(DeviceDetailsResponse deviceDetails)
-        {
-            for (int i = 0; i < devices.Count; i++)
-            {
-                Device device = devices[i];
-
-                if (device.Driver.Equals(deviceDetails.Driver, StringComparison.OrdinalIgnoreCase)
-                    &&
-                    (
-                    //serial == serial && path == path (serial may not be unique)
-                    (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
-                      && !String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
-
-                    //serial == serial && path == String.Empty - WinUSB/LibUSB has no path, but has a serial #
-                    || (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
-                      && String.IsNullOrEmpty(device.Path) && String.IsNullOrEmpty(deviceDetails.DevicePath))
-
-                    //path == path
-                    || (!String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
-
-                    //proxy == proxy
-                    || (device.Driver.Equals("proxy", StringComparison.OrdinalIgnoreCase))
-
-                    //opencl = opencl && ID = RelativeIndex
-                    || (device.Driver.Equals("opencl", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
-
-                    //cpu = cpu && ID = RelativeIndex
-                    || (device.Driver.Equals("cpu", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
-
-                    ))
-                {
-                    return i;
-                }
-            }
-
-            return -1;
         }
         #endregion
 
@@ -428,7 +372,6 @@ namespace MultiMiner.Win
 
                     /* Coin info
                      * */
-
                     listViewItem.SubItems["Difficulty"].Tag = deviceViewModel.Difficulty;
                     listViewItem.SubItems["Difficulty"].Text = deviceViewModel.Difficulty.ToDifficultyString();
 
@@ -2593,6 +2536,24 @@ namespace MultiMiner.Win
                 }
             }
         }
+
+        private void PushViewModelsOutForRemoting()
+        {
+            List<Remoting.Server.Data.Transfer.Device> newList = new List<Remoting.Server.Data.Transfer.Device>();
+            foreach (DeviceViewModel viewModel in localViewModel.Devices)
+            {
+                MultiMiner.Remoting.Server.Data.Transfer.Device dto = new Remoting.Server.Data.Transfer.Device();
+                ObjectCopier.CopyObject(viewModel, dto, "Workers");
+                foreach (DeviceViewModel source in viewModel.Workers)
+                {
+                    Remoting.Server.Data.Transfer.Device destination = new Remoting.Server.Data.Transfer.Device();
+                    ObjectCopier.CopyObject(source, destination, "Workers");
+                    dto.Workers.Add(destination);
+                }
+                newList.Add(dto);
+            }
+            ApplicationProxy.Instance.Devices = newList;
+        }
         #endregion
 
         #region Coin API
@@ -3171,6 +3132,44 @@ namespace MultiMiner.Win
 
             RefreshIncomeSummary();
             RefreshDetailsAreaIfVisible();
+        }
+
+        private int GetDeviceIndexForDeviceDetails(DeviceDetailsResponse deviceDetails)
+        {
+            for (int i = 0; i < devices.Count; i++)
+            {
+                Device device = devices[i];
+
+                if (device.Driver.Equals(deviceDetails.Driver, StringComparison.OrdinalIgnoreCase)
+                    &&
+                    (
+                    //serial == serial && path == path (serial may not be unique)
+                    (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
+                      && !String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
+
+                    //serial == serial && path == String.Empty - WinUSB/LibUSB has no path, but has a serial #
+                    || (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
+                      && String.IsNullOrEmpty(device.Path) && String.IsNullOrEmpty(deviceDetails.DevicePath))
+
+                    //path == path
+                    || (!String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
+
+                    //proxy == proxy
+                    || (device.Driver.Equals("proxy", StringComparison.OrdinalIgnoreCase))
+
+                    //opencl = opencl && ID = RelativeIndex
+                    || (device.Driver.Equals("opencl", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+
+                    //cpu = cpu && ID = RelativeIndex
+                    || (device.Driver.Equals("cpu", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+
+                    ))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         private void FlagSuspiciousMiner(MinerProcess minerProcess, DeviceInformationResponse deviceInformation)
