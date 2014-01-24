@@ -75,6 +75,7 @@ namespace MultiMiner.Win
 
         //controls
         private NotificationsControl notificationsControl;
+        private InstancesControl instancesControl;
 
         //remoting
         private RemotingServer remotingServer;
@@ -125,6 +126,14 @@ namespace MultiMiner.Win
             closeApiButton.Parent = advancedAreaContainer.Panel2;
             closeApiButton.BringToFront();
             panel2.Visible = false;
+        }
+
+        private void SetupInstancesControl()
+        {
+            instancesControl = new InstancesControl();
+            instancesControl.Dock = DockStyle.Fill;
+            instancesControl.SelectedInstanceChanged += instancesControl1_SelectedInstanceChanged;
+            instancesControl.Parent = instancesContainer.Panel1;
         }
 
         private void SetupLookAndFeel()
@@ -2325,7 +2334,7 @@ namespace MultiMiner.Win
         private void remotingBroadcastTimer_Tick(object sender, EventArgs e)
         {
             //only broadcast if there are other instances (not just us)
-            if (perksConfiguration.EnableRemoting && (instancesControl1.Instances.Count > 1))
+            if (perksConfiguration.EnableRemoting && (instancesControl.Instances.Count > 1))
             {
                 BroadcastHashrate();
             }
@@ -2387,10 +2396,10 @@ namespace MultiMiner.Win
 
             broadcastListener.Stop();
 
-            instancesControl1.Visible = false;
+            instancesControl.Visible = false;
             instancesContainer.Panel1Collapsed = true;
 
-            instancesControl1.UnregisterInstances();
+            instancesControl.UnregisterInstances();
 
             remotingEnabled = false;
         }
@@ -2415,7 +2424,7 @@ namespace MultiMiner.Win
             remotingServer = new RemotingServer();
             remotingServer.Startup();
 
-            instancesControl1.Visible = true;
+            instancesControl.Visible = true;
             instancesContainer.Panel1Collapsed = false;
 
             UpdateInstancesVisibility();
@@ -2434,7 +2443,7 @@ namespace MultiMiner.Win
                 BeginInvoke((Action)(() =>
                 {
                     //code to update UI
-                    instancesControl1.ApplyMachineInformation(ea.IpAddress, dto);
+                    instancesControl.ApplyMachineInformation(ea.IpAddress, dto);
                 }));
             }
         }
@@ -2466,7 +2475,7 @@ namespace MultiMiner.Win
             BeginInvoke((Action)(() =>
             {
                 //code to update UI
-                instancesControl1.RegisterInstance(ea.Instance);
+                instancesControl.RegisterInstance(ea.Instance);
                 UpdateInstancesVisibility();
             }));
 
@@ -2488,14 +2497,14 @@ namespace MultiMiner.Win
             BeginInvoke((Action)(() =>
             {
                 //code to update UI
-                instancesControl1.UnregisterInstance(ea.Instance);
+                instancesControl.UnregisterInstance(ea.Instance);
                 UpdateInstancesVisibility();
             }));
         }
 
         private void UpdateInstancesVisibility()
         {
-            instancesContainer.Panel1Collapsed = !perksConfiguration.EnableRemoting || (instancesControl1.Instances.Count <= 1);
+            instancesContainer.Panel1Collapsed = !perksConfiguration.EnableRemoting || (instancesControl.Instances.Count <= 1);
         }
 
         private void instancesControl1_SelectedInstanceChanged(object sender, Instance instance)
@@ -3619,6 +3628,8 @@ namespace MultiMiner.Win
             incomeSummaryLabel.Text = String.Empty;
 
             SetupInitialButtonVisibility();
+
+            SetupInstancesControl();
 
             SetupGridColumns();
 

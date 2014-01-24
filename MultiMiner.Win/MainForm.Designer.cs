@@ -89,7 +89,6 @@
             this.countdownLabel = new System.Windows.Forms.Label();
             this.advancedAreaContainer = new System.Windows.Forms.SplitContainer();
             this.instancesContainer = new System.Windows.Forms.SplitContainer();
-            this.instancesControl1 = new MultiMiner.Win.InstancesControl();
             this.detailsAreaContainer = new System.Windows.Forms.SplitContainer();
             this.deviceListView = new MultiMiner.Win.DeviceListView();
             this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -229,7 +228,6 @@
             this.advancedAreaContainer.Panel1.SuspendLayout();
             this.advancedAreaContainer.Panel2.SuspendLayout();
             this.advancedAreaContainer.SuspendLayout();
-            this.instancesContainer.Panel1.SuspendLayout();
             this.instancesContainer.Panel2.SuspendLayout();
             this.instancesContainer.SuspendLayout();
             this.detailsAreaContainer.Panel1.SuspendLayout();
@@ -305,13 +303,13 @@
             this.quitAppMenuItem});
             this.notifyIconMenuStrip.Name = "contextMenuStrip1";
             this.notifyIconMenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.notifyIconMenuStrip.Size = new System.Drawing.Size(153, 120);
+            this.notifyIconMenuStrip.Size = new System.Drawing.Size(104, 98);
             // 
             // startMenuItem
             // 
             this.startMenuItem.Image = global::MultiMiner.Win.Properties.Resources.computer_control_play;
             this.startMenuItem.Name = "startMenuItem";
-            this.startMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.startMenuItem.Size = new System.Drawing.Size(103, 22);
             this.startMenuItem.Text = "Start";
             this.startMenuItem.Click += new System.EventHandler(this.startMenuItem_Click);
             // 
@@ -319,20 +317,20 @@
             // 
             this.stopMenuItem.Image = global::MultiMiner.Win.Properties.Resources.computer_control_stop;
             this.stopMenuItem.Name = "stopMenuItem";
-            this.stopMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stopMenuItem.Size = new System.Drawing.Size(103, 22);
             this.stopMenuItem.Text = "Stop";
             this.stopMenuItem.Click += new System.EventHandler(this.stopMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(100, 6);
             // 
             // showAppMenuItem
             // 
             this.showAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application;
             this.showAppMenuItem.Name = "showAppMenuItem";
-            this.showAppMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.showAppMenuItem.Size = new System.Drawing.Size(103, 22);
             this.showAppMenuItem.Text = "Show";
             this.showAppMenuItem.Click += new System.EventHandler(this.showAppMenuItem_Click);
             // 
@@ -340,7 +338,7 @@
             // 
             this.quitAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_delete;
             this.quitAppMenuItem.Name = "quitAppMenuItem";
-            this.quitAppMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.quitAppMenuItem.Size = new System.Drawing.Size(103, 22);
             this.quitAppMenuItem.Text = "Quit";
             this.quitAppMenuItem.Click += new System.EventHandler(this.quitAppMenuItem_Click);
             // 
@@ -596,10 +594,7 @@
             this.instancesContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.instancesContainer.Location = new System.Drawing.Point(0, 0);
             this.instancesContainer.Name = "instancesContainer";
-            // 
-            // instancesContainer.Panel1
-            // 
-            this.instancesContainer.Panel1.Controls.Add(this.instancesControl1);
+            this.instancesContainer.Panel1Collapsed = true;
             // 
             // instancesContainer.Panel2
             // 
@@ -607,17 +602,6 @@
             this.instancesContainer.Size = new System.Drawing.Size(1293, 375);
             this.instancesContainer.SplitterDistance = 186;
             this.instancesContainer.TabIndex = 4;
-            // 
-            // instancesControl1
-            // 
-            this.instancesControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.instancesControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.instancesControl1.Instances = ((System.Collections.Generic.List<MultiMiner.Discovery.Instance>)(resources.GetObject("instancesControl1.Instances")));
-            this.instancesControl1.Location = new System.Drawing.Point(0, 0);
-            this.instancesControl1.Name = "instancesControl1";
-            this.instancesControl1.Size = new System.Drawing.Size(186, 375);
-            this.instancesControl1.TabIndex = 0;
-            this.instancesControl1.SelectedInstanceChanged += new MultiMiner.Win.InstancesControl.SelectedInstanceChangedHandler(this.instancesControl1_SelectedInstanceChanged);
             // 
             // detailsAreaContainer
             // 
@@ -633,8 +617,8 @@
             // detailsAreaContainer.Panel2
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
-            this.detailsAreaContainer.Size = new System.Drawing.Size(1103, 375);
-            this.detailsAreaContainer.SplitterDistance = 809;
+            this.detailsAreaContainer.Size = new System.Drawing.Size(1293, 375);
+            this.detailsAreaContainer.SplitterDistance = 1003;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -680,7 +664,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(809, 375);
+            this.deviceListView.Size = new System.Drawing.Size(1003, 375);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -792,7 +776,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(291, 375);
+            this.detailsControl1.Size = new System.Drawing.Size(287, 375);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -1316,7 +1300,7 @@
             this.restartButton.AccessibleName = "Restart";
             this.restartButton.Image = global::MultiMiner.Win.Properties.Resources.computer_update;
             this.restartButton.Name = "restartButton";
-            this.restartButton.Size = new System.Drawing.Size(110, 22);
+            this.restartButton.Size = new System.Drawing.Size(152, 22);
             this.restartButton.Text = "Restart";
             this.restartButton.ToolTipText = "Restart mining";
             this.restartButton.Click += new System.EventHandler(this.restartButton_Click);
@@ -1865,7 +1849,6 @@
             this.advancedAreaContainer.Panel1.ResumeLayout(false);
             this.advancedAreaContainer.Panel2.ResumeLayout(false);
             this.advancedAreaContainer.ResumeLayout(false);
-            this.instancesContainer.Panel1.ResumeLayout(false);
             this.instancesContainer.Panel2.ResumeLayout(false);
             this.instancesContainer.ResumeLayout(false);
             this.detailsAreaContainer.Panel1.ResumeLayout(false);
@@ -2088,7 +2071,6 @@
         private System.Windows.Forms.Timer remotingBroadcastTimer;
         private System.Windows.Forms.Timer remotingServerTimer;
         private System.Windows.Forms.Button startStartupMiningButton;
-        private InstancesControl instancesControl1;
     }
 }
 
