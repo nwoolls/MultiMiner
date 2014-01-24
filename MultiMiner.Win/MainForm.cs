@@ -2710,25 +2710,27 @@ namespace MultiMiner.Win
 
         private string GetSendingSignature(Instance destination)
         {
-            string signature = String.Format("{0}{1}{2}{3}{4}{5}", 
+            string signature = String.Format("{0}{1}{2}{3}{4}{5}{6}", 
                 Environment.MachineName, 
                 this.fingerprint, 
                 destination.MachineName, 
                 destination.Fingerprint, 
                 remotingPepper, 
-                workGroupName);
+                workGroupName,
+                perksConfiguration.RemotingPassword);
             return GetStringHash(signature);
         }
 
         private string GetReceivingSignature(Instance source)
         {
-            string signature = String.Format("{0}{1}{2}{3}{4}{5}",
+            string signature = String.Format("{0}{1}{2}{3}{4}{5}{6}",
                 source.MachineName,
                 source.Fingerprint,
                 Environment.MachineName,
                 this.fingerprint,
                 remotingPepper,
-                workGroupName);
+                workGroupName,
+                perksConfiguration.RemotingPassword);
             return GetStringHash(signature);
         }
 
