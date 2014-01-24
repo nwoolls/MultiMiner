@@ -79,7 +79,9 @@ namespace MultiMiner.Win
         //remoting
         private RemotingServer remotingServer;
         private Discovery.Listener discoveryListener;
-        private Remoting.Server.Broadcast.Listener broadcastListener; 
+        private Remoting.Server.Broadcast.Listener broadcastListener;
+        private int fingerprint;
+        private Random random = new Random();
 
         //view models
         private MainFormViewModel localViewModel = new MainFormViewModel();
@@ -2395,6 +2397,8 @@ namespace MultiMiner.Win
 
         private void EnableRemoting()
         {
+            fingerprint = random.Next();
+
             //start Broadcast Listener before Discovery so we can
             //get initial info (hashrates) sent by other instances
             broadcastListener = new Remoting.Server.Broadcast.Listener();
@@ -2446,13 +2450,13 @@ namespace MultiMiner.Win
             discoveryListener = new Listener();
             discoveryListener.InstanceOnline += HandleInstanceOnline;
             discoveryListener.InstanceOffline += HandleInstanceOffline;
-            discoveryListener.Listen();
-            Broadcaster.Broadcast(Verbs.Online);
+            discoveryListener.Listen(fingerprint);
+            Broadcaster.Broadcast(Verbs.Online, fingerprint);
         }
 
         private void StopDiscovery()
         {
-            Broadcaster.Broadcast(Verbs.Offline);
+            Broadcaster.Broadcast(Verbs.Offline, fingerprint);
             if (discoveryListener != null)
                 discoveryListener.Stop();
         }

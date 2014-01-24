@@ -4,9 +4,9 @@ namespace MultiMiner.Discovery
 {
     public class Broadcaster
     {
-        public static void Broadcast(string verb)
+        public static void Broadcast(string verb, int fingerprint)
         {
-            Sender.Send(IPAddress.Broadcast, verb);
+            Sender.Send(IPAddress.Broadcast, verb, fingerprint);
         }
     }
 }

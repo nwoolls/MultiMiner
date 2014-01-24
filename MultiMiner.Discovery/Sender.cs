@@ -8,12 +8,13 @@ namespace MultiMiner.Discovery
 {
     class Sender
     {
-        public static void Send(IPAddress ipAddress, string verb)
+        public static void Send(IPAddress ipAddress, string verb, int fingerprint)
         {
             using (UdpClient client = new UdpClient())
             {
                 Packet packet = new Packet();
                 packet.MachineName = Environment.MachineName;
+                packet.Fingerprint = fingerprint;
                 packet.Verb = verb;
 
                 JavaScriptSerializer serializer = new JavaScriptSerializer();

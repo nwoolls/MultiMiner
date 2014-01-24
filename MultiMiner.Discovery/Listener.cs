@@ -19,14 +19,16 @@ namespace MultiMiner.Discovery
         public event InstanceChangedHandler InstanceOffline;
 
         private UdpClient udpClient;
+        private int fingerprint;
         public bool listening { get; set; }
 
         private readonly List<Instance> instances = new List<Instance>();
 
-        public void Listen()
+        public void Listen(int fingerprint)
         {
             if (udpClient == null)
                 udpClient = new UdpClient(Config.Port);
+            this.fingerprint = fingerprint;
             udpClient.BeginReceive(Receive, null);
             listening = true;
         }
@@ -71,7 +73,7 @@ namespace MultiMiner.Discovery
                 {
                     Instance instance = new Instance { IpAddress = ipAddress, MachineName = packet.MachineName };
                     instances.Add(instance);
-                    Sender.Send(source.Address, Verbs.Online);
+                    Sender.Send(source.Address, Verbs.Online, fingerprint);
 
                     if (InstanceOnline != null)
                         InstanceOnline(this, new InstanceChangedArgs { Instance = instance });
