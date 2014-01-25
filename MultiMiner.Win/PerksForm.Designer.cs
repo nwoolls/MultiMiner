@@ -109,7 +109,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 323);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(407, 54);
-            this.panel1.TabIndex = 7;
+            this.panel1.TabIndex = 3;
             // 
             // saveButton
             // 
@@ -139,7 +139,7 @@
             this.percentEdit.Location = new System.Drawing.Point(182, 272);
             this.percentEdit.Name = "percentEdit";
             this.percentEdit.Size = new System.Drawing.Size(45, 23);
-            this.percentEdit.TabIndex = 6;
+            this.percentEdit.TabIndex = 2;
             this.percentEdit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.percentEdit.Validating += new System.ComponentModel.CancelEventHandler(this.percentEdit_Validating);
             // 
@@ -171,7 +171,7 @@
             this.groupBox1.Location = new System.Drawing.Point(56, 100);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(291, 158);
-            this.groupBox1.TabIndex = 16;
+            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Perks";
             // 
