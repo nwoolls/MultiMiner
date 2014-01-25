@@ -1176,6 +1176,9 @@ namespace MultiMiner.Win
                 SetupAccessibleMenu();
                 SetGpuEnvironmentVariables();
 
+                localViewModel.DynamicIntensity = engineConfiguration.XgminerConfiguration.DesktopMode;
+                dynamicIntensityButton.Checked = localViewModel.DynamicIntensity;
+
                 Application.DoEvents();
             }
             else

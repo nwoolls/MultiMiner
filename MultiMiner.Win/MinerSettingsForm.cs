@@ -55,6 +55,11 @@ namespace MultiMiner.Win
 
         private void SaveSettings()
         {
+            //if the user has disabled Auto-Set Dynamic Intensity, disable Dynamic Intensity as well
+            if (!workingApplicationConfiguration.AutoSetDesktopMode &&
+                (workingApplicationConfiguration.AutoSetDesktopMode != applicationConfiguration.AutoSetDesktopMode))
+                workingMinerConfiguration.DesktopMode = false;
+
             workingApplicationConfiguration.ScheduledRestartMiningInterval = (ApplicationConfiguration.TimerInterval)intervalCombo.SelectedIndex;
 
             minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256] = sha256ParamsEdit.Text;
