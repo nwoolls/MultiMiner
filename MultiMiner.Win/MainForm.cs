@@ -248,6 +248,7 @@ namespace MultiMiner.Win
             localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
                 engineConfiguration.CoinConfigurations);
             ApplyCoinInformationToViewModel();
+            localViewModel.ApplyCoinConfigurationModels(engineConfiguration.CoinConfigurations);
 
             PushViewModelsOutForRemoting();
         }
@@ -539,10 +540,15 @@ namespace MultiMiner.Win
 
         private void RefreshCoinPopupMenu()
         {
+            if ((this.selectedRemoteInstance != null) && (this.remoteViewModel.ConfiguredCoins.Count == 0))
+                FetchRemoteConfiguredCoins(this.selectedRemoteInstance);
+
             coinPopupMenu.Items.Clear();
-            foreach (CoinConfiguration configuration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
+
+            MainFormViewModel viewModelToView = GetViewModelToView();
+            foreach (CryptoCoin configuredCoin in viewModelToView.ConfiguredCoins)
             {
-                ToolStripItem menuItem = coinPopupMenu.Items.Add(configuration.Coin.Name);
+                ToolStripItem menuItem = coinPopupMenu.Items.Add(configuredCoin.Name);
                 menuItem.Click += CoinMenuItemClick;
             }
         }
@@ -693,10 +699,10 @@ namespace MultiMiner.Win
             }
 
             //disable actions in the menu (for now, until remote commands are done)
-            advancedMenuItem.Enabled = this.selectedRemoteInstance == null;
+            //advancedMenuItem.Enabled = this.selectedRemoteInstance == null;
             settingsButton.Enabled = this.selectedRemoteInstance == null;
             toolsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
-            advancedToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
+            //advancedToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
             actionsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
         }
 
@@ -765,14 +771,19 @@ namespace MultiMiner.Win
 
         private void RefreshQuickSwitchMenu(ToolStripDropDownItem parent)
         {
+            if ((this.selectedRemoteInstance != null) && (this.remoteViewModel.ConfiguredCoins.Count == 0))
+                FetchRemoteConfiguredCoins(this.selectedRemoteInstance);
+
             quickCoinMenu.Items.Clear();
 
-            foreach (CoinConfiguration coinConfiguration in engineConfiguration.CoinConfigurations.Where(c => c.Enabled))
+            MainFormViewModel viewModelToView = GetViewModelToView();
+
+            foreach (CryptoCoin coinConfiguration in viewModelToView.ConfiguredCoins)
             {
                 ToolStripMenuItem coinSwitchItem = new ToolStripMenuItem()
                 {
-                    Text = coinConfiguration.Coin.Name,
-                    Tag = coinConfiguration.Coin.Symbol
+                    Text = coinConfiguration.Name,
+                    Tag = coinConfiguration.Symbol
                 };
                 coinSwitchItem.Click += HandleQuickSwitchClick;
 
@@ -1924,8 +1935,12 @@ namespace MultiMiner.Win
 
         private void deviceListContextMenu_Opening(object sender, CancelEventArgs e)
         {
+            if ((this.selectedRemoteInstance != null) && (this.remoteViewModel.ConfiguredCoins.Count == 0))
+                FetchRemoteConfiguredCoins(this.selectedRemoteInstance);
+
             //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
-            quickSwitchPopupItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
+
+            quickSwitchPopupItem.Enabled = GetViewModelToView().ConfiguredCoins.Count() > 0;
         }
 
         private void quickSwitchPopupItem_DropDownOpening(object sender, EventArgs e)
@@ -2159,29 +2174,9 @@ namespace MultiMiner.Win
 
         private void HandleQuickSwitchClick(object sender, EventArgs e)
         {
-            bool wasMining = miningEngine.Mining;
-            StopMining();
-
             string coinSymbol = (string)((ToolStripMenuItem)sender).Tag;
 
-            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(coinSymbol));
-
-            SetAllDevicesToCoin(coinConfiguration);
-
-            engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false;
-
-            engineConfiguration.SaveDeviceConfigurations();
-            engineConfiguration.SaveStrategyConfiguration();
-
-            RefreshListViewFromViewModel();
-
-            AutoSizeListViewColumns();
-
-            if (wasMining)
-                StartMining();
-            else
-                //so the Start button becomes enabled if we now have a valid config
-                UpdateMiningButtons();
+            SetAllDevicesToCoin(coinSymbol);
         }
 
         private void startStartupMiningButton_Click(object sender, EventArgs e)
@@ -2400,7 +2395,7 @@ namespace MultiMiner.Win
             if (this.selectedRemoteInstance == null)
                 return;
 
-            FetchRemoteViewModels(this.selectedRemoteInstance);
+            FetchRemoteDevices(this.selectedRemoteInstance);
 
             updatingListView = true;
             try
@@ -2520,6 +2515,14 @@ namespace MultiMiner.Win
             });
         }
 
+        private void SetAllDevicesToCoinRequested(object sender, string coinSymbol, RemoteCommandEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                SetAllDevicesToCoinLocally(coinSymbol);
+            });
+        }
+
         private void SetupRemotingEventHandlers()
         {
             ApplicationProxy.Instance.StartMiningRequested -= StartMiningRequested;
@@ -2533,6 +2536,9 @@ namespace MultiMiner.Win
 
             ApplicationProxy.Instance.ScanHardwareRequested -= ScanHardwareRequested;
             ApplicationProxy.Instance.ScanHardwareRequested += ScanHardwareRequested;
+
+            ApplicationProxy.Instance.SetAllDevicesToCoinRequested -= SetAllDevicesToCoinRequested;
+            ApplicationProxy.Instance.SetAllDevicesToCoinRequested += SetAllDevicesToCoinRequested;
         }
 
         private void EnableRemoting()
@@ -2647,7 +2653,7 @@ namespace MultiMiner.Win
             bool isThisPc = instance.MachineName.Equals(Environment.MachineName);
 
             if (!isThisPc)
-                FetchRemoteViewModels(instance);
+                FetchRemoteDevices(instance);
 
             //don't set flags until remote VM is fetched
             if (isThisPc)
@@ -2683,7 +2689,7 @@ namespace MultiMiner.Win
             return serviceChannel;
         }
 
-        private void FetchRemoteViewModels(Instance instance)
+        private void FetchRemoteDevices(Instance instance)
         {
             using (new HourGlass())
             {
@@ -2701,6 +2707,29 @@ namespace MultiMiner.Win
                     ShowMultiMinerRemotingError(ex);
                 }
             }
+        }
+
+        private void FetchRemoteConfiguredCoins(Instance instance)
+        {
+            using (new HourGlass())
+            {
+                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
+                IEnumerable<CryptoCoin> configurations;
+                try
+                {
+                    serviceChannel.GetConfiguredCoins(out configurations);
+                    SaveCoinTransferObjects(configurations);
+                }
+                catch (CommunicationException ex)
+                {
+                    ShowMultiMinerRemotingError(ex);
+                }
+            }
+        }
+
+        private void SaveCoinTransferObjects(IEnumerable<CryptoCoin> configurations)
+        {
+            this.remoteViewModel.ConfiguredCoins = configurations.ToList();
         }
 
         private void ShowMultiMinerRemotingError(CommunicationException ex)
@@ -2850,6 +2879,23 @@ namespace MultiMiner.Win
             }
         }
 
+        private void SetAllDevicesToCoinRemotely(Instance instance, string coinSymbol)
+        {
+            using (new HourGlass())
+            {
+                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
+                try
+                {
+                    serviceChannel.SetAllDevicesToCoin(GetSendingSignature(instance), coinSymbol);
+                    UpdateViewFromRemoteInTheFuture(5);
+                }
+                catch (CommunicationException ex)
+                {
+                    ShowMultiMinerRemotingError(ex);
+                }
+            }
+        }
+
         private void SaveDeviceTransferObjects(IEnumerable<Remoting.Server.Data.Transfer.Device> devices)
         {
             remoteViewModel.Devices.Clear();
@@ -2868,6 +2914,17 @@ namespace MultiMiner.Win
         }
 
         private void PushViewModelsOutForRemoting()
+        {
+            PushDeviceViewModelsOutForRemoting();
+            PushCoinViewModelsOutForRemoting();
+        }
+
+        private void PushCoinViewModelsOutForRemoting()
+        {
+            ApplicationProxy.Instance.ConfiguredCoins = localViewModel.ConfiguredCoins.ToList();
+        }
+
+        private void PushDeviceViewModelsOutForRemoting()
         {
             List<Remoting.Server.Data.Transfer.Device> newList = new List<Remoting.Server.Data.Transfer.Device>();
             foreach (DeviceViewModel viewModel in localViewModel.Devices)
@@ -4555,8 +4612,25 @@ namespace MultiMiner.Win
             }
         }
 
-        private void SetAllDevicesToCoin(CoinConfiguration coinConfiguration)
+        private void SetAllDevicesToCoin(string coinSymbol)
         {
+            if (this.selectedRemoteInstance == null)
+            {
+                SetAllDevicesToCoinLocally(coinSymbol);
+            }
+            else
+            {
+                SetAllDevicesToCoinRemotely(this.selectedRemoteInstance, coinSymbol);
+            }
+        }
+
+        private void SetAllDevicesToCoinLocally(string coinSymbol)
+        {
+            bool wasMining = miningEngine.Mining;
+            StopMining();
+
+            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(coinSymbol));
+
             engineConfiguration.DeviceConfigurations.Clear();
 
             for (int i = 0; i < devices.Count; i++)
@@ -4589,6 +4663,21 @@ namespace MultiMiner.Win
             }
 
             ApplyModelsToViewModel();
+
+            engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false;
+
+            engineConfiguration.SaveDeviceConfigurations();
+            engineConfiguration.SaveStrategyConfiguration();
+
+            RefreshListViewFromViewModel();
+
+            AutoSizeListViewColumns();
+
+            if (wasMining)
+                StartMining();
+            else
+                //so the Start button becomes enabled if we now have a valid config
+                UpdateMiningButtons();
         }
 
         private void CheckForUpdates()

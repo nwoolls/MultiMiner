@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Coin.Api;
+using MultiMiner.Engine;
 using MultiMiner.Engine.Configuration;
 using MultiMiner.Utility;
 using MultiMiner.Xgminer;
@@ -12,10 +13,12 @@ namespace MultiMiner.Win.ViewModels
     class MainFormViewModel
     {
         public List<DeviceViewModel> Devices { get; set; }
+        public List<CryptoCoin> ConfiguredCoins { get; set; }
 
         public MainFormViewModel()
         {
             Devices = new List<DeviceViewModel>();
+            ConfiguredCoins = new List<CryptoCoin>();
         }
 
         public void ApplyDeviceModels(List<Device> deviceModels)
@@ -31,6 +34,13 @@ namespace MultiMiner.Win.ViewModels
 
                 ObjectCopier.CopyObject(deviceModel, deviceViewModel);
             }
+        }
+
+        public void ApplyCoinConfigurationModels(List<CoinConfiguration> configurationModels)
+        {
+            ConfiguredCoins.Clear();
+            foreach (CoinConfiguration configurationModel in configurationModels.Where(c => c.Enabled))
+                ConfiguredCoins.Add(configurationModel.Coin);
         }
 
         public void ApplyCoinInformationModels(List<CoinInformation> coinInformationModels)

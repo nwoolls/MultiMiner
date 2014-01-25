@@ -3,6 +3,7 @@ using System.ServiceModel;
 using System.Linq;
 using System.ServiceModel.Channels;
 using System;
+using MultiMiner.Engine;
 
 namespace MultiMiner.Remoting.Server
 {
@@ -41,6 +42,16 @@ namespace MultiMiner.Remoting.Server
         public void ScanHardware(string signature)
         {
             ApplicationProxy.Instance.ScanHardware(this, GetClientIpAddress(), signature);
+        }
+
+        public void GetConfiguredCoins(out IEnumerable<CryptoCoin> configurations)
+        {
+            configurations = ApplicationProxy.Instance.ConfiguredCoins.ToList();
+        }
+
+        public void SetAllDevicesToCoin(string signature, string coinSymbol)
+        {
+            ApplicationProxy.Instance.SetAllDevicesToCoin(this, GetClientIpAddress(), signature, coinSymbol);
         }
     }
 }
