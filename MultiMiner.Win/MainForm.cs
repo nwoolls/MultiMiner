@@ -2467,7 +2467,7 @@ namespace MultiMiner.Win
             if (this.selectedRemoteInstance == null)
                 return;
 
-            FetchRemoteDevices(this.selectedRemoteInstance);
+            GetRemoteApplicationModels(this.selectedRemoteInstance);
             UpdateChangesButtons(this.remoteViewModel.HasChanges);
 
             updatingListView = true;
@@ -2852,7 +2852,7 @@ namespace MultiMiner.Win
             bool isThisPc = instance.MachineName.Equals(Environment.MachineName);
 
             if (!isThisPc)
-                FetchRemoteDevices(instance);
+                GetRemoteApplicationModels(instance);
 
             //don't set flags until remote VM is fetched
             if (isThisPc)
@@ -2910,7 +2910,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private void FetchRemoteDevices(Instance instance)
+        private void GetRemoteApplicationModels(Instance instance)
         {
             PerformRemoteCommand(instance, (service) =>
             {
