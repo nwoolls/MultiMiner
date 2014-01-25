@@ -730,13 +730,6 @@ namespace MultiMiner.Win
             {
                 UpdateMiningButtonsForRemote();
             }
-
-            //disable actions in the menu (for now, until remote commands are done)
-            //advancedMenuItem.Enabled = this.selectedRemoteInstance == null;
-            settingsButton.Enabled = this.selectedRemoteInstance == null;
-            toolsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
-            //advancedToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
-            actionsToolStripMenuItem.Enabled = this.selectedRemoteInstance == null;
         }
 
         private void UpdateMiningButtonsForRemote()
