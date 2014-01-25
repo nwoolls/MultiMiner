@@ -87,6 +87,10 @@ namespace MultiMiner.Win
         private Instance selectedRemoteInstance = null;
         public bool remotingEnabled { get; set; }
         public bool remoteInstanceMining { get; set; }
+        Remoting.Server.Data.Transfer.Configuration.Perks remotePerksConfig;
+        Remoting.Server.Data.Transfer.Configuration.Path remotePathConfig;
+        Remoting.Server.Data.Transfer.Configuration.Engine remoteEngineConfig;
+        Remoting.Server.Data.Transfer.Configuration.Application remoteApplicationConfig;
 
         //view models
         private MainFormViewModel localViewModel = new MainFormViewModel();
@@ -2704,6 +2708,17 @@ namespace MultiMiner.Win
             return newList;
         }
 
+        private void ConfigurationRequestRequested(object sender, ConfigurationRequestEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                ObjectCopier.CopyObject(applicationConfiguration, ea.Application);
+                ObjectCopier.CopyObject(engineConfiguration, ea.Engine);
+                ObjectCopier.CopyObject(pathConfiguration, ea.Path);
+                ObjectCopier.CopyObject(perksConfiguration, ea.Perks);
+            });
+        }
+
         private void SetupRemotingEventHandlers()
         {
             ApplicationProxy.Instance.StartMiningRequested -= StartMiningRequested;
@@ -2738,6 +2753,9 @@ namespace MultiMiner.Win
 
             ApplicationProxy.Instance.ModelRequestRequested -= ModelRequestRequested;
             ApplicationProxy.Instance.ModelRequestRequested += ModelRequestRequested;
+
+            ApplicationProxy.Instance.ConfigurationRequestRequested -= ConfigurationRequestRequested;
+            ApplicationProxy.Instance.ConfigurationRequestRequested += ConfigurationRequestRequested;
         }
 
         private void EnableRemoting()
@@ -2925,6 +2943,19 @@ namespace MultiMiner.Win
                 this.remoteViewModel.DynamicIntensity = dynamicIntensity;
                 SaveDeviceTransferObjects(devices);
                 SaveCoinTransferObjects(configurations);
+            });
+        }
+
+        private void GetRemoteApplicationConfiguration(Instance instance)
+        {
+            PerformRemoteCommand(instance, (service) =>
+            {
+                service.GetApplicationConfiguration(
+                    GetSendingSignature(instance),
+                    out remoteApplicationConfig, 
+                    out remoteEngineConfig, 
+                    out remotePathConfig, 
+                    out remotePerksConfig);
             });
         }
 

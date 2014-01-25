@@ -17,6 +17,13 @@ namespace MultiMiner.Remoting.Server
             out bool hasChanges,
             out bool dynamicIntensity);
         [OperationContract]
+        void GetApplicationConfiguration(
+            string signature,
+            out Data.Transfer.Configuration.Application application,
+            out Data.Transfer.Configuration.Engine engine,
+            out Data.Transfer.Configuration.Path path,
+            out Data.Transfer.Configuration.Perks perks);
+        [OperationContract]
         void StopMining(string signature);
         [OperationContract]
         void StartMining(string signature);

@@ -30,6 +30,23 @@ namespace MultiMiner.Remoting.Server
                 out dynamicIntensity); 
         }
 
+        public void GetApplicationConfiguration(
+            string signature,
+            out Data.Transfer.Configuration.Application application,
+            out Data.Transfer.Configuration.Engine engine,
+            out Data.Transfer.Configuration.Path path,
+            out Data.Transfer.Configuration.Perks perks)
+        {
+            ApplicationProxy.Instance.GetApplicationConfiguration(
+                this,
+                GetClientIpAddress(),
+                signature,
+                out application,
+                out engine,
+                out path,
+                out perks);
+        }
+
         private static string GetClientIpAddress()
         {
             OperationContext currentContext = OperationContext.Current;

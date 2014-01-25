@@ -15,6 +15,7 @@ namespace MultiMiner.Remoting.Server
         public delegate void ToggleDevicesEventHandler(object sender, IEnumerable<DeviceDescriptor> devices, bool enabled, RemoteCommandEventArgs ea);
         public delegate void ToggleEventHandler(object sender, bool enabled, RemoteCommandEventArgs ea);
         public delegate void ModelRequestEventHandler(object sender, ModelRequestEventArgs ea);
+        public delegate void ConfigurationRequestEventHandler(object sender, ConfigurationRequestEventArgs ea);
 
         //event declarations        
         public event RemoteEventHandler StartMiningRequested;
@@ -28,6 +29,7 @@ namespace MultiMiner.Remoting.Server
         public event ToggleDevicesEventHandler ToggleDevicesRequested;
         public event ToggleEventHandler ToggleDynamicIntensityRequested;
         public event ModelRequestEventHandler ModelRequestRequested;
+        public event ConfigurationRequestEventHandler ConfigurationRequestRequested;
 
         private static volatile ApplicationProxy instance;
         private static object syncRoot = new Object();
@@ -133,6 +135,28 @@ namespace MultiMiner.Remoting.Server
             mining = ea.Mining;
             hasChanges = ea.HasChanges;
             dynamicIntensity = ea.DynamicIntensity;
+        }
+
+        public void GetApplicationConfiguration(
+            RemotingService sender, 
+            string clientAddress, 
+            string signature, 
+            out Data.Transfer.Configuration.Application application, 
+            out Data.Transfer.Configuration.Engine engine, 
+            out Data.Transfer.Configuration.Path path, 
+            out Data.Transfer.Configuration.Perks perks)
+        {
+            ConfigurationRequestEventArgs ea = new ConfigurationRequestEventArgs();
+            ea.IpAddress = clientAddress;
+            ea.Signature = signature;
+
+            if (ConfigurationRequestRequested != null)
+                ConfigurationRequestRequested(sender, ea);
+
+            application = ea.Application;
+            engine = ea.Engine;
+            path = ea.Path;
+            perks = ea.Perks;
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace MultiMiner.Remoting.Server.Data.Transfer.Configuration
 {
-    class Application
+    public class Application
     {
         public enum TimerInterval
         {

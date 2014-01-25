@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MultiMiner.Remoting.Server.Data.Transfer.Configuration
 {
-    class Engine
+    public class Engine
     {
         public List<DeviceConfiguration> DeviceConfigurations { get; set; }
         public List<CoinConfiguration> CoinConfigurations { get; set; }
