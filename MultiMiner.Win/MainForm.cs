@@ -1599,11 +1599,13 @@ namespace MultiMiner.Win
 
         private void advancedToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
+            MainFormViewModel viewModel = GetViewModelToView();
+
             //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
-            quickSwitchToolStripMenuItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
+            quickSwitchToolStripMenuItem.Enabled = viewModel.ConfiguredCoins.Count() > 0;
             //
             dynamicIntensityToolStripMenuItem.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
-            dynamicIntensityToolStripMenuItem.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
+            dynamicIntensityToolStripMenuItem.Checked = viewModel.DynamicIntensity;
             dynamicIntensityMenuSeperator.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
         }
 
