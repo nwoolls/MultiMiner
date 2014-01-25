@@ -471,12 +471,27 @@ namespace MultiMiner.Win
         #region View / Model behavior
         private void SaveChanges()
         {
+            if (this.selectedRemoteInstance == null)
+            {
+                SaveChangesLocally();
+            }
+            else
+            {
+                SaveChangesRemotely(this.selectedRemoteInstance);
+            }
+        }
+
+        private void SaveChangesLocally()
+        {
             SaveListViewValuesToConfiguration();
             engineConfiguration.SaveDeviceConfigurations();
+            
+            localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
+                engineConfiguration.CoinConfigurations);
+            PushViewModelsOutForRemoting();
 
-            ApplyModelsToViewModel();
-
-            UpdateChangesButtons(false);
+            if (this.selectedRemoteInstance == null)
+                UpdateChangesButtons(false);
 
             Application.DoEvents();
 
@@ -492,11 +507,27 @@ namespace MultiMiner.Win
 
         private void CancelChanges()
         {
+            if (this.selectedRemoteInstance == null)
+            {
+                CancelChangesLocally();
+            }
+            else
+            {
+                CancelChangesRemotely(this.selectedRemoteInstance);
+            }
+        }
+        private void CancelChangesLocally()
+        {
             engineConfiguration.LoadDeviceConfigurations();
-            ApplyModelsToViewModel();
+            
+            localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
+                engineConfiguration.CoinConfigurations);
+            PushViewModelsOutForRemoting();
+
             RefreshListViewFromViewModel();
 
-            UpdateChangesButtons(false);
+            if (this.selectedRemoteInstance == null)
+                UpdateChangesButtons(false);
             AutoSizeListViewColumns();
         }
         #endregion
@@ -504,6 +535,9 @@ namespace MultiMiner.Win
         #region View population
         private void UpdateChangesButtons(bool hasChanges)
         {
+            if (this.selectedRemoteInstance == null)
+                this.localViewModel.HasChanges = hasChanges;
+
             saveButton.Visible = hasChanges;
             cancelButton.Visible = hasChanges;
             saveSeparator.Visible = hasChanges;
@@ -514,6 +548,8 @@ namespace MultiMiner.Win
             //accessible menu
             saveToolStripMenuItem.Enabled = hasChanges;
             cancelToolStripMenuItem.Enabled = hasChanges;
+
+            ApplicationProxy.Instance.HasChanges = hasChanges;
         }
 
         private void RefreshDetailsAreaIfVisible()
@@ -1499,19 +1535,36 @@ namespace MultiMiner.Win
         private void CoinMenuItemClick(object sender, EventArgs e)
         {
             ToolStripItem menuItem = (ToolStripItem)sender;
+            string coinSymbol = menuItem.Text;
+            List<DeviceDescriptor> devices = new List<DeviceDescriptor>();
+            MainFormViewModel viewModelToView = GetViewModelToView();
 
             foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
             {
-                DeviceViewModel deviceViewModel = localViewModel.Devices[selectedItem.Index];
-                deviceViewModel.Coin = engineConfiguration.CoinConfigurations.Single(cc => cc.Coin.Name.Equals(menuItem.Text)).Coin;
-                //selectedItem.SubItems["Coin"].Text = menuItem.Text;
+                DeviceViewModel deviceViewModel = viewModelToView.Devices[selectedItem.Index];
+                devices.Add(deviceViewModel);
             }
 
+            SetDevicesToCoin(devices, coinSymbol);
+        }
+
+        private void SetDevicesToCoinLocally(IEnumerable<DeviceDescriptor> devices, string coinSymbol)
+        {
+            foreach (DeviceDescriptor device in devices)
+            {
+                DeviceViewModel deviceViewModel = localViewModel.Devices.SingleOrDefault(dvm => dvm.Equals(device));
+                if (deviceViewModel != null)
+                    deviceViewModel.Coin = engineConfiguration.CoinConfigurations.Single(cc => cc.Coin.Name.Equals(coinSymbol)).Coin;
+            }
+            
             RefreshListViewFromViewModel();
 
             AutoSizeListViewColumns();
 
-            UpdateChangesButtons(true);
+            if (this.selectedRemoteInstance == null)
+                UpdateChangesButtons(true);
+
+            PushViewModelsOutForRemoting();
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -1967,9 +2020,6 @@ namespace MultiMiner.Win
 
         private void deviceListView_MouseClick(object sender, MouseEventArgs e)
         {
-            if (this.selectedRemoteInstance != null)
-                return;
-
             if (e.Button == MouseButtons.Right)
                 if (deviceListView.FocusedItem.Bounds.Contains(e.Location) == true)
                 {
@@ -2238,8 +2288,8 @@ namespace MultiMiner.Win
 
         private void SetupRemotingTimers()
         {
-            remotingBroadcastTimer.Interval = 1 * 60 * 1000; //1min
-            remotingServerTimer.Interval = 1 * 30 * 1000; //30s
+            remotingBroadcastTimer.Interval = 1 * 45 * 1000;
+            remotingServerTimer.Interval = 1 * 20 * 1000;
         }
         #endregion
 
@@ -2396,6 +2446,7 @@ namespace MultiMiner.Win
                 return;
 
             FetchRemoteDevices(this.selectedRemoteInstance);
+            UpdateChangesButtons(this.remoteViewModel.HasChanges);
 
             updatingListView = true;
             try
@@ -2523,6 +2574,30 @@ namespace MultiMiner.Win
             });
         }
 
+        private void SetDeviceToCoinRequested(object sender, IEnumerable<DeviceDescriptor> devices, string coinSymbol, RemoteCommandEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                SetDevicesToCoinLocally(devices, coinSymbol);
+            });
+        }
+
+        private void SaveChangesRequested(object sender, RemoteCommandEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                SaveChangesLocally();
+            });
+        }
+
+        private void CancelChangesRequested(object sender, RemoteCommandEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                CancelChangesLocally();
+            });
+        }
+
         private void SetupRemotingEventHandlers()
         {
             ApplicationProxy.Instance.StartMiningRequested -= StartMiningRequested;
@@ -2539,6 +2614,15 @@ namespace MultiMiner.Win
 
             ApplicationProxy.Instance.SetAllDevicesToCoinRequested -= SetAllDevicesToCoinRequested;
             ApplicationProxy.Instance.SetAllDevicesToCoinRequested += SetAllDevicesToCoinRequested;
+
+            ApplicationProxy.Instance.SetDeviceToCoinRequested -= SetDeviceToCoinRequested;
+            ApplicationProxy.Instance.SetDeviceToCoinRequested += SetDeviceToCoinRequested;
+
+            ApplicationProxy.Instance.SaveChangesRequested -= SaveChangesRequested;
+            ApplicationProxy.Instance.SaveChangesRequested += SaveChangesRequested;
+
+            ApplicationProxy.Instance.CancelChangesRequested -= CancelChangesRequested;
+            ApplicationProxy.Instance.CancelChangesRequested += CancelChangesRequested;
         }
 
         private void EnableRemoting()
@@ -2677,6 +2761,8 @@ namespace MultiMiner.Win
 
             RefreshIncomeSummary();
             UpdateMiningButtons();
+            RefreshCoinPopupMenu();
+            UpdateChangesButtons(GetViewModelToView().HasChanges);
         }
 
         private static IRemotingService GetServiceChannelForInstance(Instance instance)
@@ -2696,10 +2782,12 @@ namespace MultiMiner.Win
                 IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
                 IEnumerable<Remoting.Server.Data.Transfer.Device> devices;
                 bool mining;
+                bool hasChanges;
                 try
                 {
-                    serviceChannel.GetDevices(out devices, out mining);
+                    serviceChannel.GetDevices(out devices, out mining, out hasChanges);
                     this.remoteInstanceMining = mining;
+                    this.remoteViewModel.HasChanges = hasChanges;
                     SaveDeviceTransferObjects(devices);
                 }
                 catch (CommunicationException ex)
@@ -2798,11 +2886,44 @@ namespace MultiMiner.Win
             using (new HourGlass())
             {
                 IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-
                 try
                 {
                     serviceChannel.StartMining(GetSendingSignature(instance));
                     UpdateViewFromRemoteInTheFuture(5);
+                }
+                catch (CommunicationException ex)
+                {
+                    ShowMultiMinerRemotingError(ex);
+                }
+            }
+        }
+
+        private void SaveChangesRemotely(Instance instance)
+        {
+            using (new HourGlass())
+            {
+                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
+                try
+                {
+                    serviceChannel.SaveChanges(GetSendingSignature(instance));
+                    UpdateViewFromRemoteInTheFuture(2);
+                }
+                catch (CommunicationException ex)
+                {
+                    ShowMultiMinerRemotingError(ex);
+                }
+            }
+        }
+
+        private void CancelChangesRemotely(Instance instance)
+        {
+            using (new HourGlass())
+            {
+                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
+                try
+                {
+                    serviceChannel.CancelChanges(GetSendingSignature(instance));
+                    UpdateViewFromRemoteInTheFuture(2);
                 }
                 catch (CommunicationException ex)
                 {
@@ -2887,12 +3008,49 @@ namespace MultiMiner.Win
                 try
                 {
                     serviceChannel.SetAllDevicesToCoin(GetSendingSignature(instance), coinSymbol);
-                    UpdateViewFromRemoteInTheFuture(5);
+                    UpdateViewFromRemoteInTheFuture(2);
                 }
                 catch (CommunicationException ex)
                 {
                     ShowMultiMinerRemotingError(ex);
                 }
+            }
+        }
+
+        private void SetDevicesToCoinRemotely(Instance instance, IEnumerable<DeviceDescriptor> devices, string coinSymbol)
+        {
+            using (new HourGlass())
+            {
+                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
+                List<DeviceDescriptor> descriptors = new List<DeviceDescriptor>();
+                foreach (DeviceDescriptor device in devices)
+                {
+                    DeviceDescriptor descriptor = new DeviceDescriptor();
+                    ObjectCopier.CopyObject(device, descriptor);
+                    descriptors.Add(descriptor);
+                }
+
+                try
+                {
+                    serviceChannel.SetDevicesToCoin(GetSendingSignature(instance), descriptors, coinSymbol);
+                    UpdateViewFromRemoteInTheFuture(2);
+                }
+                catch (CommunicationException ex)
+                {
+                    ShowMultiMinerRemotingError(ex);
+                }
+            }
+        }
+
+        private void SetDevicesToCoin(List<DeviceDescriptor> devices, string coinSymbol)
+        {
+            if (this.selectedRemoteInstance == null)
+            {
+                SetDevicesToCoinLocally(devices, coinSymbol);
+            }
+            else
+            {
+                SetDevicesToCoinRemotely(this.selectedRemoteInstance, devices, coinSymbol);
             }
         }
 

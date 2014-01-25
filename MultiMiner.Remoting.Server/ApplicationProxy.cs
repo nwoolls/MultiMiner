@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Engine;
+using MultiMiner.Xgminer;
 using System;
 using System.Collections.Generic;
 
@@ -9,16 +10,21 @@ namespace MultiMiner.Remoting.Server
         //events
         //delegate declarations
         public delegate void RemoteEventHandler(object sender, RemoteCommandEventArgs ea);
-        public delegate void CoinEventHandler(object sender, string coinSymbol, RemoteCommandEventArgs ea);
+        public delegate void AllCoinEventHandler(object sender, string coinSymbol, RemoteCommandEventArgs ea);
+        public delegate void DevicesCoinEventHandler(object sender, IEnumerable<DeviceDescriptor> devices, string coinSymbol, RemoteCommandEventArgs ea);
 
         //event declarations        
         public event RemoteEventHandler StartMiningRequested;
         public event RemoteEventHandler StopMiningRequested;
         public event RemoteEventHandler RestartMiningRequested;
         public event RemoteEventHandler ScanHardwareRequested;
-        public event CoinEventHandler SetAllDevicesToCoinRequested;
+        public event AllCoinEventHandler SetAllDevicesToCoinRequested;
+        public event DevicesCoinEventHandler SetDeviceToCoinRequested;
+        public event RemoteEventHandler SaveChangesRequested;
+        public event RemoteEventHandler CancelChangesRequested;
 
         private bool mining;
+        private bool hasChanges;
         private List<Data.Transfer.Device> devices;
         private List<CryptoCoin> configuredCoins;
         private static volatile ApplicationProxy instance;
@@ -97,6 +103,24 @@ namespace MultiMiner.Remoting.Server
             }
         }
 
+        public bool HasChanges
+        {
+            get
+            {
+                lock (syncRoot)
+                {
+                    return hasChanges;
+                }
+            }
+            set
+            {
+                lock (syncRoot)
+                {
+                    hasChanges = value;
+                }
+            }
+        }
+
         public void StopMining(RemotingService sender, string clientAddress, string signature)
         {
             if (StopMiningRequested != null)
@@ -125,6 +149,24 @@ namespace MultiMiner.Remoting.Server
         {
             if (SetAllDevicesToCoinRequested != null)
                 SetAllDevicesToCoinRequested(sender, coinSymbol, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
+        }
+
+        public void SetDevicesToCoin(RemotingService sender, string clientAddress, string signature, IEnumerable<DeviceDescriptor> devices, string coinSymbol)
+        {
+            if (SetDeviceToCoinRequested != null)
+                SetDeviceToCoinRequested(sender, devices, coinSymbol, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
+        }
+
+        public void SaveChanges(RemotingService sender, string clientAddress, string signature)
+        {
+            if (SaveChangesRequested != null)
+                SaveChangesRequested(sender, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
+        }
+
+        public void CancelChanges(RemotingService sender, string clientAddress, string signature)
+        {
+            if (CancelChangesRequested != null)
+                CancelChangesRequested(sender, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
         }
     }
 }

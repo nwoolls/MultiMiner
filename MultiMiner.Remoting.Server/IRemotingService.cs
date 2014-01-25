@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Engine;
+using MultiMiner.Xgminer;
 using System.Collections.Generic;
 using System.ServiceModel;
 
@@ -8,7 +9,7 @@ namespace MultiMiner.Remoting.Server
     public interface IRemotingService
     {
         [OperationContract]
-        void GetDevices(out IEnumerable<Data.Transfer.Device> devices, out bool mining);
+        void GetDevices(out IEnumerable<Data.Transfer.Device> devices, out bool mining, out bool hasChanges);
         [OperationContract]
         void GetConfiguredCoins(out IEnumerable<CryptoCoin> configurations);
         [OperationContract]
@@ -21,5 +22,11 @@ namespace MultiMiner.Remoting.Server
         void ScanHardware(string signature);
         [OperationContract]
         void SetAllDevicesToCoin(string signature, string coinSymbol);
+        [OperationContract]
+        void SetDevicesToCoin(string signature, IEnumerable<DeviceDescriptor> devices, string coinSymbol);
+        [OperationContract]
+        void SaveChanges(string signature);
+        [OperationContract]
+        void CancelChanges(string signature);
     }
 }
