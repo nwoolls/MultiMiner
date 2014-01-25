@@ -1117,6 +1117,39 @@ namespace MultiMiner.Win
         #region Settings dialogs
         private void ConfigureSettings()
         {
+            if (this.selectedRemoteInstance == null)
+            {
+                ConfigureSettingsLocally();
+            }
+            else
+            {
+                ConfigureSettingsRemotely();
+            }
+        }
+
+        private void ConfigureSettingsRemotely()
+        {
+            ApplicationConfiguration workingApplicationConfiguration = new ApplicationConfiguration();
+            EngineConfiguration workingEngineConfiguration = new EngineConfiguration();
+            PathConfiguration workingPathConfiguration = new PathConfiguration();
+
+            GetRemoteApplicationConfiguration(this.selectedRemoteInstance);
+
+            ObjectCopier.CopyObject(this.remoteApplicationConfig, workingApplicationConfiguration);
+            ObjectCopier.CopyObject(this.remoteEngineConfig, workingEngineConfiguration);
+            ObjectCopier.CopyObject(this.remotePathConfig, workingPathConfiguration);
+
+            SettingsForm settingsForm = new SettingsForm(workingApplicationConfiguration, workingEngineConfiguration.XgminerConfiguration, workingPathConfiguration);
+            settingsForm.Text = String.Format("{0}: {1}", settingsForm.Text, this.selectedRemoteInstance.MachineName);
+            DialogResult dialogResult = settingsForm.ShowDialog();
+
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+            }
+        }
+
+        private void ConfigureSettingsLocally()
+        {
             bool oldCoinWarzValue = applicationConfiguration.UseCoinWarzApi;
             string oldCoinWarzKey = applicationConfiguration.CoinWarzApiKey;
             string oldConfigPath = pathConfiguration.SharedConfigPath;
@@ -1189,6 +1222,37 @@ namespace MultiMiner.Win
 
         private void ConfigureCoins()
         {
+            if (this.selectedRemoteInstance == null)
+            {
+                ConfigureCoinsLocally();
+            }
+            else
+            {
+                ConfigureCoinsRemotely();
+            }
+        }
+
+        private void ConfigureCoinsRemotely()
+        {
+            ApplicationConfiguration workingApplicationConfiguration = new ApplicationConfiguration();
+            EngineConfiguration workingEngineConfiguration = new EngineConfiguration();
+
+            GetRemoteApplicationConfiguration(this.selectedRemoteInstance);
+
+            ObjectCopier.CopyObject(this.remoteApplicationConfig, workingApplicationConfiguration);
+            ObjectCopier.CopyObject(this.remoteEngineConfig, workingEngineConfiguration);
+
+            CoinsForm coinsForm = new CoinsForm(workingEngineConfiguration.CoinConfigurations, knownCoins, engineConfiguration.CoinConfigurationsFileName());
+            coinsForm.Text = String.Format("{0}: {1}", coinsForm.Text, this.selectedRemoteInstance.MachineName);
+            DialogResult dialogResult = coinsForm.ShowDialog();
+
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+            }
+        }
+
+        private void ConfigureCoinsLocally()
+        {
             CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins, engineConfiguration.CoinConfigurationsFileName());
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
@@ -1208,7 +1272,7 @@ namespace MultiMiner.Win
                 engineConfiguration.LoadCoinConfigurations(pathConfiguration.SharedConfigPath);
         }
 
-        private void ConfigureStrategies()
+        private void ConfigureStrategiesLocally()
         {
             StrategiesForm strategiesForm = new StrategiesForm(engineConfiguration.StrategyConfiguration, knownCoins,
                 applicationConfiguration);
@@ -1233,7 +1297,68 @@ namespace MultiMiner.Win
             }
         }
 
+        private void ConfigureStrategiesRemotely()
+        {
+            ApplicationConfiguration workingApplicationConfiguration = new ApplicationConfiguration();
+            EngineConfiguration workingEngineConfiguration = new EngineConfiguration();
+
+            GetRemoteApplicationConfiguration(this.selectedRemoteInstance);
+
+            ObjectCopier.CopyObject(this.remoteApplicationConfig, workingApplicationConfiguration);
+            ObjectCopier.CopyObject(this.remoteEngineConfig, workingEngineConfiguration);
+
+            StrategiesForm strategiesForm = new StrategiesForm(workingEngineConfiguration.StrategyConfiguration, knownCoins,
+                workingApplicationConfiguration);
+            strategiesForm.Text = String.Format("{0}: {1}", strategiesForm.Text, this.selectedRemoteInstance.MachineName);
+            DialogResult dialogResult = strategiesForm.ShowDialog();
+
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+            }
+        }
+
+        private void ConfigureStrategies()
+        {
+            if (this.selectedRemoteInstance == null)
+            {
+                ConfigureStrategiesLocally();
+            }
+            else
+            {
+                ConfigureStrategiesRemotely();
+            }
+        }
+
         private void ConfigurePerks()
+        {
+            if (this.selectedRemoteInstance == null)
+            {
+                ConfigurePerksLocally();
+            }
+            else
+            {
+                ConfigurePerksRemotely();
+            }
+        }
+
+        private void ConfigurePerksRemotely()
+        {
+            PerksConfiguration workingPerksConfiguration = new PerksConfiguration();
+
+            GetRemoteApplicationConfiguration(this.selectedRemoteInstance);
+
+            ObjectCopier.CopyObject(this.remotePerksConfig, workingPerksConfiguration);
+
+            PerksForm perksForm = new PerksForm(workingPerksConfiguration);
+            perksForm.Text = String.Format("{0}: {1}", perksForm.Text, this.selectedRemoteInstance.MachineName);
+            DialogResult dialogResult = perksForm.ShowDialog();
+
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+            }
+        }
+
+        private void ConfigurePerksLocally()
         {
             PerksForm perksForm = new PerksForm(perksConfiguration);
             DialogResult dialogResult = perksForm.ShowDialog();
