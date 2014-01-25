@@ -136,7 +136,7 @@
             // percentEdit
             // 
             this.percentEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.perksConfigurationBindingSource, "DonationPercent", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.percentEdit.Location = new System.Drawing.Point(182, 272);
+            this.percentEdit.Location = new System.Drawing.Point(271, 272);
             this.percentEdit.Name = "percentEdit";
             this.percentEdit.Size = new System.Drawing.Size(45, 23);
             this.percentEdit.TabIndex = 2;
@@ -148,14 +148,14 @@
             this.percentLabel1.AutoSize = true;
             this.percentLabel1.Location = new System.Drawing.Point(53, 275);
             this.percentLabel1.Name = "percentLabel1";
-            this.percentLabel1.Size = new System.Drawing.Size(123, 15);
+            this.percentLabel1.Size = new System.Drawing.Size(207, 15);
             this.percentLabel1.TabIndex = 5;
-            this.percentLabel1.Text = "Wish to donate more?";
+            this.percentLabel1.Text = "Wish to donate more? Total donation:";
             // 
             // percentLabel2
             // 
             this.percentLabel2.AutoSize = true;
-            this.percentLabel2.Location = new System.Drawing.Point(233, 275);
+            this.percentLabel2.Location = new System.Drawing.Point(322, 275);
             this.percentLabel2.Name = "percentLabel2";
             this.percentLabel2.Size = new System.Drawing.Size(17, 15);
             this.percentLabel2.TabIndex = 13;
