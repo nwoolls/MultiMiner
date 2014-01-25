@@ -269,6 +269,14 @@ namespace MultiMiner.Win
         #endregion
 
         #region View / ViewModel behavior
+        private MainFormViewModel GetViewModelToView()
+        {
+            MainFormViewModel viewModelToView = localViewModel;
+            if (this.selectedRemoteInstance != null)
+                viewModelToView = remoteViewModel;
+            return viewModelToView;
+        }
+        
         private void PopulateListViewFromViewModel()
         {
             deviceListView.BeginUpdate();
@@ -282,9 +290,7 @@ namespace MultiMiner.Win
 
                 utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
 
-                MainFormViewModel viewModelToView = localViewModel;
-                if (this.selectedRemoteInstance != null)
-                    viewModelToView = remoteViewModel;
+                MainFormViewModel viewModelToView = GetViewModelToView();
 
                 foreach (DeviceViewModel deviceViewModel in viewModelToView.Devices)
                 {
@@ -353,9 +359,7 @@ namespace MultiMiner.Win
                 //there may be coins configured that are no longer returned in the stats
                 ClearAllCoinStats();
 
-                MainFormViewModel viewModelToView = localViewModel;
-                if (this.selectedRemoteInstance != null)
-                    viewModelToView = remoteViewModel;
+                MainFormViewModel viewModelToView = GetViewModelToView();
 
                 for (int i = 0; i < viewModelToView.Devices.Count; i++)
                 {
@@ -519,9 +523,7 @@ namespace MultiMiner.Win
 
         private void RefreshDetailsArea()
         {
-            MainFormViewModel viewModelToView = localViewModel;
-            if (this.selectedRemoteInstance != null)
-                viewModelToView = remoteViewModel;
+            MainFormViewModel viewModelToView = GetViewModelToView();
 
             if (deviceListView.SelectedItems.Count == 0)
             {
@@ -761,7 +763,7 @@ namespace MultiMiner.Win
             launchToolStripMenuItem.Enabled = startMenuItem.Enabled;
         }
 
-        private void PopulateQuickSwitchMenu(ToolStripDropDownItem parent)
+        private void RefreshQuickSwitchMenu(ToolStripDropDownItem parent)
         {
             quickCoinMenu.Items.Clear();
 
@@ -1017,9 +1019,7 @@ namespace MultiMiner.Win
         {
             Dictionary<string, double> coinsIncome = new Dictionary<string, double>();
 
-            MainFormViewModel viewModelToView = this.localViewModel;
-            if (this.selectedRemoteInstance != null)
-                viewModelToView = this.remoteViewModel;
+            MainFormViewModel viewModelToView = GetViewModelToView();
 
             for (int i = 0; i < deviceListView.Items.Count; i++)
             {
@@ -1656,7 +1656,7 @@ namespace MultiMiner.Win
 
         private void quickSwitchToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            PopulateQuickSwitchMenu(quickSwitchToolStripMenuItem);
+            RefreshQuickSwitchMenu(quickSwitchToolStripMenuItem);
         }
 
         private void launchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1930,7 +1930,7 @@ namespace MultiMiner.Win
 
         private void quickSwitchPopupItem_DropDownOpening(object sender, EventArgs e)
         {
-            PopulateQuickSwitchMenu(quickSwitchPopupItem);
+            RefreshQuickSwitchMenu(quickSwitchPopupItem);
         }
 
         private bool briefMode = false;
@@ -2075,7 +2075,7 @@ namespace MultiMiner.Win
 
         private void quickSwitchItem_DropDownOpening(object sender, EventArgs e)
         {
-            PopulateQuickSwitchMenu(quickSwitchItem);
+            RefreshQuickSwitchMenu(quickSwitchItem);
         }
 
         private void notificationsControl1_NotificationAdded(string text)
