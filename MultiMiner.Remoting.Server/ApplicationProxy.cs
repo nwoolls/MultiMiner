@@ -29,11 +29,6 @@ namespace MultiMiner.Remoting.Server
         public event ToggleEventHandler ToggleDynamicIntensityRequested;
         public event ModelRequestEventHandler ModelRequestRequested;
 
-        private bool dynamicIntensity;
-        private bool mining;
-        private bool hasChanges;
-        private List<Data.Transfer.Device> devices;
-        private List<CryptoCoin> configuredCoins;
         private static volatile ApplicationProxy instance;
         private static object syncRoot = new Object();
 
