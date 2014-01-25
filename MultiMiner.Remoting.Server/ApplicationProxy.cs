@@ -12,6 +12,7 @@ namespace MultiMiner.Remoting.Server
         public delegate void RemoteEventHandler(object sender, RemoteCommandEventArgs ea);
         public delegate void AllCoinEventHandler(object sender, string coinSymbol, RemoteCommandEventArgs ea);
         public delegate void DevicesCoinEventHandler(object sender, IEnumerable<DeviceDescriptor> devices, string coinSymbol, RemoteCommandEventArgs ea);
+        public delegate void ToggleDevicesEventHandler(object sender, IEnumerable<DeviceDescriptor> devices, bool enabled, RemoteCommandEventArgs ea);
 
         //event declarations        
         public event RemoteEventHandler StartMiningRequested;
@@ -22,6 +23,7 @@ namespace MultiMiner.Remoting.Server
         public event DevicesCoinEventHandler SetDeviceToCoinRequested;
         public event RemoteEventHandler SaveChangesRequested;
         public event RemoteEventHandler CancelChangesRequested;
+        public event ToggleDevicesEventHandler ToggleDevicesRequested;
 
         private bool mining;
         private bool hasChanges;
@@ -167,6 +169,12 @@ namespace MultiMiner.Remoting.Server
         {
             if (CancelChangesRequested != null)
                 CancelChangesRequested(sender, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
+        }
+
+        public void ToggleDevices(RemotingService sender, string clientAddress, string signature, IEnumerable<DeviceDescriptor> devices, bool enabled)
+        {
+            if (ToggleDevicesRequested != null)
+                ToggleDevicesRequested(sender, devices, enabled, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
         }
     }
 }

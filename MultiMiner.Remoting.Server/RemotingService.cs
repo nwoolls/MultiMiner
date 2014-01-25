@@ -70,5 +70,10 @@ namespace MultiMiner.Remoting.Server
         {
             ApplicationProxy.Instance.SetDevicesToCoin(this, GetClientIpAddress(), signature, devices, coinSymbol);
         }
+
+        public void ToggleDevices(string signature, IEnumerable<DeviceDescriptor> devices, bool enabled)
+        {
+            ApplicationProxy.Instance.ToggleDevices(this, GetClientIpAddress(), signature, devices, enabled);
+        }
     }
 }

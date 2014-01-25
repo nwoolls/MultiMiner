@@ -2050,8 +2050,46 @@ namespace MultiMiner.Win
 
         private void deviceListView_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
+            if (this.updatingListView)
+                return;
+
+            bool enabled = e.Item.Checked;
+            List<DeviceDescriptor> descriptors = new List<DeviceDescriptor>();
+            MainFormViewModel viewModel = GetViewModelToView();
+            DeviceViewModel device = viewModel.Devices[e.Item.Index];
+            DeviceDescriptor descriptor = new DeviceDescriptor();
+            ObjectCopier.CopyObject(device, descriptor);
+            descriptors.Add(descriptor);
+
+            ToggleDevices(descriptors, enabled);
+        }
+
+        private void ToggleDevicesLocally(IEnumerable<DeviceDescriptor> descriptors, bool enabled)
+        {
+            foreach (DeviceDescriptor descriptor in descriptors)
+            {
+                DeviceViewModel viewModel = localViewModel.Devices.SingleOrDefault(dvm => dvm.Equals(descriptor));
+                if (viewModel != null)
+                    viewModel.Enabled = enabled;
+            }
+
             if (!updatingListView)
                 UpdateChangesButtons(true);
+
+            RefreshListViewFromViewModel();
+            PushViewModelsOutForRemoting();
+        }
+
+        private void ToggleDevices(IEnumerable<DeviceDescriptor> devices, bool enabled)
+        {
+            if (this.selectedRemoteInstance == null)
+            {
+                ToggleDevicesLocally(devices, enabled);
+            }
+            else
+            {
+                ToggleDevicesRemotely(this.selectedRemoteInstance, devices, enabled);
+            }
         }
 
         private void dynamicIntensityButton_Click(object sender, EventArgs e)
@@ -2600,6 +2638,14 @@ namespace MultiMiner.Win
             });
         }
 
+        private void ToggleDevicesRequested(object sender, IEnumerable<DeviceDescriptor> devices, bool enabled, RemoteCommandEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                ToggleDevicesLocally(devices, enabled);
+            });
+        }
+
         private void SetupRemotingEventHandlers()
         {
             ApplicationProxy.Instance.StartMiningRequested -= StartMiningRequested;
@@ -2625,6 +2671,9 @@ namespace MultiMiner.Win
 
             ApplicationProxy.Instance.CancelChangesRequested -= CancelChangesRequested;
             ApplicationProxy.Instance.CancelChangesRequested += CancelChangesRequested;
+
+            ApplicationProxy.Instance.ToggleDevicesRequested -= ToggleDevicesRequested;
+            ApplicationProxy.Instance.ToggleDevicesRequested += ToggleDevicesRequested;
         }
 
         private void EnableRemoting()
@@ -2754,7 +2803,7 @@ namespace MultiMiner.Win
                 RefreshListViewFromViewModel();
                 AutoSizeListViewColumns();
 
-                deviceListView.CheckBoxes = (deviceListView.View != View.Tile) && this.selectedRemoteInstance == null;
+                deviceListView.CheckBoxes = (deviceListView.View != View.Tile);
             }
             finally
             {
@@ -3024,17 +3073,40 @@ namespace MultiMiner.Win
             using (new HourGlass())
             {
                 IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                List<DeviceDescriptor> descriptors = new List<DeviceDescriptor>();
-                foreach (DeviceDescriptor device in devices)
-                {
-                    DeviceDescriptor descriptor = new DeviceDescriptor();
-                    ObjectCopier.CopyObject(device, descriptor);
-                    descriptors.Add(descriptor);
-                }
-
+                List<DeviceDescriptor> descriptors = CloneDescriptors(devices);
                 try
                 {
                     serviceChannel.SetDevicesToCoin(GetSendingSignature(instance), descriptors, coinSymbol);
+                    UpdateViewFromRemoteInTheFuture(2);
+                }
+                catch (CommunicationException ex)
+                {
+                    ShowMultiMinerRemotingError(ex);
+                }
+            }
+        }
+
+        private static List<DeviceDescriptor> CloneDescriptors(IEnumerable<DeviceDescriptor> devices)
+        {
+            List<DeviceDescriptor>  descriptors = new List<DeviceDescriptor>();
+            foreach (DeviceDescriptor device in devices)
+            {
+                DeviceDescriptor descriptor = new DeviceDescriptor();
+                ObjectCopier.CopyObject(device, descriptor);
+                descriptors.Add(descriptor);
+            }
+            return descriptors;
+        }
+
+        private void ToggleDevicesRemotely(Instance instance, IEnumerable<DeviceDescriptor> devices, bool enabled)
+        {
+            using (new HourGlass())
+            {
+                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
+                List<DeviceDescriptor> descriptors = CloneDescriptors(devices);
+                try
+                {
+                    serviceChannel.ToggleDevices(GetSendingSignature(instance), descriptors, enabled);
                     UpdateViewFromRemoteInTheFuture(2);
                 }
                 catch (CommunicationException ex)

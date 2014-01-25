@@ -28,5 +28,7 @@ namespace MultiMiner.Remoting.Server
         void SaveChanges(string signature);
         [OperationContract]
         void CancelChanges(string signature);
+        [OperationContract]
+        void ToggleDevices(string signature, IEnumerable<DeviceDescriptor> devices, bool enabled);
     }
 }
