@@ -2889,29 +2889,41 @@ namespace MultiMiner.Win
             return serviceChannel;
         }
 
-        private void FetchRemoteDevices(Instance instance)
+        private void PerformRemoteCommand(Instance instance, Action<IRemotingService> action)
         {
             using (new HourGlass())
             {
-                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                IEnumerable<Remoting.Server.Data.Transfer.Device> devices;
-                IEnumerable<CryptoCoin> configurations;
-
-                bool mining, hasChanges, dynamicIntensity;
                 try
                 {
-                    serviceChannel.GetApplicationModels(GetSendingSignature(instance), out devices, out configurations, out mining, out hasChanges, out dynamicIntensity);
-                    this.remoteInstanceMining = mining;
-                    this.remoteViewModel.HasChanges = hasChanges;
-                    this.remoteViewModel.DynamicIntensity = dynamicIntensity;
-                    SaveDeviceTransferObjects(devices);
-                    SaveCoinTransferObjects(configurations);
+                    IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
+                    action(serviceChannel);
                 }
-                catch (CommunicationException ex)
+                catch (SystemException ex)
                 {
-                    ShowMultiMinerRemotingError(ex);
+                    if ((ex is CommunicationException) || (ex is TimeoutException))
+                        ShowMultiMinerRemotingError(ex);
+                    else
+                        throw;
                 }
             }
+        }
+
+        private void FetchRemoteDevices(Instance instance)
+        {
+            PerformRemoteCommand(instance, (service) =>
+            {
+                IEnumerable<Remoting.Server.Data.Transfer.Device> devices;
+                IEnumerable<CryptoCoin> configurations;
+                bool mining, hasChanges, dynamicIntensity;
+
+                service.GetApplicationModels(GetSendingSignature(instance), out devices, out configurations, out mining, out hasChanges, out dynamicIntensity);
+
+                this.remoteInstanceMining = mining;
+                this.remoteViewModel.HasChanges = hasChanges;
+                this.remoteViewModel.DynamicIntensity = dynamicIntensity;
+                SaveDeviceTransferObjects(devices);
+                SaveCoinTransferObjects(configurations);
+            });
         }
 
         private void SaveCoinTransferObjects(IEnumerable<CryptoCoin> configurations)
@@ -2919,7 +2931,7 @@ namespace MultiMiner.Win
             this.remoteViewModel.ConfiguredCoins = configurations.ToList();
         }
 
-        private void ShowMultiMinerRemotingError(CommunicationException ex)
+        private void ShowMultiMinerRemotingError(SystemException ex)
         {
             BeginInvoke((Action)(() =>
             {
@@ -2982,53 +2994,29 @@ namespace MultiMiner.Win
 
         private void StartMiningRemotely(Instance instance)
         {
-            using (new HourGlass())
+            PerformRemoteCommand(instance, (service) =>
             {
-                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                try
-                {
-                    serviceChannel.StartMining(GetSendingSignature(instance));
-                    UpdateViewFromRemoteInTheFuture(5);
-                }
-                catch (CommunicationException ex)
-                {
-                    ShowMultiMinerRemotingError(ex);
-                }
-            }
+                service.StartMining(GetSendingSignature(instance));
+                UpdateViewFromRemoteInTheFuture(5);
+            });
         }
 
         private void SaveChangesRemotely(Instance instance)
         {
-            using (new HourGlass())
+            PerformRemoteCommand(instance, (service) =>
             {
-                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                try
-                {
-                    serviceChannel.SaveChanges(GetSendingSignature(instance));
-                    UpdateViewFromRemoteInTheFuture(2);
-                }
-                catch (CommunicationException ex)
-                {
-                    ShowMultiMinerRemotingError(ex);
-                }
-            }
+                service.SaveChanges(GetSendingSignature(instance));
+                UpdateViewFromRemoteInTheFuture(2);
+            });
         }
 
         private void CancelChangesRemotely(Instance instance)
         {
-            using (new HourGlass())
+            PerformRemoteCommand(instance, (service) =>
             {
-                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                try
-                {
-                    serviceChannel.CancelChanges(GetSendingSignature(instance));
-                    UpdateViewFromRemoteInTheFuture(2);
-                }
-                catch (CommunicationException ex)
-                {
-                    ShowMultiMinerRemotingError(ex);
-                }
-            }
+                service.CancelChanges(GetSendingSignature(instance));
+                UpdateViewFromRemoteInTheFuture(2);
+            });
         }
 
         private void UpdateViewFromRemoteInTheFuture(int seconds)
@@ -3051,87 +3039,47 @@ namespace MultiMiner.Win
         private System.Threading.Timer timer = null;
         private void StopMiningRemotely(Instance instance)
         {
-            using (new HourGlass())
+            PerformRemoteCommand(instance, (service) =>
             {
-                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                try
-                {
-                    serviceChannel.StopMining(GetSendingSignature(instance));
-                    UpdateViewFromRemoteInTheFuture(5);
-                }
-                catch (CommunicationException ex)
-                {
-                    ShowMultiMinerRemotingError(ex);
-                }
-            }
+                service.StopMining(GetSendingSignature(instance));
+                UpdateViewFromRemoteInTheFuture(5);
+            });
         }
 
         private void RestartMiningRemotely(Instance instance)
         {
-            using (new HourGlass())
+            PerformRemoteCommand(instance, (service) =>
             {
-                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                try
-                {
-                    serviceChannel.RestartMining(GetSendingSignature(instance));
-                }
-                catch (CommunicationException ex)
-                {
-                    ShowMultiMinerRemotingError(ex);
-                }
-            }
+                service.RestartMining(GetSendingSignature(instance));
+            });
         }
 
         private void ScanHardwareRemotely(Instance instance)
         {
-            using (new HourGlass())
+            PerformRemoteCommand(instance, (service) =>
             {
-                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                try
-                {
-                    serviceChannel.ScanHardware(GetSendingSignature(instance));
-                    UpdateViewFromRemoteInTheFuture(5);
-                }
-                catch (CommunicationException ex)
-                {
-                    ShowMultiMinerRemotingError(ex);
-                }
-            }
+                service.ScanHardware(GetSendingSignature(instance));
+                UpdateViewFromRemoteInTheFuture(5);
+            });
         }
 
         private void SetAllDevicesToCoinRemotely(Instance instance, string coinSymbol)
         {
-            using (new HourGlass())
+            PerformRemoteCommand(instance, (service) =>
             {
-                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                try
-                {
-                    serviceChannel.SetAllDevicesToCoin(GetSendingSignature(instance), coinSymbol);
-                    UpdateViewFromRemoteInTheFuture(2);
-                }
-                catch (CommunicationException ex)
-                {
-                    ShowMultiMinerRemotingError(ex);
-                }
-            }
+                service.SetAllDevicesToCoin(GetSendingSignature(instance), coinSymbol);
+                UpdateViewFromRemoteInTheFuture(2);
+            });
         }
 
         private void SetDevicesToCoinRemotely(Instance instance, IEnumerable<DeviceDescriptor> devices, string coinSymbol)
         {
-            using (new HourGlass())
+            PerformRemoteCommand(instance, (service) =>
             {
-                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
                 List<DeviceDescriptor> descriptors = CloneDescriptors(devices);
-                try
-                {
-                    serviceChannel.SetDevicesToCoin(GetSendingSignature(instance), descriptors, coinSymbol);
-                    UpdateViewFromRemoteInTheFuture(2);
-                }
-                catch (CommunicationException ex)
-                {
-                    ShowMultiMinerRemotingError(ex);
-                }
-            }
+                service.SetDevicesToCoin(GetSendingSignature(instance), descriptors, coinSymbol);
+                UpdateViewFromRemoteInTheFuture(2);
+            });
         }
 
         private static List<DeviceDescriptor> CloneDescriptors(IEnumerable<DeviceDescriptor> devices)
@@ -3148,37 +3096,21 @@ namespace MultiMiner.Win
 
         private void ToggleDevicesRemotely(Instance instance, IEnumerable<DeviceDescriptor> devices, bool enabled)
         {
-            using (new HourGlass())
+            PerformRemoteCommand(instance, (service) =>
             {
-                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
                 List<DeviceDescriptor> descriptors = CloneDescriptors(devices);
-                try
-                {
-                    serviceChannel.ToggleDevices(GetSendingSignature(instance), descriptors, enabled);
-                    UpdateViewFromRemoteInTheFuture(2);
-                }
-                catch (CommunicationException ex)
-                {
-                    ShowMultiMinerRemotingError(ex);
-                }
-            }
+                service.ToggleDevices(GetSendingSignature(instance), descriptors, enabled);
+                UpdateViewFromRemoteInTheFuture(2);
+            });
         }
 
         private void ToggleDynamicIntensityRemotely(Instance instance, bool enabled)
         {
-            using (new HourGlass())
+            PerformRemoteCommand(instance, (service) =>
             {
-                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                try
-                {
-                    serviceChannel.ToggleDynamicIntensity(GetSendingSignature(instance), enabled);
-                    UpdateViewFromRemoteInTheFuture(2);
-                }
-                catch (CommunicationException ex)
-                {
-                    ShowMultiMinerRemotingError(ex);
-                }
-            }
+                service.ToggleDynamicIntensity(GetSendingSignature(instance), enabled);
+                UpdateViewFromRemoteInTheFuture(2);
+            });
         }
 
         private void SetDevicesToCoin(List<DeviceDescriptor> devices, string coinSymbol)
