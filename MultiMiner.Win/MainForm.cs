@@ -2484,6 +2484,7 @@ namespace MultiMiner.Win
 
             AutoSizeListViewColumns();
             UpdateMiningButtons();
+            RefreshStatusBarFromViewModel();
         }
         #endregion
 
@@ -2877,6 +2878,7 @@ namespace MultiMiner.Win
             UpdateMiningButtons();
             RefreshCoinPopupMenu();
             UpdateChangesButtons(GetViewModelToView().HasChanges);
+            RefreshStatusBarFromViewModel();
         }
 
         private static IRemotingService GetServiceChannelForInstance(Instance instance)
@@ -3702,14 +3704,7 @@ namespace MultiMiner.Win
             }
 
             RefreshListViewFromViewModel();
-
-            //Mh not mh, mh is milli
-            scryptRateLabel.Text = totalScryptRate == 0 ? String.Empty : String.Format("Scrypt: {0}", totalScryptRate.ToHashrateString());
-            //spacing used to pad out the status bar item
-            sha256RateLabel.Text = totalSha256Rate == 0 ? String.Empty : String.Format("SHA-2: {0}", totalSha256Rate.ToHashrateString());
-
-            scryptRateLabel.AutoSize = true;
-            sha256RateLabel.AutoSize = true;
+            RefreshStatusBarFromViewModel();
 
             notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
 
@@ -5194,8 +5189,7 @@ namespace MultiMiner.Win
 
                 //auto-size columns
                 AutoSizeListViewColumns();
-
-                deviceTotalLabel.Text = String.Format("{0} device(s)", devices.Count);
+                RefreshStatusBarFromViewModel();
 
                 //it may not be possible to mine after discovering devices
                 UpdateMiningButtons();
@@ -5204,6 +5198,23 @@ namespace MultiMiner.Win
             {
                 updatingListView = false;
             }
+        }
+
+        private void RefreshStatusBarFromViewModel()
+        {
+            MainFormViewModel viewModel = GetViewModelToView();
+            deviceTotalLabel.Text = String.Format("{0} device(s)", viewModel.Devices.Count);
+
+            double scryptHashRate = viewModel.Devices.Where(d => (d.Coin != null) && (d.Coin.Algorithm == CoinAlgorithm.Scrypt)).Sum(d => d.AverageHashrate);
+            double sha256HashRate = viewModel.Devices.Where(d => (d.Coin != null) && (d.Coin.Algorithm == CoinAlgorithm.SHA256)).Sum(d => d.AverageHashrate);
+
+            //Mh not mh, mh is milli
+            scryptRateLabel.Text = scryptHashRate == 0 ? String.Empty : String.Format("Scrypt: {0}", scryptHashRate.ToHashrateString());
+            //spacing used to pad out the status bar item
+            sha256RateLabel.Text = sha256HashRate == 0 ? String.Empty : String.Format("SHA-2: {0}", sha256HashRate.ToHashrateString());
+
+            scryptRateLabel.AutoSize = true;
+            sha256RateLabel.AutoSize = true;
         }
 
         private void StartMiningLocally()
