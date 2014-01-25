@@ -10,9 +10,9 @@ namespace MultiMiner.Remoting.Server
         public string Signature { get; set; }
     }
 
-    public class ModelRequestEventArgs : RemoteCommandEventArgs
+    public class ModelEventArgs : RemoteCommandEventArgs
     {
-        public ModelRequestEventArgs()
+        public ModelEventArgs()
         {
             Devices = new List<Data.Transfer.Device>();
             ConfiguredCoins = new List<CryptoCoin>();
@@ -25,9 +25,9 @@ namespace MultiMiner.Remoting.Server
         public bool DynamicIntensity { get; set; }
     }
 
-    public class ConfigurationRequestEventArgs : RemoteCommandEventArgs
+    public class ConfigurationEventArgs : RemoteCommandEventArgs
     {
-        public ConfigurationRequestEventArgs()
+        public ConfigurationEventArgs()
         {
             Application = new Data.Transfer.Configuration.Application();
             Engine = new Data.Transfer.Configuration.Engine();

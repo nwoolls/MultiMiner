@@ -24,6 +24,13 @@ namespace MultiMiner.Remoting.Server
             out Data.Transfer.Configuration.Path path,
             out Data.Transfer.Configuration.Perks perks);
         [OperationContract]
+        void SetApplicationConfiguration(
+            string signature,
+            Data.Transfer.Configuration.Application application,
+            Data.Transfer.Configuration.Engine engine,
+            Data.Transfer.Configuration.Path path,
+            Data.Transfer.Configuration.Perks perks);
+        [OperationContract]
         void StopMining(string signature);
         [OperationContract]
         void StartMining(string signature);

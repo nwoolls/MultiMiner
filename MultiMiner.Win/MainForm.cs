@@ -1145,6 +1145,11 @@ namespace MultiMiner.Win
 
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
+                ObjectCopier.CopyObject(workingApplicationConfiguration, this.remoteApplicationConfig);
+                ObjectCopier.CopyObject(workingEngineConfiguration, this.remoteEngineConfig);
+                ObjectCopier.CopyObject(workingPathConfiguration, this.remotePathConfig);
+
+                SetConfigurationRemotely(this.selectedRemoteInstance, this.remoteApplicationConfig, this.remoteEngineConfig, this.remotePathConfig, null);
             }
         }
 
@@ -1187,30 +1192,15 @@ namespace MultiMiner.Win
                 perksConfiguration.SavePerksConfiguration(newConfigPath);
                 engineConfiguration.SaveCoinConfigurations(newConfigPath);
                 engineConfiguration.SaveStrategyConfiguration(newConfigPath);
-
                 engineConfiguration.SaveMinerConfiguration();
                 SaveKnownCoinsToFile();
-
-                SetupCoinApi();
-                RefreshCoinApiLabel();
-                crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
-                SetupRestartTimer();
-                CheckForUpdates();
-                SetupCoinStatsTimer();
-                SuggestCoinsToMine();
 
                 //don't refresh coin stats excessively
                 if ((oldCoinWarzValue != applicationConfiguration.UseCoinWarzApi) ||
                     !oldCoinWarzKey.Equals(applicationConfiguration.CoinWarzApiKey))
                     RefreshCoinStats();
 
-                SetupAccessibleMenu();
-                SetGpuEnvironmentVariables();
-
-                localViewModel.DynamicIntensity = engineConfiguration.XgminerConfiguration.DesktopMode;
-                dynamicIntensityButton.Checked = localViewModel.DynamicIntensity;
-
-                Application.DoEvents();
+                RefreshViewForConfigurationChanges();
             }
             else
             {
@@ -1218,6 +1208,39 @@ namespace MultiMiner.Win
                 pathConfiguration.LoadPathConfiguration();
                 applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
             }
+        }
+
+        private void RefreshViewForConfigurationChanges()
+        {
+            Application.DoEvents();
+
+            if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
+                RefreshExchangeRates();
+
+            RefreshListViewFromViewModel();
+            RefreshIncomeSummary();
+            AutoSizeListViewColumns();
+            SetupRemoting();
+            RefreshStrategiesLabel();
+            UpdateMiningButtons();
+            RemoveInvalidCoinValuesFromListView();
+            RefreshCoinPopupMenu();
+            
+            SetupCoinApi();
+            RefreshCoinApiLabel();
+            crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
+            SetupRestartTimer();
+            CheckForUpdates();
+            SetupCoinStatsTimer();
+            SuggestCoinsToMine();
+
+            SetupAccessibleMenu();
+            SetGpuEnvironmentVariables();
+
+            localViewModel.DynamicIntensity = engineConfiguration.XgminerConfiguration.DesktopMode;
+            dynamicIntensityButton.Checked = localViewModel.DynamicIntensity;
+
+            Application.DoEvents();
         }
 
         private void ConfigureCoins()
@@ -1248,6 +1271,9 @@ namespace MultiMiner.Win
 
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
+                ObjectCopier.CopyObject(workingApplicationConfiguration, this.remoteApplicationConfig);
+                ObjectCopier.CopyObject(workingEngineConfiguration, this.remoteEngineConfig);
+                SetConfigurationRemotely(this.selectedRemoteInstance, this.remoteApplicationConfig, this.remoteEngineConfig, null, null);
             }
         }
 
@@ -1257,16 +1283,9 @@ namespace MultiMiner.Win
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                Application.DoEvents();
-
                 engineConfiguration.SaveCoinConfigurations();
 
-                RemoveInvalidCoinValuesFromListView();
-
-                RefreshCoinPopupMenu();
-
-                //SaveChanges() will restart mining if needed
-                SaveChanges();
+                RefreshViewForConfigurationChanges();
             }
             else
                 engineConfiguration.LoadCoinConfigurations(pathConfiguration.SharedConfigPath);
@@ -1279,16 +1298,10 @@ namespace MultiMiner.Win
             DialogResult dialogResult = strategiesForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                Application.DoEvents();
-
                 engineConfiguration.SaveStrategyConfiguration();
                 applicationConfiguration.SaveApplicationConfiguration();
 
-                RefreshStrategiesLabel();
-                RefreshListViewFromViewModel();
-                UpdateMiningButtons();
-
-                Application.DoEvents();
+                RefreshViewForConfigurationChanges();
             }
             else
             {
@@ -1314,6 +1327,10 @@ namespace MultiMiner.Win
 
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
+                ObjectCopier.CopyObject(workingApplicationConfiguration, this.remoteApplicationConfig);
+                ObjectCopier.CopyObject(workingEngineConfiguration, this.remoteEngineConfig);
+
+                SetConfigurationRemotely(this.selectedRemoteInstance, this.remoteApplicationConfig, this.remoteEngineConfig, null, null);
             }
         }
 
@@ -1355,6 +1372,8 @@ namespace MultiMiner.Win
 
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
+                ObjectCopier.CopyObject(workingPerksConfiguration, this.remotePerksConfig);
+                SetConfigurationRemotely(this.selectedRemoteInstance, null, null, null, this.remotePerksConfig);
             }
         }
 
@@ -1366,12 +1385,8 @@ namespace MultiMiner.Win
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 perksConfiguration.SavePerksConfiguration();
-                if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
-                    RefreshExchangeRates();
-                RefreshListViewFromViewModel();
-                RefreshIncomeSummary();
-                AutoSizeListViewColumns();
-                SetupRemoting();
+
+                RefreshViewForConfigurationChanges();
             }
             else
                 perksConfiguration.LoadPerksConfiguration(pathConfiguration.SharedConfigPath);
@@ -2622,9 +2637,9 @@ namespace MultiMiner.Win
         {
             using (new HourGlass())
             {
-                if (perksConfiguration.EnableRemoting && !remotingEnabled)
+                if (perksConfiguration.EnableRemoting && perksConfiguration.PerksEnabled  && !remotingEnabled)
                     EnableRemoting();
-                else if (!perksConfiguration.EnableRemoting && remotingEnabled)
+                else if ((!perksConfiguration.EnableRemoting || !perksConfiguration.PerksEnabled) && remotingEnabled)
                     DisableRemoting();
             }
         }
@@ -2803,7 +2818,7 @@ namespace MultiMiner.Win
             });
         }
 
-        private void ModelRequestRequested(object sender, ModelRequestEventArgs ea)
+        private void GetModelRequested(object sender, ModelEventArgs ea)
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
@@ -2833,7 +2848,7 @@ namespace MultiMiner.Win
             return newList;
         }
 
-        private void ConfigurationRequestRequested(object sender, ConfigurationRequestEventArgs ea)
+        private void GetConfigurationRequested(object sender, ConfigurationEventArgs ea)
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
@@ -2841,6 +2856,45 @@ namespace MultiMiner.Win
                 ObjectCopier.CopyObject(engineConfiguration, ea.Engine);
                 ObjectCopier.CopyObject(pathConfiguration, ea.Path);
                 ObjectCopier.CopyObject(perksConfiguration, ea.Perks);
+            });
+        }
+
+        private void SetConfigurationRequested(object sender, ConfigurationEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                if (ea.Application != null)
+                {
+                    ObjectCopier.CopyObject(ea.Application, this.applicationConfiguration);
+                    this.applicationConfiguration.SaveApplicationConfiguration();
+                }
+
+                if (ea.Engine != null)
+                {
+                    ObjectCopier.CopyObject(ea.Engine, this.engineConfiguration);
+                    this.engineConfiguration.SaveCoinConfigurations();
+                    this.engineConfiguration.SaveMinerConfiguration();
+                    this.engineConfiguration.SaveStrategyConfiguration();
+                    this.engineConfiguration.SaveDeviceConfigurations();
+                }
+
+                if (ea.Path != null)
+                {
+                    ObjectCopier.CopyObject(ea.Path, this.pathConfiguration);
+                    this.pathConfiguration.SavePathConfiguration();
+                }
+
+                if (ea.Perks != null)
+                {
+                    ObjectCopier.CopyObject(ea.Perks, this.perksConfiguration);
+                    this.perksConfiguration.SavePerksConfiguration();
+                }
+
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    RefreshViewForConfigurationChanges();
+                }));
             });
         }
 
@@ -2876,11 +2930,14 @@ namespace MultiMiner.Win
             ApplicationProxy.Instance.ToggleDynamicIntensityRequested -= ToggleDynamicIntensityRequested;
             ApplicationProxy.Instance.ToggleDynamicIntensityRequested += ToggleDynamicIntensityRequested;
 
-            ApplicationProxy.Instance.ModelRequestRequested -= ModelRequestRequested;
-            ApplicationProxy.Instance.ModelRequestRequested += ModelRequestRequested;
+            ApplicationProxy.Instance.GetModelRequested -= GetModelRequested;
+            ApplicationProxy.Instance.GetModelRequested += GetModelRequested;
 
-            ApplicationProxy.Instance.ConfigurationRequestRequested -= ConfigurationRequestRequested;
-            ApplicationProxy.Instance.ConfigurationRequestRequested += ConfigurationRequestRequested;
+            ApplicationProxy.Instance.GetConfigurationRequested -= GetConfigurationRequested;
+            ApplicationProxy.Instance.GetConfigurationRequested += GetConfigurationRequested;
+
+            ApplicationProxy.Instance.SetConfigurationRequested -= SetConfigurationRequested;
+            ApplicationProxy.Instance.SetConfigurationRequested += SetConfigurationRequested;
         }
 
         private void EnableRemoting()
@@ -3268,6 +3325,24 @@ namespace MultiMiner.Win
             {
                 service.ToggleDynamicIntensity(GetSendingSignature(instance), enabled);
                 UpdateViewFromRemoteInTheFuture(2);
+            });
+        }
+
+        private void SetConfigurationRemotely(
+            Instance instance, 
+            Remoting.Server.Data.Transfer.Configuration.Application application,
+            Remoting.Server.Data.Transfer.Configuration.Engine engine,
+            Remoting.Server.Data.Transfer.Configuration.Path path,
+            Remoting.Server.Data.Transfer.Configuration.Perks perks)
+        {
+            PerformRemoteCommand(instance, (service) =>
+            {
+                service.SetApplicationConfiguration(
+                    GetSendingSignature(instance),
+                    application,
+                    engine,
+                    path,
+                    perks);
             });
         }
 

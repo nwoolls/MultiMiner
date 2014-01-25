@@ -14,8 +14,8 @@ namespace MultiMiner.Remoting.Server
         public delegate void DevicesCoinEventHandler(object sender, IEnumerable<DeviceDescriptor> devices, string coinSymbol, RemoteCommandEventArgs ea);
         public delegate void ToggleDevicesEventHandler(object sender, IEnumerable<DeviceDescriptor> devices, bool enabled, RemoteCommandEventArgs ea);
         public delegate void ToggleEventHandler(object sender, bool enabled, RemoteCommandEventArgs ea);
-        public delegate void ModelRequestEventHandler(object sender, ModelRequestEventArgs ea);
-        public delegate void ConfigurationRequestEventHandler(object sender, ConfigurationRequestEventArgs ea);
+        public delegate void ModelRequestEventHandler(object sender, ModelEventArgs ea);
+        public delegate void ConfigurationEventHandler(object sender, ConfigurationEventArgs ea);
 
         //event declarations        
         public event RemoteEventHandler StartMiningRequested;
@@ -28,8 +28,9 @@ namespace MultiMiner.Remoting.Server
         public event RemoteEventHandler CancelChangesRequested;
         public event ToggleDevicesEventHandler ToggleDevicesRequested;
         public event ToggleEventHandler ToggleDynamicIntensityRequested;
-        public event ModelRequestEventHandler ModelRequestRequested;
-        public event ConfigurationRequestEventHandler ConfigurationRequestRequested;
+        public event ModelRequestEventHandler GetModelRequested;
+        public event ConfigurationEventHandler GetConfigurationRequested;
+        public event ConfigurationEventHandler SetConfigurationRequested;
 
         private static volatile ApplicationProxy instance;
         private static object syncRoot = new Object();
@@ -123,12 +124,12 @@ namespace MultiMiner.Remoting.Server
             out bool hasChanges,
             out bool dynamicIntensity)
         {
-            ModelRequestEventArgs ea = new ModelRequestEventArgs();
+            ModelEventArgs ea = new ModelEventArgs();
             ea.IpAddress = clientAddress;
             ea.Signature = signature;
 
-            if (ModelRequestRequested != null)
-                ModelRequestRequested(sender, ea);
+            if (GetModelRequested != null)
+                GetModelRequested(sender, ea);
 
             devices = ea.Devices;
             configurations = ea.ConfiguredCoins;
@@ -146,17 +147,40 @@ namespace MultiMiner.Remoting.Server
             out Data.Transfer.Configuration.Path path, 
             out Data.Transfer.Configuration.Perks perks)
         {
-            ConfigurationRequestEventArgs ea = new ConfigurationRequestEventArgs();
+            ConfigurationEventArgs ea = new ConfigurationEventArgs();
             ea.IpAddress = clientAddress;
             ea.Signature = signature;
 
-            if (ConfigurationRequestRequested != null)
-                ConfigurationRequestRequested(sender, ea);
+            if (GetConfigurationRequested != null)
+                GetConfigurationRequested(sender, ea);
 
             application = ea.Application;
             engine = ea.Engine;
             path = ea.Path;
             perks = ea.Perks;
+        }
+
+        public void SetApplicationConfiguration(
+            RemotingService sender, 
+            string clientAddress, 
+            string signature, 
+            Data.Transfer.Configuration.Application application, 
+            Data.Transfer.Configuration.Engine engine, 
+            Data.Transfer.Configuration.Path path, 
+            Data.Transfer.Configuration.Perks perks)
+        {
+            ConfigurationEventArgs ea = new ConfigurationEventArgs() 
+            { 
+                IpAddress = clientAddress, 
+                Signature = signature, 
+                Application = application, 
+                Engine = engine, 
+                Path = path, 
+                Perks = perks 
+            };
+
+            if (SetConfigurationRequested != null)
+                SetConfigurationRequested(sender, ea);
         }
     }
 }

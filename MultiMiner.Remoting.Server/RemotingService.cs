@@ -47,6 +47,23 @@ namespace MultiMiner.Remoting.Server
                 out perks);
         }
 
+        public void SetApplicationConfiguration(
+            string signature,
+            Data.Transfer.Configuration.Application application,
+            Data.Transfer.Configuration.Engine engine,
+            Data.Transfer.Configuration.Path path,
+            Data.Transfer.Configuration.Perks perks)
+        {
+            ApplicationProxy.Instance.SetApplicationConfiguration(
+                this,
+                GetClientIpAddress(),
+                signature,
+                application,
+                engine,
+                path,
+                perks);
+        }
+
         private static string GetClientIpAddress()
         {
             OperationContext currentContext = OperationContext.Current;
