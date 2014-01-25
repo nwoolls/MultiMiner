@@ -1157,6 +1157,7 @@ namespace MultiMiner.Win
         {
             bool oldCoinWarzValue = applicationConfiguration.UseCoinWarzApi;
             string oldCoinWarzKey = applicationConfiguration.CoinWarzApiKey;
+
             string oldConfigPath = pathConfiguration.SharedConfigPath;
 
             SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration, pathConfiguration);
@@ -1172,21 +1173,7 @@ namespace MultiMiner.Win
                 //these are settings not considered machine/device-specific
                 //e.g. no device settings, no miner settings
                 string newConfigPath = pathConfiguration.SharedConfigPath;
-
-                //if the shared config path changed, and there are already settings
-                //in that path, load those settings (so they aren't overwritten)
-                //idea being the user has shared settings already there they want to use
-                if (!Path.Equals(oldConfigPath, newConfigPath))
-                {
-                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(applicationConfiguration.ApplicationConfigurationFileName()))))
-                        applicationConfiguration.LoadApplicationConfiguration(newConfigPath);
-                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(perksConfiguration.PerksConfigurationFileName()))))
-                        perksConfiguration.LoadPerksConfiguration(newConfigPath);
-                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(engineConfiguration.CoinConfigurationsFileName()))))
-                        engineConfiguration.LoadCoinConfigurations(newConfigPath);
-                    if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(engineConfiguration.StrategyConfigurationsFileName()))))
-                        engineConfiguration.LoadStrategyConfiguration(newConfigPath);
-                }
+                MigrateSettingsToNewFolder(oldConfigPath, newConfigPath);
 
                 applicationConfiguration.SaveApplicationConfiguration(newConfigPath);
                 perksConfiguration.SavePerksConfiguration(newConfigPath);
@@ -2863,6 +2850,8 @@ namespace MultiMiner.Win
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
+                string oldConfigPath = this.pathConfiguration.SharedConfigPath;
+
                 if (ea.Application != null)
                 {
                     ObjectCopier.CopyObject(ea.Application, this.applicationConfiguration);
@@ -2889,6 +2878,12 @@ namespace MultiMiner.Win
                     ObjectCopier.CopyObject(ea.Perks, this.perksConfiguration);
                     this.perksConfiguration.SavePerksConfiguration();
                 }
+                
+                //save settings as the "shared" config path may have changed
+                //these are settings not considered machine/device-specific
+                //e.g. no device settings, no miner settings
+                string newConfigPath = pathConfiguration.SharedConfigPath;
+                MigrateSettingsToNewFolder(oldConfigPath, newConfigPath);
 
                 BeginInvoke((Action)(() =>
                 {
@@ -2896,6 +2891,24 @@ namespace MultiMiner.Win
                     RefreshViewForConfigurationChanges();
                 }));
             });
+        }
+
+        private void MigrateSettingsToNewFolder(string oldConfigPath, string newConfigPath)
+        {
+            //if the shared config path changed, and there are already settings
+            //in that path, load those settings (so they aren't overwritten)
+            //idea being the user has shared settings already there they want to use
+            if (!Path.Equals(oldConfigPath, newConfigPath))
+            {
+                if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(applicationConfiguration.ApplicationConfigurationFileName()))))
+                    applicationConfiguration.LoadApplicationConfiguration(newConfigPath);
+                if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(perksConfiguration.PerksConfigurationFileName()))))
+                    perksConfiguration.LoadPerksConfiguration(newConfigPath);
+                if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(engineConfiguration.CoinConfigurationsFileName()))))
+                    engineConfiguration.LoadCoinConfigurations(newConfigPath);
+                if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(engineConfiguration.StrategyConfigurationsFileName()))))
+                    engineConfiguration.LoadStrategyConfiguration(newConfigPath);
+            }
         }
 
         private void SetupRemotingEventHandlers()
