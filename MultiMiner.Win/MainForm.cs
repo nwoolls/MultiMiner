@@ -3671,9 +3671,8 @@ namespace MultiMiner.Win
 
             notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
 
-            int count = 3;
             //auto sizing the columns is moderately CPU intensive, so only do it every /count/ times
-            AutoSizeListViewColumnsEvery(count);
+            AutoSizeListViewColumnsEvery(2);
 
             UpdateInstancesStatsFromLocal();
 
@@ -5218,6 +5217,8 @@ namespace MultiMiner.Win
 
             //update ViewModel with potential changes 
             ApplyModelsToViewModel();
+
+            autoSizeColumnsFlag = 0;
 
             deviceStatsTimer.Enabled = true;
             minerSummaryTimer.Enabled = true;
