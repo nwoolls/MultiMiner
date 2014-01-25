@@ -14,6 +14,7 @@ namespace MultiMiner.Remoting.Server
         public delegate void DevicesCoinEventHandler(object sender, IEnumerable<DeviceDescriptor> devices, string coinSymbol, RemoteCommandEventArgs ea);
         public delegate void ToggleDevicesEventHandler(object sender, IEnumerable<DeviceDescriptor> devices, bool enabled, RemoteCommandEventArgs ea);
         public delegate void ToggleEventHandler(object sender, bool enabled, RemoteCommandEventArgs ea);
+        public delegate void ModelRequestEventHandler(object sender, ModelRequestEventArgs ea);
 
         //event declarations        
         public event RemoteEventHandler StartMiningRequested;
@@ -26,6 +27,7 @@ namespace MultiMiner.Remoting.Server
         public event RemoteEventHandler CancelChangesRequested;
         public event ToggleDevicesEventHandler ToggleDevicesRequested;
         public event ToggleEventHandler ToggleDynamicIntensityRequested;
+        public event ModelRequestEventHandler ModelRequestRequested;
 
         private bool dynamicIntensity;
         private bool mining;
@@ -51,96 +53,6 @@ namespace MultiMiner.Remoting.Server
                 }
 
                 return instance;
-            }
-        }
-
-        public List<Data.Transfer.Device> Devices
-        {
-            get
-            {
-                lock (syncRoot)
-                {
-                    return devices;
-                }
-            }
-            set
-            {
-                lock (syncRoot)
-                {
-                    devices = value;
-                }
-            }
-        }
-
-        public List<CryptoCoin> ConfiguredCoins
-        {
-            get
-            {
-                lock (syncRoot)
-                {
-                    return configuredCoins;
-                }
-            }
-            set
-            {
-                lock (syncRoot)
-                {
-                    configuredCoins = value;
-                }
-            }
-        }
-
-        public bool Mining
-        {
-            get
-            {
-                lock (syncRoot)
-                {
-                    return mining;
-                }
-            }
-            set
-            {
-                lock (syncRoot)
-                {
-                    mining = value;
-                }
-            }
-        }
-
-        public bool HasChanges
-        {
-            get
-            {
-                lock (syncRoot)
-                {
-                    return hasChanges;
-                }
-            }
-            set
-            {
-                lock (syncRoot)
-                {
-                    hasChanges = value;
-                }
-            }
-        }
-
-        public bool DynamicIntensity
-        {
-            get
-            {
-                lock (syncRoot)
-                {
-                    return dynamicIntensity;
-                }
-            }
-            set
-            {
-                lock (syncRoot)
-                {
-                    dynamicIntensity = value;
-                }
             }
         }
 
@@ -198,10 +110,34 @@ namespace MultiMiner.Remoting.Server
                 ToggleDevicesRequested(sender, devices, enabled, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
         }
 
-        public void ToggleDynamicIntensity(MultiMiner.Remoting.Server.RemotingService sender, string clientAddress, string signature, bool enabled)
+        public void ToggleDynamicIntensity(RemotingService sender, string clientAddress, string signature, bool enabled)
         {
             if (ToggleDynamicIntensityRequested != null)
                 ToggleDynamicIntensityRequested(sender, enabled, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
+        }
+
+        public void GetApplicationModels(
+            RemotingService sender,
+            string clientAddress,
+            string signature,
+            out IEnumerable<Data.Transfer.Device> devices,
+            out IEnumerable<CryptoCoin> configurations,
+            out bool mining,
+            out bool hasChanges,
+            out bool dynamicIntensity)
+        {
+            ModelRequestEventArgs ea = new ModelRequestEventArgs();
+            ea.IpAddress = clientAddress;
+            ea.Signature = signature;
+
+            if (ModelRequestRequested != null)
+                ModelRequestRequested(sender, ea);
+
+            devices = ea.Devices;
+            configurations = ea.ConfiguredCoins;
+            mining = ea.Mining;
+            hasChanges = ea.HasChanges;
+            dynamicIntensity = ea.DynamicIntensity;
         }
     }
 }

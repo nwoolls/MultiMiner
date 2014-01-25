@@ -249,8 +249,6 @@ namespace MultiMiner.Win
                 engineConfiguration.CoinConfigurations);
             ApplyCoinInformationToViewModel();
             localViewModel.ApplyCoinConfigurationModels(engineConfiguration.CoinConfigurations);
-
-            PushViewModelsOutForRemoting();
         }
 
         private void ApplyDevicesToViewModel()
@@ -488,7 +486,6 @@ namespace MultiMiner.Win
             
             localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
                 engineConfiguration.CoinConfigurations);
-            PushViewModelsOutForRemoting();
 
             if (this.selectedRemoteInstance == null)
                 UpdateChangesButtons(false);
@@ -522,7 +519,6 @@ namespace MultiMiner.Win
             
             localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
                 engineConfiguration.CoinConfigurations);
-            PushViewModelsOutForRemoting();
 
             RefreshListViewFromViewModel();
 
@@ -548,8 +544,6 @@ namespace MultiMiner.Win
             //accessible menu
             saveToolStripMenuItem.Enabled = hasChanges;
             cancelToolStripMenuItem.Enabled = hasChanges;
-
-            PushViewModelsOutForRemoting();
         }
 
         private void RefreshDetailsAreaIfVisible()
@@ -1555,8 +1549,6 @@ namespace MultiMiner.Win
 
             if (this.selectedRemoteInstance == null)
                 UpdateChangesButtons(true);
-
-            PushViewModelsOutForRemoting();
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -2066,7 +2058,6 @@ namespace MultiMiner.Win
                 UpdateChangesButtons(true);
 
             RefreshListViewFromViewModel();
-            PushViewModelsOutForRemoting();
         }
 
         private void ToggleDevices(IEnumerable<DeviceDescriptor> devices, bool enabled)
@@ -2559,18 +2550,18 @@ namespace MultiMiner.Win
                 return;
             }
 
-            BeginInvoke((Action)(() =>
-            {
-                //code to update UI
-                action();
-            }));
+            action();
         }
 
         private void StartMiningRequested(object sender, RemoteCommandEventArgs ea)
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                StartMiningLocally();
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    StartMiningLocally();
+                }));
             });
         }
 
@@ -2578,7 +2569,11 @@ namespace MultiMiner.Win
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                StopMiningLocally();
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    StopMiningLocally();
+                }));
             });
         }
 
@@ -2586,7 +2581,11 @@ namespace MultiMiner.Win
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                RestartMiningLocally();
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    RestartMiningLocally();
+                }));
             });
         }
 
@@ -2594,7 +2593,11 @@ namespace MultiMiner.Win
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                ScanHardwareLocally();
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    ScanHardwareLocally();
+                }));
             });
         }
 
@@ -2602,7 +2605,11 @@ namespace MultiMiner.Win
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                SetAllDevicesToCoinLocally(coinSymbol);
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    SetAllDevicesToCoinLocally(coinSymbol);
+                }));
             });
         }
 
@@ -2610,7 +2617,11 @@ namespace MultiMiner.Win
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                SetDevicesToCoinLocally(devices, coinSymbol);
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    SetDevicesToCoinLocally(devices, coinSymbol);
+                }));
             });
         }
 
@@ -2618,7 +2629,11 @@ namespace MultiMiner.Win
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                SaveChangesLocally();
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    SaveChangesLocally();
+                }));
             });
         }
 
@@ -2626,7 +2641,11 @@ namespace MultiMiner.Win
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                CancelChangesLocally();
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    CancelChangesLocally();
+                }));
             });
         }
 
@@ -2634,7 +2653,11 @@ namespace MultiMiner.Win
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                ToggleDevicesLocally(devices, enabled);
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    ToggleDevicesLocally(devices, enabled);
+                }));
             });
         }
 
@@ -2642,8 +2665,42 @@ namespace MultiMiner.Win
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                ToggleDynamicIntensityLocally(enabled);
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    ToggleDynamicIntensityLocally(enabled);
+                }));
             });
+        }
+
+        private void ModelRequestRequested(object sender, ModelRequestEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                ea.Devices = GetDeviceTransferObjects();
+                ea.ConfiguredCoins = localViewModel.ConfiguredCoins;
+                ea.Mining = miningEngine.Mining;
+                ea.DynamicIntensity = localViewModel.DynamicIntensity;
+                ea.HasChanges = localViewModel.HasChanges;
+            });
+        }
+
+        private List<Remoting.Server.Data.Transfer.Device> GetDeviceTransferObjects()
+        {
+            List<Remoting.Server.Data.Transfer.Device> newList = new List<Remoting.Server.Data.Transfer.Device>();
+            foreach (DeviceViewModel viewModel in localViewModel.Devices)
+            {
+                MultiMiner.Remoting.Server.Data.Transfer.Device dto = new Remoting.Server.Data.Transfer.Device();
+                ObjectCopier.CopyObject(viewModel, dto, "Workers");
+                foreach (DeviceViewModel source in viewModel.Workers)
+                {
+                    Remoting.Server.Data.Transfer.Device destination = new Remoting.Server.Data.Transfer.Device();
+                    ObjectCopier.CopyObject(source, destination, "Workers");
+                    dto.Workers.Add(destination);
+                }
+                newList.Add(dto);
+            }
+            return newList;
         }
 
         private void SetupRemotingEventHandlers()
@@ -2677,6 +2734,9 @@ namespace MultiMiner.Win
             
             ApplicationProxy.Instance.ToggleDynamicIntensityRequested -= ToggleDynamicIntensityRequested;
             ApplicationProxy.Instance.ToggleDynamicIntensityRequested += ToggleDynamicIntensityRequested;
+
+            ApplicationProxy.Instance.ModelRequestRequested -= ModelRequestRequested;
+            ApplicationProxy.Instance.ModelRequestRequested += ModelRequestRequested;
         }
 
         private void EnableRemoting()
@@ -2840,7 +2900,7 @@ namespace MultiMiner.Win
                 bool mining, hasChanges, dynamicIntensity;
                 try
                 {
-                    serviceChannel.GetApplicationModels(out devices, out configurations, out mining, out hasChanges, out dynamicIntensity);
+                    serviceChannel.GetApplicationModels(GetSendingSignature(instance), out devices, out configurations, out mining, out hasChanges, out dynamicIntensity);
                     this.remoteInstanceMining = mining;
                     this.remoteViewModel.HasChanges = hasChanges;
                     this.remoteViewModel.DynamicIntensity = dynamicIntensity;
@@ -3149,38 +3209,6 @@ namespace MultiMiner.Win
                 remoteViewModel.Devices.Add(viewModel);
             }
         }
-
-        private void PushViewModelsOutForRemoting()
-        {
-            PushDeviceViewModelsOutForRemoting();
-            PushCoinViewModelsOutForRemoting();
-            ApplicationProxy.Instance.Mining = miningEngine.Mining;
-            ApplicationProxy.Instance.DynamicIntensity = localViewModel.DynamicIntensity;
-            ApplicationProxy.Instance.HasChanges = localViewModel.HasChanges;
-        }
-
-        private void PushCoinViewModelsOutForRemoting()
-        {
-            ApplicationProxy.Instance.ConfiguredCoins = localViewModel.ConfiguredCoins.ToList();
-        }
-
-        private void PushDeviceViewModelsOutForRemoting()
-        {
-            List<Remoting.Server.Data.Transfer.Device> newList = new List<Remoting.Server.Data.Transfer.Device>();
-            foreach (DeviceViewModel viewModel in localViewModel.Devices)
-            {
-                MultiMiner.Remoting.Server.Data.Transfer.Device dto = new Remoting.Server.Data.Transfer.Device();
-                ObjectCopier.CopyObject(viewModel, dto, "Workers");
-                foreach (DeviceViewModel source in viewModel.Workers)
-                {
-                    Remoting.Server.Data.Transfer.Device destination = new Remoting.Server.Data.Transfer.Device();
-                    ObjectCopier.CopyObject(source, destination, "Workers");
-                    dto.Workers.Add(destination);
-                }
-                newList.Add(dto);
-            }
-            ApplicationProxy.Instance.Devices = newList;
-        }
         #endregion
 
         #region Coin API
@@ -3218,7 +3246,6 @@ namespace MultiMiner.Win
                     UserAgent.AgentString).ToList();
 
                 ApplyCoinInformationToViewModel();
-                PushViewModelsOutForRemoting();
             }
             catch (Exception ex)
             {
@@ -3742,7 +3769,6 @@ namespace MultiMiner.Win
                 deviceListView.EndUpdate();
             }
 
-            PushViewModelsOutForRemoting();
             RefreshListViewFromViewModel();
 
             //Mh not mh, mh is milli
@@ -4905,7 +4931,6 @@ namespace MultiMiner.Win
 
             localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
                 engineConfiguration.CoinConfigurations);
-            PushViewModelsOutForRemoting();
 
             engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false;
 
@@ -5055,7 +5080,6 @@ namespace MultiMiner.Win
             }
 
             localViewModel.ClearDeviceInformationFromViewModel();
-            PushViewModelsOutForRemoting();
 
             processDeviceDetails.Clear();
             deviceStatsTimer.Enabled = false;
@@ -5329,7 +5353,6 @@ namespace MultiMiner.Win
             engineConfiguration.SaveMinerConfiguration();
 
             GetViewModelToView().DynamicIntensity = enabled;
-            PushViewModelsOutForRemoting();
         }
 
         private void ToggleDynamicIntensity(bool enabled)

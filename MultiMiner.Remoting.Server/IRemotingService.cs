@@ -10,6 +10,7 @@ namespace MultiMiner.Remoting.Server
     {
         [OperationContract]
         void GetApplicationModels(
+            string signature,
             out IEnumerable<Data.Transfer.Device> devices, 
             out IEnumerable<CryptoCoin> configurations, 
             out bool mining, 

@@ -12,17 +12,22 @@ namespace MultiMiner.Remoting.Server
     public class RemotingService : IRemotingService
     {
         public void GetApplicationModels(
+            string signature,
             out IEnumerable<Data.Transfer.Device> devices,
             out IEnumerable<CryptoCoin> configurations,
             out bool mining, 
             out bool hasChanges,
             out bool dynamicIntensity)
         {
-            devices = ApplicationProxy.Instance.Devices.ToList();
-            configurations = ApplicationProxy.Instance.ConfiguredCoins.ToList();
-            mining = ApplicationProxy.Instance.Mining;
-            hasChanges = ApplicationProxy.Instance.HasChanges;
-            dynamicIntensity = ApplicationProxy.Instance.DynamicIntensity;
+            ApplicationProxy.Instance.GetApplicationModels(
+                this, 
+                GetClientIpAddress(), 
+                signature, 
+                out devices, 
+                out configurations, 
+                out mining, 
+                out hasChanges, 
+                out dynamicIntensity); 
         }
 
         private static string GetClientIpAddress()
