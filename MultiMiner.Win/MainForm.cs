@@ -1019,10 +1019,10 @@ namespace MultiMiner.Win
             {
                 const string addition = " + ";
                 double usdTotal = 0.00;
-                foreach (string coinName in incomeForCoins.Keys)
+                foreach (string coinSymbol in incomeForCoins.Keys)
                 {
-                    double coinIncome = incomeForCoins[coinName];
-                    CoinInformation coinInfo = coinApiInformation.SingleOrDefault(c => c.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+                    double coinIncome = incomeForCoins[coinSymbol];
+                    CoinInformation coinInfo = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
                     if (coinInfo != null)
                     {
                         double coinUsd = sellPrices.Subtotal.Amount * coinInfo.Price;
@@ -1063,13 +1063,13 @@ namespace MultiMiner.Win
                 //check for Coin != null, device may not have a coin configured
                 if ((deviceViewModel.Coin != null) && (listItem.SubItems["Daily"].Tag != null))
                 {
-                    string coinName = deviceViewModel.Coin.Name;
+                    string coinSymbol = deviceViewModel.Coin.Symbol;
                     double coinIncome = (double)listItem.SubItems["Daily"].Tag;
 
-                    if (coinsIncome.ContainsKey(coinName))
-                        coinsIncome[coinName] = coinsIncome[coinName] + coinIncome;
+                    if (coinsIncome.ContainsKey(coinSymbol))
+                        coinsIncome[coinSymbol] = coinsIncome[coinSymbol] + coinIncome;
                     else
-                        coinsIncome[coinName] = coinIncome;
+                        coinsIncome[coinSymbol] = coinIncome;
                 }
             }
             return coinsIncome;
