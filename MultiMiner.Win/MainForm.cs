@@ -1252,7 +1252,7 @@ namespace MultiMiner.Win
             ObjectCopier.CopyObject(this.remoteApplicationConfig, workingApplicationConfiguration);
             ObjectCopier.CopyObject(this.remoteEngineConfig, workingEngineConfiguration);
 
-            CoinsForm coinsForm = new CoinsForm(workingEngineConfiguration.CoinConfigurations, knownCoins, engineConfiguration.CoinConfigurationsFileName());
+            CoinsForm coinsForm = new CoinsForm(workingEngineConfiguration.CoinConfigurations, knownCoins);
             coinsForm.Text = String.Format("{0}: {1}", coinsForm.Text, this.selectedRemoteInstance.MachineName);
             DialogResult dialogResult = coinsForm.ShowDialog();
 
@@ -1266,7 +1266,7 @@ namespace MultiMiner.Win
 
         private void ConfigureCoinsLocally()
         {
-            CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins, engineConfiguration.CoinConfigurationsFileName());
+            CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins);
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
