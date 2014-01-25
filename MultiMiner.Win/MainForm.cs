@@ -1326,6 +1326,8 @@ namespace MultiMiner.Win
             poolsDownFlagTimer.Enabled = true;
             ClearPoolsFlaggedDown();
 
+            ApplyModelsToViewModel();
+
             //allow resize/maximize/etc to render
             Application.DoEvents();
 
@@ -3134,7 +3136,9 @@ namespace MultiMiner.Win
             {
                 coinApiInformation = coinApiContext.GetCoinInformation(
                     UserAgent.AgentString).ToList();
-                ApplyModelsToViewModel();
+
+                ApplyCoinInformationToViewModel();
+                PushViewModelsOutForRemoting();
             }
             catch (Exception ex)
             {
@@ -4819,7 +4823,9 @@ namespace MultiMiner.Win
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
 
-            ApplyModelsToViewModel();
+            localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
+                engineConfiguration.CoinConfigurations);
+            PushViewModelsOutForRemoting();
 
             engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false;
 
