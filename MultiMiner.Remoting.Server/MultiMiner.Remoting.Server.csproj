@@ -33,9 +33,11 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -49,6 +51,10 @@
     <Compile Include="Broadcast\Packet.cs" />
     <Compile Include="Broadcast\Sender.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Data\Transfer\Configuration\Application.cs" />
+    <Compile Include="Data\Transfer\Configuration\Engine.cs" />
+    <Compile Include="Data\Transfer\Configuration\Path.cs" />
+    <Compile Include="Data\Transfer\Configuration\Perks.cs" />
     <Compile Include="Data\Transfer\Device.cs" />
     <Compile Include="Data\Transfer\Machine.cs" />
     <Compile Include="IRemotingService.cs" />
@@ -71,6 +77,7 @@
       <Name>MultiMiner.Xgminer</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
