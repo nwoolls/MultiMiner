@@ -27,6 +27,11 @@ namespace MultiMiner.Utility
 
                     //special handling for nullable types
                     Type underlyingType = Nullable.GetUnderlyingType(destinationPropertyType);
+
+                    //special hanlding for enums
+                    if (underlyingType == null && destinationPropertyType.IsEnum)
+                        underlyingType = Enum.GetUnderlyingType(destinationPropertyType);
+
                     if (underlyingType != null)
                     {
                         if (sourceValue == null)
