@@ -35,8 +35,12 @@ namespace MultiMiner.Remoting.Server
 
         public void RestartMining(string signature)
         {
-            bool result = true;
             ApplicationProxy.Instance.RestartMining(this, GetClientIpAddress(), signature);
+        }
+
+        public void ScanHardware(string signature)
+        {
+            ApplicationProxy.Instance.ScanHardware(this, GetClientIpAddress(), signature);
         }
     }
 }

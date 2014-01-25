@@ -11,8 +11,9 @@ namespace MultiMiner.Remoting.Server
 
         //event declarations        
         public event RemoteEventHandler StartMiningRequested;
-        public event RemoteEventHandler StopMiningRequested;        
+        public event RemoteEventHandler StopMiningRequested;
         public event RemoteEventHandler RestartMiningRequested;
+        public event RemoteEventHandler ScanHardwareRequested;
 
         private bool mining;
         private List<Data.Transfer.Device> devices;
@@ -90,6 +91,12 @@ namespace MultiMiner.Remoting.Server
         {
             if (RestartMiningRequested != null)
                 RestartMiningRequested(sender, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
+        }
+
+        public void ScanHardware(RemotingService sender, string clientAddress, string signature)
+        {
+            if (ScanHardwareRequested != null)
+                ScanHardwareRequested(sender, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
         }
     }
 }

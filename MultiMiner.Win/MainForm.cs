@@ -707,8 +707,8 @@ namespace MultiMiner.Win
             stopMenuItem.Enabled = stopButton.Enabled;
 
             //no remote detecting devices (yet)
-            detectDevicesButton.Enabled = false;
-            detectDevicesToolStripMenuItem.Enabled = false;
+            detectDevicesButton.Enabled = !remoteInstanceMining;
+            detectDevicesToolStripMenuItem.Enabled = detectDevicesButton.Enabled;
 
             startButton.Visible = startButton.Enabled;
             stopButton.Visible = stopButton.Enabled;
@@ -1531,7 +1531,7 @@ namespace MultiMiner.Win
 
         private void detectDevicesButton_Click(object sender, EventArgs e)
         {
-            RefreshDevices();
+            ScanHardware();
         }
 
         private void coinChooseLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -1561,7 +1561,7 @@ namespace MultiMiner.Win
 
         private void scanHardwareToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RefreshDevices();
+            ScanHardware();
         }
 
         private void historyToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1879,9 +1879,6 @@ namespace MultiMiner.Win
 
         private void deviceListView_MouseUp(object sender, MouseEventArgs e)
         {
-            if (this.selectedRemoteInstance != null)
-                return;
-
             //display the devices context menu when no item is selected
             if (e.Button == MouseButtons.Right)
                 if ((deviceListView.FocusedItem == null) || !deviceListView.FocusedItem.Bounds.Contains(e.Location))
@@ -1892,7 +1889,7 @@ namespace MultiMiner.Win
 
         private void detectDevicesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RefreshDevices();
+            ScanHardware();
         }
 
         private void historyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2280,7 +2277,7 @@ namespace MultiMiner.Win
                 //refresh devices so that we are sure we have all devices 
                 //otherwise scanning could happen too early on startup,
                 //before Windows has recognized all devices
-                RefreshDevices();
+                ScanHardware();
                 Application.DoEvents();
                 StartMining();
             }
@@ -2515,6 +2512,14 @@ namespace MultiMiner.Win
             });
         }
 
+        private void ScanHardwareRequested(object sender, RemoteCommandEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                ScanHardwareLocally();
+            });
+        }
+
         private void SetupRemotingEventHandlers()
         {
             ApplicationProxy.Instance.StartMiningRequested -= StartMiningRequested;
@@ -2525,6 +2530,9 @@ namespace MultiMiner.Win
 
             ApplicationProxy.Instance.RestartMiningRequested -= RestartMiningRequested;
             ApplicationProxy.Instance.RestartMiningRequested += RestartMiningRequested;
+
+            ApplicationProxy.Instance.ScanHardwareRequested -= ScanHardwareRequested;
+            ApplicationProxy.Instance.ScanHardwareRequested += ScanHardwareRequested;
         }
 
         private void EnableRemoting()
@@ -2712,7 +2720,7 @@ namespace MultiMiner.Win
         private const uint remotingPepper = 4108157753;
         private string workGroupName = null;
 
-        private string GetStringHash(string text)
+        private static string GetStringHash(string text)
         {
             byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(text);
 
@@ -2817,6 +2825,23 @@ namespace MultiMiner.Win
                 try
                 {
                     serviceChannel.RestartMining(GetSendingSignature(instance));
+                }
+                catch (CommunicationException ex)
+                {
+                    ShowMultiMinerRemotingError(ex);
+                }
+            }
+        }
+
+        private void ScanHardwareRemotely(Instance instance)
+        {
+            using (new HourGlass())
+            {
+                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
+                try
+                {
+                    serviceChannel.ScanHardware(GetSendingSignature(instance));
+                    UpdateViewFromRemoteInTheFuture(5);
                 }
                 catch (CommunicationException ex)
                 {
@@ -3959,7 +3984,7 @@ namespace MultiMiner.Win
 
             UpdateChangesButtons(false);
 
-            RefreshDevices();
+            ScanHardware();
             //after refreshing devices
             SubmitMultiMinerStatistics();
 
@@ -4238,7 +4263,7 @@ namespace MultiMiner.Win
                 if (dialogResult == System.Windows.Forms.DialogResult.Yes)
                 {
                     InstallMiner();
-                    RefreshDevices();
+                    ScanHardware();
                     showWarning = false;
                 }
             }
@@ -4817,8 +4842,23 @@ namespace MultiMiner.Win
         }
 
         private bool updatingListView = false;
-        private void RefreshDevices()
+        private void ScanHardware()
         {
+            if (this.selectedRemoteInstance == null)
+            {
+                ScanHardwareLocally();
+            }
+            else
+            {
+                ScanHardwareRemotely(this.selectedRemoteInstance);
+            }
+        }
+
+        private void ScanHardwareLocally()
+        {
+            if (miningEngine.Mining)
+                return;
+
             updatingListView = true;
             try
             {

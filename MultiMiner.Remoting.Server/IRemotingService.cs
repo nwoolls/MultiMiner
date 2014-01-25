@@ -14,5 +14,7 @@ namespace MultiMiner.Remoting.Server
         void StartMining(string signature);
         [OperationContract]
         void RestartMining(string signature);
+        [OperationContract]
+        void ScanHardware(string signature);
     }
 }
