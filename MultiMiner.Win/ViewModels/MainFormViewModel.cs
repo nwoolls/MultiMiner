@@ -15,6 +15,7 @@ namespace MultiMiner.Win.ViewModels
         public List<DeviceViewModel> Devices { get; set; }
         public List<CryptoCoin> ConfiguredCoins { get; set; }
         public bool HasChanges { get; set; }
+        public bool DynamicIntensity { get; set; }
 
         public MainFormViewModel()
         {

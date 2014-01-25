@@ -9,9 +9,12 @@ namespace MultiMiner.Remoting.Server
     public interface IRemotingService
     {
         [OperationContract]
-        void GetDevices(out IEnumerable<Data.Transfer.Device> devices, out bool mining, out bool hasChanges);
-        [OperationContract]
-        void GetConfiguredCoins(out IEnumerable<CryptoCoin> configurations);
+        void GetApplicationModels(
+            out IEnumerable<Data.Transfer.Device> devices, 
+            out IEnumerable<CryptoCoin> configurations, 
+            out bool mining, 
+            out bool hasChanges,
+            out bool dynamicIntensity);
         [OperationContract]
         void StopMining(string signature);
         [OperationContract]
@@ -30,5 +33,7 @@ namespace MultiMiner.Remoting.Server
         void CancelChanges(string signature);
         [OperationContract]
         void ToggleDevices(string signature, IEnumerable<DeviceDescriptor> devices, bool enabled);
+        [OperationContract]
+        void ToggleDynamicIntensity(string signature, bool enabled);
     }
 }

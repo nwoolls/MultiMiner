@@ -549,7 +549,7 @@ namespace MultiMiner.Win
             saveToolStripMenuItem.Enabled = hasChanges;
             cancelToolStripMenuItem.Enabled = hasChanges;
 
-            ApplicationProxy.Instance.HasChanges = hasChanges;
+            PushViewModelsOutForRemoting();
         }
 
         private void RefreshDetailsAreaIfVisible()
@@ -576,9 +576,6 @@ namespace MultiMiner.Win
 
         private void RefreshCoinPopupMenu()
         {
-            if ((this.selectedRemoteInstance != null) && (this.remoteViewModel.ConfiguredCoins.Count == 0))
-                FetchRemoteConfiguredCoins(this.selectedRemoteInstance);
-
             coinPopupMenu.Items.Clear();
 
             MainFormViewModel viewModelToView = GetViewModelToView();
@@ -807,9 +804,6 @@ namespace MultiMiner.Win
 
         private void RefreshQuickSwitchMenu(ToolStripDropDownItem parent)
         {
-            if ((this.selectedRemoteInstance != null) && (this.remoteViewModel.ConfiguredCoins.Count == 0))
-                FetchRemoteConfiguredCoins(this.selectedRemoteInstance);
-
             quickCoinMenu.Items.Clear();
 
             MainFormViewModel viewModelToView = GetViewModelToView();
@@ -1275,8 +1269,6 @@ namespace MultiMiner.Win
             RefreshStrategiesLabel();
             RefreshStrategiesCountdown();
 
-            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
-
             //already done in ctor //applicationConfiguration.LoadApplicationConfiguration();
 
             perksConfiguration.LoadPerksConfiguration(pathConfiguration.SharedConfigPath);
@@ -1327,6 +1319,8 @@ namespace MultiMiner.Win
             ClearPoolsFlaggedDown();
 
             ApplyModelsToViewModel();
+            localViewModel.DynamicIntensity = engineConfiguration.XgminerConfiguration.DesktopMode;
+            dynamicIntensityButton.Checked = localViewModel.DynamicIntensity;
 
             //allow resize/maximize/etc to render
             Application.DoEvents();
@@ -1990,9 +1984,6 @@ namespace MultiMiner.Win
 
         private void deviceListContextMenu_Opening(object sender, CancelEventArgs e)
         {
-            if ((this.selectedRemoteInstance != null) && (this.remoteViewModel.ConfiguredCoins.Count == 0))
-                FetchRemoteConfiguredCoins(this.selectedRemoteInstance);
-
             //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
 
             quickSwitchPopupItem.Enabled = GetViewModelToView().ConfiguredCoins.Count() > 0;
@@ -2129,7 +2120,9 @@ namespace MultiMiner.Win
             quickSwitchItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
             //
             dynamicIntensityButton.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
-            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
+
+            dynamicIntensityButton.Checked = GetViewModelToView().DynamicIntensity;
+
             dynamicIntensitySeparator.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
         }
 
@@ -2646,6 +2639,14 @@ namespace MultiMiner.Win
             });
         }
 
+        private void ToggleDynamicIntensityRequested(object sender, bool enabled, RemoteCommandEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                ToggleDynamicIntensityLocally(enabled);
+            });
+        }
+
         private void SetupRemotingEventHandlers()
         {
             ApplicationProxy.Instance.StartMiningRequested -= StartMiningRequested;
@@ -2674,6 +2675,9 @@ namespace MultiMiner.Win
 
             ApplicationProxy.Instance.ToggleDevicesRequested -= ToggleDevicesRequested;
             ApplicationProxy.Instance.ToggleDevicesRequested += ToggleDevicesRequested;
+            
+            ApplicationProxy.Instance.ToggleDynamicIntensityRequested -= ToggleDynamicIntensityRequested;
+            ApplicationProxy.Instance.ToggleDynamicIntensityRequested += ToggleDynamicIntensityRequested;
         }
 
         private void EnableRemoting()
@@ -2832,31 +2836,16 @@ namespace MultiMiner.Win
             {
                 IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
                 IEnumerable<Remoting.Server.Data.Transfer.Device> devices;
-                bool mining;
-                bool hasChanges;
+                IEnumerable<CryptoCoin> configurations;
+
+                bool mining, hasChanges, dynamicIntensity;
                 try
                 {
-                    serviceChannel.GetDevices(out devices, out mining, out hasChanges);
+                    serviceChannel.GetApplicationModels(out devices, out configurations, out mining, out hasChanges, out dynamicIntensity);
                     this.remoteInstanceMining = mining;
                     this.remoteViewModel.HasChanges = hasChanges;
+                    this.remoteViewModel.DynamicIntensity = dynamicIntensity;
                     SaveDeviceTransferObjects(devices);
-                }
-                catch (CommunicationException ex)
-                {
-                    ShowMultiMinerRemotingError(ex);
-                }
-            }
-        }
-
-        private void FetchRemoteConfiguredCoins(Instance instance)
-        {
-            using (new HourGlass())
-            {
-                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
-                IEnumerable<CryptoCoin> configurations;
-                try
-                {
-                    serviceChannel.GetConfiguredCoins(out configurations);
                     SaveCoinTransferObjects(configurations);
                 }
                 catch (CommunicationException ex)
@@ -3116,6 +3105,23 @@ namespace MultiMiner.Win
             }
         }
 
+        private void ToggleDynamicIntensityRemotely(Instance instance, bool enabled)
+        {
+            using (new HourGlass())
+            {
+                IRemotingService serviceChannel = GetServiceChannelForInstance(instance);
+                try
+                {
+                    serviceChannel.ToggleDynamicIntensity(GetSendingSignature(instance), enabled);
+                    UpdateViewFromRemoteInTheFuture(2);
+                }
+                catch (CommunicationException ex)
+                {
+                    ShowMultiMinerRemotingError(ex);
+                }
+            }
+        }
+
         private void SetDevicesToCoin(List<DeviceDescriptor> devices, string coinSymbol)
         {
             if (this.selectedRemoteInstance == null)
@@ -3149,6 +3155,9 @@ namespace MultiMiner.Win
         {
             PushDeviceViewModelsOutForRemoting();
             PushCoinViewModelsOutForRemoting();
+            ApplicationProxy.Instance.Mining = miningEngine.Mining;
+            ApplicationProxy.Instance.DynamicIntensity = localViewModel.DynamicIntensity;
+            ApplicationProxy.Instance.HasChanges = localViewModel.HasChanges;
         }
 
         private void PushCoinViewModelsOutForRemoting()
@@ -5048,7 +5057,6 @@ namespace MultiMiner.Win
 
             localViewModel.ClearDeviceInformationFromViewModel();
             PushViewModelsOutForRemoting();
-            ApplicationProxy.Instance.Mining = false;
 
             processDeviceDetails.Clear();
             deviceStatsTimer.Enabled = false;
@@ -5281,8 +5289,6 @@ namespace MultiMiner.Win
                 return;
             }
 
-            ApplicationProxy.Instance.Mining = true;
-
             //do this AFTER we start mining to pick up any Auto-Mining changes
 
             //create a deep clone of the mining & device configurations
@@ -5317,11 +5323,26 @@ namespace MultiMiner.Win
             UpdateMiningButtons();
         }
 
-        private void ToggleDynamicIntensity(bool enabled)
+        private void ToggleDynamicIntensityLocally(bool enabled)
         {
             engineConfiguration.XgminerConfiguration.DesktopMode = enabled;
             dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
             engineConfiguration.SaveMinerConfiguration();
+
+            GetViewModelToView().DynamicIntensity = enabled;
+            PushViewModelsOutForRemoting();
+        }
+
+        private void ToggleDynamicIntensity(bool enabled)
+        {
+            if (this.selectedRemoteInstance == null)
+            {
+                ToggleDynamicIntensityLocally(enabled);
+            }
+            else
+            {
+                ToggleDynamicIntensityRemotely(this.selectedRemoteInstance, enabled);
+            }
         }
 
         private void ClearPoolsFlaggedDown()

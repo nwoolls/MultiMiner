@@ -11,11 +11,18 @@ namespace MultiMiner.Remoting.Server
     [ServiceBehavior(IncludeExceptionDetailInFaults = true, UseSynchronizationContext = false)]
     public class RemotingService : IRemotingService
     {
-        public void GetDevices(out IEnumerable<Data.Transfer.Device> devices, out bool mining, out bool hasChanges)
+        public void GetApplicationModels(
+            out IEnumerable<Data.Transfer.Device> devices,
+            out IEnumerable<CryptoCoin> configurations,
+            out bool mining, 
+            out bool hasChanges,
+            out bool dynamicIntensity)
         {
             devices = ApplicationProxy.Instance.Devices.ToList();
+            configurations = ApplicationProxy.Instance.ConfiguredCoins.ToList();
             mining = ApplicationProxy.Instance.Mining;
             hasChanges = ApplicationProxy.Instance.HasChanges;
+            dynamicIntensity = ApplicationProxy.Instance.DynamicIntensity;
         }
 
         private static string GetClientIpAddress()
@@ -56,11 +63,6 @@ namespace MultiMiner.Remoting.Server
             ApplicationProxy.Instance.CancelChanges(this, GetClientIpAddress(), signature);
         }
 
-        public void GetConfiguredCoins(out IEnumerable<CryptoCoin> configurations)
-        {
-            configurations = ApplicationProxy.Instance.ConfiguredCoins.ToList();
-        }
-
         public void SetAllDevicesToCoin(string signature, string coinSymbol)
         {
             ApplicationProxy.Instance.SetAllDevicesToCoin(this, GetClientIpAddress(), signature, coinSymbol);
@@ -74,6 +76,11 @@ namespace MultiMiner.Remoting.Server
         public void ToggleDevices(string signature, IEnumerable<DeviceDescriptor> devices, bool enabled)
         {
             ApplicationProxy.Instance.ToggleDevices(this, GetClientIpAddress(), signature, devices, enabled);
+        }
+
+        public void ToggleDynamicIntensity(string signature, bool enabled)
+        {
+            ApplicationProxy.Instance.ToggleDynamicIntensity(this, GetClientIpAddress(), signature, enabled);
         }
     }
 }

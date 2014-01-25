@@ -13,6 +13,7 @@ namespace MultiMiner.Remoting.Server
         public delegate void AllCoinEventHandler(object sender, string coinSymbol, RemoteCommandEventArgs ea);
         public delegate void DevicesCoinEventHandler(object sender, IEnumerable<DeviceDescriptor> devices, string coinSymbol, RemoteCommandEventArgs ea);
         public delegate void ToggleDevicesEventHandler(object sender, IEnumerable<DeviceDescriptor> devices, bool enabled, RemoteCommandEventArgs ea);
+        public delegate void ToggleEventHandler(object sender, bool enabled, RemoteCommandEventArgs ea);
 
         //event declarations        
         public event RemoteEventHandler StartMiningRequested;
@@ -24,7 +25,9 @@ namespace MultiMiner.Remoting.Server
         public event RemoteEventHandler SaveChangesRequested;
         public event RemoteEventHandler CancelChangesRequested;
         public event ToggleDevicesEventHandler ToggleDevicesRequested;
+        public event ToggleEventHandler ToggleDynamicIntensityRequested;
 
+        private bool dynamicIntensity;
         private bool mining;
         private bool hasChanges;
         private List<Data.Transfer.Device> devices;
@@ -123,6 +126,24 @@ namespace MultiMiner.Remoting.Server
             }
         }
 
+        public bool DynamicIntensity
+        {
+            get
+            {
+                lock (syncRoot)
+                {
+                    return dynamicIntensity;
+                }
+            }
+            set
+            {
+                lock (syncRoot)
+                {
+                    dynamicIntensity = value;
+                }
+            }
+        }
+
         public void StopMining(RemotingService sender, string clientAddress, string signature)
         {
             if (StopMiningRequested != null)
@@ -175,6 +196,12 @@ namespace MultiMiner.Remoting.Server
         {
             if (ToggleDevicesRequested != null)
                 ToggleDevicesRequested(sender, devices, enabled, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
+        }
+
+        public void ToggleDynamicIntensity(MultiMiner.Remoting.Server.RemotingService sender, string clientAddress, string signature, bool enabled)
+        {
+            if (ToggleDynamicIntensityRequested != null)
+                ToggleDynamicIntensityRequested(sender, enabled, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
         }
     }
 }
