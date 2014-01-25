@@ -153,10 +153,14 @@ namespace MultiMiner.Win
             treeView1.BeginUpdate();
             try
             {
-            string key = treeView1.SelectedNode == null ? null : treeView1.SelectedNode.Name;
-            treeView1.Sort();
-            if (!String.IsNullOrEmpty(key))
-                treeView1.SelectedNode = treeView1.Nodes[0].Nodes.Find(key, false).First();
+                string key = treeView1.SelectedNode == null ? null : treeView1.SelectedNode.Name;
+                treeView1.Sort();
+                if (!String.IsNullOrEmpty(key))
+                {
+                    TreeNode[] foundNodes = treeView1.Nodes[0].Nodes.Find(key, false);
+                    if (foundNodes.Length > 0)
+                        treeView1.SelectedNode = foundNodes.First();
+                }
             }
             finally
             {
