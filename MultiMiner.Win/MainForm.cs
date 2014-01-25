@@ -2523,7 +2523,8 @@ namespace MultiMiner.Win
             if (remotingServer != null)
                 remotingServer.Shutdown();
 
-            broadcastListener.Stop();
+            if (broadcastListener != null)
+                broadcastListener.Stop();
 
             instancesControl.Visible = false;
             instancesContainer.Panel1Collapsed = true;
