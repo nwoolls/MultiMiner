@@ -23,11 +23,6 @@ namespace MultiMiner.Win
             this.coins = knownCoins;
         }
 
-        private void configureMobileMinerPage_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void mobileMinerInfoLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("http://mobileminerapp.com/");
@@ -278,6 +273,8 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
             result.PerksEnabled = perksCheckBox.Checked;
             result.ShowExchangeRates = coinbaseCheckBox.Checked;
             result.ShowIncomeRates = incomeCheckBox.Checked;
+            result.EnableRemoting = remotingCheckBox.Checked;
+            result.RemotingPassword = remotingPasswordEdit.Text;
 
             return result;
         }
@@ -340,6 +337,8 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
         {
             this.coinbaseCheckBox.Enabled = perksCheckBox.Checked;
             this.incomeCheckBox.Enabled = perksCheckBox.Checked;
+            this.remotingCheckBox.Enabled = perksCheckBox.Checked;
+            this.remotingPasswordEdit.Enabled = perksCheckBox.Checked;
         }
     }
 }

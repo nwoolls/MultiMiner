@@ -63,6 +63,9 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.configurePerksPage = new System.Windows.Forms.TabPage();
+            this.label3 = new System.Windows.Forms.Label();
+            this.remotingPasswordEdit = new System.Windows.Forms.TextBox();
+            this.remotingCheckBox = new System.Windows.Forms.CheckBox();
             this.smileyPicture = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -358,7 +361,6 @@
             this.configureMobileMinerPage.TabIndex = 4;
             this.configureMobileMinerPage.Text = "Configure MobileMiner";
             this.configureMobileMinerPage.UseVisualStyleBackColor = true;
-            this.configureMobileMinerPage.Click += new System.EventHandler(this.configureMobileMinerPage_Click);
             // 
             // mobileMinerInfoLink
             // 
@@ -451,6 +453,9 @@
             // 
             // configurePerksPage
             // 
+            this.configurePerksPage.Controls.Add(this.label3);
+            this.configurePerksPage.Controls.Add(this.remotingPasswordEdit);
+            this.configurePerksPage.Controls.Add(this.remotingCheckBox);
             this.configurePerksPage.Controls.Add(this.smileyPicture);
             this.configurePerksPage.Controls.Add(this.pictureBox3);
             this.configurePerksPage.Controls.Add(this.label2);
@@ -465,10 +470,37 @@
             this.configurePerksPage.Text = "Configure Perks";
             this.configurePerksPage.UseVisualStyleBackColor = true;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(133, 199);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(115, 15);
+            this.label3.TabIndex = 23;
+            this.label3.Text = "Password (optional):";
+            // 
+            // remotingPasswordEdit
+            // 
+            this.remotingPasswordEdit.Location = new System.Drawing.Point(255, 196);
+            this.remotingPasswordEdit.Name = "remotingPasswordEdit";
+            this.remotingPasswordEdit.Size = new System.Drawing.Size(102, 23);
+            this.remotingPasswordEdit.TabIndex = 22;
+            this.remotingPasswordEdit.UseSystemPasswordChar = true;
+            // 
+            // remotingCheckBox
+            // 
+            this.remotingCheckBox.AutoSize = true;
+            this.remotingCheckBox.Location = new System.Drawing.Point(117, 167);
+            this.remotingCheckBox.Name = "remotingCheckBox";
+            this.remotingCheckBox.Size = new System.Drawing.Size(178, 19);
+            this.remotingCheckBox.TabIndex = 21;
+            this.remotingCheckBox.Text = "Enable MultiMiner Remoting";
+            this.remotingCheckBox.UseVisualStyleBackColor = true;
+            // 
             // smileyPicture
             // 
             this.smileyPicture.Image = global::MultiMiner.Win.Properties.Resources.smiley_happy;
-            this.smileyPicture.Location = new System.Drawing.Point(302, 83);
+            this.smileyPicture.Location = new System.Drawing.Point(294, 83);
             this.smileyPicture.Name = "smileyPicture";
             this.smileyPicture.Size = new System.Drawing.Size(20, 20);
             this.smileyPicture.TabIndex = 15;
@@ -498,7 +530,7 @@
             // incomeCheckBox
             // 
             this.incomeCheckBox.AutoSize = true;
-            this.incomeCheckBox.Location = new System.Drawing.Point(125, 138);
+            this.incomeCheckBox.Location = new System.Drawing.Point(117, 138);
             this.incomeCheckBox.Name = "incomeCheckBox";
             this.incomeCheckBox.Size = new System.Drawing.Size(224, 19);
             this.incomeCheckBox.TabIndex = 12;
@@ -508,17 +540,17 @@
             // coinbaseCheckBox
             // 
             this.coinbaseCheckBox.AutoSize = true;
-            this.coinbaseCheckBox.Location = new System.Drawing.Point(125, 110);
+            this.coinbaseCheckBox.Location = new System.Drawing.Point(117, 110);
             this.coinbaseCheckBox.Name = "coinbaseCheckBox";
-            this.coinbaseCheckBox.Size = new System.Drawing.Size(217, 19);
+            this.coinbaseCheckBox.Size = new System.Drawing.Size(244, 19);
             this.coinbaseCheckBox.TabIndex = 11;
-            this.coinbaseCheckBox.Text = "Show exchange rates from Coinbase";
+            this.coinbaseCheckBox.Text = "Show exchange rates from Coinbase.com";
             this.coinbaseCheckBox.UseVisualStyleBackColor = true;
             // 
             // perksCheckBox
             // 
             this.perksCheckBox.AutoSize = true;
-            this.perksCheckBox.Location = new System.Drawing.Point(104, 82);
+            this.perksCheckBox.Location = new System.Drawing.Point(96, 82);
             this.perksCheckBox.Name = "perksCheckBox";
             this.perksCheckBox.Size = new System.Drawing.Size(192, 19);
             this.perksCheckBox.TabIndex = 10;
@@ -655,5 +687,8 @@
         private System.Windows.Forms.CheckBox coinbaseCheckBox;
         private System.Windows.Forms.CheckBox perksCheckBox;
         private System.Windows.Forms.PictureBox smileyPicture;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox remotingPasswordEdit;
+        private System.Windows.Forms.CheckBox remotingCheckBox;
     }
 }
