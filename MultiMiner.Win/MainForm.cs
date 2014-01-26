@@ -485,7 +485,7 @@ namespace MultiMiner.Win
 
         private void SaveChangesLocally()
         {
-            SaveListViewValuesToConfiguration();
+            SaveViewModelValuesToConfiguration();
             engineConfiguration.SaveDeviceConfigurations();
             
             localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
@@ -1622,25 +1622,22 @@ namespace MultiMiner.Win
             ConfigurationReaderWriter.WriteConfiguration(knownCoins, KnownCoinsFileName());
         }
 
-        private void SaveListViewValuesToConfiguration()
+        private void SaveViewModelValuesToConfiguration()
         {
             engineConfiguration.DeviceConfigurations.Clear();
 
             for (int i = 0; i < devices.Count; i++)
             {
-                ListViewItem listViewItem = deviceListView.Items[i];
+                DeviceViewModel viewModel = localViewModel.Devices[i];
 
                 //pull this from coin configurations, not known coins, may not be in CoinChoose
-                string coinValue = listViewItem.SubItems["Coin"].Text;
-                CryptoCoin coin = null;
-                if (!String.IsNullOrEmpty(coinValue))
-                    coin = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinValue, StringComparison.OrdinalIgnoreCase)).Coin;
+                CryptoCoin coin = viewModel.Coin;
 
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
-                deviceConfiguration.Assign(devices[i]);
+                deviceConfiguration.Assign(viewModel);
 
-                deviceConfiguration.Enabled = listViewItem.Checked;
+                deviceConfiguration.Enabled = viewModel.Enabled;
                 deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
 
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
@@ -5063,29 +5060,24 @@ namespace MultiMiner.Win
 
             for (int i = 0; i < devices.Count; i++)
             {
-                ListViewItem listViewItem = deviceListView.Items[i];
-
-                Device device = devices[i];
-                //don't use KnownCoins as it may have dupes by coin name
-                CoinConfiguration existingConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Name.Equals(listViewItem.SubItems["Coin"].Text));
-
+                DeviceViewModel viewModel = localViewModel.Devices[i];
+                
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
-
-                deviceConfiguration.Assign(device);
+                deviceConfiguration.Assign(viewModel);
 
                 if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
                 {
-                    if (device.Kind == DeviceKind.GPU)
+                    if (viewModel.Kind == DeviceKind.GPU)
                         deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
                     else
-                        deviceConfiguration.CoinSymbol = existingConfiguration == null ? String.Empty : existingConfiguration.Coin.Symbol;
+                        deviceConfiguration.CoinSymbol = viewModel.Coin == null ? String.Empty : viewModel.Coin.Name;
                 }
                 else
                 {
                     deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
                 }
 
-                deviceConfiguration.Enabled = listViewItem.Checked;
+                deviceConfiguration.Enabled = viewModel.Enabled;
 
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
