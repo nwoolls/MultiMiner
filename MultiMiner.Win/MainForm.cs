@@ -1684,7 +1684,6 @@ namespace MultiMiner.Win
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            //SaveChanges() will restart mining if needed
             SaveChanges();
         }
 
@@ -2475,9 +2474,9 @@ namespace MultiMiner.Win
                 //refresh devices so that we are sure we have all devices 
                 //otherwise scanning could happen too early on startup,
                 //before Windows has recognized all devices
-                ScanHardware();
+                ScanHardwareLocally();
                 Application.DoEvents();
-                StartMining();
+                StartMiningLocally();
             }
         }
 
@@ -2516,8 +2515,8 @@ namespace MultiMiner.Win
                 {
                     if (engineConfiguration.XgminerConfiguration.DesktopMode)
                     {
-                        ToggleDynamicIntensity(false);
-                        RestartMiningIfMining();
+                        ToggleDynamicIntensityLocally(false);
+                        RestartMiningLocallyIfMining();
                     }
                 }
                 //else if idle for less than the idleTimer interval, enable Desktop Mode
@@ -2525,8 +2524,8 @@ namespace MultiMiner.Win
                 {
                     if (!engineConfiguration.XgminerConfiguration.DesktopMode)
                     {
-                        ToggleDynamicIntensity(true);
-                        RestartMiningIfMining();
+                        ToggleDynamicIntensityLocally(true);
+                        RestartMiningLocallyIfMining();
                     }
                 }
             }
@@ -2576,7 +2575,7 @@ namespace MultiMiner.Win
 
         private void restartTimer_Tick(object sender, EventArgs e)
         {
-            RestartMiningIfMining();
+            RestartMiningLocallyIfMining();
         }
 
         private void remotingBroadcastTimer_Tick(object sender, EventArgs e)
@@ -3627,14 +3626,11 @@ namespace MultiMiner.Win
                             //check to make sure there are no modal windows already
                             if (!ShowingModalDialog())
                             {
-                                if (InvokeRequired)
-                                    BeginInvoke((Action)(() =>
-                                    {
-                                        //code to update UI
-                                        ConfigureSettings();
-                                    }));
-                                else
-                                    ConfigureSettings();
+                                BeginInvoke((Action)(() =>
+                                {
+                                    //code to update UI
+                                    ConfigureSettingsLocally();
+                                }));
                             }
                         }
                     }
@@ -3749,27 +3745,21 @@ namespace MultiMiner.Win
                                     //check to make sure there are no modal windows already
                                     if (!ShowingModalDialog())
                                     {
-                                        if (InvokeRequired)
-                                            BeginInvoke((Action)(() =>
-                                            {
-                                                //code to update UI
-                                                ConfigureSettings();
-                                            }));
-                                        else
-                                            ConfigureSettings();
+                                        BeginInvoke((Action)(() =>
+                                        {
+                                            //code to update UI
+                                            ConfigureSettingsLocally();
+                                        }));
                                     }
                                 }
                             }
                             else if (applicationConfiguration.ShowApiErrors)
                             {
-                                if (InvokeRequired)
-                                    BeginInvoke((Action)(() =>
-                                    {
-                                        //code to update UI
-                                        ShowMobileMinerApiErrorNotification(webException);
-                                    }));
-                                else
+                                BeginInvoke((Action)(() =>
+                                {
+                                    //code to update UI
                                     ShowMobileMinerApiErrorNotification(webException);
+                                }));
                             }
                         }
                     }
@@ -3801,16 +3791,16 @@ namespace MultiMiner.Win
 
                 if (command.CommandText.Equals("START", StringComparison.OrdinalIgnoreCase))
                 {
-                    SaveChanges(); //necessary to ensure device configurations exist for devices
-                    StartMining();
+                    SaveChangesLocally(); //necessary to ensure device configurations exist for devices
+                    StartMiningLocally();
                 }
                 else if (command.CommandText.Equals("STOP", StringComparison.OrdinalIgnoreCase))
-                    StopMining();
+                    StopMiningLocally();
                 else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
                 {
-                    StopMining();
-                    SaveChanges(); //necessary to ensure device configurations exist for devices
-                    StartMining();
+                    StopMiningLocally();
+                    SaveChangesLocally(); //necessary to ensure device configurations exist for devices
+                    StartMiningLocally();
                 }
 
                 if (deleteRemoteCommandDelegate == null)
@@ -4347,7 +4337,7 @@ namespace MultiMiner.Win
                         //if no enabled configurations, stop mining
                         int enabledConfigurations = engineConfiguration.CoinConfigurations.Count(config => config.Enabled && !config.PoolsDown);
                         if (enabledConfigurations == 0)
-                            StopMining();
+                            StopMiningLocally();
                         else
                             //if there are enabled configurations, apply mining strategy
                             CheckAndApplyMiningStrategy();
@@ -4362,7 +4352,7 @@ namespace MultiMiner.Win
 
                     notificationsControl.AddNotification(notificationReason, notificationReason, () =>
                     {
-                        ConfigureCoins();
+                        ConfigureCoinsLocally();
                     }, "");
                 }
                 else
@@ -4378,7 +4368,7 @@ namespace MultiMiner.Win
                         string notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
                         notificationsControl.AddNotification(notificationReason, notificationReason, () =>
                         {
-                            ConfigureCoins();
+                            ConfigureCoinsLocally();
                         }, "");
                     }
                 }
@@ -4392,7 +4382,7 @@ namespace MultiMiner.Win
                 //code to update UI
                 notificationsControl.AddNotification(ea.Reason, ea.Reason, () =>
                 {
-                    ConfigureCoins();
+                    ConfigureCoinsLocally();
                 }, "");
             }));
         }
@@ -4479,7 +4469,7 @@ namespace MultiMiner.Win
 
             UpdateChangesButtons(false);
 
-            ScanHardware();
+            ScanHardwareLocally();
             //after refreshing devices
             SubmitMultiMinerStatistics();
 
@@ -4572,7 +4562,7 @@ namespace MultiMiner.Win
                     tip = "Tip: enabling perks gives back to the author";
                     notificationsControl.AddNotification(tip, tip, () =>
                     {
-                        ConfigurePerks();
+                        ConfigurePerksLocally();
                     }, "");
                     applicationConfiguration.TipsShown++;
                     break;
@@ -4758,7 +4748,7 @@ namespace MultiMiner.Win
                 if (dialogResult == System.Windows.Forms.DialogResult.Yes)
                 {
                     InstallMiner();
-                    ScanHardware();
+                    ScanHardwareLocally();
                     showWarning = false;
                 }
             }
@@ -4949,10 +4939,10 @@ namespace MultiMiner.Win
                         availableMinerVersion, installedMinerVersion), () =>
                         {
                             bool wasMining = miningEngine.Mining;
-                            StopMining();
+                            StopMiningLocally();
                             InstallMultiMiner();
                             if (wasMining)
-                                StartMining();
+                                StartMiningLocally();
                         }, "http://releases.multiminerapp.com");
             }
         }
@@ -5007,13 +4997,13 @@ namespace MultiMiner.Win
 
                         //only stop mining if this is the engine being used
                         if (wasMining)
-                            StopMining();
+                            StopMiningLocally();
 
                         InstallMiner();
 
                         //only start mining if we stopped mining
                         if (wasMining)
-                            StartMining();
+                            StartMiningLocally();
                     }, informationUrl);
         }
 
@@ -5065,7 +5055,7 @@ namespace MultiMiner.Win
         private void SetAllDevicesToCoinLocally(string coinSymbol)
         {
             bool wasMining = miningEngine.Mining;
-            StopMining();
+            StopMiningLocally();
 
             CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Coin.Symbol.Equals(coinSymbol));
 
@@ -5113,7 +5103,7 @@ namespace MultiMiner.Win
             AutoSizeListViewColumns();
 
             if (wasMining)
-                StartMining();
+                StartMiningLocally();
             else
                 //so the Start button becomes enabled if we now have a valid config
                 UpdateMiningButtons();
@@ -5285,21 +5275,21 @@ namespace MultiMiner.Win
 
         private void RestartMiningLocally()
         {
-            StopMining();
+            StopMiningLocally();
 
             //refresh stats from Coin API so the Restart button can be used as a way to
             //force MultiMiner to apply updated mining strategies
             RefreshCoinStats();
 
-            StartMining();
+            StartMiningLocally();
         }
 
-        private void RestartMiningIfMining()
+        private void RestartMiningLocallyIfMining()
         {
             if (miningEngine.Mining)
             {
-                StopMining();
-                StartMining();
+                StopMiningLocally();
+                StartMiningLocally();
             }
         }
 
@@ -5464,12 +5454,11 @@ namespace MultiMiner.Win
         private void StartMiningLocally()
         {
             if (applicationConfiguration.AutoSetDesktopMode)
-                ToggleDynamicIntensity(true);
+                ToggleDynamicIntensityLocally(true);
 
             CancelMiningOnStartup(); //in case clicked during countdown
 
-            if (this.selectedRemoteInstance == null)
-                SaveChanges();
+            SaveChangesLocally();
 
             if (!MiningConfigurationValid())
                 return;
