@@ -148,7 +148,7 @@ namespace MultiMiner.Win.ViewModels
         public void ApplyDeviceDetailsResponseModels(string coinSymbol, List<DeviceDetailsResponse> deviceDetailsList)
         {
             //for getting Proxy worker names
-            DeviceViewModel proxyDevice = Devices.SingleOrDefault(d => (d.Kind == DeviceKind.PXY) && d.Coin.Symbol.Equals(coinSymbol));
+            DeviceViewModel proxyDevice = Devices.SingleOrDefault(d => (d.Kind == DeviceKind.PXY) && (d.Coin != null) && d.Coin.Symbol.Equals(coinSymbol));
 
             if (proxyDevice != null)
             {
