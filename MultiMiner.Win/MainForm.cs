@@ -491,8 +491,7 @@ namespace MultiMiner.Win
             localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
                 engineConfiguration.CoinConfigurations);
 
-            if (this.selectedRemoteInstance == null)
-                UpdateChangesButtons(false);
+            SetHasChangesLocally(false);
 
             Application.DoEvents();
 
@@ -526,28 +525,60 @@ namespace MultiMiner.Win
 
             RefreshListViewFromViewModel();
 
-            if (this.selectedRemoteInstance == null)
-                UpdateChangesButtons(false);
+            SetHasChangesLocally(false);
             AutoSizeListViewColumns();
         }
         #endregion
 
         #region View population
-        private void UpdateChangesButtons(bool hasChanges)
+        private void SetHasChanges(bool hasChanges)
         {
             if (this.selectedRemoteInstance == null)
-                this.localViewModel.HasChanges = hasChanges;
+            {
+                SetHasChangesLocally(hasChanges);
+            }
+            else
+            {
+                SetHasChangesRemotely(hasChanges);
+            }
+        }
 
-            saveButton.Visible = hasChanges;
-            cancelButton.Visible = hasChanges;
-            saveSeparator.Visible = hasChanges;
+        private void SetHasChangesLocally(bool hasChanges)
+        {
+            this.localViewModel.HasChanges = hasChanges;
 
-            saveButton.Enabled = hasChanges;
-            cancelButton.Enabled = hasChanges;
+            if (this.selectedRemoteInstance == null)
+            {
+                saveButton.Visible = hasChanges;
+                cancelButton.Visible = hasChanges;
+                saveSeparator.Visible = hasChanges;
 
-            //accessible menu
-            saveToolStripMenuItem.Enabled = hasChanges;
-            cancelToolStripMenuItem.Enabled = hasChanges;
+                saveButton.Enabled = hasChanges;
+                cancelButton.Enabled = hasChanges;
+
+                //accessible menu
+                saveToolStripMenuItem.Enabled = hasChanges;
+                cancelToolStripMenuItem.Enabled = hasChanges;
+            }
+        }
+
+        private void SetHasChangesRemotely(bool hasChanges)
+        {
+            this.remoteViewModel.HasChanges = hasChanges;
+
+            if (this.selectedRemoteInstance != null)
+            {
+                saveButton.Visible = hasChanges;
+                cancelButton.Visible = hasChanges;
+                saveSeparator.Visible = hasChanges;
+
+                saveButton.Enabled = hasChanges;
+                cancelButton.Enabled = hasChanges;
+
+                //accessible menu
+                saveToolStripMenuItem.Enabled = hasChanges;
+                cancelToolStripMenuItem.Enabled = hasChanges;
+            }
         }
 
         private void RefreshDetailsAreaIfVisible()
@@ -1675,8 +1706,7 @@ namespace MultiMiner.Win
 
             AutoSizeListViewColumns();
 
-            if (this.selectedRemoteInstance == null)
-                UpdateChangesButtons(true);
+            SetHasChangesLocally(true);
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -2181,8 +2211,7 @@ namespace MultiMiner.Win
                     viewModel.Enabled = enabled;
             }
 
-            if (!updatingListView)
-                UpdateChangesButtons(true);
+            SetHasChangesLocally(true);
 
             RefreshListViewFromViewModel();
         }
@@ -2595,7 +2624,7 @@ namespace MultiMiner.Win
                 return;
 
             GetRemoteApplicationModels(this.selectedRemoteInstance);
-            UpdateChangesButtons(this.remoteViewModel.HasChanges);
+            SetHasChanges(this.remoteViewModel.HasChanges);
 
             updatingListView = true;
             try
@@ -3086,7 +3115,7 @@ namespace MultiMiner.Win
             RefreshIncomeSummary();
             UpdateMiningButtons();
             RefreshCoinPopupMenu();
-            UpdateChangesButtons(GetViewModelToView().HasChanges);
+            SetHasChanges(GetViewModelToView().HasChanges);
             RefreshStatusBarFromViewModel();
         }
 
@@ -4450,7 +4479,7 @@ namespace MultiMiner.Win
             logLaunchArgsBindingSource.DataSource = logLaunchEntries;
             logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
 
-            UpdateChangesButtons(false);
+            SetHasChangesLocally(false);
 
             //check for disowned miners before refreshing devices
             if (applicationConfiguration.DetectDisownedMiners)
@@ -4464,7 +4493,7 @@ namespace MultiMiner.Win
 
             SetupAutoUpdates();
 
-            UpdateChangesButtons(false);
+            SetHasChangesLocally(false);
 
             ScanHardwareLocally();
             //after refreshing devices
