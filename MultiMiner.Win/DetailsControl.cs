@@ -67,6 +67,7 @@ namespace MultiMiner.Win
             noDetailsPanel.Dock = DockStyle.Fill;
             noDetailsPanel.BringToFront();
             noDetailsPanel.Visible = true;
+            closeDetailsButton.BringToFront();
         }
 
         public void InspectDetails(DeviceViewModel deviceViewModel, bool showWorkUtility)
