@@ -212,6 +212,128 @@ namespace MultiMiner.Engine
             };
             donationConfiguration.Pools.Add(donationPool);
 
+            //DOG
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "DOG";
+            donationConfiguration.Pools.Add(donationPool);
+
+            //ASC
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "ASC";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://de1.miningpool.co",
+                Port = 10601,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            //DGC
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "ASC";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://us.miningpool.co",
+                Port = 9102,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            //FST
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "FST";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://de1.miningpool.co",
+                Port = 9203,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            //FRK
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "FRK";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://de2.miningpool.co",
+                Port = 4101,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            //GLC
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "GLC";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://de3.miningpool.co",
+                Port = 3905,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            //GDC
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "GDC";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://us.miningpool.co",
+                Port = 10001,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            //XJO
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "XJO";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://de1.miningpool.co",
+                Port = 11001,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            //MOON
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "MOON";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://ca1.miningpool.co",
+                Port = 9999,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
+            //SBC
+            donationConfiguration = new CoinConfiguration();
+            donationConfiguration.Coin.Symbol = "SBC";
+
+            donationPool = new MiningPool()
+            {
+                Host = "stratum+tcp://au1.miningpool.co",
+                Port = 9203,
+                Username = "nwoolls.mmdonations",
+                Password = "X"
+            };
+            donationConfiguration.Pools.Add(donationPool);
+
             configurations.Add(donationConfiguration);
         }
     }
