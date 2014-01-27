@@ -232,7 +232,7 @@ namespace MultiMiner.Engine
 
             //DGC
             donationConfiguration = new CoinConfiguration();
-            donationConfiguration.Coin.Symbol = "ASC";
+            donationConfiguration.Coin.Symbol = "DGC";
 
             donationPool = new MiningPool()
             {
