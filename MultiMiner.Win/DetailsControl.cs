@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using MultiMiner.Xgminer;
 using MultiMiner.Engine;
-using MultiMiner.Xgminer.Api.Responses;
 using MultiMiner.Win.Extensions;
 using MultiMiner.Win.ViewModels;
 
