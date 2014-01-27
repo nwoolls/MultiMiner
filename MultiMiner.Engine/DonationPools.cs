@@ -199,6 +199,8 @@ namespace MultiMiner.Engine
             };
             donationConfiguration.Pools.Add(donationPool);
 
+            configurations.Add(donationConfiguration);
+
             //DOGE
             donationConfiguration = new CoinConfiguration();
             donationConfiguration.Coin.Symbol = "DOGE";
@@ -212,10 +214,14 @@ namespace MultiMiner.Engine
             };
             donationConfiguration.Pools.Add(donationPool);
 
+            configurations.Add(donationConfiguration);
+
             //DOG
             donationConfiguration = new CoinConfiguration();
             donationConfiguration.Coin.Symbol = "DOG";
             donationConfiguration.Pools.Add(donationPool);
+
+            configurations.Add(donationConfiguration);
 
             //ASC
             donationConfiguration = new CoinConfiguration();
@@ -230,6 +236,8 @@ namespace MultiMiner.Engine
             };
             donationConfiguration.Pools.Add(donationPool);
 
+            configurations.Add(donationConfiguration);
+
             //DGC
             donationConfiguration = new CoinConfiguration();
             donationConfiguration.Coin.Symbol = "DGC";
@@ -242,6 +250,8 @@ namespace MultiMiner.Engine
                 Password = "X"
             };
             donationConfiguration.Pools.Add(donationPool);
+
+            configurations.Add(donationConfiguration);
 
             //FST
             donationConfiguration = new CoinConfiguration();
@@ -256,6 +266,8 @@ namespace MultiMiner.Engine
             };
             donationConfiguration.Pools.Add(donationPool);
 
+            configurations.Add(donationConfiguration);
+
             //FRK
             donationConfiguration = new CoinConfiguration();
             donationConfiguration.Coin.Symbol = "FRK";
@@ -268,6 +280,8 @@ namespace MultiMiner.Engine
                 Password = "X"
             };
             donationConfiguration.Pools.Add(donationPool);
+
+            configurations.Add(donationConfiguration);
 
             //GLC
             donationConfiguration = new CoinConfiguration();
@@ -282,6 +296,8 @@ namespace MultiMiner.Engine
             };
             donationConfiguration.Pools.Add(donationPool);
 
+            configurations.Add(donationConfiguration);
+
             //GDC
             donationConfiguration = new CoinConfiguration();
             donationConfiguration.Coin.Symbol = "GDC";
@@ -294,6 +310,8 @@ namespace MultiMiner.Engine
                 Password = "X"
             };
             donationConfiguration.Pools.Add(donationPool);
+
+            configurations.Add(donationConfiguration);
 
             //XJO
             donationConfiguration = new CoinConfiguration();
@@ -308,6 +326,8 @@ namespace MultiMiner.Engine
             };
             donationConfiguration.Pools.Add(donationPool);
 
+            configurations.Add(donationConfiguration);
+
             //MOON
             donationConfiguration = new CoinConfiguration();
             donationConfiguration.Coin.Symbol = "MOON";
@@ -320,6 +340,8 @@ namespace MultiMiner.Engine
                 Password = "X"
             };
             donationConfiguration.Pools.Add(donationPool);
+
+            configurations.Add(donationConfiguration);
 
             //SBC
             donationConfiguration = new CoinConfiguration();
