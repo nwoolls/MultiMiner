@@ -481,7 +481,7 @@
             // 
             // remotingPasswordEdit
             // 
-            this.remotingPasswordEdit.Location = new System.Drawing.Point(255, 196);
+            this.remotingPasswordEdit.Location = new System.Drawing.Point(269, 196);
             this.remotingPasswordEdit.Name = "remotingPasswordEdit";
             this.remotingPasswordEdit.Size = new System.Drawing.Size(102, 23);
             this.remotingPasswordEdit.TabIndex = 22;
