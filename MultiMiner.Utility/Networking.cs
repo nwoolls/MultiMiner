@@ -27,7 +27,14 @@ namespace MultiMiner.Utility
                 //Windows
                 using (ManagementObject managementObject = new ManagementObject(String.Format("Win32_ComputerSystem.Name='{0}'", Environment.MachineName)))
                 {
-                    result = managementObject["Workgroup"].ToString();
+                    object workgroup;
+                    //Workgroup is NULL under XP
+                    if (OSVersionPlatform.IsWindowsVistaOrHigher())
+                        workgroup = managementObject["Workgroup"];
+                    else
+                        workgroup = managementObject["Domain"];
+
+                    result = workgroup.ToString();
                 }
             }
             return result;
