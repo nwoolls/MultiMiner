@@ -5336,6 +5336,9 @@ namespace MultiMiner.Win
                 this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<CoinConfiguration>, List<CoinConfiguration>>(engineConfiguration.CoinConfigurations);
                 this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<DeviceConfiguration>, List<DeviceConfiguration>>(engineConfiguration.DeviceConfigurations);
 
+                //update the ViewModel
+                ApplyModelsToViewModel();
+
                 //to get changes from strategy config
                 //to refresh coin stats due to changed coin selections
                 RefreshListViewFromViewModel();
