@@ -158,19 +158,14 @@ namespace MultiMiner.Engine.Configuration
             RemoveIvalidCoinsFromDeviceConfigurations();
         }
 
-        private static string XgminerConfigurationFileName()
-        {
-            return Path.Combine(ApplicationPaths.AppDataPath(), "XgminerConfiguration.xml");
-        }
-
         public void LoadMinerConfiguration()
         {
-            XgminerConfiguration = ConfigurationReaderWriter.ReadConfiguration<XgminerConfiguration>(XgminerConfigurationFileName());
+            XgminerConfiguration.LoadMinerConfiguration();
         }
 
         public void SaveMinerConfiguration()
         {
-            ConfigurationReaderWriter.WriteConfiguration(XgminerConfiguration, XgminerConfigurationFileName());
+            XgminerConfiguration.SaveMinerConfiguration();
         }
     }
 }

@@ -15,14 +15,11 @@ namespace MultiMiner.Win
     {
         private readonly List<CoinConfiguration> configurations = new List<CoinConfiguration>();
         private readonly List<CryptoCoin> knownCoins;
-        private readonly string coinConfigurationsFileName;
 
-        public CoinsForm(List<CoinConfiguration> configurations, List<CryptoCoin> knownCoins,
-            string coinConfigurationsFileName)
+        public CoinsForm(List<CoinConfiguration> configurations, List<CryptoCoin> knownCoins)
         {
             this.configurations = configurations;
             this.knownCoins = knownCoins;
-            this.coinConfigurationsFileName = coinConfigurationsFileName;
             InitializeComponent();
         }
 
@@ -247,11 +244,11 @@ namespace MultiMiner.Win
             DialogResult dialogResult = saveFileDialog1.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                string sourceFileName = coinConfigurationsFileName;
+                //string sourceFileName = coinConfigurationsFileName;
                 string destinationFileName = saveFileDialog1.FileName;
                 if (File.Exists(destinationFileName))
                     File.Delete(destinationFileName);
-                File.Copy(sourceFileName, destinationFileName);
+                ConfigurationReaderWriter.WriteConfiguration(configurations, destinationFileName);
             }
         }
 

@@ -41,6 +41,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -74,6 +76,12 @@
     </Compile>
     <Compile Include="DeviceListView.Designer.cs">
       <DependentUpon>DeviceListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InstancesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="InstancesControl.Designer.cs">
+      <DependentUpon>InstancesControl.cs</DependentUpon>
     </Compile>
     <Compile Include="MessageBoxFontUserControl.cs">
       <SubType>UserControl</SubType>
@@ -178,6 +186,8 @@
       <DependentUpon>StrategiesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UserAgent.cs" />
+    <Compile Include="ViewModels\DeviceViewModel.cs" />
+    <Compile Include="ViewModels\MainFormViewModel.cs" />
     <Compile Include="WindowsStartupShortcut.cs" />
     <Compile Include="WizardForm.cs">
       <SubType>Form</SubType>
@@ -194,6 +204,9 @@
     <EmbeddedResource Include="DetailsControl.resx">
       <DependentUpon>DetailsControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="InstancesControl.resx">
+      <DependentUpon>InstancesControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MinerSettingsForm.resx">
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -208,6 +221,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Notifications\NotificationControl.resx">
       <DependentUpon>NotificationControl.cs</DependentUpon>
@@ -257,6 +271,7 @@
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.ApplicationConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.PathConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.PerksConfiguration.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Win.ViewModels.DeviceViewModel.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.LogEntry.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.Responses.DeviceDetailsResponse.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.Responses.DeviceInformationResponse.datasource" />
@@ -293,6 +308,10 @@
       <Project>{5b2b2592-689a-4de2-815c-259427a3d101}</Project>
       <Name>MultiMiner.CoinWarz.Api</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Discovery\MultiMiner.Discovery.csproj">
+      <Project>{ccb532cd-4922-42a9-baf9-0e651a592467}</Project>
+      <Name>MultiMiner.Discovery</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Engine\MultiMiner.Engine.csproj">
       <Project>{845687bb-ec47-46d3-ac9d-6fcfb63de8f5}</Project>
       <Name>MultiMiner.Engine</Name>
@@ -300,6 +319,14 @@
     <ProjectReference Include="..\MultiMiner.MobileMiner.Api\MultiMiner.MobileMiner.Api.csproj">
       <Project>{70622816-5853-4470-9432-9acda2e96089}</Project>
       <Name>MultiMiner.MobileMiner.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Remoting.Server\MultiMiner.Remoting.Server.csproj">
+      <Project>{db1b318b-b57f-4bf4-8e05-befe7970f64c}</Project>
+      <Name>MultiMiner.Remoting.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Services\MultiMiner.Services.csproj">
+      <Project>{cffa60ec-9486-4f45-bef2-05c1a3d68ea6}</Project>
+      <Name>MultiMiner.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Stats.Api\MultiMiner.Stats.Api.csproj">
       <Project>{2cf95427-df1d-4061-8580-f143f04a0439}</Project>

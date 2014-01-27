@@ -8,17 +8,46 @@ namespace MultiMiner.Utility
 {
     public static class ObjectCopier
     {
-        public static void CopyObject<TSource, TDestination>(TSource source, TDestination destination)
+        public static void CopyObject<TSource, TDestination>(TSource source, TDestination destination, params string[] excludedProperties)
         {
             var sourceProperties = TypeDescriptor.GetProperties(typeof(TSource)).Cast<PropertyDescriptor>();
             var destinationProperties = TypeDescriptor.GetProperties(typeof(TDestination)).Cast<PropertyDescriptor>();
-            
-            foreach (var entityProperty in sourceProperties)
+
+            foreach (var sourceProperty in sourceProperties)
             {
-                var property = entityProperty;
-                var convertProperty = destinationProperties.FirstOrDefault(prop => prop.Name == property.Name);
-                if (convertProperty != null)
-                    convertProperty.SetValue(destination, Convert.ChangeType(entityProperty.GetValue(source), convertProperty.PropertyType));
+                if (excludedProperties.Contains(sourceProperty.Name))
+                    continue;
+
+                var destinationProperty = destinationProperties.FirstOrDefault(prop => prop.Name == sourceProperty.Name);
+                if (destinationProperty != null)
+                {
+                    object sourceValue = sourceProperty.GetValue(source);
+                    object destinationValue;
+                    Type destinationPropertyType = destinationProperty.PropertyType;
+
+                    //special handling for nullable types
+                    Type underlyingType = Nullable.GetUnderlyingType(destinationPropertyType);
+
+                    //special hanlding for enums
+                    if (underlyingType == null && destinationPropertyType.IsEnum)
+                        underlyingType = Enum.GetUnderlyingType(destinationPropertyType);
+
+                    if (underlyingType != null)
+                    {
+                        if (sourceValue == null)
+                            destinationValue = null;
+                        else
+                        {
+                            destinationValue = Convert.ChangeType(sourceValue, underlyingType);
+                            destinationProperty.SetValue(destination, destinationValue);
+                        }
+                    }
+                    else
+                    {
+                        destinationValue = Convert.ChangeType(sourceValue, destinationPropertyType);
+                        destinationProperty.SetValue(destination, destinationValue);
+                    }
+                }
             }
         }
 

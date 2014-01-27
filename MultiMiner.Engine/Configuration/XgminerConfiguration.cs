@@ -1,6 +1,7 @@
 ﻿using MultiMiner.Utility;
 using MultiMiner.Xgminer;
 using System.Diagnostics;
+using System.IO;
 
 namespace MultiMiner.Engine.Configuration
 {
@@ -29,5 +30,21 @@ namespace MultiMiner.Engine.Configuration
         public bool StratumProxy { get; set; }
         public int StratumProxyPort { get; set; }
         public int StratumProxyStratumPort { get; set; }
+
+        private static string XgminerConfigurationFileName()
+        {
+            return Path.Combine(ApplicationPaths.AppDataPath(), "XgminerConfiguration.xml");
+        }
+
+        public void LoadMinerConfiguration()
+        {
+            XgminerConfiguration minerConfiguration = ConfigurationReaderWriter.ReadConfiguration<XgminerConfiguration>(XgminerConfigurationFileName());
+            ObjectCopier.CopyObject(minerConfiguration, this);
+        }
+
+        public void SaveMinerConfiguration()
+        {
+            ConfigurationReaderWriter.WriteConfiguration(this, XgminerConfigurationFileName());
+        }
     }
 }

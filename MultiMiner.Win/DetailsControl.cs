@@ -4,11 +4,10 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using MultiMiner.Xgminer;
-using MultiMiner.Coin.Api;
-using MultiMiner.Engine.Configuration;
 using MultiMiner.Engine;
 using MultiMiner.Xgminer.Api.Responses;
 using MultiMiner.Win.Extensions;
+using MultiMiner.Win.ViewModels;
 
 namespace MultiMiner.Win
 {
@@ -20,9 +19,6 @@ namespace MultiMiner.Win
 
         //event declarations        
         public event CloseClickedHandler CloseClicked;
-
-        private List<DeviceInformationResponse> deviceInformation;
-        private List<DeviceDetailsResponse> deviceDetails;
 
         public DetailsControl()
         {
@@ -73,47 +69,31 @@ namespace MultiMiner.Win
             noDetailsPanel.Visible = true;
         }
 
-        public void InspectDetails(Device device, CoinConfiguration coinConfiguration, CoinInformation coinInformation,
-            List<DeviceInformationResponse> deviceInformation, PoolInformationResponse poolInformation,
-            List<DeviceDetailsResponse> deviceDetails, bool showWorkUtility)
-        {
-            this.deviceDetails = deviceDetails;
-            this.deviceInformation = deviceInformation;
-
-
+        public void InspectDetails(DeviceViewModel deviceViewModel, bool showWorkUtility)
+        {            
             noDetailsPanel.Visible = false;
-            double hashrate = deviceInformation.Sum(di => di.AverageHashrate);
-            double currentRate = deviceInformation.Sum(di => di.CurrentHashrate);
             
-            hashrateLabel.Text = hashrate.ToHashrateString();
-            currentRateLabel.Text = currentRate.ToHashrateString();
+            hashrateLabel.Text = deviceViewModel.AverageHashrate.ToHashrateString();
+            currentRateLabel.Text = deviceViewModel.CurrentHashrate.ToHashrateString();
 
-            workersGridView.Visible = (device.Kind == DeviceKind.PXY) &&
-                (deviceInformation.Count > 0);
+            workersGridView.Visible = (deviceViewModel.Kind == DeviceKind.PXY) &&
+                (deviceViewModel.Workers.Count > 0);
             workersTitleLabel.Visible = workersGridView.Visible;
-
-            //Internet or Coin API could be down
-            if (coinInformation != null)
-            {
-            }
-
+            
             //device may not be configured
-            if (coinConfiguration != null)
-                cryptoCoinBindingSource.DataSource = coinConfiguration.Coin;
+            if (deviceViewModel.Coin != null)
+                cryptoCoinBindingSource.DataSource = deviceViewModel.Coin;
             else
                 cryptoCoinBindingSource.DataSource = new CryptoCoin();
+            cryptoCoinBindingSource.ResetBindings(false);
 
-            deviceInformationResponseBindingSource.DataSource = deviceInformation;
-            
-            //may not be hashing yet
-            if (deviceDetails != null)
-                deviceDetailsResponseBindingSource.DataSource = deviceDetails;
-            else
-                deviceDetailsResponseBindingSource.DataSource = new DeviceDetailsResponse();
+            deviceBindingSource.DataSource = deviceViewModel;
+            deviceBindingSource.ResetBindings(false);
 
-            deviceBindingSource.DataSource = device;
+            workerBindingSource.DataSource = deviceViewModel.Workers;
+            workerBindingSource.ResetBindings(false);
 
-            switch (device.Kind)
+            switch (deviceViewModel.Kind)
             {
                 case DeviceKind.CPU:
                     pictureBox1.Image = imageList1.Images[3];
@@ -131,48 +111,33 @@ namespace MultiMiner.Win
 
             nameLabel.Width = this.Width - nameLabel.Left - closeDetailsButton.Width;
 
-            acceptedLabel.Text = deviceInformation.Sum(d => d.AcceptedShares).ToString();
-            rejectedLabel.Text = deviceInformation.Sum(d => d.RejectedShares).ToString();
-            errorsLabel.Text = deviceInformation.Sum(d => d.HardwareErrors).ToString();
+            acceptedLabel.Text = deviceViewModel.AcceptedShares.ToString();
+            rejectedLabel.Text = deviceViewModel.RejectedShares.ToString();
+            errorsLabel.Text = deviceViewModel.HardwareErrors.ToString();
 
             if (showWorkUtility)
             {
-                utilityLabel.Text = deviceInformation.Sum(d => d.WorkUtility).ToString();
+                utilityLabel.Text = deviceViewModel.WorkUtility.ToString();
                 utilityDataGridViewTextBoxColumn.DataPropertyName = "WorkUtility";
             }
             else
             {
-                utilityLabel.Text = deviceInformation.Sum(d => d.Utility).ToString();
+                utilityLabel.Text = deviceViewModel.Utility.ToString();
                 utilityDataGridViewTextBoxColumn.DataPropertyName = "Utility";
             }
             utilityPrefixLabel.Text = showWorkUtility ? "Work utility:" : "Utility:";
 
-            DeviceInformationResponse deviceInfo = (DeviceInformationResponse)deviceInformationResponseBindingSource.Current;
-            if (deviceInfo != null)
-            {
-                if (deviceInfo.Temperature > 0)
-                    tempLabel.Text = deviceInfo.Temperature + "°";
-                else
-                    tempLabel.Text = String.Empty;
-
-                if (deviceInfo.FanPercent > 0)
-                    fanLabel.Text = deviceInfo.FanPercent + "%";
-                else
-                    fanLabel.Text = String.Empty;
-            }
+            if (deviceViewModel.Temperature > 0)
+                tempLabel.Text = deviceViewModel.Temperature + "°";
             else
-            {
                 tempLabel.Text = String.Empty;
+
+            if (deviceViewModel.FanPercent > 0)
+                fanLabel.Text = deviceViewModel.FanPercent + "%";
+            else
                 fanLabel.Text = String.Empty;
-            }
 
             UpdateColumnVisibility();
-
-            //may not be hashing yet
-            if (poolInformation != null)
-                poolInformationResponseBindingSource.DataSource = poolInformation;
-            else
-                poolInformationResponseBindingSource.DataSource = new PoolInformationResponse();
         }
 
         private void UpdateColumnVisibility()
@@ -211,15 +176,5 @@ namespace MultiMiner.Win
             }
         }
 
-        private void workersGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            for (int i = e.RowIndex; i < (e.RowIndex + e.RowCount); i++)
-            {
-                DeviceInformationResponse deviceInformation = this.deviceInformation[i];
-                DeviceDetailsResponse deviceDetails = this.deviceDetails.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name) && (d.Index == deviceInformation.Index));
-                if (deviceDetails != null)
-                    workersGridView.Rows[i].Cells[workerNameColumn.Index].Value = deviceDetails.DevicePath;
-            }
-        }
     }
 }

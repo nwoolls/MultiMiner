@@ -44,6 +44,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Api.Clie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Stats.Api", "MultiMiner.Stats.Api\MultiMiner.Stats.Api.csproj", "{2CF95427-DF1D-4061-8580-F143F04A0439}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Remoting.Server", "MultiMiner.Remoting.Server\MultiMiner.Remoting.Server.csproj", "{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Services", "MultiMiner.Services\MultiMiner.Services.csproj", "{CFFA60EC-9486-4F45-BEF2-05C1A3D68EA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Discovery", "MultiMiner.Discovery\MultiMiner.Discovery.csproj", "{CCB532CD-4922-42A9-BAF9-0E651A592467}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -122,6 +128,18 @@ Global
 		{2CF95427-DF1D-4061-8580-F143F04A0439}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CF95427-DF1D-4061-8580-F143F04A0439}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CF95427-DF1D-4061-8580-F143F04A0439}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFFA60EC-9486-4F45-BEF2-05C1A3D68EA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFFA60EC-9486-4F45-BEF2-05C1A3D68EA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFFA60EC-9486-4F45-BEF2-05C1A3D68EA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFFA60EC-9486-4F45-BEF2-05C1A3D68EA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCB532CD-4922-42A9-BAF9-0E651A592467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCB532CD-4922-42A9-BAF9-0E651A592467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCB532CD-4922-42A9-BAF9-0E651A592467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCB532CD-4922-42A9-BAF9-0E651A592467}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

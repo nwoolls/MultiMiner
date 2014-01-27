@@ -13,9 +13,17 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+                if (notificationsControl != null)
+                {
+                    notificationsControl.Dispose();
+                    notificationsControl = null;
+                }
             }
             base.Dispose(disposing);
         }
@@ -30,13 +38,13 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.deviceStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.startupMiningCountdownTimer = new System.Windows.Forms.Timer(this.components);
@@ -76,9 +84,11 @@
             this.dummyToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.exchangeRateTimer = new System.Windows.Forms.Timer(this.components);
             this.startupMiningPanel = new System.Windows.Forms.Panel();
+            this.startStartupMiningButton = new System.Windows.Forms.Button();
             this.cancelStartupMiningButton = new System.Windows.Forms.Button();
             this.countdownLabel = new System.Windows.Forms.Label();
             this.advancedAreaContainer = new System.Windows.Forms.SplitContainer();
+            this.instancesContainer = new System.Windows.Forms.SplitContainer();
             this.detailsAreaContainer = new System.Windows.Forms.SplitContainer();
             this.deviceListView = new MultiMiner.Win.DeviceListView();
             this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -93,6 +103,7 @@
             this.fanColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.hashrateColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.currentRateColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.effectiveColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.incomeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.acceptedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.rejectedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -207,8 +218,9 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.poolInfoTimer = new System.Windows.Forms.Timer(this.components);
-            this.effectiveColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.poolsDownFlagTimer = new System.Windows.Forms.Timer(this.components);
+            this.remotingBroadcastTimer = new System.Windows.Forms.Timer(this.components);
+            this.remotingServerTimer = new System.Windows.Forms.Timer(this.components);
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -216,6 +228,8 @@
             this.advancedAreaContainer.Panel1.SuspendLayout();
             this.advancedAreaContainer.Panel2.SuspendLayout();
             this.advancedAreaContainer.SuspendLayout();
+            this.instancesContainer.Panel2.SuspendLayout();
+            this.instancesContainer.SuspendLayout();
             this.detailsAreaContainer.Panel1.SuspendLayout();
             this.detailsAreaContainer.Panel2.SuspendLayout();
             this.detailsAreaContainer.SuspendLayout();
@@ -515,6 +529,7 @@
             // 
             this.startupMiningPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.startupMiningPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.startupMiningPanel.Controls.Add(this.startStartupMiningButton);
             this.startupMiningPanel.Controls.Add(this.cancelStartupMiningButton);
             this.startupMiningPanel.Controls.Add(this.countdownLabel);
             this.startupMiningPanel.Location = new System.Drawing.Point(460, 220);
@@ -523,11 +538,21 @@
             this.startupMiningPanel.TabIndex = 6;
             this.startupMiningPanel.Visible = false;
             // 
+            // startStartupMiningButton
+            // 
+            this.startStartupMiningButton.Location = new System.Drawing.Point(336, 7);
+            this.startStartupMiningButton.Name = "startStartupMiningButton";
+            this.startStartupMiningButton.Size = new System.Drawing.Size(24, 27);
+            this.startStartupMiningButton.TabIndex = 6;
+            this.startStartupMiningButton.Text = "▶";
+            this.startStartupMiningButton.UseVisualStyleBackColor = true;
+            this.startStartupMiningButton.Click += new System.EventHandler(this.startStartupMiningButton_Click);
+            // 
             // cancelStartupMiningButton
             // 
             this.cancelStartupMiningButton.Location = new System.Drawing.Point(269, 7);
             this.cancelStartupMiningButton.Name = "cancelStartupMiningButton";
-            this.cancelStartupMiningButton.Size = new System.Drawing.Size(87, 27);
+            this.cancelStartupMiningButton.Size = new System.Drawing.Size(68, 27);
             this.cancelStartupMiningButton.TabIndex = 5;
             this.cancelStartupMiningButton.Text = "Cancel";
             this.cancelStartupMiningButton.UseVisualStyleBackColor = true;
@@ -551,17 +576,32 @@
             // 
             // advancedAreaContainer.Panel1
             // 
-            this.advancedAreaContainer.Panel1.Controls.Add(this.detailsAreaContainer);
+            this.advancedAreaContainer.Panel1.Controls.Add(this.instancesContainer);
             // 
             // advancedAreaContainer.Panel2
             // 
             this.advancedAreaContainer.Panel2.Controls.Add(this.advancedTabControl);
             this.advancedAreaContainer.Panel2.Controls.Add(this.panel2);
+            this.advancedAreaContainer.Panel2Collapsed = true;
             this.advancedAreaContainer.Size = new System.Drawing.Size(1293, 375);
             this.advancedAreaContainer.SplitterDistance = 232;
             this.advancedAreaContainer.SplitterWidth = 5;
             this.advancedAreaContainer.TabIndex = 10;
             this.advancedAreaContainer.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.advancedAreaContainer_SplitterMoved);
+            // 
+            // instancesContainer
+            // 
+            this.instancesContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.instancesContainer.Location = new System.Drawing.Point(0, 0);
+            this.instancesContainer.Name = "instancesContainer";
+            this.instancesContainer.Panel1Collapsed = true;
+            // 
+            // instancesContainer.Panel2
+            // 
+            this.instancesContainer.Panel2.Controls.Add(this.detailsAreaContainer);
+            this.instancesContainer.Size = new System.Drawing.Size(1293, 375);
+            this.instancesContainer.SplitterDistance = 186;
+            this.instancesContainer.TabIndex = 4;
             // 
             // detailsAreaContainer
             // 
@@ -577,8 +617,8 @@
             // detailsAreaContainer.Panel2
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
-            this.detailsAreaContainer.Size = new System.Drawing.Size(1293, 232);
-            this.detailsAreaContainer.SplitterDistance = 958;
+            this.detailsAreaContainer.Size = new System.Drawing.Size(1293, 375);
+            this.detailsAreaContainer.SplitterDistance = 1003;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -608,23 +648,23 @@
             this.intensityColumnHeader});
             this.deviceListView.ContextMenuStrip = this.columnHeaderMenu;
             this.deviceListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            listViewGroup5.Header = "CPU";
-            listViewGroup5.Name = "cpuListViewGroup";
-            listViewGroup6.Header = "GPU";
-            listViewGroup6.Name = "gpuListViewGroup";
-            listViewGroup7.Header = "USB";
-            listViewGroup7.Name = "usbListViewGroup";
-            listViewGroup8.Header = "Proxy";
-            listViewGroup8.Name = "proxyListViewGroup";
+            listViewGroup1.Header = "CPU";
+            listViewGroup1.Name = "cpuListViewGroup";
+            listViewGroup2.Header = "GPU";
+            listViewGroup2.Name = "gpuListViewGroup";
+            listViewGroup3.Header = "USB";
+            listViewGroup3.Name = "usbListViewGroup";
+            listViewGroup4.Header = "Proxy";
+            listViewGroup4.Name = "proxyListViewGroup";
             this.deviceListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup5,
-            listViewGroup6,
-            listViewGroup7,
-            listViewGroup8});
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4});
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(958, 232);
+            this.deviceListView.Size = new System.Drawing.Size(1003, 375);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -694,6 +734,11 @@
             this.currentRateColumnHeader.Text = "Current";
             this.currentRateColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
+            // effectiveColumnHeader
+            // 
+            this.effectiveColumnHeader.Text = "Effective";
+            this.effectiveColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // incomeColumnHeader
             // 
             this.incomeColumnHeader.Text = "Daily";
@@ -731,7 +776,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(332, 232);
+            this.detailsControl1.Size = new System.Drawing.Size(287, 375);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -745,7 +790,7 @@
             this.advancedTabControl.Location = new System.Drawing.Point(0, 26);
             this.advancedTabControl.Name = "advancedTabControl";
             this.advancedTabControl.SelectedIndex = 0;
-            this.advancedTabControl.Size = new System.Drawing.Size(1293, 112);
+            this.advancedTabControl.Size = new System.Drawing.Size(150, 20);
             this.advancedTabControl.TabIndex = 15;
             // 
             // historyPage
@@ -755,7 +800,7 @@
             this.historyPage.Location = new System.Drawing.Point(4, 24);
             this.historyPage.Name = "historyPage";
             this.historyPage.Padding = new System.Windows.Forms.Padding(3);
-            this.historyPage.Size = new System.Drawing.Size(1285, 84);
+            this.historyPage.Size = new System.Drawing.Size(142, 0);
             this.historyPage.TabIndex = 2;
             this.historyPage.Text = "History";
             this.historyPage.UseVisualStyleBackColor = true;
@@ -765,8 +810,8 @@
             this.historyGridView.AllowUserToAddRows = false;
             this.historyGridView.AllowUserToDeleteRows = false;
             this.historyGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.historyGridView.AutoGenerateColumns = false;
             this.historyGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.historyGridView.BackgroundColor = System.Drawing.SystemColors.Window;
@@ -789,7 +834,7 @@
             this.historyGridView.Name = "historyGridView";
             this.historyGridView.ReadOnly = true;
             this.historyGridView.RowHeadersVisible = false;
-            this.historyGridView.Size = new System.Drawing.Size(1279, 78);
+            this.historyGridView.Size = new System.Drawing.Size(136, 0);
             this.historyGridView.TabIndex = 0;
             this.historyGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.historyGridView_CellFormatting);
             this.historyGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.historyGridView_RowsAdded);
@@ -885,7 +930,7 @@
             this.processLogPage.Location = new System.Drawing.Point(4, 24);
             this.processLogPage.Name = "processLogPage";
             this.processLogPage.Padding = new System.Windows.Forms.Padding(3);
-            this.processLogPage.Size = new System.Drawing.Size(1285, 84);
+            this.processLogPage.Size = new System.Drawing.Size(142, 0);
             this.processLogPage.TabIndex = 1;
             this.processLogPage.Text = "Process Log";
             this.processLogPage.UseVisualStyleBackColor = true;
@@ -896,8 +941,8 @@
             this.processLogGridView.AllowUserToDeleteRows = false;
             this.processLogGridView.AllowUserToOrderColumns = true;
             this.processLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.processLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.processLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.processLogGridView.AutoGenerateColumns = false;
             this.processLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.processLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -914,7 +959,7 @@
             this.processLogGridView.Name = "processLogGridView";
             this.processLogGridView.ReadOnly = true;
             this.processLogGridView.RowHeadersVisible = false;
-            this.processLogGridView.Size = new System.Drawing.Size(1279, 78);
+            this.processLogGridView.Size = new System.Drawing.Size(136, 0);
             this.processLogGridView.TabIndex = 14;
             this.processLogGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.processLogGridView_CellFormatting);
             this.processLogGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.processLogGridView_CellMouseDown);
@@ -969,7 +1014,7 @@
             this.apiMonitorPage.Location = new System.Drawing.Point(4, 24);
             this.apiMonitorPage.Name = "apiMonitorPage";
             this.apiMonitorPage.Padding = new System.Windows.Forms.Padding(3);
-            this.apiMonitorPage.Size = new System.Drawing.Size(1285, 84);
+            this.apiMonitorPage.Size = new System.Drawing.Size(142, 0);
             this.apiMonitorPage.TabIndex = 0;
             this.apiMonitorPage.Text = "API Monitor";
             this.apiMonitorPage.UseVisualStyleBackColor = true;
@@ -980,8 +1025,8 @@
             this.apiLogGridView.AllowUserToDeleteRows = false;
             this.apiLogGridView.AllowUserToOrderColumns = true;
             this.apiLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.apiLogGridView.AutoGenerateColumns = false;
             this.apiLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.apiLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -997,7 +1042,7 @@
             this.apiLogGridView.Location = new System.Drawing.Point(3, 3);
             this.apiLogGridView.Name = "apiLogGridView";
             this.apiLogGridView.RowHeadersVisible = false;
-            this.apiLogGridView.Size = new System.Drawing.Size(1279, 78);
+            this.apiLogGridView.Size = new System.Drawing.Size(136, 0);
             this.apiLogGridView.TabIndex = 13;
             this.apiLogGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.apiLogGridView_CellFormatting);
             // 
@@ -1042,7 +1087,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1293, 26);
+            this.panel2.Size = new System.Drawing.Size(150, 26);
             this.panel2.TabIndex = 14;
             // 
             // closeApiButton
@@ -1050,7 +1095,7 @@
             this.closeApiButton.AccessibleName = "Close";
             this.closeApiButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.closeApiButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.closeApiButton.Location = new System.Drawing.Point(1270, 0);
+            this.closeApiButton.Location = new System.Drawing.Point(127, 0);
             this.closeApiButton.Name = "closeApiButton";
             this.closeApiButton.Size = new System.Drawing.Size(22, 22);
             this.closeApiButton.TabIndex = 0;
@@ -1763,14 +1808,17 @@
             this.poolInfoTimer.Interval = 30000;
             this.poolInfoTimer.Tick += new System.EventHandler(this.poolInfoTimer_Tick);
             // 
-            // effectiveColumnHeader
-            // 
-            this.effectiveColumnHeader.Text = "Effective";
-            this.effectiveColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
             // poolsDownFlagTimer
             // 
             this.poolsDownFlagTimer.Tick += new System.EventHandler(this.poolsDownFlagTimer_Tick);
+            // 
+            // remotingBroadcastTimer
+            // 
+            this.remotingBroadcastTimer.Tick += new System.EventHandler(this.remotingBroadcastTimer_Tick);
+            // 
+            // remotingServerTimer
+            // 
+            this.remotingServerTimer.Tick += new System.EventHandler(this.remotingServerTimer_Tick);
             // 
             // MainForm
             // 
@@ -1801,6 +1849,8 @@
             this.advancedAreaContainer.Panel1.ResumeLayout(false);
             this.advancedAreaContainer.Panel2.ResumeLayout(false);
             this.advancedAreaContainer.ResumeLayout(false);
+            this.instancesContainer.Panel2.ResumeLayout(false);
+            this.instancesContainer.ResumeLayout(false);
             this.detailsAreaContainer.Panel1.ResumeLayout(false);
             this.detailsAreaContainer.Panel2.ResumeLayout(false);
             this.detailsAreaContainer.ResumeLayout(false);
@@ -2017,6 +2067,10 @@
         private System.Windows.Forms.ColumnHeader currentRateColumnHeader;
         private System.Windows.Forms.ColumnHeader effectiveColumnHeader;
         private System.Windows.Forms.Timer poolsDownFlagTimer;
+        private System.Windows.Forms.SplitContainer instancesContainer;
+        private System.Windows.Forms.Timer remotingBroadcastTimer;
+        private System.Windows.Forms.Timer remotingServerTimer;
+        private System.Windows.Forms.Button startStartupMiningButton;
     }
 }
 
