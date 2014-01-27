@@ -123,6 +123,13 @@ namespace MultiMiner.Win
         private void MainForm_Shown(object sender, EventArgs e)
         {
             deviceListView.Focus();
+
+            if (!advancedAreaContainer.Panel2Collapsed)
+            {
+                //have to wait until visible on Linux + Mono
+                logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
+                logProcessCloseArgsBindingSource.MoveLast();
+            }
         }
         #endregion
 
@@ -3156,6 +3163,9 @@ namespace MultiMiner.Win
                 IEnumerable<CryptoCoin> configurations;
                 bool mining, hasChanges, dynamicIntensity;
 
+                //set some safe defaults in case the call fails
+                this.remoteViewModel = new MainFormViewModel();
+
                 service.GetApplicationModels(GetSendingSignature(instance), out devices, out configurations, out mining, out hasChanges, out dynamicIntensity);
 
                 this.remoteInstanceMining = mining;
@@ -4453,7 +4463,6 @@ namespace MultiMiner.Win
             SetupGridColumns();
 
             LoadPreviousHistory();
-            logLaunchArgsBindingSource.DataSource = logCloseEntries;
 
             SetupMobileMinerTimer();
 
@@ -4477,7 +4486,6 @@ namespace MultiMiner.Win
 
             SetupMiningEngineEvents();
             logLaunchArgsBindingSource.DataSource = logLaunchEntries;
-            logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
 
             SetHasChangesLocally(false);
 
@@ -4502,9 +4510,7 @@ namespace MultiMiner.Win
             UpdateMiningButtons();
 
             AutoSizeListViewColumns();
-
-            logProcessCloseArgsBindingSource.MoveLast();
-
+            
             if (deviceListView.Items.Count > 0)
             {
                 deviceListView.Items[0].Selected = true;
@@ -5217,6 +5223,10 @@ namespace MultiMiner.Win
         {
             advancedTabControl.SelectedTab = historyPage;
             ShowAdvancedPanel();
+
+            //have to wait until visible on Linux + Mono
+            logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
+            logProcessCloseArgsBindingSource.MoveLast();
 
             applicationConfiguration.LogAreaVisible = true;
             applicationConfiguration.SaveApplicationConfiguration();
