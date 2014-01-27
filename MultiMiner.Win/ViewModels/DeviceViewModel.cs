@@ -30,6 +30,7 @@ namespace MultiMiner.Win.ViewModels
         public string Pool { get; set; }
         public double Exchange { get; set; }
         public double EffectiveHashRate { get; set; }
+        public double Daily { get; set; }
 
         //device stats
         public double Temperature { get; set; }

@@ -965,9 +965,7 @@ namespace MultiMiner.Win
             item.SubItems["Intensity"].Text = String.Empty;
             item.SubItems["Pool"].Text = String.Empty;
             item.SubItems["Fan"].Text = String.Empty;
-
             item.SubItems["Daily"].Text = String.Empty;
-            item.SubItems["Daily"].Tag = 0.00;
         }
 
         private void PopulateIncomeForListViewItem(ListViewItem item, DeviceViewModel deviceViewModel)
@@ -997,7 +995,7 @@ namespace MultiMiner.Win
                 double sharesPerDay = secondsPerDay / secondsToCalcShare;
                 double rewardPerDay = sharesPerDay * info.Reward;
 
-                item.SubItems["Daily"].Tag = rewardPerDay;
+                deviceViewModel.Daily = rewardPerDay;
 
                 if (perksConfiguration.ShowExchangeRates && perksConfiguration.ShowIncomeInUsd)
                 {
@@ -1091,16 +1089,13 @@ namespace MultiMiner.Win
 
             MainFormViewModel viewModelToView = GetViewModelToView();
 
-            for (int i = 0; i < deviceListView.Items.Count; i++)
+            foreach (DeviceViewModel deviceViewModel in viewModelToView.Devices)
             {
-                ListViewItem listItem = deviceListView.Items[i];
-                DeviceViewModel deviceViewModel = viewModelToView.Devices[i];
-
                 //check for Coin != null, device may not have a coin configured
-                if ((deviceViewModel.Coin != null) && (listItem.SubItems["Daily"].Tag != null))
+                if (deviceViewModel.Coin != null)
                 {
                     string coinSymbol = deviceViewModel.Coin.Symbol;
-                    double coinIncome = (double)listItem.SubItems["Daily"].Tag;
+                    double coinIncome = deviceViewModel.Daily;
 
                     if (coinsIncome.ContainsKey(coinSymbol))
                         coinsIncome[coinSymbol] = coinsIncome[coinSymbol] + coinIncome;
@@ -1108,6 +1103,7 @@ namespace MultiMiner.Win
                         coinsIncome[coinSymbol] = coinIncome;
                 }
             }
+
             return coinsIncome;
         }
 
