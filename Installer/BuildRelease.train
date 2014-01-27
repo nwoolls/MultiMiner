@@ -18,6 +18,7 @@ msbuild.updateAssemblyVersion("../MultiMiner.Stats.Api/Properties/AssemblyInfo.c
 msbuild.updateAssemblyVersion("../MultiMiner.Remoting.Server/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Services/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Discovery/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.Utility/Properties/AssemblyInfo.cs", appVersion);
 
 //rebuild each .NET project - Release configurations
 msbuild.rebuild("../MultiMiner.Coin.Api/MultiMiner.Coin.Api.csproj", { configuration: "Release" });
