@@ -101,7 +101,13 @@ namespace MultiMiner.Discovery
                 if (!instances.Any(i => i.IpAddress.Equals(ipAddress)))
                 {
                     Instance instance = new Instance { IpAddress = ipAddress, MachineName = packet.MachineName, Fingerprint = packet.Fingerprint };
-                    instances.Add(instance);
+
+                    //lock for thread-safety - collection may be modified
+                    lock (instances)
+                    {
+                        instances.Add(instance);
+                    }
+
                     Sender.Send(source.Address, Verbs.Online, fingerprint);
 
                     if (InstanceOnline != null)
@@ -111,13 +117,18 @@ namespace MultiMiner.Discovery
             else if (packet.Verb.Equals(Verbs.Offline))
             {
                 string ipAddress = source.Address.ToString();
-                Instance instance = instances.SingleOrDefault(i => i.IpAddress.Equals(ipAddress));
-                if (instance != null)
-                {
-                    instances.Remove(instance);
 
-                    if (InstanceOffline != null)
-                        InstanceOffline(this, new InstanceChangedArgs { Instance = instance });
+                //lock for thread-safety - collection may be modified
+                lock (instances)
+                {
+                    Instance instance = instances.SingleOrDefault(i => i.IpAddress.Equals(ipAddress));
+                    if (instance != null)
+                    {
+                        instances.Remove(instance);
+
+                        if (InstanceOffline != null)
+                            InstanceOffline(this, new InstanceChangedArgs { Instance = instance });
+                    }
                 }
             }
         }
