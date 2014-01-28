@@ -123,13 +123,6 @@ namespace MultiMiner.Win
         private void MainForm_Shown(object sender, EventArgs e)
         {
             deviceListView.Focus();
-
-            if (!advancedAreaContainer.Panel2Collapsed)
-            {
-                //have to wait until visible on Linux + Mono
-                logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
-                logProcessCloseArgsBindingSource.MoveLast();
-            }
         }
         #endregion
 
@@ -4458,7 +4451,10 @@ namespace MultiMiner.Win
 
             SetupGridColumns();
 
+
+            logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
             LoadPreviousHistory();
+            logProcessCloseArgsBindingSource.MoveLast();
 
             SetupMobileMinerTimer();
 
@@ -4654,7 +4650,13 @@ namespace MultiMiner.Win
                 {
                     List<LogProcessCloseArgs> loadLogFile = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
                     loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - MaxHistoryOnScreen));
-                    logCloseEntries.AddRange(loadLogFile);
+
+                    //add via the BindingSource, not logCloseEntries
+                    //populating logCloseEntries and then binding causes errors on Linux
+                    logProcessCloseArgsBindingSource.SuspendBinding();
+                    foreach (LogProcessCloseArgs logProcessCloseArgs in loadLogFile)
+                        logProcessCloseArgsBindingSource.Add(logProcessCloseArgs);
+                    logProcessCloseArgsBindingSource.ResumeBinding();
                 }
                 catch (ArgumentException ex)
                 {
@@ -5219,10 +5221,6 @@ namespace MultiMiner.Win
         {
             advancedTabControl.SelectedTab = historyPage;
             ShowAdvancedPanel();
-
-            //have to wait until visible on Linux + Mono
-            logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
-            logProcessCloseArgsBindingSource.MoveLast();
 
             applicationConfiguration.LogAreaVisible = true;
             applicationConfiguration.SaveApplicationConfiguration();
