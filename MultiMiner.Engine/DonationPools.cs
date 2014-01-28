@@ -16,11 +16,11 @@ namespace MultiMiner.Engine
 
 
             //LTC
-            donationConfiguration = CreateCoinConfiguration("LTC", "stratum+tcp://world.wemineltc.com", 3333);
+            donationConfiguration = CreateCoinConfiguration("LTC", "stratum+tcp://freedom.wemineltc.com", 3334);
             configurations.Add(donationConfiguration);
 
             //BQC
-            donationConfiguration = CreateCoinConfiguration("BQC", "http://de1.bigbbq.cc", 8446);
+            donationConfiguration = CreateCoinConfiguration("BQC", "stratum+tcp://www.bbqpool.net", 3333);
             configurations.Add(donationConfiguration);
 
             //FTC
