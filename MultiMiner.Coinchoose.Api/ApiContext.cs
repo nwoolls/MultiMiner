@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 
 namespace MultiMiner.CoinChoose.Api
 {
@@ -29,7 +30,25 @@ namespace MultiMiner.CoinChoose.Api
 
             string apiUrl = GetApiUrl();
 
-            string jsonString = client.DownloadString(apiUrl);
+            string jsonString = String.Empty;
+            
+            try
+            {
+                jsonString = client.DownloadString(apiUrl);
+            }
+            catch (WebException ex)
+            {
+                if ((ex.Status == WebExceptionStatus.ProtocolError) &&
+                    (((HttpWebResponse)ex.Response).StatusCode == HttpStatusCode.BadGateway))
+                {
+                    //try again 1 more time if error 502
+                    Thread.Sleep(750);
+                    jsonString = client.DownloadString(apiUrl);
+                }
+                else
+                    throw;
+            }
+
             JArray jsonArray = JArray.Parse(jsonString);
 
             List<CoinInformation> result = new List<CoinInformation>();
