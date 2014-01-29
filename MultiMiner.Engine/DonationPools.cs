@@ -94,6 +94,26 @@ namespace MultiMiner.Engine
             //SBC
             donationConfiguration = CreateCoinConfiguration("SBC", "stratum+tcp://au1.miningpool.co", 9203);
             configurations.Add(donationConfiguration);
+
+            //QRK
+            donationConfiguration = CreateCoinConfiguration("QRK", "stratum+tcp://mine1.coinmine.pl", 6010);
+            configurations.Add(donationConfiguration);
+
+            //SPT
+            donationConfiguration = CreateCoinConfiguration("SPT", "stratum+tcp://spt.coinmine.pl", 9108);
+            configurations.Add(donationConfiguration);
+
+            //SRC
+            donationConfiguration = CreateCoinConfiguration("SRC", "stratum+tcp://mine2.coinmine.pl", 6020);
+            configurations.Add(donationConfiguration);
+
+            //WDC
+            donationConfiguration = CreateCoinConfiguration("WDC", "stratum+tcp://wdc.coinmine.pl", 9090);
+            configurations.Add(donationConfiguration);
+
+            //YBC
+            donationConfiguration = CreateCoinConfiguration("YBC", "stratum+tcp://ybc.coinmine.pl", 9104);
+            configurations.Add(donationConfiguration);
         }
 
         private static CoinConfiguration CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
