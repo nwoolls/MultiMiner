@@ -50,6 +50,26 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Services", "Mult
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Discovery", "MultiMiner.Discovery\MultiMiner.Discovery.csproj", "{CCB532CD-4922-42A9-BAF9-0E651A592467}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Coinbase.Api.Tests", "MultiMiner.Coinbase.Api.Tests\MultiMiner.Coinbase.Api.Tests.csproj", "{A06EE263-1096-47CA-95F9-B84F95D16958}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.CoinWarz.Api.Tests", "MultiMiner.CoinWarz.Api.Tests\MultiMiner.CoinWarz.Api.Tests.csproj", "{24EE4E92-AB39-4612-8671-C2F59BD8FCF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Discovery.Tests", "MultiMiner.Discovery.Tests\MultiMiner.Discovery.Tests.csproj", "{7623C002-10B8-4E88-9FA2-12C09996A5CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Engine.Tests", "MultiMiner.Engine.Tests\MultiMiner.Engine.Tests.csproj", "{714E0443-DCA9-4CC5-90D7-84FE8BD2B8E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.MobileMiner.Api.Tests", "MultiMiner.MobileMiner.Api.Tests\MultiMiner.MobileMiner.Api.Tests.csproj", "{192B845E-0FDD-48AE-AA7C-02A81A1C4A05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Remoting.Server.Tests", "MultiMiner.Remoting.Server.Tests\MultiMiner.Remoting.Server.Tests.csproj", "{45643625-A345-4539-AD4B-1F64F920FFA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Services.Tests", "MultiMiner.Services.Tests\MultiMiner.Services.Tests.csproj", "{CE7E782C-748A-44B4-A9DB-90FE798DB9A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Stats.Api.Tests", "MultiMiner.Stats.Api.Tests\MultiMiner.Stats.Api.Tests.csproj", "{BA751292-EB11-40E7-BD88-45A1682DAA53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Update.Tests", "MultiMiner.Update.Tests\MultiMiner.Update.Tests.csproj", "{D99041EA-8051-4229-9D12-091FA652A3E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Utility.Tests", "MultiMiner.Utility.Tests\MultiMiner.Utility.Tests.csproj", "{5CA11E2E-47A3-40A9-A136-14FF56DB97A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -140,6 +160,46 @@ Global
 		{CCB532CD-4922-42A9-BAF9-0E651A592467}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCB532CD-4922-42A9-BAF9-0E651A592467}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCB532CD-4922-42A9-BAF9-0E651A592467}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A06EE263-1096-47CA-95F9-B84F95D16958}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A06EE263-1096-47CA-95F9-B84F95D16958}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A06EE263-1096-47CA-95F9-B84F95D16958}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A06EE263-1096-47CA-95F9-B84F95D16958}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24EE4E92-AB39-4612-8671-C2F59BD8FCF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24EE4E92-AB39-4612-8671-C2F59BD8FCF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24EE4E92-AB39-4612-8671-C2F59BD8FCF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24EE4E92-AB39-4612-8671-C2F59BD8FCF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7623C002-10B8-4E88-9FA2-12C09996A5CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7623C002-10B8-4E88-9FA2-12C09996A5CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7623C002-10B8-4E88-9FA2-12C09996A5CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7623C002-10B8-4E88-9FA2-12C09996A5CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{714E0443-DCA9-4CC5-90D7-84FE8BD2B8E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{714E0443-DCA9-4CC5-90D7-84FE8BD2B8E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{714E0443-DCA9-4CC5-90D7-84FE8BD2B8E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{714E0443-DCA9-4CC5-90D7-84FE8BD2B8E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{192B845E-0FDD-48AE-AA7C-02A81A1C4A05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{192B845E-0FDD-48AE-AA7C-02A81A1C4A05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{192B845E-0FDD-48AE-AA7C-02A81A1C4A05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{192B845E-0FDD-48AE-AA7C-02A81A1C4A05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45643625-A345-4539-AD4B-1F64F920FFA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45643625-A345-4539-AD4B-1F64F920FFA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45643625-A345-4539-AD4B-1F64F920FFA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45643625-A345-4539-AD4B-1F64F920FFA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE7E782C-748A-44B4-A9DB-90FE798DB9A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE7E782C-748A-44B4-A9DB-90FE798DB9A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE7E782C-748A-44B4-A9DB-90FE798DB9A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE7E782C-748A-44B4-A9DB-90FE798DB9A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA751292-EB11-40E7-BD88-45A1682DAA53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA751292-EB11-40E7-BD88-45A1682DAA53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA751292-EB11-40E7-BD88-45A1682DAA53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA751292-EB11-40E7-BD88-45A1682DAA53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D99041EA-8051-4229-9D12-091FA652A3E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D99041EA-8051-4229-9D12-091FA652A3E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D99041EA-8051-4229-9D12-091FA652A3E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D99041EA-8051-4229-9D12-091FA652A3E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CA11E2E-47A3-40A9-A136-14FF56DB97A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CA11E2E-47A3-40A9-A136-14FF56DB97A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CA11E2E-47A3-40A9-A136-14FF56DB97A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CA11E2E-47A3-40A9-A136-14FF56DB97A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
