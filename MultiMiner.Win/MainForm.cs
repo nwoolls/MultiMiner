@@ -1722,6 +1722,14 @@ namespace MultiMiner.Win
 
         private void startButton_Click(object sender, EventArgs e)
         {
+            HandleStartButtonClicked();
+        }
+
+        private void HandleStartButtonClicked()
+        {
+            if ((this.selectedRemoteInstance == null) && applicationConfiguration.AutoSetDesktopMode)
+                ToggleDynamicIntensityLocally(true);
+
             StartMining();
         }
 
@@ -2373,7 +2381,7 @@ namespace MultiMiner.Win
 
         private void startMenuItem_Click(object sender, EventArgs e)
         {
-            StartMining();
+            HandleStartButtonClicked();
         }
 
         private void stopMenuItem_Click(object sender, EventArgs e)
@@ -2405,8 +2413,7 @@ namespace MultiMiner.Win
 
         private void startStartupMiningButton_Click(object sender, EventArgs e)
         {
-            CancelMiningOnStartup();
-            StartMining();
+            HandleStartButtonClicked();
         }
         #endregion
 
@@ -5481,8 +5488,8 @@ namespace MultiMiner.Win
 
         private void StartMiningLocally()
         {
-            if (applicationConfiguration.AutoSetDesktopMode)
-                ToggleDynamicIntensityLocally(true);
+            //do not set Dynamic Intensity here - may have already been set by idleTimer_Tick
+            //don't want to override
 
             CancelMiningOnStartup(); //in case clicked during countdown
 
