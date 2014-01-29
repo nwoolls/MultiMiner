@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace MultiMiner.Services
 {
-    public class DevicesService : MarshalByRefObject
+    public class DevicesService
     {
         private readonly XgminerConfiguration xgminerConfiguration = null;
         public DevicesService(XgminerConfiguration minerConfiguration)
