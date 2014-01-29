@@ -20,11 +20,11 @@ namespace MultiMiner.Services
             this.xgminerConfiguration.LoadMinerConfiguration();
         }
 
-        public List<Device> GetDevices()
+        public List<Device> GetDevices(string executablePath)
         {
             MinerConfiguration minerConfiguration = new MinerConfiguration()
             {
-                ExecutablePath = MinerPath.GetPathToInstalledMiner(),
+                ExecutablePath = executablePath,
                 DisableGpu = xgminerConfiguration.DisableGpu,
                 DisableUsbProbe = xgminerConfiguration.DisableUsbProbe,
                 ScanArguments = xgminerConfiguration.ScanArguments

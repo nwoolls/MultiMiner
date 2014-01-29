@@ -5411,7 +5411,7 @@ namespace MultiMiner.Win
                     using (new HourGlass())
                     {
                         DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
-                        devices = devicesService.GetDevices();
+                        devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner());
 
                         ApplyModelsToViewModel();
                     }
