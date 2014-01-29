@@ -63,7 +63,10 @@ namespace MultiMiner.Discovery
             listening = false;
 
             if (udpClient != null)
+            {
                 udpClient.Close();
+                udpClient = null;
+            }
         }
 
         private void Receive(IAsyncResult ar)
