@@ -147,6 +147,7 @@
             this.symbolEdit.AccessibleName = "Exchange symbol";
             this.symbolEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Symbol", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.symbolEdit.Location = new System.Drawing.Point(129, 46);
+            this.symbolEdit.MaxLength = 5;
             this.symbolEdit.Name = "symbolEdit";
             this.symbolEdit.Size = new System.Drawing.Size(125, 23);
             this.symbolEdit.TabIndex = 1;
