@@ -28,11 +28,14 @@ namespace MultiMiner.CoinChoose.Api
             {
                 coinInformation.Difficulty = jToken.Value<double>("difficulty");
             }
-            catch (InvalidCastException)
+            catch (SystemException ex)
             {
                 //handle System.InvalidCastException: Null object cannot be converted to a value type.
                 //tried this but didn't work: if (jToken["difficulty"] != null)
-                coinInformation.Difficulty = 0;
+                if ((ex is InvalidCastException) || (ex is FormatException))
+                    coinInformation.Difficulty = 0;
+                else
+                    throw;
             }
 
             coinInformation.Reward = jToken.Value<double>("reward");
@@ -48,7 +51,17 @@ namespace MultiMiner.CoinChoose.Api
                 coinInformation.MinimumBlockTime = 0;
             }
 
-            coinInformation.NetworkHashRate = jToken.Value<Int64>("networkhashrate");
+            try
+            {
+                coinInformation.NetworkHashRate = jToken.Value<Int64>("networkhashrate"); //this one can be null too (?)
+            }
+            catch (InvalidCastException)
+            {
+                //handle System.InvalidCastException: Null object cannot be converted to a value type.
+                //tried this but didn't work: if (jToken["networkhashrate"] != null)
+                coinInformation.NetworkHashRate = 0;
+            }
+
             coinInformation.Price = jToken.Value<double>("price");
             coinInformation.Exchange = jToken.Value<string>("exchange");
             coinInformation.Profitability = jToken.Value<double>("ratio");
