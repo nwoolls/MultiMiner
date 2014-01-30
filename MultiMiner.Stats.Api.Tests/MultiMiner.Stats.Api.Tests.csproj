@@ -54,6 +54,13 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ApiContextTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MultiMiner.Stats.Api\MultiMiner.Stats.Api.csproj">
+      <Project>{2cf95427-df1d-4061-8580-f143f04a0439}</Project>
+      <Name>MultiMiner.Stats.Api</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

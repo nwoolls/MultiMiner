@@ -54,6 +54,18 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnzipperTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App_Data\Unzipper-Test.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
+      <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
+      <Name>MultiMiner.Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
