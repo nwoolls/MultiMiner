@@ -17,9 +17,12 @@ namespace MultiMiner.Xgminer.Api
         public event LogEventHandler LogEvent;
 
         private readonly int port;
-        public ApiContext(int port)
+        private readonly string ipAddress;
+
+        public ApiContext(int port, string ipAddress = "127.0.0.1")
         {
             this.port = port;
+            this.ipAddress = ipAddress;
         }
 
         public List<DeviceInformationResponse> GetDeviceInformation()
@@ -61,7 +64,7 @@ namespace MultiMiner.Xgminer.Api
 
         public string GetResponse(string apiVerb)
         {
-            TcpClient tcpClient = new TcpClient("127.0.0.1", port);
+            TcpClient tcpClient = new TcpClient(this.ipAddress, port);
             NetworkStream tcpStream = tcpClient.GetStream();
 
             Byte[] request = Encoding.ASCII.GetBytes(apiVerb);
