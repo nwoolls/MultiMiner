@@ -47,7 +47,7 @@
     <Compile Include="FileCopier.cs" />
     <Compile Include="IdleTimeFinder.cs" />
     <Compile Include="IniFileParser.cs" />
-    <Compile Include="Networking.cs" />
+    <Compile Include="Networking\WorkGroup.cs" />
     <Compile Include="ObjectCopier.cs" />
     <Compile Include="ObjectLogger.cs" />
     <Compile Include="OSVersionPlatform.cs" />

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Management;
 
-namespace MultiMiner.Utility
+namespace MultiMiner.Utility.Networking
 {
-    public class Networking
+    public class WorkGroup
     {
-        public static string GetWorkGroup()
+        public static string GetWorkGroupName()
         {
             string result = String.Empty;
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
