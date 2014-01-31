@@ -7,5 +7,6 @@
         public const string Quit = "quit";
         public const string Summary = "summary";
         public const string Pools = "pools";
+        public const string Version = "version";
     }
 }

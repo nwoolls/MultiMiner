@@ -43,7 +43,7 @@ namespace MultiMiner.Xgminer.Discovery
             string response = null;
             try
             {
-                response = context.GetResponse("version");
+                response = context.GetResponse(ApiVerb.Version);
             }
             catch (Exception ex)
             {
