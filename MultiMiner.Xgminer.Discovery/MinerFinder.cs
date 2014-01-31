@@ -50,7 +50,7 @@ namespace MultiMiner.Xgminer.Discovery
                 response = null;
             }
 
-            if (!String.IsNullOrEmpty(response))
+            if (!String.IsNullOrEmpty(response) && response.Contains("VERSION"))
                 endpointIsMiner = true;
 
             return endpointIsMiner;
