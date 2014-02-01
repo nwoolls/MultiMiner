@@ -882,21 +882,7 @@ namespace MultiMiner.Win
 
             return result;
         }
-
-        private void ClearAllMinerStats()
-        {
-            deviceListView.BeginUpdate();
-            try
-            {
-                foreach (ListViewItem item in deviceListView.Items)
-                    ClearDeviceInfoForListViewItem(item);
-            }
-            finally
-            {
-                deviceListView.EndUpdate();
-            }
-        }
-
+        
         private void ClearAllCoinStats()
         {
             deviceListView.BeginUpdate();
@@ -5496,7 +5482,6 @@ namespace MultiMiner.Win
             sha256RateLabel.Text = string.Empty;
             notifyIcon1.Text = "MultiMiner - Stopped";
             UpdateMiningButtons();
-            ClearAllMinerStats();
             RefreshIncomeSummary();
             AutoSizeListViewColumns();
             RefreshDetailsAreaIfVisible();
