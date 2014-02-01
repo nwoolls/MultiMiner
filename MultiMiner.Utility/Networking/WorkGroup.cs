@@ -3,7 +3,7 @@ using System.Management;
 
 namespace MultiMiner.Utility.Networking
 {
-    public class WorkGroup
+    public class LocalNetwork
     {
         public static string GetWorkGroupName()
         {

@@ -2988,7 +2988,7 @@ namespace MultiMiner.Win
             fingerprint = random.Next();
 
             if (workGroupName == null)
-                this.workGroupName = Utility.Networking.WorkGroup.GetWorkGroupName();
+                this.workGroupName = Utility.Networking.LocalNetwork.GetWorkGroupName();
 
             //start Broadcast Listener before Discovery so we can
             //get initial info (hashrates) sent by other instances
