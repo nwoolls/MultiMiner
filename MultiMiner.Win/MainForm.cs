@@ -4102,22 +4102,15 @@ namespace MultiMiner.Win
             RefreshDetailsAreaIfVisible();
         }
 
-        private bool RemoveSelfReferencingNetworkDevices()
-        {
-            bool removed = false;
-
+        private void RemoveSelfReferencingNetworkDevices()
+        {            
             string localIpAddress = Utility.Networking.LocalNetwork.GetLocalIPAddress();
             IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET).ToList();
             foreach (DeviceViewModel networkDevice in networkDevices)
             {
                 if (networkDevice.Pool.DomainFromHost().Equals(localIpAddress))
-                {
-                    localViewModel.Devices.Remove(networkDevice);
-                    removed = true;
-                }
+                    networkDevice.Visible = false;
             }
-
-            return removed;
         }
 
         private void RefreshNetworkDeviceStats()
