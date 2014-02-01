@@ -2488,6 +2488,14 @@ namespace MultiMiner.Win
         {
             HandleStartButtonClicked();
         }
+
+        private void deviceListView_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            //disallow toggling check-state for Network Devices
+            MainFormViewModel viewModelToView = GetViewModelToView();
+            if (viewModelToView.Devices[e.Index].Kind == DeviceKind.NET)
+                e.NewValue = CheckState.Checked;
+        }
         #endregion
 
         #region Timer setup
