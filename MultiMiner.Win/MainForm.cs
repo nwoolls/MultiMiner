@@ -4108,9 +4108,18 @@ namespace MultiMiner.Win
                     string ipAddress = portions[0];
                     int port = int.Parse(portions[1]);
                     List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromAddress(ipAddress, port);
+                    List<PoolInformationResponse> poolInformationList = GetPoolInfoFromAddress(ipAddress, port);
+
+                    int poolIndex = -1;
 
                     foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                    {
                         localViewModel.ApplyDeviceInformationResponseModel(deviceViewModel, deviceInformation);
+                        poolIndex = deviceInformation.PoolIndex >= 0 ? deviceInformation.PoolIndex : poolIndex;
+                    }
+
+                    if (poolIndex >= 0)
+                        deviceViewModel.Pool = poolInformationList[poolIndex].Url;
                 }
             }
             finally
@@ -4227,6 +4236,36 @@ namespace MultiMiner.Win
         private List<PoolInformationResponse> GetPoolInfoFromProcess(MinerProcess minerProcess)
         {
             Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<PoolInformationResponse> poolInformation = null;
+            try
+            {
+                try
+                {
+                    poolInformation = apiContext.GetPoolInformation();
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    poolInformation = null;
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
+                poolInformation = null;
+            }
+
+            return poolInformation;
+        }
+
+        private List<PoolInformationResponse> GetPoolInfoFromAddress(string ipAddress, int port)
+        {
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
 
             //setup logging
             apiContext.LogEvent -= LogApiEvent;
