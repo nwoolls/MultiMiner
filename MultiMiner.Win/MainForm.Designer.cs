@@ -618,7 +618,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(1293, 375);
-            this.detailsAreaContainer.SplitterDistance = 1003;
+            this.detailsAreaContainer.SplitterDistance = 1004;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -664,7 +664,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(1003, 375);
+            this.deviceListView.Size = new System.Drawing.Size(1004, 375);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -776,7 +776,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(287, 375);
+            this.detailsControl1.Size = new System.Drawing.Size(286, 375);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -1300,7 +1300,7 @@
             this.restartButton.AccessibleName = "Restart";
             this.restartButton.Image = global::MultiMiner.Win.Properties.Resources.computer_update;
             this.restartButton.Name = "restartButton";
-            this.restartButton.Size = new System.Drawing.Size(152, 22);
+            this.restartButton.Size = new System.Drawing.Size(110, 22);
             this.restartButton.Text = "Restart";
             this.restartButton.ToolTipText = "Restart mining";
             this.restartButton.Click += new System.EventHandler(this.restartButton_Click);
