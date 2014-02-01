@@ -49,7 +49,7 @@
     <Compile Include="IniFileParser.cs" />
     <Compile Include="Networking\IPRange.cs" />
     <Compile Include="Networking\PortScanner.cs" />
-    <Compile Include="Networking\WorkGroup.cs" />
+    <Compile Include="Networking\LocalNetwork.cs" />
     <Compile Include="ObjectCopier.cs" />
     <Compile Include="ObjectLogger.cs" />
     <Compile Include="OSVersionPlatform.cs" />

@@ -6,9 +6,10 @@ namespace MultiMiner.Xgminer
     public enum DeviceKind
     {
         None = 0,
-        GPU = 1,
-        USB = 2,
-        PXY = 4, //proxy
-        CPU = 8
+        GPU = 1 << 0,
+        USB = 1 << 1,
+        PXY = 1 << 2, //proxy
+        CPU = 1 << 3,
+        NET = 1 << 4  //network device
     }
 }

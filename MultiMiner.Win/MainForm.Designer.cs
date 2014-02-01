@@ -42,6 +42,7 @@
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Network", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -221,6 +222,8 @@
             this.poolsDownFlagTimer = new System.Windows.Forms.Timer(this.components);
             this.remotingBroadcastTimer = new System.Windows.Forms.Timer(this.components);
             this.remotingServerTimer = new System.Windows.Forms.Timer(this.components);
+            this.networkDeviceStatsTimer = new System.Windows.Forms.Timer(this.components);
+            this.networkDeviceDetectTimer = new System.Windows.Forms.Timer(this.components);
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -381,6 +384,7 @@
             this.largeImageList.Images.SetKeyName(1, "usb_connector.png");
             this.largeImageList.Images.SetKeyName(2, "link_network-list.png");
             this.largeImageList.Images.SetKeyName(3, "cpu_front.png");
+            this.largeImageList.Images.SetKeyName(4, "hardware-internet.png");
             // 
             // smallImageList
             // 
@@ -390,6 +394,7 @@
             this.smallImageList.Images.SetKeyName(1, "usb_connector.png");
             this.smallImageList.Images.SetKeyName(2, "link_network-list.png");
             this.smallImageList.Images.SetKeyName(3, "cpu_front.png");
+            this.smallImageList.Images.SetKeyName(4, "hardware-internet.png");
             // 
             // deviceListContextMenu
             // 
@@ -618,7 +623,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(1293, 375);
-            this.detailsAreaContainer.SplitterDistance = 1003;
+            this.detailsAreaContainer.SplitterDistance = 1005;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -656,15 +661,18 @@
             listViewGroup3.Name = "usbListViewGroup";
             listViewGroup4.Header = "Proxy";
             listViewGroup4.Name = "proxyListViewGroup";
+            listViewGroup5.Header = "Network";
+            listViewGroup5.Name = "networkListViewGroup";
             this.deviceListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2,
             listViewGroup3,
-            listViewGroup4});
+            listViewGroup4,
+            listViewGroup5});
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(1003, 375);
+            this.deviceListView.Size = new System.Drawing.Size(1005, 375);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -776,7 +784,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(287, 375);
+            this.detailsControl1.Size = new System.Drawing.Size(285, 375);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -1300,7 +1308,7 @@
             this.restartButton.AccessibleName = "Restart";
             this.restartButton.Image = global::MultiMiner.Win.Properties.Resources.computer_update;
             this.restartButton.Name = "restartButton";
-            this.restartButton.Size = new System.Drawing.Size(152, 22);
+            this.restartButton.Size = new System.Drawing.Size(110, 22);
             this.restartButton.Text = "Restart";
             this.restartButton.ToolTipText = "Restart mining";
             this.restartButton.Click += new System.EventHandler(this.restartButton_Click);
@@ -1820,6 +1828,14 @@
             // 
             this.remotingServerTimer.Tick += new System.EventHandler(this.remotingServerTimer_Tick);
             // 
+            // networkDeviceStatsTimer
+            // 
+            this.networkDeviceStatsTimer.Tick += new System.EventHandler(this.networkDeviceStatsTimer_Tick);
+            // 
+            // networkDeviceDetectTimer
+            // 
+            this.networkDeviceDetectTimer.Tick += new System.EventHandler(this.networkDeviceDetectTimer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -2071,6 +2087,8 @@
         private System.Windows.Forms.Timer remotingBroadcastTimer;
         private System.Windows.Forms.Timer remotingServerTimer;
         private System.Windows.Forms.Button startStartupMiningButton;
+        private System.Windows.Forms.Timer networkDeviceStatsTimer;
+        private System.Windows.Forms.Timer networkDeviceDetectTimer;
     }
 }
 

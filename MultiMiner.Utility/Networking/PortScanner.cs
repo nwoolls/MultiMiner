@@ -7,7 +7,7 @@ namespace MultiMiner.Utility.Networking
 {
     public class PortScanner
     {
-        public static List<IPEndPoint> Find(string ipRange, int startingPort, int endingPort, int connectTimeout = 50)
+        public static List<IPEndPoint> Find(string ipRange, int startingPort, int endingPort, int connectTimeout = 100)
         {
             if (startingPort >= endingPort)
                 throw new ArgumentException();

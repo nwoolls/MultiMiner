@@ -7,6 +7,7 @@ using MultiMiner.Xgminer.Api.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MultiMiner.Win.Configuration;
 
 namespace MultiMiner.Win.ViewModels
 {
@@ -23,18 +24,38 @@ namespace MultiMiner.Win.ViewModels
             ConfiguredCoins = new List<CryptoCoin>();
         }
 
-        public void ApplyDeviceModels(List<Device> deviceModels)
+        public void ApplyDeviceModels(List<Device> deviceModels, List<NetworkDevicesConfiguration.NetworkDevice> networkDeviceModels)
         {
-            foreach (Device deviceModel in deviceModels)
+            if (deviceModels != null)
             {
-                DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Equals(deviceModel));
-                if (deviceViewModel == null)
+                foreach (Device deviceModel in deviceModels)
                 {
-                    deviceViewModel = new DeviceViewModel();
-                    Devices.Add(deviceViewModel);
-                }
+                    DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Equals(deviceModel));
+                    if (deviceViewModel == null)
+                    {
+                        deviceViewModel = new DeviceViewModel();
+                        Devices.Add(deviceViewModel);
+                    }
 
-                ObjectCopier.CopyObject(deviceModel, deviceViewModel);
+                    ObjectCopier.CopyObject(deviceModel, deviceViewModel);
+                }
+            }
+
+            if (networkDeviceModels != null)
+            {
+                foreach (NetworkDevicesConfiguration.NetworkDevice networkDeviceModel in networkDeviceModels)
+                {
+                    DeviceViewModel deviceViewModel = new DeviceViewModel
+                    {
+                        Kind = DeviceKind.NET,
+                        Path = String.Format("{0}:{1}", networkDeviceModel.IPAddress, networkDeviceModel.Port),
+                        Name = networkDeviceModel.IPAddress,
+                        Driver = "network"
+                    };
+
+                    if (Devices.SingleOrDefault(d => d.Equals(deviceViewModel)) == null)
+                        Devices.Add(deviceViewModel);
+                }
             }
         }
 
@@ -62,34 +83,43 @@ namespace MultiMiner.Win.ViewModels
 
         public void ClearDeviceInformationFromViewModel()
         {
-            foreach (DeviceViewModel deviceViewModel in Devices)
-            {
-                deviceViewModel.AverageHashrate = 0;
-                deviceViewModel.CurrentHashrate = 0;
-                deviceViewModel.AcceptedShares = 0;
-                deviceViewModel.RejectedShares = 0;
-                deviceViewModel.HardwareErrors = 0;
-                deviceViewModel.Utility = 0;
-                deviceViewModel.WorkUtility = 0;
-                deviceViewModel.RejectedSharesPercent = 0;
-                deviceViewModel.HardwareErrorsPercent = 0;
-
-                deviceViewModel.Pool = String.Empty;
-                deviceViewModel.PoolIndex = -1;
-                deviceViewModel.FanPercent = 0;
-                deviceViewModel.Temperature = 0;
-                deviceViewModel.Intensity = String.Empty;
-
-                deviceViewModel.Workers.Clear();
-            }
+            foreach (DeviceViewModel deviceViewModel in Devices.Where(d => d.Kind != DeviceKind.NET))
+                ClearDeviceInformation(deviceViewModel);
         }
 
-        public DeviceViewModel ApplyDeviceInformationResponseModel(Device deviceModel, DeviceInformationResponse deviceInformationResponseModel)
+        public void ClearNetworkDeviceInformationFromViewModel()
+        {
+            foreach (DeviceViewModel deviceViewModel in Devices.Where(d => d.Kind == DeviceKind.NET))
+                ClearDeviceInformation(deviceViewModel);
+        }
+
+        private static void ClearDeviceInformation(DeviceViewModel deviceViewModel)
+        {
+            deviceViewModel.AverageHashrate = 0;
+            deviceViewModel.CurrentHashrate = 0;
+            deviceViewModel.AcceptedShares = 0;
+            deviceViewModel.RejectedShares = 0;
+            deviceViewModel.HardwareErrors = 0;
+            deviceViewModel.Utility = 0;
+            deviceViewModel.WorkUtility = 0;
+            deviceViewModel.RejectedSharesPercent = 0;
+            deviceViewModel.HardwareErrorsPercent = 0;
+
+            deviceViewModel.Pool = String.Empty;
+            deviceViewModel.PoolIndex = -1;
+            deviceViewModel.FanPercent = 0;
+            deviceViewModel.Temperature = 0;
+            deviceViewModel.Intensity = String.Empty;
+
+            deviceViewModel.Workers.Clear();
+        }
+
+        public DeviceViewModel ApplyDeviceInformationResponseModel(DeviceDescriptor deviceModel, DeviceInformationResponse deviceInformationResponseModel)
         {
             DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Equals(deviceModel));
             if (deviceViewModel != null)
             {
-                if (deviceModel.Kind == DeviceKind.PXY)
+                if ((deviceModel.Kind == DeviceKind.PXY) || (deviceModel.Kind == DeviceKind.NET))
                 {
                     deviceViewModel.PoolIndex = deviceInformationResponseModel.PoolIndex;
 

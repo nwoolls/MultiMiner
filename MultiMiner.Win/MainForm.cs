@@ -26,6 +26,7 @@ using System.ServiceModel;
 using Newtonsoft.Json;
 using System.Web.Script.Serialization;
 using System.Security.Cryptography;
+using MultiMiner.Xgminer.Discovery;
 
 namespace MultiMiner.Win
 {
@@ -46,6 +47,7 @@ namespace MultiMiner.Win
         private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
         private readonly PathConfiguration pathConfiguration = new PathConfiguration();
         private PerksConfiguration perksConfiguration = new PerksConfiguration();
+        private NetworkDevicesConfiguration networkDevicesConfiguration = new NetworkDevicesConfiguration();
 
         //hardware information
         private List<Device> devices;
@@ -260,8 +262,7 @@ namespace MultiMiner.Win
             //clear to ensure we have a 1-to-1 with listview items
             localViewModel.Devices.Clear();
 
-            if (devices != null)
-                localViewModel.ApplyDeviceModels(devices);
+            localViewModel.ApplyDeviceModels(devices, networkDevicesConfiguration.NetworkDevices);
         }
         
         private void ApplyCoinInformationToViewModel()
@@ -282,11 +283,12 @@ namespace MultiMiner.Win
         
         private void PopulateListViewFromViewModel()
         {
-            deviceListView.BeginUpdate();
             List<int> selectedIndexes = new List<int>();
             foreach (int selectedIndex in deviceListView.SelectedIndices)
                 selectedIndexes.Add(selectedIndex);
 
+            deviceListView.BeginUpdate();
+            this.updatingListView = true;
             try
             {
                 deviceListView.Items.Clear();
@@ -317,6 +319,10 @@ namespace MultiMiner.Win
                             listViewItem.Group = deviceListView.Groups["proxyListViewGroup"];
                             listViewItem.ImageIndex = 2;
                             break;
+                        case DeviceKind.NET:
+                            listViewItem.Group = deviceListView.Groups["networkListViewGroup"];
+                            listViewItem.ImageIndex = 4;
+                            break;
                     }
 
                     listViewItem.Text = deviceViewModel.Name;
@@ -337,6 +343,7 @@ namespace MultiMiner.Win
 
                     listViewItem.UseItemStyleForSubItems = false;
 
+                    listViewItem.Checked = deviceViewModel.Enabled;
 
                     listViewItem.SubItems["Driver"].Text = deviceViewModel.Driver;
 
@@ -349,6 +356,7 @@ namespace MultiMiner.Win
             }
             finally
             {
+                this.updatingListView = false;
                 deviceListView.EndUpdate();
             }
         }
@@ -356,6 +364,7 @@ namespace MultiMiner.Win
         private void RefreshListViewFromViewModel()
         {
             deviceListView.BeginUpdate();
+            this.updatingListView = true;
             try
             {
                 //clear all coin stats first
@@ -466,6 +475,7 @@ namespace MultiMiner.Win
             finally
             {
                 deviceListView.EndUpdate();
+                this.updatingListView = false;
             }
         }
         #endregion
@@ -1466,6 +1476,13 @@ namespace MultiMiner.Win
             poolsDownFlagTimer.Enabled = true;
             ClearPoolsFlaggedDown();
 
+            //network devices
+            this.networkDevicesConfiguration.LoadNetworkDevicesConfiguration();
+            CheckNetworkDevicesAsync();
+            FindNetworkDevicesAsync();
+            SetupNetworkDeviceStatsTimer();
+            SetupNetworkDeviceDetectTimer();
+
             ApplyModelsToViewModel();
             localViewModel.DynamicIntensity = engineConfiguration.XgminerConfiguration.DesktopMode;
             dynamicIntensityButton.Checked = localViewModel.DynamicIntensity;
@@ -1474,6 +1491,76 @@ namespace MultiMiner.Win
             Application.DoEvents();
 
             this.settingsLoaded = true;
+        }
+
+        private void FindNetworkDevices()
+        {
+            int startingPort = 4028;
+            int endingPort = 4030;
+            string localIpRange = Utility.Networking.LocalNetwork.GetLocalIPAddressRange();
+            List<IPEndPoint> miners = MinerFinder.Find(localIpRange, startingPort, endingPort);
+
+            //remove own miners
+            miners.RemoveAll(m => m.Address.ToString().Equals(Utility.Networking.LocalNetwork.GetLocalIPAddress()));
+
+            List<NetworkDevicesConfiguration.NetworkDevice> devices = miners.ToNetworkDevices();
+
+            networkDevicesConfiguration.NetworkDevices = devices;
+            networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+        }
+
+        private void CheckNetworkDevices()
+        {
+            List<IPEndPoint> endpoints = networkDevicesConfiguration.NetworkDevices.ToIPEndPoints();
+
+            //remove own miners
+            endpoints.RemoveAll(m => m.Address.ToString().Equals(Utility.Networking.LocalNetwork.GetLocalIPAddress()));
+
+            endpoints = MinerFinder.Check(endpoints);
+
+            networkDevicesConfiguration.NetworkDevices = endpoints.ToNetworkDevices();
+            networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+        }
+
+        private void CheckNetworkDevicesAsync()
+        {
+            Action asyncAction = CheckNetworkDevices;
+            asyncAction.BeginInvoke(
+                ar =>
+                {
+
+                    BeginInvoke((Action)(() =>
+                    {
+                        //code to update UI
+                        ApplyModelsToViewModel();
+                        PopulateListViewFromViewModel();
+                        RefreshListViewFromViewModel();
+                        if (localViewModel.Devices.Count(d => d.Kind == DeviceKind.NET) > 0)
+                            RefreshNetworkDeviceStats();
+                        AutoSizeListViewColumns();
+                    }));
+
+                }, null);
+        }
+
+        private void FindNetworkDevicesAsync()
+        {
+            Action asyncAction = FindNetworkDevices;
+            asyncAction.BeginInvoke(
+                ar =>
+                {
+                    BeginInvoke((Action)(() =>
+                    {
+                        //code to update UI
+                        ApplyModelsToViewModel();
+                        PopulateListViewFromViewModel();
+                        RefreshListViewFromViewModel();
+                        if (localViewModel.Devices.Count(d => d.Kind == DeviceKind.NET) > 0)
+                            RefreshNetworkDeviceStats();
+                        AutoSizeListViewColumns();
+                    }));
+
+                }, null);
         }
 
         private void SaveSettings()
@@ -2472,6 +2559,18 @@ namespace MultiMiner.Win
             remotingBroadcastTimer.Interval = 1 * 45 * 1000;
             remotingServerTimer.Interval = 1 * 20 * 1000;
         }
+
+        private void SetupNetworkDeviceStatsTimer()
+        {
+            networkDeviceStatsTimer.Interval = 10 * 1000; //10s
+            networkDeviceStatsTimer.Enabled = true;
+        }
+
+        private void SetupNetworkDeviceDetectTimer()
+        {
+            networkDeviceDetectTimer.Interval = 10 * 60 * 1000; //19min
+            networkDeviceDetectTimer.Enabled = true;
+        }
         #endregion
 
         #region Timer event handlers
@@ -2644,6 +2743,17 @@ namespace MultiMiner.Win
             AutoSizeListViewColumns();
             UpdateMiningButtons();
             RefreshStatusBarFromViewModel();
+        }
+
+        private void networkDeviceStatsTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshNetworkDeviceStats();
+        }
+
+        private void networkDeviceDetectTimer_Tick(object sender, EventArgs e)
+        {
+            CheckNetworkDevicesAsync();
+            FindNetworkDevicesAsync();
         }
         #endregion
 
@@ -3983,6 +4093,37 @@ namespace MultiMiner.Win
             RefreshDetailsAreaIfVisible();
         }
 
+        private void RefreshNetworkDeviceStats()
+        {
+            //first clear stats for each row
+            //this is because the NET row stats get summed 
+            localViewModel.ClearNetworkDeviceInformationFromViewModel();
+
+            deviceListView.BeginUpdate();
+            try
+            {
+                foreach (DeviceViewModel deviceViewModel in localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET))
+                {
+                    string[] portions = deviceViewModel.Path.Split(':');
+                    string ipAddress = portions[0];
+                    int port = int.Parse(portions[1]);
+                    List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromAddress(ipAddress, port);
+
+                    foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                        localViewModel.ApplyDeviceInformationResponseModel(deviceViewModel, deviceInformation);
+                }
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
+
+            RefreshListViewFromViewModel();
+
+            //auto sizing the columns is moderately CPU intensive, so only do it every /count/ times
+            AutoSizeListViewColumnsEvery(2);
+        }
+
         private void UpdateInstancesStatsFromLocal()
         {
             if (instancesControl.Visible)
@@ -4158,6 +4299,36 @@ namespace MultiMiner.Win
                 processDeviceDetails[minerProcess] = processDevices;
             }
             return processDevices;
+        }
+
+        private List<DeviceInformationResponse> GetDeviceInfoFromAddress(string ipAddress, int port)
+        {
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<DeviceInformationResponse> deviceInformationList = null;
+            try
+            {
+                try
+                {
+                    deviceInformationList = apiContext.GetDeviceInformation().Where(d => d.Enabled).ToList();
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    deviceInformationList = null;
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
+                deviceInformationList = null;
+            }
+
+            return deviceInformationList;
         }
 
         private List<DeviceInformationResponse> GetDeviceInfoFromProcess(MinerProcess minerProcess)
@@ -5421,6 +5592,8 @@ namespace MultiMiner.Win
                         devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner());
 
                         ApplyModelsToViewModel();
+                        //populate ListView directly after - maintain 1-to-1 for ViewModel to ListView items
+                        PopulateListViewFromViewModel();
                     }
                 }
                 catch (Win32Exception ex)
@@ -5449,7 +5622,6 @@ namespace MultiMiner.Win
                 //remove any duplicate configurations
                 engineConfiguration.RemoveDuplicateDeviceConfigurations();
 
-                PopulateListViewFromViewModel();
                 RefreshListViewFromViewModel();
                 RefreshDetailsAreaIfVisible();
 

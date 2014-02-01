@@ -1,10 +1,39 @@
 ﻿using System;
 using System.Management;
+using System.Net;
+using System.Net.Sockets;
 
 namespace MultiMiner.Utility.Networking
 {
     public class LocalNetwork
     {
+        public static string GetLocalIPAddress()
+        {
+            string result = String.Empty;
+
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    result = ip.ToString();
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        public static string GetLocalIPAddressRange()
+        {
+            string localIpAddress = GetLocalIPAddress();
+            
+            string[] portions = localIpAddress.Split('.');
+            portions[portions.Length - 1] = "0/24";
+
+            return String.Join(".", portions);
+        }
+
         public static string GetWorkGroupName()
         {
             string result = String.Empty;
