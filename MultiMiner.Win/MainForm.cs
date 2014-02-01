@@ -278,8 +278,80 @@ namespace MultiMiner.Win
                 viewModelToView = remoteViewModel;
             return viewModelToView;
         }
-        
-        private void PopulateListViewFromViewModel()
+
+        private void RemoveListViewItemsMissingFromViewModel(MainFormViewModel viewModelToView)
+        {
+            for (int j = deviceListView.Items.Count - 1; j >= 0; j--)
+            {
+                DeviceViewModel itemModel = (DeviceViewModel)deviceListView.Items[j].Tag;
+                if (viewModelToView.Devices.SingleOrDefault(d => d.Equals(itemModel)) == null)
+                    deviceListView.Items.RemoveAt(j);
+            }
+        }
+
+        private void AddViewModelItemsMissingFromListView(MainFormViewModel viewModelToView)
+        {
+            foreach (DeviceViewModel deviceViewModel in viewModelToView.Devices)
+            {
+                foreach (ListViewItem item in deviceListView.Items)
+                {
+                    if (item.Tag == deviceViewModel)
+                        continue;
+                }
+
+                ListViewItem listViewItem = new ListViewItem();
+
+                switch (deviceViewModel.Kind)
+                {
+                    case DeviceKind.CPU:
+                        listViewItem.Group = deviceListView.Groups["cpuListViewGroup"];
+                        listViewItem.ImageIndex = 3;
+                        break;
+                    case DeviceKind.GPU:
+                        listViewItem.Group = deviceListView.Groups["gpuListViewGroup"];
+                        listViewItem.ImageIndex = 0;
+                        break;
+                    case DeviceKind.USB:
+                        listViewItem.Group = deviceListView.Groups["usbListViewGroup"];
+                        listViewItem.ImageIndex = 1;
+                        break;
+                    case DeviceKind.PXY:
+                        listViewItem.Group = deviceListView.Groups["proxyListViewGroup"];
+                        listViewItem.ImageIndex = 2;
+                        break;
+                    case DeviceKind.NET:
+                        listViewItem.Group = deviceListView.Groups["networkListViewGroup"];
+                        listViewItem.ImageIndex = 4;
+                        break;
+                }
+
+                listViewItem.Text = deviceViewModel.Name;
+
+                //start at i = 1, skip the first column
+                for (int i = 1; i < deviceListView.Columns.Count; i++)
+                {
+                    listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, String.Empty)
+                    {
+                        Name = deviceListView.Columns[i].Text,
+                        ForeColor = SystemColors.WindowFrame
+                    });
+                }
+
+                listViewItem.SubItems["Coin"].ForeColor = SystemColors.WindowText;
+                listViewItem.SubItems["Errors"].ForeColor = SystemColors.WindowText;
+                listViewItem.SubItems["Rejected"].ForeColor = SystemColors.WindowText;
+
+                listViewItem.UseItemStyleForSubItems = false;
+
+                listViewItem.Checked = deviceViewModel.Enabled;
+
+                listViewItem.SubItems["Driver"].Text = deviceViewModel.Driver;
+
+                deviceListView.Items.Add(listViewItem);
+            }
+        }
+
+        private void RefreshListViewFromViewModel()
         {
             List<int> selectedIndexes = new List<int>();
             foreach (int selectedIndex in deviceListView.SelectedIndices)
@@ -289,92 +361,22 @@ namespace MultiMiner.Win
             this.updatingListView = true;
             try
             {
-                deviceListView.Items.Clear();
-
                 utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
 
-                MainFormViewModel viewModelToView = GetViewModelToView();
-
-                foreach (DeviceViewModel deviceViewModel in viewModelToView.Devices)
-                {
-                    ListViewItem listViewItem = new ListViewItem();
-
-                    switch (deviceViewModel.Kind)
-                    {
-                        case DeviceKind.CPU:
-                            listViewItem.Group = deviceListView.Groups["cpuListViewGroup"];
-                            listViewItem.ImageIndex = 3;
-                            break;
-                        case DeviceKind.GPU:
-                            listViewItem.Group = deviceListView.Groups["gpuListViewGroup"];
-                            listViewItem.ImageIndex = 0;
-                            break;
-                        case DeviceKind.USB:
-                            listViewItem.Group = deviceListView.Groups["usbListViewGroup"];
-                            listViewItem.ImageIndex = 1;
-                            break;
-                        case DeviceKind.PXY:
-                            listViewItem.Group = deviceListView.Groups["proxyListViewGroup"];
-                            listViewItem.ImageIndex = 2;
-                            break;
-                        case DeviceKind.NET:
-                            listViewItem.Group = deviceListView.Groups["networkListViewGroup"];
-                            listViewItem.ImageIndex = 4;
-                            break;
-                    }
-
-                    listViewItem.Text = deviceViewModel.Name;
-
-                    //start at i = 1, skip the first column
-                    for (int i = 1; i < deviceListView.Columns.Count; i++)
-                    {
-                        listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, String.Empty)
-                        {
-                            Name = deviceListView.Columns[i].Text,
-                            ForeColor = SystemColors.WindowFrame
-                        });
-                    }
-
-                    listViewItem.SubItems["Coin"].ForeColor = SystemColors.WindowText;
-                    listViewItem.SubItems["Errors"].ForeColor = SystemColors.WindowText;
-                    listViewItem.SubItems["Rejected"].ForeColor = SystemColors.WindowText;
-
-                    listViewItem.UseItemStyleForSubItems = false;
-
-                    listViewItem.Checked = deviceViewModel.Enabled;
-
-                    listViewItem.SubItems["Driver"].Text = deviceViewModel.Driver;
-
-                    deviceListView.Items.Add(listViewItem);
-                }
-
-                foreach (int selectedIndex in selectedIndexes)
-                    if (selectedIndex < deviceListView.Items.Count)
-                        deviceListView.Items[selectedIndex].Selected = true;
-            }
-            finally
-            {
-                this.updatingListView = false;
-                deviceListView.EndUpdate();
-            }
-        }
-
-        private void RefreshListViewFromViewModel()
-        {
-            deviceListView.BeginUpdate();
-            this.updatingListView = true;
-            try
-            {
                 //clear all coin stats first
                 //there may be coins configured that are no longer returned in the stats
                 ClearAllCoinStats();
 
                 MainFormViewModel viewModelToView = GetViewModelToView();
 
+                RemoveListViewItemsMissingFromViewModel(viewModelToView);
+                AddViewModelItemsMissingFromListView(viewModelToView);
+
                 for (int i = 0; i < viewModelToView.Devices.Count; i++)
                 {
-                    ListViewItem listViewItem = deviceListView.Items[i];
                     DeviceViewModel deviceViewModel = viewModelToView.Devices[i];
+
+                    ListViewItem listViewItem = deviceListView.Items[i];
 
                     /* configuration info
                      * */
@@ -469,6 +471,10 @@ namespace MultiMiner.Win
 
                     PopulateIncomeForListViewItem(listViewItem, deviceViewModel);
                 }
+
+                foreach (int selectedIndex in selectedIndexes)
+                    if (selectedIndex < deviceListView.Items.Count)
+                        deviceListView.Items[selectedIndex].Selected = true;
             }
             finally
             {
@@ -1517,7 +1523,7 @@ namespace MultiMiner.Win
                     {
                         //code to update UI
                         ApplyModelsToViewModel();
-                        PopulateListViewFromViewModel();
+                        RefreshListViewFromViewModel();
                         if (localViewModel.Devices.Count(d => d.Kind == DeviceKind.NET) > 0)
                             RefreshNetworkDeviceStats();
                         RefreshListViewFromViewModel();
@@ -1537,7 +1543,7 @@ namespace MultiMiner.Win
                     {
                         //code to update UI
                         ApplyModelsToViewModel();
-                        PopulateListViewFromViewModel();
+                        RefreshListViewFromViewModel();
                         if (localViewModel.Devices.Count(d => d.Kind == DeviceKind.NET) > 0)
                             RefreshNetworkDeviceStats();
                         RefreshListViewFromViewModel();
@@ -2723,7 +2729,6 @@ namespace MultiMiner.Win
             updatingListView = true;
             try
             {
-                PopulateListViewFromViewModel();
                 RefreshListViewFromViewModel();
                 RefreshIncomeSummary();
             }
@@ -3222,7 +3227,6 @@ namespace MultiMiner.Win
             updatingListView = true;
             try
             {
-                PopulateListViewFromViewModel();
                 RefreshListViewFromViewModel();
                 AutoSizeListViewColumns();
 
@@ -4145,8 +4149,7 @@ namespace MultiMiner.Win
                 deviceListView.EndUpdate();
             }
 
-            if (RemoveSelfReferencingNetworkDevices())
-                PopulateListViewFromViewModel();
+            RemoveSelfReferencingNetworkDevices();
 
             RefreshListViewFromViewModel();
 
@@ -5650,7 +5653,7 @@ namespace MultiMiner.Win
 
                         ApplyModelsToViewModel();
                         //populate ListView directly after - maintain 1-to-1 for ViewModel to ListView items
-                        PopulateListViewFromViewModel();
+                        RefreshListViewFromViewModel();
                     }
                 }
                 catch (Win32Exception ex)
