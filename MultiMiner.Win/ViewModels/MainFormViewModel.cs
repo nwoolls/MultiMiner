@@ -38,6 +38,8 @@ namespace MultiMiner.Win.ViewModels
                     }
 
                     ObjectCopier.CopyObject(deviceModel, deviceViewModel);
+
+                    deviceViewModel.Visible = true;
                 }
             }
 
@@ -54,7 +56,10 @@ namespace MultiMiner.Win.ViewModels
                     };
 
                     if (Devices.SingleOrDefault(d => d.Equals(deviceViewModel)) == null)
+                    {
+                        deviceViewModel.Visible = false;
                         Devices.Add(deviceViewModel);
+                    }
                 }
             }
         }

@@ -293,6 +293,9 @@ namespace MultiMiner.Win
         {
             foreach (DeviceViewModel deviceViewModel in viewModelToView.Devices)
             {
+                if (!deviceViewModel.Visible)
+                    continue;
+
                 foreach (ListViewItem item in deviceListView.Items)
                 {
                     if (item.Tag == deviceViewModel)
@@ -375,6 +378,8 @@ namespace MultiMiner.Win
                 for (int i = 0; i < viewModelToView.Devices.Count; i++)
                 {
                     DeviceViewModel deviceViewModel = viewModelToView.Devices[i];
+                    if (!deviceViewModel.Visible)
+                        continue;
 
                     ListViewItem listViewItem = deviceListView.Items[i];
 
@@ -4141,7 +4146,10 @@ namespace MultiMiner.Win
                     }
 
                     if (poolIndex >= 0)
+                    {
                         deviceViewModel.Pool = poolInformationList[poolIndex].Url;
+                        deviceViewModel.Visible = true;
+                    }
                 }
             }
             finally
