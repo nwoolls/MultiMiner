@@ -68,8 +68,6 @@ namespace MultiMiner.Win
         private bool settingsLoaded = false;
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
         private bool applicationSetup = false;
-        private double totalScryptRate;
-        private double totalSha256Rate;
 
         //logic
         private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
@@ -2763,11 +2761,27 @@ namespace MultiMiner.Win
             }
         }
 
+        private double GetTotalHashrate(CoinAlgorithm algorithm)
+        {
+            double result = 0.00;
+
+            if (miningEngine.Mining)
+            {
+                foreach (DeviceViewModel device in localViewModel.Devices)
+                {
+                    if ((device.Coin != null) && (device.Coin.Algorithm == algorithm))
+                        result += device.AverageHashrate;
+                }
+            }
+
+            return result;
+        }
+
         private void BroadcastHashrate()
         {
             Remoting.Server.Data.Transfer.Machine machine = new Remoting.Server.Data.Transfer.Machine();
-            machine.TotalScryptHashrate = this.totalScryptRate;
-            machine.TotalSha256Hashrate = this.totalSha256Rate;
+            machine.TotalScryptHashrate = GetTotalHashrate(CoinAlgorithm.Scrypt);
+            machine.TotalSha256Hashrate = GetTotalHashrate(CoinAlgorithm.SHA256);
             Remoting.Server.Broadcast.Broadcaster.Broadcast(machine);
         }
 
@@ -3171,8 +3185,8 @@ namespace MultiMiner.Win
         private void SendHashrate(string ipAddress)
         {
             Remoting.Server.Data.Transfer.Machine machine = new Remoting.Server.Data.Transfer.Machine();
-            machine.TotalScryptHashrate = this.totalScryptRate;
-            machine.TotalSha256Hashrate = this.totalSha256Rate;
+            machine.TotalScryptHashrate = GetTotalHashrate(CoinAlgorithm.Scrypt);
+            machine.TotalSha256Hashrate = GetTotalHashrate(CoinAlgorithm.SHA256);
             Remoting.Server.Broadcast.Sender.Send(IPAddress.Parse(ipAddress), machine);
         }
 
@@ -4004,9 +4018,6 @@ namespace MultiMiner.Win
         #region RPC API
         private void RefreshDeviceStats()
         {
-            totalScryptRate = 0;
-            totalSha256Rate = 0;
-
             allDeviceInformation.Clear();
 
             //first clear stats for each row
@@ -4047,12 +4058,7 @@ namespace MultiMiner.Win
                         int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
 
                         if (deviceIndex >= 0)
-                        {
-                            if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
-                                totalScryptRate += deviceInformation.AverageHashrate;
-                            else if (minerProcess.MinerConfiguration.Algorithm == CoinAlgorithm.SHA256)
-                                totalSha256Rate += deviceInformation.AverageHashrate;
-                            
+                        {                            
                             minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
 
                             Device device = devices[deviceIndex];
@@ -4153,8 +4159,8 @@ namespace MultiMiner.Win
             if (instancesControl.Visible)
             {
                 Remoting.Server.Data.Transfer.Machine machine = new Remoting.Server.Data.Transfer.Machine();
-                machine.TotalScryptHashrate = this.totalScryptRate;
-                machine.TotalSha256Hashrate = this.totalSha256Rate;
+                machine.TotalScryptHashrate = GetTotalHashrate(CoinAlgorithm.Scrypt);
+                machine.TotalSha256Hashrate = GetTotalHashrate(CoinAlgorithm.SHA256);
                 instancesControl.ApplyMachineInformation("localhost", machine);
             }
         }
@@ -5505,8 +5511,6 @@ namespace MultiMiner.Win
             coinStatsCountdownTimer.Enabled = false;
             poolInfoTimer.Enabled = false;
             RefreshStrategiesCountdown();
-            totalScryptRate = 0;
-            totalSha256Rate = 0;
             scryptRateLabel.Text = string.Empty;
             sha256RateLabel.Text = string.Empty;
             notifyIcon1.Text = "MultiMiner - Stopped";
