@@ -5311,22 +5311,41 @@ namespace MultiMiner.Win
 
         private void DisplayMultiMinerUpdateNotification(string availableMinerVersion, string installedMinerVersion)
         {
+            if (notificationsControl == null)
+                //app is closing
+                return;
+
             notificationsControl.AddNotification(multiMinerNotificationId.ToString(),
                                 String.Format("MultiMiner version {0} is available ({1} installed)",
                                     availableMinerVersion, installedMinerVersion), () =>
                                     {
+                                        bool allRigs = ShouldUpdateAllRigs();
+                                        
                                         bool wasMining = miningEngine.Mining;
 
                                         if (wasMining)
                                             StopMiningLocally();
 
                                         //remote first as we'll be restarting
-                                        if (remotingEnabled)
+                                        if (allRigs)
                                             InstallMultiMinerRemotely();
 
                                         //this will restart the app
                                         InstallMultiMinerLocally();
                                     }, "http://releases.multiminerapp.com");
+        }
+
+        private bool ShouldUpdateAllRigs()
+        {
+            bool allRigs = false;
+            if (remotingEnabled && (instancesControl.Instances.Count > 1))
+            {
+                DialogResult dialogResult = MessageBox.Show("Would you like to apply this update to all of your online rigs?",
+                    "MultiMiner Remoting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                    allRigs = true;
+            }
+            return allRigs;
         }
 
         private static bool AutomaticUpgradeAllowed(string installedMinerVersion, string availableMinerVersion)
@@ -5384,6 +5403,10 @@ namespace MultiMiner.Win
 
         private void DisplayBackendMinerUpdateNotification(string availableMinerVersion, string installedMinerVersion)
         {
+            if (notificationsControl == null)
+                //app is closing
+                return;
+
             int notificationId = bfgminerNotificationId;
 
             string informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
@@ -5394,13 +5417,16 @@ namespace MultiMiner.Win
                 String.Format("{0} version {1} is available ({2} installed)",
                     minerName, availableMinerVersion, installedMinerVersion), () =>
                     {
+                        bool allRigs = ShouldUpdateAllRigs();
+
                         bool wasMining = miningEngine.Mining;
 
                         if (wasMining)
                             StopMiningLocally();
 
-                        if (remotingEnabled)
+                        if (allRigs)
                             InstallBackendMinerRemotely();
+
                         InstallBackendMinerLocally();
 
                         //only start mining if we stopped mining
