@@ -1776,13 +1776,13 @@ namespace MultiMiner.Win
             SetDevicesToCoin(devices, coinSymbol);
         }
 
-        private void SetDevicesToCoinLocally(IEnumerable<DeviceDescriptor> devices, string coinSymbol)
+        private void SetDevicesToCoinLocally(IEnumerable<DeviceDescriptor> devices, string coinName)
         {
             foreach (DeviceDescriptor device in devices)
             {
                 DeviceViewModel deviceViewModel = localViewModel.Devices.SingleOrDefault(dvm => dvm.Equals(device));
                 if ((deviceViewModel != null) && (deviceViewModel.Kind != DeviceKind.NET))
-                    deviceViewModel.Coin = engineConfiguration.CoinConfigurations.Single(cc => cc.Coin.Name.Equals(coinSymbol)).Coin;
+                    deviceViewModel.Coin = engineConfiguration.CoinConfigurations.Single(cc => cc.Coin.Name.Equals(coinName)).Coin;
             }
             
             RefreshListViewFromViewModel();
@@ -3506,12 +3506,12 @@ namespace MultiMiner.Win
             });
         }
 
-        private void SetDevicesToCoinRemotely(Instance instance, IEnumerable<DeviceDescriptor> devices, string coinSymbol)
+        private void SetDevicesToCoinRemotely(Instance instance, IEnumerable<DeviceDescriptor> devices, string coinName)
         {
             PerformRemoteCommand(instance, (service) =>
             {
                 List<DeviceDescriptor> descriptors = CloneDescriptors(devices);
-                service.SetDevicesToCoin(GetSendingSignature(instance), descriptors, coinSymbol);
+                service.SetDevicesToCoin(GetSendingSignature(instance), descriptors, coinName);
                 UpdateViewFromRemoteInTheFuture(2);
             });
         }
@@ -3565,15 +3565,15 @@ namespace MultiMiner.Win
             });
         }
 
-        private void SetDevicesToCoin(List<DeviceDescriptor> devices, string coinSymbol)
+        private void SetDevicesToCoin(List<DeviceDescriptor> devices, string coinName)
         {
             if (this.selectedRemoteInstance == null)
             {
-                SetDevicesToCoinLocally(devices, coinSymbol);
+                SetDevicesToCoinLocally(devices, coinName);
             }
             else
             {
-                SetDevicesToCoinRemotely(this.selectedRemoteInstance, devices, coinSymbol);
+                SetDevicesToCoinRemotely(this.selectedRemoteInstance, devices, coinName);
             }
         }
 
