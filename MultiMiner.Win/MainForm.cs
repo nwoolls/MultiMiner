@@ -2587,7 +2587,7 @@ namespace MultiMiner.Win
 
         private void SetupNetworkDeviceDetectTimer()
         {
-            networkDeviceDetectTimer.Interval = 10 * 60 * 1000; //19min
+            networkDeviceDetectTimer.Interval = 10 * 60 * 1000; //10min
             networkDeviceDetectTimer.Enabled = true;
         }
         #endregion
