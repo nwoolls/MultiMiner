@@ -1797,7 +1797,7 @@ namespace MultiMiner.Win
             foreach (DeviceDescriptor device in devices)
             {
                 DeviceViewModel deviceViewModel = localViewModel.Devices.SingleOrDefault(dvm => dvm.Equals(device));
-                if (deviceViewModel != null)
+                if ((deviceViewModel != null) && (deviceViewModel.Kind != DeviceKind.NET))
                     deviceViewModel.Coin = engineConfiguration.CoinConfigurations.Single(cc => cc.Coin.Name.Equals(coinSymbol)).Coin;
             }
             
