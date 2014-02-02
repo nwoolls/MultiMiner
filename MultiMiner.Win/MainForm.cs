@@ -5839,6 +5839,13 @@ namespace MultiMiner.Win
                         DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
                         devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner());
 
+                        //safe to do here as we are Scanning Hardware - we are not mining
+                        //no data to lose in the ViewModel
+                        //clearing means our sort order within the ListView is preserved
+                        //and things like selecting the first item work better
+                        //http://social.msdn.microsoft.com/Forums/windows/en-US/8a81c5a6-251c-4bf9-91c5-a937b5cfe9f3/possible-bug-in-listview-control-topitem-property-doesnt-work-with-groups
+                        localViewModel.Devices.Clear();
+
                         ApplyModelsToViewModel();
                         //populate ListView directly after - maintain 1-to-1 for ViewModel to ListView items
                         RefreshListViewFromViewModel();
