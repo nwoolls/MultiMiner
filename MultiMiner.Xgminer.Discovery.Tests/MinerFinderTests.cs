@@ -16,7 +16,7 @@ namespace MultiMiner.Xgminer.Discovery.Tests
             for (int i = 0; i < times; i++)
             {
                 List<IPEndPoint> miners = MinerFinder.Find("192.168.0.29-100", 4028, 4029);
-                Assert.IsTrue(miners.Count >= 4);
+                Assert.IsTrue(miners.Count >= 3);
             }
         }
 
