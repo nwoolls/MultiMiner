@@ -42,6 +42,7 @@
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Network", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -221,6 +222,8 @@
             this.poolsDownFlagTimer = new System.Windows.Forms.Timer(this.components);
             this.remotingBroadcastTimer = new System.Windows.Forms.Timer(this.components);
             this.remotingServerTimer = new System.Windows.Forms.Timer(this.components);
+            this.networkDeviceStatsTimer = new System.Windows.Forms.Timer(this.components);
+            this.networkDeviceDetectTimer = new System.Windows.Forms.Timer(this.components);
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -381,6 +384,7 @@
             this.largeImageList.Images.SetKeyName(1, "usb_connector.png");
             this.largeImageList.Images.SetKeyName(2, "link_network-list.png");
             this.largeImageList.Images.SetKeyName(3, "cpu_front.png");
+            this.largeImageList.Images.SetKeyName(4, "hardware-internet.png");
             // 
             // smallImageList
             // 
@@ -390,6 +394,7 @@
             this.smallImageList.Images.SetKeyName(1, "usb_connector.png");
             this.smallImageList.Images.SetKeyName(2, "link_network-list.png");
             this.smallImageList.Images.SetKeyName(3, "cpu_front.png");
+            this.smallImageList.Images.SetKeyName(4, "hardware-internet.png");
             // 
             // deviceListContextMenu
             // 
@@ -656,11 +661,14 @@
             listViewGroup3.Name = "usbListViewGroup";
             listViewGroup4.Header = "Proxy";
             listViewGroup4.Name = "proxyListViewGroup";
+            listViewGroup5.Header = "Network";
+            listViewGroup5.Name = "networkListViewGroup";
             this.deviceListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2,
             listViewGroup3,
-            listViewGroup4});
+            listViewGroup4,
+            listViewGroup5});
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
@@ -671,6 +679,7 @@
             this.deviceListView.View = System.Windows.Forms.View.Details;
             this.deviceListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.deviceListView_ColumnClick);
             this.deviceListView.ColumnWidthChanging += new System.Windows.Forms.ColumnWidthChangingEventHandler(this.deviceListView_ColumnWidthChanging);
+            this.deviceListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.deviceListView_ItemCheck);
             this.deviceListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.deviceListView_ItemChecked);
             this.deviceListView.SelectedIndexChanged += new System.EventHandler(this.deviceListView_SelectedIndexChanged);
             this.deviceListView.DoubleClick += new System.EventHandler(this.deviceListView_DoubleClick);
@@ -1820,6 +1829,14 @@
             // 
             this.remotingServerTimer.Tick += new System.EventHandler(this.remotingServerTimer_Tick);
             // 
+            // networkDeviceStatsTimer
+            // 
+            this.networkDeviceStatsTimer.Tick += new System.EventHandler(this.networkDeviceStatsTimer_Tick);
+            // 
+            // networkDeviceDetectTimer
+            // 
+            this.networkDeviceDetectTimer.Tick += new System.EventHandler(this.networkDeviceDetectTimer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -2071,6 +2088,8 @@
         private System.Windows.Forms.Timer remotingBroadcastTimer;
         private System.Windows.Forms.Timer remotingServerTimer;
         private System.Windows.Forms.Button startStartupMiningButton;
+        private System.Windows.Forms.Timer networkDeviceStatsTimer;
+        private System.Windows.Forms.Timer networkDeviceDetectTimer;
     }
 }
 

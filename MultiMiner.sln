@@ -70,6 +70,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Update.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Utility.Tests", "MultiMiner.Utility.Tests\MultiMiner.Utility.Tests.csproj", "{5CA11E2E-47A3-40A9-A136-14FF56DB97A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Discovery", "MultiMiner.Xgminer.Discovery\MultiMiner.Xgminer.Discovery.csproj", "{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Discovery.Tests", "MultiMiner.Xgminer.Discovery.Tests\MultiMiner.Xgminer.Discovery.Tests.csproj", "{432C7680-B8C3-453B-AA55-850D0254EE87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -200,6 +204,14 @@ Global
 		{5CA11E2E-47A3-40A9-A136-14FF56DB97A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CA11E2E-47A3-40A9-A136-14FF56DB97A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CA11E2E-47A3-40A9-A136-14FF56DB97A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{432C7680-B8C3-453B-AA55-850D0254EE87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{432C7680-B8C3-453B-AA55-850D0254EE87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{432C7680-B8C3-453B-AA55-850D0254EE87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{432C7680-B8C3-453B-AA55-850D0254EE87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

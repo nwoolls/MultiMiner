@@ -25,15 +25,18 @@ namespace MultiMiner.Win.Extensions
 
             domainName = uri.Host;
 
-            //remove subdomain if there is one
-            if (domainName.Split('.').Length > 2)
+            if (uri.HostNameType == UriHostNameType.Dns)
             {
-                int index = domainName.IndexOf(".") + 1;
-                domainName = domainName.Substring(index, domainName.Length - index);
-            }
+                //remove subdomain if there is one
+                if (domainName.Split('.').Length > 2)
+                {
+                    int index = domainName.IndexOf(".") + 1;
+                    domainName = domainName.Substring(index, domainName.Length - index);
+                }
 
-            //remove TLD
-            domainName = Path.GetFileNameWithoutExtension(domainName);
+                //remove TLD
+                domainName = Path.GetFileNameWithoutExtension(domainName);
+            }
 
             hostDomainNames[host] = domainName;
 

@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5CA11E2E-47A3-40A9-A136-14FF56DB97A5}</ProjectGuid>
+    <ProjectGuid>{432C7680-B8C3-453B-AA55-850D0254EE87}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MultiMiner.Utility.Tests</RootNamespace>
-    <AssemblyName>MultiMiner.Utility.Tests</AssemblyName>
+    <RootNamespace>MultiMiner.Xgminer.Discovery.Tests</RootNamespace>
+    <AssemblyName>MultiMiner.Xgminer.Discovery.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -53,22 +53,15 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Networking\LocalNetworkTests.cs" />
+    <Compile Include="MinerFinderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnzipperTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App_Data\Unzipper-Test.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
-      <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
-      <Name>MultiMiner.Utility</Name>
+    <ProjectReference Include="..\MultiMiner.Xgminer.Discovery\MultiMiner.Xgminer.Discovery.csproj">
+      <Project>{ed66caa1-4826-46e9-bb23-c56d0cff5c7a}</Project>
+      <Name>MultiMiner.Xgminer.Discovery</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
