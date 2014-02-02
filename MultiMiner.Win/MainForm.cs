@@ -4035,59 +4035,51 @@ namespace MultiMiner.Win
             //this is because the PXY row stats get summed 
             localViewModel.ClearDeviceInformationFromViewModel();
 
-            deviceListView.BeginUpdate();
-            try
+            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
-                foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+                ClearSuspectProcessFlags(minerProcess);
+
+                List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
+
+                if (deviceInformationList == null) //handled failure getting API info
                 {
-                    ClearSuspectProcessFlags(minerProcess);
-
-                    List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
-
-                    if (deviceInformationList == null) //handled failure getting API info
-                    {
-                        minerProcess.MinerIsFrozen = true;
-                        continue;
-                    }
-
-                    allDeviceInformation.AddRange(deviceInformationList);
-
-                    //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
-                    List<DeviceDetailsResponse> processDevices = GetProcessDeviceDetails(minerProcess, deviceInformationList);
-
-                    //clear accepted shares as we'll be summing that as well
-                    minerProcess.AcceptedShares = 0;
-
-                    foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
-                    {
-                        //don't consider a standalone miner suspect - restarting the proxy doesn't help and often hurts
-                        if (!deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
-                            FlagSuspiciousMiner(minerProcess, deviceInformation);
-
-                        DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
-                            && (d.ID == deviceInformation.ID));
-                        int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
-
-                        if (deviceIndex >= 0)
-                        {                            
-                            minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
-
-                            Device device = devices[deviceIndex];
-                            DeviceViewModel deviceViewModel = localViewModel.ApplyDeviceInformationResponseModel(device, deviceInformation);
-                            deviceDetailsMapping[deviceViewModel] = deviceDetails;
-
-                            CoinConfiguration coinConfiguration = CoinConfigurationForDevice(device);
-                            if (coinConfiguration != null)
-                                deviceViewModel.Pool = GetPoolNameByIndex(coinConfiguration, deviceViewModel.PoolIndex);
-                        }
-                    }
-
-                    localViewModel.ApplyDeviceDetailsResponseModels(minerProcess.CoinSymbol, processDevices);
+                    minerProcess.MinerIsFrozen = true;
+                    continue;
                 }
-            }
-            finally
-            {
-                deviceListView.EndUpdate();
+
+                allDeviceInformation.AddRange(deviceInformationList);
+
+                //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
+                List<DeviceDetailsResponse> processDevices = GetProcessDeviceDetails(minerProcess, deviceInformationList);
+
+                //clear accepted shares as we'll be summing that as well
+                minerProcess.AcceptedShares = 0;
+
+                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                {
+                    //don't consider a standalone miner suspect - restarting the proxy doesn't help and often hurts
+                    if (!deviceInformation.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
+                        FlagSuspiciousMiner(minerProcess, deviceInformation);
+
+                    DeviceDetailsResponse deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+                        && (d.ID == deviceInformation.ID));
+                    int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
+
+                    if (deviceIndex >= 0)
+                    {                            
+                        minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
+
+                        Device device = devices[deviceIndex];
+                        DeviceViewModel deviceViewModel = localViewModel.ApplyDeviceInformationResponseModel(device, deviceInformation);
+                        deviceDetailsMapping[deviceViewModel] = deviceDetails;
+
+                        CoinConfiguration coinConfiguration = CoinConfigurationForDevice(device);
+                        if (coinConfiguration != null)
+                            deviceViewModel.Pool = GetPoolNameByIndex(coinConfiguration, deviceViewModel.PoolIndex);
+                    }
+                }
+
+                localViewModel.ApplyDeviceDetailsResponseModels(minerProcess.CoinSymbol, processDevices);
             }
 
             RefreshViewFromDeviceStats();
@@ -4126,36 +4118,29 @@ namespace MultiMiner.Win
             //this is because the NET row stats get summed 
             localViewModel.ClearNetworkDeviceInformationFromViewModel();
 
-            deviceListView.BeginUpdate();
-            try
+            foreach (DeviceViewModel deviceViewModel in localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET))
             {
-                foreach (DeviceViewModel deviceViewModel in localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET))
+                string[] portions = deviceViewModel.Path.Split(':');
+                string ipAddress = portions[0];
+                int port = int.Parse(portions[1]);
+                List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromAddress(ipAddress, port);
+                List<PoolInformationResponse> poolInformationList = GetPoolInfoFromAddress(ipAddress, port);
+
+                int poolIndex = -1;
+
+                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                 {
-                    string[] portions = deviceViewModel.Path.Split(':');
-                    string ipAddress = portions[0];
-                    int port = int.Parse(portions[1]);
-                    List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromAddress(ipAddress, port);
-                    List<PoolInformationResponse> poolInformationList = GetPoolInfoFromAddress(ipAddress, port);
+                    localViewModel.ApplyDeviceInformationResponseModel(deviceViewModel, deviceInformation);
+                    poolIndex = deviceInformation.PoolIndex >= 0 ? deviceInformation.PoolIndex : poolIndex;
+                }
 
-                    int poolIndex = -1;
-
-                    foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
-                    {
-                        localViewModel.ApplyDeviceInformationResponseModel(deviceViewModel, deviceInformation);
-                        poolIndex = deviceInformation.PoolIndex >= 0 ? deviceInformation.PoolIndex : poolIndex;
-                    }
-
-                    if (poolIndex >= 0)
-                    {
-                        deviceViewModel.Pool = poolInformationList[poolIndex].Url;
-                        deviceViewModel.Visible = true;
-                    }
+                if (poolIndex >= 0)
+                {
+                    deviceViewModel.Pool = poolInformationList[poolIndex].Url;
+                    deviceViewModel.Visible = true;
                 }
             }
-            finally
-            {
-                deviceListView.EndUpdate();
-            }
+
 
             RemoveSelfReferencingNetworkDevices();
 
