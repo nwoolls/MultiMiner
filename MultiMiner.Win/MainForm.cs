@@ -2495,6 +2495,9 @@ namespace MultiMiner.Win
 
         private void deviceListView_ItemCheck(object sender, ItemCheckEventArgs e)
         {
+            if (this.updatingListView)
+                return;
+
             //disallow toggling check-state for Network Devices
             MainFormViewModel viewModelToView = GetViewModelToView();
             if (viewModelToView.Devices[e.Index].Kind == DeviceKind.NET)
