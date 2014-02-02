@@ -283,8 +283,7 @@ namespace MultiMiner.Win
             for (int i = deviceListView.Items.Count - 1; i >= 0; i--)
             {
                 DeviceViewModel listModel = (DeviceViewModel)deviceListView.Items[i].Tag;
-                DeviceViewModel viewModel = viewModelToView.Devices.SingleOrDefault(d => d.Equals(listModel));
-                if ((viewModel == null) || (!viewModel.Visible))
+                if (!viewModelToView.Devices.Contains(listModel) || !listModel.Visible)
                     deviceListView.Items.RemoveAt(i);
             }
         }
@@ -354,6 +353,8 @@ namespace MultiMiner.Win
             listViewItem.SubItems["Driver"].Text = deviceViewModel.Driver;
 
             deviceListView.Items.Add(listViewItem);
+
+            listViewItem.Tag = deviceViewModel;
 
             return listViewItem;
         }
