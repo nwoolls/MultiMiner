@@ -105,6 +105,9 @@ namespace MultiMiner.Win
                 case DeviceKind.PXY:
                     pictureBox1.Image = imageList1.Images[2];
                     break;
+                case DeviceKind.NET:
+                    pictureBox1.Image = imageList1.Images[4];
+                    break;
             }
 
             nameLabel.Width = this.Width - nameLabel.Left - closeDetailsButton.Width;

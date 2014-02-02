@@ -54,6 +54,12 @@
             this.label12 = new System.Windows.Forms.Label();
             this.hashrateLabel = new System.Windows.Forms.Label();
             this.workersGridView = new System.Windows.Forms.DataGridView();
+            this.workerNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.averageHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.acceptedSharesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.utilityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.workerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.workersTitleLabel = new System.Windows.Forms.Label();
             this.tempLabel = new System.Windows.Forms.Label();
@@ -86,12 +92,6 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.currentRateLabel = new System.Windows.Forms.Label();
             this.label29 = new System.Windows.Forms.Label();
-            this.workerNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.averageHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.acceptedSharesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.utilityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.workersGridView)).BeginInit();
@@ -124,6 +124,7 @@
             this.imageList1.Images.SetKeyName(1, "usb_connector.png");
             this.imageList1.Images.SetKeyName(2, "link_network-list.png");
             this.imageList1.Images.SetKeyName(3, "cpu_front.png");
+            this.imageList1.Images.SetKeyName(4, "hardware-internet.png");
             // 
             // nameLabel
             // 
@@ -315,6 +316,62 @@
             this.workersGridView.Size = new System.Drawing.Size(587, 226);
             this.workersGridView.TabIndex = 17;
             this.workersGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.workersGridView_CellFormatting);
+            // 
+            // workerNameDataGridViewTextBoxColumn
+            // 
+            this.workerNameDataGridViewTextBoxColumn.DataPropertyName = "WorkerName";
+            this.workerNameDataGridViewTextBoxColumn.FillWeight = 90F;
+            this.workerNameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.workerNameDataGridViewTextBoxColumn.Name = "workerNameDataGridViewTextBoxColumn";
+            this.workerNameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // averageHashrateDataGridViewTextBoxColumn
+            // 
+            this.averageHashrateDataGridViewTextBoxColumn.DataPropertyName = "AverageHashrate";
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.averageHashrateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            this.averageHashrateDataGridViewTextBoxColumn.HeaderText = "Average";
+            this.averageHashrateDataGridViewTextBoxColumn.Name = "averageHashrateDataGridViewTextBoxColumn";
+            this.averageHashrateDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // currentHashrateDataGridViewTextBoxColumn
+            // 
+            this.currentHashrateDataGridViewTextBoxColumn.DataPropertyName = "CurrentHashrate";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.currentHashrateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            this.currentHashrateDataGridViewTextBoxColumn.HeaderText = "Current";
+            this.currentHashrateDataGridViewTextBoxColumn.Name = "currentHashrateDataGridViewTextBoxColumn";
+            this.currentHashrateDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // acceptedSharesDataGridViewTextBoxColumn
+            // 
+            this.acceptedSharesDataGridViewTextBoxColumn.DataPropertyName = "AcceptedShares";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.acceptedSharesDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            this.acceptedSharesDataGridViewTextBoxColumn.FillWeight = 65F;
+            this.acceptedSharesDataGridViewTextBoxColumn.HeaderText = "Acc.";
+            this.acceptedSharesDataGridViewTextBoxColumn.Name = "acceptedSharesDataGridViewTextBoxColumn";
+            this.acceptedSharesDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // hardwareErrorsPercentDataGridViewTextBoxColumn
+            // 
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DataPropertyName = "HardwareErrorsPercent";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.FillWeight = 80F;
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.HeaderText = "Errors";
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.Name = "hardwareErrorsPercentDataGridViewTextBoxColumn";
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // utilityDataGridViewTextBoxColumn
+            // 
+            this.utilityDataGridViewTextBoxColumn.DataPropertyName = "Utility";
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.utilityDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
+            this.utilityDataGridViewTextBoxColumn.FillWeight = 90F;
+            this.utilityDataGridViewTextBoxColumn.HeaderText = "Utility";
+            this.utilityDataGridViewTextBoxColumn.Name = "utilityDataGridViewTextBoxColumn";
+            this.utilityDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // workerBindingSource
             // 
@@ -642,62 +699,6 @@
             this.label29.Size = new System.Drawing.Size(50, 15);
             this.label29.TabIndex = 43;
             this.label29.Text = "Current:";
-            // 
-            // workerNameDataGridViewTextBoxColumn
-            // 
-            this.workerNameDataGridViewTextBoxColumn.DataPropertyName = "WorkerName";
-            this.workerNameDataGridViewTextBoxColumn.FillWeight = 90F;
-            this.workerNameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.workerNameDataGridViewTextBoxColumn.Name = "workerNameDataGridViewTextBoxColumn";
-            this.workerNameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // averageHashrateDataGridViewTextBoxColumn
-            // 
-            this.averageHashrateDataGridViewTextBoxColumn.DataPropertyName = "AverageHashrate";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.averageHashrateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
-            this.averageHashrateDataGridViewTextBoxColumn.HeaderText = "Average";
-            this.averageHashrateDataGridViewTextBoxColumn.Name = "averageHashrateDataGridViewTextBoxColumn";
-            this.averageHashrateDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // currentHashrateDataGridViewTextBoxColumn
-            // 
-            this.currentHashrateDataGridViewTextBoxColumn.DataPropertyName = "CurrentHashrate";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.currentHashrateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
-            this.currentHashrateDataGridViewTextBoxColumn.HeaderText = "Current";
-            this.currentHashrateDataGridViewTextBoxColumn.Name = "currentHashrateDataGridViewTextBoxColumn";
-            this.currentHashrateDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // acceptedSharesDataGridViewTextBoxColumn
-            // 
-            this.acceptedSharesDataGridViewTextBoxColumn.DataPropertyName = "AcceptedShares";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.acceptedSharesDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
-            this.acceptedSharesDataGridViewTextBoxColumn.FillWeight = 65F;
-            this.acceptedSharesDataGridViewTextBoxColumn.HeaderText = "Acc.";
-            this.acceptedSharesDataGridViewTextBoxColumn.Name = "acceptedSharesDataGridViewTextBoxColumn";
-            this.acceptedSharesDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // hardwareErrorsPercentDataGridViewTextBoxColumn
-            // 
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DataPropertyName = "HardwareErrorsPercent";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.FillWeight = 80F;
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.HeaderText = "Errors";
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.Name = "hardwareErrorsPercentDataGridViewTextBoxColumn";
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // utilityDataGridViewTextBoxColumn
-            // 
-            this.utilityDataGridViewTextBoxColumn.DataPropertyName = "Utility";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.utilityDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
-            this.utilityDataGridViewTextBoxColumn.FillWeight = 90F;
-            this.utilityDataGridViewTextBoxColumn.HeaderText = "Utility";
-            this.utilityDataGridViewTextBoxColumn.Name = "utilityDataGridViewTextBoxColumn";
-            this.utilityDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // DetailsControl
             // 
