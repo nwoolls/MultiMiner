@@ -2485,7 +2485,30 @@ namespace MultiMiner.Win
         {
             string coinSymbol = (string)((ToolStripMenuItem)sender).Tag;
 
-            SetAllDevicesToCoin(coinSymbol);
+            bool allRigs = ShouldQuickSwitchAllRigs(coinSymbol);
+
+            if (allRigs)
+            {
+                SetAllDevicesToCoinOnAllRigs(coinSymbol);
+            }
+            else
+            {
+                SetAllDevicesToCoin(coinSymbol);
+            }
+        }
+
+        private bool ShouldQuickSwitchAllRigs(string coinSymbol)
+        {
+            bool allRigs = false;
+            if (remotingEnabled && (instancesControl.Instances.Count > 1))
+            {
+                DialogResult dialogResult = MessageBox.Show(
+                    String.Format("Would you like to Quick Switch to {0} on all of your online rigs?", coinSymbol),
+                    "MultiMiner Remoting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                    allRigs = true;
+            }
+            return allRigs;
         }
 
         private void startStartupMiningButton_Click(object sender, EventArgs e)
@@ -5471,6 +5494,12 @@ namespace MultiMiner.Win
             {
                 SetAllDevicesToCoinRemotely(this.selectedRemoteInstance, coinSymbol);
             }
+        }
+
+        private void SetAllDevicesToCoinOnAllRigs(string coinSymbol)
+        {
+            foreach (Instance instance in instancesControl.Instances)
+                SetAllDevicesToCoinRemotely(instance, coinSymbol);
         }
 
         private void SetAllDevicesToCoinLocally(string coinSymbol)
