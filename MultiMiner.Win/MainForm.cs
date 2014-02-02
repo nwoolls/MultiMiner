@@ -5716,8 +5716,8 @@ namespace MultiMiner.Win
             MainFormViewModel viewModel = GetViewModelToView();
             deviceTotalLabel.Text = String.Format("{0} device(s)", viewModel.Devices.Count);
 
-            double scryptHashRate = viewModel.Devices.Where(d => (d.Coin != null) && (d.Coin.Algorithm == CoinAlgorithm.Scrypt)).Sum(d => d.AverageHashrate);
-            double sha256HashRate = viewModel.Devices.Where(d => (d.Coin != null) && (d.Coin.Algorithm == CoinAlgorithm.SHA256)).Sum(d => d.AverageHashrate);
+            double scryptHashRate = GetTotalHashrate(CoinAlgorithm.Scrypt);
+            double sha256HashRate = GetTotalHashrate(CoinAlgorithm.SHA256);
 
             //Mh not mh, mh is milli
             scryptRateLabel.Text = scryptHashRate == 0 ? String.Empty : String.Format("Scrypt: {0}", scryptHashRate.ToHashrateString());
