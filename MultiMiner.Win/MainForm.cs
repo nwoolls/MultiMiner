@@ -625,8 +625,7 @@ namespace MultiMiner.Win
                 return;
             }
 
-            int deviceIndex = deviceListView.SelectedIndices[0];
-            DeviceViewModel selectedDevice = viewModelToView.Devices[deviceIndex];
+            DeviceViewModel selectedDevice = (DeviceViewModel)deviceListView.SelectedItems[0].Tag;
 
             detailsControl1.InspectDetails(selectedDevice, applicationConfiguration.ShowWorkUtility);
         }
