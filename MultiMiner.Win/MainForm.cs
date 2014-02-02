@@ -989,7 +989,7 @@ namespace MultiMiner.Win
             if (info != null)
             {
                 double difficulty = (double)item.SubItems["Difficulty"].Tag;
-                double hashrate = deviceViewModel.AverageHashrate * 1000;
+                double hashrate = deviceViewModel.CurrentHashrate * 1000;
                 double fullDifficulty = difficulty * difficultyMuliplier;
                 double secondsToCalcShare = fullDifficulty / hashrate;
                 const double secondsPerDay = 86400;
@@ -2786,7 +2786,7 @@ namespace MultiMiner.Win
                 foreach (DeviceViewModel device in localViewModel.Devices.Where(d => d.Visible))
                 {
                     if ((device.Coin != null) && (device.Coin.Algorithm == algorithm))
-                        result += device.AverageHashrate;
+                        result += device.CurrentHashrate;
                 }
             }
 
