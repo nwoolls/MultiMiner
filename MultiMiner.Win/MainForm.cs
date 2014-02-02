@@ -1298,7 +1298,7 @@ namespace MultiMiner.Win
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 engineConfiguration.SaveCoinConfigurations();
-
+                localViewModel.ApplyCoinConfigurationModels(engineConfiguration.CoinConfigurations);
                 RefreshViewForConfigurationChanges();
             }
             else
