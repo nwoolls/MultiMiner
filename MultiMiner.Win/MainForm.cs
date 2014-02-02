@@ -2262,30 +2262,20 @@ namespace MultiMiner.Win
 
         private void deviceListView_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
-                if (deviceListView.FocusedItem.Bounds.Contains(e.Location) == true)
-                {
-                    string currentCoin = GetCurrentlySelectedCoinName();
+            if ((e.Button == MouseButtons.Right) && (deviceListView.FocusedItem.Bounds.Contains(e.Location) == true) &&
+                (!deviceListView.FocusedItem.Group.Name.Equals("networkListViewGroup")))
+            {
+                string currentCoin = GetCurrentlySelectedCoinName();
 
-                    CheckCoinInPopupMenu(currentCoin);
+                CheckCoinInPopupMenu(currentCoin);
 
-                    coinPopupMenu.Show(Cursor.Position);
-                }
+                coinPopupMenu.Show(Cursor.Position);
+            }
         }
 
         private string GetCurrentlySelectedCoinName()
         {
-            string currentCoin = null;
-            foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
-            {
-                string itemValue = selectedItem.SubItems["Coin"].Text;
-                if (!String.IsNullOrEmpty(itemValue))
-                {
-                    currentCoin = itemValue;
-                    break;
-                }
-            }
-            return currentCoin;
+            return deviceListView.FocusedItem.SubItems["Coin"].Text;
         }
 
         private void deviceListView_ItemChecked(object sender, ItemCheckedEventArgs e)
