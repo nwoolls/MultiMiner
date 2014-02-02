@@ -883,17 +883,10 @@ namespace MultiMiner.Win
             {
                 if (coinConfiguration != null)
                 {
-                    //the poolIndex may be greater than the Pools count if the user edits
-                    //their pools while mining
+                    //the poolIndex may be greater than the Pools count if donating
                     if (poolIndex < coinConfiguration.Pools.Count)
                     {
                         result = coinConfiguration.Pools[poolIndex].Host;
-                    }
-                    else
-                    {
-                        //check .Mining to allow perks for Remoting when local PC is not mining
-                        if (miningEngine.Donating || !miningEngine.Mining)
-                            result = "donation"; //donation pool won't be in list
                     }
                 }
             }
@@ -4076,7 +4069,7 @@ namespace MultiMiner.Win
                     int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
 
                     if (deviceIndex >= 0)
-                    {                            
+                    {
                         minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
 
                         Device device = devices[deviceIndex];
@@ -4085,7 +4078,12 @@ namespace MultiMiner.Win
 
                         CoinConfiguration coinConfiguration = CoinConfigurationForDevice(device);
                         if (coinConfiguration != null)
-                            deviceViewModel.Pool = GetPoolNameByIndex(coinConfiguration, deviceViewModel.PoolIndex);
+                        {
+                            string poolName = GetPoolNameByIndex(coinConfiguration, deviceViewModel.PoolIndex);
+                            //may be blank if donating
+                            if (!String.IsNullOrEmpty(poolName))
+                                deviceViewModel.Pool = poolName;
+                        }
                     }
                 }
 
