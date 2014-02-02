@@ -2793,7 +2793,8 @@ namespace MultiMiner.Win
 
             if (miningEngine.Mining)
             {
-                foreach (DeviceViewModel device in localViewModel.Devices)
+                //only include Visible devices
+                foreach (DeviceViewModel device in localViewModel.Devices.Where(d => d.Visible))
                 {
                     if ((device.Coin != null) && (device.Coin.Algorithm == algorithm))
                         result += device.AverageHashrate;
