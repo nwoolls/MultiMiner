@@ -5334,19 +5334,29 @@ namespace MultiMiner.Win
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                 deviceConfiguration.Assign(viewModel);
 
-                if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
+                if (viewModel.Kind == DeviceKind.NET)
                 {
-                    if (viewModel.Kind == DeviceKind.GPU)
-                        deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
-                    else
-                        deviceConfiguration.CoinSymbol = viewModel.Coin == null ? String.Empty : viewModel.Coin.Name;
+                    //assume BTC for Network Devices (for now)
+                    deviceConfiguration.CoinSymbol = "BTC";
+                    deviceConfiguration.Enabled = true;
                 }
                 else
                 {
-                    deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
-                }
 
-                deviceConfiguration.Enabled = viewModel.Enabled;
+                    if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
+                    {
+                        if (viewModel.Kind == DeviceKind.GPU)
+                            deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
+                        else
+                            deviceConfiguration.CoinSymbol = viewModel.Coin == null ? String.Empty : viewModel.Coin.Name;
+                    }
+                    else
+                    {
+                        deviceConfiguration.CoinSymbol = coinConfiguration.Coin.Symbol;
+                    }
+
+                    deviceConfiguration.Enabled = viewModel.Enabled;
+                }
 
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
