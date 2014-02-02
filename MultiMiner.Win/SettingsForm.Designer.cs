@@ -124,9 +124,9 @@
             // 
             this.apiKeyEdit.AccessibleName = "API key";
             this.apiKeyEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "CoinWarzApiKey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.apiKeyEdit.Location = new System.Drawing.Point(318, 25);
+            this.apiKeyEdit.Location = new System.Drawing.Point(345, 25);
             this.apiKeyEdit.Name = "apiKeyEdit";
-            this.apiKeyEdit.Size = new System.Drawing.Size(151, 23);
+            this.apiKeyEdit.Size = new System.Drawing.Size(124, 23);
             this.apiKeyEdit.TabIndex = 2;
             // 
             // applicationConfigurationBindingSource
@@ -136,12 +136,12 @@
             // apiKeyLabel
             // 
             this.apiKeyLabel.AutoSize = true;
-            this.apiKeyLabel.Location = new System.Drawing.Point(257, 29);
+            this.apiKeyLabel.Location = new System.Drawing.Point(253, 29);
             this.apiKeyLabel.Name = "apiKeyLabel";
-            this.apiKeyLabel.Size = new System.Drawing.Size(49, 15);
+            this.apiKeyLabel.Size = new System.Drawing.Size(82, 15);
             this.apiKeyLabel.TabIndex = 1;
             this.apiKeyLabel.TabStop = true;
-            this.apiKeyLabel.Text = "API key:";
+            this.apiKeyLabel.Text = "CoinWarz key:";
             this.apiKeyLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.apiKeyLabel_LinkClicked);
             // 
             // label11
@@ -149,9 +149,9 @@
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(10, 29);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(101, 15);
+            this.label11.Size = new System.Drawing.Size(90, 15);
             this.label11.TabIndex = 8;
-            this.label11.Text = "Coin information:";
+            this.label11.Text = "Prefer Coin API:";
             // 
             // coinApiCombo
             // 
@@ -164,12 +164,11 @@
             this.coinApiCombo.Name = "coinApiCombo";
             this.coinApiCombo.Size = new System.Drawing.Size(124, 23);
             this.coinApiCombo.TabIndex = 0;
-            this.coinApiCombo.SelectedIndexChanged += new System.EventHandler(this.coinApiCombo_SelectedIndexChanged);
             // 
             // mobileMinerInfoLink
             // 
             this.mobileMinerInfoLink.AutoSize = true;
-            this.mobileMinerInfoLink.Location = new System.Drawing.Point(285, 62);
+            this.mobileMinerInfoLink.Location = new System.Drawing.Point(281, 62);
             this.mobileMinerInfoLink.Name = "mobileMinerInfoLink";
             this.mobileMinerInfoLink.Size = new System.Drawing.Size(172, 15);
             this.mobileMinerInfoLink.TabIndex = 6;
@@ -180,7 +179,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.info;
-            this.pictureBox1.Location = new System.Drawing.Point(260, 61);
+            this.pictureBox1.Location = new System.Drawing.Point(256, 61);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(19, 18);
             this.pictureBox1.TabIndex = 5;
@@ -203,9 +202,9 @@
             this.appKeyEdit.AccessibleName = "App key";
             this.appKeyEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "MobileMinerApplicationKey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.appKeyEdit.Enabled = false;
-            this.appKeyEdit.Location = new System.Drawing.Point(318, 91);
+            this.appKeyEdit.Location = new System.Drawing.Point(345, 91);
             this.appKeyEdit.Name = "appKeyEdit";
-            this.appKeyEdit.Size = new System.Drawing.Size(151, 23);
+            this.appKeyEdit.Size = new System.Drawing.Size(124, 23);
             this.appKeyEdit.TabIndex = 8;
             // 
             // label8
@@ -230,7 +229,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(257, 94);
+            this.label6.Location = new System.Drawing.Point(253, 94);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(53, 15);
             this.label6.TabIndex = 0;
@@ -291,7 +290,7 @@
             this.sysTrayCheckBox.Checked = true;
             this.sysTrayCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.sysTrayCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MinimizeToNotificationArea", true));
-            this.sysTrayCheckBox.Location = new System.Drawing.Point(260, 29);
+            this.sysTrayCheckBox.Location = new System.Drawing.Point(256, 29);
             this.sysTrayCheckBox.Name = "sysTrayCheckBox";
             this.sysTrayCheckBox.Size = new System.Drawing.Size(224, 20);
             this.sysTrayCheckBox.TabIndex = 3;
@@ -301,7 +300,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(421, 85);
+            this.label4.Location = new System.Drawing.Point(417, 85);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(50, 15);
             this.label4.TabIndex = 16;
@@ -313,7 +312,7 @@
             this.checkBox3.Checked = true;
             this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox3.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "StartMiningOnStartup", true));
-            this.checkBox3.Location = new System.Drawing.Point(260, 55);
+            this.checkBox3.Location = new System.Drawing.Point(256, 55);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(203, 19);
             this.checkBox3.TabIndex = 4;
@@ -323,7 +322,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(279, 85);
+            this.label3.Location = new System.Drawing.Point(275, 85);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(93, 15);
             this.label3.TabIndex = 5;
@@ -345,7 +344,7 @@
             // textBox1
             // 
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "StartupMiningDelay", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox1.Location = new System.Drawing.Point(378, 82);
+            this.textBox1.Location = new System.Drawing.Point(374, 82);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(37, 23);
             this.textBox1.TabIndex = 6;
@@ -384,7 +383,7 @@
             this.checkBox4.Checked = true;
             this.checkBox4.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox4.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "DetectDisownedMiners", true));
-            this.checkBox4.Location = new System.Drawing.Point(260, 22);
+            this.checkBox4.Location = new System.Drawing.Point(256, 22);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(190, 20);
             this.checkBox4.TabIndex = 1;
@@ -414,7 +413,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(257, 51);
+            this.label7.Location = new System.Drawing.Point(253, 51);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(48, 15);
             this.label7.TabIndex = 17;
@@ -427,9 +426,9 @@
             this.priorityCombo.Items.AddRange(new object[] {
             "cgminer",
             "bfgminer"});
-            this.priorityCombo.Location = new System.Drawing.Point(318, 48);
+            this.priorityCombo.Location = new System.Drawing.Point(345, 48);
             this.priorityCombo.Name = "priorityCombo";
-            this.priorityCombo.Size = new System.Drawing.Size(151, 23);
+            this.priorityCombo.Size = new System.Drawing.Size(124, 23);
             this.priorityCombo.TabIndex = 3;
             // 
             // checkBox2

@@ -127,12 +127,6 @@ namespace MultiMiner.Win
             Process.Start("http://www.coinwarz.com/v1/api/documentation");
         }
 
-        private void coinApiCombo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            apiKeyEdit.Enabled = coinApiCombo.SelectedIndex == 1;
-            apiKeyLabel.Enabled = apiKeyEdit.Enabled;
-        }
-
         private void advancedSettingsLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             AdvancedSettingsForm advancedSettingsForm = new AdvancedSettingsForm(applicationConfiguration, pathConfiguration);
