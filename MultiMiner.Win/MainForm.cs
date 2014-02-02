@@ -1656,14 +1656,7 @@ namespace MultiMiner.Win
             }
             return miningConfigurationValid;
         }
-
-        private CoinConfiguration CoinConfigurationForListViewItem(ListViewItem item)
-        {
-            int itemIndex = deviceListView.Items.IndexOf(item);
-            Device device = devices[itemIndex];
-            return CoinConfigurationForDevice(device);
-        }
-
+        
         private CoinConfiguration CoinConfigurationForDevice(Device device)
         {
             //get the actual device configuration, text in the ListViewItem may be unsaved

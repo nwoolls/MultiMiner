@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MultiMiner.Win.Configuration;
+using MultiMiner.Win.Extensions;
 
 namespace MultiMiner.Win.ViewModels
 {
@@ -26,6 +27,7 @@ namespace MultiMiner.Win.ViewModels
 
         public void ApplyDeviceModels(List<Device> deviceModels, List<NetworkDevicesConfiguration.NetworkDevice> networkDeviceModels)
         {
+            //add/update Devices from deviceModels
             if (deviceModels != null)
             {
                 foreach (Device deviceModel in deviceModels)
@@ -43,17 +45,12 @@ namespace MultiMiner.Win.ViewModels
                 }
             }
 
+            //add/update Devices from networkDeviceModels
             if (networkDeviceModels != null)
             {
                 foreach (NetworkDevicesConfiguration.NetworkDevice networkDeviceModel in networkDeviceModels)
                 {
-                    DeviceViewModel deviceViewModel = new DeviceViewModel
-                    {
-                        Kind = DeviceKind.NET,
-                        Path = String.Format("{0}:{1}", networkDeviceModel.IPAddress, networkDeviceModel.Port),
-                        Name = networkDeviceModel.IPAddress,
-                        Driver = "network"
-                    };
+                    DeviceViewModel deviceViewModel = networkDeviceModel.ToViewModel();
 
                     if (Devices.SingleOrDefault(d => d.Equals(deviceViewModel)) == null)
                     {
