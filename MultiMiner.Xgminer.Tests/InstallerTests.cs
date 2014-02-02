@@ -25,5 +25,20 @@ namespace MultiMiner.Xgminer.Tests
             //cleanup
             Directory.Delete(minerPath, true);
         }
+
+        [TestMethod]
+        public void GetAvailableMinerVersion_Succeeds()
+        {
+            //arrange
+            string availableMinerVersion;
+                
+            //act
+            Version version = null;
+            availableMinerVersion = Xgminer.Installer.GetAvailableMinerVersion();
+            bool success = Version.TryParse(availableMinerVersion, out version);
+
+            //assert
+            Assert.IsTrue(success);
+        }
     }
 }
