@@ -57,5 +57,8 @@ namespace MultiMiner.Remoting.Server.Data.Transfer
         public string WorkerName { get; set; }
         public int Index { get; set; }
         public List<Device> Workers { get; set; }
+
+        //ViewModel specific
+        public bool Visible { get; set; }
     }
 }
