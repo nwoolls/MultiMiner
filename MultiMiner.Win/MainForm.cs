@@ -3678,23 +3678,13 @@ namespace MultiMiner.Win
                 siteUrl);
         }
 
-        private void RefreshCoinStats()
+        private bool ApplyCoinInformationToViewModel(IApiContext apiContext)
         {
-            //always load known coins from file
-            //CoinChoose may not shown coins it once did if there are no orders
-            LoadKnownCoinsFromFile();
-
-            IApiContext preferredApiContext;
-            if (applicationConfiguration.UseCoinWarzApi)
-                preferredApiContext = this.coinWarzApiContext;
-            else
-                preferredApiContext = this.coinChooseApiContext;
             try
             {
-                coinApiInformation = preferredApiContext.GetCoinInformation(
-                    UserAgent.AgentString).ToList();
+                coinApiInformation = apiContext.GetCoinInformation(UserAgent.AgentString).ToList();
 
-                successfulApiContext = preferredApiContext;
+                successfulApiContext = apiContext;
 
                 ApplyCoinInformationToViewModel();
             }
@@ -3705,15 +3695,43 @@ namespace MultiMiner.Win
                     (ex is JsonReaderException))
                 {
                     if (applicationConfiguration.ShowApiErrors)
-                        ShowCoinApiErrorNotification(preferredApiContext, ex);
-                    return;
+                        ShowCoinApiErrorNotification(apiContext, ex);
+                    return false;
                 }
                 throw;
-
             }
 
+            return true;
+        }
+
+        private void RefreshCoinStats()
+        {
+            //always load known coins from file
+            //CoinChoose may not show coins it once did if there are no orders
+            LoadKnownCoinsFromFile();
+
+            IApiContext preferredApiContext, backupApiContext;
+            if (applicationConfiguration.UseCoinWarzApi)
+            {
+                preferredApiContext = this.coinWarzApiContext;
+                backupApiContext = this.coinChooseApiContext;
+            }
+            else
+            {
+                preferredApiContext = this.coinChooseApiContext;
+                backupApiContext = this.coinWarzApiContext;
+            }
+
+            bool success = ApplyCoinInformationToViewModel(preferredApiContext);
+            if (!success && 
+                //don't try to use CoinWarz as a backup unless the user has entered an API key for CoinWarz
+                ((backupApiContext == this.coinChooseApiContext) || !String.IsNullOrEmpty(this.applicationConfiguration.CoinWarzApiKey)))
+                success = ApplyCoinInformationToViewModel(backupApiContext);
+
+            if (success)
+                LoadKnownCoinsFromCoinStats();
+
             RefreshListViewFromViewModel();
-            LoadKnownCoinsFromCoinStats();
             RefreshCoinStatsLabel();
             AutoSizeListViewColumns();
             SuggestCoinsToMine();
