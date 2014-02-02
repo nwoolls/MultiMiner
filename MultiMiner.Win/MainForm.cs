@@ -1769,7 +1769,7 @@ namespace MultiMiner.Win
 
             foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
             {
-                DeviceViewModel deviceViewModel = viewModelToView.Devices[selectedItem.Index];
+                DeviceViewModel deviceViewModel = (DeviceViewModel)selectedItem.Tag;
                 devices.Add(deviceViewModel);
             }
 
