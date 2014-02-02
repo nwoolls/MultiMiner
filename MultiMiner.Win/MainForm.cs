@@ -405,7 +405,8 @@ namespace MultiMiner.Win
                     /* Coin info
                      * */
                     //check for Coin != null, device may not have a coin configured
-                    if (deviceViewModel.Coin == null)
+                    //Network Devices assume BTC (for now)
+                    if ((deviceViewModel.Coin == null) && (deviceViewModel.Kind != DeviceKind.NET))
                     {
                         listViewItem.SubItems["Coin"].Text = String.Empty;
                         listViewItem.SubItems["Difficulty"].Text = String.Empty;
@@ -415,7 +416,11 @@ namespace MultiMiner.Win
                     }
                     else
                     {
-                        listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
+                        if (deviceViewModel.Kind == DeviceKind.NET)
+                            //Network Devices assume BTC (for now)
+                            listViewItem.SubItems["Coin"].Text = "Bitcoin";
+                        else
+                            listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
 
                         listViewItem.SubItems["Difficulty"].Tag = deviceViewModel.Difficulty;
                         listViewItem.SubItems["Difficulty"].Text = deviceViewModel.Difficulty.ToDifficultyString();

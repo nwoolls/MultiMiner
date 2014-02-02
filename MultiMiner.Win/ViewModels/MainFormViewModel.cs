@@ -76,13 +76,23 @@ namespace MultiMiner.Win.ViewModels
             //check for Coin != null, device may not have a coin configured
             foreach (DeviceViewModel deviceViewModel in Devices.Where(d => d.Coin != null))
             {
-                CoinInformation coinInformationModel = coinInformationModels.SingleOrDefault(c => c.Symbol.Equals(deviceViewModel.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
-                if (coinInformationModel != null)
-                {
-                    string oldName = deviceViewModel.Name;
-                    ObjectCopier.CopyObject(coinInformationModel, deviceViewModel, "Exchange");
-                    deviceViewModel.Name = oldName;
-                }
+                string coinSymbol = deviceViewModel.Coin.Symbol;
+                ApplyCoinInformationToViewModel(coinInformationModels, coinSymbol, deviceViewModel);
+            }
+
+            foreach (DeviceViewModel deviceViewModel in Devices.Where(d => d.Kind == DeviceKind.NET))
+            {
+                string coinSymbol = "BTC";
+                ApplyCoinInformationToViewModel(coinInformationModels, coinSymbol, deviceViewModel);
+            }
+        }
+
+        private static void ApplyCoinInformationToViewModel(List<CoinInformation> coinInformationModels, string coinSymbol, DeviceViewModel deviceViewModel)
+        {
+            CoinInformation coinInformationModel = coinInformationModels.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+            if (coinInformationModel != null)
+            {
+                ObjectCopier.CopyObject(coinInformationModel, deviceViewModel, "Name", "Exchange");
             }
         }
 
