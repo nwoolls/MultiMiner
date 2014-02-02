@@ -4952,10 +4952,10 @@ namespace MultiMiner.Win
             bool hasMiners = HasMinersInstalled();
 
             if (!hasMiners)
-                InstallMiner();
+                InstallBackendMiner();
         }
 
-        private static void InstallMiner()
+        private static void InstallBackendMiner()
         {
             string minerName = MinerPath.GetMinerName();
 
@@ -5025,7 +5025,7 @@ namespace MultiMiner.Win
 
                 if (dialogResult == System.Windows.Forms.DialogResult.Yes)
                 {
-                    InstallMiner();
+                    InstallBackendMiner();
                     ScanHardwareLocally();
                     showWarning = false;
                 }
@@ -5191,38 +5191,62 @@ namespace MultiMiner.Win
 
         private void CheckForMultiMinerUpdates()
         {
-            string availableMinerVersion = String.Empty;
+            bool updatesAvailable = false;
+            string availableVersion, installedVersion;
+
+            using (new HourGlass())
+                updatesAvailable = MultiMinerHasUpdates(out availableVersion, out installedVersion);
+
+            if (updatesAvailable)
+                DisplayMultiMinerUpdateNotification(availableVersion, installedVersion);
+        }
+
+        private static bool MultiMinerHasUpdates(out string availableVersion, out string installedVersion)
+        {
+            availableVersion = String.Empty;
+            installedVersion = String.Empty;
+
             try
             {
-                using (new HourGlass())
-                {
-                    availableMinerVersion = Engine.Installer.GetAvailableMinerVersion();
-                }
+                availableVersion = Engine.Installer.GetAvailableMinerVersion();
             }
             catch (WebException ex)
             {
                 //downloads website is down
-                return;
+                return false;
             }
 
-            string installedMinerVersion = Engine.Installer.GetInstalledMinerVersion();
+            if (String.IsNullOrEmpty(availableVersion))
+                return false;
 
-            if (!AutomaticUpgradeAllowed(installedMinerVersion, availableMinerVersion))
-                return;
+            installedVersion = Engine.Installer.GetInstalledMinerVersion();
 
-            if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
-            {
-                notificationsControl.AddNotification(multiMinerNotificationId.ToString(),
-                    String.Format("MultiMiner version {0} is available ({1} installed)",
-                        availableMinerVersion, installedMinerVersion), () =>
-                        {
-                            bool wasMining = miningEngine.Mining;
-                            StopMiningLocally();
-                            InstallMultiMiner();
-                            if (wasMining)
-                                StartMiningLocally();
-                        }, "http://releases.multiminerapp.com");
-            }
+            if (!AutomaticUpgradeAllowed(installedVersion, availableVersion))
+                return false;
+
+            if (ThisVersionGreater(availableVersion, installedVersion))
+                return true;
+
+            return false;
+        }
+
+        private void DisplayMultiMinerUpdateNotification(string availableMinerVersion, string installedMinerVersion)
+        {
+            notificationsControl.AddNotification(multiMinerNotificationId.ToString(),
+                                String.Format("MultiMiner version {0} is available ({1} installed)",
+                                    availableMinerVersion, installedMinerVersion), () =>
+                                    {
+                                        bool wasMining = miningEngine.Mining;
+
+                                        if (wasMining)
+                                            StopMiningLocally();
+
+                                        InstallMultiMiner();
+
+                                        //only start mining if we stopped mining
+                                        if (wasMining)
+                                            StartMiningLocally();
+                                    }, "http://releases.multiminerapp.com");
         }
 
         private static bool AutomaticUpgradeAllowed(string installedMinerVersion, string availableMinerVersion)
@@ -5241,26 +5265,40 @@ namespace MultiMiner.Win
             return thisVersionObj > thatVersionObj;
         }
 
-        private void CheckForMinerUpdates()
+        private void CheckForBackendMinerUpdates()
         {
-            if (!MinerIsInstalled())
-                return;
+            bool updatesAvailable = false;
+            string availableVersion, installedVersion;
 
-            string availableMinerVersion = null;
             using (new HourGlass())
-            {
-                availableMinerVersion = GetAvailableBackendVersion();
-            }
+                updatesAvailable = BackendMinerHasUpdates(out availableVersion, out installedVersion);
 
-            if (String.IsNullOrEmpty(availableMinerVersion))
-                return;
-
-            string installedMinerVersion = Xgminer.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner());
-            if (ThisVersionGreater(availableMinerVersion, installedMinerVersion))
-                DisplayMinerUpdateNotification(availableMinerVersion, installedMinerVersion);
+            if (updatesAvailable)
+                DisplayBackendMinerUpdateNotification(availableVersion, installedVersion);
         }
 
-        private void DisplayMinerUpdateNotification(string availableMinerVersion, string installedMinerVersion)
+        private static bool BackendMinerHasUpdates(out string availableVersion, out string installedVersion)
+        {
+            availableVersion = String.Empty;
+            installedVersion = String.Empty;
+
+            if (!MinerIsInstalled())
+                return false;
+
+            availableVersion = GetAvailableBackendVersion();
+
+            if (String.IsNullOrEmpty(availableVersion))
+                return false;
+
+            installedVersion = Xgminer.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner());
+
+            if (ThisVersionGreater(availableVersion, installedVersion))
+                return true;
+
+            return false;
+        }
+
+        private void DisplayBackendMinerUpdateNotification(string availableMinerVersion, string installedMinerVersion)
         {
             int notificationId = bfgminerNotificationId;
 
@@ -5273,11 +5311,10 @@ namespace MultiMiner.Win
                     {
                         bool wasMining = miningEngine.Mining;
 
-                        //only stop mining if this is the engine being used
                         if (wasMining)
                             StopMiningLocally();
 
-                        InstallMiner();
+                        InstallBackendMiner();
 
                         //only start mining if we stopped mining
                         if (wasMining)
@@ -5408,7 +5445,7 @@ namespace MultiMiner.Win
         {
             try
             {
-                CheckForMinerUpdates();
+                CheckForBackendMinerUpdates();
             }
             catch (ArgumentException ex)
             {
