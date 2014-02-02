@@ -3073,6 +3073,52 @@ namespace MultiMiner.Win
             }
         }
 
+        private void UpgradeMultiMinerRequested(object sender, RemoteCommandEventArgs ea)
+        {
+            string installedVersion, availableVersion;
+            bool updatesAvailable = MultiMinerHasUpdates(out availableVersion, out installedVersion);
+            if (!updatesAvailable)
+                return;
+
+            BeginInvoke((Action)(() =>
+            {
+                //code to update UI
+                bool wasMining = miningEngine.Mining;
+
+                if (wasMining)
+                    StopMiningLocally();
+
+                InstallMultiMiner();
+
+                //only start mining if we stopped mining
+                if (wasMining)
+                    StartMiningLocally();
+            }));
+        }
+
+        private void UpgradeBackendMinerRequested(object sender, RemoteCommandEventArgs ea)
+        {
+            string installedVersion, availableVersion;
+            bool updatesAvailable = BackendMinerHasUpdates(out availableVersion, out installedVersion);
+            if (!updatesAvailable)
+                return;
+
+            BeginInvoke((Action)(() =>
+            {
+                //code to update UI
+                bool wasMining = miningEngine.Mining;
+
+                if (wasMining)
+                    StopMiningLocally();
+
+                InstallBackendMiner();
+
+                //only start mining if we stopped mining
+                if (wasMining)
+                    StartMiningLocally();
+            }));
+        }
+
         private void SetupRemotingEventHandlers()
         {
             ApplicationProxy.Instance.StartMiningRequested -= StartMiningRequested;
@@ -3113,6 +3159,12 @@ namespace MultiMiner.Win
 
             ApplicationProxy.Instance.SetConfigurationRequested -= SetConfigurationRequested;
             ApplicationProxy.Instance.SetConfigurationRequested += SetConfigurationRequested;
+
+            ApplicationProxy.Instance.UpgradeMultiMinerRequested -= UpgradeMultiMinerRequested;
+            ApplicationProxy.Instance.UpgradeMultiMinerRequested += UpgradeMultiMinerRequested;
+
+            ApplicationProxy.Instance.UpgradeBackendMinerRequested -= UpgradeBackendMinerRequested;
+            ApplicationProxy.Instance.UpgradeBackendMinerRequested += UpgradeBackendMinerRequested;
         }
 
         private void EnableRemoting()

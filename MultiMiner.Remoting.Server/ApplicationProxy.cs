@@ -31,10 +31,12 @@ namespace MultiMiner.Remoting.Server
         public event ModelRequestEventHandler GetModelRequested;
         public event ConfigurationEventHandler GetConfigurationRequested;
         public event ConfigurationEventHandler SetConfigurationRequested;
+        public event RemoteEventHandler UpgradeMultiMinerRequested;
+        public event RemoteEventHandler UpgradeBackendMinerRequested;
 
         private static volatile ApplicationProxy instance;
         private static object syncRoot = new Object();
-
+        
         private ApplicationProxy() { }
 
         public static ApplicationProxy Instance
@@ -181,6 +183,18 @@ namespace MultiMiner.Remoting.Server
 
             if (SetConfigurationRequested != null)
                 SetConfigurationRequested(sender, ea);
+        }
+
+        public void UpgradeMultiMiner(RemotingService sender, string clientAddress, string signature)
+        {
+            if (UpgradeMultiMinerRequested != null)
+                UpgradeMultiMinerRequested(sender, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
+        }
+
+        public void UpgradeBackendMiner(RemotingService sender, string clientAddress, string signature)
+        {
+            if (UpgradeBackendMinerRequested != null)
+                UpgradeBackendMinerRequested(sender, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
         }
     }
 }

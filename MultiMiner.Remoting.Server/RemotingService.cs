@@ -121,5 +121,15 @@ namespace MultiMiner.Remoting.Server
         {
             ApplicationProxy.Instance.ToggleDynamicIntensity(this, GetClientIpAddress(), signature, enabled);
         }
+
+        public void UpgradeMultiMiner(string signature)
+        {
+            ApplicationProxy.Instance.UpgradeMultiMiner(this, GetClientIpAddress(), signature);
+        }
+
+        public void UpgradeBackendMiner(string signature)
+        {
+            ApplicationProxy.Instance.UpgradeBackendMiner(this, GetClientIpAddress(), signature);
+        }
     }
 }

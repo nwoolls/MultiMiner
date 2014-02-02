@@ -50,5 +50,9 @@ namespace MultiMiner.Remoting.Server
         void ToggleDevices(string signature, IEnumerable<DeviceDescriptor> devices, bool enabled);
         [OperationContract]
         void ToggleDynamicIntensity(string signature, bool enabled);
+        [OperationContract]
+        void UpgradeMultiMiner(string signature);
+        [OperationContract]
+        void UpgradeBackendMiner(string signature);
     }
 }
