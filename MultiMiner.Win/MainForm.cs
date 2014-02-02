@@ -1535,7 +1535,6 @@ namespace MultiMiner.Win
                         RefreshListViewFromViewModel();
                         if (localViewModel.Devices.Count(d => d.Kind == DeviceKind.NET) > 0)
                             RefreshNetworkDeviceStats();
-                        RefreshListViewFromViewModel();
                         AutoSizeListViewColumns();
                     }));
 
@@ -1555,7 +1554,6 @@ namespace MultiMiner.Win
                         RefreshListViewFromViewModel();
                         if (localViewModel.Devices.Count(d => d.Kind == DeviceKind.NET) > 0)
                             RefreshNetworkDeviceStats();
-                        RefreshListViewFromViewModel();
                         AutoSizeListViewColumns();
                     }));
 
@@ -4092,6 +4090,11 @@ namespace MultiMiner.Win
                 deviceListView.EndUpdate();
             }
 
+            RefreshViewFromDeviceStats();
+        }
+
+        private void RefreshViewFromDeviceStats()
+        {
             RefreshListViewFromViewModel();
             RefreshStatusBarFromViewModel();
 
@@ -4156,10 +4159,7 @@ namespace MultiMiner.Win
 
             RemoveSelfReferencingNetworkDevices();
 
-            RefreshListViewFromViewModel();
-
-            //auto sizing the columns is moderately CPU intensive, so only do it every /count/ times
-            AutoSizeListViewColumnsEvery(2);
+            RefreshViewFromDeviceStats();
         }
 
         private void UpdateInstancesStatsFromLocal()
