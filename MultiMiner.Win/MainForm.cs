@@ -3088,11 +3088,8 @@ namespace MultiMiner.Win
                 if (wasMining)
                     StopMiningLocally();
 
-                InstallMultiMiner();
-
-                //only start mining if we stopped mining
-                if (wasMining)
-                    StartMiningLocally();
+                //this will restart the app
+                InstallMultiMinerLocally();
             }));
         }
 
@@ -3111,7 +3108,7 @@ namespace MultiMiner.Win
                 if (wasMining)
                     StopMiningLocally();
 
-                InstallBackendMiner();
+                InstallBackendMinerLocally();
 
                 //only start mining if we stopped mining
                 if (wasMining)
@@ -3601,6 +3598,34 @@ namespace MultiMiner.Win
                     viewModel.Workers.Add(destination);
                 }
                 remoteViewModel.Devices.Add(viewModel);
+            }
+        }
+
+        private void InstallBackendMinerRemotely()
+        {
+            foreach (Instance instance in instancesControl.Instances)
+            {
+                if (!instance.MachineName.Equals(Environment.MachineName))
+                {
+                    PerformRemoteCommand(instance, (service) =>
+                    {
+                        service.UpgradeBackendMiner(GetSendingSignature(instance));
+                    });
+                }
+            }
+        }
+
+        private void InstallMultiMinerRemotely()
+        {
+            foreach (Instance instance in instancesControl.Instances)
+            {
+                if (!instance.MachineName.Equals(Environment.MachineName))
+                {
+                    PerformRemoteCommand(instance, (service) =>
+                    {
+                        service.UpgradeMultiMiner(GetSendingSignature(instance));
+                    });
+                }
             }
         }
         #endregion
@@ -4996,7 +5021,7 @@ namespace MultiMiner.Win
             }
         }
 
-        private static void CheckAndDownloadMiners()
+        private void CheckAndDownloadMiners()
         {
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
                 return; //can't auto download binaries on Linux
@@ -5004,10 +5029,10 @@ namespace MultiMiner.Win
             bool hasMiners = HasMinersInstalled();
 
             if (!hasMiners)
-                InstallBackendMiner();
+                InstallBackendMinerLocally();
         }
 
-        private static void InstallBackendMiner()
+        private void InstallBackendMinerLocally()
         {
             string minerName = MinerPath.GetMinerName();
 
@@ -5023,6 +5048,8 @@ namespace MultiMiner.Win
                 string minerPath = Path.Combine("Miners", minerName);
                 string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
                 Xgminer.Installer.InstallMiner(destinationFolder);
+                //may have been installed via Remoting - dismiss notification
+                notificationsControl.RemoveNotification(bfgminerNotificationId.ToString());
             }
             finally
             {
@@ -5077,7 +5104,7 @@ namespace MultiMiner.Win
 
                 if (dialogResult == System.Windows.Forms.DialogResult.Yes)
                 {
-                    InstallBackendMiner();
+                    InstallBackendMinerLocally();
                     ScanHardwareLocally();
                     showWarning = false;
                 }
@@ -5285,7 +5312,7 @@ namespace MultiMiner.Win
         private void DisplayMultiMinerUpdateNotification(string availableMinerVersion, string installedMinerVersion)
         {
             notificationsControl.AddNotification(multiMinerNotificationId.ToString(),
-                                String.Format("MultiMiner version {0} is available ({1} installed)",
+                                String.Format("Click to install MultiMiner {1} ({1} installed)",
                                     availableMinerVersion, installedMinerVersion), () =>
                                     {
                                         bool wasMining = miningEngine.Mining;
@@ -5293,11 +5320,12 @@ namespace MultiMiner.Win
                                         if (wasMining)
                                             StopMiningLocally();
 
-                                        InstallMultiMiner();
+                                        //remote first as we'll be restarting
+                                        if (remotingEnabled)
+                                            InstallMultiMinerRemotely();
 
-                                        //only start mining if we stopped mining
-                                        if (wasMining)
-                                            StartMiningLocally();
+                                        //this will restart the app
+                                        InstallMultiMinerLocally();
                                     }, "http://releases.multiminerapp.com");
         }
 
@@ -5358,7 +5386,7 @@ namespace MultiMiner.Win
 
             string minerName = MinerPath.GetMinerName();
             notificationsControl.AddNotification(notificationId.ToString(),
-                String.Format("{0} version {1} is available ({2} installed)",
+                String.Format("Click to install {0} {1} ({2} installed)",
                     minerName, availableMinerVersion, installedMinerVersion), () =>
                     {
                         bool wasMining = miningEngine.Mining;
@@ -5366,7 +5394,9 @@ namespace MultiMiner.Win
                         if (wasMining)
                             StopMiningLocally();
 
-                        InstallBackendMiner();
+                        if (remotingEnabled)
+                            InstallBackendMinerRemotely();
+                        InstallBackendMinerLocally();
 
                         //only start mining if we stopped mining
                         if (wasMining)
@@ -5388,7 +5418,7 @@ namespace MultiMiner.Win
             return result;
         }
 
-        private static void InstallMultiMiner()
+        private static void InstallMultiMinerLocally()
         {
             ProgressForm progressForm = new ProgressForm("Downloading and installing MultiMiner from " + Engine.Installer.GetMinerDownloadRoot());
             progressForm.Show();

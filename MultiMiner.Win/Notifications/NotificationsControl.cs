@@ -19,6 +19,22 @@ namespace MultiMiner.Win.Notifications
             InitializeComponent();
         }
 
+        public void RemoveNotification(string id)
+        {
+            NotificationControl notificationControl;
+
+            foreach (Control control in containerPanel.Controls)
+            {
+                notificationControl = (NotificationControl)control;
+                if ((string)notificationControl.Tag == id)
+                {
+                    notificationControl.Parent = null;
+                    if (NotificationsChanged != null)
+                        NotificationsChanged(this);
+                }
+            }
+        }
+
         public void AddNotification(string id, string text, Action clickHandler, string informationUrl = "")
         {
             NotificationControl notificationControl;
