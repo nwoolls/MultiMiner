@@ -281,77 +281,82 @@ namespace MultiMiner.Win
 
         private void RemoveListViewItemsMissingFromViewModel(MainFormViewModel viewModelToView)
         {
-            for (int j = deviceListView.Items.Count - 1; j >= 0; j--)
+            for (int i = deviceListView.Items.Count - 1; i >= 0; i--)
             {
-                DeviceViewModel itemModel = (DeviceViewModel)deviceListView.Items[j].Tag;
-                if (viewModelToView.Devices.SingleOrDefault(d => d.Equals(itemModel)) == null)
-                    deviceListView.Items.RemoveAt(j);
+                DeviceViewModel listModel = (DeviceViewModel)deviceListView.Items[i].Tag;
+                DeviceViewModel viewModel = viewModelToView.Devices.SingleOrDefault(d => d.Equals(listModel));
+                if ((viewModel == null) || (!viewModel.Visible))
+                    deviceListView.Items.RemoveAt(i);
             }
         }
 
-        private void AddViewModelItemsMissingFromListView(MainFormViewModel viewModelToView)
+        private ListViewItem GetListViewItemForDeviceViewModel(DeviceViewModel deviceViewModel)
         {
-            foreach (DeviceViewModel deviceViewModel in viewModelToView.Devices)
+            foreach (ListViewItem item in deviceListView.Items)
             {
-                if (!deviceViewModel.Visible)
-                    continue;
-
-                foreach (ListViewItem item in deviceListView.Items)
-                {
-                    if (item.Tag == deviceViewModel)
-                        continue;
-                }
-
-                ListViewItem listViewItem = new ListViewItem();
-
-                switch (deviceViewModel.Kind)
-                {
-                    case DeviceKind.CPU:
-                        listViewItem.Group = deviceListView.Groups["cpuListViewGroup"];
-                        listViewItem.ImageIndex = 3;
-                        break;
-                    case DeviceKind.GPU:
-                        listViewItem.Group = deviceListView.Groups["gpuListViewGroup"];
-                        listViewItem.ImageIndex = 0;
-                        break;
-                    case DeviceKind.USB:
-                        listViewItem.Group = deviceListView.Groups["usbListViewGroup"];
-                        listViewItem.ImageIndex = 1;
-                        break;
-                    case DeviceKind.PXY:
-                        listViewItem.Group = deviceListView.Groups["proxyListViewGroup"];
-                        listViewItem.ImageIndex = 2;
-                        break;
-                    case DeviceKind.NET:
-                        listViewItem.Group = deviceListView.Groups["networkListViewGroup"];
-                        listViewItem.ImageIndex = 4;
-                        break;
-                }
-
-                listViewItem.Text = deviceViewModel.Name;
-
-                //start at i = 1, skip the first column
-                for (int i = 1; i < deviceListView.Columns.Count; i++)
-                {
-                    listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, String.Empty)
-                    {
-                        Name = deviceListView.Columns[i].Text,
-                        ForeColor = SystemColors.WindowFrame
-                    });
-                }
-
-                listViewItem.SubItems["Coin"].ForeColor = SystemColors.WindowText;
-                listViewItem.SubItems["Errors"].ForeColor = SystemColors.WindowText;
-                listViewItem.SubItems["Rejected"].ForeColor = SystemColors.WindowText;
-
-                listViewItem.UseItemStyleForSubItems = false;
-
-                listViewItem.Checked = deviceViewModel.Enabled;
-
-                listViewItem.SubItems["Driver"].Text = deviceViewModel.Driver;
-
-                deviceListView.Items.Add(listViewItem);
+                if (item.Tag == deviceViewModel)
+                    return item;
             }
+            return null;
+        }
+
+        private ListViewItem FindOrAddListViewItemForViewModel(DeviceViewModel deviceViewModel)
+        {                
+            ListViewItem listViewItem = GetListViewItemForDeviceViewModel(deviceViewModel);
+            if (listViewItem != null)
+                return listViewItem;
+                
+            listViewItem = new ListViewItem();
+
+            switch (deviceViewModel.Kind)
+            {
+                case DeviceKind.CPU:
+                    listViewItem.Group = deviceListView.Groups["cpuListViewGroup"];
+                    listViewItem.ImageIndex = 3;
+                    break;
+                case DeviceKind.GPU:
+                    listViewItem.Group = deviceListView.Groups["gpuListViewGroup"];
+                    listViewItem.ImageIndex = 0;
+                    break;
+                case DeviceKind.USB:
+                    listViewItem.Group = deviceListView.Groups["usbListViewGroup"];
+                    listViewItem.ImageIndex = 1;
+                    break;
+                case DeviceKind.PXY:
+                    listViewItem.Group = deviceListView.Groups["proxyListViewGroup"];
+                    listViewItem.ImageIndex = 2;
+                    break;
+                case DeviceKind.NET:
+                    listViewItem.Group = deviceListView.Groups["networkListViewGroup"];
+                    listViewItem.ImageIndex = 4;
+                    break;
+            }
+
+            listViewItem.Text = deviceViewModel.Name;
+
+            //start at i = 1, skip the first column
+            for (int i = 1; i < deviceListView.Columns.Count; i++)
+            {
+                listViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(listViewItem, String.Empty)
+                {
+                    Name = deviceListView.Columns[i].Text,
+                    ForeColor = SystemColors.WindowFrame
+                });
+            }
+
+            listViewItem.SubItems["Coin"].ForeColor = SystemColors.WindowText;
+            listViewItem.SubItems["Errors"].ForeColor = SystemColors.WindowText;
+            listViewItem.SubItems["Rejected"].ForeColor = SystemColors.WindowText;
+
+            listViewItem.UseItemStyleForSubItems = false;
+
+            listViewItem.Checked = deviceViewModel.Enabled;
+
+            listViewItem.SubItems["Driver"].Text = deviceViewModel.Driver;
+
+            deviceListView.Items.Add(listViewItem);
+
+            return listViewItem;
         }
 
         private void RefreshListViewFromViewModel()
@@ -373,7 +378,6 @@ namespace MultiMiner.Win
                 MainFormViewModel viewModelToView = GetViewModelToView();
 
                 RemoveListViewItemsMissingFromViewModel(viewModelToView);
-                AddViewModelItemsMissingFromListView(viewModelToView);
 
                 for (int i = 0; i < viewModelToView.Devices.Count; i++)
                 {
@@ -381,7 +385,7 @@ namespace MultiMiner.Win
                     if (!deviceViewModel.Visible)
                         continue;
 
-                    ListViewItem listViewItem = deviceListView.Items[i];
+                    ListViewItem listViewItem = FindOrAddListViewItemForViewModel(deviceViewModel);
 
                     /* configuration info
                      * */
