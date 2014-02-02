@@ -5312,7 +5312,7 @@ namespace MultiMiner.Win
         private void DisplayMultiMinerUpdateNotification(string availableMinerVersion, string installedMinerVersion)
         {
             notificationsControl.AddNotification(multiMinerNotificationId.ToString(),
-                                String.Format("Click to install MultiMiner {1} ({1} installed)",
+                                String.Format("MultiMiner version {0} is available ({1} installed)",
                                     availableMinerVersion, installedMinerVersion), () =>
                                     {
                                         bool wasMining = miningEngine.Mining;
@@ -5339,6 +5339,10 @@ namespace MultiMiner.Win
 
         private static bool ThisVersionGreater(string thisVersion, string thatVersion)
         {
+#if DEBUG
+            return true;
+#endif
+
             Version thisVersionObj = new Version(thisVersion);
             Version thatVersionObj = new Version(thatVersion);
 
@@ -5385,8 +5389,9 @@ namespace MultiMiner.Win
             string informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
 
             string minerName = MinerPath.GetMinerName();
+
             notificationsControl.AddNotification(notificationId.ToString(),
-                String.Format("Click to install {0} {1} ({2} installed)",
+                String.Format("{0} version {1} is available ({2} installed)",
                     minerName, availableMinerVersion, installedMinerVersion), () =>
                     {
                         bool wasMining = miningEngine.Mining;
