@@ -34,7 +34,9 @@ namespace MultiMiner.Win
     {
         #region Private fields
         //API contexts
-        private IApiContext coinApiContext = new CoinChoose.Api.ApiContext();
+        private IApiContext coinChooseApiContext;
+        private IApiContext coinWarzApiContext;
+        private IApiContext successfulApiContext;
         private readonly List<DeviceInformationResponse> allDeviceInformation = new List<DeviceInformationResponse>();
         private readonly Dictionary<MinerProcess, List<DeviceDetailsResponse>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetailsResponse>>();
 
@@ -769,9 +771,19 @@ namespace MultiMiner.Win
         }
         private ushort autoSizeColumnsFlag = 0;
 
+        private IApiContext GetEffectiveApiContext()
+        {
+            if (this.successfulApiContext != null)
+                return this.successfulApiContext;
+            else if (this.applicationConfiguration.UseCoinWarzApi)
+                return this.coinWarzApiContext;
+            else
+                return this.coinChooseApiContext;
+        }
+        
         private void RefreshCoinApiLabel()
         {
-            coinApiLinkLabel.Text = this.coinApiContext.GetApiName();
+            coinApiLinkLabel.Text = this.GetEffectiveApiContext().GetApiName();
 
             PositionCoinChooseLabels();
         }
@@ -1831,7 +1843,7 @@ namespace MultiMiner.Win
 
         private void coinChooseLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(this.coinApiContext.GetInfoUrl());
+            Process.Start(GetEffectiveApiContext().GetInfoUrl());
         }
 
         private void apiMonitorButton_Click(object sender, EventArgs e)
@@ -3648,17 +3660,15 @@ namespace MultiMiner.Win
         #region Coin API
         private void SetupCoinApi()
         {
-            if (applicationConfiguration.UseCoinWarzApi)
-                this.coinApiContext = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey);
-            else
-                this.coinApiContext = new CoinChoose.Api.ApiContext();
+            this.coinWarzApiContext = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey);
+            this.coinChooseApiContext = new CoinChoose.Api.ApiContext();
         }
 
-        private void ShowCoinApiErrorNotification(Exception ex)
+        private void ShowCoinApiErrorNotification(IApiContext apiContext, Exception ex)
         {
-            string siteUrl = this.coinApiContext.GetInfoUrl();
-            string apiUrl = this.coinApiContext.GetApiUrl();
-            string apiName = this.coinApiContext.GetApiName();
+            string siteUrl = apiContext.GetInfoUrl();
+            string apiUrl = apiContext.GetApiUrl();
+            string apiName = apiContext.GetApiName();
 
             notificationsControl.AddNotification(ex.Message,
                 String.Format("Error parsing the {0} JSON API", apiName), () =>
@@ -3674,10 +3684,17 @@ namespace MultiMiner.Win
             //CoinChoose may not shown coins it once did if there are no orders
             LoadKnownCoinsFromFile();
 
+            IApiContext preferredApiContext;
+            if (applicationConfiguration.UseCoinWarzApi)
+                preferredApiContext = this.coinWarzApiContext;
+            else
+                preferredApiContext = this.coinChooseApiContext;
             try
             {
-                coinApiInformation = coinApiContext.GetCoinInformation(
+                coinApiInformation = preferredApiContext.GetCoinInformation(
                     UserAgent.AgentString).ToList();
+
+                successfulApiContext = preferredApiContext;
 
                 ApplyCoinInformationToViewModel();
             }
@@ -3688,7 +3705,7 @@ namespace MultiMiner.Win
                     (ex is JsonReaderException))
                 {
                     if (applicationConfiguration.ShowApiErrors)
-                        ShowCoinApiErrorNotification(ex);
+                        ShowCoinApiErrorNotification(preferredApiContext, ex);
                     return;
                 }
                 throw;
@@ -6024,7 +6041,7 @@ namespace MultiMiner.Win
             IEnumerable<CoinInformation> coinsToMine = GetCoinsToMine();
 
             foreach (CoinInformation coin in coinsToMine)
-                NotifyCoinToMine(coin);
+                NotifyCoinToMine(this.successfulApiContext, coin);
         }
 
         private IEnumerable<CoinInformation> GetCoinsToMine()
@@ -6053,7 +6070,7 @@ namespace MultiMiner.Win
             return coinsToMine;
         }
 
-        private void NotifyCoinToMine(CoinInformation coin)
+        private void NotifyCoinToMine(IApiContext apiContext, CoinInformation coin)
         {
             string value = coin.AverageProfitability.ToString(".#") + "%";
             string noun = "average profitability";
@@ -6070,7 +6087,7 @@ namespace MultiMiner.Win
                     break;
             }
 
-            string infoUrl = coinApiContext.GetInfoUrl();
+            string infoUrl = apiContext.GetInfoUrl();
 
             notificationsControl.AddNotification(coin.Symbol,
                 String.Format("Consider mining {0} ({1} {2})",
