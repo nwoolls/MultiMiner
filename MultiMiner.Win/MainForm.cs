@@ -52,6 +52,7 @@ namespace MultiMiner.Win
         //hardware information
         private List<Device> devices;
         private readonly Dictionary<DeviceViewModel, DeviceDetailsResponse> deviceDetailsMapping = new Dictionary<DeviceViewModel, DeviceDetailsResponse>();
+        private readonly Dictionary<DeviceViewModel, string> lastDevicePoolMapping = new Dictionary<DeviceViewModel, string>();
 
         //currently mining information
         private List<DeviceConfiguration> miningDeviceConfigurations;
@@ -4082,7 +4083,15 @@ namespace MultiMiner.Win
                             string poolName = GetPoolNameByIndex(coinConfiguration, deviceViewModel.PoolIndex);
                             //may be blank if donating
                             if (!String.IsNullOrEmpty(poolName))
+                            {
                                 deviceViewModel.Pool = poolName;
+                                lastDevicePoolMapping[deviceViewModel] = poolName;
+                            }
+                            else
+                            {
+                                if (lastDevicePoolMapping.ContainsKey(deviceViewModel))
+                                    deviceViewModel.Pool = lastDevicePoolMapping[deviceViewModel];
+                            }
                         }
                     }
                 }
