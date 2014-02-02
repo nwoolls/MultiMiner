@@ -59,6 +59,20 @@ namespace MultiMiner.Win.ViewModels
                     }
                 }
             }
+
+            //remove entries from Devices not found in deviceModels or  networkDeviceModels
+            foreach (DeviceViewModel deviceViewModel in Devices.ToList())
+            {
+                bool found = true;
+
+                if (deviceViewModel.Kind == DeviceKind.NET)
+                    found = networkDeviceModels.Any(d => d.ToViewModel().Equals(deviceViewModel));
+                else
+                    found = deviceModels.Any(d => d.Equals(deviceViewModel));
+
+                if (!found)
+                    Devices.Remove(deviceViewModel);
+            }
         }
 
         public void ApplyCoinConfigurationModels(List<CoinConfiguration> configurationModels)

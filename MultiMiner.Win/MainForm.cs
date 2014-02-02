@@ -258,9 +258,7 @@ namespace MultiMiner.Win
 
         private void ApplyDevicesToViewModel()
         {
-            //clear to ensure we have a 1-to-1 with listview items
-            localViewModel.Devices.Clear();
-
+            //ApplyDeviceModels() ensures we have a 1-to-1 with listview items
             localViewModel.ApplyDeviceModels(devices, networkDevicesConfiguration.NetworkDevices);
         }
         
@@ -1743,20 +1741,18 @@ namespace MultiMiner.Win
         {
             engineConfiguration.DeviceConfigurations.Clear();
 
-            for (int i = 0; i < devices.Count; i++)
+            foreach (Device device in devices)
             {
-                DeviceViewModel viewModel = localViewModel.Devices[i];
+                //don't assume 1-to-1 of Devices and ViewModel.Devices
+                //Devices doesn't include Network Devices
+                DeviceViewModel viewModel = localViewModel.Devices.Single(vm => vm.Equals(device));
 
                 //pull this from coin configurations, not known coins, may not be in CoinChoose
                 CryptoCoin coin = viewModel.Coin;
-
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
-
                 deviceConfiguration.Assign(viewModel);
-
                 deviceConfiguration.Enabled = viewModel.Enabled;
                 deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
-
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
         }
@@ -5482,13 +5478,14 @@ namespace MultiMiner.Win
 
             engineConfiguration.DeviceConfigurations.Clear();
 
-            for (int i = 0; i < devices.Count; i++)
+            foreach (Device device in devices)
             {
-                DeviceViewModel viewModel = localViewModel.Devices[i];
-                
+                //don't assume 1-to-1 of Devices and ViewModel.Devices
+                //Devices doesn't include Network Devices
+                DeviceViewModel viewModel = localViewModel.Devices.Single(vm => vm.Equals(device));
+
                 DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
                 deviceConfiguration.Assign(viewModel);
-
                 if (viewModel.Kind == DeviceKind.NET)
                 {
                     //assume BTC for Network Devices (for now)
@@ -5497,7 +5494,6 @@ namespace MultiMiner.Win
                 }
                 else
                 {
-
                     if (coinConfiguration.Coin.Algorithm == CoinAlgorithm.Scrypt)
                     {
                         if (viewModel.Kind == DeviceKind.GPU)
