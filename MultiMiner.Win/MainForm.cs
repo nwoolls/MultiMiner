@@ -1527,18 +1527,36 @@ namespace MultiMiner.Win
             asyncAction.BeginInvoke(
                 ar =>
                 {
-
                     BeginInvoke((Action)(() =>
                     {
                         //code to update UI
-                        ApplyModelsToViewModel();
-                        RefreshListViewFromViewModel();
-                        if (localViewModel.Devices.Count(d => d.Kind == DeviceKind.NET) > 0)
-                            RefreshNetworkDeviceStats();
-                        AutoSizeListViewColumns();
+                        HandleNetworkDeviceDiscovery();
                     }));
 
                 }, null);
+        }
+
+        private void HandleNetworkDeviceDiscovery()
+        {
+            ApplyModelsToViewModel();
+
+            deviceListView.BeginUpdate();
+            try
+            {
+                //after the above call, no devices in the ViewModel have stats
+                //refresh them
+                if (localViewModel.Devices.Count(d => d.Kind != DeviceKind.NET) > 0)
+                    RefreshDeviceStats();
+
+                if (localViewModel.Devices.Count(d => d.Kind == DeviceKind.NET) > 0)
+                    RefreshNetworkDeviceStats();
+            }
+            finally
+            {
+                deviceListView.EndUpdate();
+            }
+
+            AutoSizeListViewColumns();
         }
 
         private void FindNetworkDevicesAsync()
@@ -1550,11 +1568,7 @@ namespace MultiMiner.Win
                     BeginInvoke((Action)(() =>
                     {
                         //code to update UI
-                        ApplyModelsToViewModel();
-                        RefreshListViewFromViewModel();
-                        if (localViewModel.Devices.Count(d => d.Kind == DeviceKind.NET) > 0)
-                            RefreshNetworkDeviceStats();
-                        AutoSizeListViewColumns();
+                        HandleNetworkDeviceDiscovery();
                     }));
 
                 }, null);
