@@ -1,9 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
-using MultiMiner.Utility.Networking;
 using System.Collections.Generic;
 
-namespace MultiMiner.Utility.Tests.Networking
+namespace MultiMiner.Utility.Networking.Tests
 {
     [TestClass]
     public class PortScannerTests

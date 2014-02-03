@@ -1,8 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
-using MultiMiner.Utility.IO;
 
-namespace MultiMiner.Utility.Tests
+namespace MultiMiner.Utility.IO.Tests
 {
     [TestClass]
     public class UnzipperTests

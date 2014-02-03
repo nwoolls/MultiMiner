@@ -1,10 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MultiMiner.Utility.Networking;
 using System.Collections.Generic;
 using System.Net;
 using System.Linq;
 
-namespace MultiMiner.Utility.Tests.Networking
+namespace MultiMiner.Utility.Networking.Tests
 {
     [TestClass]
     public class IPRangeTests

@@ -1,8 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MultiMiner.Utility.OS;
 
-namespace MultiMiner.Utility.Tests
+namespace MultiMiner.Utility.OS.Tests
 {
     [TestClass]
     public class IdleTimeFinderTests

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MultiMiner.Utility.Tests.Networking
+namespace MultiMiner.Utility.Networking.Tests
 {
     [TestClass]
     public class LocalNetworkTests

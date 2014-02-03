@@ -57,11 +57,11 @@
     <Compile Include="Networking\PortScannerTests.cs" />
     <Compile Include="Networking\IPRangeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IniFileParserTests.cs" />
-    <Compile Include="FileCopierTests.cs" />
-    <Compile Include="IdleTimeFinderTests.cs" />
-    <Compile Include="PlistParserTests.cs" />
-    <Compile Include="UnzipperTests.cs" />
+    <Compile Include="Parsers\IniFileParserTests.cs" />
+    <Compile Include="IO\FileCopierTests.cs" />
+    <Compile Include="OS\IdleTimeFinderTests.cs" />
+    <Compile Include="Parsers\PlistParserTests.cs" />
+    <Compile Include="IO\UnzipperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App_Data\com.apple.smb.server.plist">
