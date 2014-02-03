@@ -28,26 +28,26 @@ namespace MultiMiner.Utility.Networking
         {
             bool portIsOpen = false;
 
-            using (var tcp = new TcpClient())
+            //use raw Sockets
+            //using TclClient along with IAsyncResult can lead to ObjectDisposedException on Linux+Mono
+            Socket socket = null;
+            try
             {
-                IAsyncResult ar = tcp.BeginConnect(ipAddress, currentPort, null, null);
-                using (ar.AsyncWaitHandle)
-                {
-                    //Wait connectTimeout ms for connection.
-                    if (ar.AsyncWaitHandle.WaitOne(connectTimeout, false))
-                    {
-                        try
-                        {
-                            tcp.EndConnect(ar);
-                            portIsOpen = true;
-                            //Connect was successful.
-                        }
-                        catch
-                        {
-                            //Server refused the connection.
-                        }
-                    }
-                }
+                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, false);
+
+                IAsyncResult result = socket.BeginConnect(ipAddress.ToString(), currentPort, null, null);
+                result.AsyncWaitHandle.WaitOne(TimeSpan.FromMilliseconds(connectTimeout), true);
+
+                portIsOpen = socket.Connected;
+            }
+            catch
+            {
+            }
+            finally
+            {
+                if (socket != null)
+                    socket.Close();
             }
 
             return portIsOpen;
