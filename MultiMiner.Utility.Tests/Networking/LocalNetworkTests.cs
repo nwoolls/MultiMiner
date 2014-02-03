@@ -25,5 +25,15 @@ namespace MultiMiner.Utility.Tests.Networking
 
             Assert.IsTrue(!String.IsNullOrEmpty(localIPAddressRange));
         }
+
+        [TestMethod]
+        public void GetWorkGroupName_Succeeds()
+        {
+            string workGroupName = String.Empty;
+
+            workGroupName = Utility.Networking.LocalNetwork.GetWorkGroupName();
+
+            Assert.IsTrue(!String.IsNullOrEmpty(workGroupName));
+        }
     }
 }

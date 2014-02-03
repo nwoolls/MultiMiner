@@ -54,6 +54,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Networking\LocalNetworkTests.cs" />
+    <Compile Include="Networking\PortScannerTests.cs" />
+    <Compile Include="Networking\IPRangeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnzipperTests.cs" />
   </ItemGroup>

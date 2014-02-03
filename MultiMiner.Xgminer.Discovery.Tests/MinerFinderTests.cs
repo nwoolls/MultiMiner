@@ -9,19 +9,20 @@ namespace MultiMiner.Xgminer.Discovery.Tests
     public class MinerFinderTests
     {
         [TestMethod]
-        public void MinerFinder_FindsMiners()
+        public void Find_FindsMiners()
         {
             const int times = 3;
 
             for (int i = 0; i < times; i++)
             {
                 List<IPEndPoint> miners = MinerFinder.Find("192.168.0.29-100", 4028, 4029);
-                Assert.IsTrue(miners.Count >= 3);
+                //MinePeon & S1
+                Assert.IsTrue(miners.Count >= 2);
             }
         }
 
         [TestMethod]
-        public void MinerFinder_ChecksMiners()
+        public void Check_ChecksMiners()
         {
             List<IPEndPoint> miners = MinerFinder.Find("192.168.0.29-100", 4028, 4029);
             int goodCount = miners.Count;
