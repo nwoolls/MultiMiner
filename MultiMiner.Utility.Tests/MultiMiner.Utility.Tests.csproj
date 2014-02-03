@@ -57,9 +57,19 @@
     <Compile Include="Networking\PortScannerTests.cs" />
     <Compile Include="Networking\IPRangeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IniFileParserTests.cs" />
+    <Compile Include="FileCopierTests.cs" />
+    <Compile Include="IdleTimeFinderTests.cs" />
+    <Compile Include="PlistParserTests.cs" />
     <Compile Include="UnzipperTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App_Data\com.apple.smb.server.plist">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="App_Data\system.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="App_Data\Unzipper-Test.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DOSCodePage</key>
+	<string>437</string>
+	<key>LocalKerberosRealm</key>
+	<string>LKDC:SHA1.7364666173646661736466617364666173646661</string>
+	<key>NetBIOSName</key>
+	<string>NET-BIOS-NAME</string>
+	<key>ServerDescription</key>
+	<string>John's Mac Pro</string>
+	<key>Workgroup</key>
+	<string>WORKGROUP</string>
+</dict>
+</plist>
