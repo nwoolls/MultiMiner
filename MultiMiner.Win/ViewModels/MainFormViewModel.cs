@@ -153,7 +153,7 @@ namespace MultiMiner.Win.ViewModels
                     //bfgminer will report back for each Proxy Worker, but we only show a single entry in the ViewModel that rolls
                     //up the stats for individual Proxy Workers
                     deviceViewModel.AverageHashrate += deviceInformationResponseModel.AverageHashrate;
-                    deviceViewModel.CurrentHashrate += deviceInformationResponseModel.AverageHashrate;
+                    deviceViewModel.CurrentHashrate += deviceInformationResponseModel.CurrentHashrate;
                     deviceViewModel.AcceptedShares += deviceInformationResponseModel.AcceptedShares;
                     deviceViewModel.RejectedShares += deviceInformationResponseModel.RejectedShares;
                     deviceViewModel.HardwareErrors += deviceInformationResponseModel.HardwareErrors;
