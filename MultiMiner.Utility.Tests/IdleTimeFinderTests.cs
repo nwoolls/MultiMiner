@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MultiMiner.Utility.OS;
 
 namespace MultiMiner.Utility.Tests
 {

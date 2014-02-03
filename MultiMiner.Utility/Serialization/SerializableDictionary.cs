@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 
 //http://weblogs.asp.net/pwelter34/archive/2006/05/03/444961.aspx
-namespace MultiMiner.Utility
+namespace MultiMiner.Utility.Serialization
 {
     [XmlRoot("dictionary")]
     public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IXmlSerializable

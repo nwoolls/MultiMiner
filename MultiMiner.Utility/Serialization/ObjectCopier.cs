@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace MultiMiner.Utility
+namespace MultiMiner.Utility.Serialization
 {
     public static class ObjectCopier
     {

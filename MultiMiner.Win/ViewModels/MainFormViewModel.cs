@@ -1,7 +1,6 @@
 ﻿using MultiMiner.Coin.Api;
 using MultiMiner.Engine;
 using MultiMiner.Engine.Configuration;
-using MultiMiner.Utility;
 using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Api.Responses;
 using System;
@@ -9,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MultiMiner.Win.Configuration;
 using MultiMiner.Win.Extensions;
+using MultiMiner.Utility.Serialization;
 
 namespace MultiMiner.Win.ViewModels
 {

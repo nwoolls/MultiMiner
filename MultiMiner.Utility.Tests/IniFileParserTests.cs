@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using MultiMiner.Utility.Parsers;
 
 namespace MultiMiner.Utility.Tests
 {

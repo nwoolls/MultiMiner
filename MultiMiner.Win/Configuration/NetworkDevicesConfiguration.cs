@@ -1,4 +1,5 @@
-﻿using MultiMiner.Utility;
+﻿using MultiMiner.Engine;
+using MultiMiner.Utility.Serialization;
 using System.Collections.Generic;
 using System.IO;
 

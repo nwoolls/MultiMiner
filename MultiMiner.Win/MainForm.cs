@@ -12,7 +12,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
-using MultiMiner.Utility;
 using MultiMiner.Win.Notifications;
 using MultiMiner.Xgminer.Api.Responses;
 using MultiMiner.Win.Extensions;
@@ -27,6 +26,8 @@ using Newtonsoft.Json;
 using System.Web.Script.Serialization;
 using System.Security.Cryptography;
 using MultiMiner.Xgminer.Discovery;
+using MultiMiner.Utility.OS;
+using MultiMiner.Utility.Serialization;
 
 namespace MultiMiner.Win
 {

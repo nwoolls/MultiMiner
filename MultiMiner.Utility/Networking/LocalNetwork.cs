@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MultiMiner.Utility.OS;
+using MultiMiner.Utility.Parsers;
+using System;
 using System.Management;
 using System.Net;
 using System.Net.Sockets;

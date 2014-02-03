@@ -1,4 +1,6 @@
-﻿using MultiMiner.Utility;
+﻿using MultiMiner.Engine;
+using MultiMiner.Utility.OS;
+using MultiMiner.Utility.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

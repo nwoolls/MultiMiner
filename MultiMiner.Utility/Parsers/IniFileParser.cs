@@ -2,7 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 
-namespace MultiMiner.Utility
+namespace MultiMiner.Utility.Parsers
 {
     public class IniFileParser
     {

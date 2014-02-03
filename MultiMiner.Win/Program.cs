@@ -1,4 +1,4 @@
-﻿using MultiMiner.Utility;
+﻿using MultiMiner.Utility.OS;
 using MultiMiner.Win.Configuration;
 using System;
 using System.Net;

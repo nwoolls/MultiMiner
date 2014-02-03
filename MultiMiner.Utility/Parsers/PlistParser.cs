@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace MultiMiner.Utility
+namespace MultiMiner.Utility.Parsers
 {
 
     public class PlistParser : Dictionary<string, object>

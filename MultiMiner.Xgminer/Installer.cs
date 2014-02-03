@@ -1,4 +1,5 @@
-﻿using MultiMiner.Utility;
+﻿using MultiMiner.Utility.IO;
+using MultiMiner.Utility.OS;
 using System;
 using System.Diagnostics;
 using System.IO;

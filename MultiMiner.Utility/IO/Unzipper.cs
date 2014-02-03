@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MultiMiner.Utility.OS;
+using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace MultiMiner.Utility
+namespace MultiMiner.Utility.IO
 {
     public static class Unzipper
     {

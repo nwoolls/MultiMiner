@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationPaths.cs" />
     <Compile Include="Configuration\CoinConfiguration.cs" />
     <Compile Include="Configuration\Obsolete\StrategyConfiguration.cs" />
     <Compile Include="Configuration\StrategyConfiguration.cs" />

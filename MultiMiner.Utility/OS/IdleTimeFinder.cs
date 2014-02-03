@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace MultiMiner.Utility
+namespace MultiMiner.Utility.OS
 {
     internal struct LASTINPUTINFO
     {

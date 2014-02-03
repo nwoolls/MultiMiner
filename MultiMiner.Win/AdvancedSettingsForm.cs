@@ -1,7 +1,8 @@
-﻿using MultiMiner.Utility;
+﻿using MultiMiner.Engine;
+using MultiMiner.Utility.IO;
+using MultiMiner.Utility.Serialization;
 using MultiMiner.Win.Configuration;
 using System;
-using System.Windows.Forms;
 
 namespace MultiMiner.Win
 {

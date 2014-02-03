@@ -42,21 +42,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationPaths.cs" />
-    <Compile Include="ConfigurationReaderWriter.cs" />
-    <Compile Include="FileCopier.cs" />
-    <Compile Include="IdleTimeFinder.cs" />
-    <Compile Include="IniFileParser.cs" />
+    <Compile Include="Serialization\ConfigurationReaderWriter.cs" />
+    <Compile Include="IO\FileCopier.cs" />
+    <Compile Include="OS\IdleTimeFinder.cs" />
+    <Compile Include="Parsers\IniFileParser.cs" />
     <Compile Include="Networking\IPRange.cs" />
     <Compile Include="Networking\PortScanner.cs" />
     <Compile Include="Networking\LocalNetwork.cs" />
-    <Compile Include="ObjectCopier.cs" />
-    <Compile Include="ObjectLogger.cs" />
-    <Compile Include="OSVersionPlatform.cs" />
-    <Compile Include="PlistParser.cs" />
+    <Compile Include="Serialization\ObjectCopier.cs" />
+    <Compile Include="Serialization\ObjectLogger.cs" />
+    <Compile Include="OS\OSVersionPlatform.cs" />
+    <Compile Include="Parsers\PlistParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SerializableDictionary.cs" />
-    <Compile Include="Unzipper.cs" />
+    <Compile Include="Serialization\SerializableDictionary.cs" />
+    <Compile Include="IO\Unzipper.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Shell32">

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace MultiMiner.Utility
+namespace MultiMiner.Engine
 {
     public static class ApplicationPaths
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Web.Script.Serialization;
 
-namespace MultiMiner.Utility
+namespace MultiMiner.Utility.Serialization
 {
     public class ObjectLogger
     {

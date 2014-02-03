@@ -7,9 +7,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Linq;
-using MultiMiner.Utility;
 using System.Drawing;
 using MultiMiner.Win.Configuration;
+using MultiMiner.Utility.OS;
 
 namespace MultiMiner.Win
 {

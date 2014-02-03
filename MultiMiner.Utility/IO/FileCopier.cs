@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace MultiMiner.Utility
+namespace MultiMiner.Utility.IO
 {
     public static class FileCopier
     {

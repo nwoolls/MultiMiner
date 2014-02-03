@@ -3,7 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
-namespace MultiMiner.Utility
+namespace MultiMiner.Utility.Serialization
 {
     public static class ConfigurationReaderWriter
     {
