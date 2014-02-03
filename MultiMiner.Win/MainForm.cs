@@ -4270,24 +4270,29 @@ namespace MultiMiner.Win
                 string[] portions = deviceViewModel.Path.Split(':');
                 string ipAddress = portions[0];
                 int port = int.Parse(portions[1]);
+
                 List<DeviceInformationResponse> deviceInformationList = GetDeviceInfoFromAddress(ipAddress, port);
                 List<PoolInformationResponse> poolInformationList = GetPoolInfoFromAddress(ipAddress, port);
 
-                int poolIndex = -1;
-
-                foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                //deviceInformationList or poolInformationList may be down if the API was unreachable
+                //at the time
+                if (deviceInformationList != null)
                 {
-                    localViewModel.ApplyDeviceInformationResponseModel(deviceViewModel, deviceInformation);
-                    poolIndex = deviceInformation.PoolIndex >= 0 ? deviceInformation.PoolIndex : poolIndex;
-                }
+                    int poolIndex = -1;
 
-                if (poolIndex >= 0)
-                {
-                    deviceViewModel.Pool = poolInformationList[poolIndex].Url;
-                    deviceViewModel.Visible = true;
+                    foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
+                    {
+                        localViewModel.ApplyDeviceInformationResponseModel(deviceViewModel, deviceInformation);
+                        poolIndex = deviceInformation.PoolIndex >= 0 ? deviceInformation.PoolIndex : poolIndex;
+                    }
+
+                    if ((poolInformationList != null) && (poolIndex >= 0))
+                    {
+                        deviceViewModel.Pool = poolInformationList[poolIndex].Url;
+                        deviceViewModel.Visible = true;
+                    }
                 }
             }
-
 
             RemoveSelfReferencingNetworkDevices();
 
