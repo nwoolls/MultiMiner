@@ -4,6 +4,7 @@ using System;
 using System.Management;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
 
 namespace MultiMiner.Utility.Networking
 {
@@ -58,12 +59,22 @@ namespace MultiMiner.Utility.Networking
                 //Windows
                 using (ManagementObject managementObject = new ManagementObject(String.Format("Win32_ComputerSystem.Name='{0}'", Environment.MachineName)))
                 {
-                    object workgroup;
-                    //Workgroup is NULL under XP
-                    if (OSVersionPlatform.IsWindowsVistaOrHigher())
-                        workgroup = managementObject["Workgroup"];
-                    else
+                    object workgroup = managementObject["Workgroup"];
+
+                    //Workgroup is NULL under XP and Server OS
+                    //instead read Domain
+                    if (workgroup == null)
+                    {
                         workgroup = managementObject["Domain"];
+                        const string LocalSuffix = ".local";
+                        if (workgroup != null)
+                        {
+                            string domain = (string)workgroup;
+                            if (domain.EndsWith(LocalSuffix))
+                                domain = Path.GetFileNameWithoutExtension(domain);
+                            workgroup = domain;
+                        }
+                    }
 
                     result = workgroup.ToString();
                 }
