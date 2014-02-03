@@ -4252,7 +4252,9 @@ namespace MultiMiner.Win
             foreach (DeviceViewModel networkDevice in networkDevices)
             {
                 if (networkDevice.Pool.DomainFromHost().Equals(localIpAddress))
-                    networkDevice.Visible = false;
+                    //actually remove rather than setting Visible = false
+                    //Visible = false items still get fetched with RefreshNetworkDeviceStats()
+                    localViewModel.Devices.Remove(networkDevice);
             }
         }
 
