@@ -3,6 +3,7 @@ using System.Net;
 using System.Web.Script.Serialization;
 using System;
 using System.Text;
+using System.Threading;
 
 namespace MultiMiner.MobileMiner.Api
 {
@@ -35,8 +36,38 @@ namespace MultiMiner.MobileMiner.Api
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 string jsonData = serializer.Serialize(miningStatistics);
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
-                string response = client.UploadString(fullUrl, jsonData);
+
+
+                ExecuteWebAction(() =>
+                {
+                    return client.UploadString(fullUrl, jsonData);
+                });
+
             }
+        }
+
+        private static string ExecuteWebAction(Func<string> action)
+        {
+            string response = String.Empty;
+
+            try
+            {
+                response = action();
+            }
+            catch (WebException ex)
+            {
+                if ((ex.Status == WebExceptionStatus.ProtocolError) &&
+                    (((HttpWebResponse)ex.Response).StatusCode == HttpStatusCode.BadGateway))
+                {
+                    //retry 1 time for error 502 Invalid Gateway
+                    Thread.Sleep(750);
+                    response = action();
+                }
+                else
+                    throw;
+            }
+
+            return response;
         }
 
         public static void SubmitNotifications(string url, string apiKey, string emailAddress, string applicationKey, List<string> notifications)
@@ -50,7 +81,11 @@ namespace MultiMiner.MobileMiner.Api
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 string jsonData = serializer.Serialize(notifications);
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
-                string response = client.UploadString(fullUrl, jsonData);
+
+                ExecuteWebAction(() =>
+                {
+                    return client.UploadString(fullUrl, jsonData);
+                });
             }
         }
 
@@ -62,7 +97,11 @@ namespace MultiMiner.MobileMiner.Api
                 url, emailAddress, applicationKey, machineName, apiKey);
             using (WebClient client = new ApiWebClient())
             {
-                string response = client.DownloadString(fullUrl);
+                string response = ExecuteWebAction(() =>
+                {
+                    return client.DownloadString(fullUrl);
+                });
+
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 return serializer.Deserialize<List<RemoteCommand>>(response);
             }
@@ -76,7 +115,11 @@ namespace MultiMiner.MobileMiner.Api
                 url, emailAddress, applicationKey, machineName, commandId, apiKey);
             using (WebClient client = new ApiWebClient())
             {
-                string response = client.UploadString(fullUrl, "DELETE", "");
+                string response = ExecuteWebAction(() =>
+                {
+                    return client.UploadString(fullUrl, "DELETE", "");
+                });
+
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 return serializer.Deserialize<RemoteCommand>(response);
             }
