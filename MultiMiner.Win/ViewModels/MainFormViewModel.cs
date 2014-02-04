@@ -100,11 +100,9 @@ namespace MultiMiner.Win.ViewModels
 
         private static void ApplyCoinInformationToViewModel(List<CoinInformation> coinInformationModels, string coinSymbol, DeviceViewModel deviceViewModel)
         {
-            CoinInformation coinInformationModel = coinInformationModels.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+            CoinInformation coinInformationModel = coinInformationModels.GetCoinInformationForSymbol(coinSymbol);
             if (coinInformationModel != null)
-            {
                 ObjectCopier.CopyObject(coinInformationModel, deviceViewModel, "Name", "Exchange");
-            }
         }
 
         public void ClearDeviceInformationFromViewModel()
