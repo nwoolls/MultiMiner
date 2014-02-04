@@ -51,6 +51,12 @@ namespace MultiMiner.Win
 
         public void RegisterInstance(Instance instance)
         {
+            if (Instances.SingleOrDefault(i => i.IpAddress.Equals(instance.IpAddress)) != null)
+                //instance already registered
+                //added as an additional guard after user reported Sequence error with use of
+                //SingleOrDefault in ApplyMachineInformation()
+                return;
+
             string nodeText = instance.MachineName;
             bool isThisPc = instance.MachineName.Equals(Environment.MachineName);
 
