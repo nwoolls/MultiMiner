@@ -2826,7 +2826,16 @@ namespace MultiMiner.Win
             Remoting.Server.Data.Transfer.Machine machine = new Remoting.Server.Data.Transfer.Machine();
             machine.TotalScryptHashrate = GetTotalHashrate(CoinAlgorithm.Scrypt);
             machine.TotalSha256Hashrate = GetTotalHashrate(CoinAlgorithm.SHA256);
-            Remoting.Server.Broadcast.Broadcaster.Broadcast(machine);
+            
+            try
+            {
+                Remoting.Server.Broadcast.Broadcaster.Broadcast(machine);
+            }
+            catch (SocketException ex)
+            {
+                //e.g. no network connection on Linux
+                ShowMultiMinerRemotingError(ex);
+            }
         }
 
         private void DisableRemoting()
@@ -3250,15 +3259,33 @@ namespace MultiMiner.Win
             discoveryListener.InstanceOnline += HandleInstanceOnline;
             discoveryListener.InstanceOffline += HandleInstanceOffline;
             discoveryListener.Listen(fingerprint);
-            Broadcaster.Broadcast(Verbs.Online, fingerprint);
+
+            try
+            {
+                Broadcaster.Broadcast(Verbs.Online, fingerprint);
+            }
+            catch (SocketException ex)
+            {
+                //e.g. no network connection on Linux
+                ShowMultiMinerRemotingError(ex);
+            }
         }
 
         private void StopDiscovery()
         {
             if (discoveryListener != null)
                 discoveryListener.Stop();
+
             //broadcast after so we aren't needless processing our own message
-            Broadcaster.Broadcast(Verbs.Offline, fingerprint);
+            try
+            {
+                Broadcaster.Broadcast(Verbs.Offline, fingerprint);
+            }
+            catch (SocketException ex)
+            {
+                //e.g. no network connection on Linux
+                ShowMultiMinerRemotingError(ex);
+            }
         }
 
         private void HandleInstanceOnline(object sender, InstanceChangedArgs ea)
