@@ -140,6 +140,13 @@ namespace MultiMiner.Win.ViewModels
 
         public DeviceViewModel ApplyDeviceInformationResponseModel(DeviceDescriptor deviceModel, DeviceInformationResponse deviceInformationResponseModel)
         {
+            string[] excludedProperties = 
+            { 
+                "Name",     //don't overwrite our "nice" name
+                "Kind",     //we have our own enum Kind
+                "Enabled"   //don't overwrite our own Enabled flag
+            };
+
             DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Equals(deviceModel));
             if (deviceViewModel != null)
             {
@@ -162,12 +169,12 @@ namespace MultiMiner.Win.ViewModels
 
                     //now add as a worker
                     DeviceViewModel workerViewModel = new DeviceViewModel();
-                    ObjectCopier.CopyObject(deviceInformationResponseModel, workerViewModel, "Name", "Kind");
+                    ObjectCopier.CopyObject(deviceInformationResponseModel, workerViewModel, excludedProperties);
                     deviceViewModel.Workers.Add(workerViewModel);
                 }
                 else
                 {
-                    ObjectCopier.CopyObject(deviceInformationResponseModel, deviceViewModel, "Name", "Kind");
+                    ObjectCopier.CopyObject(deviceInformationResponseModel, deviceViewModel, excludedProperties);
                 }
             }
             return deviceViewModel;
