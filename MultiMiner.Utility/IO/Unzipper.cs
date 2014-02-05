@@ -13,8 +13,10 @@ namespace MultiMiner.Utility.IO
 
             if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
                 UnzipFileToFolderUnix(zipFilePath, destionationFolder);
+#if !__MonoCS__
             else
                 UnzipFileToFolderWindows(zipFilePath, destionationFolder);
+#endif
         }
 
         private static void UnzipFileToFolderUnix(string zipFilePath, string destinationFolder)
@@ -60,6 +62,7 @@ namespace MultiMiner.Utility.IO
                 CopyDirectoryContents(directory, Path.Combine(targetDir, Path.GetFileName(directory)));
         }
 
+#if !__MonoCS__
         private static void UnzipFileToFolderWindows(string zipFilePath, string destinationFolder)
         {
             const bool showProgress = false;
@@ -101,5 +104,7 @@ namespace MultiMiner.Utility.IO
             Object shell = Activator.CreateInstance(shellAppType);
             return (Shell32.Folder)shellAppType.InvokeMember("NameSpace", System.Reflection.BindingFlags.InvokeMethod, null, shell, new object[] { folder });
         }
+#endif
+
     }
 }

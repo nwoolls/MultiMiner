@@ -42,7 +42,7 @@ namespace MultiMiner.Utility.Parsers
 
         private List<object> ParseArray(IEnumerable<XElement> elements)
         {
-            List<dynamic> list = new List<dynamic>();
+            List<object> list = new List<object>();
             foreach (XElement e in elements)
             {
                 object one = ParseValue(e);
@@ -71,7 +71,7 @@ namespace MultiMiner.Utility.Parsers
                     Parse(plist, val.Elements());
                     return plist;
                 case "array":
-                    List<dynamic> list = ParseArray(val.Elements());
+                    List<object> list = ParseArray(val.Elements());
                     return list;
                 default:
                     throw new ArgumentException("Unsupported");

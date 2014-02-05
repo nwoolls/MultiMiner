@@ -121,10 +121,12 @@ namespace MultiMiner.Win.Configuration
         private void ApplyLaunchOnWindowsStartup()
         {
             //launch using a .lnk file - launching via registry has proven troublesome, trouble launching cgminer after
+#if !__MonoCS__
             if (LaunchOnWindowsLogin)
                 WindowsStartupShortcut.CreateStartupFolderShortcut();
             else
                 WindowsStartupShortcut.DeleteStartupFolderShortcuts();
+#endif
         }
 
         public void LoadApplicationConfiguration(string configDirectory)
