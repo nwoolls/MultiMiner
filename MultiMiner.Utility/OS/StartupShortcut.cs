@@ -6,13 +6,13 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace MultiMiner.Win
+namespace MultiMiner.Utility.OS
 {
-    class WindowsStartupShortcut
+    public class StartupShortcut
     {
+#if !__MonoCS__
         public static void CreateStartupFolderShortcut()
         {
-#if !__MonoCS__
             WshShellClass wshShell = new WshShellClass();
             IWshShortcut shortcut;
             string startUpFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
@@ -24,10 +24,8 @@ namespace MultiMiner.Win
             shortcut.WorkingDirectory = Application.StartupPath;
 
             shortcut.Save();
-#endif
         }
 
-#if !__MonoCS__
         private static string GetShortcutTargetFile(string shortcutFilename)
         {
             string pathOnly = Path.GetDirectoryName(shortcutFilename);
