@@ -11,6 +11,8 @@
     <AssemblyName>MultiMiner.Xgminer.Discovery</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,11 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
-      <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
+      <Project>{99B0F266-EFF7-4416-8C36-8356396A11CA}</Project>
       <Name>MultiMiner.Utility</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj">
-      <Project>{5b43ad9d-8b67-4aa8-b76d-aa83caf9d29f}</Project>
+      <Project>{5B43AD9D-8B67-4AA8-B76D-AA83CAF9D29F}</Project>
       <Name>MultiMiner.Xgminer.Api</Name>
     </ProjectReference>
   </ItemGroup>

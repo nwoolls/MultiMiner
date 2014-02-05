@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,16 +33,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net35\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Newtonsoft.Json\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiContext.cs" />
@@ -49,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiMiner.Coin.Api\MultiMiner.Coin.Api.csproj">
-      <Project>{9e86f77a-68b9-4d72-82d2-855878ba8cb1}</Project>
+      <Project>{9E86F77A-68B9-4D72-82D2-855878BA8CB1}</Project>
       <Name>MultiMiner.Coin.Api</Name>
     </ProjectReference>
   </ItemGroup>

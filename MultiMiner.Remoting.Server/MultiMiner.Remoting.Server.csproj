@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,15 +67,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiMiner.Engine\MultiMiner.Engine.csproj">
-      <Project>{845687bb-ec47-46d3-ac9d-6fcfb63de8f5}</Project>
+      <Project>{845687BB-EC47-46D3-AC9D-6FCFB63DE8F5}</Project>
       <Name>MultiMiner.Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Services\MultiMiner.Services.csproj">
-      <Project>{cffa60ec-9486-4f45-bef2-05c1a3d68ea6}</Project>
+      <Project>{CFFA60EC-9486-4F45-BEF2-05C1A3D68EA6}</Project>
       <Name>MultiMiner.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Xgminer\MultiMiner.Xgminer.csproj">
-      <Project>{0dbef993-1b34-4d80-ab6a-f662604325dc}</Project>
+      <Project>{0DBEF993-1B34-4D80-AB6A-F662604325DC}</Project>
       <Name>MultiMiner.Xgminer</Name>
     </ProjectReference>
   </ItemGroup>

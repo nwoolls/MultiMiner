@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -50,11 +52,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj">
-      <Project>{5b43ad9d-8b67-4aa8-b76d-aa83caf9d29f}</Project>
+      <Project>{5B43AD9D-8B67-4AA8-B76D-AA83CAF9D29F}</Project>
       <Name>MultiMiner.Xgminer.Api</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Xgminer\MultiMiner.Xgminer.csproj">
-      <Project>{0dbef993-1b34-4d80-ab6a-f662604325dc}</Project>
+      <Project>{0DBEF993-1B34-4D80-AB6A-F662604325DC}</Project>
       <Name>MultiMiner.Xgminer</Name>
     </ProjectReference>
   </ItemGroup>
