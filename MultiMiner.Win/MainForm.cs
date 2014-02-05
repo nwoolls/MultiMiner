@@ -1069,7 +1069,7 @@ namespace MultiMiner.Win
                 foreach (string coinSymbol in incomeForCoins.Keys)
                 {
                     double coinIncome = incomeForCoins[coinSymbol];
-                    CoinInformation coinInfo = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+                    CoinInformation coinInfo = coinApiInformation.GetCoinInformationForSymbol(coinSymbol);
                     if (coinInfo != null)
                     {
                         double coinUsd = sellPrices.Subtotal.Amount * coinInfo.Price;
@@ -3088,6 +3088,9 @@ namespace MultiMiner.Win
                 BeginInvoke((Action)(() =>
                 {
                     //code to update UI
+                    localViewModel.ApplyCoinConfigurationModels(engineConfiguration.CoinConfigurations);
+                    localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
+                        engineConfiguration.CoinConfigurations);
                     RefreshViewForConfigurationChanges();
                 }));
             });
