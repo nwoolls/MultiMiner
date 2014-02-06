@@ -35,7 +35,7 @@ using MultiMiner.Win.Forms.Configuration;
 
 namespace MultiMiner.Win.Forms
 {
-    public partial class MainForm : MessageBoxFontForm
+    public partial class MinerForm : MessageBoxFontForm
     {
         #region Private fields
         //API contexts
@@ -106,7 +106,7 @@ namespace MultiMiner.Win.Forms
         #endregion
 
         #region Constructor
-        public MainForm()
+        public MinerForm()
         {
             InitializeComponent();
 

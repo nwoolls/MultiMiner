@@ -54,7 +54,7 @@ namespace MultiMiner.Win
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            Application.Run(new MinerForm());
         }
     }
 }
