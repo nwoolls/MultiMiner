@@ -127,16 +127,16 @@
     <Compile Include="Forms\MinerForm.Designer.cs">
       <DependentUpon>MinerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Notifications\NotificationControl.cs">
+    <Compile Include="Controls\Notifications\NotificationControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Notifications\NotificationControl.Designer.cs">
+    <Compile Include="Controls\Notifications\NotificationControl.Designer.cs">
       <DependentUpon>NotificationControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Notifications\NotificationsControl.cs">
+    <Compile Include="Controls\Notifications\NotificationsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Notifications\NotificationsControl.Designer.cs">
+    <Compile Include="Controls\Notifications\NotificationsControl.Designer.cs">
       <DependentUpon>NotificationsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Configuration\OnlineSettingsForm.cs">
@@ -208,10 +208,10 @@
       <DependentUpon>MinerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Notifications\NotificationControl.resx">
+    <EmbeddedResource Include="Controls\Notifications\NotificationControl.resx">
       <DependentUpon>NotificationControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Notifications\NotificationsControl.resx">
+    <EmbeddedResource Include="Controls\Notifications\NotificationsControl.resx">
       <DependentUpon>NotificationsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Configuration\OnlineSettingsForm.resx">

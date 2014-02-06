@@ -2,7 +2,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace MultiMiner.Win.Notifications
+namespace MultiMiner.Win.Controls.Notifications
 {
     public partial class NotificationsControl : MessageBoxFontUserControl
     {

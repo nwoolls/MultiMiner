@@ -1,4 +1,4 @@
-﻿namespace MultiMiner.Win.Notifications
+﻿namespace MultiMiner.Win.Controls.Notifications
 {
     partial class NotificationsControl
     {
