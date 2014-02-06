@@ -74,6 +74,10 @@
       <Project>{CFFA60EC-9486-4F45-BEF2-05C1A3D68EA6}</Project>
       <Name>MultiMiner.Services</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
+      <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
+      <Name>MultiMiner.Utility</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Xgminer\MultiMiner.Xgminer.csproj">
       <Project>{0DBEF993-1B34-4D80-AB6A-F662604325DC}</Project>
       <Name>MultiMiner.Xgminer</Name>

@@ -64,10 +64,17 @@ namespace MultiMiner.Remoting.Server
 
         private static string GetClientIpAddress()
         {
-            OperationContext currentContext = OperationContext.Current;
-            MessageProperties messageProperties = currentContext.IncomingMessageProperties;
-            RemoteEndpointMessageProperty endpoint = messageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
-            return endpoint.Address;
+            //don't use RemoteEndpointMessageProperty on Mono+Linux
+            if (MultiMiner.Utility.OS.OSVersionPlatform.GetGenericPlatform() == System.PlatformID.Unix)
+                return OperationContext.Current.Channel.RemoteAddress.Uri.DnsSafeHost;
+            else
+            {
+                //don't use Channel.RemoteAddress on Windows
+                OperationContext currentContext = OperationContext.Current;
+                MessageProperties messageProperties = currentContext.IncomingMessageProperties;
+                RemoteEndpointMessageProperty endpoint = messageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
+                return endpoint.Address;
+            }
         }
 
         public void StopMining(string signature)
