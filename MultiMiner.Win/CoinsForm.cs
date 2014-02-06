@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Engine.Configuration;
+using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer;

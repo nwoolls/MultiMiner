@@ -1,4 +1,5 @@
-﻿using MultiMiner.Utility.Serialization;
+﻿using MultiMiner.Utility.Forms;
+using MultiMiner.Utility.Serialization;
 using MultiMiner.Win.Configuration;
 using System;
 

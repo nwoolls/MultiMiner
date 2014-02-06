@@ -1,11 +1,11 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
-namespace MultiMiner.Win
+namespace MultiMiner.Utility.Forms
 {
-    public partial class MessageBoxFontForm : Form
+    public partial class MessageBoxFontUserControl : UserControl
     {
-        public MessageBoxFontForm()
+        public MessageBoxFontUserControl()
         {
             this.Font = SystemFonts.MessageBoxFont;
             InitializeComponent();

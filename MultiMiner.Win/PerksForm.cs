@@ -1,4 +1,5 @@
-﻿using MultiMiner.Win.Configuration;
+﻿using MultiMiner.Utility.Forms;
+using MultiMiner.Win.Configuration;
 using System;
 
 namespace MultiMiner.Win

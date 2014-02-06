@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using MultiMiner.Utility.OS;
 
-namespace MultiMiner.Win
+namespace MultiMiner.Utility.Forms
 {
     public class HourGlass : IDisposable
     {

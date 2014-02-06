@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiMiner.Utility.Forms;
+using System;
 using System.Windows.Forms;
 
 namespace MultiMiner.Win.Notifications

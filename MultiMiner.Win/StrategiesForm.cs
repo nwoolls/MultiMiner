@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using MultiMiner.Win.Configuration;
+using MultiMiner.Utility.Forms;
 
 namespace MultiMiner.Win
 {

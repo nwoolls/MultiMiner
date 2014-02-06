@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace MultiMiner.Win
+namespace MultiMiner.MobileMiner.Api
 {
     public static class InputValidation
     {

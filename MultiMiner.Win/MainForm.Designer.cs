@@ -1088,7 +1088,7 @@
             // 
             // apiLogEntryBindingSource
             // 
-            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.ApiLogEntry);
+            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.Data.ApiLogEntry);
             // 
             // panel2
             // 

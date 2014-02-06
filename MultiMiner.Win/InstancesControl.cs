@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using MultiMiner.Discovery;
 using MultiMiner.Win.Extensions;
 using System.Collections;
+using MultiMiner.Utility.Forms;
 
 namespace MultiMiner.Win
 {

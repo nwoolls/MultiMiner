@@ -10,6 +10,8 @@ using System.Linq;
 using System.Drawing;
 using MultiMiner.Win.Configuration;
 using MultiMiner.Utility.OS;
+using MultiMiner.MobileMiner.Api;
+using MultiMiner.Utility.Forms;
 
 namespace MultiMiner.Win
 {

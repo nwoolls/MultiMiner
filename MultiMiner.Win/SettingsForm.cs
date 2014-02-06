@@ -1,4 +1,6 @@
 ﻿using MultiMiner.Engine.Configuration;
+using MultiMiner.MobileMiner.Api;
+using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
 using MultiMiner.Win.Configuration;
 using System;

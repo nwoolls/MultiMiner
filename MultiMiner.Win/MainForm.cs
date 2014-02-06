@@ -28,6 +28,8 @@ using System.Security.Cryptography;
 using MultiMiner.Xgminer.Discovery;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
+using MultiMiner.Win.Data;
+using MultiMiner.Utility.Forms;
 
 namespace MultiMiner.Win
 {

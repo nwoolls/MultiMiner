@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiMiner.Utility.Forms;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;

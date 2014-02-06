@@ -89,12 +89,6 @@
     <Compile Include="InstancesControl.Designer.cs">
       <DependentUpon>InstancesControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="MessageBoxFontUserControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MessageBoxFontUserControl.Designer.cs">
-      <DependentUpon>MessageBoxFontUserControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="MinerSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -120,32 +114,18 @@
     <Compile Include="CoinsForm.Designer.cs">
       <DependentUpon>CoinsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ApiLogEntry.cs" />
+    <Compile Include="Data\ApiLogEntry.cs" />
     <Compile Include="Configuration\PerksConfiguration.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />
     <Compile Include="Extensions\MiningStatisticsExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TimeIntervalExtensions.cs" />
-    <Compile Include="HourGlass.cs" />
-    <Compile Include="InputValidation.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MessageBoxFontForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MessageBoxFontForm.Designer.cs">
-      <DependentUpon>MessageBoxFontForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NoFlickerListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="NoFlickerListView.Designer.cs">
-      <DependentUpon>NoFlickerListView.cs</DependentUpon>
     </Compile>
     <Compile Include="Notifications\NotificationControl.cs">
       <SubType>UserControl</SubType>

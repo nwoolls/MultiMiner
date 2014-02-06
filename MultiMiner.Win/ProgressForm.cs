@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+﻿using MultiMiner.Utility.Forms;
 
 namespace MultiMiner.Win
 {

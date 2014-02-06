@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Engine;
+using MultiMiner.Utility.Forms;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -11,11 +12,6 @@ namespace MultiMiner.Win
         public AboutForm()
         {
             InitializeComponent();
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void AboutForm_Load(object sender, EventArgs e)
