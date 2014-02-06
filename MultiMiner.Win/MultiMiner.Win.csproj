@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>computer-coins.ico</ApplicationIcon>
+    <ApplicationIcon>MultiMiner.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -335,10 +335,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="computer-coins.ico" />
     <Content Include="Miners\bfgminer\Extract bfgminer here.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="MultiMiner.ico" />
     <None Include="Resources\computer-control_play.png" />
     <None Include="Resources\computer-control_stop.png" />
     <None Include="Resources\application-delete.png" />
@@ -383,7 +383,6 @@
     <None Include="Resources\computer-list.png" />
     <None Include="Resources\list-internet.png" />
     <None Include="Resources\document-find.png" />
-    <Content Include="window_sel.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

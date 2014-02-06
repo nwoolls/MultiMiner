@@ -131,7 +131,7 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.Discovery.pdb,\
 ../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll,\
 Miners \
--i ../MultiMiner.Win/computer-coins.icns \
+-i ../MultiMiner.Win/MultiMiner.icns \
 ../MultiMiner.Win/bin/Release/MultiMiner.Win.exe");
 
 folder.move("Output/MultiMiner.Win.app", "Output/MultiMiner.app");
