@@ -66,7 +66,12 @@ namespace MultiMiner.Win.Forms.Configuration
         
         private void AddCoinConfiguration(CryptoCoin cryptoCoin)
         {
-            CoinConfiguration configuration = configurations.SingleOrDefault(c => c.Coin.Symbol.Equals(cryptoCoin.Symbol));
+            //don't allow two configurations for the same coin symbol
+            CoinConfiguration configuration = configurations.SingleOrDefault(c => c.Coin.Symbol.Equals(cryptoCoin.Symbol, StringComparison.OrdinalIgnoreCase));
+            if (configuration == null)
+                //don't allow two configurations for the same coin name
+                configuration = configurations.SingleOrDefault(c => c.Coin.Name.Equals(cryptoCoin.Name, StringComparison.OrdinalIgnoreCase));
+
             if (configuration != null)
             {
                 coinListBox.SelectedIndex = configurations.IndexOf(configuration);
