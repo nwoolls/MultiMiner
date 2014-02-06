@@ -1,4 +1,4 @@
-﻿using MultiMiner.Win.Configuration;
+﻿using MultiMiner.Win.Data.Configuration;
 using System.Collections.Generic;
 using System.Net;
 

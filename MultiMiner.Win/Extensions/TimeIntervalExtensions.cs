@@ -1,4 +1,4 @@
-﻿using MultiMiner.Win.Configuration;
+﻿using MultiMiner.Win.Data.Configuration;
 
 namespace MultiMiner.Win.Extensions
 {

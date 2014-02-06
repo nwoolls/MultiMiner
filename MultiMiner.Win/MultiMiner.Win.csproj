@@ -54,77 +54,77 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutForm.cs">
+    <Compile Include="Forms\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AboutForm.Designer.cs">
+    <Compile Include="Forms\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="AdvancedSettingsForm.cs">
+    <Compile Include="Forms\Configuration\AdvancedSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AdvancedSettingsForm.Designer.cs">
+    <Compile Include="Forms\Configuration\AdvancedSettingsForm.Designer.cs">
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\NetworkDevicesConfiguration.cs" />
-    <Compile Include="Configuration\PathConfiguration.cs" />
-    <Compile Include="DetailsControl.cs">
+    <Compile Include="Data\Configuration\NetworkDevicesConfiguration.cs" />
+    <Compile Include="Data\Configuration\PathConfiguration.cs" />
+    <Compile Include="Controls\DetailsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DetailsControl.Designer.cs">
+    <Compile Include="Controls\DetailsControl.Designer.cs">
       <DependentUpon>DetailsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="DeviceListView.cs">
+    <Compile Include="Controls\DeviceListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DeviceListView.Designer.cs">
+    <Compile Include="Controls\DeviceListView.Designer.cs">
       <DependentUpon>DeviceListView.cs</DependentUpon>
     </Compile>
     <Compile Include="Extensions\CoinInformationExtensions.cs" />
     <Compile Include="Extensions\IPEndPointExtensions.cs" />
     <Compile Include="Extensions\NetworkDeviceExtensions.cs" />
-    <Compile Include="InstancesControl.cs">
+    <Compile Include="Controls\InstancesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="InstancesControl.Designer.cs">
+    <Compile Include="Controls\InstancesControl.Designer.cs">
       <DependentUpon>InstancesControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="MinerSettingsForm.cs">
+    <Compile Include="Forms\Configuration\MinerSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MinerSettingsForm.Designer.cs">
+    <Compile Include="Forms\Configuration\MinerSettingsForm.Designer.cs">
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\ApplicationConfiguration.cs" />
-    <Compile Include="CoinChooseForm.cs">
+    <Compile Include="Data\Configuration\ApplicationConfiguration.cs" />
+    <Compile Include="Forms\CoinChooseForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CoinChooseForm.Designer.cs">
+    <Compile Include="Forms\CoinChooseForm.Designer.cs">
       <DependentUpon>CoinChooseForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CoinEditForm.cs">
+    <Compile Include="Forms\CoinEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CoinEditForm.Designer.cs">
+    <Compile Include="Forms\CoinEditForm.Designer.cs">
       <DependentUpon>CoinEditForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CoinsForm.cs">
+    <Compile Include="Forms\Configuration\CoinsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CoinsForm.Designer.cs">
+    <Compile Include="Forms\Configuration\CoinsForm.Designer.cs">
       <DependentUpon>CoinsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\ApiLogEntry.cs" />
-    <Compile Include="Configuration\PerksConfiguration.cs" />
+    <Compile Include="Data\Configuration\PerksConfiguration.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />
     <Compile Include="Extensions\MiningStatisticsExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TimeIntervalExtensions.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Notifications\NotificationControl.cs">
@@ -139,72 +139,72 @@
     <Compile Include="Notifications\NotificationsControl.Designer.cs">
       <DependentUpon>NotificationsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="OnlineSettingsForm.cs">
+    <Compile Include="Forms\Configuration\OnlineSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OnlineSettingsForm.Designer.cs">
+    <Compile Include="Forms\Configuration\OnlineSettingsForm.Designer.cs">
       <DependentUpon>OnlineSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PerksForm.cs">
+    <Compile Include="Forms\Configuration\PerksForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PerksForm.Designer.cs">
+    <Compile Include="Forms\Configuration\PerksForm.Designer.cs">
       <DependentUpon>PerksForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="ProgressForm.cs">
+    <Compile Include="Forms\ProgressForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProgressForm.Designer.cs">
+    <Compile Include="Forms\ProgressForm.Designer.cs">
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SettingsForm.cs">
+    <Compile Include="Forms\Configuration\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SettingsForm.Designer.cs">
+    <Compile Include="Forms\Configuration\SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="StrategiesForm.cs">
+    <Compile Include="Forms\Configuration\StrategiesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StrategiesForm.Designer.cs">
+    <Compile Include="Forms\Configuration\StrategiesForm.Designer.cs">
       <DependentUpon>StrategiesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserAgent.cs" />
+    <Compile Include="Data\UserAgent.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\MainFormViewModel.cs" />
-    <Compile Include="WizardForm.cs">
+    <Compile Include="Forms\WizardForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="WizardForm.Designer.cs">
+    <Compile Include="Forms\WizardForm.Designer.cs">
       <DependentUpon>WizardForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="AboutForm.resx">
+    <EmbeddedResource Include="Forms\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AdvancedSettingsForm.resx">
+    <EmbeddedResource Include="Forms\Configuration\AdvancedSettingsForm.resx">
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DetailsControl.resx">
+    <EmbeddedResource Include="Controls\DetailsControl.resx">
       <DependentUpon>DetailsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InstancesControl.resx">
+    <EmbeddedResource Include="Controls\InstancesControl.resx">
       <DependentUpon>InstancesControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MinerSettingsForm.resx">
+    <EmbeddedResource Include="Forms\Configuration\MinerSettingsForm.resx">
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CoinChooseForm.resx">
+    <EmbeddedResource Include="Forms\CoinChooseForm.resx">
       <DependentUpon>CoinChooseForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CoinEditForm.resx">
+    <EmbeddedResource Include="Forms\CoinEditForm.resx">
       <DependentUpon>CoinEditForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CoinsForm.resx">
+    <EmbeddedResource Include="Forms\Configuration\CoinsForm.resx">
       <DependentUpon>CoinsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -214,13 +214,13 @@
     <EmbeddedResource Include="Notifications\NotificationsControl.resx">
       <DependentUpon>NotificationsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="OnlineSettingsForm.resx">
+    <EmbeddedResource Include="Forms\Configuration\OnlineSettingsForm.resx">
       <DependentUpon>OnlineSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PerksForm.resx">
+    <EmbeddedResource Include="Forms\Configuration\PerksForm.resx">
       <DependentUpon>PerksForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProgressForm.resx">
+    <EmbeddedResource Include="Forms\ProgressForm.resx">
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -233,13 +233,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="SettingsForm.resx">
+    <EmbeddedResource Include="Forms\Configuration\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StrategiesForm.resx">
+    <EmbeddedResource Include="Forms\Configuration\StrategiesForm.resx">
       <DependentUpon>StrategiesForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="WizardForm.resx">
+    <EmbeddedResource Include="Forms\WizardForm.resx">
       <DependentUpon>WizardForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />

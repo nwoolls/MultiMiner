@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Utility.OS;
-using MultiMiner.Win.Configuration;
+using MultiMiner.Win.Data.Configuration;
+using MultiMiner.Win.Forms;
 using System;
 using System.Net;
 using System.Net.Security;

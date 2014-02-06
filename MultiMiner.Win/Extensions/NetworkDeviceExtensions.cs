@@ -1,4 +1,4 @@
-﻿using MultiMiner.Win.Configuration;
+﻿using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Win.ViewModels;
 using MultiMiner.Xgminer;
 using System;
