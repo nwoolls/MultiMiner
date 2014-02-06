@@ -9,7 +9,6 @@ using System.Linq;
 using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Win.Extensions;
 using MultiMiner.Utility.Serialization;
-using MultiMiner.Win.Data.Configuration;
 
 namespace MultiMiner.Win.ViewModels
 {

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ServiceModel;
-using System.Linq;
 using System.ServiceModel.Channels;
-using System;
 using MultiMiner.Engine;
 using MultiMiner.Xgminer;
 

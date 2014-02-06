@@ -12,7 +12,6 @@ using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Utility.OS;
 using MultiMiner.MobileMiner.Api;
 using MultiMiner.Utility.Forms;
-using MultiMiner.Win.Data.Configuration;
 
 namespace MultiMiner.Win.Forms
 {

@@ -6,7 +6,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Linq;
-using System.Globalization;
 
 namespace MultiMiner.Xgminer
 {

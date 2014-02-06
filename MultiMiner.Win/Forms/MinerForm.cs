@@ -12,7 +12,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
-using MultiMiner.Win.Notifications;
+using MultiMiner.Win.Controls.Notifications;
 using MultiMiner.Xgminer.Api.Responses;
 using MultiMiner.Win.Extensions;
 using MultiMiner.Win.Data.Configuration;
