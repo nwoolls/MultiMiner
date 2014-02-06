@@ -129,7 +129,12 @@ namespace MultiMiner.Win.Controls
         public void ApplyMachineInformation(string ipAddress, Remoting.Server.Data.Transfer.Machine machine)
         {
             if (ipAddress.Equals("localhost"))
-                ipAddress = Instances.Single(i => i.MachineName.Equals(Environment.MachineName)).IpAddress;
+            {
+                ipAddress = Instances.SingleOrDefault(i => i.MachineName.Equals(Environment.MachineName)).IpAddress;
+                if (ipAddress == null)
+                    //haven't registered our own instance yet
+                    return;
+            }
 
             Instance instance = Instances.SingleOrDefault(i => i.IpAddress.Equals(ipAddress));
             if (instance != null)
