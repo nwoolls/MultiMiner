@@ -85,7 +85,7 @@ namespace MultiMiner.Api.Example
                                 Thread.Sleep(1000 * 10); //sleep 10s
 
                                 //query the miner process via its RPC API for device information
-                                List<Xgminer.Api.Responses.DeviceInformationResponse> deviceInformation = apiContext.GetDeviceInformation();
+                                List<Xgminer.Api.Responses.DeviceInformationResponse> deviceInformation = apiContext.GetDeviceInformation(minerConfiguration.LogInterval);
 
                                 //output device information
                                 foreach (Xgminer.Api.Responses.DeviceInformationResponse item in deviceInformation)

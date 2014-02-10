@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Xgminer.Api.Responses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
 {
     public class DeviceInformationParser : ResponseTextParser
     {
-        public static void ParseTextForDeviceInformation(string text, List<DeviceInformationResponse> deviceInformation)
+        public static void ParseTextForDeviceInformation(string text, List<DeviceInformationResponse> deviceInformation, int logInterval)
         {
             List<string> deviceBlob = text.Split('|').ToList();
             deviceBlob.RemoveAt(0);
@@ -69,10 +70,10 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     newDevice.AverageHashrate = TryToParseDouble(keyValuePairs, "MHS av", 0.00) * 1000;
 
                     //seen both MHS 5s and MHS 1s
-                    if (keyValuePairs.ContainsKey("MHS 5s"))
-                        newDevice.CurrentHashrate = TryToParseDouble(keyValuePairs, "MHS 5s", 0.00) * 1000;
-                    else if (keyValuePairs.ContainsKey("MHS 1s"))
-                        newDevice.CurrentHashrate = TryToParseDouble(keyValuePairs, "MHS 1s", 0.00) * 1000;
+                    //the key here is based on the value passed for --log to bfgminer
+                    string currentRateKey = String.Format("MHS {0}s", logInterval);
+                    if (keyValuePairs.ContainsKey(currentRateKey))
+                        newDevice.CurrentHashrate = TryToParseDouble(keyValuePairs, currentRateKey, 0.00) * 1000;
                     
                     newDevice.AcceptedShares = TryToParseInt(keyValuePairs, "Accepted", 0);                    
                     newDevice.RejectedShares = TryToParseInt(keyValuePairs, "Rejected", 0);                    

@@ -256,6 +256,9 @@ namespace MultiMiner.Xgminer
             //we don't read the console output anyway and this is proven to improve performance (at least with very fast devices, e.g. KnC)
             arguments = arguments + " -q";
 
+            //specify a value for --log so we can depend on the API RPC current hashrate key
+            arguments = String.Format("{0} --log {1}", arguments, minerConfiguration.LogInterval);
+
             Process process = StartMinerProcess(arguments, redirectOutput, ensureProcessStarts, reason);
 
             return process;

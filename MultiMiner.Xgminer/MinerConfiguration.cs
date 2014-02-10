@@ -12,6 +12,7 @@ namespace MultiMiner.Xgminer
             this.Pools = new List<MiningPool>();
             this.StratumProxyPort = 8332;
             this.StratumProxyStratumPort = 3333;
+            this.LogInterval = 5;
         }
 
         public string ExecutablePath { get; set; }
@@ -27,6 +28,7 @@ namespace MultiMiner.Xgminer
         public bool DisableGpu { get; set; }
         public bool DisableUsbProbe { get; set; }
         public ProcessPriorityClass Priority { get; set; }
+        public int LogInterval { get; set; }
 
         //bfgminer-specific
         public bool StratumProxy { get; set; }
