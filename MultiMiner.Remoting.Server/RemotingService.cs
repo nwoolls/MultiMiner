@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ServiceModel;
+﻿using System.ServiceModel;
 using System.ServiceModel.Channels;
-using MultiMiner.Engine;
 using MultiMiner.Xgminer;
 
 namespace MultiMiner.Remoting.Server
@@ -11,8 +9,8 @@ namespace MultiMiner.Remoting.Server
     {
         public void GetApplicationModels(
             string signature,
-            out IEnumerable<Data.Transfer.Device> devices,
-            out IEnumerable<CryptoCoin> configurations,
+            out Data.Transfer.Device[] devices,
+            out Engine.CryptoCoin[] configurations,
             out bool mining, 
             out bool hasChanges,
             out bool dynamicIntensity)
@@ -112,12 +110,12 @@ namespace MultiMiner.Remoting.Server
             ApplicationProxy.Instance.SetAllDevicesToCoin(this, GetClientIpAddress(), signature, coinSymbol);
         }
 
-        public void SetDevicesToCoin(string signature, IEnumerable<DeviceDescriptor> devices, string coinSymbol)
+        public void SetDevicesToCoin(string signature, DeviceDescriptor[] devices, string coinSymbol)
         {
             ApplicationProxy.Instance.SetDevicesToCoin(this, GetClientIpAddress(), signature, devices, coinSymbol);
         }
 
-        public void ToggleDevices(string signature, IEnumerable<DeviceDescriptor> devices, bool enabled)
+        public void ToggleDevices(string signature, DeviceDescriptor[] devices, bool enabled)
         {
             ApplicationProxy.Instance.ToggleDevices(this, GetClientIpAddress(), signature, devices, enabled);
         }

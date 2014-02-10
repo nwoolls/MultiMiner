@@ -3014,7 +3014,7 @@ namespace MultiMiner.Win.Forms
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
                 ea.Devices = GetDeviceTransferObjects();
-                ea.ConfiguredCoins = localViewModel.ConfiguredCoins;
+                ea.ConfiguredCoins = localViewModel.ConfiguredCoins.ToList();
                 ea.Mining = miningEngine.Mining;
                 ea.DynamicIntensity = localViewModel.DynamicIntensity;
                 ea.HasChanges = localViewModel.HasChanges;
@@ -3400,8 +3400,8 @@ namespace MultiMiner.Win.Forms
         {
             PerformRemoteCommand(instance, (service) =>
             {
-                IEnumerable<Remoting.Server.Data.Transfer.Device> devices;
-                IEnumerable<CryptoCoin> configurations;
+                Remoting.Server.Data.Transfer.Device[] devices;
+                CryptoCoin[] configurations;
                 bool mining, hasChanges, dynamicIntensity;
 
                 //set some safe defaults in case the call fails
@@ -3581,7 +3581,7 @@ namespace MultiMiner.Win.Forms
             PerformRemoteCommand(instance, (service) =>
             {
                 List<DeviceDescriptor> descriptors = CloneDescriptors(devices);
-                service.SetDevicesToCoin(GetSendingSignature(instance), descriptors, coinName);
+                service.SetDevicesToCoin(GetSendingSignature(instance), descriptors.ToArray(), coinName);
                 UpdateViewFromRemoteInTheFuture(2);
             });
         }
@@ -3603,7 +3603,7 @@ namespace MultiMiner.Win.Forms
             PerformRemoteCommand(instance, (service) =>
             {
                 List<DeviceDescriptor> descriptors = CloneDescriptors(devices);
-                service.ToggleDevices(GetSendingSignature(instance), descriptors, enabled);
+                service.ToggleDevices(GetSendingSignature(instance), descriptors.ToArray(), enabled);
                 UpdateViewFromRemoteInTheFuture(2);
             });
         }

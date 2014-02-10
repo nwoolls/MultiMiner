@@ -120,8 +120,8 @@ namespace MultiMiner.Remoting.Server
             RemotingService sender,
             string clientAddress,
             string signature,
-            out IEnumerable<Data.Transfer.Device> devices,
-            out IEnumerable<CryptoCoin> configurations,
+            out Data.Transfer.Device[] devices,
+            out CryptoCoin[] configurations,
             out bool mining,
             out bool hasChanges,
             out bool dynamicIntensity)
@@ -133,8 +133,8 @@ namespace MultiMiner.Remoting.Server
             if (GetModelRequested != null)
                 GetModelRequested(sender, ea);
 
-            devices = ea.Devices;
-            configurations = ea.ConfiguredCoins;
+            devices = ea.Devices.ToArray();
+            configurations = ea.ConfiguredCoins.ToArray();
             mining = ea.Mining;
             hasChanges = ea.HasChanges;
             dynamicIntensity = ea.DynamicIntensity;
