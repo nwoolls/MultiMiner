@@ -2,6 +2,7 @@
 using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Win.Forms;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
@@ -38,6 +39,9 @@ namespace MultiMiner.Win
 
         private static void RunApplication()
         {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            
+
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
             {
                 ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) =>
@@ -55,6 +59,20 @@ namespace MultiMiner.Win
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MinerForm());
+        }
+
+        private static void HandleException(string exceptionMessage)
+        {
+#if DEBUG
+            //Debug.WriteLine("Main exception: " + exceptionMessage);
+            //MessageBox.Show("Main exception: " + exceptionMessage);
+#endif
+            EventLog.WriteEntry("Application Error", exceptionMessage, EventLogEntryType.Error, 1000);
+        }
+        
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            HandleException((e.ExceptionObject as Exception).ToString());
         }
     }
 }
