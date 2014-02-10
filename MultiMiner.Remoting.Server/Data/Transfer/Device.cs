@@ -5,12 +5,21 @@ using System.Collections.Generic;
 
 namespace MultiMiner.Remoting.Server.Data.Transfer
 {
-    public class Device : DeviceDescriptor
+    //do not descend from anything - messes up WCF+Linux+Windows+Mono
+    public class Device
     {
         public Device()
         {
             Workers = new List<Device>();
+            Coin = new CryptoCoin();
         }
+
+        //device descriptor
+        public DeviceKind Kind { get; set; }
+        public int RelativeIndex { get; set; }
+        public string Driver { get; set; }
+        public string Path { get; set; }
+        public string Serial { get; set; }
 
         //device info
         public bool Enabled { get; set; }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace MultiMiner.Remoting.Server.Data.Transfer.Configuration
 {
+    //do not descend from anything - messes up WCF+Linux+Windows+Mono
     public class Engine
     {
         public List<DeviceConfiguration> DeviceConfigurations { get; set; }

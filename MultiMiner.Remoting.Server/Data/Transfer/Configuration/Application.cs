@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 namespace MultiMiner.Remoting.Server.Data.Transfer.Configuration
 {
+    //do not descend from anything - messes up WCF+Linux+Windows+Mono
     public class Application
     {
         public enum TimerInterval
