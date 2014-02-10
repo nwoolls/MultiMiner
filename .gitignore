@@ -33,3 +33,4 @@ Thumbs.db
 Installer/Output/
 *.vspx
 *.psess
+*.userprefs
