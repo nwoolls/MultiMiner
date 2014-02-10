@@ -1542,6 +1542,7 @@ namespace MultiMiner.Win.Forms
             asyncAction.BeginInvoke(
                 ar =>
                 {
+                    asyncAction.EndInvoke(ar);
                     BeginInvoke((Action)(() =>
                     {
                         //code to update UI
@@ -1580,6 +1581,7 @@ namespace MultiMiner.Win.Forms
             asyncAction.BeginInvoke(
                 ar =>
                 {
+                    asyncAction.EndInvoke(ar);
                     BeginInvoke((Action)(() =>
                     {
                         //code to update UI
@@ -3886,7 +3888,7 @@ namespace MultiMiner.Win.Forms
                 if (submitMiningStatisticsDelegate == null)
                     submitMiningStatisticsDelegate = SubmitMiningStatistics;
 
-                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, null, null);
+                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, submitMiningStatisticsDelegate.EndInvoke, null);
             }
         }
 
@@ -3991,7 +3993,7 @@ namespace MultiMiner.Win.Forms
             if (submitNotificationDelegate == null)
                 submitNotificationDelegate = SubmitNotification;
 
-            submitNotificationDelegate.BeginInvoke(text, null, null);
+            submitNotificationDelegate.BeginInvoke(text, submitNotificationDelegate.EndInvoke, null);
         }
 
         private Action<string> submitNotificationDelegate;
@@ -4031,7 +4033,7 @@ namespace MultiMiner.Win.Forms
             if (checkForRemoteCommandsDelegate == null)
                 checkForRemoteCommandsDelegate = GetRemoteCommands;
 
-            checkForRemoteCommandsDelegate.BeginInvoke(null, null);
+            checkForRemoteCommandsDelegate.BeginInvoke(checkForRemoteCommandsDelegate.EndInvoke, null);
         }
 
         private Action checkForRemoteCommandsDelegate;
@@ -4134,7 +4136,7 @@ namespace MultiMiner.Win.Forms
                 if (deleteRemoteCommandDelegate == null)
                     deleteRemoteCommandDelegate = DeleteRemoteCommand;
 
-                deleteRemoteCommandDelegate.BeginInvoke(command, null, null);
+                deleteRemoteCommandDelegate.BeginInvoke(command, deleteRemoteCommandDelegate.EndInvoke, null);
             }
         }
 
@@ -4174,7 +4176,7 @@ namespace MultiMiner.Win.Forms
             if (submitMinerStatisticsDelegate == null)
                 submitMinerStatisticsDelegate = SubmitMinerStatistics;
 
-            submitMinerStatisticsDelegate.BeginInvoke(machineStat, null, null);
+            submitMinerStatisticsDelegate.BeginInvoke(machineStat, submitMinerStatisticsDelegate.EndInvoke, null);
         }
         private Action<Stats.Api.Machine> submitMinerStatisticsDelegate;
 
