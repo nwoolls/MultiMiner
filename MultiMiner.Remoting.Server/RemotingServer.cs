@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiMiner.Utility.OS;
+using System;
 using System.Net;
 using System.ServiceModel;
 
@@ -8,12 +9,18 @@ namespace MultiMiner.Remoting.Server
     {
         private bool serviceStarted = false;
         private ServiceHost myServiceHost = null;
-        
+
         public void Startup()
         {
             //use Dns.GetHostName() instead of localhost for compatibility with Mono+Linux
             //https://github.com/nwoolls/MultiMiner/issues/62
-            Uri baseAddress = new Uri(String.Format("net.tcp://{0}:{1}/RemotingService", Dns.GetHostName(), Config.RemotingPort));
+            string hostname = Dns.GetHostName();
+
+            if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
+                //otherwise Windows -> OS X gets connection refused (though Linux -> OS X works)
+                hostname = "localhost";
+
+            Uri baseAddress = new Uri(String.Format("net.tcp://{0}:{1}/RemotingService", hostname, Config.RemotingPort));
 
             NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
 
