@@ -4321,7 +4321,11 @@ namespace MultiMiner.Win.Forms
                         poolIndex = deviceInformation.PoolIndex >= 0 ? deviceInformation.PoolIndex : poolIndex;
                     }
 
-                    if ((poolInformationList != null) && (poolIndex >= 0))
+                    if ((poolInformationList != null) &&
+                        //ensure poolIndex is valid for poolInformationList
+                        //user(s) reported index errors so we can't out on the RPC API here
+                        //https://github.com/nwoolls/MultiMiner/issues/64
+                        ((poolIndex >= 0) && (poolIndex < poolInformationList.Count)))
                     {
                         deviceViewModel.Pool = poolInformationList[poolIndex].Url;
                         deviceViewModel.Visible = true;
