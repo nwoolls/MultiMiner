@@ -60,19 +60,10 @@ namespace MultiMiner.Win
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MinerForm());
         }
-
-        private static void HandleException(string exceptionMessage)
-        {
-#if DEBUG
-            //Debug.WriteLine("Main exception: " + exceptionMessage);
-            //MessageBox.Show("Main exception: " + exceptionMessage);
-#endif
-            EventLog.WriteEntry("Application Error", exceptionMessage, EventLogEntryType.Error, 1000);
-        }
         
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            HandleException((e.ExceptionObject as Exception).ToString());
+            EventLog.WriteEntry("Application Error", (e.ExceptionObject as Exception).ToString(), EventLogEntryType.Error, 1000);
         }
     }
 }
