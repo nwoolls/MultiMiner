@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CoinApiException.cs" />
-    <Compile Include="CoinInformation.cs" />
+    <Compile Include="Data\CoinInformation.cs" />
     <Compile Include="IApiContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

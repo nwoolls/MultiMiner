@@ -1,4 +1,4 @@
-﻿namespace MultiMiner.Coinbase.Api
+﻿namespace MultiMiner.Coinbase.Api.Data
 {
     public class CurrencyAmount
     {

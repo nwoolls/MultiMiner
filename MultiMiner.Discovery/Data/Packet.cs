@@ -1,4 +1,4 @@
-﻿namespace MultiMiner.Discovery
+﻿namespace MultiMiner.Discovery.Data
 {
     class Packet
     {

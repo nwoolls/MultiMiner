@@ -1,8 +1,8 @@
-﻿using MultiMiner.Coin.Api;
+﻿using MultiMiner.Coin.Api.Data;
 using Newtonsoft.Json.Linq;
 using System;
 
-namespace MultiMiner.CoinChoose.Api
+namespace MultiMiner.CoinChoose.Api.Extensions
 {
     public static class CoinInformationExtensions
     {

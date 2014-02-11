@@ -44,10 +44,10 @@
   <ItemGroup>
     <Compile Include="Broadcaster.cs" />
     <Compile Include="Config.cs" />
-    <Compile Include="Instance.cs" />
+    <Compile Include="Data\Instance.cs" />
     <Compile Include="InstanceChangedArgs.cs" />
     <Compile Include="Listener.cs" />
-    <Compile Include="Packet.cs" />
+    <Compile Include="Data\Packet.cs" />
     <Compile Include="Verbs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sender.cs" />

@@ -1,4 +1,6 @@
 ﻿using MultiMiner.Coin.Api;
+using MultiMiner.Coin.Api.Data;
+using MultiMiner.CoinChoose.Api.Extensions;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;

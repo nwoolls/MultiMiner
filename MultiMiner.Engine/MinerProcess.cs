@@ -14,7 +14,7 @@ namespace MultiMiner.Engine
         public int ApiPort { get; set; }
         public MinerConfiguration MinerConfiguration { get; set; } //for relaunching crashed miners
         public DateTime StartDate { get; set; }
-        public Coin.Api.CoinInformation CoinInformation { get; set; }
+        public Coin.Api.Data.CoinInformation CoinInformation { get; set; }
         //store separately from CoinInformation as CoinInformation depends on Coin API
         public string CoinSymbol { get; set; }
 

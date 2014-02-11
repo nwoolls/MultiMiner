@@ -1,5 +1,4 @@
 ﻿using MultiMiner.Engine.Configuration;
-using System.Collections.Generic;
 
 namespace MultiMiner.Remoting.Server.Data.Transfer.Configuration
 {

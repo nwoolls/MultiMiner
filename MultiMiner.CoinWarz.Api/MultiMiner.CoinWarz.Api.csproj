@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiContext.cs" />
-    <Compile Include="CoinInformationExtensions.cs" />
+    <Compile Include="Extensions\CoinInformationExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

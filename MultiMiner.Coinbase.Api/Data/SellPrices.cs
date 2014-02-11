@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MultiMiner.Coinbase.Api
+namespace MultiMiner.Coinbase.Api.Data
 {
     //https://coinbase.com/api/v1/prices/sell
     public class SellPrices : CurrencyAmount

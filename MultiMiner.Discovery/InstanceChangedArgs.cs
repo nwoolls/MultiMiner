@@ -4,6 +4,6 @@ namespace MultiMiner.Discovery
 {
     public class InstanceChangedArgs : EventArgs
     {
-        public Instance Instance { get; set; }
+        public Data.Instance Instance { get; set; }
     }
 }

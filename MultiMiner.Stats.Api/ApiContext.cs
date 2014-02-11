@@ -20,7 +20,7 @@ namespace MultiMiner.Stats.Api
             }
         }
 
-        public static void SubmitMinerStatistics(string url, Machine machine)
+        public static void SubmitMinerStatistics(string url, Data.Machine machine)
         {
             if (!url.EndsWith("/"))
                 url = url + "/";

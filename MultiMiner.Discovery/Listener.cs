@@ -23,7 +23,7 @@ namespace MultiMiner.Discovery
         private int fingerprint;
         public bool listening { get; set; }
 
-        private readonly List<Instance> instances = new List<Instance>();
+        private readonly List<Data.Instance> instances = new List<Data.Instance>();
 
         public void Listen(int fingerprint)
         {
@@ -96,14 +96,19 @@ namespace MultiMiner.Discovery
             string jsonData = Encoding.ASCII.GetString(bytes);
 
             JavaScriptSerializer serializer = new JavaScriptSerializer();
-            Packet packet = serializer.Deserialize<Packet>(jsonData);
+            Data.Packet packet = serializer.Deserialize<Data.Packet>(jsonData);
 
             if (packet.Verb.Equals(Verbs.Online))
             {
                 string ipAddress = source.Address.ToString();
                 if (!instances.Any(i => i.IpAddress.Equals(ipAddress)))
                 {
-                    Instance instance = new Instance { IpAddress = ipAddress, MachineName = packet.MachineName, Fingerprint = packet.Fingerprint };
+                    Data.Instance instance = new Data.Instance 
+                    { 
+                        IpAddress = ipAddress, 
+                        MachineName = packet.MachineName, 
+                        Fingerprint = packet.Fingerprint 
+                    };
 
                     //lock for thread-safety - collection may be modified
                     lock (instances)
@@ -124,7 +129,7 @@ namespace MultiMiner.Discovery
                 //lock for thread-safety - collection may be modified
                 lock (instances)
                 {
-                    Instance instance = instances.SingleOrDefault(i => i.IpAddress.Equals(ipAddress));
+                    Data.Instance instance = instances.SingleOrDefault(i => i.IpAddress.Equals(ipAddress));
                     if (instance != null)
                     {
                         instances.Remove(instance);

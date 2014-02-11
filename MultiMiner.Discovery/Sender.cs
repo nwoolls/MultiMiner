@@ -12,7 +12,7 @@ namespace MultiMiner.Discovery
         {
             using (UdpClient client = new UdpClient())
             {
-                Packet packet = new Packet();
+                Data.Packet packet = new Data.Packet();
                 packet.MachineName = Environment.MachineName;
                 packet.Fingerprint = fingerprint;
                 packet.Verb = verb;

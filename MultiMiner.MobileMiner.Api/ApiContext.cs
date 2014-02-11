@@ -22,7 +22,7 @@ namespace MultiMiner.MobileMiner.Api
             }
         }
 
-        public static void SubmitMiningStatistics(string url, string apiKey, string emailAddress, string applicationKey, string machineName, List<MiningStatistics> miningStatistics)
+        public static void SubmitMiningStatistics(string url, string apiKey, string emailAddress, string applicationKey, string machineName, List<Data.MiningStatistics> miningStatistics)
         {
             if (!url.EndsWith("/"))
                 url = url + "/";
@@ -89,7 +89,7 @@ namespace MultiMiner.MobileMiner.Api
             }
         }
 
-        public static List<RemoteCommand> GetCommands(string url, string apiKey, string emailAddress, string applicationKey, string machineName)
+        public static List<Data.RemoteCommand> GetCommands(string url, string apiKey, string emailAddress, string applicationKey, string machineName)
         {
             if (!url.EndsWith("/"))
                 url = url + "/";
@@ -103,11 +103,11 @@ namespace MultiMiner.MobileMiner.Api
                 });
 
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
-                return serializer.Deserialize<List<RemoteCommand>>(response);
+                return serializer.Deserialize<List<Data.RemoteCommand>>(response);
             }
         }
 
-        public static RemoteCommand DeleteCommand(string url, string apiKey, string emailAddress, string applicationKey, string machineName, long commandId)
+        public static Data.RemoteCommand DeleteCommand(string url, string apiKey, string emailAddress, string applicationKey, string machineName, long commandId)
         {
             if (!url.EndsWith("/"))
                 url = url + "/";
@@ -121,7 +121,7 @@ namespace MultiMiner.MobileMiner.Api
                 });
 
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
-                return serializer.Deserialize<RemoteCommand>(response);
+                return serializer.Deserialize<Data.RemoteCommand>(response);
             }
         }
     }

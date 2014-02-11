@@ -4,7 +4,7 @@ namespace MultiMiner.Coin.Api
 {
     public interface IApiContext
     {
-        IEnumerable<CoinInformation> GetCoinInformation(string userAgent = "");
+        IEnumerable<Data.CoinInformation> GetCoinInformation(string userAgent = "");
         string GetApiUrl();
         string GetInfoUrl();
         string GetApiName();

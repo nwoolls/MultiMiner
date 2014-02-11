@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MultiMiner.Coin.Api
+namespace MultiMiner.Coin.Api.Data
 {
     public class CoinInformation
     {

@@ -1,4 +1,4 @@
-namespace MultiMiner.MobileMiner.Api
+namespace MultiMiner.MobileMiner.Api.Data
 {
     public class MiningStatistics
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MultiMiner.Discovery
+namespace MultiMiner.Discovery.Data
 {
     [Serializable]
     public class Instance

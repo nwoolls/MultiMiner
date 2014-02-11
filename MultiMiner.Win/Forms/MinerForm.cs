@@ -17,9 +17,11 @@ using MultiMiner.Xgminer.Api.Responses;
 using MultiMiner.Win.Extensions;
 using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Coin.Api;
+using MultiMiner.Coin.Api.Data;
 using MultiMiner.Remoting.Server;
 using MultiMiner.Services;
 using MultiMiner.Discovery;
+using MultiMiner.Discovery.Data;
 using MultiMiner.Win.ViewModels;
 using System.ServiceModel;
 using Newtonsoft.Json;
@@ -47,7 +49,7 @@ namespace MultiMiner.Win.Forms
 
         //API information
         private List<CoinInformation> coinApiInformation;
-        private MultiMiner.Coinbase.Api.SellPrices sellPrices;
+        private MultiMiner.Coinbase.Api.Data.SellPrices sellPrices;
 
         //configuration
         private EngineConfiguration engineConfiguration = new EngineConfiguration();
@@ -3852,7 +3854,7 @@ namespace MultiMiner.Win.Forms
                 string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
                 return;
 
-            List<MultiMiner.MobileMiner.Api.MiningStatistics> statisticsList = new List<MobileMiner.Api.MiningStatistics>();
+            List<MultiMiner.MobileMiner.Api.Data.MiningStatistics> statisticsList = new List<MobileMiner.Api.Data.MiningStatistics>();
 
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
@@ -3866,7 +3868,7 @@ namespace MultiMiner.Win.Forms
 
                 foreach (DeviceInformationResponse deviceInformation in deviceInformationList)
                 {
-                    MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics = new MobileMiner.Api.MiningStatistics();
+                    MultiMiner.MobileMiner.Api.Data.MiningStatistics miningStatistics = new MobileMiner.Api.Data.MiningStatistics();
 
                     PopulateMiningStatistics(miningStatistics, deviceInformation, GetCoinNameForApiContext(minerProcess.ApiContext));
 
@@ -3909,7 +3911,7 @@ namespace MultiMiner.Win.Forms
             return coinName;
         }
 
-        private void PopulateMiningStatistics(MultiMiner.MobileMiner.Api.MiningStatistics miningStatistics, DeviceInformationResponse deviceInformation,
+        private void PopulateMiningStatistics(MultiMiner.MobileMiner.Api.Data.MiningStatistics miningStatistics, DeviceInformationResponse deviceInformation,
             string coinName)
         {
             miningStatistics.MinerName = "MultiMiner";
@@ -3926,9 +3928,9 @@ namespace MultiMiner.Win.Forms
             miningStatistics.PopulateFrom(deviceInformation);
         }
 
-        private Action<List<MultiMiner.MobileMiner.Api.MiningStatistics>> submitMiningStatisticsDelegate;
+        private Action<List<MultiMiner.MobileMiner.Api.Data.MiningStatistics>> submitMiningStatisticsDelegate;
 
-        private void SubmitMiningStatistics(List<MultiMiner.MobileMiner.Api.MiningStatistics> statisticsList)
+        private void SubmitMiningStatistics(List<MultiMiner.MobileMiner.Api.Data.MiningStatistics> statisticsList)
         {
             try
             {
@@ -4040,7 +4042,7 @@ namespace MultiMiner.Win.Forms
 
         private void GetRemoteCommands()
         {
-            List<MobileMiner.Api.RemoteCommand> commands = new List<MobileMiner.Api.RemoteCommand>();
+            List<MobileMiner.Api.Data.RemoteCommand> commands = new List<MobileMiner.Api.Data.RemoteCommand>();
 
             try
             {
@@ -4100,16 +4102,16 @@ namespace MultiMiner.Win.Forms
             }
 
             if (InvokeRequired)
-                BeginInvoke((Action<List<MobileMiner.Api.RemoteCommand>>)((c) => ProcessRemoteCommands(c)), commands);
+                BeginInvoke((Action<List<MobileMiner.Api.Data.RemoteCommand>>)((c) => ProcessRemoteCommands(c)), commands);
             else
                 ProcessRemoteCommands(commands);
         }
 
-        private void ProcessRemoteCommands(List<MobileMiner.Api.RemoteCommand> commands)
+        private void ProcessRemoteCommands(List<MobileMiner.Api.Data.RemoteCommand> commands)
         {
             if (commands.Count > 0)
             {
-                MobileMiner.Api.RemoteCommand command = commands.First();
+                MobileMiner.Api.Data.RemoteCommand command = commands.First();
 
                 //check this before actually executing the command
                 //point being, say for some reason it takes 2 minutes to restart mining
@@ -4140,9 +4142,9 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private Action<MobileMiner.Api.RemoteCommand> deleteRemoteCommandDelegate;
+        private Action<MobileMiner.Api.Data.RemoteCommand> deleteRemoteCommandDelegate;
 
-        private void DeleteRemoteCommand(MobileMiner.Api.RemoteCommand command)
+        private void DeleteRemoteCommand(MobileMiner.Api.Data.RemoteCommand command)
         {
             MobileMiner.Api.ApiContext.DeleteCommand(GetMobileMinerUrl(), mobileMinerApiKey,
                                 applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
@@ -4167,7 +4169,7 @@ namespace MultiMiner.Win.Forms
             if (installedVersion.Equals(applicationConfiguration.SubmittedStatsVersion))
                 return;
 
-            Stats.Api.Machine machineStat = new Stats.Api.Machine()
+            Stats.Api.Data.Machine machineStat = new Stats.Api.Data.Machine()
             {
                 Name = Environment.MachineName,
                 MinerVersion = installedVersion
@@ -4178,9 +4180,9 @@ namespace MultiMiner.Win.Forms
 
             submitMinerStatisticsDelegate.BeginInvoke(machineStat, submitMinerStatisticsDelegate.EndInvoke, null);
         }
-        private Action<Stats.Api.Machine> submitMinerStatisticsDelegate;
+        private Action<Stats.Api.Data.Machine> submitMinerStatisticsDelegate;
 
-        private void SubmitMinerStatistics(Stats.Api.Machine machineStat)
+        private void SubmitMinerStatistics(Stats.Api.Data.Machine machineStat)
         {
             try
             {

@@ -1,4 +1,4 @@
-﻿namespace MultiMiner.Stats.Api
+﻿namespace MultiMiner.Stats.Api.Data
 {
     public class Machine
     {

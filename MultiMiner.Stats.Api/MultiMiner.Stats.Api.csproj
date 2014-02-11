@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiContext.cs" />
-    <Compile Include="Machine.cs" />
+    <Compile Include="Data\Machine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

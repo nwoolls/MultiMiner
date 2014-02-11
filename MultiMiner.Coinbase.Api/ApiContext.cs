@@ -19,13 +19,13 @@ namespace MultiMiner.Coinbase.Api
             }
         }
 
-        public static SellPrices GetSellPrices()
+        public static Data.SellPrices GetSellPrices()
         {
             WebClient webClient = new ApiWebClient();
 
             string response = webClient.DownloadString(new Uri(GetApiUrl()));
 
-            SellPrices sellPrices = JsonConvert.DeserializeObject<SellPrices>(response);
+            Data.SellPrices sellPrices = JsonConvert.DeserializeObject<Data.SellPrices>(response);
             return sellPrices;
         }
 

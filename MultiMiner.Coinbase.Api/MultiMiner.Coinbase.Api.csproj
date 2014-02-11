@@ -45,9 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiContext.cs" />
-    <Compile Include="CurrencyAmount.cs" />
+    <Compile Include="Data\CurrencyAmount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SellPrices.cs" />
+    <Compile Include="Data\SellPrices.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

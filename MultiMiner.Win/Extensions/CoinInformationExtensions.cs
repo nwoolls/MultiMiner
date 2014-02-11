@@ -1,4 +1,4 @@
-﻿using MultiMiner.Coin.Api;
+﻿using MultiMiner.Coin.Api.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
