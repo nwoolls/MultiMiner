@@ -5,6 +5,7 @@ namespace MultiMiner.Remoting.Server
 {
     //do not use collections - arrays only for Mono compatibility
     [ServiceContract]
+    [ServiceKnownType(typeof(CoinAlgorithm))]
     public interface IRemotingService
     {
         [OperationContract]

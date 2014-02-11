@@ -54,6 +54,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ApplicationConfigurationExtensions.cs" />
+    <Compile Include="Extensions\DeviceConfigurationExtensions.cs" />
+    <Compile Include="Extensions\EngineConfigurationExtensions.cs" />
     <Compile Include="Forms\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -1186,8 +1186,8 @@ namespace MultiMiner.Win.Forms
 
             GetRemoteApplicationConfiguration(this.selectedRemoteInstance);
 
-            ObjectCopier.CopyObject(this.remoteApplicationConfig, workingApplicationConfiguration);
-            ObjectCopier.CopyObject(this.remoteEngineConfig, workingEngineConfiguration);
+            ObjectCopier.CopyObject(this.remoteApplicationConfig.ToModelObject(), workingApplicationConfiguration);
+            ObjectCopier.CopyObject(this.remoteEngineConfig.ToModelObject(), workingEngineConfiguration);
             ObjectCopier.CopyObject(this.remotePathConfig, workingPathConfiguration);
 
             SettingsForm settingsForm = new SettingsForm(workingApplicationConfiguration, workingEngineConfiguration.XgminerConfiguration, workingPathConfiguration);
@@ -1196,8 +1196,8 @@ namespace MultiMiner.Win.Forms
 
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                ObjectCopier.CopyObject(workingApplicationConfiguration, this.remoteApplicationConfig);
-                ObjectCopier.CopyObject(workingEngineConfiguration, this.remoteEngineConfig);
+                ObjectCopier.CopyObject(workingApplicationConfiguration.ToTransferObject(), this.remoteApplicationConfig);
+                ObjectCopier.CopyObject(workingEngineConfiguration.ToTransferObject(), this.remoteEngineConfig);
                 ObjectCopier.CopyObject(workingPathConfiguration, this.remotePathConfig);
 
                 SetConfigurationRemotely(this.selectedRemoteInstance, this.remoteApplicationConfig, this.remoteEngineConfig, this.remotePathConfig, null);
@@ -1300,8 +1300,8 @@ namespace MultiMiner.Win.Forms
 
             GetRemoteApplicationConfiguration(this.selectedRemoteInstance);
 
-            ObjectCopier.CopyObject(this.remoteApplicationConfig, workingApplicationConfiguration);
-            ObjectCopier.CopyObject(this.remoteEngineConfig, workingEngineConfiguration);
+            ObjectCopier.CopyObject(this.remoteApplicationConfig.ToModelObject(), workingApplicationConfiguration);
+            ObjectCopier.CopyObject(this.remoteEngineConfig.ToModelObject(), workingEngineConfiguration);
 
             CoinsForm coinsForm = new CoinsForm(workingEngineConfiguration.CoinConfigurations, knownCoins);
             coinsForm.Text = String.Format("{0}: {1}", coinsForm.Text, this.selectedRemoteInstance.MachineName);
@@ -1309,8 +1309,8 @@ namespace MultiMiner.Win.Forms
 
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                ObjectCopier.CopyObject(workingApplicationConfiguration, this.remoteApplicationConfig);
-                ObjectCopier.CopyObject(workingEngineConfiguration, this.remoteEngineConfig);
+                ObjectCopier.CopyObject(workingApplicationConfiguration.ToTransferObject(), this.remoteApplicationConfig);
+                ObjectCopier.CopyObject(workingEngineConfiguration.ToTransferObject(), this.remoteEngineConfig);
                 SetConfigurationRemotely(this.selectedRemoteInstance, this.remoteApplicationConfig, this.remoteEngineConfig, null, null);
             }
         }
@@ -1355,8 +1355,8 @@ namespace MultiMiner.Win.Forms
 
             GetRemoteApplicationConfiguration(this.selectedRemoteInstance);
 
-            ObjectCopier.CopyObject(this.remoteApplicationConfig, workingApplicationConfiguration);
-            ObjectCopier.CopyObject(this.remoteEngineConfig, workingEngineConfiguration);
+            ObjectCopier.CopyObject(this.remoteApplicationConfig.ToModelObject(), workingApplicationConfiguration);
+            ObjectCopier.CopyObject(this.remoteEngineConfig.ToModelObject(), workingEngineConfiguration);
 
             StrategiesForm strategiesForm = new StrategiesForm(workingEngineConfiguration.StrategyConfiguration, knownCoins,
                 workingApplicationConfiguration);
@@ -1365,8 +1365,8 @@ namespace MultiMiner.Win.Forms
 
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                ObjectCopier.CopyObject(workingApplicationConfiguration, this.remoteApplicationConfig);
-                ObjectCopier.CopyObject(workingEngineConfiguration, this.remoteEngineConfig);
+                ObjectCopier.CopyObject(workingApplicationConfiguration.ToTransferObject(), this.remoteApplicationConfig);
+                ObjectCopier.CopyObject(workingEngineConfiguration.ToTransferObject(), this.remoteEngineConfig);
 
                 SetConfigurationRemotely(this.selectedRemoteInstance, this.remoteApplicationConfig, this.remoteEngineConfig, null, null);
             }
@@ -3045,8 +3045,8 @@ namespace MultiMiner.Win.Forms
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                ObjectCopier.CopyObject(applicationConfiguration, ea.Application);
-                ObjectCopier.CopyObject(engineConfiguration, ea.Engine);
+                ObjectCopier.CopyObject(applicationConfiguration.ToTransferObject(), ea.Application);
+                ObjectCopier.CopyObject(engineConfiguration.ToTransferObject(), ea.Engine);
                 ObjectCopier.CopyObject(pathConfiguration, ea.Path);
                 ObjectCopier.CopyObject(perksConfiguration, ea.Perks);
             });
@@ -3060,13 +3060,13 @@ namespace MultiMiner.Win.Forms
 
                 if (ea.Application != null)
                 {
-                    ObjectCopier.CopyObject(ea.Application, this.applicationConfiguration);
+                    ObjectCopier.CopyObject(ea.Application.ToModelObject(), this.applicationConfiguration);
                     this.applicationConfiguration.SaveApplicationConfiguration();
                 }
 
                 if (ea.Engine != null)
                 {
-                    ObjectCopier.CopyObject(ea.Engine, this.engineConfiguration);
+                    ObjectCopier.CopyObject(ea.Engine.ToModelObject(), this.engineConfiguration);
                     this.engineConfiguration.SaveCoinConfigurations();
                     this.engineConfiguration.SaveMinerConfiguration();
                     this.engineConfiguration.SaveStrategyConfiguration();

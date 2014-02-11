@@ -41,7 +41,7 @@ namespace MultiMiner.Remoting.Server.Data.Transfer.Configuration
         public bool CheckForMinerUpdates { get; set; }
         public bool BriefUserInterface { get; set; }
         public View ListViewStyle { get; set; }
-        public List<string> HiddenColumns { get; set; }
+        public string[] HiddenColumns { get; set; }
         public bool ShowApiErrors { get; set; }
         public bool UseAccessibleMenu { get; set; }
         public bool SetGpuEnvironmentVariables { get; set; }

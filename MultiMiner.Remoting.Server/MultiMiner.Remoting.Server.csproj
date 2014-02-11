@@ -54,9 +54,11 @@
     <Compile Include="Broadcast\Sender.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Data\Transfer\Configuration\Application.cs" />
+    <Compile Include="Data\Transfer\Configuration\Device.cs" />
     <Compile Include="Data\Transfer\Configuration\Engine.cs" />
     <Compile Include="Data\Transfer\Configuration\Path.cs" />
     <Compile Include="Data\Transfer\Configuration\Perks.cs" />
+    <Compile Include="Data\Transfer\Configuration\Xgminer.cs" />
     <Compile Include="Data\Transfer\Device.cs" />
     <Compile Include="Data\Transfer\Machine.cs" />
     <Compile Include="IRemotingService.cs" />
