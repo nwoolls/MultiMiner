@@ -653,6 +653,9 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshCountdownLabel()
         {
+            startupMiningPanel.Left = (this.Width / 2) - (startupMiningPanel.Width / 2);
+            startupMiningPanel.Top = (this.Height / 2) - (startupMiningPanel.Height / 2);
+
             countdownLabel.Text = string.Format("Mining will start automatically in {0} seconds...", startupMiningCountdownSeconds);
             startupMiningPanel.Visible = true;
         }
