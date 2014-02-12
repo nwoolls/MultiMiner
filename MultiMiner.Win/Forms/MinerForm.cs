@@ -1492,13 +1492,6 @@ namespace MultiMiner.Win.Forms
             poolsDownFlagTimer.Enabled = true;
             ClearPoolsFlaggedDown();
 
-            //network devices
-            this.networkDevicesConfiguration.LoadNetworkDevicesConfiguration();
-            CheckNetworkDevicesAsync();
-            FindNetworkDevicesAsync();
-            SetupNetworkDeviceStatsTimer();
-            SetupNetworkDeviceDetectTimer();
-
             ApplyModelsToViewModel();
             localViewModel.DynamicIntensity = engineConfiguration.XgminerConfiguration.DesktopMode;
             dynamicIntensityButton.Checked = localViewModel.DynamicIntensity;
@@ -1507,6 +1500,17 @@ namespace MultiMiner.Win.Forms
             Application.DoEvents();
 
             this.settingsLoaded = true;
+        }
+
+        private void SetupNetworkDeviceDetection()
+        {
+            //network devices
+            this.networkDevicesConfiguration.LoadNetworkDevicesConfiguration();
+
+            CheckNetworkDevicesAsync();
+            FindNetworkDevicesAsync();
+            SetupNetworkDeviceStatsTimer();
+            SetupNetworkDeviceDetectTimer();
         }
 
         private void FindNetworkDevices()
@@ -4879,7 +4883,6 @@ namespace MultiMiner.Win.Forms
 
             SetupGridColumns();
 
-
             logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
             LoadPreviousHistory();
             logProcessCloseArgsBindingSource.MoveLast();
@@ -4926,6 +4929,10 @@ namespace MultiMiner.Win.Forms
             ScanHardwareLocally();
             //after refreshing devices
             SubmitMultiMinerStatistics();
+
+            //scan for Network Devices after scanning for local hardware
+            //makes more sense visually
+            SetupNetworkDeviceDetection();
 
             UpdateMiningButtons();
 
