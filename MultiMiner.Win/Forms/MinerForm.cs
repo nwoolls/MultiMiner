@@ -1733,6 +1733,24 @@ namespace MultiMiner.Win.Forms
             SaveKnownCoinsToFile();
         }
 
+        private static string KnownDevicesFileName()
+        {
+            string filePath = ApplicationPaths.AppDataPath();
+            return Path.Combine(filePath, "KnownDevicesCache.xml");
+        }
+
+        private void LoadKnownDevicesFromFile()
+        {
+            string knownDevicesFileName = KnownDevicesFileName();
+            if (File.Exists(knownDevicesFileName))
+                devices = ConfigurationReaderWriter.ReadConfiguration<List<Device>>(knownDevicesFileName);
+        }
+
+        private void SaveKnownDevicesToFile()
+        {
+            ConfigurationReaderWriter.WriteConfiguration(devices, KnownDevicesFileName());
+        }
+
         private string KnownCoinsFileName()
         {
             string filePath;
@@ -2649,12 +2667,6 @@ namespace MultiMiner.Win.Forms
             {
                 startupMiningPanel.Visible = false;
                 startupMiningCountdownTimer.Enabled = false;
-                Application.DoEvents();
-
-                //refresh devices so that we are sure we have all devices 
-                //otherwise scanning could happen too early on startup,
-                //before Windows has recognized all devices
-                ScanHardwareLocally();
                 Application.DoEvents();
                 StartMiningLocally();
             }
@@ -4929,7 +4941,10 @@ namespace MultiMiner.Win.Forms
 
             SetHasChangesLocally(false);
 
-            ScanHardwareLocally();
+            LoadKnownDevicesFromFile();
+            if ((devices == null) || (devices.Count == 0))
+                ScanHardwareLocally();
+
             //after refreshing devices
             SubmitMultiMinerStatistics();
 
@@ -5987,6 +6002,9 @@ namespace MultiMiner.Win.Forms
 
                 //it may not be possible to mine after discovering devices
                 UpdateMiningButtons();
+
+                //cache devices
+                SaveKnownDevicesToFile();
             }
             finally
             {
