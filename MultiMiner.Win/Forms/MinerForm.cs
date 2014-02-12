@@ -1086,7 +1086,8 @@ namespace MultiMiner.Win.Forms
                         double coinDailyUsd = coinIncome * coinUsd;
                         usdTotal += coinDailyUsd;
 
-                        summary = String.Format("{0}{1} {2}{3}", summary, coinIncome.ToFriendlyString(), coinInfo.Symbol, addition);
+                        if (coinIncome > 0)
+                            summary = String.Format("{0}{1} {2}{3}", summary, coinIncome.ToFriendlyString(), coinInfo.Symbol, addition);
                     }
                 }
 
