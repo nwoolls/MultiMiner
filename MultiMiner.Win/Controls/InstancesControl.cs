@@ -40,6 +40,7 @@ namespace MultiMiner.Win.Controls
         public event SelectedInstanceChangedHandler SelectedInstanceChanged;
 
         public List<Instance> Instances { get; set; }
+        public Instance ThisPCInstance { get; set; }
 
         private Dictionary<Instance, Remoting.Server.Data.Transfer.Machine> instanceMachines = new Dictionary<Instance, Remoting.Server.Data.Transfer.Machine>();
 
@@ -65,6 +66,7 @@ namespace MultiMiner.Win.Controls
 
             if (isThisPc)
             {
+                ThisPCInstance = instance;
                 nodeText = ThisPCText;
                 node = treeView1.Nodes[0].Nodes.Insert(0, instance.IpAddress, nodeText);
             }
@@ -129,12 +131,7 @@ namespace MultiMiner.Win.Controls
         public void ApplyMachineInformation(string ipAddress, Remoting.Server.Data.Transfer.Machine machine)
         {
             if (ipAddress.Equals("localhost"))
-            {
-                ipAddress = Instances.SingleOrDefault(i => i.MachineName.Equals(Environment.MachineName)).IpAddress;
-                if (ipAddress == null)
-                    //haven't registered our own instance yet
-                    return;
-            }
+                ipAddress = ThisPCInstance.IpAddress;
 
             Instance instance = Instances.SingleOrDefault(i => i.IpAddress.Equals(ipAddress));
             if (instance != null)

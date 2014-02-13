@@ -3257,6 +3257,13 @@ namespace MultiMiner.Win.Forms
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 Remoting.Server.Data.Transfer.Machine dto = serializer.Deserialize<Remoting.Server.Data.Transfer.Machine>(ea.Packet.Payload);
 
+                if ((instancesControl.ThisPCInstance != null) &&
+                    (instancesControl.ThisPCInstance.IpAddress.Equals(ea.IpAddress)))
+                    //don't process packets broadcast by This PC
+                    //for instance we don't broadcast out hashrate for Network Devices and
+                    //so don't want to process the packet
+                    return;
+
                 BeginInvoke((Action)(() =>
                 {
                     //code to update UI
