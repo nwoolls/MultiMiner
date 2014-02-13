@@ -401,6 +401,11 @@ namespace MultiMiner.Win.Forms
                     if (!deviceViewModel.Visible)
                         continue;
 
+                    //Network Devices should only show from the Local ViewModel
+                    if ((viewModelToView == remoteViewModel) &&
+                        (deviceViewModel.Kind == DeviceKind.NET))
+                        continue;
+
                     ListViewItem listViewItem = FindOrAddListViewItemForViewModel(deviceViewModel);
 
                     if (!String.IsNullOrEmpty(deviceViewModel.FriendlyName))
@@ -2862,18 +2867,27 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private double GetTotalHashrate(CoinAlgorithm algorithm)
+        private double GetLocalInstanceHashrate(CoinAlgorithm algorithm, bool includeNetworkDevices)
+        {
+            return GetTotalHashrate(localViewModel, algorithm, includeNetworkDevices);
+        }
+
+        private double GetVisibleInstanceHashrate(CoinAlgorithm algorithm, bool includeNetworkDevices)
+        {
+            return GetTotalHashrate(GetViewModelToView(), algorithm, includeNetworkDevices);
+        }
+
+        private double GetTotalHashrate(MinerFormViewModel viewModel, CoinAlgorithm algorithm, bool includeNetworkDevices)
         {
             double result = 0.00;
 
-            if (miningEngine.Mining)
+            //only include Visible devices
+            foreach (DeviceViewModel device in viewModel.Devices.Where(d => d.Visible))
             {
-                //only include Visible devices
-                foreach (DeviceViewModel device in localViewModel.Devices.Where(d => d.Visible))
-                {
-                    if ((device.Coin != null) && (device.Coin.Algorithm == algorithm))
-                        result += device.CurrentHashrate;
-                }
+                if ((device.Coin != null) && (device.Coin.Algorithm == algorithm) &&
+                    //optionally filter out Network Devices
+                    (includeNetworkDevices || (device.Kind != DeviceKind.NET)))
+                    result += device.CurrentHashrate;
             }
 
             return result;
@@ -2882,8 +2896,8 @@ namespace MultiMiner.Win.Forms
         private void BroadcastHashrate()
         {
             Remoting.Data.Transfer.Machine machine = new Remoting.Data.Transfer.Machine();
-            machine.TotalScryptHashrate = GetTotalHashrate(CoinAlgorithm.Scrypt);
-            machine.TotalSha256Hashrate = GetTotalHashrate(CoinAlgorithm.SHA256);
+            machine.TotalScryptHashrate = GetLocalInstanceHashrate(CoinAlgorithm.Scrypt, false);
+            machine.TotalSha256Hashrate = GetLocalInstanceHashrate(CoinAlgorithm.SHA256, false);
             
             try
             {
@@ -3300,6 +3314,13 @@ namespace MultiMiner.Win.Forms
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 Remoting.Data.Transfer.Machine dto = serializer.Deserialize<Remoting.Data.Transfer.Machine>(ea.Packet.Payload);
 
+                if ((instancesControl.ThisPCInstance != null) &&
+                    (instancesControl.ThisPCInstance.IpAddress.Equals(ea.IpAddress)))
+                    //don't process packets broadcast by This PC
+                    //for instance we don't broadcast out hashrate for Network Devices and
+                    //so don't want to process the packet
+                    return;
+
                 BeginInvoke((Action)(() =>
                 {
                     //code to update UI
@@ -3366,8 +3387,8 @@ namespace MultiMiner.Win.Forms
         private void SendHashrate(string ipAddress)
         {
             Remoting.Data.Transfer.Machine machine = new Remoting.Data.Transfer.Machine();
-            machine.TotalScryptHashrate = GetTotalHashrate(CoinAlgorithm.Scrypt);
-            machine.TotalSha256Hashrate = GetTotalHashrate(CoinAlgorithm.SHA256);
+            machine.TotalScryptHashrate = GetLocalInstanceHashrate(CoinAlgorithm.Scrypt, false);
+            machine.TotalSha256Hashrate = GetLocalInstanceHashrate(CoinAlgorithm.SHA256, false);
             Remoting.Broadcast.Sender.Send(IPAddress.Parse(ipAddress), machine);
         }
 
@@ -4399,8 +4420,8 @@ namespace MultiMiner.Win.Forms
             if (instancesControl.Visible)
             {
                 Remoting.Data.Transfer.Machine machine = new Remoting.Data.Transfer.Machine();
-                machine.TotalScryptHashrate = GetTotalHashrate(CoinAlgorithm.Scrypt);
-                machine.TotalSha256Hashrate = GetTotalHashrate(CoinAlgorithm.SHA256);
+                machine.TotalScryptHashrate = GetLocalInstanceHashrate(CoinAlgorithm.Scrypt, true);
+                machine.TotalSha256Hashrate = GetLocalInstanceHashrate(CoinAlgorithm.SHA256, true);
                 instancesControl.ApplyMachineInformation("localhost", machine);
             }
         }
@@ -6065,10 +6086,11 @@ namespace MultiMiner.Win.Forms
         private void RefreshStatusBarFromViewModel()
         {
             MinerFormViewModel viewModel = GetViewModelToView();
-            deviceTotalLabel.Text = String.Format("{0} device(s)", viewModel.Devices.Count);
-
-            double scryptHashRate = GetTotalHashrate(CoinAlgorithm.Scrypt);
-            double sha256HashRate = GetTotalHashrate(CoinAlgorithm.SHA256);
+            //don't include Network Devices in the count for Remote ViewModels
+            deviceTotalLabel.Text = String.Format("{0} device(s)", viewModel.Devices.Count(d => (viewModel == localViewModel) || (d.Kind != DeviceKind.NET)));
+            
+            double scryptHashRate = GetVisibleInstanceHashrate(CoinAlgorithm.Scrypt, viewModel == localViewModel);
+            double sha256HashRate = GetVisibleInstanceHashrate(CoinAlgorithm.SHA256, viewModel == localViewModel);
 
             //Mh not mh, mh is milli
             scryptRateLabel.Text = scryptHashRate == 0 ? String.Empty : String.Format("Scrypt: {0}", scryptHashRate.ToHashrateString());
