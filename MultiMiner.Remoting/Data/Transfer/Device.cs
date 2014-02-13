@@ -143,5 +143,8 @@ namespace MultiMiner.Remoting.Data.Transfer
         //ViewModel specific
         [DataMember]
         public bool Visible { get; set; }
+
+        [DataMember]
+        public string FriendlyName { get; set; }
     }
 }
