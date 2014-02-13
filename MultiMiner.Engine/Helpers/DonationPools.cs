@@ -113,6 +113,10 @@ namespace MultiMiner.Engine.Helpers
             //YBC
             donationConfiguration = CreateCoinConfiguration("YBC", "stratum+tcp://ybc.coinmine.pl", 9104);
             configurations.Add(donationConfiguration);
+
+            //LEAF
+            donationConfiguration = CreateCoinConfiguration("LEAF", "stratum+tcp://de3.miningpool.co", 3931);
+            configurations.Add(donationConfiguration);
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
