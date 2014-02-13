@@ -673,12 +673,13 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(1007, 375);
+            this.deviceListView.Size = new System.Drawing.Size(1008, 375);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
             this.deviceListView.View = System.Windows.Forms.View.Details;
             this.deviceListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.deviceListView_AfterLabelEdit);
+            this.deviceListView.BeforeLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.deviceListView_BeforeLabelEdit);
             this.deviceListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.deviceListView_ColumnClick);
             this.deviceListView.ColumnWidthChanging += new System.Windows.Forms.ColumnWidthChangingEventHandler(this.deviceListView_ColumnWidthChanging);
             this.deviceListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.deviceListView_ItemCheck);
