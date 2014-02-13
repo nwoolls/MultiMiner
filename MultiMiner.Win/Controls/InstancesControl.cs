@@ -41,7 +41,7 @@ namespace MultiMiner.Win.Controls
 
         public List<Instance> Instances { get; set; }
 
-        private Dictionary<Instance, Remoting.Server.Data.Transfer.Machine> instanceMachines = new Dictionary<Instance, Remoting.Server.Data.Transfer.Machine>();
+        private Dictionary<Instance, Remoting.Data.Transfer.Machine> instanceMachines = new Dictionary<Instance, Remoting.Data.Transfer.Machine>();
 
         public InstancesControl()
         {
@@ -126,7 +126,7 @@ namespace MultiMiner.Win.Controls
             return result;
         }
 
-        public void ApplyMachineInformation(string ipAddress, Remoting.Server.Data.Transfer.Machine machine)
+        public void ApplyMachineInformation(string ipAddress, Remoting.Data.Transfer.Machine machine)
         {
             if (ipAddress.Equals("localhost"))
             {

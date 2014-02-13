@@ -3,9 +3,9 @@ using System.Diagnostics;
 
 namespace MultiMiner.Xgminer.Data.Configuration
 {
-    public class MinerConfiguration
+    public class Miner
     {
-        public MinerConfiguration()
+        public Miner()
         {
             this.DeviceDescriptors = new List<DeviceDescriptor>();
             this.Priority = ProcessPriorityClass.Normal;

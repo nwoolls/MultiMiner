@@ -1,6 +1,4 @@
-﻿using MultiMiner.Xgminer;
-using MultiMiner.Xgminer.Api;
-using MultiMiner.Xgminer.Data.Configuration;
+﻿using MultiMiner.Xgminer.Api;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -13,9 +11,9 @@ namespace MultiMiner.Engine
     {
         public Process Process { get; set; }
         public int ApiPort { get; set; }
-        public MinerConfiguration MinerConfiguration { get; set; } //for relaunching crashed miners
+        public Xgminer.Data.Configuration.Miner MinerConfiguration { get; set; } //for relaunching crashed miners
         public DateTime StartDate { get; set; }
-        public Coin.Api.Data.CoinInformation CoinInformation { get; set; }
+        public CoinApi.Data.CoinInformation CoinInformation { get; set; }
         //store separately from CoinInformation as CoinInformation depends on Coin API
         public string CoinSymbol { get; set; }
 

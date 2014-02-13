@@ -35,7 +35,7 @@ namespace MultiMiner.Xgminer.Tests
         public void EnumerateDevices_ReturnsNoDevices()
         {
             //arrange
-            MinerConfiguration minerConfiguration = new MinerConfiguration();
+            Data.Configuration.Miner minerConfiguration = new Data.Configuration.Miner();
 
             minerConfiguration.ExecutablePath = executablePath;
             minerConfiguration.DisableGpu = true;
@@ -43,7 +43,7 @@ namespace MultiMiner.Xgminer.Tests
             Miner miner = new Miner(minerConfiguration);
 
             //act
-            List<Device> devices = miner.EnumerateDevices();
+            List<Data.Device> devices = miner.EnumerateDevices();
 
             //assert
             Assert.IsTrue(devices.Count == 0);
@@ -56,7 +56,7 @@ namespace MultiMiner.Xgminer.Tests
         public void DeviceList_ReturnsDevices()
         {
             //arrange
-            MinerConfiguration minerConfiguration = new MinerConfiguration();
+            Data.Configuration.Miner minerConfiguration = new Data.Configuration.Miner();
 
             minerConfiguration.ExecutablePath = executablePath;
             minerConfiguration.DisableGpu = true;
@@ -64,11 +64,11 @@ namespace MultiMiner.Xgminer.Tests
             Miner miner = new Miner(minerConfiguration);
 
             //act
-            List<Device> devices = miner.ListDevices();
+            List<Data.Device> devices = miner.ListDevices();
 
             //assert
             Assert.IsTrue(devices.Count > 0);
-            Assert.IsTrue(devices.First().Kind == DeviceKind.USB);
+            Assert.IsTrue(devices.First().Kind == Data.DeviceKind.USB);
         }
     }
 }

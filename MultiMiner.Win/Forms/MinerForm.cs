@@ -16,9 +16,9 @@ using MultiMiner.Win.Controls.Notifications;
 using MultiMiner.Xgminer.Api.Data;
 using MultiMiner.Win.Extensions;
 using MultiMiner.Win.Data.Configuration;
-using MultiMiner.Coin.Api;
-using MultiMiner.Coin.Api.Data;
-using MultiMiner.Remoting.Server;
+using MultiMiner.CoinApi;
+using MultiMiner.CoinApi.Data;
+using MultiMiner.Remoting;
 using MultiMiner.Services;
 using MultiMiner.Discovery;
 using MultiMiner.Discovery.Data;
@@ -36,7 +36,6 @@ using MultiMiner.Win.Controls;
 using MultiMiner.Win.Forms.Configuration;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
-using MultiMiner.Engine.Data.Configuration;
 
 namespace MultiMiner.Win.Forms
 {
@@ -52,7 +51,7 @@ namespace MultiMiner.Win.Forms
 
         //API information
         private List<CoinInformation> coinApiInformation;
-        private MultiMiner.Coinbase.Api.Data.SellPrices sellPrices;
+        private MultiMiner.Coinbase.Data.SellPrices sellPrices;
 
         //configuration
         private Engine.Data.Configuration.Engine engineConfiguration = new Engine.Data.Configuration.Engine();
@@ -94,16 +93,16 @@ namespace MultiMiner.Win.Forms
         //remoting
         private RemotingServer remotingServer;
         private Discovery.Listener discoveryListener;
-        private Remoting.Server.Broadcast.Listener broadcastListener;
+        private Remoting.Broadcast.Listener broadcastListener;
         private int fingerprint;
         private Random random = new Random();
         private Instance selectedRemoteInstance = null;
         public bool remotingEnabled { get; set; }
         public bool remoteInstanceMining { get; set; }
-        Remoting.Server.Data.Transfer.Configuration.Perks remotePerksConfig;
-        Remoting.Server.Data.Transfer.Configuration.Path remotePathConfig;
-        Remoting.Server.Data.Transfer.Configuration.Engine remoteEngineConfig;
-        Remoting.Server.Data.Transfer.Configuration.Application remoteApplicationConfig;
+        Remoting.Data.Transfer.Configuration.Perks remotePerksConfig;
+        Remoting.Data.Transfer.Configuration.Path remotePathConfig;
+        Remoting.Data.Transfer.Configuration.Engine remoteEngineConfig;
+        Remoting.Data.Transfer.Configuration.Application remoteApplicationConfig;
 
         //view models
         private MinerFormViewModel localViewModel = new MinerFormViewModel();
@@ -2855,13 +2854,13 @@ namespace MultiMiner.Win.Forms
 
         private void BroadcastHashrate()
         {
-            Remoting.Server.Data.Transfer.Machine machine = new Remoting.Server.Data.Transfer.Machine();
+            Remoting.Data.Transfer.Machine machine = new Remoting.Data.Transfer.Machine();
             machine.TotalScryptHashrate = GetTotalHashrate(CoinAlgorithm.Scrypt);
             machine.TotalSha256Hashrate = GetTotalHashrate(CoinAlgorithm.SHA256);
             
             try
             {
-                Remoting.Server.Broadcast.Broadcaster.Broadcast(machine);
+                Remoting.Broadcast.Broadcaster.Broadcast(machine);
             }
             catch (SocketException ex)
             {
@@ -3048,16 +3047,16 @@ namespace MultiMiner.Win.Forms
             });
         }
 
-        private List<Remoting.Server.Data.Transfer.Device> GetDeviceTransferObjects()
+        private List<Remoting.Data.Transfer.Device> GetDeviceTransferObjects()
         {
-            List<Remoting.Server.Data.Transfer.Device> newList = new List<Remoting.Server.Data.Transfer.Device>();
+            List<Remoting.Data.Transfer.Device> newList = new List<Remoting.Data.Transfer.Device>();
             foreach (DeviceViewModel viewModel in localViewModel.Devices)
             {
-                MultiMiner.Remoting.Server.Data.Transfer.Device dto = new Remoting.Server.Data.Transfer.Device();
+                MultiMiner.Remoting.Data.Transfer.Device dto = new Remoting.Data.Transfer.Device();
                 ObjectCopier.CopyObject(viewModel, dto, "Workers");
                 foreach (DeviceViewModel source in viewModel.Workers)
                 {
-                    Remoting.Server.Data.Transfer.Device destination = new Remoting.Server.Data.Transfer.Device();
+                    Remoting.Data.Transfer.Device destination = new Remoting.Data.Transfer.Device();
                     ObjectCopier.CopyObject(source, destination, "Workers");
                     dto.Workers.Add(destination);
                 }
@@ -3247,7 +3246,7 @@ namespace MultiMiner.Win.Forms
 
             //start Broadcast Listener before Discovery so we can
             //get initial info (hashrates) sent by other instances
-            broadcastListener = new Remoting.Server.Broadcast.Listener();
+            broadcastListener = new Remoting.Broadcast.Listener();
             broadcastListener.PacketReceived += HandlePacketReceived;
             broadcastListener.Listen();
 
@@ -3266,13 +3265,13 @@ namespace MultiMiner.Win.Forms
             remotingEnabled = true;
         }
 
-        private void HandlePacketReceived(object sender, Remoting.Server.Broadcast.PacketReceivedArgs ea)
+        private void HandlePacketReceived(object sender, Remoting.Broadcast.PacketReceivedArgs ea)
         {
-            Type type = typeof(Remoting.Server.Data.Transfer.Machine);
+            Type type = typeof(Remoting.Data.Transfer.Machine);
             if (ea.Packet.Descriptor.Equals(type.FullName))
             {
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
-                Remoting.Server.Data.Transfer.Machine dto = serializer.Deserialize<Remoting.Server.Data.Transfer.Machine>(ea.Packet.Payload);
+                Remoting.Data.Transfer.Machine dto = serializer.Deserialize<Remoting.Data.Transfer.Machine>(ea.Packet.Payload);
 
                 BeginInvoke((Action)(() =>
                 {
@@ -3339,10 +3338,10 @@ namespace MultiMiner.Win.Forms
 
         private void SendHashrate(string ipAddress)
         {
-            Remoting.Server.Data.Transfer.Machine machine = new Remoting.Server.Data.Transfer.Machine();
+            Remoting.Data.Transfer.Machine machine = new Remoting.Data.Transfer.Machine();
             machine.TotalScryptHashrate = GetTotalHashrate(CoinAlgorithm.Scrypt);
             machine.TotalSha256Hashrate = GetTotalHashrate(CoinAlgorithm.SHA256);
-            Remoting.Server.Broadcast.Sender.Send(IPAddress.Parse(ipAddress), machine);
+            Remoting.Broadcast.Sender.Send(IPAddress.Parse(ipAddress), machine);
         }
 
         private void HandleInstanceOffline(object sender, InstanceChangedArgs ea)
@@ -3427,7 +3426,7 @@ namespace MultiMiner.Win.Forms
         {
             PerformRemoteCommand(instance, (service) =>
             {
-                Remoting.Server.Data.Transfer.Device[] devices;
+                Remoting.Data.Transfer.Device[] devices;
                 CryptoCoin[] configurations;
                 bool mining, hasChanges, dynamicIntensity;
 
@@ -3646,10 +3645,10 @@ namespace MultiMiner.Win.Forms
 
         private void SetConfigurationRemotely(
             Instance instance, 
-            Remoting.Server.Data.Transfer.Configuration.Application application,
-            Remoting.Server.Data.Transfer.Configuration.Engine engine,
-            Remoting.Server.Data.Transfer.Configuration.Path path,
-            Remoting.Server.Data.Transfer.Configuration.Perks perks)
+            Remoting.Data.Transfer.Configuration.Application application,
+            Remoting.Data.Transfer.Configuration.Engine engine,
+            Remoting.Data.Transfer.Configuration.Path path,
+            Remoting.Data.Transfer.Configuration.Perks perks)
         {
             PerformRemoteCommand(instance, (service) =>
             {
@@ -3674,14 +3673,14 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private void SaveDeviceTransferObjects(IEnumerable<Remoting.Server.Data.Transfer.Device> devices)
+        private void SaveDeviceTransferObjects(IEnumerable<Remoting.Data.Transfer.Device> devices)
         {
             remoteViewModel.Devices.Clear();
-            foreach (Remoting.Server.Data.Transfer.Device dto in devices)
+            foreach (Remoting.Data.Transfer.Device dto in devices)
             {
                 DeviceViewModel viewModel = new DeviceViewModel();
                 ObjectCopier.CopyObject(dto, viewModel, "Workers");
-                foreach (Remoting.Server.Data.Transfer.Device source in dto.Workers)
+                foreach (Remoting.Data.Transfer.Device source in dto.Workers)
                 {
                     DeviceViewModel destination = new DeviceViewModel();
                     ObjectCopier.CopyObject(source, destination, "Workers");
@@ -3723,8 +3722,8 @@ namespace MultiMiner.Win.Forms
         #region Coin API
         private void SetupCoinApi()
         {
-            this.coinWarzApiContext = new CoinWarz.Api.ApiContext(applicationConfiguration.CoinWarzApiKey);
-            this.coinChooseApiContext = new CoinChoose.Api.ApiContext();
+            this.coinWarzApiContext = new CoinWarz.ApiContext(applicationConfiguration.CoinWarzApiKey);
+            this.coinChooseApiContext = new CoinChoose.ApiContext();
         }
 
         private void ShowCoinApiErrorNotification(IApiContext apiContext, Exception ex)
@@ -3809,7 +3808,7 @@ namespace MultiMiner.Win.Forms
             {
                 try
                 {
-                    sellPrices = Coinbase.Api.ApiContext.GetSellPrices();
+                    sellPrices = Coinbase.ApiContext.GetSellPrices();
                 }
                 catch (Exception ex)
                 {
@@ -3827,9 +3826,9 @@ namespace MultiMiner.Win.Forms
 
         private void ShowCoinbaseApiErrorNotification(Exception ex)
         {
-            string siteUrl = Coinbase.Api.ApiContext.GetInfoUrl();
-            string apiUrl = Coinbase.Api.ApiContext.GetApiUrl();
-            string apiName = Coinbase.Api.ApiContext.GetApiName();
+            string siteUrl = Coinbase.ApiContext.GetInfoUrl();
+            string apiUrl = Coinbase.ApiContext.GetApiUrl();
+            string apiName = Coinbase.ApiContext.GetApiName();
 
             notificationsControl.AddNotification(ex.Message,
                 String.Format("Error parsing the {0} JSON API", apiName), () =>
@@ -3877,7 +3876,7 @@ namespace MultiMiner.Win.Forms
                 string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
                 return;
 
-            List<MultiMiner.MobileMiner.Api.Data.MiningStatistics> statisticsList = new List<MobileMiner.Api.Data.MiningStatistics>();
+            List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList = new List<MobileMiner.Data.MiningStatistics>();
 
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
             {
@@ -3891,7 +3890,7 @@ namespace MultiMiner.Win.Forms
 
                 foreach (DeviceInformation deviceInformation in deviceInformationList)
                 {
-                    MobileMiner.Api.Data.MiningStatistics miningStatistics = new MobileMiner.Api.Data.MiningStatistics();
+                    MobileMiner.Data.MiningStatistics miningStatistics = new MobileMiner.Data.MiningStatistics();
 
                     PopulateMiningStatistics(miningStatistics, deviceInformation, GetCoinNameForApiContext(minerProcess.ApiContext));
 
@@ -3934,7 +3933,7 @@ namespace MultiMiner.Win.Forms
             return coinName;
         }
 
-        private void PopulateMiningStatistics(MultiMiner.MobileMiner.Api.Data.MiningStatistics miningStatistics, DeviceInformation deviceInformation,
+        private void PopulateMiningStatistics(MultiMiner.MobileMiner.Data.MiningStatistics miningStatistics, DeviceInformation deviceInformation,
             string coinName)
         {
             miningStatistics.MinerName = "MultiMiner";
@@ -3951,13 +3950,13 @@ namespace MultiMiner.Win.Forms
             miningStatistics.PopulateFrom(deviceInformation);
         }
 
-        private Action<List<MultiMiner.MobileMiner.Api.Data.MiningStatistics>> submitMiningStatisticsDelegate;
+        private Action<List<MultiMiner.MobileMiner.Data.MiningStatistics>> submitMiningStatisticsDelegate;
 
-        private void SubmitMiningStatistics(List<MultiMiner.MobileMiner.Api.Data.MiningStatistics> statisticsList)
+        private void SubmitMiningStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
         {
             try
             {
-                MobileMiner.Api.ApiContext.SubmitMiningStatistics(GetMobileMinerUrl(), mobileMinerApiKey,
+                MobileMiner.ApiContext.SubmitMiningStatistics(GetMobileMinerUrl(), mobileMinerApiKey,
                     applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
                     Environment.MachineName, statisticsList);
                 mobileMinerSuccess = true;
@@ -4028,7 +4027,7 @@ namespace MultiMiner.Win.Forms
             try
             {
                 string notificationText = String.Format("{0}: {1}", Environment.MachineName, text);
-                MobileMiner.Api.ApiContext.SubmitNotifications(GetMobileMinerUrl(), mobileMinerApiKey,
+                MobileMiner.ApiContext.SubmitNotifications(GetMobileMinerUrl(), mobileMinerApiKey,
                         applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
                         new List<string> { notificationText });
             }
@@ -4065,11 +4064,11 @@ namespace MultiMiner.Win.Forms
 
         private void GetRemoteCommands()
         {
-            List<MobileMiner.Api.Data.RemoteCommand> commands = new List<MobileMiner.Api.Data.RemoteCommand>();
+            List<MobileMiner.Data.RemoteCommand> commands = new List<MobileMiner.Data.RemoteCommand>();
 
             try
             {
-                commands = MobileMiner.Api.ApiContext.GetCommands(GetMobileMinerUrl(), mobileMinerApiKey,
+                commands = MobileMiner.ApiContext.GetCommands(GetMobileMinerUrl(), mobileMinerApiKey,
                     applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
                     Environment.MachineName);
                 mobileMinerSuccess = true;
@@ -4125,16 +4124,16 @@ namespace MultiMiner.Win.Forms
             }
 
             if (InvokeRequired)
-                BeginInvoke((Action<List<MobileMiner.Api.Data.RemoteCommand>>)((c) => ProcessRemoteCommands(c)), commands);
+                BeginInvoke((Action<List<MobileMiner.Data.RemoteCommand>>)((c) => ProcessRemoteCommands(c)), commands);
             else
                 ProcessRemoteCommands(commands);
         }
 
-        private void ProcessRemoteCommands(List<MobileMiner.Api.Data.RemoteCommand> commands)
+        private void ProcessRemoteCommands(List<MobileMiner.Data.RemoteCommand> commands)
         {
             if (commands.Count > 0)
             {
-                MobileMiner.Api.Data.RemoteCommand command = commands.First();
+                MobileMiner.Data.RemoteCommand command = commands.First();
 
                 //check this before actually executing the command
                 //point being, say for some reason it takes 2 minutes to restart mining
@@ -4165,11 +4164,11 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private Action<MobileMiner.Api.Data.RemoteCommand> deleteRemoteCommandDelegate;
+        private Action<MobileMiner.Data.RemoteCommand> deleteRemoteCommandDelegate;
 
-        private void DeleteRemoteCommand(MobileMiner.Api.Data.RemoteCommand command)
+        private void DeleteRemoteCommand(MobileMiner.Data.RemoteCommand command)
         {
-            MobileMiner.Api.ApiContext.DeleteCommand(GetMobileMinerUrl(), mobileMinerApiKey,
+            MobileMiner.ApiContext.DeleteCommand(GetMobileMinerUrl(), mobileMinerApiKey,
                                 applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
                                 Environment.MachineName, command.Id);
         }
@@ -4192,7 +4191,7 @@ namespace MultiMiner.Win.Forms
             if (installedVersion.Equals(applicationConfiguration.SubmittedStatsVersion))
                 return;
 
-            Stats.Api.Data.Machine machineStat = new Stats.Api.Data.Machine()
+            Stats.Data.Machine machineStat = new Stats.Data.Machine()
             {
                 Name = Environment.MachineName,
                 MinerVersion = installedVersion
@@ -4203,14 +4202,14 @@ namespace MultiMiner.Win.Forms
 
             submitMinerStatisticsDelegate.BeginInvoke(machineStat, submitMinerStatisticsDelegate.EndInvoke, null);
         }
-        private Action<Stats.Api.Data.Machine> submitMinerStatisticsDelegate;
+        private Action<Stats.Data.Machine> submitMinerStatisticsDelegate;
 
-        private void SubmitMinerStatistics(Stats.Api.Data.Machine machineStat)
+        private void SubmitMinerStatistics(Stats.Data.Machine machineStat)
         {
             try
             {
                 //plain text so users can see what we are posting - transparency
-                Stats.Api.ApiContext.SubmitMinerStatistics("http://multiminerstats.azurewebsites.net/api/", machineStat);
+                Stats.ApiContext.SubmitMinerStatistics("http://multiminerstats.azurewebsites.net/api/", machineStat);
                 applicationConfiguration.SubmittedStatsVersion = machineStat.MinerVersion;
             }
             catch (WebException ex)
@@ -4369,7 +4368,7 @@ namespace MultiMiner.Win.Forms
         {
             if (instancesControl.Visible)
             {
-                Remoting.Server.Data.Transfer.Machine machine = new Remoting.Server.Data.Transfer.Machine();
+                Remoting.Data.Transfer.Machine machine = new Remoting.Data.Transfer.Machine();
                 machine.TotalScryptHashrate = GetTotalHashrate(CoinAlgorithm.Scrypt);
                 machine.TotalSha256Hashrate = GetTotalHashrate(CoinAlgorithm.SHA256);
                 instancesControl.ApplyMachineInformation("localhost", machine);

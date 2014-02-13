@@ -1,4 +1,4 @@
-﻿using MultiMiner.MobileMiner.Api.Data;
+﻿using MultiMiner.MobileMiner.Data;
 using MultiMiner.Xgminer.Api.Data;
 
 namespace MultiMiner.Win.Extensions

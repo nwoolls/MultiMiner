@@ -1,7 +1,4 @@
-﻿using MultiMiner.Engine.Data;
-using MultiMiner.Xgminer;
-using MultiMiner.Xgminer.Data;
-using MultiMiner.Xgminer.Data.Configuration;
+﻿using MultiMiner.Xgminer.Data;
 using System.Collections.Generic;
 
 namespace MultiMiner.Services
@@ -22,7 +19,7 @@ namespace MultiMiner.Services
 
         public List<Device> GetDevices(string executablePath)
         {
-            MinerConfiguration minerConfiguration = new MinerConfiguration()
+            Xgminer.Data.Configuration.Miner minerConfiguration = new Xgminer.Data.Configuration.Miner()
             {
                 ExecutablePath = executablePath,
                 DisableGpu = xgminerConfiguration.DisableGpu,
@@ -30,7 +27,7 @@ namespace MultiMiner.Services
                 ScanArguments = xgminerConfiguration.ScanArguments
             };
 
-            Miner miner = new Miner(minerConfiguration);
+            Xgminer.Miner miner = new Xgminer.Miner(minerConfiguration);
 
             List<Device> detectedDevices = miner.ListDevices(true);
 

@@ -1,9 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MultiMiner.Engine.Configuration;
 using System.IO;
 using System.Collections.Generic;
-using MultiMiner.Xgminer;
 
 namespace MultiMiner.Services.Tests
 {
@@ -32,11 +30,11 @@ namespace MultiMiner.Services.Tests
         [TestMethod]
         public void GetDevices_ReturnsDevices()
         {
-            XgminerConfiguration minerConfiguration = new XgminerConfiguration();
+            Engine.Data.Configuration.Xgminer minerConfiguration = new Engine.Data.Configuration.Xgminer();
             minerConfiguration.StratumProxy = true;
 
             DevicesService service = new DevicesService(minerConfiguration);
-            List<Device> devices = service.GetDevices(executablePath);
+            List<Xgminer.Data.Device> devices = service.GetDevices(executablePath);
 
             Assert.IsTrue(devices.Count >= 1);
         }

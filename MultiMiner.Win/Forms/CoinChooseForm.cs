@@ -1,5 +1,4 @@
-﻿using MultiMiner.Engine;
-using MultiMiner.Engine.Data;
+﻿using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Forms;
 using System;
 using System.Collections.Generic;

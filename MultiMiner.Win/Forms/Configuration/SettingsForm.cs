@@ -1,5 +1,4 @@
-﻿using MultiMiner.Engine.Data.Configuration;
-using MultiMiner.MobileMiner.Api.Helpers;
+﻿using MultiMiner.MobileMiner.Helpers;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
 using MultiMiner.Win.Data.Configuration;

@@ -11,57 +11,57 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Win", "MultiMine
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Api", "MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj", "{5B43AD9D-8B67-4AA8-B76D-AA83CAF9D29F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.CoinChoose.Api", "MultiMiner.Coinchoose.Api\MultiMiner.CoinChoose.Api.csproj", "{D9B3F627-CB7A-454C-AF8F-70C8FB584553}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.CoinChoose", "MultiMiner.Coinchoose\MultiMiner.CoinChoose.csproj", "{D9B3F627-CB7A-454C-AF8F-70C8FB584553}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Tests", "MultiMiner.Xgminer.Tests\MultiMiner.Xgminer.Tests.csproj", "{E0A458B9-121F-486F-8F26-988A8D4DCD47}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Api.Tests", "MultiMiner.Xgminer.Api.Tests\MultiMiner.Xgminer.Api.Tests.csproj", "{E9C9606A-2281-4127-B25C-7449B979421B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.CoinChoose.Api.Tests", "MultiMiner.Coinchoose.Api.Tests\MultiMiner.CoinChoose.Api.Tests.csproj", "{09B979B4-36E9-408D-807E-30020A35E859}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.CoinChoose.Tests", "MultiMiner.Coinchoose.Tests\MultiMiner.CoinChoose.Tests.csproj", "{09B979B4-36E9-408D-807E-30020A35E859}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.MobileMiner.Api", "MultiMiner.MobileMiner.Api\MultiMiner.MobileMiner.Api.csproj", "{70622816-5853-4470-9432-9ACDA2E96089}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.MobileMiner", "MultiMiner.MobileMiner\MultiMiner.MobileMiner.csproj", "{70622816-5853-4470-9432-9ACDA2E96089}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Api.Example", "MultiMiner.Api.Example\MultiMiner.Api.Example.csproj", "{47C6A5A1-35AB-40E5-995C-4F957691EC60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Example", "MultiMiner.Example\MultiMiner.Example.csproj", "{47C6A5A1-35AB-40E5-995C-4F957691EC60}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Update", "MultiMiner.Update\MultiMiner.Update.csproj", "{C647E4FB-B5CF-43AC-9884-6ABF9F02E045}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Utility", "MultiMiner.Utility\MultiMiner.Utility.csproj", "{99B0F266-EFF7-4416-8C36-8356396A11CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.CoinWarz.Api", "MultiMiner.CoinWarz.Api\MultiMiner.CoinWarz.Api.csproj", "{5B2B2592-689A-4DE2-815C-259427A3D101}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.CoinWarz", "MultiMiner.CoinWarz\MultiMiner.CoinWarz.csproj", "{5B2B2592-689A-4DE2-815C-259427A3D101}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Coin.Api", "MultiMiner.Coin.Api\MultiMiner.Coin.Api.csproj", "{9E86F77A-68B9-4D72-82D2-855878BA8CB1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.CoinApi", "MultiMiner.CoinApi\MultiMiner.CoinApi.csproj", "{9E86F77A-68B9-4D72-82D2-855878BA8CB1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B61C67E8-898E-469C-BA76-42A2B9C6B9BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Win.Tests", "MultiMiner.Win.Tests\MultiMiner.Win.Tests.csproj", "{379A2E0B-C085-4536-8C12-5B4B703728E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Coinbase.Api", "MultiMiner.Coinbase.Api\MultiMiner.Coinbase.Api.csproj", "{95F6C880-7AB3-441B-8D41-28C0AD507B62}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Coinbase", "MultiMiner.Coinbase\MultiMiner.Coinbase.csproj", "{95F6C880-7AB3-441B-8D41-28C0AD507B62}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Api.Client", "MultiMiner.Xgminer.Api.Client\MultiMiner.Xgminer.Api.Client.csproj", "{6A2D8FEC-E7D0-412A-9F76-C476347ADBEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Stats.Api", "MultiMiner.Stats.Api\MultiMiner.Stats.Api.csproj", "{2CF95427-DF1D-4061-8580-F143F04A0439}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Stats", "MultiMiner.Stats\MultiMiner.Stats.csproj", "{2CF95427-DF1D-4061-8580-F143F04A0439}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Remoting.Server", "MultiMiner.Remoting.Server\MultiMiner.Remoting.Server.csproj", "{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Remoting", "MultiMiner.Remoting\MultiMiner.Remoting.csproj", "{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Services", "MultiMiner.Services\MultiMiner.Services.csproj", "{CFFA60EC-9486-4F45-BEF2-05C1A3D68EA6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Discovery", "MultiMiner.Discovery\MultiMiner.Discovery.csproj", "{CCB532CD-4922-42A9-BAF9-0E651A592467}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Coinbase.Api.Tests", "MultiMiner.Coinbase.Api.Tests\MultiMiner.Coinbase.Api.Tests.csproj", "{A06EE263-1096-47CA-95F9-B84F95D16958}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Coinbase.Tests", "MultiMiner.Coinbase.Tests\MultiMiner.Coinbase.Tests.csproj", "{A06EE263-1096-47CA-95F9-B84F95D16958}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.CoinWarz.Api.Tests", "MultiMiner.CoinWarz.Api.Tests\MultiMiner.CoinWarz.Api.Tests.csproj", "{24EE4E92-AB39-4612-8671-C2F59BD8FCF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.CoinWarz.Tests", "MultiMiner.CoinWarz.Tests\MultiMiner.CoinWarz.Tests.csproj", "{24EE4E92-AB39-4612-8671-C2F59BD8FCF2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Discovery.Tests", "MultiMiner.Discovery.Tests\MultiMiner.Discovery.Tests.csproj", "{7623C002-10B8-4E88-9FA2-12C09996A5CB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Engine.Tests", "MultiMiner.Engine.Tests\MultiMiner.Engine.Tests.csproj", "{714E0443-DCA9-4CC5-90D7-84FE8BD2B8E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.MobileMiner.Api.Tests", "MultiMiner.MobileMiner.Api.Tests\MultiMiner.MobileMiner.Api.Tests.csproj", "{192B845E-0FDD-48AE-AA7C-02A81A1C4A05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.MobileMiner.Tests", "MultiMiner.MobileMiner.Tests\MultiMiner.MobileMiner.Tests.csproj", "{192B845E-0FDD-48AE-AA7C-02A81A1C4A05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Remoting.Server.Tests", "MultiMiner.Remoting.Server.Tests\MultiMiner.Remoting.Server.Tests.csproj", "{45643625-A345-4539-AD4B-1F64F920FFA4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Remoting.Tests", "MultiMiner.Remoting.Tests\MultiMiner.Remoting.Tests.csproj", "{45643625-A345-4539-AD4B-1F64F920FFA4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Services.Tests", "MultiMiner.Services.Tests\MultiMiner.Services.Tests.csproj", "{CE7E782C-748A-44B4-A9DB-90FE798DB9A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Stats.Api.Tests", "MultiMiner.Stats.Api.Tests\MultiMiner.Stats.Api.Tests.csproj", "{BA751292-EB11-40E7-BD88-45A1682DAA53}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Stats.Tests", "MultiMiner.Stats.Tests\MultiMiner.Stats.Tests.csproj", "{BA751292-EB11-40E7-BD88-45A1682DAA53}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Update.Tests", "MultiMiner.Update.Tests\MultiMiner.Update.Tests.csproj", "{D99041EA-8051-4229-9D12-091FA652A3E2}"
 EndProject

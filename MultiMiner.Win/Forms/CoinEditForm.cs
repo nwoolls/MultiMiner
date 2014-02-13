@@ -1,7 +1,5 @@
-﻿using MultiMiner.Engine;
-using MultiMiner.Engine.Data;
+﻿using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Forms;
-using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Data;
 using System;
 

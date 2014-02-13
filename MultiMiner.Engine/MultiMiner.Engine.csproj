@@ -48,7 +48,7 @@
     <Compile Include="Data\Configuration\Device.cs" />
     <Compile Include="Data\Configuration\Engine.cs" />
     <Compile Include="Data\Configuration\Xgminer.cs" />
-    <Compile Include="DonationPools.cs" />
+    <Compile Include="Helpers\DonationPools.cs" />
     <Compile Include="Installer.cs" />
     <Compile Include="LogProcessCloseArgs.cs" />
     <Compile Include="MinerPath.cs" />
@@ -57,9 +57,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MultiMiner.Coin.Api\MultiMiner.Coin.Api.csproj">
+    <ProjectReference Include="..\MultiMiner.CoinApi\MultiMiner.CoinApi.csproj">
       <Project>{9E86F77A-68B9-4D72-82D2-855878BA8CB1}</Project>
-      <Name>MultiMiner.Coin.Api</Name>
+      <Name>MultiMiner.CoinApi</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
       <Project>{99B0F266-EFF7-4416-8C36-8356396A11CA}</Project>

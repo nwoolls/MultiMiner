@@ -1,6 +1,4 @@
-using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Data;
-using MultiMiner.Xgminer.Data.Configuration;
 using System;
 using System.Collections.Generic;
 
@@ -16,6 +14,6 @@ namespace MultiMiner.Engine
         public double EndPrice { get; set; }
         public long AcceptedShares { get; set; }
         public List<DeviceDescriptor> DeviceDescriptors { get; set; }
-        public MinerConfiguration MinerConfiguration { get; set; }
+        public Xgminer.Data.Configuration.Miner MinerConfiguration { get; set; }
     }
 }

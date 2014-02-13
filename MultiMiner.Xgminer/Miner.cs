@@ -6,7 +6,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Linq;
-using MultiMiner.Xgminer.Data.Configuration;
 using MultiMiner.Xgminer.Data;
 
 namespace MultiMiner.Xgminer
@@ -24,9 +23,9 @@ namespace MultiMiner.Xgminer
         public event LaunchFailedHandler LaunchFailed;
         public event AuthenticationFailedHandler AuthenticationFailed;
 
-        private readonly MinerConfiguration minerConfiguration;
+        private readonly Data.Configuration.Miner minerConfiguration;
 
-        public Miner(MinerConfiguration minerConfig)
+        public Miner(Data.Configuration.Miner minerConfig)
         {
             this.minerConfiguration = minerConfig;
         }

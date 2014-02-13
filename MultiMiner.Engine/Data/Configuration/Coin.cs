@@ -1,5 +1,4 @@
-﻿using MultiMiner.Engine.Data;
-using MultiMiner.Xgminer.Data;
+﻿using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;

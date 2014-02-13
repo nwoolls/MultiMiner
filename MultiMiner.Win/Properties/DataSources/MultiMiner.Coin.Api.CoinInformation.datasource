@@ -6,5 +6,5 @@
     cause the file to be unrecognizable by the program.
 -->
 <GenericObjectDataSource DisplayName="CoinInformation" Version="1.0" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
-   <TypeInfo>MultiMiner.Coin.Api.CoinInformation, MultiMiner.Coin.Api, Version=2.3.0.79, Culture=neutral, PublicKeyToken=null</TypeInfo>
+   <TypeInfo>MultiMiner.CoinApi.CoinInformation, MultiMiner.CoinApi, Version=2.3.0.79, Culture=neutral, PublicKeyToken=null</TypeInfo>
 </GenericObjectDataSource>

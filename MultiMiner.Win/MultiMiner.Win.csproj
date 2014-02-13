@@ -280,21 +280,21 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MultiMiner.Coin.Api\MultiMiner.Coin.Api.csproj">
+    <ProjectReference Include="..\MultiMiner.CoinApi\MultiMiner.CoinApi.csproj">
       <Project>{9E86F77A-68B9-4D72-82D2-855878BA8CB1}</Project>
-      <Name>MultiMiner.Coin.Api</Name>
+      <Name>MultiMiner.CoinApi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MultiMiner.Coinbase.Api\MultiMiner.Coinbase.Api.csproj">
+    <ProjectReference Include="..\MultiMiner.Coinbase\MultiMiner.Coinbase.csproj">
       <Project>{95F6C880-7AB3-441B-8D41-28C0AD507B62}</Project>
-      <Name>MultiMiner.Coinbase.Api</Name>
+      <Name>MultiMiner.Coinbase</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MultiMiner.Coinchoose.Api\MultiMiner.CoinChoose.Api.csproj">
+    <ProjectReference Include="..\MultiMiner.Coinchoose\MultiMiner.CoinChoose.csproj">
       <Project>{D9B3F627-CB7A-454C-AF8F-70C8FB584553}</Project>
-      <Name>MultiMiner.CoinChoose.Api</Name>
+      <Name>MultiMiner.CoinChoose</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MultiMiner.CoinWarz.Api\MultiMiner.CoinWarz.Api.csproj">
+    <ProjectReference Include="..\MultiMiner.CoinWarz\MultiMiner.CoinWarz.csproj">
       <Project>{5B2B2592-689A-4DE2-815C-259427A3D101}</Project>
-      <Name>MultiMiner.CoinWarz.Api</Name>
+      <Name>MultiMiner.CoinWarz</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Discovery\MultiMiner.Discovery.csproj">
       <Project>{CCB532CD-4922-42A9-BAF9-0E651A592467}</Project>
@@ -304,21 +304,21 @@
       <Project>{845687BB-EC47-46D3-AC9D-6FCFB63DE8F5}</Project>
       <Name>MultiMiner.Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MultiMiner.MobileMiner.Api\MultiMiner.MobileMiner.Api.csproj">
+    <ProjectReference Include="..\MultiMiner.MobileMiner\MultiMiner.MobileMiner.csproj">
       <Project>{70622816-5853-4470-9432-9ACDA2E96089}</Project>
-      <Name>MultiMiner.MobileMiner.Api</Name>
+      <Name>MultiMiner.MobileMiner</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MultiMiner.Remoting.Server\MultiMiner.Remoting.Server.csproj">
+    <ProjectReference Include="..\MultiMiner.Remoting\MultiMiner.Remoting.csproj">
       <Project>{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}</Project>
-      <Name>MultiMiner.Remoting.Server</Name>
+      <Name>MultiMiner.Remoting</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Services\MultiMiner.Services.csproj">
       <Project>{CFFA60EC-9486-4F45-BEF2-05C1A3D68EA6}</Project>
       <Name>MultiMiner.Services</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MultiMiner.Stats.Api\MultiMiner.Stats.Api.csproj">
+    <ProjectReference Include="..\MultiMiner.Stats\MultiMiner.Stats.csproj">
       <Project>{2CF95427-DF1D-4061-8580-F143F04A0439}</Project>
-      <Name>MultiMiner.Stats.Api</Name>
+      <Name>MultiMiner.Stats</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
       <Project>{99B0F266-EFF7-4416-8C36-8356396A11CA}</Project>

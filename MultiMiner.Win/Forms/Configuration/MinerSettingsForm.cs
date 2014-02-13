@@ -1,9 +1,7 @@
-﻿using MultiMiner.Engine.Data.Configuration;
-using MultiMiner.Utility.Forms;
+﻿using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Win.Data.Configuration;
-using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Data;
 using System;
 using System.Diagnostics;

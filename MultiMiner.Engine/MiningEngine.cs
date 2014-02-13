@@ -1,8 +1,6 @@
-﻿using MultiMiner.Coin.Api.Data;
+﻿using MultiMiner.CoinApi.Data;
 using MultiMiner.Engine.Data.Configuration;
-using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Data;
-using MultiMiner.Xgminer.Data.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,9 +17,9 @@ namespace MultiMiner.Engine
 
         //event declarations        
         public event LogProcessCloseHandler LogProcessClose;
-        public event Miner.LogLaunchHandler LogProcessLaunch;
-        public event Miner.LaunchFailedHandler ProcessLaunchFailed;
-        public event Miner.AuthenticationFailedHandler ProcessAuthenticationFailed;
+        public event Xgminer.Miner.LogLaunchHandler LogProcessLaunch;
+        public event Xgminer.Miner.LaunchFailedHandler ProcessLaunchFailed;
+        public event Xgminer.Miner.AuthenticationFailedHandler ProcessAuthenticationFailed;
         private List<MinerProcess> minerProcesses = new List<MinerProcess>();
         private Data.Configuration.Engine engineConfiguration;
         private List<Xgminer.Data.Device> devices;
@@ -552,7 +550,7 @@ namespace MultiMiner.Engine
             foreach (string coinSymbol in coinSymbols)
             {
                 //launch separate processes for CPU & GPU vs USB & PXY (for stability)
-                MinerConfiguration minerConfiguration = CreateMinerConfiguration(port, coinSymbol, DeviceKind.CPU | DeviceKind.GPU);
+                Xgminer.Data.Configuration.Miner minerConfiguration = CreateMinerConfiguration(port, coinSymbol, DeviceKind.CPU | DeviceKind.GPU);
                 if (minerConfiguration != null)
                 {
                     Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
@@ -579,7 +577,7 @@ namespace MultiMiner.Engine
             mining = true;
         }
 
-        private MinerProcess StoreMinerProcess(Process process, string coinSymbol, MinerConfiguration minerConfiguration, int port)
+        private MinerProcess StoreMinerProcess(Process process, string coinSymbol, Xgminer.Data.Configuration.Miner minerConfiguration, int port)
         {
             MinerProcess minerProcess = new MinerProcess();
 
@@ -595,10 +593,10 @@ namespace MultiMiner.Engine
             return minerProcess;
         }
 
-        private Process LaunchMinerProcess(MinerConfiguration minerConfiguration, string reason)
+        private Process LaunchMinerProcess(Xgminer.Data.Configuration.Miner minerConfiguration, string reason)
         {
             minerConfiguration.Priority = this.engineConfiguration.XgminerConfiguration.Priority;
-            Miner miner = new Miner(minerConfiguration);
+            Xgminer.Miner miner = new Xgminer.Miner(minerConfiguration);
             miner.LogLaunch += this.LogProcessLaunch;
             miner.LaunchFailed += this.ProcessLaunchFailed;
             miner.AuthenticationFailed += this.ProcessAuthenticationFailed;
@@ -606,13 +604,13 @@ namespace MultiMiner.Engine
             return process;
         }
 
-        private MinerConfiguration CreateMinerConfiguration(int port, string coinSymbol, DeviceKind includeKinds)
+        private Xgminer.Data.Configuration.Miner CreateMinerConfiguration(int port, string coinSymbol, DeviceKind includeKinds)
         {
             Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.CryptoCoin.Symbol.Equals(coinSymbol));
 
             IList<Engine.Data.Configuration.Device> enabledConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol)).ToList();
 
-            MinerConfiguration minerConfiguration = new MinerConfiguration() 
+            Xgminer.Data.Configuration.Miner minerConfiguration = new Xgminer.Data.Configuration.Miner() 
             { 
                 ExecutablePath = MinerPath.GetPathToInstalledMiner(), 
                 Algorithm = coinConfiguration.CryptoCoin.Algorithm, 
@@ -634,7 +632,7 @@ namespace MultiMiner.Engine
             return minerConfiguration;
         }
 
-        private void SetupConfigurationArguments(MinerConfiguration minerConfiguration, Data.Configuration.Coin coinConfiguration)
+        private void SetupConfigurationArguments(Xgminer.Data.Configuration.Miner minerConfiguration, Data.Configuration.Coin coinConfiguration)
         {
             string arguments = string.Empty;
 
@@ -656,7 +654,7 @@ namespace MultiMiner.Engine
             minerConfiguration.LaunchArguments = arguments;
         }
 
-        private int SetupConfigurationDevices(MinerConfiguration minerConfiguration, DeviceKind deviceKinds, IList<Engine.Data.Configuration.Device> deviceConfigurations)
+        private int SetupConfigurationDevices(Xgminer.Data.Configuration.Miner minerConfiguration, DeviceKind deviceKinds, IList<Engine.Data.Configuration.Device> deviceConfigurations)
         {
             int deviceCount = 0;
             for (int i = 0; i < deviceConfigurations.Count; i++)
@@ -686,7 +684,7 @@ namespace MultiMiner.Engine
             return deviceCount;
         }
 
-        private void SetupConfigurationPools(MinerConfiguration minerConfiguration, Data.Configuration.Coin coinConfiguration)
+        private void SetupConfigurationPools(Xgminer.Data.Configuration.Miner minerConfiguration, Data.Configuration.Coin coinConfiguration)
         {
             //minerConfiguration.Pools = coinConfiguration.Pools;
             foreach (MiningPool pool in coinConfiguration.Pools)
@@ -709,12 +707,12 @@ namespace MultiMiner.Engine
         private static List<Data.Configuration.Coin> InitializeDonationConfigurations()
         {
             List<Data.Configuration.Coin> result = new List<Data.Configuration.Coin>();
-            DonationPools.Seed(result);
+            Helpers.DonationPools.Seed(result);
             return result;
         }
 
         private readonly Random random = new Random(Guid.NewGuid().GetHashCode()); //seed so we don't keep getting the same indexes
-        private void AddDonationPool(string coinSymbol, MinerConfiguration minerConfiguration)
+        private void AddDonationPool(string coinSymbol, Xgminer.Data.Configuration.Miner minerConfiguration)
         {
             MiningPool donationPool = null;
 

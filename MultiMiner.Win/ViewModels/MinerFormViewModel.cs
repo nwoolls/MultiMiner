@@ -1,6 +1,4 @@
-﻿using MultiMiner.Coin.Api.Data;
-using MultiMiner.Engine;
-using MultiMiner.Engine.Data.Configuration;
+﻿using MultiMiner.CoinApi.Data;
 using MultiMiner.Xgminer.Api.Data;
 using System;
 using System.Collections.Generic;

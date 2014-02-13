@@ -21,7 +21,7 @@ namespace MultiMiner.Xgminer.Tests
 
             List<string> inputLines = inputText.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
-            List<Device> deviceList = new List<Device>();
+            List<Data.Device> deviceList = new List<Data.Device>();
 
             DeviceListParser.ParseTextForDevices(inputLines, deviceList);
 
@@ -62,7 +62,7 @@ namespace MultiMiner.Xgminer.Tests
 
             List<string> inputLines = inputText.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
-            List<Device> deviceList = new List<Device>();
+            List<Data.Device> deviceList = new List<Data.Device>();
 
             DeviceListParser.ParseTextForDevices(inputLines, deviceList);
 
@@ -153,7 +153,7 @@ namespace MultiMiner.Xgminer.Tests
 
             List<string> inputLines = inputText.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
-            List<Device> deviceList = new List<Device>();
+            List<Data.Device> deviceList = new List<Data.Device>();
 
             DeviceListParser.ParseTextForDevices(inputLines, deviceList);
 

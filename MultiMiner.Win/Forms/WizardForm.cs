@@ -1,6 +1,4 @@
 ﻿using MultiMiner.Engine;
-using MultiMiner.Engine.Data.Configuration;
-using MultiMiner.Xgminer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +8,7 @@ using System.Linq;
 using System.Drawing;
 using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Utility.OS;
-using MultiMiner.MobileMiner.Api.Helpers;
+using MultiMiner.MobileMiner.Helpers;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
