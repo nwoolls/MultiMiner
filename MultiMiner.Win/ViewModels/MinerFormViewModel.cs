@@ -24,7 +24,8 @@ namespace MultiMiner.Win.ViewModels
             ConfiguredCoins = new List<CryptoCoin>();
         }
 
-        public void ApplyDeviceModels(List<Xgminer.Data.Device> deviceModels, List<NetworkDevices.NetworkDevice> networkDeviceModels)
+        public void ApplyDeviceModels(List<Xgminer.Data.Device> deviceModels, List<NetworkDevices.NetworkDevice> networkDeviceModels,
+            List<Metadata.DeviceMetadata> deviceMetadata)
         {
             //add/update Devices from deviceModels
             if (deviceModels != null)
@@ -71,6 +72,14 @@ namespace MultiMiner.Win.ViewModels
 
                 if (!found)
                     Devices.Remove(deviceViewModel);
+            }
+
+            //apply metadata
+            foreach (Metadata.DeviceMetadata metadata in deviceMetadata)
+            {
+                DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Equals(metadata));
+                if (deviceViewModel != null)
+                    ObjectCopier.CopyObject(metadata, deviceViewModel);
             }
         }
 

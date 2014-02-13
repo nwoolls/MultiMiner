@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Configuration\Metadata.cs" />
     <Compile Include="Extensions\ApplicationConfigurationExtensions.cs" />
     <Compile Include="Extensions\DeviceConfigurationExtensions.cs" />
     <Compile Include="Extensions\EngineConfigurationExtensions.cs" />

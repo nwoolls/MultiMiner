@@ -59,6 +59,7 @@ namespace MultiMiner.Win.Forms
         private readonly Paths pathConfiguration = new Paths();
         private Perks perksConfiguration = new Perks();
         private NetworkDevices networkDevicesConfiguration = new NetworkDevices();
+        private Metadata metadataConfiguration = new Metadata();
 
         //hardware information
         private List<Xgminer.Data.Device> devices;
@@ -80,6 +81,7 @@ namespace MultiMiner.Win.Forms
         private bool settingsLoaded = false;
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
         private bool applicationSetup = false;
+        private bool editingDeviceListView = false;
 
         //logic
         private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
@@ -270,7 +272,7 @@ namespace MultiMiner.Win.Forms
         private void ApplyDevicesToViewModel()
         {
             //ApplyDeviceModels() ensures we have a 1-to-1 with listview items
-            localViewModel.ApplyDeviceModels(devices, networkDevicesConfiguration.Devices);
+            localViewModel.ApplyDeviceModels(devices, networkDevicesConfiguration.Devices, metadataConfiguration.Devices);
         }
         
         private void ApplyCoinInformationToViewModel()
@@ -372,6 +374,9 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshListViewFromViewModel()
         {
+            if (editingDeviceListView)
+                return;
+
             List<int> selectedIndexes = new List<int>();
             foreach (int selectedIndex in deviceListView.SelectedIndices)
                 selectedIndexes.Add(selectedIndex);
@@ -397,6 +402,9 @@ namespace MultiMiner.Win.Forms
                         continue;
 
                     ListViewItem listViewItem = FindOrAddListViewItemForViewModel(deviceViewModel);
+
+                    if (!String.IsNullOrEmpty(deviceViewModel.FriendlyName))
+                        listViewItem.Text = deviceViewModel.FriendlyName;
 
                     /* configuration info
                      * */
@@ -701,6 +709,9 @@ namespace MultiMiner.Win.Forms
 
         private void AutoSizeListViewColumns()
         {
+            if (editingDeviceListView)
+                return;
+
             if (deviceListView.View != View.Details)
                 return;
 
@@ -1501,6 +1512,8 @@ namespace MultiMiner.Win.Forms
             ApplyModelsToViewModel();
             localViewModel.DynamicIntensity = engineConfiguration.XgminerConfiguration.DesktopMode;
             dynamicIntensityButton.Checked = localViewModel.DynamicIntensity;
+
+            metadataConfiguration.LoadDeviceMetadataConfiguration();
 
             //allow resize/maximize/etc to render
             System.Windows.Forms.Application.DoEvents();
@@ -2575,6 +2588,20 @@ namespace MultiMiner.Win.Forms
             if (viewModelToView.Devices[e.Index].Kind == DeviceKind.NET)
                 e.NewValue = CheckState.Checked;
         }
+
+        private void deviceListView_BeforeLabelEdit(object sender, LabelEditEventArgs e)
+        {
+            editingDeviceListView = true;
+        }
+
+        private void deviceListView_AfterLabelEdit(object sender, LabelEditEventArgs e)
+        {
+            editingDeviceListView = false;
+
+            MinerFormViewModel viewModelToView = GetViewModelToView();
+            DeviceViewModel deviceViewModel = viewModelToView.Devices[e.Item];
+            RenameDevice(deviceViewModel, e.Label);
+        }
         #endregion
 
         #region Timer setup
@@ -3372,6 +3399,9 @@ namespace MultiMiner.Win.Forms
                 this.selectedRemoteInstance = null;
             else
                 this.selectedRemoteInstance = instance;
+
+            //only This PC for now
+            deviceListView.LabelEdit = isThisPc;
 
             updatingListView = true;
             try
@@ -5776,6 +5806,23 @@ namespace MultiMiner.Win.Forms
             AboutForm aboutForm = new AboutForm();
             aboutForm.ShowDialog();
         }
+
+        private void RenameDevice(DeviceViewModel deviceViewModel, string name)
+        {
+            //rename the device in the user metadata
+            Metadata.DeviceMetadata deviceData = metadataConfiguration.Devices.SingleOrDefault(d => d.Equals(deviceViewModel));
+            if (deviceData == null)
+            {
+                deviceData = new Metadata.DeviceMetadata();
+                ObjectCopier.CopyObject(deviceViewModel, deviceData);
+                metadataConfiguration.Devices.Add(deviceData);
+            }
+            deviceData.FriendlyName = name;
+            metadataConfiguration.SaveDeviceMetadataConfiguration();
+
+            //rename the device ViewModel itself
+            deviceViewModel.FriendlyName = name;
+        }
         #endregion
 
         #region Primary mining logic
@@ -6207,6 +6254,6 @@ namespace MultiMiner.Win.Forms
             countdownLabel.Visible = false; //or remains visible under Mono
             cancelStartupMiningButton.Visible = false; //or remains visible under Mono
         }
-        #endregion
+        #endregion      
     }
 }

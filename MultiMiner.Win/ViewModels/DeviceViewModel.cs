@@ -61,5 +61,6 @@ namespace MultiMiner.Win.ViewModels
 
         //ViewModel specific
         public bool Visible { get; set; }
+        public string FriendlyName { get; set; }
     }
 }
