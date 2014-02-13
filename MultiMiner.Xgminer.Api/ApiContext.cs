@@ -76,7 +76,10 @@ namespace MultiMiner.Xgminer.Api
             {
                 int bytesRead = tcpStream.Read(responseBuffer, 0, responseBuffer.Length);
                 response = response + Encoding.ASCII.GetString(responseBuffer, 0, bytesRead);
-            } while (tcpStream.DataAvailable);
+
+            } while (String.IsNullOrEmpty(response) ||
+                //looking for a terminating NULL character from the RPC API
+                (response[response.Length - 1] != '\0'));
             
             if (LogEvent != null)
             {
