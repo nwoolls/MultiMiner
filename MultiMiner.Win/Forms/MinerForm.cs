@@ -394,6 +394,11 @@ namespace MultiMiner.Win.Forms
                     if (!deviceViewModel.Visible)
                         continue;
 
+                    //Network Devices should only show from the Local ViewModel
+                    if ((viewModelToView == remoteViewModel) &&
+                        (deviceViewModel.Kind == DeviceKind.NET))
+                        continue;
+
                     ListViewItem listViewItem = FindOrAddListViewItemForViewModel(deviceViewModel);
 
                     /* configuration info
