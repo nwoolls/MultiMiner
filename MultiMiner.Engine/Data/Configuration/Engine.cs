@@ -1,30 +1,30 @@
 ﻿using MultiMiner.Utility.Serialization;
-using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace MultiMiner.Engine.Configuration
+namespace MultiMiner.Engine.Data.Configuration
 {
-    public class EngineConfiguration
+    public class Engine
     {
-        public EngineConfiguration()
+        public Engine()
         {
-            DeviceConfigurations = new List<DeviceConfiguration>();
-            CoinConfigurations = new List<CoinConfiguration>();
-            XgminerConfiguration = new XgminerConfiguration();
-            StrategyConfiguration = new StrategyConfiguration();
+            DeviceConfigurations = new List<Device>();
+            CoinConfigurations = new List<Coin>();
+            XgminerConfiguration = new Xgminer();
+            StrategyConfiguration = new Strategy();
         }
 
-        public List<DeviceConfiguration> DeviceConfigurations { get; set; }
-        public List<CoinConfiguration> CoinConfigurations { get; set; }
-        public XgminerConfiguration XgminerConfiguration { get; set; }
-        public StrategyConfiguration StrategyConfiguration { get; set; }
+        public List<Device> DeviceConfigurations { get; set; }
+        public List<Coin> CoinConfigurations { get; set; }
+        public Xgminer XgminerConfiguration { get; set; }
+        public Strategy StrategyConfiguration { get; set; }
 
         public void RemoveBlankPoolConfigurations()
         {
-            foreach (CoinConfiguration coinConfiguration in CoinConfigurations)
+            foreach (Coin coinConfiguration in CoinConfigurations)
             {
                 for (int i = coinConfiguration.Pools.Count - 1; i >= 0; i--)
                 {
@@ -70,19 +70,7 @@ namespace MultiMiner.Engine.Configuration
         public void LoadStrategyConfiguration(string configDirectory)
         {
             InitializeConfigDirectory(configDirectory);
-
-            try
-            {
-                StrategyConfiguration = ConfigurationReaderWriter.ReadConfiguration<StrategyConfiguration>(StrategyConfigurationsFileName());
-            }
-            catch (InvalidOperationException ex)
-            {
-                //legacy settings
-                Obsolete.StrategyConfiguration obsoleteSettings = ConfigurationReaderWriter.ReadConfiguration<Obsolete.StrategyConfiguration>(StrategyConfigurationsFileName());
-                StrategyConfiguration = new StrategyConfiguration();
-                obsoleteSettings.StoreTo(StrategyConfiguration);
-                SaveStrategyConfiguration();
-            }
+            StrategyConfiguration = ConfigurationReaderWriter.ReadConfiguration<Strategy>(StrategyConfigurationsFileName());
         }
 
         private static string DeviceConfigurationsFileName()
@@ -92,12 +80,14 @@ namespace MultiMiner.Engine.Configuration
         
         public void SaveDeviceConfigurations()
         {
-            ConfigurationReaderWriter.WriteConfiguration(DeviceConfigurations, DeviceConfigurationsFileName());
+            ConfigurationReaderWriter.WriteConfiguration(DeviceConfigurations,
+                DeviceConfigurationsFileName(), "ArrayOfDeviceConfiguration");
         }
 
         public void LoadDeviceConfigurations()
         {
-            DeviceConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<DeviceConfiguration>>(DeviceConfigurationsFileName());
+            DeviceConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<Device>>(
+                DeviceConfigurationsFileName(), "ArrayOfDeviceConfiguration");
             RemoveIvalidCoinsFromDeviceConfigurations();
             RemoveDuplicateDeviceConfigurations();
         }
@@ -121,25 +111,25 @@ namespace MultiMiner.Engine.Configuration
         {
             InitializeConfigDirectory(configDirectory);
 
-            CoinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<CoinConfiguration>>(CoinConfigurationsFileName());
+            CoinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<Coin>>(CoinConfigurationsFileName());
             RemoveIvalidCoinsFromDeviceConfigurations();
             RemoveBlankPoolConfigurations();
         }
 
         private void RemoveDisabledCoinsFromDeviceConfigurations()
         {
-            foreach (CoinConfiguration coinConfiguration in CoinConfigurations.Where(c => !c.Enabled))
+            foreach (Coin coinConfiguration in CoinConfigurations.Where(c => !c.Enabled))
             {
-                IEnumerable<DeviceConfiguration> coinDeviceConfigurations = DeviceConfigurations.Where(c => !String.IsNullOrEmpty(c.CoinSymbol) && c.CoinSymbol.Equals(coinConfiguration.Coin.Symbol));
-                foreach (DeviceConfiguration coinDeviceConfiguration in coinDeviceConfigurations)
+                IEnumerable<Device> coinDeviceConfigurations = DeviceConfigurations.Where(c => !String.IsNullOrEmpty(c.CoinSymbol) && c.CoinSymbol.Equals(coinConfiguration.CryptoCoin.Symbol));
+                foreach (Device coinDeviceConfiguration in coinDeviceConfigurations)
                     coinDeviceConfiguration.CoinSymbol = string.Empty;
             }
         }
 
         private void RemoveDeletedCoinsFromDeviceConfigurations()
         {
-            foreach (DeviceConfiguration deviceConfiguration in DeviceConfigurations)
-                if (CoinConfigurations.Count(c => c.Coin.Symbol.Equals(deviceConfiguration.CoinSymbol)) == 0)
+            foreach (Device deviceConfiguration in DeviceConfigurations)
+                if (CoinConfigurations.Count(c => c.CryptoCoin.Symbol.Equals(deviceConfiguration.CoinSymbol)) == 0)
                     deviceConfiguration.CoinSymbol = string.Empty;
         }
 

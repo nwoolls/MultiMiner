@@ -1,5 +1,5 @@
 ﻿using MultiMiner.Engine;
-using MultiMiner.Engine.Configuration;
+using MultiMiner.Engine.Data.Configuration;
 using MultiMiner.Xgminer;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,8 @@ using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Utility.OS;
 using MultiMiner.MobileMiner.Api.Helpers;
 using MultiMiner.Utility.Forms;
+using MultiMiner.Xgminer.Data;
+using MultiMiner.Engine.Data;
 
 namespace MultiMiner.Win.Forms
 {
@@ -172,7 +174,7 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
             string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
 
             downloadingMinerLabel.Text = String.Format("Please wait while {0} is downloaded from {2} and installed into the folder {1}", minerName, destinationFolder, Xgminer.Installer.GetMinerDownloadRoot());
-            Application.DoEvents();
+            System.Windows.Forms.Application.DoEvents();
 
             Cursor = Cursors.WaitCursor;
             Xgminer.Installer.InstallMiner(destinationFolder);
@@ -259,18 +261,18 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
             appKeyEdit.Enabled = emailAddressEdit.Enabled;
         }
 
-        public void CreateConfigurations(out EngineConfiguration engineConfiguration, 
-            out ApplicationConfiguration applicationConfiguraion,
-            out PerksConfiguration perksConfiguration)
+        public void CreateConfigurations(out Engine.Data.Configuration.Engine engineConfiguration,
+            out Data.Configuration.Application applicationConfiguraion,
+            out Perks perksConfiguration)
         {
             engineConfiguration = CreateEngineConfiguration();
             applicationConfiguraion = CreateApplicationConfiguration();
             perksConfiguration = CreatePerksConfiguration();
         }
 
-        private PerksConfiguration CreatePerksConfiguration()
+        private Perks CreatePerksConfiguration()
         {
-            PerksConfiguration result = new PerksConfiguration();
+            Perks result = new Perks();
 
             result.PerksEnabled = perksCheckBox.Checked;
             result.ShowExchangeRates = coinbaseCheckBox.Checked;
@@ -281,16 +283,16 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
             return result;
         }
 
-        private EngineConfiguration CreateEngineConfiguration()
+        private Engine.Data.Configuration.Engine CreateEngineConfiguration()
         {
-            EngineConfiguration engineConfiguration;
-            engineConfiguration = new EngineConfiguration();
-            
-            CoinConfiguration coinConfiguration = new CoinConfiguration();
+            Engine.Data.Configuration.Engine engineConfiguration;
+            engineConfiguration = new Engine.Data.Configuration.Engine();
+
+            Engine.Data.Configuration.Coin coinConfiguration = new Engine.Data.Configuration.Coin();
 
             CryptoCoin coin = coins.Single(c => c.Name.Equals(coinComboBox.Text));
 
-            coinConfiguration.Coin = coin;
+            coinConfiguration.CryptoCoin = coin;
             coinConfiguration.Enabled = true;
 
             MiningPool miningPool = new MiningPool();
@@ -306,10 +308,10 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
             return engineConfiguration;
         }
 
-        private ApplicationConfiguration CreateApplicationConfiguration()
+        private Data.Configuration.Application CreateApplicationConfiguration()
         {
-            ApplicationConfiguration applicationConfiguraion;
-            applicationConfiguraion = new ApplicationConfiguration();
+            Data.Configuration.Application applicationConfiguraion;
+            applicationConfiguraion = new Data.Configuration.Application();
             applicationConfiguraion.MobileMinerMonitoring = remoteMonitoringCheck.Checked;
             applicationConfiguraion.MobileMinerRemoteCommands = remoteCommandsCheck.Checked;
             applicationConfiguraion.MobileMinerEmailAddress = emailAddressEdit.Text;

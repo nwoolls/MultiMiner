@@ -1,4 +1,4 @@
-﻿using MultiMiner.Engine.Configuration;
+﻿using MultiMiner.Engine.Data.Configuration;
 using MultiMiner.MobileMiner.Api.Helpers;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
@@ -11,12 +11,12 @@ namespace MultiMiner.Win.Forms.Configuration
 {
     public partial class SettingsForm : MessageBoxFontForm
     {
-        private readonly XgminerConfiguration minerConfiguration;
-        private readonly ApplicationConfiguration applicationConfiguration;
-        private readonly PathConfiguration pathConfiguration;
+        private readonly MultiMiner.Engine.Data.Configuration.Xgminer minerConfiguration;
+        private readonly Data.Configuration.Application applicationConfiguration;
+        private readonly Paths pathConfiguration;
 
-        public SettingsForm(ApplicationConfiguration applicationConfiguration, XgminerConfiguration minerConfiguration,
-            PathConfiguration pathConfiguration)
+        public SettingsForm(Data.Configuration.Application applicationConfiguration, MultiMiner.Engine.Data.Configuration.Xgminer minerConfiguration,
+            Paths pathConfiguration)
         {
             InitializeComponent();
 

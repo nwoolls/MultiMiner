@@ -1,6 +1,6 @@
-﻿namespace MultiMiner.Xgminer.Api.Responses
+﻿namespace MultiMiner.Xgminer.Api.Data
 {
-    public class DeviceDetailsResponse
+    public class DeviceDetails
     {
         public int Index { get; set; }
         public string Name { get; set; }

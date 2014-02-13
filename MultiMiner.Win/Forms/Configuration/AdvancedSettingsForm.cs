@@ -9,21 +9,21 @@ namespace MultiMiner.Win.Forms.Configuration
 {
     public partial class AdvancedSettingsForm : MessageBoxFontForm
     {
-        private readonly ApplicationConfiguration applicationConfiguration;
-        private readonly ApplicationConfiguration workingApplicationConfiguration;
+        private readonly Application applicationConfiguration;
+        private readonly Application workingApplicationConfiguration;
 
-        private readonly PathConfiguration pathConfiguration;
-        private readonly PathConfiguration workingPathConfiguration;
+        private readonly Paths pathConfiguration;
+        private readonly Paths workingPathConfiguration;
 
-        public AdvancedSettingsForm(ApplicationConfiguration applicationConfiguration, PathConfiguration pathConfiguration)
+        public AdvancedSettingsForm(Application applicationConfiguration, Paths pathConfiguration)
         {
             InitializeComponent();
 
             this.applicationConfiguration = applicationConfiguration;
-            workingApplicationConfiguration = ObjectCopier.CloneObject<ApplicationConfiguration, ApplicationConfiguration>(applicationConfiguration);
+            workingApplicationConfiguration = ObjectCopier.CloneObject<Application, Application>(applicationConfiguration);
 
             this.pathConfiguration = pathConfiguration;
-            workingPathConfiguration = ObjectCopier.CloneObject<PathConfiguration, PathConfiguration>(pathConfiguration);
+            workingPathConfiguration = ObjectCopier.CloneObject<Paths, Paths>(pathConfiguration);
 
             if (String.IsNullOrEmpty(workingApplicationConfiguration.LogFilePath))
                 workingApplicationConfiguration.LogFilePath = ApplicationPaths.AppDataPath();

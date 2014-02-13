@@ -6,6 +6,8 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Linq;
+using MultiMiner.Xgminer.Data.Configuration;
+using MultiMiner.Xgminer.Data;
 
 namespace MultiMiner.Xgminer
 {

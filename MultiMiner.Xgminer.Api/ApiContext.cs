@@ -1,5 +1,5 @@
 ﻿using MultiMiner.Xgminer.Api.Parsers;
-using MultiMiner.Xgminer.Api.Responses;
+using MultiMiner.Xgminer.Api.Data;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -25,34 +25,34 @@ namespace MultiMiner.Xgminer.Api
             this.ipAddress = ipAddress;
         }
 
-        public List<DeviceInformationResponse> GetDeviceInformation(int logInterval)
+        public List<DeviceInformation> GetDeviceInformation(int logInterval)
         {
             string textResponse = GetResponse(ApiVerb.Devs);
-            List<DeviceInformationResponse> result = new List<DeviceInformationResponse>();
+            List<DeviceInformation> result = new List<DeviceInformation>();
             DeviceInformationParser.ParseTextForDeviceInformation(textResponse, result, logInterval);
             return result;
         }
 
-        public List<DeviceDetailsResponse> GetDeviceDetails()
+        public List<DeviceDetails> GetDeviceDetails()
         {
             string textResponse = GetResponse(ApiVerb.DevDetails);
-            List<DeviceDetailsResponse> result = new List<DeviceDetailsResponse>();
+            List<DeviceDetails> result = new List<DeviceDetails>();
             DeviceDetailsParser.ParseTextForDeviceDetails(textResponse, result);
             return result;
         }
 
-        public SummaryInformationResponse GetSummaryInformation()
+        public SummaryInformation GetSummaryInformation()
         {
             string textResponse = GetResponse(ApiVerb.Summary);
-            SummaryInformationResponse result = new SummaryInformationResponse();
+            SummaryInformation result = new SummaryInformation();
             SummaryInformationParser.ParseTextForSummaryInformation(textResponse, result);
             return result;
         }
 
-        public List<PoolInformationResponse> GetPoolInformation()
+        public List<PoolInformation> GetPoolInformation()
         {
             string textResponse = GetResponse(ApiVerb.Pools);
-            List<PoolInformationResponse> result = new List<PoolInformationResponse>();
+            List<PoolInformation> result = new List<PoolInformation>();
             PoolInformationParser.ParseTextForDeviceDetails(textResponse, result);
             return result;
         }

@@ -1,6 +1,6 @@
-﻿namespace MultiMiner.Xgminer.Api.Responses
+﻿namespace MultiMiner.Xgminer.Api.Data
 {
-    public class SummaryInformationResponse
+    public class SummaryInformation
     {
         public long Elapsed { get; set; }
         public double AverageHashrate { get; set; }

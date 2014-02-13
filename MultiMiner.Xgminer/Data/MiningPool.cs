@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MultiMiner.Xgminer
+namespace MultiMiner.Xgminer.Data
 {
     //marked Serializable to allow deep cloning of CoinConfiguration
     [Serializable]

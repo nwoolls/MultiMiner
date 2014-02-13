@@ -6,10 +6,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace MultiMiner.Win.Data.Configuration
 {
-    public class ApplicationConfiguration
+    [XmlType(TypeName = "ApplicationConfiguration")]
+    public class Application
     {
         public enum TimerInterval
         {
@@ -31,7 +33,7 @@ namespace MultiMiner.Win.Data.Configuration
             Scrypt = 0x2
         }
 
-        public ApplicationConfiguration()
+        public Application()
         {
             this.StartupMiningDelay = 45;
             this.StrategyCheckInterval = TimerInterval.FifteenMinutes;
@@ -133,7 +135,7 @@ namespace MultiMiner.Win.Data.Configuration
         {
             InitializeConfigDirectory(configDirectory);
 
-            ApplicationConfiguration tmp = ConfigurationReaderWriter.ReadConfiguration<ApplicationConfiguration>(ApplicationConfigurationFileName());
+            Application tmp = ConfigurationReaderWriter.ReadConfiguration<Application>(ApplicationConfigurationFileName());
 
             ObjectCopier.CopyObject(tmp, this);
         }

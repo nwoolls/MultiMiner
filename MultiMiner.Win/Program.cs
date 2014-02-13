@@ -25,9 +25,9 @@ namespace MultiMiner.Win
             {
                 if (!mutex.WaitOne(0, false))
                 {
-                    PathConfiguration pathConfig = new PathConfiguration();
+                    Paths pathConfig = new Paths();
                     pathConfig.LoadPathConfiguration();
-                    ApplicationConfiguration appConfig = new ApplicationConfiguration();
+                    Data.Configuration.Application appConfig = new Data.Configuration.Application();
                     appConfig.LoadApplicationConfiguration(pathConfig.SharedConfigPath);
                     if (!appConfig.AllowMultipleInstances)
                         return;
@@ -56,9 +56,9 @@ namespace MultiMiner.Win
                 };
             }
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MinerForm());
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            System.Windows.Forms.Application.Run(new MinerForm());
         }
         
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

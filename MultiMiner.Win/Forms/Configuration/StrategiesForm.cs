@@ -1,21 +1,22 @@
 ﻿using MultiMiner.Engine;
-using MultiMiner.Engine.Configuration;
+using MultiMiner.Engine.Data.Configuration;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Utility.Forms;
+using MultiMiner.Engine.Data;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
     public partial class StrategiesForm : MessageBoxFontForm
     {
         private readonly List<CryptoCoin> knownCoins;
-        private readonly StrategyConfiguration strategyConfiguration;
-        private readonly ApplicationConfiguration applicationConfiguration;
+        private readonly Strategy strategyConfiguration;
+        private readonly Application applicationConfiguration;
 
-        public StrategiesForm(StrategyConfiguration strategyConfiguration, List<CryptoCoin> knownCoins, 
-            ApplicationConfiguration applicationConfiguration)
+        public StrategiesForm(Strategy strategyConfiguration, List<CryptoCoin> knownCoins, 
+            Application applicationConfiguration)
         {
             InitializeComponent();
             this.strategyConfiguration = strategyConfiguration;
@@ -51,8 +52,8 @@ namespace MultiMiner.Win.Forms.Configuration
             if (coin != null)
                 thresholdSymbolCombo.Text = coin.Name;
             
-            singleCoinRadio.Checked = strategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.SingleMost;
-            multiCoinRadio.Checked = strategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.AllMost;
+            singleCoinRadio.Checked = strategyConfiguration.SwitchStrategy == Strategy.CoinSwitchStrategy.SingleMost;
+            multiCoinRadio.Checked = strategyConfiguration.SwitchStrategy == Strategy.CoinSwitchStrategy.AllMost;
 
             thresholdValueEdit.Text = strategyConfiguration.MinimumThresholdValue.ToString();
 
@@ -76,9 +77,9 @@ namespace MultiMiner.Win.Forms.Configuration
             }
 
             if (singleCoinRadio.Checked)
-                strategyConfiguration.SwitchStrategy = StrategyConfiguration.CoinSwitchStrategy.SingleMost;
+                strategyConfiguration.SwitchStrategy = Strategy.CoinSwitchStrategy.SingleMost;
             else
-                strategyConfiguration.SwitchStrategy = StrategyConfiguration.CoinSwitchStrategy.AllMost;
+                strategyConfiguration.SwitchStrategy = Strategy.CoinSwitchStrategy.AllMost;
 
             if (string.IsNullOrEmpty(thresholdValueEdit.Text))
                 this.strategyConfiguration.MinimumThresholdValue = null;
@@ -101,8 +102,8 @@ namespace MultiMiner.Win.Forms.Configuration
                 }
             }
 
-            strategyConfiguration.ProfitabilityKind = (StrategyConfiguration.CoinProfitabilityKind)profitabilityKindCombo.SelectedIndex;
-            strategyConfiguration.MiningBasis = (StrategyConfiguration.CoinMiningBasis)miningBasisCombo.SelectedIndex;
+            strategyConfiguration.ProfitabilityKind = (Strategy.CoinProfitabilityKind)profitabilityKindCombo.SelectedIndex;
+            strategyConfiguration.MiningBasis = (Strategy.CoinMiningBasis)miningBasisCombo.SelectedIndex;
         }
 
         private void multiCoinRadio_CheckedChanged(object sender, EventArgs e)
@@ -123,24 +124,24 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void UpdateControlsForMiningBasis()
         {
-            StrategyConfiguration.CoinMiningBasis miningBasis = (StrategyConfiguration.CoinMiningBasis)miningBasisCombo.SelectedIndex;
+            Strategy.CoinMiningBasis miningBasis = (Strategy.CoinMiningBasis)miningBasisCombo.SelectedIndex;
             switch (miningBasis)
             {
-                case StrategyConfiguration.CoinMiningBasis.Profitability:
+                case Strategy.CoinMiningBasis.Profitability:
                     profitabilityKindCombo.Enabled = true;
                     thresholdSymbolLabel.Text = "Don't mine coins less profitable than";
                     singleCoinRadio.Text = "Mine only the single most profitable coin";
                     multiCoinRadio.Text = "Mine all of the most profitable coins";
                     mineSingleOverrideLabel.Text = "Mine a single coin if it exceeds";
                     break;
-                case StrategyConfiguration.CoinMiningBasis.Difficulty:
+                case Strategy.CoinMiningBasis.Difficulty:
                     profitabilityKindCombo.Enabled = false;
                     thresholdSymbolLabel.Text = "Don't mine coins more difficult than";
                     singleCoinRadio.Text = "Mine only the single least difficult coin";
                     multiCoinRadio.Text = "Mine all of the least difficult coins";
                     mineSingleOverrideLabel.Text = "Mine a single coin if it falls below";
                     break;
-                case StrategyConfiguration.CoinMiningBasis.Price:
+                case Strategy.CoinMiningBasis.Price:
                     profitabilityKindCombo.Enabled = false;
                     thresholdSymbolLabel.Text = "Don't mine coins less valuable than";
                     singleCoinRadio.Text = "Mine only the single most valuable coin";

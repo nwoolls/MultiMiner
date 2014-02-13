@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Data;
 using System.Runtime.Serialization;
 
 namespace MultiMiner.Remoting.Server.Data.Transfer.Configuration

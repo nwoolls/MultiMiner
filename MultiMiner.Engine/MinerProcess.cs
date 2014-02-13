@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Api;
+using MultiMiner.Xgminer.Data.Configuration;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;

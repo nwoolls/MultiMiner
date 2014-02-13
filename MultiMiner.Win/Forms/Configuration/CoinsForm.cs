@@ -1,9 +1,12 @@
 ﻿using MultiMiner.Engine;
-using MultiMiner.Engine.Configuration;
+using MultiMiner.Engine.Data.Configuration;
+using MultiMiner.Engine.Data;
+using MultiMiner.Engine.Data.Configuration;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,10 +18,10 @@ namespace MultiMiner.Win.Forms.Configuration
 {
     public partial class CoinsForm : MessageBoxFontForm
     {
-        private readonly List<CoinConfiguration> configurations = new List<CoinConfiguration>();
+        private readonly List<Engine.Data.Configuration.Coin> configurations = new List<Engine.Data.Configuration.Coin>();
         private readonly List<CryptoCoin> knownCoins;
 
-        public CoinsForm(List<CoinConfiguration> configurations, List<CryptoCoin> knownCoins)
+        public CoinsForm(List<Engine.Data.Configuration.Coin> configurations, List<CryptoCoin> knownCoins)
         {
             this.configurations = configurations;
             this.knownCoins = knownCoins;
@@ -40,10 +43,10 @@ namespace MultiMiner.Win.Forms.Configuration
             if (promptResult == System.Windows.Forms.DialogResult.Yes)
             {
                 //required to clear bindings if this was the last coin in the list
-                coinConfigurationBindingSource.DataSource = typeof(CoinConfiguration);
+                coinConfigurationBindingSource.DataSource = typeof(Engine.Data.Configuration.Coin);
                 miningPoolBindingSource.DataSource = typeof(MiningPool);
 
-                CoinConfiguration configuration = configurations[coinListBox.SelectedIndex];
+                Engine.Data.Configuration.Coin configuration = configurations[coinListBox.SelectedIndex];
                 configurations.Remove(configuration);
                 coinListBox.Items.RemoveAt(coinListBox.SelectedIndex);
 
@@ -57,8 +60,8 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             coinListBox.Items.Clear();
 
-            foreach (CoinConfiguration configuration in configurations)
-                coinListBox.Items.Add(configuration.Coin.Name);
+            foreach (Engine.Data.Configuration.Coin configuration in configurations)
+                coinListBox.Items.Add(configuration.CryptoCoin.Name);
 
             if (configurations.Count > 0)
                 coinListBox.SelectedIndex = 0;
@@ -67,10 +70,10 @@ namespace MultiMiner.Win.Forms.Configuration
         private void AddCoinConfiguration(CryptoCoin cryptoCoin)
         {
             //don't allow two configurations for the same coin symbol
-            CoinConfiguration configuration = configurations.SingleOrDefault(c => c.Coin.Symbol.Equals(cryptoCoin.Symbol, StringComparison.OrdinalIgnoreCase));
+            Engine.Data.Configuration.Coin configuration = configurations.SingleOrDefault(c => c.CryptoCoin.Symbol.Equals(cryptoCoin.Symbol, StringComparison.OrdinalIgnoreCase));
             if (configuration == null)
                 //don't allow two configurations for the same coin name
-                configuration = configurations.SingleOrDefault(c => c.Coin.Name.Equals(cryptoCoin.Name, StringComparison.OrdinalIgnoreCase));
+                configuration = configurations.SingleOrDefault(c => c.CryptoCoin.Name.Equals(cryptoCoin.Name, StringComparison.OrdinalIgnoreCase));
 
             if (configuration != null)
             {
@@ -78,24 +81,24 @@ namespace MultiMiner.Win.Forms.Configuration
             }
             else
             {
-                configuration = new CoinConfiguration();
+                configuration = new Engine.Data.Configuration.Coin();
 
-                configuration.Coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(cryptoCoin.Symbol, StringComparison.OrdinalIgnoreCase));
+                configuration.CryptoCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(cryptoCoin.Symbol, StringComparison.OrdinalIgnoreCase));
 
                 //user may have manually entered a coin
-                if (configuration.Coin == null)
+                if (configuration.CryptoCoin == null)
                 {
-                    configuration.Coin = new CryptoCoin();
-                    configuration.Coin.Name = cryptoCoin.Name;
-                    configuration.Coin.Symbol = cryptoCoin.Symbol;
-                    configuration.Coin.Algorithm = cryptoCoin.Algorithm;
+                    configuration.CryptoCoin = new CryptoCoin();
+                    configuration.CryptoCoin.Name = cryptoCoin.Name;
+                    configuration.CryptoCoin.Symbol = cryptoCoin.Symbol;
+                    configuration.CryptoCoin.Algorithm = cryptoCoin.Algorithm;
                 }
 
                 configuration.Pools.Add(new MiningPool());
 
                 configurations.Add(configuration);
 
-                coinListBox.Items.Add(configuration.Coin.Name);
+                coinListBox.Items.Add(configuration.CryptoCoin.Name);
                 coinListBox.SelectedIndex = configurations.IndexOf(configuration);
             }
 
@@ -106,7 +109,7 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             if (coinListBox.SelectedIndex >= 0)
             {
-                CoinConfiguration configuration = configurations[coinListBox.SelectedIndex];
+                Engine.Data.Configuration.Coin configuration = configurations[coinListBox.SelectedIndex];
 
                 coinConfigurationBindingSource.DataSource = configuration;
                 miningPoolBindingSource.DataSource = configuration.Pools;
@@ -119,7 +122,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void addPoolButton_Click(object sender, EventArgs e)
         {
-            CoinConfiguration configuration = configurations[coinListBox.SelectedIndex];
+            Engine.Data.Configuration.Coin configuration = configurations[coinListBox.SelectedIndex];
             miningPoolBindingSource.Add(new MiningPool());
             poolListBox.SelectedIndex = configuration.Pools.Count - 1;
             hostEdit.Focus();
@@ -154,8 +157,8 @@ namespace MultiMiner.Win.Forms.Configuration
             if (coinConfigurationBindingSource.Current == null)
                 return;
 
-            CoinConfiguration currentConfiguration = (CoinConfiguration)coinConfigurationBindingSource.Current;
-            currentConfiguration.ProfitabilityAdjustmentType = (CoinConfiguration.AdjustmentType)((ComboBox)sender).SelectedIndex;
+            Engine.Data.Configuration.Coin currentConfiguration = (Engine.Data.Configuration.Coin)coinConfigurationBindingSource.Current;
+            currentConfiguration.ProfitabilityAdjustmentType = (Engine.Data.Configuration.Coin.AdjustmentType)((ComboBox)sender).SelectedIndex;
         }
 
         private void coinConfigurationBindingSource_CurrentChanged(object sender, EventArgs e)
@@ -163,7 +166,7 @@ namespace MultiMiner.Win.Forms.Configuration
             if (coinConfigurationBindingSource.Current == null)
                 return;
 
-            CoinConfiguration currentConfiguration = (CoinConfiguration)coinConfigurationBindingSource.Current;
+            Engine.Data.Configuration.Coin currentConfiguration = (Engine.Data.Configuration.Coin)coinConfigurationBindingSource.Current;
             adjustProfitCombo.SelectedIndex = (int)currentConfiguration.ProfitabilityAdjustmentType;
         }
 
@@ -228,12 +231,12 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void MergeConfigurationsFromFile(string configurationsFileName)
         {
-            List<CoinConfiguration> sourceConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<CoinConfiguration>>(configurationsFileName);
-            List<CoinConfiguration> destinationConfigurations = configurations;
+            List<Engine.Data.Configuration.Coin> sourceConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<Engine.Data.Configuration.Coin>>(configurationsFileName);
+            List<Engine.Data.Configuration.Coin> destinationConfigurations = configurations;
 
-            foreach (CoinConfiguration sourceConfiguration in sourceConfigurations)
+            foreach (Engine.Data.Configuration.Coin sourceConfiguration in sourceConfigurations)
             {
-                int existingIndex = destinationConfigurations.FindIndex(c => c.Coin.Symbol.Equals(sourceConfiguration.Coin.Symbol));
+                int existingIndex = destinationConfigurations.FindIndex(c => c.CryptoCoin.Symbol.Equals(sourceConfiguration.CryptoCoin.Symbol));
                 if (existingIndex == -1)
                     destinationConfigurations.Add(sourceConfiguration);
                 else
@@ -266,7 +269,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void SortConfigurations()
         {
-            configurations.Sort((config1, config2) => config1.Coin.Name.CompareTo(config2.Coin.Name));
+            configurations.Sort((config1, config2) => config1.CryptoCoin.Name.CompareTo(config2.CryptoCoin.Name));
             PopulateConfigurations();
         }
 
@@ -301,8 +304,8 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void MoveCoinToIndex(string coinName, int index)
         {
-            CoinConfiguration configuration = configurations.Single(
-                config => config.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            Engine.Data.Configuration.Coin configuration = configurations.Single(
+                config => config.CryptoCoin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
 
             configurations.Remove(configuration);
             configurations.Insert(index, configuration);

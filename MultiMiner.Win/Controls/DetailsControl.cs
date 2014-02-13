@@ -6,6 +6,8 @@ using MultiMiner.Engine;
 using MultiMiner.Win.Extensions;
 using MultiMiner.Win.ViewModels;
 using MultiMiner.Utility.Forms;
+using MultiMiner.Xgminer.Data;
+using MultiMiner.Engine.Data;
 
 namespace MultiMiner.Win.Controls
 {

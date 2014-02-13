@@ -1,10 +1,12 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Utility.Serialization;
 using System.IO;
+using System.Xml.Serialization;
 
 namespace MultiMiner.Win.Data.Configuration
 {
-    public class PathConfiguration
+    [XmlType(TypeName = "PathConfiguration")]
+    public class Paths
     {
         public string SharedConfigPath { get; set; }
 
@@ -20,7 +22,7 @@ namespace MultiMiner.Win.Data.Configuration
 
         public void LoadPathConfiguration()
         {
-            PathConfiguration tmp = ConfigurationReaderWriter.ReadConfiguration<PathConfiguration>(PathConfigurationFileName());
+            Paths tmp = ConfigurationReaderWriter.ReadConfiguration<Paths>(PathConfigurationFileName());
 
             ObjectCopier.CopyObject(tmp, this);
         }

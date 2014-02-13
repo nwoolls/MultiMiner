@@ -4,30 +4,30 @@ namespace MultiMiner.Win.Extensions
 {
     static class TimeIntervalExtensions
     {
-        public static int ToMinutes(this ApplicationConfiguration.TimerInterval timerInterval)
+        public static int ToMinutes(this Application.TimerInterval timerInterval)
         {
             int coinStatsMinutes;
             switch (timerInterval)
             {
-                case ApplicationConfiguration.TimerInterval.FiveMinutes:
+                case Application.TimerInterval.FiveMinutes:
                     coinStatsMinutes = 5;
                     break;
-                case ApplicationConfiguration.TimerInterval.ThirtyMinutes:
+                case Application.TimerInterval.ThirtyMinutes:
                     coinStatsMinutes = 30;
                     break;
-                case ApplicationConfiguration.TimerInterval.OneHour:
+                case Application.TimerInterval.OneHour:
                     coinStatsMinutes = 1 * 60;
                     break;
-                case ApplicationConfiguration.TimerInterval.TwoHours:
+                case Application.TimerInterval.TwoHours:
                     coinStatsMinutes = 2 * 60;
                     break;
-                case ApplicationConfiguration.TimerInterval.ThreeHours:
+                case Application.TimerInterval.ThreeHours:
                     coinStatsMinutes = 3 * 60;
                     break;
-                case ApplicationConfiguration.TimerInterval.SixHours:
+                case Application.TimerInterval.SixHours:
                     coinStatsMinutes = 6 * 60;
                     break;
-                case ApplicationConfiguration.TimerInterval.TwelveHours:
+                case Application.TimerInterval.TwelveHours:
                     coinStatsMinutes = 12 * 60;
                     break;
                 default:

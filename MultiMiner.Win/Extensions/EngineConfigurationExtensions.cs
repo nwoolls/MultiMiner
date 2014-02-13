@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Data;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,7 +8,7 @@ namespace MultiMiner.Win.Extensions
 {
     public static class EngineConfigurationExtensions
     {
-        public static Remoting.Server.Data.Transfer.Configuration.Engine ToTransferObject(this Engine.Configuration.EngineConfiguration modelObject)
+        public static Remoting.Server.Data.Transfer.Configuration.Engine ToTransferObject(this Engine.Data.Configuration.Engine modelObject)
         {
             Remoting.Server.Data.Transfer.Configuration.Engine transferObject = new Remoting.Server.Data.Transfer.Configuration.Engine();
 
@@ -24,9 +25,9 @@ namespace MultiMiner.Win.Extensions
             return transferObject;
         }
 
-        public static Engine.Configuration.EngineConfiguration ToModelObject(this Remoting.Server.Data.Transfer.Configuration.Engine transferObject)
+        public static Engine.Data.Configuration.Engine ToModelObject(this Remoting.Server.Data.Transfer.Configuration.Engine transferObject)
         {
-            Engine.Configuration.EngineConfiguration modelObject = new Engine.Configuration.EngineConfiguration();
+            Engine.Data.Configuration.Engine modelObject = new Engine.Data.Configuration.Engine();
 
             ObjectCopier.CopyObject(transferObject, modelObject, "DeviceConfigurations", "XgminerConfiguration", "CoinConfigurations");
 

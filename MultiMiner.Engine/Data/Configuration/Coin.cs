@@ -1,12 +1,15 @@
-﻿using MultiMiner.Xgminer;
+﻿using MultiMiner.Engine.Data;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
-namespace MultiMiner.Engine.Configuration
+namespace MultiMiner.Engine.Data.Configuration
 {
     //marked Serializable to allow deep cloning of CoinConfiguration
     [Serializable]
-    public class CoinConfiguration
+    [XmlType(TypeName = "CoinConfiguration")]
+    public class Coin
     {
         public enum AdjustmentType
         {
@@ -14,14 +17,15 @@ namespace MultiMiner.Engine.Configuration
             Multiplication = 1
         }
 
-        public CoinConfiguration()
+        public Coin()
         {
             this.Pools = new List<MiningPool>();
             this.Enabled = true;
-            this.Coin = new CryptoCoin();
+            this.CryptoCoin = new CryptoCoin();
         }
 
-        public CryptoCoin Coin { get; set; }
+        [XmlElement(ElementName = "Coin")]
+        public CryptoCoin CryptoCoin { get; set; }
         public List<MiningPool> Pools { get; set; }
         public string MinerFlags { get; set; }
         public double ProfitabilityAdjustment { get; set; }

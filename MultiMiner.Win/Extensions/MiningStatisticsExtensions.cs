@@ -1,11 +1,11 @@
 ﻿using MultiMiner.MobileMiner.Api.Data;
-using MultiMiner.Xgminer.Api.Responses;
+using MultiMiner.Xgminer.Api.Data;
 
 namespace MultiMiner.Win.Extensions
 {
     static class MiningStatisticsExtensions
     {
-        public static void PopulateFrom(this MiningStatistics miningStatistics, DeviceInformationResponse deviceInformation)
+        public static void PopulateFrom(this MiningStatistics miningStatistics, DeviceInformation deviceInformation)
         {
             miningStatistics.AcceptedShares = deviceInformation.AcceptedShares;
             miningStatistics.AverageHashrate = deviceInformation.AverageHashrate;

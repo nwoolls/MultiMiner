@@ -8,7 +8,7 @@ namespace MultiMiner.Xgminer
     {
         public MinerLaunchException() : base() { }
         public MinerLaunchException(string message) : base(message) { }
-        public MinerLaunchException(string message, System.Exception inner) : base(message, inner) { }
+        public MinerLaunchException(string message, Exception inner) : base(message, inner) { }
         public MinerLaunchException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }

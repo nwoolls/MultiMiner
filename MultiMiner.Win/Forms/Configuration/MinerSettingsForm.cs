@@ -1,9 +1,10 @@
-﻿using MultiMiner.Engine.Configuration;
+﻿using MultiMiner.Engine.Data.Configuration;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Diagnostics;
 
@@ -11,20 +12,20 @@ namespace MultiMiner.Win.Forms.Configuration
 {
     public partial class MinerSettingsForm : MessageBoxFontForm
     {
-        private readonly XgminerConfiguration minerConfiguration;
-        private readonly XgminerConfiguration workingMinerConfiguration;
+        private readonly MultiMiner.Engine.Data.Configuration.Xgminer minerConfiguration;
+        private readonly MultiMiner.Engine.Data.Configuration.Xgminer workingMinerConfiguration;
 
-        private readonly ApplicationConfiguration applicationConfiguration;
-        private readonly ApplicationConfiguration workingApplicationConfiguration;
+        private readonly Application applicationConfiguration;
+        private readonly Application workingApplicationConfiguration;
 
-        public MinerSettingsForm(XgminerConfiguration minerConfiguration, ApplicationConfiguration applicationConfiguration)
+        public MinerSettingsForm(MultiMiner.Engine.Data.Configuration.Xgminer minerConfiguration, Application applicationConfiguration)
         {
             InitializeComponent();
             this.minerConfiguration = minerConfiguration;
-            this.workingMinerConfiguration = ObjectCopier.CloneObject<XgminerConfiguration, XgminerConfiguration>(minerConfiguration);
+            this.workingMinerConfiguration = ObjectCopier.CloneObject<MultiMiner.Engine.Data.Configuration.Xgminer, MultiMiner.Engine.Data.Configuration.Xgminer>(minerConfiguration);
 
             this.applicationConfiguration = applicationConfiguration;
-            this.workingApplicationConfiguration = ObjectCopier.CloneObject<ApplicationConfiguration, ApplicationConfiguration>(applicationConfiguration);
+            this.workingApplicationConfiguration = ObjectCopier.CloneObject<Application, Application>(applicationConfiguration);
         }
 
         private void AdvancedSettingsForm_Load(object sender, EventArgs e)
@@ -62,7 +63,7 @@ namespace MultiMiner.Win.Forms.Configuration
                 (workingApplicationConfiguration.AutoSetDesktopMode != applicationConfiguration.AutoSetDesktopMode))
                 workingMinerConfiguration.DesktopMode = false;
 
-            workingApplicationConfiguration.ScheduledRestartMiningInterval = (ApplicationConfiguration.TimerInterval)intervalCombo.SelectedIndex;
+            workingApplicationConfiguration.ScheduledRestartMiningInterval = (Application.TimerInterval)intervalCombo.SelectedIndex;
 
             minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256] = sha256ParamsEdit.Text;
             minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt] = scryptParamsEdit.Text;

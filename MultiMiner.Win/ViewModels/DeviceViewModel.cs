@@ -1,5 +1,5 @@
-﻿using MultiMiner.Engine;
-using MultiMiner.Xgminer;
+﻿using MultiMiner.Engine.Data;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 

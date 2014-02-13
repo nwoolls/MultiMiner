@@ -42,13 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationPaths.cs" />
-    <Compile Include="Configuration\CoinConfiguration.cs" />
-    <Compile Include="Configuration\Obsolete\StrategyConfiguration.cs" />
-    <Compile Include="Configuration\StrategyConfiguration.cs" />
-    <Compile Include="CryptoCoin.cs" />
-    <Compile Include="Configuration\DeviceConfiguration.cs" />
-    <Compile Include="Configuration\EngineConfiguration.cs" />
-    <Compile Include="Configuration\XgminerConfiguration.cs" />
+    <Compile Include="Data\Configuration\Coin.cs" />
+    <Compile Include="Data\Configuration\Strategy.cs" />
+    <Compile Include="Data\CryptoCoin.cs" />
+    <Compile Include="Data\Configuration\Device.cs" />
+    <Compile Include="Data\Configuration\Engine.cs" />
+    <Compile Include="Data\Configuration\Xgminer.cs" />
     <Compile Include="DonationPools.cs" />
     <Compile Include="Installer.cs" />
     <Compile Include="LogProcessCloseArgs.cs" />

@@ -6,13 +6,13 @@ namespace MultiMiner.Win.Extensions
 {
     public static class IPEndPointExtensions
     {
-        public static List<NetworkDevicesConfiguration.NetworkDevice> ToNetworkDevices(this List<IPEndPoint> endpoints)
+        public static List<NetworkDevices.NetworkDevice> ToNetworkDevices(this List<IPEndPoint> endpoints)
         {
-            List<NetworkDevicesConfiguration.NetworkDevice> networkDevices = new List<NetworkDevicesConfiguration.NetworkDevice>();
+            List<NetworkDevices.NetworkDevice> networkDevices = new List<NetworkDevices.NetworkDevice>();
 
             foreach (IPEndPoint endpoint in endpoints)
             {
-                networkDevices.Add(new NetworkDevicesConfiguration.NetworkDevice
+                networkDevices.Add(new NetworkDevices.NetworkDevice
                 {
                     IPAddress = endpoint.Address.ToString(),
                     Port = endpoint.Port

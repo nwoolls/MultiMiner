@@ -7,15 +7,15 @@ namespace MultiMiner.Win.Forms.Configuration
 {
     public partial class OnlineSettingsForm : MessageBoxFontForm
     {
-        private readonly ApplicationConfiguration applicationConfiguration;
-        private readonly ApplicationConfiguration workingApplicationConfiguration;
+        private readonly Application applicationConfiguration;
+        private readonly Application workingApplicationConfiguration;
 
-        public OnlineSettingsForm(ApplicationConfiguration applicationConfiguration)
+        public OnlineSettingsForm(Application applicationConfiguration)
         {
             InitializeComponent();
 
             this.applicationConfiguration = applicationConfiguration;
-            workingApplicationConfiguration = ObjectCopier.CloneObject<ApplicationConfiguration, ApplicationConfiguration>(applicationConfiguration);
+            workingApplicationConfiguration = ObjectCopier.CloneObject<Application, Application>(applicationConfiguration);
         }
 
         private void OnlineSettingsForm_Load(object sender, EventArgs e)
@@ -35,11 +35,11 @@ namespace MultiMiner.Win.Forms.Configuration
 
             if (applicationConfiguration.SuggestCoinsToMine)
             {
-                if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256)
+                if (applicationConfiguration.SuggestionsAlgorithm == Application.CoinSuggestionsAlgorithm.SHA256)
                     suggestionsCombo.SelectedIndex = 1;
-                else if (applicationConfiguration.SuggestionsAlgorithm == ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt)
+                else if (applicationConfiguration.SuggestionsAlgorithm == Application.CoinSuggestionsAlgorithm.Scrypt)
                     suggestionsCombo.SelectedIndex = 2;
-                else if (applicationConfiguration.SuggestionsAlgorithm == (ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256 | ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt))
+                else if (applicationConfiguration.SuggestionsAlgorithm == (Application.CoinSuggestionsAlgorithm.SHA256 | Application.CoinSuggestionsAlgorithm.Scrypt))
                     suggestionsCombo.SelectedIndex = 3;
                 else
                     suggestionsCombo.SelectedIndex = 0;
@@ -54,21 +54,21 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             ObjectCopier.CopyObject(workingApplicationConfiguration, applicationConfiguration);
             
-            applicationConfiguration.StrategyCheckInterval = (ApplicationConfiguration.TimerInterval)intervalCombo.SelectedIndex;
+            applicationConfiguration.StrategyCheckInterval = (Application.TimerInterval)intervalCombo.SelectedIndex;
 
             switch (suggestionsCombo.SelectedIndex)
             {
                 case 1:
                     applicationConfiguration.SuggestCoinsToMine = true;
-                    applicationConfiguration.SuggestionsAlgorithm = ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256;
+                    applicationConfiguration.SuggestionsAlgorithm = Application.CoinSuggestionsAlgorithm.SHA256;
                     break;
                 case 2:
                     applicationConfiguration.SuggestCoinsToMine = true;
-                    applicationConfiguration.SuggestionsAlgorithm = ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt;
+                    applicationConfiguration.SuggestionsAlgorithm = Application.CoinSuggestionsAlgorithm.Scrypt;
                     break;
                 case 3:
                     applicationConfiguration.SuggestCoinsToMine = true;
-                    applicationConfiguration.SuggestionsAlgorithm = ApplicationConfiguration.CoinSuggestionsAlgorithm.SHA256 | ApplicationConfiguration.CoinSuggestionsAlgorithm.Scrypt;
+                    applicationConfiguration.SuggestionsAlgorithm = Application.CoinSuggestionsAlgorithm.SHA256 | Application.CoinSuggestionsAlgorithm.Scrypt;
                     break;
                 default:
                     applicationConfiguration.SuggestCoinsToMine = false;

@@ -1,4 +1,4 @@
-﻿using MultiMiner.Xgminer.Api.Responses;
+﻿using MultiMiner.Xgminer.Api.Data;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +6,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
 {
     class SummaryInformationParser : ResponseTextParser
     {
-        public static void ParseTextForSummaryInformation(string text, SummaryInformationResponse summaryInformation)
+        public static void ParseTextForSummaryInformation(string text, SummaryInformation summaryInformation)
         {
             List<string> summaryBlob = text.Split('|').ToList();
             summaryBlob.RemoveAt(0);

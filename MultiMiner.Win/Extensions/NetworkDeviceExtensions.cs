@@ -1,6 +1,7 @@
 ﻿using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Win.ViewModels;
 using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -9,17 +10,17 @@ namespace MultiMiner.Win.Extensions
 {
     public static class NetworkDeviceExtensions
     {
-        public static List<IPEndPoint> ToIPEndPoints(this List<NetworkDevicesConfiguration.NetworkDevice> networkDevices)
+        public static List<IPEndPoint> ToIPEndPoints(this List<NetworkDevices.NetworkDevice> networkDevices)
         {
             List<IPEndPoint> endpoints = new List<IPEndPoint>();
 
-            foreach (NetworkDevicesConfiguration.NetworkDevice networkDevice in networkDevices)
+            foreach (NetworkDevices.NetworkDevice networkDevice in networkDevices)
                 endpoints.Add(new IPEndPoint(IPAddress.Parse(networkDevice.IPAddress), networkDevice.Port));
 
             return endpoints;
         }
 
-        public static DeviceViewModel ToViewModel(this NetworkDevicesConfiguration.NetworkDevice networkDevice)
+        public static DeviceViewModel ToViewModel(this NetworkDevices.NetworkDevice networkDevice)
         {
             DeviceViewModel deviceViewModel = new DeviceViewModel
             {

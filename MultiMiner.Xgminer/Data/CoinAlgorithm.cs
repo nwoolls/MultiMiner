@@ -1,4 +1,4 @@
-﻿namespace MultiMiner.Xgminer
+﻿namespace MultiMiner.Xgminer.Data
 {
     public enum CoinAlgorithm
     {

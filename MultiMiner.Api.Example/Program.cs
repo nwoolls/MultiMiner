@@ -1,4 +1,6 @@
 ﻿using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Data;
+using MultiMiner.Xgminer.Data.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -85,10 +87,10 @@ namespace MultiMiner.Api.Example
                                 Thread.Sleep(1000 * 10); //sleep 10s
 
                                 //query the miner process via its RPC API for device information
-                                List<Xgminer.Api.Responses.DeviceInformationResponse> deviceInformation = apiContext.GetDeviceInformation(minerConfiguration.LogInterval);
+                                List<Xgminer.Api.Data.DeviceInformation> deviceInformation = apiContext.GetDeviceInformation(minerConfiguration.LogInterval);
 
                                 //output device information
-                                foreach (Xgminer.Api.Responses.DeviceInformationResponse item in deviceInformation)
+                                foreach (Xgminer.Api.Data.DeviceInformation item in deviceInformation)
                                     Console.WriteLine("Hasrate for device {0}: {1} current, {2} average", item.Index,
                                             item.CurrentHashrate, item.AverageHashrate);
                             }

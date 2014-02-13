@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MultiMiner.Xgminer
+namespace MultiMiner.Xgminer.Data
 {
     [Serializable]
     public class DeviceDescriptor

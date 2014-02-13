@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Engine;
+using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Forms;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace MultiMiner.Win.Forms
             {
                 CryptoCoin newCoin = new CryptoCoin();
                 newCoin.Name = coinCombo.Text;
-                newCoin.Algorithm = Xgminer.CoinAlgorithm.SHA256;
+                newCoin.Algorithm = Xgminer.Data.CoinAlgorithm.SHA256;
 
                 CoinEditForm coinEditForm = new CoinEditForm(newCoin);
                 if (coinEditForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)

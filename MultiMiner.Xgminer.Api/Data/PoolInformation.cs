@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace MultiMiner.Xgminer.Api.Responses
+namespace MultiMiner.Xgminer.Api.Data
 {
-    public class PoolInformationResponse
+    public class PoolInformation
     {
         public int Index { get; set; }
         public string Url { get; set; }

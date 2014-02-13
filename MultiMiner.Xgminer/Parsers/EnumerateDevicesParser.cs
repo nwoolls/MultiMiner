@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MultiMiner.Xgminer.Data;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace MultiMiner.Xgminer.Parsers

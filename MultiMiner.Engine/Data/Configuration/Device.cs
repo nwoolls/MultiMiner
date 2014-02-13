@@ -1,12 +1,14 @@
-﻿using MultiMiner.Xgminer;
+﻿using MultiMiner.Xgminer.Data;
 using System;
+using System.Xml.Serialization;
 
-namespace MultiMiner.Engine.Configuration
+namespace MultiMiner.Engine.Data.Configuration
 {
     [Serializable]
-    public class DeviceConfiguration : DeviceDescriptor
+    [XmlType(TypeName = "DeviceConfiguration")]
+    public class Device : DeviceDescriptor
     {
-        public DeviceConfiguration()
+        public Device()
         {
             this.Enabled = true;
             this.CoinSymbol = String.Empty;

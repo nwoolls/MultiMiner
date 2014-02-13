@@ -1,4 +1,4 @@
-﻿using MultiMiner.Xgminer.Api.Responses;
+﻿using MultiMiner.Xgminer.Api.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
 {
     class PoolInformationParser : ResponseTextParser
     {
-        public static void ParseTextForDeviceDetails(string text, List<PoolInformationResponse> poolInformation)
+        public static void ParseTextForDeviceDetails(string text, List<PoolInformation> poolInformation)
         {
             List<string> deviceBlob = text.Split('|').ToList();
             deviceBlob.RemoveAt(0);
@@ -31,7 +31,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
                 //seen Count == 0 with user API logs
                 if (keyValuePairs.Count > 0)
                 {
-                    PoolInformationResponse newPool = new PoolInformationResponse();
+                    PoolInformation newPool = new PoolInformation();
 
                     newPool.Index = int.Parse(keyValuePairs["POOL"]);
 

@@ -43,20 +43,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationFailedArgs.cs" />
-    <Compile Include="CoinAlgorithm.cs" />
-    <Compile Include="Device\Device.cs" />
-    <Compile Include="Device\DeviceDescriptor.cs" />
-    <Compile Include="Device\DeviceKind.cs" />
-    <Compile Include="Device\DevicePlatform.cs" />
+    <Compile Include="Data\CoinAlgorithm.cs" />
+    <Compile Include="Data\Device\Device.cs" />
+    <Compile Include="Data\Device\DeviceDescriptor.cs" />
+    <Compile Include="Data\Device\DeviceKind.cs" />
+    <Compile Include="Data\Device\DevicePlatform.cs" />
     <Compile Include="Installer.cs" />
     <Compile Include="LaunchFailedArgs.cs" />
     <Compile Include="LogLaunchArgs.cs" />
     <Compile Include="MinerLaunchException.cs" />
-    <Compile Include="MiningPool.cs" />
+    <Compile Include="Data\MiningPool.cs" />
     <Compile Include="Parsers\DeviceListParser.cs" />
     <Compile Include="Parsers\EnumerateDevicesParser.cs" />
     <Compile Include="Miner.cs" />
-    <Compile Include="MinerConfiguration.cs" />
+    <Compile Include="Data\Configuration\Miner.cs" />
     <Compile Include="MinerParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

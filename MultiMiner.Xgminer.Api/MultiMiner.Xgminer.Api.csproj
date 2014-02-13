@@ -46,15 +46,15 @@
     <Compile Include="Parsers\DeviceDetailsParser.cs" />
     <Compile Include="Parsers\PoolInformationParser.cs" />
     <Compile Include="Parsers\ResponseTextParser.cs" />
-    <Compile Include="Responses\DeviceDetailsResponse.cs" />
-    <Compile Include="Responses\DeviceInformationResponse.cs" />
+    <Compile Include="Data\DeviceDetails.cs" />
+    <Compile Include="Data\DeviceInformation.cs" />
     <Compile Include="LogEventArgs.cs" />
     <Compile Include="Parsers\DeviceInformationParser.cs" />
     <Compile Include="Parsers\SummaryInformationParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ApiVerb.cs" />
-    <Compile Include="Responses\PoolInformationResponse.cs" />
-    <Compile Include="Responses\SummaryInformationResponse.cs" />
+    <Compile Include="Data\PoolInformation.cs" />
+    <Compile Include="Data\SummaryInformation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Data;
 using System.ServiceModel;
 
 namespace MultiMiner.Remoting.Server
@@ -12,7 +13,7 @@ namespace MultiMiner.Remoting.Server
         void GetApplicationModels(
             string signature,
             out Data.Transfer.Device[] devices,
-            out Engine.CryptoCoin[] configurations, 
+            out Engine.Data.CryptoCoin[] configurations, 
             out bool mining, 
             out bool hasChanges,
             out bool dynamicIntensity);

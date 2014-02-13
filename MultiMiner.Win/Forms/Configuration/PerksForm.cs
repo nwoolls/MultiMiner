@@ -6,7 +6,7 @@ namespace MultiMiner.Win.Forms.Configuration
 {
     public partial class PerksForm : MessageBoxFontForm
     {
-        public PerksForm(PerksConfiguration perksConfiguration)
+        public PerksForm(Perks perksConfiguration)
         {
             InitializeComponent();
             this.perksConfigurationBindingSource.DataSource = perksConfiguration;

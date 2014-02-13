@@ -156,7 +156,7 @@
             // 
             // cryptoCoinBindingSource
             // 
-            this.cryptoCoinBindingSource.DataSource = typeof(MultiMiner.Engine.CryptoCoin);
+            this.cryptoCoinBindingSource.DataSource = typeof(MultiMiner.Engine.Data.CryptoCoin);
             // 
             // label3
             // 

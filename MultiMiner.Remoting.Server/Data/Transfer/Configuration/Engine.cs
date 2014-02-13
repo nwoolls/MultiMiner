@@ -1,4 +1,4 @@
-﻿using MultiMiner.Engine.Configuration;
+﻿using MultiMiner.Engine.Data.Configuration;
 using System.Runtime.Serialization;
 
 namespace MultiMiner.Remoting.Server.Data.Transfer.Configuration
@@ -10,19 +10,19 @@ namespace MultiMiner.Remoting.Server.Data.Transfer.Configuration
         public Engine()
         {
             XgminerConfiguration = new Xgminer();
-            StrategyConfiguration = new StrategyConfiguration();
+            StrategyConfiguration = new Strategy();
         }
 
         [DataMember]
         public Device[] DeviceConfigurations { get; set; }
 
         [DataMember]
-        public CoinConfiguration[] CoinConfigurations { get; set; }
+        public Coin[] CoinConfigurations { get; set; }
 
         [DataMember]
         public Xgminer XgminerConfiguration { get; set; }
 
         [DataMember]
-        public StrategyConfiguration StrategyConfiguration { get; set; }
+        public Strategy StrategyConfiguration { get; set; }
     }
 }

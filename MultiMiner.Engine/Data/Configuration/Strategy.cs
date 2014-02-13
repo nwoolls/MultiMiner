@@ -1,6 +1,9 @@
-﻿namespace MultiMiner.Engine.Configuration
+﻿using System.Xml.Serialization;
+
+namespace MultiMiner.Engine.Data.Configuration
 {
-    public class StrategyConfiguration
+    [XmlType(TypeName = "StrategyConfiguration")]
+    public class Strategy
     {
         //generic
         public bool AutomaticallyMineCoins { get; set; }

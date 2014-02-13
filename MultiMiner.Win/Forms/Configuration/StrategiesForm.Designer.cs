@@ -101,7 +101,7 @@
             // 
             // strategyConfigurationBindingSource
             // 
-            this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.StrategyConfiguration);
+            this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Data.Configuration.Strategy);
             // 
             // singleCoinRadio
             // 
@@ -249,7 +249,7 @@
             // 
             // applicationConfigurationBindingSource
             // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.ApplicationConfiguration);
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
             // 
             // StrategiesForm
             // 

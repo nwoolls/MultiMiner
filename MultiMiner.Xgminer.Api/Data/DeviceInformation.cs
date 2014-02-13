@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace MultiMiner.Xgminer.Api.Responses
+namespace MultiMiner.Xgminer.Api.Data
 {
-    public class DeviceInformationResponse
+    public class DeviceInformation
     {
-        public DeviceInformationResponse()
+        public DeviceInformation()
         {
             Status = String.Empty;
             Name = String.Empty;

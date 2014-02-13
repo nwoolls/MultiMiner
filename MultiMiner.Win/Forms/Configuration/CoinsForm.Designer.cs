@@ -319,7 +319,7 @@
             // 
             // miningPoolBindingSource
             // 
-            this.miningPoolBindingSource.DataSource = typeof(MultiMiner.Xgminer.MiningPool);
+            this.miningPoolBindingSource.DataSource = typeof(MultiMiner.Xgminer.Data.MiningPool);
             // 
             // label4
             // 
@@ -404,7 +404,7 @@
             // 
             // coinConfigurationBindingSource
             // 
-            this.coinConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Configuration.CoinConfiguration);
+            this.coinConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Data.Configuration.Coin);
             this.coinConfigurationBindingSource.CurrentChanged += new System.EventHandler(this.coinConfigurationBindingSource_CurrentChanged);
             // 
             // label5

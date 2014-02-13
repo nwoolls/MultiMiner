@@ -36,7 +36,7 @@ namespace MultiMiner.Utility.Forms
                     else
                         CheckAndShowCursor(activeForm);
                 }
-                Application.DoEvents();
+                System.Windows.Forms.Application.DoEvents();
             }
         }
 

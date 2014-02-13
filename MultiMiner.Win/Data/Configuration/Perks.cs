@@ -2,10 +2,12 @@
 using MultiMiner.Utility.Serialization;
 using System;
 using System.IO;
+using System.Xml.Serialization;
 
 namespace MultiMiner.Win.Data.Configuration
 {
-    public class PerksConfiguration
+    [XmlType(TypeName = "PerksConfiguration")]
+    public class Perks
     {
         public bool PerksEnabled { get; set; }
         public bool ShowExchangeRates { get; set; }
@@ -52,7 +54,7 @@ namespace MultiMiner.Win.Data.Configuration
         {
             InitializeConfigDirectory(configDirectory);
 
-            PerksConfiguration tmp = ConfigurationReaderWriter.ReadConfiguration<PerksConfiguration>(PerksConfigurationFileName());
+            Perks tmp = ConfigurationReaderWriter.ReadConfiguration<Perks>(PerksConfigurationFileName());
 
             ObjectCopier.CopyObject(tmp, this);
         }

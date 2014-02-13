@@ -1,14 +1,15 @@
-﻿using MultiMiner.Engine.Configuration;
+﻿using MultiMiner.Engine.Data.Configuration;
 using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Data;
 using System.Collections.Generic;
 
 namespace MultiMiner.Engine
 {
     public static class DonationPools
     {
-        public static void Seed(List<CoinConfiguration> configurations)
+        public static void Seed(List<Data.Configuration.Coin> configurations)
         {
-            CoinConfiguration donationConfiguration;
+            Data.Configuration.Coin donationConfiguration;
 
             //BTC
             donationConfiguration = CreateCoinConfiguration("BTC", "stratum+tcp://stratum.mining.eligius.st", 3334, "1LKwyLK4KhojsJUEvUx8bEmnmjohNMjRDM");
@@ -116,10 +117,10 @@ namespace MultiMiner.Engine
             configurations.Add(donationConfiguration);
         }
 
-        private static CoinConfiguration CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
+        private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
         {
-            CoinConfiguration donationConfiguration = new CoinConfiguration();
-            donationConfiguration.Coin.Symbol = coinSymbol;
+            Data.Configuration.Coin donationConfiguration = new Data.Configuration.Coin();
+            donationConfiguration.CryptoCoin.Symbol = coinSymbol;
 
             MiningPool donationPool = new MiningPool()
             {

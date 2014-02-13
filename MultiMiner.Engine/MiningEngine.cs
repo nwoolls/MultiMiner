@@ -1,6 +1,8 @@
 ﻿using MultiMiner.Coin.Api.Data;
-using MultiMiner.Engine.Configuration;
+using MultiMiner.Engine.Data.Configuration;
 using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Data;
+using MultiMiner.Xgminer.Data.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,8 +23,8 @@ namespace MultiMiner.Engine
         public event Miner.LaunchFailedHandler ProcessLaunchFailed;
         public event Miner.AuthenticationFailedHandler ProcessAuthenticationFailed;
         private List<MinerProcess> minerProcesses = new List<MinerProcess>();
-        private EngineConfiguration engineConfiguration;
-        private List<Device> devices;
+        private Data.Configuration.Engine engineConfiguration;
+        private List<Xgminer.Data.Device> devices;
         private Version backendVersion;
         private int donationPercent;
         
@@ -55,7 +57,7 @@ namespace MultiMiner.Engine
         }
 
         private bool startingMining = false;
-        public void StartMining(EngineConfiguration engineConfiguration, List<Device> devices, List<CoinInformation> coinInformation, int donationPercent)
+        public void StartMining(Data.Configuration.Engine engineConfiguration, List<Xgminer.Data.Device> devices, List<CoinInformation> coinInformation, int donationPercent)
         {
             StopMining();
 
@@ -159,7 +161,7 @@ namespace MultiMiner.Engine
         private void setupProcessStartInfo(MinerProcess minerProcess)
         {
             string coinName = minerProcess.MinerConfiguration.CoinName;
-            string coinSymbol = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase)).Coin.Symbol;
+            string coinSymbol = engineConfiguration.CoinConfigurations.Single(c => c.CryptoCoin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase)).CryptoCoin.Symbol;
 
             CoinInformation processCoinInfo = null;
             if (coinInformation != null) //null if no network connection
@@ -237,7 +239,7 @@ namespace MultiMiner.Engine
                     c => c.Enabled && 
                         !c.PoolsDown && 
                         (c.Pools.Count > 0)
-                    ).Select(c => c.Coin.Symbol);
+                    ).Select(c => c.CryptoCoin.Symbol);
 
                 //filter the coin info by that list
                 //use the copy here
@@ -250,7 +252,7 @@ namespace MultiMiner.Engine
 
                     List<CoinInformation> orderedCoinInformation = GetCoinInformationOrderedByMiningBasis(filteredCoinInformation);
 
-                    List<DeviceConfiguration> newConfiguration = CreateAutomaticDeviceConfiguration(orderedCoinInformation);
+                    List<Engine.Data.Configuration.Device> newConfiguration = CreateAutomaticDeviceConfiguration(orderedCoinInformation);
 
                     //compare newConfiguration to engineConfiguration.DeviceConfiguration
                     //store if different
@@ -258,7 +260,7 @@ namespace MultiMiner.Engine
 
                     //apply newConfiguration to engineConfiguration.DeviceConfiguration
                     engineConfiguration.DeviceConfigurations.Clear();
-                    foreach (DeviceConfiguration deviceConfiguration in newConfiguration)
+                    foreach (Engine.Data.Configuration.Device deviceConfiguration in newConfiguration)
                         engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
 
                     //restart mining if stored bool is true
@@ -298,24 +300,24 @@ namespace MultiMiner.Engine
 
             switch (engineConfiguration.StrategyConfiguration.MiningBasis)
             {
-                case StrategyConfiguration.CoinMiningBasis.Profitability:
+                case Strategy.CoinMiningBasis.Profitability:
                     switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
                     {
-                        case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
+                        case Strategy.CoinProfitabilityKind.AdjustedProfitability:
                             orderedCoins = orderedCoins.OrderByDescending(c => c.AdjustedProfitability).ToList();
                             break;
-                        case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
+                        case Strategy.CoinProfitabilityKind.AverageProfitability:
                             orderedCoins = orderedCoins.OrderByDescending(c => c.AverageProfitability).ToList();
                             break;
-                        case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
+                        case Strategy.CoinProfitabilityKind.StraightProfitability:
                             orderedCoins = orderedCoins.OrderByDescending(c => c.Profitability).ToList();
                             break;
                     }
                     break;
-                case StrategyConfiguration.CoinMiningBasis.Difficulty:
+                case Strategy.CoinMiningBasis.Difficulty:
                     orderedCoins = orderedCoins.OrderBy(c => c.Difficulty).ToList();
                     break;
-                case StrategyConfiguration.CoinMiningBasis.Price:
+                case Strategy.CoinMiningBasis.Price:
                     orderedCoins = orderedCoins.OrderByDescending(c => c.Price).ToList();
                     break;
             }
@@ -327,15 +329,15 @@ namespace MultiMiner.Engine
         {
             foreach (CoinInformation configuredProfitableCoin in coinInformation)
             {
-                CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(configuredProfitableCoin.Symbol));
+                Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.CryptoCoin.Symbol.Equals(configuredProfitableCoin.Symbol));
 
-                if (coinConfiguration.ProfitabilityAdjustmentType == CoinConfiguration.AdjustmentType.Addition)
+                if (coinConfiguration.ProfitabilityAdjustmentType == Data.Configuration.Coin.AdjustmentType.Addition)
                 {
                     configuredProfitableCoin.AdjustedProfitability += coinConfiguration.ProfitabilityAdjustment;
                     configuredProfitableCoin.AverageProfitability += coinConfiguration.ProfitabilityAdjustment;
                     configuredProfitableCoin.Profitability += coinConfiguration.ProfitabilityAdjustment;
                 }
-                else if (coinConfiguration.ProfitabilityAdjustmentType == CoinConfiguration.AdjustmentType.Multiplication)
+                else if (coinConfiguration.ProfitabilityAdjustmentType == Data.Configuration.Coin.AdjustmentType.Multiplication)
                 {
                     configuredProfitableCoin.AdjustedProfitability *= coinConfiguration.ProfitabilityAdjustment;
                     configuredProfitableCoin.AverageProfitability *= coinConfiguration.ProfitabilityAdjustment;
@@ -344,7 +346,7 @@ namespace MultiMiner.Engine
             }
         }
 
-        private List<DeviceConfiguration> CreateAutomaticDeviceConfiguration(IEnumerable<CoinInformation> orderedCoinInformation)
+        private List<Engine.Data.Configuration.Device> CreateAutomaticDeviceConfiguration(IEnumerable<CoinInformation> orderedCoinInformation)
         {
             //order by adjusted profitability
             List<CoinInformation> filteredCoinInformation = GetFilteredCoinInformation(orderedCoinInformation);
@@ -367,9 +369,9 @@ namespace MultiMiner.Engine
             return CreateDeviceConfigurationForProfitableCoins(filteredCoinInformation, sha256ProfitableCoins);
         }
 
-        private List<DeviceConfiguration> CreateDeviceConfigurationForProfitableCoins(List<CoinInformation> allProfitableCoins, List<CoinInformation> sha256ProfitableCoins)
+        private List<Engine.Data.Configuration.Device> CreateDeviceConfigurationForProfitableCoins(List<CoinInformation> allProfitableCoins, List<CoinInformation> sha256ProfitableCoins)
         {
-            List<DeviceConfiguration> newConfiguration = new List<DeviceConfiguration>();
+            List<Engine.Data.Configuration.Device> newConfiguration = new List<Engine.Data.Configuration.Device>();
             CoinInformation profitableCoin = null;
 
             int gpuIterator = 0;
@@ -377,10 +379,10 @@ namespace MultiMiner.Engine
 
             for (int i = 0; i < devices.Count; i++)
             {
-                Device device = devices[i];
+                Xgminer.Data.Device device = devices[i];
 
                 //there should be a 1-to-1 relationship of devices and device configurations
-                DeviceConfiguration existingConfiguration = engineConfiguration.DeviceConfigurations[i];
+                Engine.Data.Configuration.Device existingConfiguration = engineConfiguration.DeviceConfigurations[i];
 
                 if (existingConfiguration.Enabled)
                 {
@@ -405,7 +407,7 @@ namespace MultiMiner.Engine
                             amuIterator = 0;
                     }
 
-                    DeviceConfiguration configEntry = new DeviceConfiguration();
+                    Engine.Data.Configuration.Device configEntry = new Engine.Data.Configuration.Device();
 
                     configEntry.Assign(device);
 
@@ -415,7 +417,7 @@ namespace MultiMiner.Engine
                 }
                 else
                 {
-                    DeviceConfiguration configEntry = new DeviceConfiguration();
+                    Engine.Data.Configuration.Device configEntry = new Engine.Data.Configuration.Device();
 
                     configEntry.Assign(device);
 
@@ -433,30 +435,30 @@ namespace MultiMiner.Engine
         {
             CoinInformation profitableCoin;
 
-            bool mineSingle = engineConfiguration.StrategyConfiguration.SwitchStrategy == StrategyConfiguration.CoinSwitchStrategy.SingleMost;
+            bool mineSingle = engineConfiguration.StrategyConfiguration.SwitchStrategy == Strategy.CoinSwitchStrategy.SingleMost;
 
             if (!mineSingle && engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue.HasValue)
             {
                 switch (engineConfiguration.StrategyConfiguration.MiningBasis)
                 {
-                    case StrategyConfiguration.CoinMiningBasis.Profitability:
+                    case Strategy.CoinMiningBasis.Profitability:
                         switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
                         {
-                            case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
+                            case Strategy.CoinProfitabilityKind.AdjustedProfitability:
                                 mineSingle = coinList.First().AdjustedProfitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
                                 break;
-                            case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
+                            case Strategy.CoinProfitabilityKind.AverageProfitability:
                                 mineSingle = coinList.First().AverageProfitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
                                 break;
-                            case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
+                            case Strategy.CoinProfitabilityKind.StraightProfitability:
                                 mineSingle = coinList.First().Profitability > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
                                 break;
                         }
                         break;
-                    case StrategyConfiguration.CoinMiningBasis.Difficulty:
+                    case Strategy.CoinMiningBasis.Difficulty:
                         mineSingle = coinList.First().Difficulty < engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
                         break;
-                    case StrategyConfiguration.CoinMiningBasis.Price:
+                    case Strategy.CoinMiningBasis.Price:
                         mineSingle = coinList.First().Price > engineConfiguration.StrategyConfiguration.MineSingleMostOverrideValue;
                         break;
                 }                
@@ -489,24 +491,24 @@ namespace MultiMiner.Engine
 
                 switch (engineConfiguration.StrategyConfiguration.MiningBasis)
                 {
-                    case StrategyConfiguration.CoinMiningBasis.Profitability:
+                    case Strategy.CoinMiningBasis.Profitability:
                         switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
                         {
-                            case StrategyConfiguration.CoinProfitabilityKind.AdjustedProfitability:
+                            case Strategy.CoinProfitabilityKind.AdjustedProfitability:
                                 filteredCoinInformation = filteredCoinInformation.Where(c => c.AdjustedProfitability > minimumValue).ToList();
                                 break;
-                            case StrategyConfiguration.CoinProfitabilityKind.AverageProfitability:
+                            case Strategy.CoinProfitabilityKind.AverageProfitability:
                                 filteredCoinInformation = filteredCoinInformation.Where(c => c.AverageProfitability > minimumValue).ToList();
                                 break;
-                            case StrategyConfiguration.CoinProfitabilityKind.StraightProfitability:
+                            case Strategy.CoinProfitabilityKind.StraightProfitability:
                                 filteredCoinInformation = filteredCoinInformation.Where(c => c.Profitability > minimumValue).ToList();
                                 break;
                         }
                         break;
-                    case StrategyConfiguration.CoinMiningBasis.Difficulty:
+                    case Strategy.CoinMiningBasis.Difficulty:
                         filteredCoinInformation = filteredCoinInformation.Where(c => c.Difficulty < minimumValue).ToList();
                         break;
-                    case StrategyConfiguration.CoinMiningBasis.Price:
+                    case Strategy.CoinMiningBasis.Price:
                         filteredCoinInformation = filteredCoinInformation.Where(c => c.Price > minimumValue).ToList();
                         break;
                 }
@@ -515,7 +517,7 @@ namespace MultiMiner.Engine
             return filteredCoinInformation;
         }
 
-        private static bool DeviceConfigurationsDiffer(List<DeviceConfiguration> configuration1, List<DeviceConfiguration> configuration2)
+        private static bool DeviceConfigurationsDiffer(List<Engine.Data.Configuration.Device> configuration1, List<Engine.Data.Configuration.Device> configuration2)
         {
             bool configDifferent = configuration1.Count != configuration2.Count;
 
@@ -523,8 +525,8 @@ namespace MultiMiner.Engine
             {
                 for (int i = 0; i < configuration1.Count; i++)
                 {
-                    DeviceConfiguration entry1 = configuration1[i];
-                    DeviceConfiguration entry2 = configuration2[i];
+                    Engine.Data.Configuration.Device entry1 = configuration1[i];
+                    Engine.Data.Configuration.Device entry2 = configuration2[i];
 
                     configDifferent = (!entry1.CoinSymbol.Equals(entry2.CoinSymbol)
                         || (entry1.Kind != entry2.Kind)
@@ -606,18 +608,18 @@ namespace MultiMiner.Engine
 
         private MinerConfiguration CreateMinerConfiguration(int port, string coinSymbol, DeviceKind includeKinds)
         {
-            CoinConfiguration coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.Coin.Symbol.Equals(coinSymbol));
+            Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.CryptoCoin.Symbol.Equals(coinSymbol));
 
-            IList<DeviceConfiguration> enabledConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol)).ToList();
+            IList<Engine.Data.Configuration.Device> enabledConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol)).ToList();
 
             MinerConfiguration minerConfiguration = new MinerConfiguration() 
             { 
                 ExecutablePath = MinerPath.GetPathToInstalledMiner(), 
-                Algorithm = coinConfiguration.Coin.Algorithm, 
+                Algorithm = coinConfiguration.CryptoCoin.Algorithm, 
                 ApiPort = port, 
                 ApiListen = true, 
                 AllowedApiIps = engineConfiguration.XgminerConfiguration.AllowedApiIps, 
-                CoinName = coinConfiguration.Coin.Name, 
+                CoinName = coinConfiguration.CryptoCoin.Name, 
                 DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu 
             };
             
@@ -632,14 +634,14 @@ namespace MultiMiner.Engine
             return minerConfiguration;
         }
 
-        private void SetupConfigurationArguments(MinerConfiguration minerConfiguration, CoinConfiguration coinConfiguration)
+        private void SetupConfigurationArguments(MinerConfiguration minerConfiguration, Data.Configuration.Coin coinConfiguration)
         {
             string arguments = string.Empty;
 
             //apply algorithm-specific parameters
-            if (engineConfiguration.XgminerConfiguration.AlgorithmFlags.ContainsKey(coinConfiguration.Coin.Algorithm))
+            if (engineConfiguration.XgminerConfiguration.AlgorithmFlags.ContainsKey(coinConfiguration.CryptoCoin.Algorithm))
                 arguments = String.Format("{0} {1}", arguments,
-                    engineConfiguration.XgminerConfiguration.AlgorithmFlags[coinConfiguration.Coin.Algorithm]);
+                    engineConfiguration.XgminerConfiguration.AlgorithmFlags[coinConfiguration.CryptoCoin.Algorithm]);
 
             //apply coin-specific parameters
             if (!string.IsNullOrEmpty(coinConfiguration.MinerFlags))
@@ -654,14 +656,14 @@ namespace MultiMiner.Engine
             minerConfiguration.LaunchArguments = arguments;
         }
 
-        private int SetupConfigurationDevices(MinerConfiguration minerConfiguration, DeviceKind deviceKinds, IList<DeviceConfiguration> deviceConfigurations)
+        private int SetupConfigurationDevices(MinerConfiguration minerConfiguration, DeviceKind deviceKinds, IList<Engine.Data.Configuration.Device> deviceConfigurations)
         {
             int deviceCount = 0;
             for (int i = 0; i < deviceConfigurations.Count; i++)
             {
-                DeviceConfiguration enabledConfiguration = deviceConfigurations[i];
+                Engine.Data.Configuration.Device enabledConfiguration = deviceConfigurations[i];
 
-                Device device = devices.SingleOrDefault(d => d.Equals(enabledConfiguration));
+                Xgminer.Data.Device device = devices.SingleOrDefault(d => d.Equals(enabledConfiguration));
 
                 if ((deviceKinds & device.Kind) == 0)
                     continue;
@@ -684,7 +686,7 @@ namespace MultiMiner.Engine
             return deviceCount;
         }
 
-        private void SetupConfigurationPools(MinerConfiguration minerConfiguration, CoinConfiguration coinConfiguration)
+        private void SetupConfigurationPools(MinerConfiguration minerConfiguration, Data.Configuration.Coin coinConfiguration)
         {
             //minerConfiguration.Pools = coinConfiguration.Pools;
             foreach (MiningPool pool in coinConfiguration.Pools)
@@ -696,17 +698,17 @@ namespace MultiMiner.Engine
             //using bfgminer quotas for failover, that way we can augment for donations
             minerConfiguration.Pools.First().Quota = 100 - donationPercent;
             if (donationPercent > 0)
-                AddDonationPool(coinConfiguration.Coin.Symbol, minerConfiguration);
+                AddDonationPool(coinConfiguration.CryptoCoin.Symbol, minerConfiguration);
 
             foreach (MiningPool pool in minerConfiguration.Pools)
                 pool.QuotaEnabled = donationPercent > 0;
         }
 
-        private readonly List<CoinConfiguration> donationConfigurations = InitializeDonationConfigurations();
+        private readonly List<Data.Configuration.Coin> donationConfigurations = InitializeDonationConfigurations();
 
-        private static List<CoinConfiguration> InitializeDonationConfigurations()
+        private static List<Data.Configuration.Coin> InitializeDonationConfigurations()
         {
-            List<CoinConfiguration> result = new List<CoinConfiguration>();
+            List<Data.Configuration.Coin> result = new List<Data.Configuration.Coin>();
             DonationPools.Seed(result);
             return result;
         }
@@ -716,7 +718,7 @@ namespace MultiMiner.Engine
         {
             MiningPool donationPool = null;
 
-            CoinConfiguration donationConfiguration = this.donationConfigurations.SingleOrDefault(dc => dc.Coin.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+            Data.Configuration.Coin donationConfiguration = this.donationConfigurations.SingleOrDefault(dc => dc.CryptoCoin.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             if (donationConfiguration != null)
             {
                 //inclusive lower, exclusive upper

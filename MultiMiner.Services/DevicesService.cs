@@ -1,20 +1,22 @@
-﻿using MultiMiner.Engine.Configuration;
+﻿using MultiMiner.Engine.Data;
 using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Data;
+using MultiMiner.Xgminer.Data.Configuration;
 using System.Collections.Generic;
 
 namespace MultiMiner.Services
 {
     public class DevicesService
     {
-        private readonly XgminerConfiguration xgminerConfiguration = null;
-        public DevicesService(XgminerConfiguration minerConfiguration)
+        private readonly MultiMiner.Engine.Data.Configuration.Xgminer xgminerConfiguration = null;
+        public DevicesService(MultiMiner.Engine.Data.Configuration.Xgminer minerConfiguration)
         {
             this.xgminerConfiguration = minerConfiguration;
         }
 
         public DevicesService()
         {
-            this.xgminerConfiguration = new XgminerConfiguration();
+            this.xgminerConfiguration = new MultiMiner.Engine.Data.Configuration.Xgminer();
             this.xgminerConfiguration.LoadMinerConfiguration();
         }
 

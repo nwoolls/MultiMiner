@@ -5,7 +5,7 @@ using System.IO;
 
 namespace MultiMiner.Win.Data.Configuration
 {
-    public class NetworkDevicesConfiguration
+    public class NetworkDevices
     {
         public class NetworkDevice
         {
@@ -13,7 +13,7 @@ namespace MultiMiner.Win.Data.Configuration
             public int Port { get; set; }
         }
 
-        public List<NetworkDevice> NetworkDevices { get; set; }
+        public List<NetworkDevice> Devices { get; set; }
 
         private static string NetworkDevicesConfigurationFileName()
         {
@@ -22,12 +22,12 @@ namespace MultiMiner.Win.Data.Configuration
 
         public void SaveNetworkDevicesConfiguration()
         {
-            ConfigurationReaderWriter.WriteConfiguration(NetworkDevices, NetworkDevicesConfigurationFileName());
+            ConfigurationReaderWriter.WriteConfiguration(Devices, NetworkDevicesConfigurationFileName());
         }
 
         public void LoadNetworkDevicesConfiguration()
         {
-            NetworkDevices = ConfigurationReaderWriter.ReadConfiguration<List<NetworkDevice>>(NetworkDevicesConfigurationFileName());
+            Devices = ConfigurationReaderWriter.ReadConfiguration<List<NetworkDevice>>(NetworkDevicesConfigurationFileName());
         }
     }
 }

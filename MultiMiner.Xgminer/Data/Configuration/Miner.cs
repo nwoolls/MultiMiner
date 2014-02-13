@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace MultiMiner.Xgminer
+namespace MultiMiner.Xgminer.Data.Configuration
 {
     public class MinerConfiguration
     {

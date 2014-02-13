@@ -5,28 +5,28 @@ namespace MultiMiner.Win.Extensions
 {
     public static class DeviceConfigurationExtensions
     {
-        public static List<Remoting.Server.Data.Transfer.Configuration.Device> ToTransferObjects(this List<Engine.Configuration.DeviceConfiguration> modelObjects)
+        public static List<Remoting.Server.Data.Transfer.Configuration.Device> ToTransferObjects(this List<Engine.Data.Configuration.Device> modelObjects)
         {
             List<Remoting.Server.Data.Transfer.Configuration.Device> transferObjects = new List<Remoting.Server.Data.Transfer.Configuration.Device>();
 
-            foreach (Engine.Configuration.DeviceConfiguration modelConfig in modelObjects)
+            foreach (Engine.Data.Configuration.Device modelConfig in modelObjects)
             {
                 Remoting.Server.Data.Transfer.Configuration.Device transferObject;
-                transferObject = ObjectCopier.CloneObject<Engine.Configuration.DeviceConfiguration, Remoting.Server.Data.Transfer.Configuration.Device>(modelConfig);
+                transferObject = ObjectCopier.CloneObject<Engine.Data.Configuration.Device, Remoting.Server.Data.Transfer.Configuration.Device>(modelConfig);
                 transferObjects.Add(transferObject);
             }
 
             return transferObjects;
         }
 
-        public static List<Engine.Configuration.DeviceConfiguration> ToModelObjects(this List<Remoting.Server.Data.Transfer.Configuration.Device> transferObjects)
+        public static List<Engine.Data.Configuration.Device> ToModelObjects(this List<Remoting.Server.Data.Transfer.Configuration.Device> transferObjects)
         {
-            List<Engine.Configuration.DeviceConfiguration> modelObjects = new List<Engine.Configuration.DeviceConfiguration>();
+            List<Engine.Data.Configuration.Device> modelObjects = new List<Engine.Data.Configuration.Device>();
 
             foreach (Remoting.Server.Data.Transfer.Configuration.Device transferConfig in transferObjects)
             {
-                Engine.Configuration.DeviceConfiguration modelObject;
-                modelObject = ObjectCopier.CloneObject<Remoting.Server.Data.Transfer.Configuration.Device, Engine.Configuration.DeviceConfiguration>(transferConfig);
+                Engine.Data.Configuration.Device modelObject;
+                modelObject = ObjectCopier.CloneObject<Remoting.Server.Data.Transfer.Configuration.Device, Engine.Data.Configuration.Device>(transferConfig);
                 modelObjects.Add(modelObject);
             }
 

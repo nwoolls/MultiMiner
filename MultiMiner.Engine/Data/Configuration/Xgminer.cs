@@ -1,13 +1,15 @@
 ﻿using MultiMiner.Utility.Serialization;
-using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Xml.Serialization;
 
-namespace MultiMiner.Engine.Configuration
+namespace MultiMiner.Engine.Data.Configuration
 {
-    public class XgminerConfiguration
+    [XmlType(TypeName = "XgminerConfiguration")]
+    public class Xgminer
     {
-        public XgminerConfiguration()
+        public Xgminer()
         {
             AlgorithmFlags = new SerializableDictionary<CoinAlgorithm, string>();
             Priority = ProcessPriorityClass.Normal;
@@ -38,7 +40,7 @@ namespace MultiMiner.Engine.Configuration
 
         public void LoadMinerConfiguration()
         {
-            XgminerConfiguration minerConfiguration = ConfigurationReaderWriter.ReadConfiguration<XgminerConfiguration>(XgminerConfigurationFileName());
+            Xgminer minerConfiguration = ConfigurationReaderWriter.ReadConfiguration<Xgminer>(XgminerConfigurationFileName());
             ObjectCopier.CopyObject(minerConfiguration, this);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
+using MultiMiner.Xgminer.Data;
 
 namespace MultiMiner.Xgminer.Parsers
 {

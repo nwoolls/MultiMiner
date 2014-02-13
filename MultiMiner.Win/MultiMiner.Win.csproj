@@ -69,8 +69,8 @@
     <Compile Include="Forms\Configuration\AdvancedSettingsForm.Designer.cs">
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\Configuration\NetworkDevicesConfiguration.cs" />
-    <Compile Include="Data\Configuration\PathConfiguration.cs" />
+    <Compile Include="Data\Configuration\NetworkDevices.cs" />
+    <Compile Include="Data\Configuration\Paths.cs" />
     <Compile Include="Controls\DetailsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -98,7 +98,7 @@
     <Compile Include="Forms\Configuration\MinerSettingsForm.Designer.cs">
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\Configuration\ApplicationConfiguration.cs" />
+    <Compile Include="Data\Configuration\Application.cs" />
     <Compile Include="Forms\CoinChooseForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,7 +118,7 @@
       <DependentUpon>CoinsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\ApiLogEntry.cs" />
-    <Compile Include="Data\Configuration\PerksConfiguration.cs" />
+    <Compile Include="Data\Configuration\Perks.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />
     <Compile Include="Extensions\MiningStatisticsExtensions.cs" />
@@ -176,7 +176,7 @@
     </Compile>
     <Compile Include="Data\UserAgent.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
-    <Compile Include="ViewModels\MainFormViewModel.cs" />
+    <Compile Include="ViewModels\MinerFormViewModel.cs" />
     <Compile Include="Forms\WizardForm.cs">
       <SubType>Form</SubType>
     </Compile>

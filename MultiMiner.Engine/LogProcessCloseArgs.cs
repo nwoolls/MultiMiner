@@ -1,4 +1,6 @@
 using MultiMiner.Xgminer;
+using MultiMiner.Xgminer.Data;
+using MultiMiner.Xgminer.Data.Configuration;
 using System;
 using System.Collections.Generic;
 

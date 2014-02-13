@@ -7,11 +7,16 @@ namespace MultiMiner.Utility.Serialization
 {
     public static class ConfigurationReaderWriter
     {
-        public static T ReadConfiguration<T>(string fileName) where T : new()
+        public static T ReadConfiguration<T>(string fileName, string rootElement = null) where T : new()
         {
             if (File.Exists(fileName))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                XmlSerializer serializer;
+                if (String.IsNullOrEmpty(rootElement))
+                    serializer = new XmlSerializer(typeof(T));
+                else
+                    serializer = new XmlSerializer(typeof(T), new XmlRootAttribute(rootElement));
+
                 using (TextReader reader = new StreamReader(fileName))
                 {
                     T result;
@@ -32,11 +37,17 @@ namespace MultiMiner.Utility.Serialization
             return new T();
         }
 
-        public static void WriteConfiguration(object source, string fileName)
+        public static void WriteConfiguration(object source, string fileName, string rootElement = null)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(fileName));
             Type type = source.GetType();
-            XmlSerializer serializer = new XmlSerializer(type);
+
+            XmlSerializer serializer;
+            if (String.IsNullOrEmpty(rootElement))
+                serializer = new XmlSerializer(type);
+            else
+                serializer = new XmlSerializer(type, new XmlRootAttribute(rootElement));
+
             using (TextWriter writer = new StreamWriter(fileName))
             {
                 serializer.Serialize(writer, source);
