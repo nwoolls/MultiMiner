@@ -178,6 +178,7 @@ namespace MultiMiner.Win.ViewModels
                     //now add as a worker
                     DeviceViewModel workerViewModel = new DeviceViewModel();
                     ObjectCopier.CopyObject(deviceInformationResponseModel, workerViewModel, excludedProperties);
+                    workerViewModel.WorkerName = deviceInformationResponseModel.Name; //set a default until (if) we get details
                     deviceViewModel.Workers.Add(workerViewModel);
                 }
                 else

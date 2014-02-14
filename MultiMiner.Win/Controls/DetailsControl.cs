@@ -75,8 +75,7 @@ namespace MultiMiner.Win.Controls
             hashrateLabel.Text = deviceViewModel.AverageHashrate.ToHashrateString();
             currentRateLabel.Text = deviceViewModel.CurrentHashrate.ToHashrateString();
 
-            workersGridView.Visible = (deviceViewModel.Kind == DeviceKind.PXY) &&
-                (deviceViewModel.Workers.Count > 0);
+            workersGridView.Visible = (deviceViewModel.Workers.Count > 0);
             workersTitleLabel.Visible = workersGridView.Visible;
             
             //device may not be configured
