@@ -8,5 +8,7 @@
         public const string Summary = "summary";
         public const string Pools = "pools";
         public const string Version = "version";
+        public const string Restart = "restart";
+        public const string SwitchPool = "switchpool";
     }
 }

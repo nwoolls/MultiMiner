@@ -6312,7 +6312,7 @@ namespace MultiMiner.Win.Forms
             apiContext.LogEvent -= LogApiEvent;
             apiContext.LogEvent += LogApiEvent;
 
-            apiContext.GetResponse("restart");
+            apiContext.RestartMining();
         }
 
         private void SetNetworkDevicePool(int poolIndex)
@@ -6325,7 +6325,7 @@ namespace MultiMiner.Win.Forms
             apiContext.LogEvent -= LogApiEvent;
             apiContext.LogEvent += LogApiEvent;
 
-            apiContext.GetResponse("switchpool|" + poolIndex);
+            apiContext.SwitchPool(poolIndex);
         }
 
         private void NetworkDevicePoolClicked(object sender, EventArgs e)

@@ -57,9 +57,19 @@ namespace MultiMiner.Xgminer.Api
             return result;
         }
 
-        public void QuitMining()
+        public string QuitMining()
         {
-            GetResponse(ApiVerb.Quit);
+            return GetResponse(ApiVerb.Quit);
+        }
+
+        public string RestartMining()
+        {
+            return GetResponse(ApiVerb.Restart);
+        }
+
+        public string SwitchPool(int poolIndex)
+        {
+            return GetResponse(String.Format("{0}|{1}", ApiVerb.SwitchPool, poolIndex));
         }
 
         public string GetResponse(string apiVerb)
