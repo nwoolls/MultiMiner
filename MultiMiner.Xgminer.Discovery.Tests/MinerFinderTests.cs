@@ -10,11 +10,11 @@ namespace MultiMiner.Xgminer.Discovery.Tests
         [TestMethod]
         public void Find_FindsMiners()
         {
-            const int times = 3;
+            const int times = 2;
 
             for (int i = 0; i < times; i++)
             {
-                List<IPEndPoint> miners = MinerFinder.Find("192.168.0.29-100", 4028, 4029);
+                List<IPEndPoint> miners = MinerFinder.Find("192.168.0.25-100", 4028, 4028);
                 Assert.IsTrue(miners.Count > 0);
             }
         }
@@ -22,7 +22,7 @@ namespace MultiMiner.Xgminer.Discovery.Tests
         [TestMethod]
         public void Check_ChecksMiners()
         {
-            List<IPEndPoint> miners = MinerFinder.Find("192.168.0.29-100", 4028, 4029);
+            List<IPEndPoint> miners = MinerFinder.Find("192.168.0.25-100", 4028, 4028);
             int goodCount = miners.Count;
 
             miners.Add(new IPEndPoint(IPAddress.Parse("10.0.0.1"), 1000));

@@ -10,11 +10,11 @@ namespace MultiMiner.Utility.Networking.Tests
         [TestMethod]
         public void Find_Succeeds()
         {
-            const int times = 3;
+            const int times = 2;
 
             for (int i = 0; i < times; i++)
             {
-                List<IPEndPoint> endpoints = PortScanner.Find("192.168.0.29-100", 4028, 4029);
+                List<IPEndPoint> endpoints = PortScanner.Find("192.168.0.25-100", 4028, 4028);
                 Assert.IsTrue(endpoints.Count > 0);
             }
         }
