@@ -65,6 +65,7 @@ namespace MultiMiner.Win.Forms
         private List<Xgminer.Data.Device> devices;
         private readonly Dictionary<DeviceViewModel, DeviceDetails> deviceDetailsMapping = new Dictionary<DeviceViewModel, DeviceDetails>();
         private readonly Dictionary<DeviceViewModel, string> lastDevicePoolMapping = new Dictionary<DeviceViewModel, string>();
+        private readonly Dictionary<string, List<PoolInformation>> networkDevicePools = new Dictionary<string, List<PoolInformation>>();
 
         //currently mining information
         private List<Engine.Data.Configuration.Device> miningDeviceConfigurations;
@@ -2318,14 +2319,22 @@ namespace MultiMiner.Win.Forms
 
         private void deviceListView_MouseClick(object sender, MouseEventArgs e)
         {
-            if ((e.Button == MouseButtons.Right) && (deviceListView.FocusedItem.Bounds.Contains(e.Location) == true) &&
-                (!deviceListView.FocusedItem.Group.Name.Equals("networkListViewGroup")))
+            if ((e.Button == MouseButtons.Right) && (deviceListView.FocusedItem.Bounds.Contains(e.Location) == true))
             {
-                string currentCoin = GetCurrentlySelectedCoinName();
+                if (deviceListView.FocusedItem.Group.Name.Equals("networkListViewGroup"))
+                {
+                    PopulateNetworkDevicePoolMenu();
 
-                CheckCoinInPopupMenu(currentCoin);
+                    networkDeviceContextMenu.Show(Cursor.Position);
+                }
+                else
+                {
+                    string currentCoin = GetCurrentlySelectedCoinName();
 
-                coinPopupMenu.Show(Cursor.Position);
+                    CheckCoinInPopupMenu(currentCoin);
+
+                    coinPopupMenu.Show(Cursor.Position);
+                }
             }
         }
 
@@ -2606,6 +2615,11 @@ namespace MultiMiner.Win.Forms
             MinerFormViewModel viewModelToView = GetViewModelToView();
             DeviceViewModel deviceViewModel = viewModelToView.Devices[e.Item];
             RenameDevice(deviceViewModel, e.Label);
+        }
+
+        private void restartMiningToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RestartNetworkDevice();
         }
         #endregion
 
@@ -4384,12 +4398,20 @@ namespace MultiMiner.Win.Forms
                 int port = int.Parse(portions[1]);
 
                 List<DeviceInformation> deviceInformationList = GetDeviceInfoFromAddress(ipAddress, port);
-                List<PoolInformation> poolInformationList = GetPoolInfoFromAddress(ipAddress, port);
 
                 //deviceInformationList or poolInformationList may be down if the API was unreachable
                 //at the time
                 if (deviceInformationList != null)
                 {
+                    List<PoolInformation> poolInformationList = null;
+                    if (this.networkDevicePools.ContainsKey(ipAddress))
+                        poolInformationList = this.networkDevicePools[ipAddress];
+                    else
+                    {
+                        poolInformationList = GetPoolInfoFromAddress(ipAddress, port);
+                        networkDevicePools[ipAddress] = poolInformationList;
+                    }
+
                     int poolIndex = -1;
 
                     foreach (DeviceInformation deviceInformation in deviceInformationList)
@@ -6276,6 +6298,58 @@ namespace MultiMiner.Win.Forms
             countdownLabel.Visible = false; //or remains visible under Mono
             cancelStartupMiningButton.Visible = false; //or remains visible under Mono
         }
-        #endregion      
+        #endregion
+
+        #region Network Devices
+        
+        private void RestartNetworkDevice()
+        {
+            DeviceViewModel networkDevice = (DeviceViewModel)deviceListView.FocusedItem.Tag;
+            Uri uri = new Uri("http://" + networkDevice.Path);
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            apiContext.GetResponse("restart");
+        }
+
+        private void SetNetworkDevicePool(int poolIndex)
+        {
+            DeviceViewModel networkDevice = (DeviceViewModel)deviceListView.FocusedItem.Tag;
+            Uri uri = new Uri("http://" + networkDevice.Path);
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            apiContext.GetResponse("switchpool|" + poolIndex);
+        }
+
+        private void NetworkDevicePoolClicked(object sender, EventArgs e)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            SetNetworkDevicePool((int)menuItem.Tag);
+        }
+
+        private void PopulateNetworkDevicePoolMenu()
+        {
+            networkDevicePoolMenu.DropDownItems.Clear();
+
+            DeviceViewModel viewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
+            List<PoolInformation> poolInformation = networkDevicePools[viewModel.Name];
+            for (int i = 0; i < poolInformation.Count; i++)
+            {
+                PoolInformation pool = poolInformation[i];
+                ToolStripMenuItem menuItem = new ToolStripMenuItem(pool.Url.DomainFromHost());
+                menuItem.Tag = i;
+                menuItem.Click += NetworkDevicePoolClicked;
+                networkDevicePoolMenu.DropDownItems.Add(menuItem);
+            }
+        }
+        #endregion
+
     }
 }
