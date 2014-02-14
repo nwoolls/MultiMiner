@@ -10,7 +10,7 @@ namespace MultiMiner.Xgminer.Discovery
     {
         public static List<IPEndPoint> Find(string ipRange, int startingPort, int endingPort)
         {
-            if (startingPort >= endingPort)
+            if (startingPort > endingPort)
                 throw new ArgumentException();
 
             List<IPEndPoint> endpoints = PortScanner.Find(ipRange, startingPort, endingPort);

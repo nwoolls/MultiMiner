@@ -9,7 +9,7 @@ namespace MultiMiner.Utility.Networking
     {
         public static List<IPEndPoint> Find(string ipRange, int startingPort, int endingPort, int connectTimeout = 100)
         {
-            if (startingPort >= endingPort)
+            if (startingPort > endingPort)
                 throw new ArgumentException();
 
             List<IPEndPoint> endpoints = new List<IPEndPoint>();
