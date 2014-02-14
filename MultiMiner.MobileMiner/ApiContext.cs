@@ -17,7 +17,10 @@ namespace MultiMiner.MobileMiner
                 //default is 100s - far too long for our API calls
                 //if API is being flakey we don't want calls taking 100s to timeout
                 //lets go with 10s
+                
+#if !DEBUG
                 w.Timeout = 10 * 1000;
+#endif
                 return w;
             }
         }

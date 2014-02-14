@@ -13,6 +13,7 @@ namespace MultiMiner.MobileMiner.Api.Tests
         private const string userEmail = "user@example.org";
         private const string userAppKey = "c5qN-zRmU-CFuw";
         private const string apiUrl = "http://mobileminer.azurewebsites.net/api";
+        private const int apiSecondsError = 10;
 
         [TestMethod]
         public void SubmitMiningStatistics_Succeeds()
@@ -27,9 +28,12 @@ namespace MultiMiner.MobileMiner.Api.Tests
                 Kind = "PGA",
                 MinerName = "UnitTests",
                 Name = "Name"
-                
+
             });
+
+            DateTime start = DateTime.Now;
             ApiContext.SubmitMiningStatistics(apiUrl, devApiKey, userEmail, userAppKey, Environment.MachineName, miningStatistics);
+            Assert.IsTrue((DateTime.Now - start).TotalSeconds < apiSecondsError);
         }
 
         [TestMethod]
@@ -38,7 +42,9 @@ namespace MultiMiner.MobileMiner.Api.Tests
             List<MiningStatistics> miningStatistics = new List<MiningStatistics>();
             try
             {
+                DateTime start = DateTime.Now;
                 ApiContext.SubmitMiningStatistics(apiUrl, devApiKey, userEmail, userAppKey, Environment.MachineName, miningStatistics);
+                Assert.IsTrue((DateTime.Now - start).TotalSeconds < apiSecondsError);
                 Assert.Fail("No Exception thrown");
             }
             catch (Exception ex)
@@ -53,13 +59,18 @@ namespace MultiMiner.MobileMiner.Api.Tests
         {
             List<string> notifications = new List<string>();
             notifications.Add(String.Empty);
+
+            DateTime start = DateTime.Now;
             ApiContext.SubmitNotifications(apiUrl, devApiKey, userEmail, userAppKey, notifications);
+            Assert.IsTrue((DateTime.Now - start).TotalSeconds < apiSecondsError);
         }
 
         [TestMethod]
         public void GetCommands_ReturnsCommands()
         {
+            DateTime start = DateTime.Now;
             List<RemoteCommand> commands = ApiContext.GetCommands(apiUrl, devApiKey, userEmail, userAppKey, Environment.MachineName);
+            Assert.IsTrue((DateTime.Now - start).TotalSeconds < apiSecondsError);
         }
 
         [TestMethod]
@@ -67,7 +78,10 @@ namespace MultiMiner.MobileMiner.Api.Tests
         {
             try
             {
+                DateTime start = DateTime.Now;
                 ApiContext.DeleteCommand(apiUrl, devApiKey, userEmail, userAppKey, Environment.MachineName, 0);
+                Assert.IsTrue((DateTime.Now - start).TotalSeconds < apiSecondsError);
+
                 Assert.Fail("No Exception thrown");
             }
             catch (Exception ex)
