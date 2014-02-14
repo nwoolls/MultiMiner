@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Linq;
 
 namespace MultiMiner.Utility.Networking
 {
@@ -14,7 +15,11 @@ namespace MultiMiner.Utility.Networking
 
             List<IPEndPoint> endpoints = new List<IPEndPoint>();
 
-            IEnumerable<IPAddress> ipAddresses = new IPRange(ipRange).GetIPAddresses();
+            List<IPAddress> ipAddresses = new IPRange(ipRange).GetIPAddresses().ToList();
+
+            //optimize until we need otherwise
+            ipAddresses.RemoveAll(ip => ip.ToString().Equals(LocalNetwork.GetLocalIPAddress()));
+            ipAddresses.RemoveAll(ip => ip.ToString().EndsWith(".0"));
 
             foreach (IPAddress ipAddress in ipAddresses)
                 for (int currentPort = startingPort; currentPort <= endingPort; currentPort++)
