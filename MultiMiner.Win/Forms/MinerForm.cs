@@ -1291,6 +1291,18 @@ namespace MultiMiner.Win.Forms
             }
         }
 
+        private void FixMisconfiguredDevices()
+        {
+            foreach (Engine.Data.Configuration.Device deviceConfiguration in engineConfiguration.DeviceConfigurations)
+            {
+                bool misconfigured = !String.IsNullOrEmpty(deviceConfiguration.CoinSymbol) &&
+                    !engineConfiguration.CoinConfigurations.Any(cc => cc.CryptoCoin.Symbol.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+
+                if (misconfigured)
+                    deviceConfiguration.CoinSymbol = String.Empty;
+            }
+        }
+
         private void RefreshViewForConfigurationChanges()
         {
             System.Windows.Forms.Application.DoEvents();
@@ -1364,8 +1376,11 @@ namespace MultiMiner.Win.Forms
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
+                FixMisconfiguredDevices();
                 engineConfiguration.SaveCoinConfigurations();
-                localViewModel.ApplyCoinConfigurationModels(engineConfiguration.CoinConfigurations);
+                engineConfiguration.SaveDeviceConfigurations();
+
+                ApplyModelsToViewModel();
                 RefreshViewForConfigurationChanges();
             }
             else

@@ -242,7 +242,11 @@ namespace MultiMiner.Win.ViewModels
                 if (deviceConfiguration != null)
                 {
                     deviceViewModel.Enabled = deviceConfiguration.Enabled;
-                    if (!String.IsNullOrEmpty(deviceConfiguration.CoinSymbol))
+                    if (String.IsNullOrEmpty(deviceConfiguration.CoinSymbol))
+                    {
+                        deviceViewModel.Coin = null;
+                    }
+                    else
                     {
                         Engine.Data.Configuration.Coin coinConfiguration = coinConfigurations.SingleOrDefault(
                             cc => cc.CryptoCoin.Symbol.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
