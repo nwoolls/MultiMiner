@@ -101,7 +101,7 @@ namespace MultiMiner.Win.ViewModels
 
             foreach (DeviceViewModel deviceViewModel in Devices.Where(d => d.Kind == DeviceKind.NET))
             {
-                string coinSymbol = "BTC";
+                const string coinSymbol = "BTC";
                 ApplyCoinInformationToViewModel(coinInformationModels, coinSymbol, deviceViewModel);
             }
         }
