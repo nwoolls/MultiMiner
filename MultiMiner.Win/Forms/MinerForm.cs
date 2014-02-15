@@ -2854,6 +2854,7 @@ namespace MultiMiner.Win.Forms
                 //check for commands first so we can report mining activity after
                 CheckForMobileMinerCommands();
                 SubmitMobileMinerStatistics();
+                SubmitMobileMinerNetworkStatistics();
             }
         }
 
@@ -4050,7 +4051,65 @@ namespace MultiMiner.Win.Forms
                 if (submitMiningStatisticsDelegate == null)
                     submitMiningStatisticsDelegate = SubmitMiningStatistics;
 
-                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, submitMiningStatisticsDelegate.EndInvoke, null);
+                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, Environment.MachineName, submitMiningStatisticsDelegate.EndInvoke, null);
+            }
+        }
+
+        private void SubmitMobileMinerNetworkStatistics()
+        {
+            foreach (Data.Configuration.NetworkDevices.NetworkDevice networkDevice in networkDevicesConfiguration.Devices)
+                SubmitMobileMinerNetworkDeviceStatistics(networkDevice);
+        }
+
+        private void SubmitMobileMinerNetworkDeviceStatistics(NetworkDevices.NetworkDevice networkDevice)
+        {
+            //are remote monitoring enabled?
+            if (!applicationConfiguration.MobileMinerMonitoring)
+                return;
+
+            //is MobileMiner configured?
+            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
+                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
+                return;
+
+            List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList = new List<MobileMiner.Data.MiningStatistics>();
+
+            List<DeviceInformation> deviceInformationList = GetDeviceInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
+
+            if (deviceInformationList == null) //handled failure getting API info
+                return;
+
+            List<PoolInformation> poolInformationList = GetCachedPoolInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
+
+            Xgminer.Api.Data.VersionInformation versionInformation = new Xgminer.Api.ApiContext(networkDevice.Port, networkDevice.IPAddress).GetVersionInformation();
+
+            foreach (DeviceInformation deviceInformation in deviceInformationList)
+            {
+                MobileMiner.Data.MiningStatistics miningStatistics = new MobileMiner.Data.MiningStatistics() 
+                { 
+                    MinerName = versionInformation.Name, 
+                    CoinName = NetworkDeviceCoinName, 
+                    CoinSymbol = NetworkDeviceCoinSymbol, 
+                    Algorithm = "SHA-256"
+                };
+
+                miningStatistics.PopulateFrom(deviceInformation);
+
+                //ensure poolIndex is valid for poolInformationList
+                //user(s) reported index errors so we can't out on the RPC API here
+                //https://github.com/nwoolls/MultiMiner/issues/64
+                if ((deviceInformation.PoolIndex >= 0) && (deviceInformation.PoolIndex < poolInformationList.Count))
+                    miningStatistics.PoolName = poolInformationList[deviceInformation.PoolIndex].Url.DomainFromHost();
+
+                statisticsList.Add(miningStatistics);
+            }
+
+            if (statisticsList.Count > 0)
+            {
+                if (submitMiningStatisticsDelegate == null)
+                    submitMiningStatisticsDelegate = SubmitMiningStatistics;
+
+                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, networkDevice.IPAddress, submitMiningStatisticsDelegate.EndInvoke, null);
             }
         }
 
@@ -4088,15 +4147,15 @@ namespace MultiMiner.Win.Forms
             miningStatistics.PopulateFrom(deviceInformation);
         }
 
-        private Action<List<MultiMiner.MobileMiner.Data.MiningStatistics>> submitMiningStatisticsDelegate;
+        private Action<List<MultiMiner.MobileMiner.Data.MiningStatistics>, string> submitMiningStatisticsDelegate;
 
-        private void SubmitMiningStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
+        private void SubmitMiningStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList, string machineName)
         {
             try
             {
                 MobileMiner.ApiContext.SubmitMiningStatistics(GetMobileMinerUrl(), mobileMinerApiKey,
                     applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                    Environment.MachineName, statisticsList);
+                    machineName, statisticsList);
                 mobileMinerSuccess = true;
             }
             catch (WebException ex)
