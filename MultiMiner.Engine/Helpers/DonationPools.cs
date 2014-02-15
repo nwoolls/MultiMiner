@@ -117,6 +117,58 @@ namespace MultiMiner.Engine.Helpers
             //LEAF
             donationConfiguration = CreateCoinConfiguration("LEAF", "stratum+tcp://de3.miningpool.co", 3931);
             configurations.Add(donationConfiguration);
+
+            //CNC
+            donationConfiguration = CreateCoinConfiguration("CNC", "stratum+tcp://cnc.blocksolved.com", 3301);
+            configurations.Add(donationConfiguration);
+
+            //BEC
+            donationConfiguration = CreateCoinConfiguration("CNC", "stratum+tcp://ca1.miningpool.co", 20001);
+            configurations.Add(donationConfiguration);
+
+            //BIC
+            donationConfiguration = CreateCoinConfiguration("BIC", "stratum+tcp://de2.miningpool.co", 3388);
+            configurations.Add(donationConfiguration);
+
+            //DGB
+            donationConfiguration = CreateCoinConfiguration("DGB", "stratum+tcp://de2.miningpool.co", 3399);
+            configurations.Add(donationConfiguration);
+
+            //ICO
+            donationConfiguration = CreateCoinConfiguration("ICO", "stratum+tcp://de2.miningpool.co", 3391);
+            configurations.Add(donationConfiguration);
+
+            //KDC
+            donationConfiguration = CreateCoinConfiguration("KDC", "stratum+tcp://de3.miningpool.co", 3902);
+            configurations.Add(donationConfiguration);
+
+            //MINT
+            donationConfiguration = CreateCoinConfiguration("MINT", "stratum+tcp://de3.miningpool.co", 3356);
+            configurations.Add(donationConfiguration);
+
+            //MRY
+            donationConfiguration = CreateCoinConfiguration("MRY", "stratum+tcp://ca1.miningpool.co", 14322);
+            configurations.Add(donationConfiguration);
+
+            //PLT
+            donationConfiguration = CreateCoinConfiguration("PLT", "stratum+tcp://de2.miningpool.co", 9501);
+            configurations.Add(donationConfiguration);
+
+            //SMC
+            donationConfiguration = CreateCoinConfiguration("SMC", "stratum+tcp://de3.miningpool.co", 9057);
+            configurations.Add(donationConfiguration);
+
+            //TEA
+            donationConfiguration = CreateCoinConfiguration("TEA", "stratum+tcp://de3.miningpool.co", 3921);
+            configurations.Add(donationConfiguration);
+
+            //NEC
+            donationConfiguration = CreateCoinConfiguration("NEC", "stratum+tcp://neo.cryptcoins.net", 3331);
+            configurations.Add(donationConfiguration);
+
+            //TAG
+            donationConfiguration = CreateCoinConfiguration("TAG", "stratum+tcp://tag.hashfaster.com", 3335);
+            configurations.Add(donationConfiguration);
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
