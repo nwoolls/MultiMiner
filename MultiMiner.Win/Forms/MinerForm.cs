@@ -1787,7 +1787,11 @@ namespace MultiMiner.Win.Forms
         {
             string knownDevicesFileName = KnownDevicesFileName();
             if (File.Exists(knownDevicesFileName))
+            {
                 devices = ConfigurationReaderWriter.ReadConfiguration<List<Xgminer.Data.Device>>(knownDevicesFileName);
+                ApplyModelsToViewModel();
+                RefreshListViewFromViewModel();
+            }
         }
 
         private void SaveKnownDevicesToFile()
