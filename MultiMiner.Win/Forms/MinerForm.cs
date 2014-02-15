@@ -1273,6 +1273,7 @@ namespace MultiMiner.Win.Forms
                     !oldCoinWarzKey.Equals(applicationConfiguration.CoinWarzApiKey))
                     RefreshCoinStats();
 
+                //if we are not detecting Network Devices, start the async checks
                 if (applicationConfiguration.NetworkDeviceDetection &&
                     (!oldNetworkDeviceDetection))
                 {
@@ -1288,6 +1289,28 @@ namespace MultiMiner.Win.Forms
                 engineConfiguration.LoadMinerConfiguration();
                 pathConfiguration.LoadPathConfiguration();
                 applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
+            }
+        }
+
+        private void ConfigureUnconfiguredDevices()
+        {
+            foreach (Engine.Data.Configuration.Device deviceConfiguration in engineConfiguration.DeviceConfigurations)
+            {
+                bool configured = !String.IsNullOrEmpty(deviceConfiguration.CoinSymbol);
+                bool misConfigured = configured &&
+                    !engineConfiguration.CoinConfigurations.Any(cc => cc.CryptoCoin.Symbol.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+
+                if (!configured || misConfigured)
+                {
+                    Engine.Data.Configuration.Coin coinConfiguration = null;
+                    if (deviceConfiguration.Kind == DeviceKind.GPU)
+                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.CryptoCoin.Algorithm == CoinAlgorithm.Scrypt);
+                    if (coinConfiguration == null)
+                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.CryptoCoin.Algorithm == CoinAlgorithm.SHA256);
+
+                    if (coinConfiguration != null)
+                        deviceConfiguration.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
+                }
             }
         }
 
@@ -1377,6 +1400,8 @@ namespace MultiMiner.Win.Forms
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 FixMisconfiguredDevices();
+                ConfigureUnconfiguredDevices();
+
                 engineConfiguration.SaveCoinConfigurations();
                 engineConfiguration.SaveDeviceConfigurations();
 
