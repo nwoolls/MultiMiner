@@ -17,7 +17,9 @@ namespace MultiMiner.Utility.Networking
             IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (IPAddress ip in host.AddressList)
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                if ((ip.AddressFamily == AddressFamily.InterNetwork) &&
+                    //don't include loopback address, e.g. 127.0.0.1
+                    (!IPAddress.IsLoopback(ip)))
                 {
                     result = ip.ToString();
                     break;
