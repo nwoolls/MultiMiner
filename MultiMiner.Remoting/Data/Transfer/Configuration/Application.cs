@@ -91,6 +91,7 @@ namespace MultiMiner.Remoting.Data.Transfer.Configuration
 
         [DataMember]
         public bool ShowWorkUtility { get; set; }
+        public bool NetworkDeviceDetection { get; set; }
 
         [DataMember]
         public bool MobileMinerMonitoring { get; set; }
