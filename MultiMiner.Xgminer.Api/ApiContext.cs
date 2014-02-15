@@ -57,6 +57,14 @@ namespace MultiMiner.Xgminer.Api
             return result;
         }
 
+        public VersionInformation GetVersionInformation()
+        {
+            string textResponse = GetResponse(ApiVerb.Version);
+            VersionInformation result = new VersionInformation();
+            VersionInformationParser.ParseTextForVersionInformation(textResponse, result);
+            return result;
+        }
+
         public string QuitMining()
         {
             return GetResponse(ApiVerb.Quit);
