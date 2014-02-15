@@ -294,6 +294,10 @@ namespace MultiMiner.Win.Forms
                 DeviceViewModel listModel = (DeviceViewModel)deviceListView.Items[i].Tag;
                 if (!viewModelToView.Devices.Contains(listModel) || !listModel.Visible)
                     deviceListView.Items.RemoveAt(i);
+
+                //Network Device detection disabled
+                if (!applicationConfiguration.NetworkDeviceDetection && (listModel.Kind == DeviceKind.NET))
+                    deviceListView.Items.RemoveAt(i);
             }
         }
 
@@ -396,6 +400,11 @@ namespace MultiMiner.Win.Forms
 
                     //Network Devices should only show from the Local ViewModel
                     if ((viewModelToView == remoteViewModel) &&
+                        (deviceViewModel.Kind == DeviceKind.NET))
+                        continue;
+
+                    //Network Devices disabled
+                    if (!applicationConfiguration.NetworkDeviceDetection &&
                         (deviceViewModel.Kind == DeviceKind.NET))
                         continue;
 
@@ -1213,6 +1222,7 @@ namespace MultiMiner.Win.Forms
 
         private void ConfigureSettingsLocally()
         {
+            bool oldNetworkDeviceDetection = applicationConfiguration.NetworkDeviceDetection;
             bool oldCoinWarzValue = applicationConfiguration.UseCoinWarzApi;
             string oldCoinWarzKey = applicationConfiguration.CoinWarzApiKey;
 
@@ -1245,7 +1255,15 @@ namespace MultiMiner.Win.Forms
                     !oldCoinWarzKey.Equals(applicationConfiguration.CoinWarzApiKey))
                     RefreshCoinStats();
 
+                if (applicationConfiguration.NetworkDeviceDetection &&
+                    (!oldNetworkDeviceDetection))
+                {
+                    CheckNetworkDevicesAsync();
+                    FindNetworkDevicesAsync();
+                }
+
                 RefreshViewForConfigurationChanges();
+                RefreshListViewFromViewModel();
             }
             else
             {
@@ -1499,10 +1517,14 @@ namespace MultiMiner.Win.Forms
 
             //network devices
             this.networkDevicesConfiguration.LoadNetworkDevicesConfiguration();
-            CheckNetworkDevicesAsync();
-            FindNetworkDevicesAsync();
             SetupNetworkDeviceStatsTimer();
             SetupNetworkDeviceDetectTimer();
+
+            if (applicationConfiguration.NetworkDeviceDetection)
+            {
+                CheckNetworkDevicesAsync();
+                FindNetworkDevicesAsync();
+            }
 
             ApplyModelsToViewModel();
             localViewModel.DynamicIntensity = engineConfiguration.XgminerConfiguration.DesktopMode;
@@ -2796,13 +2818,17 @@ namespace MultiMiner.Win.Forms
 
         private void networkDeviceStatsTimer_Tick(object sender, EventArgs e)
         {
-            RefreshNetworkDeviceStats();
+            if (applicationConfiguration.NetworkDeviceDetection)
+                RefreshNetworkDeviceStats();
         }
 
         private void networkDeviceDetectTimer_Tick(object sender, EventArgs e)
         {
-            CheckNetworkDevicesAsync();
-            FindNetworkDevicesAsync();
+            if (applicationConfiguration.NetworkDeviceDetection)
+            {
+                CheckNetworkDevicesAsync();
+                FindNetworkDevicesAsync();
+            }
         }
         #endregion
 

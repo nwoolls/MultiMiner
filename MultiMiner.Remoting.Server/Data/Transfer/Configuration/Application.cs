@@ -48,6 +48,7 @@ namespace MultiMiner.Remoting.Server.Data.Transfer.Configuration
         public bool AllowMultipleInstances { get; set; }
         public string SubmittedStatsVersion { get; set; }
         public bool ShowWorkUtility { get; set; }
+        public bool NetworkDeviceDetection { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }

@@ -34,14 +34,12 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
             this.configPathButton = new System.Windows.Forms.Button();
             this.configPathEdit = new System.Windows.Forms.TextBox();
-            this.pathConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label2 = new System.Windows.Forms.Label();
             this.logPathButton = new System.Windows.Forms.Button();
             this.logPathEdit = new System.Windows.Forms.TextBox();
@@ -50,10 +48,13 @@
             this.label9 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
+            this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.pathConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // saveButton
@@ -88,10 +89,6 @@
             this.checkBox4.TabIndex = 32;
             this.checkBox4.Text = "Allow launching multiple instances of MultiMiner";
             this.checkBox4.UseVisualStyleBackColor = true;
-            // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.ApplicationConfiguration);
             // 
             // checkBox3
             // 
@@ -154,10 +151,6 @@
             this.configPathEdit.Name = "configPathEdit";
             this.configPathEdit.Size = new System.Drawing.Size(286, 23);
             this.configPathEdit.TabIndex = 4;
-            // 
-            // pathConfigurationBindingSource
-            // 
-            this.pathConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.PathConfiguration);
             // 
             // label2
             // 
@@ -237,10 +230,29 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 278);
+            this.panel1.Location = new System.Drawing.Point(0, 309);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(497, 62);
             this.panel1.TabIndex = 6;
+            // 
+            // checkBox5
+            // 
+            this.checkBox5.AutoSize = true;
+            this.checkBox5.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "NetworkDeviceDetection", true));
+            this.checkBox5.Location = new System.Drawing.Point(24, 268);
+            this.checkBox5.Name = "checkBox5";
+            this.checkBox5.Size = new System.Drawing.Size(371, 19);
+            this.checkBox5.TabIndex = 33;
+            this.checkBox5.Text = "Automatically detect Network Devices (AntMiner S1, Avalon, etc.)";
+            this.checkBox5.UseVisualStyleBackColor = true;
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.ApplicationConfiguration);
+            // 
+            // pathConfigurationBindingSource
+            // 
+            this.pathConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.PathConfiguration);
             // 
             // AdvancedSettingsForm
             // 
@@ -249,7 +261,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(497, 340);
+            this.ClientSize = new System.Drawing.Size(497, 371);
+            this.Controls.Add(this.checkBox5);
             this.Controls.Add(this.checkBox4);
             this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.checkBox2);
@@ -273,10 +286,10 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Configure Advanced Settings";
             this.Load += new System.EventHandler(this.AdvancedSettingsForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -304,5 +317,6 @@
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.CheckBox checkBox4;
+        private System.Windows.Forms.CheckBox checkBox5;
     }
 }
