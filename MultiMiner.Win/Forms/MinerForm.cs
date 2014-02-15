@@ -1692,6 +1692,9 @@ namespace MultiMiner.Win.Forms
         //for instance if the user starts up the app with a new device
         private void AddMissingDeviceConfigurations()
         {
+            const string btcSymbol = "BTC";
+            bool hasBtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.CryptoCoin.Symbol.Equals(btcSymbol, StringComparison.OrdinalIgnoreCase));
+
             foreach (Xgminer.Data.Device device in devices)
             {
                 Engine.Data.Configuration.Device existingConfiguration = engineConfiguration.DeviceConfigurations.FirstOrDefault(
@@ -1703,8 +1706,6 @@ namespace MultiMiner.Win.Forms
                     newConfiguration.Assign(device);
 
                     //if the user has BTC configured, default to that
-                    string btcSymbol = "BTC";
-                    bool hasBtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.CryptoCoin.Symbol.Equals(btcSymbol, StringComparison.OrdinalIgnoreCase));
                     if (hasBtcConfigured)
                         newConfiguration.CoinSymbol = btcSymbol;
 
