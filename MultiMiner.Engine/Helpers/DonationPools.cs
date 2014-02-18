@@ -123,7 +123,7 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //BEC
-            donationConfiguration = CreateCoinConfiguration("CNC", "stratum+tcp://ca1.miningpool.co", 20001);
+            donationConfiguration = CreateCoinConfiguration("BEC", "stratum+tcp://ca1.miningpool.co", 20001);
             configurations.Add(donationConfiguration);
 
             //BIC
