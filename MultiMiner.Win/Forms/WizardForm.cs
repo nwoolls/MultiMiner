@@ -12,6 +12,7 @@ using MultiMiner.MobileMiner.Helpers;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
+using MultiMiner.Win.Data;
 
 namespace MultiMiner.Win.Forms
 {
@@ -42,8 +43,8 @@ namespace MultiMiner.Win.Forms
         {
             coinComboBox.Items.Clear();
 
-            coinComboBox.Items.Add("Bitcoin");
-            coinComboBox.Items.Add("Litecoin");
+            coinComboBox.Items.Add(KnownCoins.BitcoinName);
+            coinComboBox.Items.Add(KnownCoins.LitecoinName);
             coinComboBox.Items.Add("-");
 
             foreach (CryptoCoin coin in coins)

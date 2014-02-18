@@ -8,6 +8,7 @@ using MultiMiner.Win.Extensions;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
+using MultiMiner.Win.Data;
 
 namespace MultiMiner.Win.ViewModels
 {
@@ -101,7 +102,7 @@ namespace MultiMiner.Win.ViewModels
 
             foreach (DeviceViewModel deviceViewModel in Devices.Where(d => d.Kind == DeviceKind.NET))
             {
-                const string coinSymbol = "BTC";
+                const string coinSymbol = KnownCoins.BitcoinSymbol;
                 ApplyCoinInformationToViewModel(coinInformationModels, coinSymbol, deviceViewModel);
             }
         }
@@ -258,7 +259,7 @@ namespace MultiMiner.Win.ViewModels
                 {
                     deviceViewModel.Enabled = true;
                     Engine.Data.Configuration.Coin coinConfiguration = coinConfigurations.SingleOrDefault(
-                        cc => cc.CryptoCoin.Symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase));
+                        cc => cc.CryptoCoin.Symbol.Equals(KnownCoins.BitcoinSymbol, StringComparison.OrdinalIgnoreCase));
                     if (coinConfiguration != null)
                         deviceViewModel.Coin = coinConfiguration.CryptoCoin;
                 }
