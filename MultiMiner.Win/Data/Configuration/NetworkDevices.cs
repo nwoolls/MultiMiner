@@ -15,6 +15,12 @@ namespace MultiMiner.Win.Data.Configuration
 
         public List<NetworkDevice> Devices { get; set; }
 
+        public NetworkDevices()
+        {
+            //set a default - null ref errors if submitting MobileMiner stats before scan is completed
+            Devices = new List<NetworkDevice>();
+        }
+
         private static string NetworkDevicesConfigurationFileName()
         {
             return Path.Combine(ApplicationPaths.AppDataPath(), "NetworkDevicesConfiguration.xml");
