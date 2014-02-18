@@ -289,7 +289,29 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
 
             Engine.Data.Configuration.Coin coinConfiguration = new Engine.Data.Configuration.Coin();
 
-            CryptoCoin coin = coins.Single(c => c.Name.Equals(coinComboBox.Text));
+            CryptoCoin coin = null;
+
+            //no Internet connection - only BTC and LTC were available
+            if (coins.Count == 0)
+            {
+                coin = new CryptoCoin();
+                coin.Name = coinComboBox.Text;
+
+                if (coin.Name.Equals(KnownCoins.LitecoinName, StringComparison.OrdinalIgnoreCase))
+                {
+                    coin.Algorithm = CoinAlgorithm.Scrypt;
+                    coin.Symbol = KnownCoins.LitecoinSymbol;
+                }
+                else
+                {
+                    coin.Algorithm = CoinAlgorithm.SHA256;
+                    coin.Symbol = KnownCoins.BitcoinSymbol;
+                }
+            }
+            else
+            {
+                coin = coins.Single(c => c.Name.Equals(coinComboBox.Text));
+            }
 
             coinConfiguration.CryptoCoin = coin;
             coinConfiguration.Enabled = true;
