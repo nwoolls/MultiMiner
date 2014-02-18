@@ -62,6 +62,7 @@
     <Compile Include="OS\IdleTimeFinderTests.cs" />
     <Compile Include="Parsers\PlistParserTests.cs" />
     <Compile Include="IO\UnzipperTests.cs" />
+    <Compile Include="Serialization\ObjectCopierTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App_Data\com.apple.smb.server.plist">
