@@ -1604,9 +1604,13 @@ namespace MultiMiner.Win.Forms
 
         private void FindNetworkDevices()
         {
-            int startingPort = 4028;
-            int endingPort = 4030;
             string localIpRange = Utility.Networking.LocalNetwork.GetLocalIPAddressRange();
+            if (String.IsNullOrEmpty(localIpRange))
+                return; //no network connection
+
+            const int startingPort = 4028;
+            const int endingPort = 4030;
+
             List<IPEndPoint> miners = MinerFinder.Find(localIpRange, startingPort, endingPort);
 
             //remove own miners

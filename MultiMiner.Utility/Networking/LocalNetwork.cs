@@ -32,6 +32,8 @@ namespace MultiMiner.Utility.Networking
         public static string GetLocalIPAddressRange()
         {
             string localIpAddress = GetLocalIPAddress();
+            if (String.IsNullOrEmpty(localIpAddress))
+                return String.Empty;
             
             string[] portions = localIpAddress.Split('.');
             portions[portions.Length - 1] = "0/24";
