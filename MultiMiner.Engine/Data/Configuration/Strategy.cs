@@ -1,10 +1,16 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Xml.Serialization;
 
 namespace MultiMiner.Engine.Data.Configuration
 {
     [XmlType(TypeName = "StrategyConfiguration")]
     public class Strategy
     {
+        public Strategy()
+        {
+            MinimumThresholdSymbol = String.Empty;
+        }
+
         //generic
         public bool AutomaticallyMineCoins { get; set; }
         public enum CoinMiningBasis

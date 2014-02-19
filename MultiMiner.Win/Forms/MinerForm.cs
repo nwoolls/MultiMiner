@@ -377,8 +377,8 @@ namespace MultiMiner.Win.Forms
             return listViewItem;
         }
 
-        private const string NetworkDeviceCoinName = Data.KnownCoins.BitcoinName;
-        private const string NetworkDeviceCoinSymbol = Data.KnownCoins.BitcoinSymbol;
+        private const string NetworkDeviceCoinName = KnownCoins.BitcoinName;
+        private const string NetworkDeviceCoinSymbol = KnownCoins.BitcoinSymbol;
 
         private void RefreshListViewFromViewModel()
         {
@@ -1043,7 +1043,7 @@ namespace MultiMiner.Win.Forms
                 //no internet or error parsing API
                 return;
 
-            CoinInformation info = coinApiInformation.GetCoinInformationForSymbol(deviceViewModel.Coin.Symbol);
+            CoinInformation info = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(deviceViewModel.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
 
             if (info != null)
             {
@@ -1116,7 +1116,7 @@ namespace MultiMiner.Win.Forms
                 foreach (string coinSymbol in incomeForCoins.Keys)
                 {
                     double coinIncome = incomeForCoins[coinSymbol];
-                    CoinInformation coinInfo = coinApiInformation.GetCoinInformationForSymbol(coinSymbol);
+                    CoinInformation coinInfo = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
                     if (coinInfo != null)
                     {
                         double coinUsd = sellPrices.Subtotal.Amount * coinInfo.Price;
@@ -3939,15 +3939,51 @@ namespace MultiMiner.Win.Forms
                 //don't try to use CoinWarz as a backup unless the user has entered an API key for CoinWarz
                 ((backupApiContext == this.coinChooseApiContext) || !String.IsNullOrEmpty(this.applicationConfiguration.CoinWarzApiKey)))
                 success = ApplyCoinInformationToViewModel(backupApiContext);
-
+            
             if (success)
                 LoadKnownCoinsFromCoinStats();
+
+            FixCoinSymbolDiscrepencies();
 
             RefreshListViewFromViewModel();
             RefreshCoinStatsLabel();
             AutoSizeListViewColumns();
             SuggestCoinsToMine();
             RefreshDetailsAreaIfVisible();
+        }
+
+        private void FixCoinSymbolDiscrepencies()
+        {
+            FixKnownCoinSymbolDiscrepencies();
+            SaveKnownCoinsToFile();
+
+            FixCoinApiSymbolDiscrepencies();
+        }
+
+        private void FixCoinApiSymbolDiscrepencies()
+        {
+            CoinInformation badCoin = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+            if (badCoin != null)
+            {
+                CoinInformation goodCoin = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(KnownCoins.DogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+                if (goodCoin == null)
+                    badCoin.Symbol = KnownCoins.DogecoinSymbol;
+                else
+                    coinApiInformation.Remove(badCoin);
+            }
+        }
+
+        private void FixKnownCoinSymbolDiscrepencies()
+        {
+            CryptoCoin badCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+            if (badCoin != null)
+            {
+                CryptoCoin goodCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(KnownCoins.DogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+                if (goodCoin == null)
+                    badCoin.Symbol = KnownCoins.DogecoinSymbol;
+                else
+                    knownCoins.Remove(badCoin);
+            }
         }
         #endregion
 

@@ -55,7 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Configuration\Metadata.cs" />
-    <Compile Include="Data\KnownCoins.cs" />
     <Compile Include="Extensions\ApplicationConfigurationExtensions.cs" />
     <Compile Include="Extensions\DeviceConfigurationExtensions.cs" />
     <Compile Include="Extensions\EngineConfigurationExtensions.cs" />
@@ -85,7 +84,6 @@
     <Compile Include="Controls\DeviceListView.Designer.cs">
       <DependentUpon>DeviceListView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\CoinInformationExtensions.cs" />
     <Compile Include="Extensions\IPEndPointExtensions.cs" />
     <Compile Include="Extensions\NetworkDeviceExtensions.cs" />
     <Compile Include="Controls\InstancesControl.cs">

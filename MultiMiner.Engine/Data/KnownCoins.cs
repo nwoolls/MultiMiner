@@ -1,10 +1,12 @@
-﻿namespace MultiMiner.Win.Data
+﻿namespace MultiMiner.Engine.Data
 {
-    static class KnownCoins
+    public static class KnownCoins
     {
         public const string BitcoinSymbol = "BTC";
         public const string BitcoinName = "Bitcoin";
         public const string LitecoinSymbol = "LTC";
         public const string LitecoinName = "Litecoin";
+        public const string DogecoinSymbol = "DOGE";
+        public const string BadDogecoinSymbol = "DOG";
     }
 }

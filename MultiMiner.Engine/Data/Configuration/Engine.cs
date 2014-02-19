@@ -71,6 +71,7 @@ namespace MultiMiner.Engine.Data.Configuration
         {
             InitializeConfigDirectory(configDirectory);
             StrategyConfiguration = ConfigurationReaderWriter.ReadConfiguration<Strategy>(StrategyConfigurationsFileName());
+            FixStrategyConfigurationSymbolDiscrepencies();
         }
 
         private static string DeviceConfigurationsFileName()
@@ -88,6 +89,7 @@ namespace MultiMiner.Engine.Data.Configuration
         {
             DeviceConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<Device>>(
                 DeviceConfigurationsFileName(), "ArrayOfDeviceConfiguration");
+            FixDeviceConfigurationSymbolDiscrepencies();
             RemoveIvalidCoinsFromDeviceConfigurations();
             RemoveDuplicateDeviceConfigurations();
         }
@@ -112,6 +114,7 @@ namespace MultiMiner.Engine.Data.Configuration
             InitializeConfigDirectory(configDirectory);
 
             CoinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<Coin>>(CoinConfigurationsFileName());
+            FixCoinConfigurationSymbolDiscrepencies();
             RemoveIvalidCoinsFromDeviceConfigurations();
             RemoveBlankPoolConfigurations();
         }
@@ -156,6 +159,40 @@ namespace MultiMiner.Engine.Data.Configuration
         public void SaveMinerConfiguration()
         {
             XgminerConfiguration.SaveMinerConfiguration();
+        }
+
+        private void FixDeviceConfigurationSymbolDiscrepencies()
+        {
+            bool save = DeviceConfigurations.Any(dc => dc.CoinSymbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+            foreach (Configuration.Device deviceConfiguration in DeviceConfigurations.Where(dc => dc.CoinSymbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase)))
+                deviceConfiguration.CoinSymbol = KnownCoins.DogecoinSymbol;
+            if (save)
+                SaveDeviceConfigurations();
+        }
+
+        private void FixStrategyConfigurationSymbolDiscrepencies()
+        {
+            if (StrategyConfiguration.MinimumThresholdSymbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase))
+            {
+                StrategyConfiguration.MinimumThresholdSymbol = KnownCoins.DogecoinSymbol;
+                SaveStrategyConfiguration();
+            }
+        }
+
+        private void FixCoinConfigurationSymbolDiscrepencies()
+        {
+            Coin badConfiguration = CoinConfigurations.SingleOrDefault(c => c.CryptoCoin.Symbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+            if (badConfiguration != null)
+            {
+                Coin goodConfiguration = CoinConfigurations.SingleOrDefault(c => c.CryptoCoin.Symbol.Equals(KnownCoins.DogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+
+                if (goodConfiguration == null)
+                    badConfiguration.CryptoCoin.Symbol = KnownCoins.DogecoinSymbol;
+                else
+                    CoinConfigurations.Remove(badConfiguration);
+
+                SaveCoinConfigurations();
+            }
         }
     }
 }

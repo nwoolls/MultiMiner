@@ -109,7 +109,7 @@ namespace MultiMiner.Win.ViewModels
 
         private static void ApplyCoinInformationToViewModel(List<CoinInformation> coinInformationModels, string coinSymbol, DeviceViewModel deviceViewModel)
         {
-            CoinInformation coinInformationModel = coinInformationModels.GetCoinInformationForSymbol(coinSymbol);
+            CoinInformation coinInformationModel = coinInformationModels.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             if (coinInformationModel != null)
                 ObjectCopier.CopyObject(coinInformationModel, deviceViewModel, "Name", "Exchange");
         }
