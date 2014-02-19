@@ -4611,7 +4611,16 @@ namespace MultiMiner.Win.Forms
                         //https://github.com/nwoolls/MultiMiner/issues/64
                         ((poolIndex >= 0) && (poolIndex < poolInformationList.Count)))
                     {
-                        deviceViewModel.Pool = poolInformationList[poolIndex].Url;
+                        PoolInformation poolInformation = poolInformationList[poolIndex];
+
+                        deviceViewModel.Pool = poolInformation.Url;
+
+                        deviceViewModel.LastShareDifficulty = poolInformation.LastShareDifficulty;
+                        deviceViewModel.LastShareTime = poolInformation.LastShareTime;
+                        deviceViewModel.Url = poolInformation.Url;
+                        deviceViewModel.BestShare = poolInformation.BestShare;
+                        deviceViewModel.PoolStalePercent = poolInformation.PoolStalePercent;
+
                         deviceViewModel.Visible = true;
                     }
                 }
