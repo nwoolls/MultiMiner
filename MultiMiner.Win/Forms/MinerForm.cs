@@ -393,7 +393,14 @@ namespace MultiMiner.Win.Forms
             this.updatingListView = true;
             try
             {
-                utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
+                try
+                {
+                    utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
+                }
+                catch (InvalidOperationException ex)
+                {
+                    //user was resizing columns
+                }
 
                 //clear all coin stats first
                 //there may be coins configured that are no longer returned in the stats
