@@ -3,21 +3,24 @@ using System.Windows.Forms;
 
 namespace MultiMiner.Win.Controls
 {
-    public partial class DeviceListView : NoFlickerListView
+    public partial class ListViewEx : NoFlickerListView
     {
-        private bool checkFromDoubleClick = false;
+        public bool CheckFromDoubleClick { get; set; }
 
-        public DeviceListView()
+        private bool checkWasFromDoubleClick = false;
+
+        public ListViewEx()
         {
             InitializeComponent();
+            CheckFromDoubleClick = true;
         }
 
         protected override void OnItemCheck(ItemCheckEventArgs ice)
         {
-            if (checkFromDoubleClick)
+            if (!CheckFromDoubleClick && checkWasFromDoubleClick)
             {
                 ice.NewValue = ice.CurrentValue;
-                checkFromDoubleClick = false;
+                checkWasFromDoubleClick = false;
             }
             else
                 base.OnItemCheck(ice);
@@ -26,14 +29,14 @@ namespace MultiMiner.Win.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if ((e.Button == MouseButtons.Left) && (e.Clicks > 1))
-                checkFromDoubleClick = true;
+                checkWasFromDoubleClick = true;
 
             base.OnMouseDown(e);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            checkFromDoubleClick = false;
+            checkWasFromDoubleClick = false;
 
             base.OnKeyDown(e);
         }

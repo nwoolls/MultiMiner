@@ -1,6 +1,6 @@
 ﻿namespace MultiMiner.Win.Controls
 {
-    partial class DeviceListView
+    partial class ListViewEx
     {
         /// <summary> 
         /// Required designer variable.

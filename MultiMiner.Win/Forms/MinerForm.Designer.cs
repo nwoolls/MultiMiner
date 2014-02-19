@@ -204,7 +204,7 @@
             this.aToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restartMiningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deviceListView = new MultiMiner.Win.Controls.DeviceListView();
+            this.deviceListView = new MultiMiner.Win.Controls.ListViewEx();
             this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.driverColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.coinColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -2078,7 +2078,7 @@
         private System.Windows.Forms.ToolStripMenuItem smallIconsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem largeIconsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tilesToolStripMenuItem;
-        private MultiMiner.Win.Controls.DeviceListView deviceListView;
+        private MultiMiner.Win.Controls.ListViewEx deviceListView;
         private System.Windows.Forms.ToolStripMenuItem restartButton;
         private System.Windows.Forms.ToolStripMenuItem perksButton;
         private System.Windows.Forms.ToolStripMenuItem perksToolStripMenuItem1;
