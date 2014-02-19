@@ -2905,6 +2905,7 @@ namespace MultiMiner.Win.Forms
             //only broadcast if there are other instances (not just us)
             if (perksConfiguration.EnableRemoting && (instancesControl.Instances.Count > 1))
             {
+                //broadcast 0 (e.g. even if not mining)
                 BroadcastHashrate();
             }
         }
@@ -2994,6 +2995,7 @@ namespace MultiMiner.Win.Forms
 
         private void BroadcastHashrate()
         {
+            //broadcast 0 (e.g. even if not mining)
             Remoting.Data.Transfer.Machine machine = new Remoting.Data.Transfer.Machine();
             machine.TotalScryptHashrate = GetLocalInstanceHashrate(CoinAlgorithm.Scrypt, false);
             machine.TotalSha256Hashrate = GetLocalInstanceHashrate(CoinAlgorithm.SHA256, false);
@@ -4628,6 +4630,7 @@ namespace MultiMiner.Win.Forms
                 machine.TotalScryptHashrate = GetLocalInstanceHashrate(CoinAlgorithm.Scrypt, true);
                 machine.TotalSha256Hashrate = GetLocalInstanceHashrate(CoinAlgorithm.SHA256, true);
                 instancesControl.ApplyMachineInformation("localhost", machine);
+                UpdateInstancesVisibility();
             }
         }
 

@@ -43,6 +43,7 @@ namespace MultiMiner.Win.Controls
         public Instance ThisPCInstance { get; set; }
 
         private Dictionary<Instance, Remoting.Data.Transfer.Machine> instanceMachines = new Dictionary<Instance, Remoting.Data.Transfer.Machine>();
+        private Dictionary<Instance, DateTime> instanceUpdateDates = new Dictionary<Instance, DateTime>();
 
         public InstancesControl()
         {
@@ -90,6 +91,8 @@ namespace MultiMiner.Win.Controls
 
             Instances.Add(instance);
 
+            instanceUpdateDates[instance] = DateTime.Now;
+
             SortTree();
 
             treeView1.Nodes[0].ExpandAll();
@@ -135,7 +138,10 @@ namespace MultiMiner.Win.Controls
 
             Instance instance = Instances.SingleOrDefault(i => i.IpAddress.Equals(ipAddress));
             if (instance != null)
+            {
+                instanceUpdateDates[instance] = DateTime.Now;
                 instanceMachines[instance] = machine;
+            }
 
             TreeNode[] nodes = treeView1.Nodes[0].Nodes.Find(ipAddress, false);
             if (nodes.Length > 0)
@@ -165,7 +171,20 @@ namespace MultiMiner.Win.Controls
                 }
             }
 
+            RemoveOrphans();
+
             RefreshNetworkTotals();
+        }
+
+        private void RemoveOrphans()
+        {
+            //remove instances (not This PC) that haven't broadcast a hashrate in 5 minutes
+            IEnumerable<Instance> orphans = Instances.Where(i => (i != ThisPCInstance) && (instanceUpdateDates[i].AddMinutes(5) < DateTime.Now)).ToList();
+            foreach (Instance orphan in orphans)
+            {
+                treeView1.Nodes[0].Nodes.RemoveByKey(orphan.IpAddress);
+                Instances.Remove(orphan);
+            }
         }
 
         private void RefreshNetworkTotals()
