@@ -192,7 +192,8 @@ namespace MultiMiner.Win.ViewModels
 
         public void ApplyPoolInformationResponseModels(string coinSymbol, List<PoolInformation> poolInformationResonseModels)
         {
-            IEnumerable<DeviceViewModel> relevantDevices = Devices.Where(d => (d.Coin != null) && d.Coin.Symbol.Equals(coinSymbol));
+            //apply to non-Network Devices, those are populated separately
+            IEnumerable<DeviceViewModel> relevantDevices = Devices.Where(d => (d.Kind != DeviceKind.NET) && (d.Coin != null) && d.Coin.Symbol.Equals(coinSymbol));
             foreach (DeviceViewModel relevantDevice in relevantDevices)
             {
             	PoolInformation poolInformation = poolInformationResonseModels.SingleOrDefault(p => p.Index == relevantDevice.PoolIndex);
