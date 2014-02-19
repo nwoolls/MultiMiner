@@ -1,7 +1,6 @@
-﻿using MultiMiner.Utility.Forms;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
-namespace MultiMiner.Win.Controls
+namespace MultiMiner.Utility.Forms
 {
     public partial class ListViewEx : NoFlickerListView
     {
@@ -12,7 +11,6 @@ namespace MultiMiner.Win.Controls
         public ListViewEx()
         {
             InitializeComponent();
-            CheckFromDoubleClick = true;
         }
 
         protected override void OnItemCheck(ItemCheckEventArgs ice)

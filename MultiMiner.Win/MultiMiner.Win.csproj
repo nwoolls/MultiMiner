@@ -78,12 +78,6 @@
     <Compile Include="Controls\DetailsControl.Designer.cs">
       <DependentUpon>DetailsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ListViewEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\ListViewEx.Designer.cs">
-      <DependentUpon>ListViewEx.cs</DependentUpon>
-    </Compile>
     <Compile Include="Extensions\IPEndPointExtensions.cs" />
     <Compile Include="Extensions\NetworkDeviceExtensions.cs" />
     <Compile Include="Controls\InstancesControl.cs">

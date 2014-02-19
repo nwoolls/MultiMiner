@@ -1,4 +1,4 @@
-﻿namespace MultiMiner.Win.Controls
+﻿namespace MultiMiner.Utility.Forms
 {
     partial class ListViewEx
     {
