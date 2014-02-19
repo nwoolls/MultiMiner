@@ -6086,6 +6086,7 @@ namespace MultiMiner.Win.Forms
             localViewModel.ClearDeviceInformationFromViewModel();
 
             processDeviceDetails.Clear();
+            lastDevicePoolMapping.Clear();
             deviceStatsTimer.Enabled = false;
             minerSummaryTimer.Enabled = false;
             coinStatsCountdownTimer.Enabled = false;
