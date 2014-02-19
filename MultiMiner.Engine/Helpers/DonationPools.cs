@@ -169,6 +169,10 @@ namespace MultiMiner.Engine.Helpers
             //TAG
             donationConfiguration = CreateCoinConfiguration("TAG", "stratum+tcp://tag.hashfaster.com", 3335);
             configurations.Add(donationConfiguration);
+
+            //BEE
+            donationConfiguration = CreateCoinConfiguration("BEE", "stratum+tcp://ca1.miningpool.co", 14804);
+            configurations.Add(donationConfiguration);
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
