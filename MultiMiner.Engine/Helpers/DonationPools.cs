@@ -15,7 +15,7 @@ namespace MultiMiner.Engine.Helpers
 
 
             //LTC
-            donationConfiguration = CreateCoinConfiguration("LTC", "stratum+tcp://freedom.wemineltc.com", 3334);
+            donationConfiguration = CreateCoinConfiguration("LTC", "stratum+tcp://de2.miningpool.co", 4001);
             configurations.Add(donationConfiguration);
 
             //BQC
@@ -51,11 +51,11 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //DOGE
-            donationConfiguration = CreateCoinConfiguration("DOGE", "stratum+tcp://stratum.dogehouse.org", 3333);
+            donationConfiguration = CreateCoinConfiguration("DOGE", "stratum+tcp://de2.miningpool.co", 23001);
             configurations.Add(donationConfiguration);
 
             //DOG
-            donationConfiguration = CreateCoinConfiguration("DOG", "stratum+tcp://stratum.dogehouse.org", 3333);
+            donationConfiguration = CreateCoinConfiguration("DOG", "stratum+tcp://de2.miningpool.co", 23001);
             configurations.Add(donationConfiguration);
 
             //ASC
