@@ -92,6 +92,7 @@ namespace MultiMiner.Xgminer
             minerProcess.WaitForExit(60 * 1000);
 
             List<Device> result = new List<Device>();
+            
             DeviceListParser.ParseTextForDevices(output, result);
 
             if (prettyNames)
@@ -127,7 +128,8 @@ namespace MultiMiner.Xgminer
             if (minerConfiguration.DisableUsbProbe)
                 serialArg = MinerParameter.ScanSerialAuto;
             else
-                serialArg = MinerParameter.ScanSerialLittlefuryAll + " " + MinerParameter.ScanSerialAntminerAll + " " + MinerParameter.ScanSerialErupterAll;
+                //the order specified here is so that Block Erupters use the Erupter driver without interfering with Nanofury detection
+                serialArg = MinerParameter.ScanSerialNanofuryAll + " " + MinerParameter.ScanSerialErupterAll + " " + MinerParameter.ScanSerialAll;
 
             if (!minerConfiguration.DisableGpu)
                 //openCL disabled by default in bfgminer 3.3.0+
