@@ -80,12 +80,16 @@ namespace MultiMiner.Xgminer.Api
             return GetResponse(String.Format("{0}|{1}", ApiVerb.SwitchPool, poolIndex));
         }
 
-        public string GetResponse(string apiVerb)
+        public string GetResponse(string apiVerb, int timeoutMs = 500)
         {
             TcpClient tcpClient = new TcpClient(this.ipAddress, port);
             NetworkStream tcpStream = tcpClient.GetStream();
 
             Byte[] request = Encoding.ASCII.GetBytes(apiVerb);
+
+            long timeoutTicks = timeoutMs * TimeSpan.TicksPerMillisecond;
+            long ticks = DateTime.Now.Ticks;
+
             tcpStream.Write(request, 0, request.Length);
 
             Byte[] responseBuffer = new Byte[4096];
@@ -94,10 +98,12 @@ namespace MultiMiner.Xgminer.Api
             {
                 int bytesRead = tcpStream.Read(responseBuffer, 0, responseBuffer.Length);
                 response = response + Encoding.ASCII.GetString(responseBuffer, 0, bytesRead);
-
-            } while (String.IsNullOrEmpty(response) ||
+            } while (
+                //check timeout
+                ((DateTime.Now.Ticks - ticks) <= timeoutTicks) &&
                 //looking for a terminating NULL character from the RPC API
-                (response[response.Length - 1] != '\0'));
+                (String.IsNullOrEmpty(response) ||
+                                     (response[response.Length - 1] != '\0')));
             
             if (LogEvent != null)
             {
