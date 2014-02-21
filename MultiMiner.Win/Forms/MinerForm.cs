@@ -118,7 +118,12 @@ namespace MultiMiner.Win.Forms
             InitializeComponent();
 
             pathConfiguration.LoadPathConfiguration();
+
+            instancesContainer.Panel1Collapsed = true;
+            detailsAreaContainer.Panel2Collapsed = true;
+
             applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
+
             if (applicationConfiguration.StartupMinimized)
                 this.WindowState = FormWindowState.Minimized;
         }
@@ -1572,6 +1577,10 @@ namespace MultiMiner.Win.Forms
             else
                 HideAdvancedPanel();
 
+            //can't set details container width until it is shown
+            if (applicationConfiguration.InstancesAreaWidth > 0)
+                instancesContainer.SplitterDistance = applicationConfiguration.InstancesAreaWidth;
+
             crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
 
             SetupCoinStatsTimer();
@@ -1701,6 +1710,10 @@ namespace MultiMiner.Win.Forms
         {
             applicationConfiguration.LogAreaTabIndex = advancedTabControl.SelectedIndex;
             SavePosition();
+
+            applicationConfiguration.DetailsAreaWidth = detailsAreaContainer.Width - detailsAreaContainer.SplitterDistance;
+            applicationConfiguration.InstancesAreaWidth = instancesContainer.SplitterDistance;
+
             this.applicationConfiguration.SaveApplicationConfiguration();
         }
 
@@ -5980,10 +5993,20 @@ namespace MultiMiner.Win.Forms
             detailsAreaContainer.Panel2Collapsed = true;
         }
 
+        private bool detailsAreaSetup = false;
         private void ShowDetailsArea()
         {
             SetBriefMode(false);
             RefreshDetailsArea();
+
+
+            if (!detailsAreaSetup && (applicationConfiguration.DetailsAreaWidth > 0))
+            {
+                detailsAreaContainer.SplitterDistance = detailsAreaContainer.Width - applicationConfiguration.DetailsAreaWidth;
+
+                detailsAreaSetup = true;
+            }
+
 
             detailsAreaContainer.Panel2Collapsed = false;
             detailsAreaContainer.Panel2.Show();

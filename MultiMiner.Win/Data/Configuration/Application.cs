@@ -94,6 +94,8 @@ namespace MultiMiner.Win.Data.Configuration
         public bool RollOverLogFiles { get; set; }
         public int OldLogFileSets { get; set; }
         public string LogFilePath { get; set; }
+        public int DetailsAreaWidth { get; set; }
+        public int InstancesAreaWidth { get; set; }
 
         public bool ScheduledRestartMining { get; set; }
         public TimerInterval ScheduledRestartMiningInterval { get; set; }
