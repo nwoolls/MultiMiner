@@ -129,8 +129,8 @@ The source code is structured in such a way that it should be fairly easy to use
 
 * __MultiMiner.Xgminer__ is an assembly for controlling the bfgminer executable - e.g. launching and enumerating devices
 * __MultiMiner.Xgminer.Api__ assists in communicating with the underlying miner via the RPC API
-* __MultiMiner.Coinchoose.Api__ assists in consuming the cypto-currency information available at [CoinChoose.com][9]
-* __MultiMiner.MobileMiner.Api__ facilitates communicating with the [MobileMiner][14] REST API
+* __MultiMiner.Coinchoose__ assists in consuming the cypto-currency information available at [CoinChoose.com][9]
+* __MultiMiner.MobileMiner__ facilitates communicating with the [MobileMiner][14] REST API
 * __MultiMiner.Engine__ is an assembly that can be used to interact with all functionality found in MultiMiner, but without a UI - useful for creating front-ends for other OS's
 * __MultiMiner.Win__ is the Windows Forms application
 
@@ -138,7 +138,7 @@ Source Code Example
 -------------
 This simple example shows how to use [MultiMiner.Xgminer.dll][16] and [MultiMiner.Xgminer.Api.dll][17] to install bfgminer, iterate through available mining devices, and launch the miner.
 
-Afterwards the bfgminer [RPC API][18] is used to output the miner hashrate for a minute before the mining process is stopped. You can try this code out yourself in the [MultiMiner.Api.Example][19] project.
+Afterwards the bfgminer [RPC API][18] is used to output the miner hashrate for a minute before the mining process is stopped. You can try this code out yourself in the [MultiMiner.Example][19] project.
 
 ![MultiMiner.Api.Example](https://raw.github.com/nwoolls/MultiMiner/master/Screenshots/MultiMiner.Api.Example.png "MultiMiner.Api.Example")
 
@@ -303,7 +303,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [16]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Xgminer
 [17]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Xgminer.Api
 [18]: https://github.com/luke-jr/bfgminer/blob/bfgminer/README.RPC
-[19]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Api.Example
+[19]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Example
 [20]: http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx
 [21]: http://minecoin.net/bluefuryredfury-driver-for-windows/
 [22]: http://www.ftdichip.com/Drivers/VCP.htm
