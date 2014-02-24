@@ -58,6 +58,7 @@ namespace MultiMiner.Win.ViewModels
         public string WorkerName { get; set; }
         public int Index { get; set; }
         public List<DeviceViewModel> Workers { get; set; }
+        public int ID { get; set; }
 
         //ViewModel specific
         public bool Visible { get; set; }
