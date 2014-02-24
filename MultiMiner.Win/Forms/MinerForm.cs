@@ -5927,17 +5927,10 @@ namespace MultiMiner.Win.Forms
                 }
                 else
                 {
-                    if (coinConfiguration.CryptoCoin.Algorithm == CoinAlgorithm.Scrypt)
-                    {
-                        if (viewModel.Kind == DeviceKind.GPU)
-                            deviceConfiguration.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
-                        else
-                            deviceConfiguration.CoinSymbol = viewModel.Coin == null ? String.Empty : viewModel.Coin.Name;
-                    }
-                    else
-                    {
+                    if (viewModel.SupportsAlgorithm(coinConfiguration.CryptoCoin.Algorithm))
                         deviceConfiguration.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
-                    }
+                    else
+                        deviceConfiguration.CoinSymbol = viewModel.Coin == null ? String.Empty : viewModel.Coin.Name;
 
                     deviceConfiguration.Enabled = viewModel.Enabled;
                 }

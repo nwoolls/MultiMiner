@@ -20,6 +20,29 @@ namespace MultiMiner.Xgminer.Data
             this.Kind = DeviceKind.None;
         }
 
+        private const string DualMinerDriver = "dualminer";
+
+        private bool IsScryptAsic()
+        {
+            return Driver.Equals(DualMinerDriver, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public bool SupportsAlgorithm(CoinAlgorithm algorithm)
+        {
+            bool result = false;
+
+            if (algorithm == CoinAlgorithm.Scrypt)
+            {
+                result = (Kind == DeviceKind.GPU) || (Kind == DeviceKind.CPU) || IsScryptAsic();
+            }
+            else
+            {
+                result = !IsScryptAsic();
+            }
+
+            return result;
+        }
+
         public override string ToString()
         {
             if (this.Kind == DeviceKind.PXY)
