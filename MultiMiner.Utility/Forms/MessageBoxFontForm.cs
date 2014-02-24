@@ -7,7 +7,8 @@ namespace MultiMiner.Utility.Forms
     {
         public MessageBoxFontForm()
         {
-            this.Font = SystemFonts.MessageBoxFont;
+            if (OS.OSVersionPlatform.GetGenericPlatform() != System.PlatformID.Unix)
+                this.Font = SystemFonts.MessageBoxFont;
             InitializeComponent();
         }
     }
