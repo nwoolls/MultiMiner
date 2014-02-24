@@ -62,6 +62,9 @@ namespace MultiMiner.Xgminer
 
             arguments = String.Format("{0} {1}", arguments, serialArg);
 
+            //include Scrypt ASICs
+            arguments = String.Format("{0} {1}", arguments, MinerParameter.Scrypt);
+
             //include the args specified by the user so we pickup manual devices (e.g. Avalon)
             arguments = String.Format("{0} {1}", arguments, minerConfiguration.ScanArguments);
 
@@ -229,7 +232,7 @@ namespace MultiMiner.Xgminer
 
             if (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
                 //the --scrypt param must come before the --intensity params to use over 13 in latest cgminer
-                arguments = "--scrypt " + arguments.TrimStart();
+                arguments = MinerParameter.Scrypt + " " + arguments.TrimStart();
 
             if (minerConfiguration.ApiListen)
             {
