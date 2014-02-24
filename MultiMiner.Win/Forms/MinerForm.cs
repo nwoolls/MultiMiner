@@ -4134,6 +4134,10 @@ namespace MultiMiner.Win.Forms
                 string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
                 return;
 
+            //is Network Device detection enabled?
+            if (!applicationConfiguration.NetworkDeviceDetection)
+                return;
+
             List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList = new List<MobileMiner.Data.MiningStatistics>();
 
             List<DeviceInformation> deviceInformationList = GetDeviceInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
