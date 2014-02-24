@@ -92,7 +92,8 @@ namespace MultiMiner.Xgminer
             //calling BeginErrorReadLine here is *required* on at least one user's machine
             minerProcess.BeginErrorReadLine();
 
-            minerProcess.WaitForExit(60 * 1000);
+            //wait 5 minutes - scans may take a long time
+            minerProcess.WaitForExit(5 * 60 * 1000);
 
             List<Device> result = new List<Device>();
             
