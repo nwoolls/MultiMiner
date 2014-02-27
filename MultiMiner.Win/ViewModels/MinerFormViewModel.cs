@@ -173,14 +173,15 @@ namespace MultiMiner.Win.ViewModels
                     deviceViewModel.HardwareErrors += deviceInformationResponseModel.HardwareErrors;
                     deviceViewModel.Utility += deviceInformationResponseModel.Utility;
                     deviceViewModel.WorkUtility += deviceInformationResponseModel.WorkUtility;
-                    deviceViewModel.RejectedSharesPercent += deviceInformationResponseModel.RejectedSharesPercent;
-                    deviceViewModel.HardwareErrorsPercent += deviceInformationResponseModel.HardwareErrorsPercent;
 
                     //now add as a worker
                     DeviceViewModel workerViewModel = new DeviceViewModel();
                     ObjectCopier.CopyObject(deviceInformationResponseModel, workerViewModel, excludedProperties);
                     workerViewModel.WorkerName = deviceInformationResponseModel.Name; //set a default until (if) we get details
                     deviceViewModel.Workers.Add(workerViewModel);
+
+                    //recalculate hardware and rejected share percentages - need to be weighted with worker hashrates
+                    UpdatePercentagesBasedOnWorkers(deviceViewModel);
                 }
                 else
                 {
@@ -188,6 +189,25 @@ namespace MultiMiner.Win.ViewModels
                 }
             }
             return deviceViewModel;
+        }
+
+        //update percentage-based device stats by weighing each worker
+        private static void UpdatePercentagesBasedOnWorkers(DeviceViewModel deviceViewModel)
+        {
+            double totalHashrate = deviceViewModel.Workers.Sum(w => w.AverageHashrate);
+
+            double rejectedPercent = 0;
+            double errorPercent = 0;
+
+            foreach (DeviceViewModel worker in deviceViewModel.Workers)
+            {
+                double workerWeight = worker.AverageHashrate / totalHashrate;
+                errorPercent += worker.HardwareErrorsPercent * workerWeight;
+                rejectedPercent += worker.RejectedSharesPercent * workerWeight;
+            }
+
+            deviceViewModel.HardwareErrorsPercent = errorPercent;
+            deviceViewModel.RejectedSharesPercent = rejectedPercent;
         }
 
         public void ApplyPoolInformationResponseModels(string coinSymbol, List<PoolInformation> poolInformationResonseModels)
