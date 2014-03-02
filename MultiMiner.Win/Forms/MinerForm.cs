@@ -4175,7 +4175,7 @@ namespace MultiMiner.Win.Forms
                 if (submitMiningStatisticsDelegate == null)
                     submitMiningStatisticsDelegate = SubmitMiningStatistics;
 
-                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, networkDevice.IPAddress, submitMiningStatisticsDelegate.EndInvoke, null);
+                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, String.Format("{0}:{1}", networkDevice.IPAddress, networkDevice.Port), submitMiningStatisticsDelegate.EndInvoke, null);
             }
         }
 
