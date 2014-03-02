@@ -4515,6 +4515,15 @@ namespace MultiMiner.Win.Forms
                     SaveChangesLocally(); //necessary to ensure device configurations exist for devices
                     StartMiningLocally();
                 }
+                else if (command.CommandText.StartsWith("SWITCH", StringComparison.OrdinalIgnoreCase))
+                {
+                    string[] parts = command.CommandText.Split('|');
+                    string verb = parts[0];
+                    string coinName = parts[1];
+                    Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.CryptoCoin.Name.Equals(coinName));
+                    if (coinConfiguration != null)
+                        SetAllDevicesToCoinLocally(coinConfiguration.CryptoCoin.Symbol);
+                }
 
                 if (deleteRemoteCommandDelegate == null)
                     deleteRemoteCommandDelegate = DeleteRemoteCommand;
