@@ -4586,12 +4586,13 @@ namespace MultiMiner.Win.Forms
         private List<PoolInformation> GetCachedPoolInfoFromAddress(string ipAddress, int port)
         {
             List<PoolInformation> poolInformationList = null;
-            if (this.networkDevicePools.ContainsKey(ipAddress))
-                poolInformationList = this.networkDevicePools[ipAddress];
+            string key = ipAddress + ":" + port;
+            if (this.networkDevicePools.ContainsKey(key))
+                poolInformationList = this.networkDevicePools[key];
             else
             {
                 poolInformationList = GetPoolInfoFromAddress(ipAddress, port);
-                networkDevicePools[ipAddress] = poolInformationList;
+                networkDevicePools[key] = poolInformationList;
             }
             return poolInformationList;
         }
