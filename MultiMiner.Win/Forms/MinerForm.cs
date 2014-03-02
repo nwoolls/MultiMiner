@@ -1296,6 +1296,8 @@ namespace MultiMiner.Win.Forms
                     FindNetworkDevicesAsync();
                 }
 
+                SubmitMobileMinerPools();
+
                 RefreshViewForConfigurationChanges();
                 RefreshListViewFromViewModel();
             }
@@ -1426,6 +1428,8 @@ namespace MultiMiner.Win.Forms
 
                 ApplyModelsToViewModel();
                 RefreshViewForConfigurationChanges();
+
+                SubmitMobileMinerPools();
 
                 if (applicationConfiguration.SaveCoinsToAllMachines && perksConfiguration.PerksEnabled && perksConfiguration.EnableRemoting)
                     SetCoinConfigurationOnAllRigs(this.engineConfiguration.CoinConfigurations.ToArray());
@@ -4354,6 +4358,49 @@ namespace MultiMiner.Win.Forms
                 throw;
             }
         }
+        
+        private void SubmitMobileMinerPools()
+        {
+            //are remote commands enabled?
+            if (!applicationConfiguration.MobileMinerRemoteCommands)
+                return;
+
+            //is MobileMiner configured?
+            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
+                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
+                return;
+
+            List<string> pools = new List<string>();
+            foreach (Coin coin in engineConfiguration.CoinConfigurations.Where(cc => cc.Enabled))
+                pools.Add(coin.CryptoCoin.Name);
+
+            if (submitPoolsDelegate == null)
+                submitPoolsDelegate = SubmitPools;
+
+            submitPoolsDelegate.BeginInvoke(pools, submitPoolsDelegate.EndInvoke, null);
+        }
+
+        private Action<List<string>> submitPoolsDelegate;
+
+        private void SubmitPools(List<string> pools)
+        {
+            try
+            {
+                MobileMiner.ApiContext.SubmitMachinePools(GetMobileMinerUrl(), mobileMinerApiKey,
+                        applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                        Environment.MachineName, pools);
+            }
+            catch (Exception ex)
+            {
+                if ((ex is WebException) || (ex is ArgumentException))
+                {
+                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+                    //could also be a json parsing error
+                    return;
+                }
+                throw;
+            }
+        }
 
         private void CheckForMobileMinerCommands()
         {
@@ -5315,6 +5362,8 @@ namespace MultiMiner.Win.Forms
                 CancelMiningOnStartup();
             if (!MiningConfigurationValid())
                 CancelMiningOnStartup();
+            
+            SubmitMobileMinerPools();
 
             applicationSetup = true;
         }
