@@ -4100,8 +4100,14 @@ namespace MultiMiner.Win.Forms
                     int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
                     Xgminer.Data.Device device = devices[deviceIndex];
                     Engine.Data.Configuration.Coin coinConfiguration = CoinConfigurationForDevice(device);
+                    
+                    string deviceName = device.Name;
+                    DeviceViewModel deviceViewModel = localViewModel.Devices.SingleOrDefault(d => d.Equals(device));
+                    if ((deviceViewModel != null) && !String.IsNullOrEmpty(deviceViewModel.FriendlyName))
+                        deviceName = deviceViewModel.FriendlyName;
 
-                    miningStatistics.FullName = device.Name;
+                    miningStatistics.FullName = deviceName;
+
                     miningStatistics.PoolName = GetPoolNameByIndex(coinConfiguration, deviceInformation.PoolIndex).DomainFromHost();
 
                     statisticsList.Add(miningStatistics);
@@ -4175,7 +4181,12 @@ namespace MultiMiner.Win.Forms
                 if (submitMiningStatisticsDelegate == null)
                     submitMiningStatisticsDelegate = SubmitMiningStatistics;
 
-                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, String.Format("{0}:{1}", networkDevice.IPAddress, networkDevice.Port), submitMiningStatisticsDelegate.EndInvoke, null);
+                string machineName = String.Format("{0}:{1}", networkDevice.IPAddress, networkDevice.Port);
+                DeviceViewModel deviceViewModel = localViewModel.Devices.SingleOrDefault(d => d.Path.Equals(machineName));
+                if ((deviceViewModel != null) && !String.IsNullOrEmpty(deviceViewModel.FriendlyName))
+                    machineName = deviceViewModel.FriendlyName;
+
+                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, machineName, submitMiningStatisticsDelegate.EndInvoke, null);
             }
         }
 
