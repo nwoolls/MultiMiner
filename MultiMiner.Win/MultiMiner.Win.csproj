@@ -253,6 +253,7 @@
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.ApplicationConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.PathConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.PerksConfiguration.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Win.Data.Configuration.Application.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Win.ViewModels.DeviceViewModel.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.LogEntry.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Xgminer.Api.Responses.DeviceDetailsResponse.datasource" />

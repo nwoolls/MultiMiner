@@ -16,6 +16,7 @@ namespace MultiMiner.Remoting
         public delegate void ToggleEventHandler(object sender, bool enabled, RemoteCommandEventArgs ea);
         public delegate void ModelRequestEventHandler(object sender, ModelEventArgs ea);
         public delegate void ConfigurationEventHandler(object sender, ConfigurationEventArgs ea);
+        public delegate void CoinConfigurationsEventHandler(object sender, Engine.Data.Configuration.Coin[] coinConfigurations, RemoteCommandEventArgs ea);
 
         //event declarations        
         public event RemoteEventHandler StartMiningRequested;
@@ -31,6 +32,7 @@ namespace MultiMiner.Remoting
         public event ModelRequestEventHandler GetModelRequested;
         public event ConfigurationEventHandler GetConfigurationRequested;
         public event ConfigurationEventHandler SetConfigurationRequested;
+        public event CoinConfigurationsEventHandler SetCoinConfigurationsRequested;
         public event RemoteEventHandler UpgradeMultiMinerRequested;
         public event RemoteEventHandler UpgradeBackendMinerRequested;
 
@@ -183,6 +185,21 @@ namespace MultiMiner.Remoting
 
             if (SetConfigurationRequested != null)
                 SetConfigurationRequested(sender, ea);
+        }
+
+        public void SetCoinConfigurations(
+            RemotingService sender,
+            string clientAddress, 
+            string signature,
+            Engine.Data.Configuration.Coin[] coinConfigurations)
+        {
+            if (SetCoinConfigurationsRequested != null)
+                SetCoinConfigurationsRequested(sender, coinConfigurations, 
+                    new RemoteCommandEventArgs 
+                    { 
+                        IpAddress = clientAddress, 
+                        Signature = signature 
+                    });
         }
 
         public void UpgradeMultiMiner(RemotingService sender, string clientAddress, string signature)

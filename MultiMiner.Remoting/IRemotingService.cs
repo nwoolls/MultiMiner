@@ -31,6 +31,10 @@ namespace MultiMiner.Remoting
             Data.Transfer.Configuration.Path path,
             Data.Transfer.Configuration.Perks perks);
         [OperationContract]
+        void SetCoinConfigurations(
+            string signature,
+            Engine.Data.Configuration.Coin[] coinConfigurations);
+        [OperationContract]
         void StopMining(string signature);
         [OperationContract]
         void StartMining(string signature);

@@ -60,6 +60,17 @@ namespace MultiMiner.Remoting
                 perks);
         }
 
+        public void SetCoinConfigurations(
+            string signature,
+            Engine.Data.Configuration.Coin[] coinConfigurations)
+        {
+            ApplicationProxy.Instance.SetCoinConfigurations(
+                this,
+                GetClientIpAddress(),
+                signature,
+                coinConfigurations);
+        }
+
         private static string GetClientIpAddress()
         {
             //don't use RemoteEndpointMessageProperty on Mono+Linux

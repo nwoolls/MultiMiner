@@ -72,6 +72,7 @@ namespace MultiMiner.Win.Data.Configuration
         public string SubmittedStatsVersion { get; set; }
         public bool ShowWorkUtility { get; set; }
         public bool NetworkDeviceDetection { get; set; }
+        public bool SaveCoinsToAllMachines { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }
         public bool MobileMinerRemoteCommands { get; set; }

@@ -40,17 +40,22 @@
             this.exportButton = new System.Windows.Forms.ToolStripMenuItem();
             this.coinListBox = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.saveToRemotingCheckBox = new System.Windows.Forms.CheckBox();
+            this.applicationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.miningPoolBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.poolDownButton = new System.Windows.Forms.Button();
             this.poolUpButton = new System.Windows.Forms.Button();
             this.addPoolButton = new System.Windows.Forms.Button();
             this.removePoolButton = new System.Windows.Forms.Button();
             this.poolListBox = new System.Windows.Forms.ListBox();
-            this.miningPoolBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -73,12 +78,10 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.checkBox8 = new System.Windows.Forms.CheckBox();
             this.checkBox7 = new System.Windows.Forms.CheckBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationBindingSource)).BeginInit();
             this.contextMenuStrip2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.miningPoolBindingSource)).BeginInit();
@@ -185,6 +188,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.saveToRemotingCheckBox);
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -192,6 +196,21 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(651, 54);
             this.panel1.TabIndex = 9;
+            // 
+            // saveToRemotingCheckBox
+            // 
+            this.saveToRemotingCheckBox.AutoSize = true;
+            this.saveToRemotingCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationBindingSource, "SaveCoinsToAllMachines", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.saveToRemotingCheckBox.Location = new System.Drawing.Point(12, 19);
+            this.saveToRemotingCheckBox.Name = "saveToRemotingCheckBox";
+            this.saveToRemotingCheckBox.Size = new System.Drawing.Size(198, 19);
+            this.saveToRemotingCheckBox.TabIndex = 2;
+            this.saveToRemotingCheckBox.Text = "Apply to all rigs on your network";
+            this.saveToRemotingCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // applicationBindingSource
+            // 
+            this.applicationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
             // 
             // saveButton
             // 
@@ -253,6 +272,38 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pools";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label10.Location = new System.Drawing.Point(352, 190);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(51, 15);
+            this.label10.TabIndex = 26;
+            this.label10.Text = "optional";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(8, 190);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(94, 15);
+            this.label9.TabIndex = 25;
+            this.label9.Text = "Pool arguments:";
+            // 
+            // textBox4
+            // 
+            this.textBox4.AccessibleName = "Miner arguments";
+            this.textBox4.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "MinerFlags", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox4.Location = new System.Drawing.Point(129, 187);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(217, 23);
+            this.textBox4.TabIndex = 24;
+            // 
+            // miningPoolBindingSource
+            // 
+            this.miningPoolBindingSource.DataSource = typeof(MultiMiner.Xgminer.Data.MiningPool);
             // 
             // poolDownButton
             // 
@@ -316,10 +367,6 @@
             this.poolListBox.Size = new System.Drawing.Size(294, 64);
             this.poolListBox.TabIndex = 0;
             this.poolListBox.SelectedIndexChanged += new System.EventHandler(this.poolListBox_SelectedIndexChanged);
-            // 
-            // miningPoolBindingSource
-            // 
-            this.miningPoolBindingSource.DataSource = typeof(MultiMiner.Xgminer.Data.MiningPool);
             // 
             // label4
             // 
@@ -509,34 +556,6 @@
             this.checkBox7.Text = "Notify on block found";
             this.checkBox7.UseVisualStyleBackColor = true;
             // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(8, 190);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(94, 15);
-            this.label9.TabIndex = 25;
-            this.label9.Text = "Pool arguments:";
-            // 
-            // textBox4
-            // 
-            this.textBox4.AccessibleName = "Miner arguments";
-            this.textBox4.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "MinerFlags", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox4.Location = new System.Drawing.Point(129, 187);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(217, 23);
-            this.textBox4.TabIndex = 24;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label10.Location = new System.Drawing.Point(352, 190);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(51, 15);
-            this.label10.TabIndex = 26;
-            this.label10.Text = "optional";
-            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -579,6 +598,8 @@
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationBindingSource)).EndInit();
             this.contextMenuStrip2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -638,5 +659,7 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.CheckBox saveToRemotingCheckBox;
+        private System.Windows.Forms.BindingSource applicationBindingSource;
     }
 }

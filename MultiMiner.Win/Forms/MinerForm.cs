@@ -1396,7 +1396,7 @@ namespace MultiMiner.Win.Forms
             ObjectCopier.CopyObject(this.remoteApplicationConfig.ToModelObject(), workingApplicationConfiguration);
             ObjectCopier.CopyObject(this.remoteEngineConfig.ToModelObject(), workingEngineConfiguration);
 
-            CoinsForm coinsForm = new CoinsForm(workingEngineConfiguration.CoinConfigurations, knownCoins);
+            CoinsForm coinsForm = new CoinsForm(workingEngineConfiguration.CoinConfigurations, knownCoins, workingApplicationConfiguration, perksConfiguration);
             coinsForm.Text = String.Format("{0}: {1}", coinsForm.Text, this.selectedRemoteInstance.MachineName);
             DialogResult dialogResult = coinsForm.ShowDialog();
 
@@ -1405,12 +1405,15 @@ namespace MultiMiner.Win.Forms
                 ObjectCopier.CopyObject(workingApplicationConfiguration.ToTransferObject(), this.remoteApplicationConfig);
                 ObjectCopier.CopyObject(workingEngineConfiguration.ToTransferObject(), this.remoteEngineConfig);
                 SetConfigurationRemotely(this.selectedRemoteInstance, this.remoteApplicationConfig, this.remoteEngineConfig, null, null);
+
+                if (applicationConfiguration.SaveCoinsToAllMachines && perksConfiguration.PerksEnabled && perksConfiguration.EnableRemoting)
+                    SetCoinConfigurationOnAllRigs(this.remoteEngineConfig.CoinConfigurations);
             }
         }
 
         private void ConfigureCoinsLocally()
         {
-            CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins);
+            CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins, applicationConfiguration, perksConfiguration);
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
@@ -1419,12 +1422,19 @@ namespace MultiMiner.Win.Forms
 
                 engineConfiguration.SaveCoinConfigurations();
                 engineConfiguration.SaveDeviceConfigurations();
+                applicationConfiguration.SaveApplicationConfiguration();
 
                 ApplyModelsToViewModel();
                 RefreshViewForConfigurationChanges();
+
+                if (applicationConfiguration.SaveCoinsToAllMachines && perksConfiguration.PerksEnabled && perksConfiguration.EnableRemoting)
+                    SetCoinConfigurationOnAllRigs(this.engineConfiguration.CoinConfigurations.ToArray());
             }
             else
+            {
                 engineConfiguration.LoadCoinConfigurations(pathConfiguration.SharedConfigPath);
+                applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
+            }
         }
 
         private void ConfigureStrategiesLocally()
@@ -2656,14 +2666,10 @@ namespace MultiMiner.Win.Forms
 
             bool allRigs = ShouldQuickSwitchAllRigs(coinSymbol);
 
+            SetAllDevicesToCoin(coinSymbol);
+
             if (allRigs)
-            {
                 SetAllDevicesToCoinOnAllRigs(coinSymbol);
-            }
-            else
-            {
-                SetAllDevicesToCoin(coinSymbol);
-            }
         }
 
         private bool ShouldQuickSwitchAllRigs(string coinSymbol)
@@ -3231,6 +3237,24 @@ namespace MultiMiner.Win.Forms
             });
         }
 
+        private void SetCoinConfigurationsRequested(object sender, Engine.Data.Configuration.Coin[] coinConfigurations, RemoteCommandEventArgs ea)
+        {
+            PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
+            {
+                ObjectCopier.CopyObject(coinConfigurations, this.engineConfiguration.CoinConfigurations);
+                this.engineConfiguration.SaveCoinConfigurations();
+
+                BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    localViewModel.ApplyCoinConfigurationModels(engineConfiguration.CoinConfigurations);
+                    localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
+                        engineConfiguration.CoinConfigurations);
+                    RefreshViewForConfigurationChanges();
+                }));
+            });
+        }
+
         private void SetConfigurationRequested(object sender, ConfigurationEventArgs ea)
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
@@ -3388,6 +3412,9 @@ namespace MultiMiner.Win.Forms
 
             ApplicationProxy.Instance.UpgradeBackendMinerRequested -= UpgradeBackendMinerRequested;
             ApplicationProxy.Instance.UpgradeBackendMinerRequested += UpgradeBackendMinerRequested;
+
+            ApplicationProxy.Instance.SetCoinConfigurationsRequested -= SetCoinConfigurationsRequested;
+            ApplicationProxy.Instance.SetCoinConfigurationsRequested += SetCoinConfigurationsRequested;
         }
 
         private void EnableRemoting()
@@ -3806,6 +3833,17 @@ namespace MultiMiner.Win.Forms
                 service.ToggleDynamicIntensity(GetSendingSignature(instance), enabled);
                 UpdateViewFromRemoteInTheFuture(2);
             });
+        }
+
+        private void SetCoinConfigurationOnAllRigs(Engine.Data.Configuration.Coin[] coinConfigurations)
+        {
+            foreach (Instance instance in instancesControl.Instances.Where(i => i != instancesControl.ThisPCInstance))
+            {
+                PerformRemoteCommand(instance, (service) =>
+                {
+                    service.SetCoinConfigurations(GetSendingSignature(instance), coinConfigurations);
+                });
+            }
         }
 
         private void SetConfigurationRemotely(
@@ -5910,7 +5948,7 @@ namespace MultiMiner.Win.Forms
 
         private void SetAllDevicesToCoinOnAllRigs(string coinSymbol)
         {
-            foreach (Instance instance in instancesControl.Instances)
+            foreach (Instance instance in instancesControl.Instances.Where(i => i != instancesControl.ThisPCInstance))
                 SetAllDevicesToCoinRemotely(instance, coinSymbol);
         }
 

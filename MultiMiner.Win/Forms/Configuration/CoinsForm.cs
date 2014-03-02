@@ -17,11 +17,20 @@ namespace MultiMiner.Win.Forms.Configuration
         private readonly List<Engine.Data.Configuration.Coin> configurations = new List<Engine.Data.Configuration.Coin>();
         private readonly List<CryptoCoin> knownCoins;
 
-        public CoinsForm(List<Engine.Data.Configuration.Coin> configurations, List<CryptoCoin> knownCoins)
+        public CoinsForm(List<Engine.Data.Configuration.Coin> coinConfigurations, List<CryptoCoin> knownCoins,
+            Data.Configuration.Application applicationConfiguration, Data.Configuration.Perks perksConfiguration)
         {
-            this.configurations = configurations;
+            this.configurations = coinConfigurations;
             this.knownCoins = knownCoins;
+
             InitializeComponent();
+
+            saveToRemotingCheckBox.Visible = false;
+            if (perksConfiguration.PerksEnabled && perksConfiguration.EnableRemoting)
+            {
+                saveToRemotingCheckBox.Visible = true;
+                this.applicationBindingSource.DataSource = applicationConfiguration;
+            }
         }
 
         private void CoinsForm_Load(object sender, EventArgs e)
