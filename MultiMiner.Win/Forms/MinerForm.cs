@@ -3857,7 +3857,10 @@ namespace MultiMiner.Win.Forms
 
         private void InstallBackendMinerRemotely()
         {
-            foreach (Instance instance in instancesControl.Instances)
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<Instance> instancesCopy = instancesControl.Instances.ToList();
+            foreach (Instance instance in instancesCopy)
             {
                 if (!instance.MachineName.Equals(Environment.MachineName))
                 {
@@ -3871,7 +3874,10 @@ namespace MultiMiner.Win.Forms
 
         private void InstallMultiMinerRemotely()
         {
-            foreach (Instance instance in instancesControl.Instances)
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<Instance> instancesCopy = instancesControl.Instances.ToList();
+            foreach (Instance instance in instancesCopy)
             {
                 if (!instance.MachineName.Equals(Environment.MachineName))
                 {
@@ -5898,7 +5904,10 @@ namespace MultiMiner.Win.Forms
 
         private void SetAllDevicesToCoinOnAllRigs(string coinSymbol)
         {
-            foreach (Instance instance in instancesControl.Instances)
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<Instance> instancesCopy = instancesControl.Instances.ToList();
+            foreach (Instance instance in instancesCopy)
                 SetAllDevicesToCoinRemotely(instance, coinSymbol);
         }
 
