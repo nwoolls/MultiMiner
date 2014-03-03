@@ -3841,7 +3841,10 @@ namespace MultiMiner.Win.Forms
 
         private void SetCoinConfigurationOnAllRigs(Engine.Data.Configuration.Coin[] coinConfigurations)
         {
-            foreach (Instance instance in instancesControl.Instances.Where(i => i != instancesControl.ThisPCInstance))
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<Instance> instancesCopy = instancesControl.Instances.Where(i => i != instancesControl.ThisPCInstance).ToList();
+            foreach (Instance instance in instancesCopy)
             {
                 PerformRemoteCommand(instance, (service) =>
                 {
@@ -3899,29 +3902,29 @@ namespace MultiMiner.Win.Forms
 
         private void InstallBackendMinerRemotely()
         {
-            foreach (Instance instance in instancesControl.Instances)
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<Instance> instancesCopy = instancesControl.Instances.Where(i => i != instancesControl.ThisPCInstance).ToList();
+            foreach (Instance instance in instancesCopy)
             {
-                if (!instance.MachineName.Equals(Environment.MachineName))
+                PerformRemoteCommand(instance, (service) =>
                 {
-                    PerformRemoteCommand(instance, (service) =>
-                    {
-                        service.UpgradeBackendMiner(GetSendingSignature(instance));
-                    });
-                }
+                    service.UpgradeBackendMiner(GetSendingSignature(instance));
+                });
             }
         }
 
         private void InstallMultiMinerRemotely()
         {
-            foreach (Instance instance in instancesControl.Instances)
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<Instance> instancesCopy = instancesControl.Instances.Where(i => i != instancesControl.ThisPCInstance).ToList();
+            foreach (Instance instance in instancesCopy)
             {
-                if (!instance.MachineName.Equals(Environment.MachineName))
+                PerformRemoteCommand(instance, (service) =>
                 {
-                    PerformRemoteCommand(instance, (service) =>
-                    {
-                        service.UpgradeMultiMiner(GetSendingSignature(instance));
-                    });
-                }
+                    service.UpgradeMultiMiner(GetSendingSignature(instance));
+                });
             }
         }
         #endregion
@@ -6006,7 +6009,10 @@ namespace MultiMiner.Win.Forms
 
         private void SetAllDevicesToCoinOnAllRigs(string coinSymbol)
         {
-            foreach (Instance instance in instancesControl.Instances.Where(i => i != instancesControl.ThisPCInstance))
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<Instance> instancesCopy = instancesControl.Instances.Where(i => i != instancesControl.ThisPCInstance).ToList();
+            foreach (Instance instance in instancesCopy)
                 SetAllDevicesToCoinRemotely(instance, coinSymbol);
         }
 
