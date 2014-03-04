@@ -4573,9 +4573,22 @@ namespace MultiMiner.Win.Forms
 
         private void DeleteRemoteCommand(MobileMiner.Data.RemoteCommand command)
         {
-            MobileMiner.ApiContext.DeleteCommand(GetMobileMinerUrl(), mobileMinerApiKey,
-                                applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                                Environment.MachineName, command.Id);
+            try
+            {
+                MobileMiner.ApiContext.DeleteCommand(GetMobileMinerUrl(), mobileMinerApiKey,
+                                    applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                                    Environment.MachineName, command.Id);
+            }
+            catch (Exception ex)
+            {
+                if ((ex is WebException) || (ex is ArgumentException))
+                {
+                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+                    //could also be a json parsing error
+                    return;
+                }
+                throw;
+            }
         }
 
         private void ShowMobileMinerApiErrorNotification(WebException ex)
