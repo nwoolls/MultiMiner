@@ -2878,7 +2878,7 @@ namespace MultiMiner.Win.Forms
                 //check for commands first so we can report mining activity after
                 CheckForMobileMinerCommands();
                 SubmitMobileMinerStatistics();
-                SubmitMobileMinerNetworkStatistics();
+                SubmitMobileMinerNetworkStatisticsAsync();
             }
         }
 
@@ -4122,11 +4122,33 @@ namespace MultiMiner.Win.Forms
                 submitMiningStatisticsDelegate.BeginInvoke(statisticsList, Environment.MachineName, submitMiningStatisticsDelegate.EndInvoke, null);
             }
         }
-
+        
         private void SubmitMobileMinerNetworkStatistics()
         {
             foreach (Data.Configuration.NetworkDevices.NetworkDevice networkDevice in networkDevicesConfiguration.Devices)
+            {
                 SubmitMobileMinerNetworkDeviceStatistics(networkDevice);
+                //this method is run async so we can add a slight delay so as not to spam MobileMiner
+                Thread.Sleep(500);
+            }
+        }
+
+        private void SubmitMobileMinerNetworkStatisticsAsync()
+        {
+            Action asyncAction = SubmitMobileMinerNetworkStatistics;
+            asyncAction.BeginInvoke(
+                ar =>
+                {
+                    asyncAction.EndInvoke(ar);
+
+                    ////code that doesn't update UI
+                    //
+                    //BeginInvoke((Action)(() =>
+                    //{
+                    //    //code to update UI
+                    //}));
+
+                }, null);
         }
 
         private void SubmitMobileMinerNetworkDeviceStatistics(NetworkDevices.NetworkDevice networkDevice)
