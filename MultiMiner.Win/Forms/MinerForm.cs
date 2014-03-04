@@ -5211,10 +5211,13 @@ namespace MultiMiner.Win.Forms
             logEntry.Response = eventArgs.Response;
             logEntry.CoinName = GetCoinNameForApiContext((Xgminer.Api.ApiContext)sender);
 
-            apiLogEntryBindingSource.Position = apiLogEntryBindingSource.Add(logEntry);
-
-            while (apiLogEntryBindingSource.Count > 1000)
-                apiLogEntryBindingSource.RemoveAt(0);
+            this.BeginInvoke((Action)(() =>
+            {
+                //code to update UI
+                apiLogEntryBindingSource.Position = apiLogEntryBindingSource.Add(logEntry);
+                while (apiLogEntryBindingSource.Count > 1000)
+                    apiLogEntryBindingSource.RemoveAt(0);
+            }));
 
             LogApiEventToFile(logEntry);
         }
