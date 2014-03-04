@@ -2760,10 +2760,15 @@ namespace MultiMiner.Win.Forms
             CheckForUpdates();
         }
 
-        private void SetupMobileMinerTimer()
+        private void SetupMobileMinerTimers()
         {
-            const int mobileMinerInterval = 32; //seconds
-            mobileMinerTimer.Interval = mobileMinerInterval * 1000;
+            const int mobileMinerCommandsInterval = 32; //seconds
+            mobileMinerCommandsTimer.Interval = mobileMinerCommandsInterval * 1000;
+            mobileMinerCommandsTimer.Enabled = true;
+
+            const int mobileMinerStatsInterval = 62; //seconds
+            mobileMinerStatsTimer.Interval = mobileMinerStatsInterval * 1000;
+            mobileMinerStatsTimer.Enabled = true;
         }
 
         private void SetupRemotingTimers()
@@ -2870,13 +2875,20 @@ namespace MultiMiner.Win.Forms
             PopulateSummaryInfoFromProcesses();
         }
 
-        private void mobileMinerTimer_Tick(object sender, EventArgs e)
+        private void mobileMinerCommandsTimer_Tick(object sender, EventArgs e)
         {
             //if we do this with the Settings dialog open the user may have partially entered credentials
             if (!ShowingModalDialog())
             {
-                //check for commands first so we can report mining activity after
                 CheckForMobileMinerCommands();
+            }
+        }
+
+        private void mobileMinerStatsTimer_Tick(object sender, EventArgs e)
+        {
+            //if we do this with the Settings dialog open the user may have partially entered credentials
+            if (!ShowingModalDialog())
+            {
                 SubmitMobileMinerStatistics();
                 SubmitMobileMinerNetworkStatisticsAsync();
             }
@@ -5218,7 +5230,7 @@ namespace MultiMiner.Win.Forms
             LoadPreviousHistory();
             logProcessCloseArgsBindingSource.MoveLast();
 
-            SetupMobileMinerTimer();
+            SetupMobileMinerTimers();
 
             CloseDetailsArea();
 
@@ -6597,6 +6609,7 @@ namespace MultiMiner.Win.Forms
             }
         }
         #endregion
+
 
     }
 }
