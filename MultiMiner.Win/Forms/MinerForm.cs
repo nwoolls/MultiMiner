@@ -1064,7 +1064,9 @@ namespace MultiMiner.Win.Forms
 
                 if (perksConfiguration.ShowExchangeRates && perksConfiguration.ShowIncomeInUsd)
                 {
-                    double fiatPerDay = rewardPerDay * (double)item.SubItems["Exchange"].Tag;
+                    //item.SubItems["Exchange"].Tag may be null
+                    double exchangeRate = item.SubItems["Exchange"].Tag == null ? 0 : (double)item.SubItems["Exchange"].Tag;
+                    double fiatPerDay = rewardPerDay * exchangeRate;
                     if (fiatPerDay > 0.00)
                         item.SubItems["Daily"].Text = String.Format("${0}", fiatPerDay.ToFriendlyString(true));
                 }
