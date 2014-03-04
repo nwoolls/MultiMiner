@@ -25,12 +25,12 @@ namespace MultiMiner.MobileMiner
             }
         }
 
-        public static void SubmitMiningStatistics(string url, string apiKey, string emailAddress, string applicationKey, string machineName, List<Data.MiningStatistics> miningStatistics)
+        public static void SubmitMiningStatistics(string url, string apiKey, string emailAddress, string applicationKey, List<Data.MiningStatistics> miningStatistics)
         {
             if (!url.EndsWith("/"))
                 url = url + "/";
-            string fullUrl = String.Format("{0}MiningStatisticsInput?emailAddress={1}&applicationKey={2}&machineName={3}&apiKey={4}", 
-                url, emailAddress, applicationKey, machineName, apiKey);
+            string fullUrl = String.Format("{0}MiningStatisticsInput?emailAddress={1}&applicationKey={2}&apiKey={3}", 
+                url, emailAddress, applicationKey, apiKey);
             using (WebClient client = new ApiWebClient())
             {
                 //specify UTF8 so devices with Unicode characters are posted up properly
