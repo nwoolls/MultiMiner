@@ -161,8 +161,7 @@ namespace MultiMiner.Win.Controls
 
         private void workersGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.ColumnIndex == averageHashrateDataGridViewTextBoxColumn.Index ||
-                e.ColumnIndex == currentHashrateDataGridViewTextBoxColumn.Index)
+            if (e.ColumnIndex == currentHashrateDataGridViewTextBoxColumn.Index)
             {
                 e.Value = ((double)e.Value).ToHashrateString();
             }
@@ -171,9 +170,9 @@ namespace MultiMiner.Win.Controls
                 //check for >= 0.05 so we don't show 0% (due to the format string)
                 e.Value = (double)e.Value >= 0.05 ? ((double)e.Value).ToString("0.#") + "%" : String.Empty;
             }
-            else if (e.ColumnIndex == acceptedSharesDataGridViewTextBoxColumn.Index)
+            else if (e.ColumnIndex == temperatureDataGridViewTextBoxColumn.Index)
             {
-                e.Value = (int)e.Value > 0 ? ((int)e.Value).ToString() : String.Empty;
+                e.Value = (double)e.Value > 0 ? ((double)e.Value).ToString() + "°" : String.Empty;
             }
         }
 

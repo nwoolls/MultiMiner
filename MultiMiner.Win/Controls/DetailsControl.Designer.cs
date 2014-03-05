@@ -34,11 +34,9 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.closeDetailsButton = new System.Windows.Forms.Button();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.nameLabel = new System.Windows.Forms.Label();
-            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label2 = new System.Windows.Forms.Label();
             this.cryptoCoinBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label3 = new System.Windows.Forms.Label();
@@ -54,13 +52,6 @@
             this.label12 = new System.Windows.Forms.Label();
             this.hashrateLabel = new System.Windows.Forms.Label();
             this.workersGridView = new System.Windows.Forms.DataGridView();
-            this.workerNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.averageHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.acceptedSharesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.utilityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.workerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.workersTitleLabel = new System.Windows.Forms.Label();
             this.tempLabel = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
@@ -92,15 +83,22 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.currentRateLabel = new System.Windows.Forms.Label();
             this.label29 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
+            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.workerBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.workerNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.temperatureDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.utilityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.workersGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.workerBindingSource)).BeginInit();
             this.noDetailsPanel.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.workerBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // closeDetailsButton
@@ -138,10 +136,6 @@
             this.nameLabel.Size = new System.Drawing.Size(561, 25);
             this.nameLabel.TabIndex = 3;
             this.nameLabel.Text = "label1";
-            // 
-            // deviceBindingSource
-            // 
-            this.deviceBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
             // 
             // label2
             // 
@@ -301,9 +295,8 @@
             this.workersGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.workersGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.workerNameDataGridViewTextBoxColumn,
-            this.averageHashrateDataGridViewTextBoxColumn,
             this.currentHashrateDataGridViewTextBoxColumn,
-            this.acceptedSharesDataGridViewTextBoxColumn,
+            this.temperatureDataGridViewTextBoxColumn,
             this.hardwareErrorsPercentDataGridViewTextBoxColumn,
             this.utilityDataGridViewTextBoxColumn});
             this.workersGridView.DataSource = this.workerBindingSource;
@@ -316,66 +309,6 @@
             this.workersGridView.Size = new System.Drawing.Size(587, 226);
             this.workersGridView.TabIndex = 17;
             this.workersGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.workersGridView_CellFormatting);
-            // 
-            // workerNameDataGridViewTextBoxColumn
-            // 
-            this.workerNameDataGridViewTextBoxColumn.DataPropertyName = "WorkerName";
-            this.workerNameDataGridViewTextBoxColumn.FillWeight = 90F;
-            this.workerNameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.workerNameDataGridViewTextBoxColumn.Name = "workerNameDataGridViewTextBoxColumn";
-            this.workerNameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // averageHashrateDataGridViewTextBoxColumn
-            // 
-            this.averageHashrateDataGridViewTextBoxColumn.DataPropertyName = "AverageHashrate";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.averageHashrateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
-            this.averageHashrateDataGridViewTextBoxColumn.HeaderText = "Average";
-            this.averageHashrateDataGridViewTextBoxColumn.Name = "averageHashrateDataGridViewTextBoxColumn";
-            this.averageHashrateDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // currentHashrateDataGridViewTextBoxColumn
-            // 
-            this.currentHashrateDataGridViewTextBoxColumn.DataPropertyName = "CurrentHashrate";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.currentHashrateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
-            this.currentHashrateDataGridViewTextBoxColumn.HeaderText = "Current";
-            this.currentHashrateDataGridViewTextBoxColumn.Name = "currentHashrateDataGridViewTextBoxColumn";
-            this.currentHashrateDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // acceptedSharesDataGridViewTextBoxColumn
-            // 
-            this.acceptedSharesDataGridViewTextBoxColumn.DataPropertyName = "AcceptedShares";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.acceptedSharesDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
-            this.acceptedSharesDataGridViewTextBoxColumn.FillWeight = 65F;
-            this.acceptedSharesDataGridViewTextBoxColumn.HeaderText = "Acc.";
-            this.acceptedSharesDataGridViewTextBoxColumn.Name = "acceptedSharesDataGridViewTextBoxColumn";
-            this.acceptedSharesDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // hardwareErrorsPercentDataGridViewTextBoxColumn
-            // 
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DataPropertyName = "HardwareErrorsPercent";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.FillWeight = 80F;
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.HeaderText = "Errors";
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.Name = "hardwareErrorsPercentDataGridViewTextBoxColumn";
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // utilityDataGridViewTextBoxColumn
-            // 
-            this.utilityDataGridViewTextBoxColumn.DataPropertyName = "Utility";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.utilityDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
-            this.utilityDataGridViewTextBoxColumn.FillWeight = 90F;
-            this.utilityDataGridViewTextBoxColumn.HeaderText = "Utility";
-            this.utilityDataGridViewTextBoxColumn.Name = "utilityDataGridViewTextBoxColumn";
-            this.utilityDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // workerBindingSource
-            // 
-            this.workerBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
             // 
             // workersTitleLabel
             // 
@@ -700,6 +633,61 @@
             this.label29.TabIndex = 43;
             this.label29.Text = "Current:";
             // 
+            // deviceBindingSource
+            // 
+            this.deviceBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
+            // 
+            // workerBindingSource
+            // 
+            this.workerBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
+            // 
+            // workerNameDataGridViewTextBoxColumn
+            // 
+            this.workerNameDataGridViewTextBoxColumn.DataPropertyName = "WorkerName";
+            this.workerNameDataGridViewTextBoxColumn.FillWeight = 75F;
+            this.workerNameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.workerNameDataGridViewTextBoxColumn.Name = "workerNameDataGridViewTextBoxColumn";
+            this.workerNameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // currentHashrateDataGridViewTextBoxColumn
+            // 
+            this.currentHashrateDataGridViewTextBoxColumn.DataPropertyName = "CurrentHashrate";
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.currentHashrateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            this.currentHashrateDataGridViewTextBoxColumn.HeaderText = "Current";
+            this.currentHashrateDataGridViewTextBoxColumn.Name = "currentHashrateDataGridViewTextBoxColumn";
+            this.currentHashrateDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // temperatureDataGridViewTextBoxColumn
+            // 
+            this.temperatureDataGridViewTextBoxColumn.DataPropertyName = "Temperature";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.temperatureDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            this.temperatureDataGridViewTextBoxColumn.FillWeight = 60F;
+            this.temperatureDataGridViewTextBoxColumn.HeaderText = "Temp";
+            this.temperatureDataGridViewTextBoxColumn.Name = "temperatureDataGridViewTextBoxColumn";
+            this.temperatureDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // hardwareErrorsPercentDataGridViewTextBoxColumn
+            // 
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DataPropertyName = "HardwareErrorsPercent";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.FillWeight = 75F;
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.HeaderText = "Errors";
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.Name = "hardwareErrorsPercentDataGridViewTextBoxColumn";
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // utilityDataGridViewTextBoxColumn
+            // 
+            this.utilityDataGridViewTextBoxColumn.DataPropertyName = "Utility";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.utilityDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
+            this.utilityDataGridViewTextBoxColumn.FillWeight = 75F;
+            this.utilityDataGridViewTextBoxColumn.HeaderText = "Utility";
+            this.utilityDataGridViewTextBoxColumn.Name = "utilityDataGridViewTextBoxColumn";
+            this.utilityDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
             // DetailsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -752,15 +740,15 @@
             this.Name = "DetailsControl";
             this.Size = new System.Drawing.Size(601, 517);
             this.Load += new System.EventHandler(this.DetailsControl_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.workersGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.workerBindingSource)).EndInit();
             this.noDetailsPanel.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.workerBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -820,9 +808,8 @@
         private System.Windows.Forms.BindingSource cryptoCoinBindingSource;
         private System.Windows.Forms.BindingSource workerBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn workerNameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn averageHashrateDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn currentHashrateDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn acceptedSharesDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn temperatureDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn hardwareErrorsPercentDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn utilityDataGridViewTextBoxColumn;
     }
