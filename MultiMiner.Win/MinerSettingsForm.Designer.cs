@@ -258,6 +258,7 @@
             "15 minutes",
             "30 minutes",
             "1 hour",
+            "2 hours",
             "3 hours",
             "6 hours",
             "12 hours"});
