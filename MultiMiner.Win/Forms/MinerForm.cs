@@ -4220,6 +4220,17 @@ namespace MultiMiner.Win.Forms
             }
         }
 
+        private string GetFriendlyDeviceName(string deviceName)
+        {
+            string result = deviceName;
+
+            DeviceViewModel deviceViewModel = localViewModel.Devices.SingleOrDefault(d => d.Path.Equals(deviceName));
+            if ((deviceViewModel != null) && !String.IsNullOrEmpty(deviceViewModel.FriendlyName))
+                result = deviceViewModel.FriendlyName;
+
+            return result;
+        }
+
         private void AddLocalMinerStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
         {
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
@@ -4246,12 +4257,7 @@ namespace MultiMiner.Win.Forms
                     Xgminer.Data.Device device = devices[deviceIndex];
                     Engine.Data.Configuration.Coin coinConfiguration = CoinConfigurationForDevice(device);
                     
-                    string deviceName = device.Name;
-                    DeviceViewModel deviceViewModel = localViewModel.Devices.SingleOrDefault(d => d.Equals(device));
-                    if ((deviceViewModel != null) && !String.IsNullOrEmpty(deviceViewModel.FriendlyName))
-                        deviceName = deviceViewModel.FriendlyName;
-
-                    miningStatistics.FullName = deviceName;
+                    miningStatistics.FullName = GetFriendlyDeviceName(device.Name);
 
                     miningStatistics.PoolName = GetPoolNameByIndex(coinConfiguration, deviceInformation.PoolIndex).DomainFromHost();
 
