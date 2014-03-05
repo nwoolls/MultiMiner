@@ -38,19 +38,15 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MinerForm));
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Network", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Network", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.deviceStatsTimer = new System.Windows.Forms.Timer(this.components);
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
-            this.startupMiningCountdownTimer = new System.Windows.Forms.Timer(this.components);
-            this.crashRecoveryTimer = new System.Windows.Forms.Timer(this.components);
-            this.coinStatsCountdownTimer = new System.Windows.Forms.Timer(this.components);
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.notifyIconMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -59,11 +55,7 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.showAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mobileMinerCommandsTimer = new System.Windows.Forms.Timer(this.components);
-            this.updateCheckTimer = new System.Windows.Forms.Timer(this.components);
-            this.idleTimer = new System.Windows.Forms.Timer(this.components);
             this.restartTimer = new System.Windows.Forms.Timer(this.components);
-            this.minerSummaryTimer = new System.Windows.Forms.Timer(this.components);
             this.coinPopupMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.largeImageList = new System.Windows.Forms.ImageList(this.components);
             this.smallImageList = new System.Windows.Forms.ImageList(this.components);
@@ -83,7 +75,6 @@
             this.quickCoinMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.columnHeaderMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.dummyToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.exchangeRateTimer = new System.Windows.Forms.Timer(this.components);
             this.startupMiningPanel = new System.Windows.Forms.Panel();
             this.startStartupMiningButton = new System.Windows.Forms.Button();
             this.cancelStartupMiningButton = new System.Windows.Forms.Button();
@@ -218,19 +209,11 @@
             this.dynamicIntensityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.poolInfoTimer = new System.Windows.Forms.Timer(this.components);
-            this.poolsDownFlagTimer = new System.Windows.Forms.Timer(this.components);
-            this.remotingBroadcastTimer = new System.Windows.Forms.Timer(this.components);
-            this.remotingServerTimer = new System.Windows.Forms.Timer(this.components);
-            this.networkDeviceStatsTimer = new System.Windows.Forms.Timer(this.components);
-            this.networkDeviceDetectTimer = new System.Windows.Forms.Timer(this.components);
             this.networkDeviceContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.networkDevicePoolMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.aToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restartMiningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mobileMinerStatsTimer = new System.Windows.Forms.Timer(this.components);
-            this.oneHourTimer = new System.Windows.Forms.Timer(this.components);
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -263,31 +246,11 @@
             this.networkDeviceContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
-            // deviceStatsTimer
-            // 
-            this.deviceStatsTimer.Interval = 5000;
-            this.deviceStatsTimer.Tick += new System.EventHandler(this.statsTimer_Tick);
-            // 
             // coinStatsTimer
             // 
             this.coinStatsTimer.Enabled = true;
             this.coinStatsTimer.Interval = 900000;
             this.coinStatsTimer.Tick += new System.EventHandler(this.coinStatsTimer_Tick);
-            // 
-            // startupMiningCountdownTimer
-            // 
-            this.startupMiningCountdownTimer.Interval = 1000;
-            this.startupMiningCountdownTimer.Tick += new System.EventHandler(this.countdownTimer_Tick);
-            // 
-            // crashRecoveryTimer
-            // 
-            this.crashRecoveryTimer.Interval = 30000;
-            this.crashRecoveryTimer.Tick += new System.EventHandler(this.crashRecoveryTimer_Tick);
-            // 
-            // coinStatsCountdownTimer
-            // 
-            this.coinStatsCountdownTimer.Interval = 60000;
-            this.coinStatsCountdownTimer.Tick += new System.EventHandler(this.coinStatsCountdownTimer_Tick);
             // 
             // imageList1
             // 
@@ -353,30 +316,9 @@
             this.quitAppMenuItem.Text = "Quit";
             this.quitAppMenuItem.Click += new System.EventHandler(this.quitAppMenuItem_Click);
             // 
-            // mobileMinerCommandsTimer
-            // 
-            this.mobileMinerCommandsTimer.Enabled = true;
-            this.mobileMinerCommandsTimer.Interval = 15000;
-            this.mobileMinerCommandsTimer.Tick += new System.EventHandler(this.mobileMinerCommandsTimer_Tick);
-            // 
-            // updateCheckTimer
-            // 
-            this.updateCheckTimer.Interval = 3600000;
-            this.updateCheckTimer.Tick += new System.EventHandler(this.updateCheckTimer_Tick);
-            // 
-            // idleTimer
-            // 
-            this.idleTimer.Interval = 10000;
-            this.idleTimer.Tick += new System.EventHandler(this.idleTimer_Tick);
-            // 
             // restartTimer
             // 
             this.restartTimer.Tick += new System.EventHandler(this.restartTimer_Tick);
-            // 
-            // minerSummaryTimer
-            // 
-            this.minerSummaryTimer.Interval = 60000;
-            this.minerSummaryTimer.Tick += new System.EventHandler(this.minerSummaryTimer_Tick);
             // 
             // coinPopupMenu
             // 
@@ -534,10 +476,6 @@
             this.dummyToolStripMenuItem2.Size = new System.Drawing.Size(117, 22);
             this.dummyToolStripMenuItem2.Text = "Dummy";
             // 
-            // exchangeRateTimer
-            // 
-            this.exchangeRateTimer.Tick += new System.EventHandler(this.exchangeRateTimer_Tick);
-            // 
             // startupMiningPanel
             // 
             this.startupMiningPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -631,7 +569,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(1293, 375);
-            this.detailsAreaContainer.SplitterDistance = 1013;
+            this.detailsAreaContainer.SplitterDistance = 1033;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -662,27 +600,27 @@
             this.intensityColumnHeader});
             this.deviceListView.ContextMenuStrip = this.columnHeaderMenu;
             this.deviceListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            listViewGroup6.Header = "CPU";
-            listViewGroup6.Name = "cpuListViewGroup";
-            listViewGroup7.Header = "GPU";
-            listViewGroup7.Name = "gpuListViewGroup";
-            listViewGroup8.Header = "USB";
-            listViewGroup8.Name = "usbListViewGroup";
-            listViewGroup9.Header = "Proxy";
-            listViewGroup9.Name = "proxyListViewGroup";
-            listViewGroup10.Header = "Network";
-            listViewGroup10.Name = "networkListViewGroup";
+            listViewGroup1.Header = "CPU";
+            listViewGroup1.Name = "cpuListViewGroup";
+            listViewGroup2.Header = "GPU";
+            listViewGroup2.Name = "gpuListViewGroup";
+            listViewGroup3.Header = "USB";
+            listViewGroup3.Name = "usbListViewGroup";
+            listViewGroup4.Header = "Proxy";
+            listViewGroup4.Name = "proxyListViewGroup";
+            listViewGroup5.Header = "Network";
+            listViewGroup5.Name = "networkListViewGroup";
             this.deviceListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup6,
-            listViewGroup7,
-            listViewGroup8,
-            listViewGroup9,
-            listViewGroup10});
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4,
+            listViewGroup5});
             this.deviceListView.LabelEdit = true;
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(1013, 375);
+            this.deviceListView.Size = new System.Drawing.Size(1033, 375);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -797,7 +735,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(277, 375);
+            this.detailsControl1.Size = new System.Drawing.Size(257, 375);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -831,8 +769,8 @@
             this.historyGridView.AllowUserToAddRows = false;
             this.historyGridView.AllowUserToDeleteRows = false;
             this.historyGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.historyGridView.AutoGenerateColumns = false;
             this.historyGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.historyGridView.BackgroundColor = System.Drawing.SystemColors.Window;
@@ -962,8 +900,8 @@
             this.processLogGridView.AllowUserToDeleteRows = false;
             this.processLogGridView.AllowUserToOrderColumns = true;
             this.processLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.processLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.processLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.processLogGridView.AutoGenerateColumns = false;
             this.processLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.processLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -1046,8 +984,8 @@
             this.apiLogGridView.AllowUserToDeleteRows = false;
             this.apiLogGridView.AllowUserToOrderColumns = true;
             this.apiLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.apiLogGridView.AutoGenerateColumns = false;
             this.apiLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.apiLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -1824,31 +1762,6 @@
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // poolInfoTimer
-            // 
-            this.poolInfoTimer.Interval = 30000;
-            this.poolInfoTimer.Tick += new System.EventHandler(this.poolInfoTimer_Tick);
-            // 
-            // poolsDownFlagTimer
-            // 
-            this.poolsDownFlagTimer.Tick += new System.EventHandler(this.poolsDownFlagTimer_Tick);
-            // 
-            // remotingBroadcastTimer
-            // 
-            this.remotingBroadcastTimer.Tick += new System.EventHandler(this.remotingBroadcastTimer_Tick);
-            // 
-            // remotingServerTimer
-            // 
-            this.remotingServerTimer.Tick += new System.EventHandler(this.remotingServerTimer_Tick);
-            // 
-            // networkDeviceStatsTimer
-            // 
-            this.networkDeviceStatsTimer.Tick += new System.EventHandler(this.networkDeviceStatsTimer_Tick);
-            // 
-            // networkDeviceDetectTimer
-            // 
-            this.networkDeviceDetectTimer.Tick += new System.EventHandler(this.networkDeviceDetectTimer_Tick);
-            // 
             // networkDeviceContextMenu
             // 
             this.networkDeviceContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1885,14 +1798,6 @@
             this.restartMiningToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.restartMiningToolStripMenuItem.Text = "Restart Mining";
             this.restartMiningToolStripMenuItem.Click += new System.EventHandler(this.restartMiningToolStripMenuItem_Click);
-            // 
-            // mobileMinerStatsTimer
-            // 
-            this.mobileMinerStatsTimer.Tick += new System.EventHandler(this.mobileMinerStatsTimer_Tick);
-            // 
-            // oneHourTimer
-            // 
-            this.oneHourTimer.Tick += new System.EventHandler(this.oneHourTimer_Tick);
             // 
             // MinerForm
             // 
@@ -1957,13 +1862,10 @@
 
         #endregion
 
-        private System.Windows.Forms.Timer deviceStatsTimer;
         private System.Windows.Forms.Timer coinStatsTimer;
-        private System.Windows.Forms.Timer startupMiningCountdownTimer;
         private System.Windows.Forms.Panel startupMiningPanel;
         private System.Windows.Forms.Button cancelStartupMiningButton;
         private System.Windows.Forms.Label countdownLabel;
-        private System.Windows.Forms.Timer crashRecoveryTimer;
         private System.Windows.Forms.ToolStrip standardToolBar;
         private System.Windows.Forms.ToolStripButton startButton;
         private System.Windows.Forms.ToolStripButton saveButton;
@@ -1975,7 +1877,6 @@
         private System.Windows.Forms.ToolStripStatusLabel sha256RateLabel;
         private System.Windows.Forms.ToolStripStatusLabel strategiesLabel;
         private System.Windows.Forms.ToolStripStatusLabel strategyCountdownLabel;
-        private System.Windows.Forms.Timer coinStatsCountdownTimer;
         private System.Windows.Forms.Panel footerPanel;
         private System.Windows.Forms.Label coinChooseSuffixLabel;
         private System.Windows.Forms.LinkLabel coinApiLinkLabel;
@@ -1991,7 +1892,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem startMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopMenuItem;
-        private System.Windows.Forms.Timer mobileMinerCommandsTimer;
         private System.Windows.Forms.ToolStripDropDownButton advancedMenuItem;
         private System.Windows.Forms.ToolStripMenuItem apiMonitorButton;
         private System.Windows.Forms.ToolStripMenuItem detectDevicesButton;
@@ -2025,10 +1925,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Reason;
         private System.Windows.Forms.ToolStripMenuItem quickSwitchItem;
         private System.Windows.Forms.ToolStripMenuItem dummyToolStripMenuItem;
-        private System.Windows.Forms.Timer updateCheckTimer;
         private System.Windows.Forms.ToolStripButton aboutButton;
         private System.Windows.Forms.ToolStripStatusLabel deviceTotalLabel;
-        private System.Windows.Forms.Timer idleTimer;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
@@ -2049,7 +1947,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn AcceptedShares;
         private System.Windows.Forms.DataGridViewTextBoxColumn durationColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn devicesColumn;
-        private System.Windows.Forms.Timer minerSummaryTimer;
         private System.Windows.Forms.ColumnHeader nameColumnHeader;
         private System.Windows.Forms.ColumnHeader driverColumnHeader;
         private System.Windows.Forms.ColumnHeader coinColumnHeader;
@@ -2094,7 +1991,6 @@
         private System.Windows.Forms.ToolStripMenuItem perksButton;
         private System.Windows.Forms.ToolStripMenuItem perksToolStripMenuItem1;
         private System.Windows.Forms.ColumnHeader exchangeColumnHeader;
-        private System.Windows.Forms.Timer exchangeRateTimer;
         private System.Windows.Forms.ColumnHeader incomeColumnHeader;
         private System.Windows.Forms.Label incomeSummaryLabel;
         private System.Windows.Forms.ColumnHeader fanColumnHeader;
@@ -2136,25 +2032,17 @@
         private System.Windows.Forms.Button closeApiButton;
         private System.Windows.Forms.SplitContainer detailsAreaContainer;
         private MultiMiner.Win.Controls.DetailsControl detailsControl1;
-        private System.Windows.Forms.Timer poolInfoTimer;
         private System.Windows.Forms.ContextMenuStrip openLogMenu;
         private System.Windows.Forms.ToolStripMenuItem openLogToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader currentRateColumnHeader;
         private System.Windows.Forms.ColumnHeader effectiveColumnHeader;
-        private System.Windows.Forms.Timer poolsDownFlagTimer;
         private System.Windows.Forms.SplitContainer instancesContainer;
-        private System.Windows.Forms.Timer remotingBroadcastTimer;
-        private System.Windows.Forms.Timer remotingServerTimer;
         private System.Windows.Forms.Button startStartupMiningButton;
-        private System.Windows.Forms.Timer networkDeviceStatsTimer;
-        private System.Windows.Forms.Timer networkDeviceDetectTimer;
         private System.Windows.Forms.ContextMenuStrip networkDeviceContextMenu;
         private System.Windows.Forms.ToolStripMenuItem networkDevicePoolMenu;
         private System.Windows.Forms.ToolStripMenuItem aToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restartMiningToolStripMenuItem;
-        private System.Windows.Forms.Timer mobileMinerStatsTimer;
-        private System.Windows.Forms.Timer oneHourTimer;
     }
 }
 

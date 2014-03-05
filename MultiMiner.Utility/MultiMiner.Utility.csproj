@@ -70,6 +70,7 @@
     <Compile Include="Forms\NoFlickerListView.Designer.cs">
       <DependentUpon>NoFlickerListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Timers.cs" />
     <Compile Include="OS\StartupShortcut.cs" />
     <Compile Include="Serialization\ConfigurationReaderWriter.cs" />
     <Compile Include="IO\FileCopier.cs" />

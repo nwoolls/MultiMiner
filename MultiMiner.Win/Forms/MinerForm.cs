@@ -46,6 +46,9 @@ namespace MultiMiner.Win.Forms
         private IApiContext coinChooseApiContext;
         private IApiContext coinWarzApiContext;
         private IApiContext successfulApiContext;
+        
+        //coalesced timers
+        private Timers timers = new Timers();
 
         //Coin API information
         private List<CoinInformation> coinApiInformation;
@@ -1377,7 +1380,6 @@ namespace MultiMiner.Win.Forms
 
             SetupCoinApi();
             RefreshCoinApiLabel();
-            crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
             SetupRestartTimer();
             CheckForUpdates();
             SetupCoinStatsTimer();
@@ -1572,8 +1574,6 @@ namespace MultiMiner.Win.Forms
             //already done in ctor //applicationConfiguration.LoadApplicationConfiguration();
 
             perksConfiguration.LoadPerksConfiguration(pathConfiguration.SharedConfigPath);
-            exchangeRateTimer.Interval = 1000 * 60 * 30; //30 minutes
-            exchangeRateTimer.Enabled = perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates;
             RefreshExchangeRates();
 
             SetListViewStyle(applicationConfiguration.ListViewStyle);
@@ -1610,16 +1610,9 @@ namespace MultiMiner.Win.Forms
             //can't set details container width until it is shown
             if (applicationConfiguration.InstancesAreaWidth > 0)
                 instancesContainer.SplitterDistance = applicationConfiguration.InstancesAreaWidth;
-
-            crashRecoveryTimer.Enabled = applicationConfiguration.RestartCrashedMiners;
-
+            
             SetupCoinStatsTimer();
 
-            idleTimer.Interval = 15 * 1000; //check every 15s
-            idleTimer.Enabled = true;
-
-            poolsDownFlagTimer.Interval = 1000 * 60 * 60; //1 hour
-            poolsDownFlagTimer.Enabled = true;
             ClearPoolsFlaggedDown();
 
             ApplyModelsToViewModel();
@@ -1638,8 +1631,6 @@ namespace MultiMiner.Win.Forms
         {
             //network devices
             this.networkDevicesConfiguration.LoadNetworkDevicesConfiguration();
-            SetupNetworkDeviceStatsTimer();
-            SetupNetworkDeviceDetectTimer();
 
             if (applicationConfiguration.NetworkDeviceDetection)
             {
@@ -2749,7 +2740,6 @@ namespace MultiMiner.Win.Forms
             {
                 //minimum 1s delay for mining on startup - 0 not allowed
                 startupMiningCountdownSeconds = Math.Max(1, applicationConfiguration.StartupMiningDelay);
-                startupMiningCountdownTimer.Enabled = true;
                 RefreshCountdownLabel();
             }
         }
@@ -2758,7 +2748,7 @@ namespace MultiMiner.Win.Forms
         {
             //if enabled, we want to restart it so this can be used when we start mining
             restartTimer.Enabled = false;
-            restartTimer.Interval = applicationConfiguration.ScheduledRestartMiningInterval.ToMinutes() * 60 * 1000;
+            restartTimer.Interval = applicationConfiguration.ScheduledRestartMiningInterval.ToMinutes() * 60 * 1000; //dynamic
             restartTimer.Enabled = applicationConfiguration.ScheduledRestartMining;
         }
 
@@ -2770,71 +2760,27 @@ namespace MultiMiner.Win.Forms
             coinStatsMinutes = timerInterval.ToMinutes();
 
             coinStatsTimer.Enabled = false;
-            coinStatsCountdownTimer.Enabled = false;
 
             coinStatsCountdownMinutes = coinStatsMinutes;
-            coinStatsTimer.Interval = coinStatsMinutes * 60 * 1000;
+            coinStatsTimer.Interval = coinStatsMinutes * 60 * 1000; //dynamic
 
             coinStatsTimer.Enabled = true;
-            coinStatsCountdownTimer.Enabled = true;
         }
-
-        private void SetupAutoUpdates()
-        {
-            updateCheckTimer.Interval = 3600000; //1h
-            updateCheckTimer.Enabled = true;
-            CheckForUpdates();
-        }
-
-        private void SetupMobileMinerTimers()
-        {
-            const int mobileMinerCommandsInterval = 32; //seconds
-            mobileMinerCommandsTimer.Interval = mobileMinerCommandsInterval * 1000;
-            mobileMinerCommandsTimer.Enabled = true;
-
-            const int mobileMinerStatsInterval = 62; //seconds
-            mobileMinerStatsTimer.Interval = mobileMinerStatsInterval * 1000;
-            mobileMinerStatsTimer.Enabled = true;
-        }
-
-        private void SetupRemotingTimers()
-        {
-            remotingBroadcastTimer.Interval = 1 * 45 * 1000;
-            remotingServerTimer.Interval = 1 * 20 * 1000;
-        }
-
-        private void SetupNetworkDeviceStatsTimer()
-        {
-            networkDeviceStatsTimer.Interval = 10 * 1000; //10s
-            networkDeviceStatsTimer.Enabled = true;
-        }
-
-        private void SetupNetworkDeviceDetectTimer()
-        {
-            networkDeviceDetectTimer.Interval = 10 * 60 * 1000; //10min
-            networkDeviceDetectTimer.Enabled = true;
-        }
-
-        private const int minutesPerHour = 60;
-        private const int secondsPerMinute = 60;
-        private const int msPerSecond = 1000;
-
-        private const int oneMinuteInterval = msPerSecond * secondsPerMinute;
-        private const int oneHourInterval = oneMinuteInterval * minutesPerHour;
         
         private void SetupCoalescedTimers()
         {
-            oneHourTimer.Interval = oneHourInterval;
-            oneHourTimer.Enabled = true;
+            timers.CreateTimer(Timers.OneHourInterval, oneHourTimer_Tick);
+            timers.CreateTimer(Timers.OneMinuteInterval, oneMinuteTimer_Tick);
+            timers.CreateTimer(Timers.ThirtySecondInterval, thirtySecondTimer_Tick);
+            timers.CreateTimer(Timers.FiveSecondInterval, fiveSecondTimer_Tick);
+            timers.CreateTimer(Timers.TenSecondInterval, tenSecondTimer_Tick);
+            timers.CreateTimer(Timers.TenMinuteInterval, tenMinuteTimer_Tick);
+            timers.CreateTimer(Timers.ThirtyMinuteInterval, thirtyMinuteTimer_Tick);
+            timers.CreateTimer(Timers.OneSecondInterval, oneSecondTimer_Tick);
         }
         #endregion
 
         #region Timer event handlers
-        private void coinStatsCountdownTimer_Tick(object sender, EventArgs e)
-        {
-            coinStatsCountdownMinutes--;
-            RefreshStrategiesCountdown();
-        }
 
         private void coinStatsTimer_Tick(object sender, EventArgs e)
         {
@@ -2843,91 +2789,6 @@ namespace MultiMiner.Win.Forms
             CheckAndApplyMiningStrategy();
 
             coinStatsCountdownMinutes = coinStatsTimer.Interval / 1000 / 60;
-        }
-
-        private void countdownTimer_Tick(object sender, EventArgs e)
-        {
-            startupMiningCountdownSeconds--;
-            RefreshCountdownLabel();
-            if (startupMiningCountdownSeconds == 0)
-            {
-                startupMiningPanel.Visible = false;
-                startupMiningCountdownTimer.Enabled = false;
-                System.Windows.Forms.Application.DoEvents();
-                StartMiningLocally();
-            }
-        }
-
-        private void crashRecoveryTimer_Tick(object sender, EventArgs e)
-        {
-            if (miningEngine.RelaunchCrashedMiners())
-            {
-                //clear any details stored correlated to processes - they could all be invalid after this
-                processDeviceDetails.Clear();
-            }
-        }
-
-        private void exchangeRateTimer_Tick(object sender, EventArgs e)
-        {
-            RefreshExchangeRates();
-        }
-
-        private void updateCheckTimer_Tick(object sender, EventArgs e)
-        {
-            CheckForUpdates();
-        }
-
-        private void idleTimer_Tick(object sender, EventArgs e)
-        {
-            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
-                return; //idle detection code uses User32.dll
-
-            if (applicationConfiguration.AutoSetDesktopMode && miningEngine.Mining)
-            {
-                TimeSpan idleTimeSpan = TimeSpan.FromMilliseconds(Environment.TickCount - IdleTimeFinder.GetLastInputTime());
-
-                const int idleMinutesForDesktopMode = 2;
-
-                //if idle for more than 1 minute, disable Desktop Mode
-                if (idleTimeSpan.TotalMinutes > idleMinutesForDesktopMode)
-                {
-                    if (engineConfiguration.XgminerConfiguration.DesktopMode)
-                    {
-                        ToggleDynamicIntensityLocally(false);
-                        RestartMiningLocallyIfMining();
-                    }
-                }
-                //else if idle for less than the idleTimer interval, enable Desktop Mode
-                else if (idleTimeSpan.TotalMilliseconds <= idleTimer.Interval)
-                {
-                    if (!engineConfiguration.XgminerConfiguration.DesktopMode)
-                    {
-                        ToggleDynamicIntensityLocally(true);
-                        RestartMiningLocallyIfMining();
-                    }
-                }
-            }
-        }
-
-        private void minerSummaryTimer_Tick(object sender, EventArgs e)
-        {
-            PopulateSummaryInfoFromProcesses();
-        }
-
-        private void mobileMinerCommandsTimer_Tick(object sender, EventArgs e)
-        {
-            //if we do this with the Settings dialog open the user may have partially entered credentials
-            if (!ShowingModalDialog())
-            {
-                CheckForMobileMinerCommands();
-            }
-        }
-
-        private void mobileMinerStatsTimer_Tick(object sender, EventArgs e)
-        {
-            //if we do this with the Settings dialog open the user may have partially entered credentials
-            if (!ShowingModalDialog())
-                SubmitMobileMinerStatistics();
         }
 
         private static bool ShowingModalDialog()
@@ -2939,45 +2800,16 @@ namespace MultiMiner.Win.Forms
             return false;
         }
 
-        private void poolInfoTimer_Tick(object sender, EventArgs e)
-        {
-            RefreshPoolInfo();
-            RefreshDetailsAreaIfVisible();
-        }
-
-        private void poolsDownFlagTimer_Tick(object sender, EventArgs e)
-        {
-            ClearPoolsFlaggedDown();
-        }
-
-        private void statsTimer_Tick(object sender, EventArgs e)
-        {
-            ClearMinerStatsForDisabledCoins();
-            RefreshDeviceStats();
-        }
-
         private void restartTimer_Tick(object sender, EventArgs e)
         {
             RestartMiningLocallyIfMining();
         }
 
-        private void remotingBroadcastTimer_Tick(object sender, EventArgs e)
-        {
-            //only broadcast if there are other instances (not just us)
-            if (perksConfiguration.EnableRemoting && (instancesControl.Instances.Count > 1))
-            {
-                //broadcast 0 (e.g. even if not mining)
-                BroadcastHashrate();
-            }
-        }
-
-        private void remotingServerTimer_Tick(object sender, EventArgs e)
-        {
-            UpdateLocalViewFromRemoteInstance();
-        }
-
         private void UpdateLocalViewFromRemoteInstance()
         {
+            if (!remotingEnabled)
+                return;
+
             if (this.selectedRemoteInstance == null)
                 return;
 
@@ -3000,13 +2832,55 @@ namespace MultiMiner.Win.Forms
             RefreshStatusBarFromViewModel();
         }
 
-        private void networkDeviceStatsTimer_Tick(object sender, EventArgs e)
+        private void oneHourTimer_Tick(object sender, EventArgs e)
         {
-            if (applicationConfiguration.NetworkDeviceDetection)
-                RefreshNetworkDeviceStats();
+            ClearCachedNetworkCoinInformation();
+
+            CheckForUpdates();
+
+            ClearPoolsFlaggedDown();
         }
 
-        private void networkDeviceDetectTimer_Tick(object sender, EventArgs e)
+        private void oneMinuteTimer_Tick(object sender, EventArgs e)
+        {
+            //if we do this with the Settings dialog open the user may have partially entered credentials
+            if (!ShowingModalDialog())
+                SubmitMobileMinerStatistics();
+            
+            //only broadcast if there are other instances (not just us)
+            if (remotingEnabled && perksConfiguration.EnableRemoting && (instancesControl.Instances.Count > 1))
+            {
+                //broadcast 0 (e.g. even if not mining)
+                BroadcastHashrate();
+            }
+
+            //coin stats countdown
+            coinStatsCountdownMinutes--;
+            RefreshStrategiesCountdown();
+
+            PopulateSummaryInfoFromProcesses();
+        }
+
+        private void thirtySecondTimer_Tick(object sender, EventArgs e)
+        {
+            //if we do this with the Settings dialog open the user may have partially entered credentials
+            if (!ShowingModalDialog())
+                CheckForMobileMinerCommands();
+
+            UpdateLocalViewFromRemoteInstance();
+
+            if (applicationConfiguration.RestartCrashedMiners && miningEngine.RelaunchCrashedMiners())
+                //clear any details stored correlated to processes - they could all be invalid after this
+                processDeviceDetails.Clear();
+
+            if (miningEngine.Mining)
+            {
+                RefreshPoolInfo();
+                RefreshDetailsAreaIfVisible();
+            }
+        }
+
+        private void tenMinuteTimer_Tick(object sender, EventArgs e)
         {
             if (applicationConfiguration.NetworkDeviceDetection)
             {
@@ -3015,9 +2889,31 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private void oneHourTimer_Tick(object sender, EventArgs e)
+        private void tenSecondTimer_Tick(object sender, EventArgs e)
         {
-            ClearCachedNetworkCoinInformation();
+            if (applicationConfiguration.NetworkDeviceDetection)
+                RefreshNetworkDeviceStats();
+
+            CheckIdleTimeForDynamicIntensity(((System.Windows.Forms.Timer)sender).Interval);
+        }
+
+        private void fiveSecondTimer_Tick(object sender, EventArgs e)
+        {
+            if (miningEngine.Mining)
+            {
+                ClearMinerStatsForDisabledCoins();
+                RefreshDeviceStats();
+            }
+        }
+
+        private void thirtyMinuteTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshExchangeRates();
+        }
+
+        private void oneSecondTimer_Tick(object sender, EventArgs e)
+        {
+            CheckMiningOnStartupStatus();
         }
         #endregion
 
@@ -3080,9 +2976,6 @@ namespace MultiMiner.Win.Forms
         private void DisableRemoting()
         {
             StopDiscovery();
-
-            remotingBroadcastTimer.Enabled = false;
-            remotingServerTimer.Enabled = false;
 
             if (remotingServer != null)
                 remotingServer.Shutdown();
@@ -3480,11 +3373,6 @@ namespace MultiMiner.Win.Forms
             broadcastListener.Listen();
 
             SetupDiscovery();
-
-            SetupRemotingTimers();
-
-            remotingBroadcastTimer.Enabled = true;
-            remotingServerTimer.Enabled = true;
 
             remotingServer = new RemotingServer();
             remotingServer.Startup();
@@ -5412,9 +5300,7 @@ namespace MultiMiner.Win.Forms
             logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
             LoadPreviousHistory();
             logProcessCloseArgsBindingSource.MoveLast();
-
-            SetupMobileMinerTimers();
-
+            
             CloseDetailsArea();
 
             FetchInitialCoinStats();
@@ -5448,7 +5334,7 @@ namespace MultiMiner.Win.Forms
 
             CheckAndDownloadMiners();
 
-            SetupAutoUpdates();
+            CheckForUpdates();
 
             SetHasChangesLocally(false);
 
@@ -6350,10 +6236,6 @@ namespace MultiMiner.Win.Forms
             ClearCachedNetworkCoinInformation();
             processDeviceDetails.Clear();
             lastDevicePoolMapping.Clear();
-            deviceStatsTimer.Enabled = false;
-            minerSummaryTimer.Enabled = false;
-            coinStatsCountdownTimer.Enabled = false;
-            poolInfoTimer.Enabled = false;
             RefreshStrategiesCountdown();
             scryptRateLabel.Text = string.Empty;
             sha256RateLabel.Text = string.Empty;
@@ -6622,10 +6504,6 @@ namespace MultiMiner.Win.Forms
 
             autoSizeColumnsFlag = 0;
 
-            deviceStatsTimer.Enabled = true;
-            minerSummaryTimer.Enabled = true;
-            coinStatsCountdownTimer.Enabled = true;
-            poolInfoTimer.Enabled = true;
             RefreshStrategiesCountdown();
 
             //so restart timer based on when mining started, not a constantly ticking timer
@@ -6740,10 +6618,57 @@ namespace MultiMiner.Win.Forms
 
         private void CancelMiningOnStartup()
         {
-            startupMiningCountdownTimer.Enabled = false;
+            startupMiningCountdownSeconds = 0;
             startupMiningPanel.Visible = false;
             countdownLabel.Visible = false; //or remains visible under Mono
             cancelStartupMiningButton.Visible = false; //or remains visible under Mono
+        }
+
+        private void CheckIdleTimeForDynamicIntensity(long timerInterval)
+        {
+            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+                return; //idle detection code uses User32.dll
+
+            if (applicationConfiguration.AutoSetDesktopMode && miningEngine.Mining)
+            {
+                TimeSpan idleTimeSpan = TimeSpan.FromMilliseconds(Environment.TickCount - IdleTimeFinder.GetLastInputTime());
+
+                const int idleMinutesForDesktopMode = 2;
+
+                //if idle for more than 1 minute, disable Desktop Mode
+                if (idleTimeSpan.TotalMinutes > idleMinutesForDesktopMode)
+                {
+                    if (engineConfiguration.XgminerConfiguration.DesktopMode)
+                    {
+                        ToggleDynamicIntensityLocally(false);
+                        RestartMiningLocallyIfMining();
+                    }
+                }
+                //else if idle for less than the idleTimer interval, enable Desktop Mode
+                else if (idleTimeSpan.TotalMilliseconds <= timerInterval)
+                {
+                    if (!engineConfiguration.XgminerConfiguration.DesktopMode)
+                    {
+                        ToggleDynamicIntensityLocally(true);
+                        RestartMiningLocallyIfMining();
+                    }
+                }
+            }
+        }
+
+        private void CheckMiningOnStartupStatus()
+        {
+            if (startupMiningCountdownSeconds > 0)
+            {
+                startupMiningCountdownSeconds--;
+                RefreshCountdownLabel();
+                if (startupMiningCountdownSeconds == 0)
+                {
+                    startupMiningPanel.Visible = false;
+                    System.Windows.Forms.Application.DoEvents();
+                    StartMiningLocally();
+                }
+            }
         }
         #endregion
 
