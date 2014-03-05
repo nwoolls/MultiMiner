@@ -2,6 +2,9 @@ namespace MultiMiner.MobileMiner.Data
 {
     public class MiningStatistics
     {
+        //so these can be rolled up into a single HTTP POST for all machines
+        public string MachineName { get; set; }
+        
         //MiningStatistics
         public string MinerName { get; set; } //e.g. MultiMiner, Asteroid, etc.
         public string CoinSymbol { get; set; }
