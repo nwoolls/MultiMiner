@@ -4033,10 +4033,10 @@ namespace MultiMiner.Win.Forms
 
         private void FixCoinApiSymbolDiscrepencies()
         {
-            CoinInformation badCoin = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+            CoinInformation badCoin = coinApiInformation.SingleOrDefault(c => !String.IsNullOrEmpty(c.Symbol) && c.Symbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
             if (badCoin != null)
             {
-                CoinInformation goodCoin = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(KnownCoins.DogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+                CoinInformation goodCoin = coinApiInformation.SingleOrDefault(c => !String.IsNullOrEmpty(c.Symbol) && c.Symbol.Equals(KnownCoins.DogecoinSymbol, StringComparison.OrdinalIgnoreCase));
                 if (goodCoin == null)
                     badCoin.Symbol = KnownCoins.DogecoinSymbol;
                 else
