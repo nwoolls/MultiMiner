@@ -54,7 +54,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 166);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(272, 45);
-            this.panel1.TabIndex = 3;
+            this.panel1.TabIndex = 2;
             // 
             // saveButton
             // 
@@ -103,9 +103,10 @@
             this.groupBox1.Location = new System.Drawing.Point(17, 87);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(238, 65);
-            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Algorithm";
+            
             // 
             // scryptRadioButton
             // 
@@ -136,7 +137,7 @@
             this.textBox1.Location = new System.Drawing.Point(129, 16);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(125, 23);
-            this.textBox1.TabIndex = 0;
+            this.textBox1.TabIndex = 3;
             // 
             // cryptoCoinBindingSource
             // 
@@ -145,18 +146,21 @@
             // symbolEdit
             // 
             this.symbolEdit.AccessibleName = "Exchange symbol";
+            this.symbolEdit.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.symbolEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Symbol", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.symbolEdit.Location = new System.Drawing.Point(129, 46);
             this.symbolEdit.MaxLength = 5;
             this.symbolEdit.Name = "symbolEdit";
             this.symbolEdit.Size = new System.Drawing.Size(125, 23);
-            this.symbolEdit.TabIndex = 1;
+            this.symbolEdit.TabIndex = 0;
             // 
             // CoinEditForm
             // 
+            this.AcceptButton = this.saveButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(272, 211);
             this.Controls.Add(this.symbolEdit);
             this.Controls.Add(this.textBox1);
