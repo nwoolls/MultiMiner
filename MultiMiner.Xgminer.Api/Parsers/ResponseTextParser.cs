@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace MultiMiner.Xgminer.Api.Parsers
 {
@@ -40,6 +41,16 @@ namespace MultiMiner.Xgminer.Api.Parsers
             }
 
             return result;
+        }
+
+        protected static Dictionary<string, string> GetDictionaryFromTextChunk(string textChunk)
+        {
+            IEnumerable<string> deviceAttributes = textChunk.Split(',').ToList().Distinct();
+            Dictionary<string, string> keyValuePairs = deviceAttributes
+              .Where(value => value.Contains('='))
+              .Select(value => value.Split('='))
+              .ToDictionary(pair => pair[0], pair => pair[1]);
+            return keyValuePairs;
         }
     }
 }

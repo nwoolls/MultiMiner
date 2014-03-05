@@ -702,10 +702,15 @@ namespace MultiMiner.Win.Forms
 
         private void UpdateUtilityColumnHeader()
         {
-            string oldValue = utilityColumnHeader.Text;
-            utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
+            ChangeSubItemText(deviceListView, difficultyColumnHeader, applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility");
+        }
+
+        private void ChangeSubItemText(ListView listView, ColumnHeader columnHeader, string caption)
+        {
+            string oldValue = columnHeader.Text;
+            columnHeader.Text = caption;
             foreach (ListViewItem item in deviceListView.Items)
-                item.SubItems[oldValue].Name = utilityColumnHeader.Text;
+                item.SubItems[oldValue].Name = columnHeader.Text;
         }
 
         private void SetupColumnHeaderMenu()

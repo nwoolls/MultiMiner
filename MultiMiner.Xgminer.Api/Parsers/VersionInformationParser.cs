@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MultiMiner.Xgminer.Api.Parsers
 {
-    class VersionInformationParser
+    class VersionInformationParser : ResponseTextParser
     {
         public static void ParseTextForVersionInformation(string text, MultiMiner.Xgminer.Api.Data.VersionInformation versionInformation)
         {
@@ -19,16 +19,6 @@ namespace MultiMiner.Xgminer.Api.Parsers
 
             versionInformation.MinerVersion = keyValuePairs["CGMiner"];
             versionInformation.ApiVersion = keyValuePairs["API"];
-        }
-
-        private static Dictionary<string, string> GetDictionaryFromTextChunk(string textChunk)
-        {
-            IEnumerable<string> deviceAttributes = textChunk.Split(',').ToList().Distinct();
-            Dictionary<string, string> keyValuePairs = deviceAttributes
-              .Where(value => value.Contains('='))
-              .Select(value => value.Split('='))
-              .ToDictionary(pair => pair[0], pair => pair[1]);
-            return keyValuePairs;
         }
     }
 }
