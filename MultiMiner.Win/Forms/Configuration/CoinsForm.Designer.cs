@@ -33,6 +33,7 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.addCoinButton = new System.Windows.Forms.ToolStripButton();
             this.removeCoinButton = new System.Windows.Forms.ToolStripButton();
+            this.copyCoinButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -95,6 +96,7 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addCoinButton,
             this.removeCoinButton,
+            this.copyCoinButton,
             this.toolStripSeparator2,
             this.toolStripButton1,
             this.toolStripSeparator1,
@@ -128,6 +130,16 @@
             this.removeCoinButton.Text = "Remove Coin";
             this.removeCoinButton.ToolTipText = "Remove a configuration";
             this.removeCoinButton.Click += new System.EventHandler(this.removeCoinButton_Click);
+            // 
+            // copyCoinButton
+            // 
+            this.copyCoinButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.copyCoinButton.Image = global::MultiMiner.Win.Properties.Resources.clipboard_copy;
+            this.copyCoinButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.copyCoinButton.Name = "copyCoinButton";
+            this.copyCoinButton.Size = new System.Drawing.Size(23, 22);
+            this.copyCoinButton.Text = "Copy Coin";
+            this.copyCoinButton.Click += new System.EventHandler(this.copyCoinButton_Click);
             // 
             // toolStripSeparator2
             // 
@@ -661,5 +673,6 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox saveToRemotingCheckBox;
         private System.Windows.Forms.BindingSource applicationBindingSource;
+        private System.Windows.Forms.ToolStripButton copyCoinButton;
     }
 }

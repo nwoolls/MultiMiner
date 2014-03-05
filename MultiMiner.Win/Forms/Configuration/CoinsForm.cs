@@ -71,8 +71,8 @@ namespace MultiMiner.Win.Forms.Configuration
             if (configurations.Count > 0)
                 coinListBox.SelectedIndex = 0;
         }
-        
-        private void AddCoinConfiguration(CryptoCoin cryptoCoin)
+
+        private Engine.Data.Configuration.Coin AddCoinConfiguration(CryptoCoin cryptoCoin)
         {
             //don't allow two configurations for the same coin symbol
             Engine.Data.Configuration.Coin configuration = configurations.SingleOrDefault(c => c.CryptoCoin.Symbol.Equals(cryptoCoin.Symbol, StringComparison.OrdinalIgnoreCase));
@@ -108,21 +108,26 @@ namespace MultiMiner.Win.Forms.Configuration
             }
 
             hostEdit.Focus();
+
+            return configuration;
         }
 
         private void coinListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (coinListBox.SelectedIndex >= 0)
-            {
-                Engine.Data.Configuration.Coin configuration = configurations[coinListBox.SelectedIndex];
-
-                coinConfigurationBindingSource.DataSource = configuration;
-                miningPoolBindingSource.DataSource = configuration.Pools;
-                poolListBox.DataSource = miningPoolBindingSource;
-                poolListBox.DisplayMember = "Host";
-            }
+                BindToCurrentConfiguration();
 
             UpdateButtonStates();
+        }
+
+        private void BindToCurrentConfiguration()
+        {
+            Engine.Data.Configuration.Coin configuration = configurations[coinListBox.SelectedIndex];
+
+            coinConfigurationBindingSource.DataSource = configuration;
+            miningPoolBindingSource.DataSource = configuration.Pools;
+            poolListBox.DataSource = miningPoolBindingSource;
+            poolListBox.DisplayMember = "Host";
         }
 
         private void addPoolButton_Click(object sender, EventArgs e)
@@ -148,6 +153,7 @@ namespace MultiMiner.Win.Forms.Configuration
             addPoolButton.Enabled = coinListBox.SelectedIndex >= 0;
             removePoolButton.Enabled = (coinListBox.SelectedIndex >= 0) && (poolListBox.SelectedIndex >= 0);
             removeCoinButton.Enabled = (coinListBox.SelectedIndex >= 0) && (coinListBox.SelectedIndex >= 0);
+            copyCoinButton.Enabled = (coinListBox.SelectedIndex >= 0) && (coinListBox.SelectedIndex >= 0);
             poolUpButton.Enabled = (poolListBox.SelectedIndex >= 1);
             poolDownButton.Enabled = (poolListBox.SelectedIndex < poolListBox.Items.Count - 1);
         }
@@ -319,6 +325,26 @@ namespace MultiMiner.Win.Forms.Configuration
             coinListBox.Items.Insert(index, coinName);
 
             coinListBox.SelectedIndex = index;
+        }
+
+        private void copyCoinButton_Click(object sender, EventArgs e)
+        {
+            CoinChooseForm coinChooseForm = new CoinChooseForm(knownCoins);
+            DialogResult dialogResult = coinChooseForm.ShowDialog();
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                CryptoCoin destinationCoin = coinChooseForm.SelectedCoin;
+
+                Engine.Data.Configuration.Coin sourceConfiguration = configurations[coinListBox.SelectedIndex];
+
+                MultiMiner.Engine.Data.Configuration.Coin destinationConfiguration = AddCoinConfiguration(destinationCoin);
+
+                ObjectCopier.CopyObject(sourceConfiguration, destinationConfiguration, "CryptoCoin");
+
+                BindToCurrentConfiguration();
+                coinConfigurationBindingSource.ResetBindings(false);
+                miningPoolBindingSource.ResetBindings(false);
+            }
         }
     }
 }
