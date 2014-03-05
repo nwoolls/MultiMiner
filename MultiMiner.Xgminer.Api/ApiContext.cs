@@ -15,14 +15,14 @@ namespace MultiMiner.Xgminer.Api
 
         // event declaration 
         public event LogEventHandler LogEvent;
-
-        private readonly int port;
-        private readonly string ipAddress;
+        
+        public int Port { get; set; }
+        public string IpAddress { get; set; }
 
         public ApiContext(int port, string ipAddress = "127.0.0.1")
         {
-            this.port = port;
-            this.ipAddress = ipAddress;
+            this.Port = port;
+            this.IpAddress = ipAddress;
         }
 
         public List<DeviceInformation> GetDeviceInformation(int logInterval)
@@ -65,6 +65,14 @@ namespace MultiMiner.Xgminer.Api
             return result;
         }
 
+        public NetworkCoinInformation GetCoinInformation()
+        {
+            string textResponse = GetResponse(ApiVerb.Coin);
+            NetworkCoinInformation result = new NetworkCoinInformation();
+            NetworkCoinInformationParser.ParseTextForCoinNetworkInformation(textResponse, result);
+            return result;
+        }
+
         public string QuitMining()
         {
             return GetResponse(ApiVerb.Quit);
@@ -82,7 +90,7 @@ namespace MultiMiner.Xgminer.Api
 
         public string GetResponse(string apiVerb, int timeoutMs = 500)
         {
-            TcpClient tcpClient = new TcpClient(this.ipAddress, port);
+            TcpClient tcpClient = new TcpClient(this.IpAddress, Port);
             NetworkStream tcpStream = tcpClient.GetStream();
 
             Byte[] request = Encoding.ASCII.GetBytes(apiVerb);

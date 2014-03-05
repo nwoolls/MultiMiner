@@ -46,12 +46,15 @@ namespace MultiMiner.Win.Forms
         private IApiContext coinChooseApiContext;
         private IApiContext coinWarzApiContext;
         private IApiContext successfulApiContext;
-        private readonly List<DeviceInformation> allDeviceInformation = new List<DeviceInformation>();
-        private readonly Dictionary<MinerProcess, List<DeviceDetails>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetails>>();
 
-        //API information
+        //Coin API information
         private List<CoinInformation> coinApiInformation;
         private MultiMiner.Coinbase.Data.SellPrices sellPrices;
+
+        //RPC API information
+        private Dictionary<string, double> minerNetworkDifficulty = new Dictionary<string, double>();
+        private readonly Dictionary<MinerProcess, List<DeviceDetails>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetails>>();
+        private readonly List<DeviceInformation> allDeviceInformation = new List<DeviceInformation>();
 
         //configuration
         private Engine.Data.Configuration.Engine engineConfiguration = new Engine.Data.Configuration.Engine();
@@ -471,8 +474,14 @@ namespace MultiMiner.Win.Forms
                         else
                             listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
 
-                        listViewItem.SubItems["Difficulty"].Tag = deviceViewModel.Difficulty;
-                        listViewItem.SubItems["Difficulty"].Text = deviceViewModel.Difficulty.ToDifficultyString();
+
+
+                        double difficulty = GetMinerNetworkDifficulty(deviceViewModel.Coin.Symbol);
+                        if (difficulty == 0.0)
+                            difficulty = deviceViewModel.Difficulty;
+
+                        listViewItem.SubItems["Difficulty"].Tag = difficulty;
+                        listViewItem.SubItems["Difficulty"].Text = difficulty.ToDifficultyString();
 
                         string unit = KnownCoins.BitcoinSymbol;
 
@@ -702,7 +711,7 @@ namespace MultiMiner.Win.Forms
 
         private void UpdateUtilityColumnHeader()
         {
-            ChangeSubItemText(deviceListView, difficultyColumnHeader, applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility");
+            ChangeSubItemText(deviceListView, utilityColumnHeader, applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility");
         }
 
         private void ChangeSubItemText(ListView listView, ColumnHeader columnHeader, string caption)
@@ -2805,6 +2814,19 @@ namespace MultiMiner.Win.Forms
             networkDeviceDetectTimer.Interval = 10 * 60 * 1000; //10min
             networkDeviceDetectTimer.Enabled = true;
         }
+
+        private const int minutesPerHour = 60;
+        private const int secondsPerMinute = 60;
+        private const int msPerSecond = 1000;
+
+        private const int oneMinuteInterval = msPerSecond * secondsPerMinute;
+        private const int oneHourInterval = oneMinuteInterval * minutesPerHour;
+        
+        private void SetupCoalescedTimers()
+        {
+            oneHourTimer.Interval = oneHourInterval;
+            oneHourTimer.Enabled = true;
+        }
         #endregion
 
         #region Timer event handlers
@@ -2991,6 +3013,11 @@ namespace MultiMiner.Win.Forms
                 CheckNetworkDevicesAsync();
                 FindNetworkDevicesAsync();
             }
+        }
+
+        private void oneHourTimer_Tick(object sender, EventArgs e)
+        {
+            ClearCachedNetworkCoinInformation();
         }
         #endregion
 
@@ -4630,6 +4657,8 @@ namespace MultiMiner.Win.Forms
                 //clear accepted shares as we'll be summing that as well
                 minerProcess.AcceptedShares = 0;
 
+                string coinSymbol = null;
+
                 foreach (DeviceInformation deviceInformation in deviceInformationList)
                 {
                     //don't consider a standalone miner suspect - restarting the proxy doesn't help and often hurts
@@ -4651,6 +4680,8 @@ namespace MultiMiner.Win.Forms
                         Engine.Data.Configuration.Coin coinConfiguration = CoinConfigurationForDevice(device);
                         if (coinConfiguration != null)
                         {
+                            coinSymbol = coinConfiguration.CryptoCoin.Symbol;
+
                             string poolName = GetPoolNameByIndex(coinConfiguration, deviceViewModel.PoolIndex);
                             //may be blank if donating
                             if (!String.IsNullOrEmpty(poolName))
@@ -4667,10 +4698,71 @@ namespace MultiMiner.Win.Forms
                     }
                 }
 
+                if (!String.IsNullOrEmpty(coinSymbol))
+                    CheckAndSetNetworkDifficulty(minerProcess.ApiContext.IpAddress, minerProcess.ApiContext.Port, coinSymbol);
+
                 localViewModel.ApplyDeviceDetailsResponseModels(minerProcess.CoinSymbol, processDevices);
             }
 
             RefreshViewFromDeviceStats();
+        }
+
+        private double GetMinerNetworkDifficulty(string coinSymbol)
+        {
+            double result = 0.0;
+            if (minerNetworkDifficulty.ContainsKey(coinSymbol))
+                result = minerNetworkDifficulty[coinSymbol];
+            return result;
+        }
+
+        private void ClearCachedNetworkCoinInformation()
+        {
+            minerNetworkDifficulty.Clear();
+        }
+
+        private void SetMinerNetworkDifficulty(string coinSymbol, double difficulty)
+        {
+            minerNetworkDifficulty[coinSymbol] = difficulty;
+        }
+
+        private void CheckAndSetNetworkDifficulty(string ipAddress, int port, string coinSymbol)
+        {
+            double difficulty = GetMinerNetworkDifficulty(coinSymbol);
+            if (difficulty == 0.0)
+            {
+                MultiMiner.Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
+                difficulty = GetNetworkDifficultyFromMiner(apiContext);
+                SetMinerNetworkDifficulty(coinSymbol, difficulty);
+            }
+        }
+
+        private double GetNetworkDifficultyFromMiner(Xgminer.Api.ApiContext apiContext)
+        {            
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            NetworkCoinInformation coinInformation = null;
+
+            try
+            {
+                try
+                {
+                    coinInformation = apiContext.GetCoinInformation();
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    coinInformation = null;
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
+                coinInformation = null;
+            }
+
+            return coinInformation == null ? 0.0 : coinInformation.NetworkDifficulty;
         }
 
         private void RefreshViewFromDeviceStats()
@@ -4761,6 +4853,8 @@ namespace MultiMiner.Win.Forms
                         deviceViewModel.Visible = true;
                     }
                 }
+
+                CheckAndSetNetworkDifficulty(ipAddress, port, KnownCoins.BitcoinSymbol);
             }
 
             RemoveSelfReferencingNetworkDevices();
@@ -5388,6 +5482,8 @@ namespace MultiMiner.Win.Forms
                 CancelMiningOnStartup();
             if (!MiningConfigurationValid())
                 CancelMiningOnStartup();
+
+            SetupCoalescedTimers();
             
             SubmitMobileMinerPools();
 
@@ -6245,6 +6341,7 @@ namespace MultiMiner.Win.Forms
 
             localViewModel.ClearDeviceInformationFromViewModel();
 
+            ClearCachedNetworkCoinInformation();
             processDeviceDetails.Clear();
             lastDevicePoolMapping.Clear();
             deviceStatsTimer.Enabled = false;

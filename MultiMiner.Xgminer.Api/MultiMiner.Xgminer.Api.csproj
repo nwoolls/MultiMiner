@@ -42,8 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiContext.cs" />
+    <Compile Include="Data\NetworkCoinInformation.cs" />
     <Compile Include="Data\VersionInformation.cs" />
     <Compile Include="Extensions\IntegerExtensions.cs" />
+    <Compile Include="Parsers\NetworkCoinInformationParser.cs" />
     <Compile Include="Parsers\DeviceDetailsParser.cs" />
     <Compile Include="Parsers\PoolInformationParser.cs" />
     <Compile Include="Parsers\ResponseTextParser.cs" />
@@ -57,6 +59,12 @@
     <Compile Include="ApiVerb.cs" />
     <Compile Include="Data\PoolInformation.cs" />
     <Compile Include="Data\SummaryInformation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MultiMiner.Xgminer\MultiMiner.Xgminer.csproj">
+      <Project>{0dbef993-1b34-4d80-ab6a-f662604325dc}</Project>
+      <Name>MultiMiner.Xgminer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
