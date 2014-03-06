@@ -21,6 +21,7 @@ namespace MultiMiner.MobileMiner.Api.Tests
             List<MiningStatistics> miningStatistics = new List<MiningStatistics>();
             miningStatistics.Add(new MiningStatistics()
             {
+                MachineName = Environment.MachineName,
                 Algorithm = "Scrypt",
                 CoinName = "Coin",
                 CoinSymbol = "COIN",
@@ -28,11 +29,10 @@ namespace MultiMiner.MobileMiner.Api.Tests
                 Kind = "PGA",
                 MinerName = "UnitTests",
                 Name = "Name"
-
             });
 
             DateTime start = DateTime.Now;
-            ApiContext.SubmitMiningStatistics(apiUrl, devApiKey, userEmail, userAppKey, Environment.MachineName, miningStatistics);
+            ApiContext.SubmitMiningStatistics(apiUrl, devApiKey, userEmail, userAppKey, miningStatistics);
             Assert.IsTrue((DateTime.Now - start).TotalSeconds < apiSecondsError);
         }
 
@@ -43,7 +43,7 @@ namespace MultiMiner.MobileMiner.Api.Tests
             try
             {
                 DateTime start = DateTime.Now;
-                ApiContext.SubmitMiningStatistics(apiUrl, devApiKey, userEmail, userAppKey, Environment.MachineName, miningStatistics);
+                ApiContext.SubmitMiningStatistics(apiUrl, devApiKey, userEmail, userAppKey, miningStatistics);
                 Assert.IsTrue((DateTime.Now - start).TotalSeconds < apiSecondsError);
                 Assert.Fail("No Exception thrown");
             }
