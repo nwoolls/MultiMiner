@@ -5,6 +5,7 @@ using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Xgminer.Data;
 using System;
 using System.Diagnostics;
+using MultiMiner.Win.Extensions;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -31,7 +32,15 @@ namespace MultiMiner.Win.Forms.Configuration
             xgminerConfigurationBindingSource.DataSource = workingMinerConfiguration;
             applicationConfigurationBindingSource.DataSource = workingApplicationConfiguration;
             autoDesktopCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
+            PopulateIntervalCombo();
             LoadSettings();
+        }
+
+        private void PopulateIntervalCombo()
+        {
+            intervalCombo.Items.Clear();
+            foreach (Application.TimerInterval interval in (Application.TimerInterval[])Enum.GetValues(typeof(Application.TimerInterval)))
+                intervalCombo.Items.Add(interval.ToString().ToSpaceDelimitedWords());
         }
 
         private void saveButton_Click(object sender, EventArgs e)

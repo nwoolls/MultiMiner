@@ -3953,6 +3953,10 @@ namespace MultiMiner.Win.Forms
 
         private void FixCoinApiSymbolDiscrepencies()
         {
+            //we're offline or the API is offline
+            if (coinApiInformation == null)
+                return;
+
             CoinInformation badCoin = coinApiInformation.SingleOrDefault(c => !String.IsNullOrEmpty(c.Symbol) && c.Symbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
             if (badCoin != null)
             {
