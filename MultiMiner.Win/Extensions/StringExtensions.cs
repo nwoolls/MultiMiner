@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace MultiMiner.Win.Extensions
 {
@@ -41,6 +42,11 @@ namespace MultiMiner.Win.Extensions
             hostDomainNames[host] = domainName;
 
             return domainName;
+        }
+
+        public static string ToSpaceDelimitedWords(this string text)
+        {
+            return Regex.Replace(text, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
         }
     }
 }
