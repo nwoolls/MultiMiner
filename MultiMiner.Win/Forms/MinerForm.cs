@@ -6555,41 +6555,19 @@ namespace MultiMiner.Win.Forms
         {
             if (!applicationConfiguration.SuggestCoinsToMine)
                 return;
-            if (applicationConfiguration.SuggestionsAlgorithm == Data.Configuration.Application.CoinSuggestionsAlgorithm.None)
+            if (applicationConfiguration.SuggestionsAlgorithm == CoinSuggestionsAlgorithm.None)
                 return;
             if (coinApiInformation == null) //no network connection
                 return;
 
-            IEnumerable<CoinInformation> coinsToMine = GetCoinsToMine();
+            IEnumerable<CoinInformation> coinsToMine = CoinSuggestions.GetCoinsToMine(
+                coinApiInformation, 
+                applicationConfiguration.SuggestionsAlgorithm, 
+                engineConfiguration.StrategyConfiguration, 
+                engineConfiguration.CoinConfigurations);
 
             foreach (CoinInformation coin in coinsToMine)
                 NotifyCoinToMine(this.successfulApiContext, coin);
-        }
-
-        private IEnumerable<CoinInformation> GetCoinsToMine()
-        {
-            IEnumerable<CoinInformation> filteredCoins = this.coinApiInformation;
-            if (applicationConfiguration.SuggestionsAlgorithm == Data.Configuration.Application.CoinSuggestionsAlgorithm.SHA256)
-                filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("SHA-256", StringComparison.OrdinalIgnoreCase));
-            else if (applicationConfiguration.SuggestionsAlgorithm == Data.Configuration.Application.CoinSuggestionsAlgorithm.Scrypt)
-                filteredCoins = filteredCoins.Where(c => c.Algorithm.Equals("Scrypt", StringComparison.OrdinalIgnoreCase));
-
-            IEnumerable<CoinInformation> orderedCoins = filteredCoins.OrderByDescending(c => c.AverageProfitability);
-            switch (engineConfiguration.StrategyConfiguration.MiningBasis)
-            {
-                case Strategy.CoinMiningBasis.Difficulty:
-                    orderedCoins = coinApiInformation.OrderBy(c => c.Difficulty);
-                    break;
-                case Strategy.CoinMiningBasis.Price:
-                    orderedCoins = coinApiInformation.OrderByDescending(c => c.Price);
-                    break;
-            }
-
-            //added checks for coin.Symbol and coin.Exchange
-            //current CoinChoose.com feed for LTC profitability has a NULL exchange for Litecoin
-            IEnumerable<CoinInformation> unconfiguredCoins = orderedCoins.Where(coin => !String.IsNullOrEmpty(coin.Symbol) && !engineConfiguration.CoinConfigurations.Any(config => config.CryptoCoin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase)));
-            IEnumerable<CoinInformation> coinsToMine = unconfiguredCoins.Take(3);
-            return coinsToMine;
         }
 
         private void NotifyCoinToMine(IApiContext apiContext, CoinInformation coin)
