@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationPaths.cs" />
+    <Compile Include="Data\CoinSuggestionsAlgorithm.cs" />
     <Compile Include="Data\Configuration\Coin.cs" />
     <Compile Include="Data\Configuration\Strategy.cs" />
     <Compile Include="Data\CryptoCoin.cs" />

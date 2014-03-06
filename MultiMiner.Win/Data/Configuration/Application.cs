@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Engine;
+using MultiMiner.Engine.Data;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
 using System;
@@ -23,14 +24,6 @@ namespace MultiMiner.Win.Data.Configuration
             ThreeHours = 5,
             SixHours = 6,
             TwelveHours = 7
-        }
-
-        [Flags]
-        public enum CoinSuggestionsAlgorithm
-        {
-            None = 0x0,
-            SHA256 = 0x1,
-            Scrypt = 0x2
         }
 
         public Application()

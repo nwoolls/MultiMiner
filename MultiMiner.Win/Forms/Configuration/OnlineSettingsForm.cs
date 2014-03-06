@@ -35,11 +35,11 @@ namespace MultiMiner.Win.Forms.Configuration
 
             if (applicationConfiguration.SuggestCoinsToMine)
             {
-                if (applicationConfiguration.SuggestionsAlgorithm == Application.CoinSuggestionsAlgorithm.SHA256)
+                if (applicationConfiguration.SuggestionsAlgorithm == Engine.Data.CoinSuggestionsAlgorithm.SHA256)
                     suggestionsCombo.SelectedIndex = 1;
-                else if (applicationConfiguration.SuggestionsAlgorithm == Application.CoinSuggestionsAlgorithm.Scrypt)
+                else if (applicationConfiguration.SuggestionsAlgorithm == Engine.Data.CoinSuggestionsAlgorithm.Scrypt)
                     suggestionsCombo.SelectedIndex = 2;
-                else if (applicationConfiguration.SuggestionsAlgorithm == (Application.CoinSuggestionsAlgorithm.SHA256 | Application.CoinSuggestionsAlgorithm.Scrypt))
+                else if (applicationConfiguration.SuggestionsAlgorithm == (Engine.Data.CoinSuggestionsAlgorithm.SHA256 | Engine.Data.CoinSuggestionsAlgorithm.Scrypt))
                     suggestionsCombo.SelectedIndex = 3;
                 else
                     suggestionsCombo.SelectedIndex = 0;
@@ -60,15 +60,15 @@ namespace MultiMiner.Win.Forms.Configuration
             {
                 case 1:
                     applicationConfiguration.SuggestCoinsToMine = true;
-                    applicationConfiguration.SuggestionsAlgorithm = Application.CoinSuggestionsAlgorithm.SHA256;
+                    applicationConfiguration.SuggestionsAlgorithm = Engine.Data.CoinSuggestionsAlgorithm.SHA256;
                     break;
                 case 2:
                     applicationConfiguration.SuggestCoinsToMine = true;
-                    applicationConfiguration.SuggestionsAlgorithm = Application.CoinSuggestionsAlgorithm.Scrypt;
+                    applicationConfiguration.SuggestionsAlgorithm = Engine.Data.CoinSuggestionsAlgorithm.Scrypt;
                     break;
                 case 3:
                     applicationConfiguration.SuggestCoinsToMine = true;
-                    applicationConfiguration.SuggestionsAlgorithm = Application.CoinSuggestionsAlgorithm.SHA256 | Application.CoinSuggestionsAlgorithm.Scrypt;
+                    applicationConfiguration.SuggestionsAlgorithm = Engine.Data.CoinSuggestionsAlgorithm.SHA256 | Engine.Data.CoinSuggestionsAlgorithm.Scrypt;
                     break;
                 default:
                     applicationConfiguration.SuggestCoinsToMine = false;
