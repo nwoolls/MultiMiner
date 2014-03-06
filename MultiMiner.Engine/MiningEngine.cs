@@ -351,6 +351,8 @@ namespace MultiMiner.Engine
 
             //get algorithm only options
             List<CoinInformation> sha256ProfitableCoins = filteredCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmNames.SHA256, StringComparison.OrdinalIgnoreCase)).ToList();
+            List<CoinInformation> scryptProfitableCoins = filteredCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase)).ToList();
+
 
             //ABM - always be mining
             if (filteredCoinInformation.Count == 0)
@@ -362,19 +364,27 @@ namespace MultiMiner.Engine
                 if (sha256Coin != null)
                     sha256ProfitableCoins.Add(sha256Coin);
             }
+
+            if (scryptProfitableCoins.Count == 0)
+            {
+                CoinInformation scryptCoin = orderedCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmNames.Scrypt)).FirstOrDefault();
+                if (scryptCoin != null)
+                    scryptProfitableCoins.Add(scryptCoin);
             }
             //end ABM
 
-            return CreateDeviceConfigurationForProfitableCoins(filteredCoinInformation, sha256ProfitableCoins);
+            return CreateDeviceConfigurationForProfitableCoins(filteredCoinInformation, sha256ProfitableCoins, scryptProfitableCoins);
         }
 
-        private List<Engine.Data.Configuration.Device> CreateDeviceConfigurationForProfitableCoins(List<CoinInformation> allProfitableCoins, List<CoinInformation> sha256ProfitableCoins)
+        private List<Engine.Data.Configuration.Device> CreateDeviceConfigurationForProfitableCoins(List<CoinInformation> allProfitableCoins,
+            List<CoinInformation> sha256ProfitableCoins, List<CoinInformation> scryptProfitableCoins)
         {
             List<Engine.Data.Configuration.Device> newConfiguration = new List<Engine.Data.Configuration.Device>();
             CoinInformation profitableCoin = null;
 
-            int gpuIterator = 0;
-            int amuIterator = 0;
+            int comboAlgoIterator = 0;
+            int sha256Iterator = 0;
+            int scryptIterator = 0;
 
             for (int i = 0; i < devices.Count; i++)
             {
@@ -387,23 +397,32 @@ namespace MultiMiner.Engine
                 {
                     profitableCoin = null;
 
-                    if (device.Kind == DeviceKind.GPU)
+                    if (device.SupportsAlgorithm(CoinAlgorithm.Scrypt) && !device.SupportsAlgorithm(CoinAlgorithm.SHA256))
+                    {
+                        //scrypt only
+                        profitableCoin = ChooseCoinFromList(scryptProfitableCoins, scryptIterator);
+
+                        scryptIterator++;
+                        if (scryptIterator >= scryptProfitableCoins.Count())
+                            scryptIterator = 0;
+                    }
+                    else if (device.SupportsAlgorithm(CoinAlgorithm.Scrypt) && device.SupportsAlgorithm(CoinAlgorithm.SHA256))
                     {
                         //sha256 or scrypt
-                        profitableCoin = ChooseCoinFromList(allProfitableCoins, gpuIterator);
+                        profitableCoin = ChooseCoinFromList(allProfitableCoins, comboAlgoIterator);
 
-                        gpuIterator++;
-                        if (gpuIterator >= allProfitableCoins.Count())
-                            gpuIterator = 0;
+                        comboAlgoIterator++;
+                        if (comboAlgoIterator >= allProfitableCoins.Count())
+                            comboAlgoIterator = 0;
                     }
                     else if (sha256ProfitableCoins.Count > 0)
                     {
                         //sha256 only
-                        profitableCoin = ChooseCoinFromList(sha256ProfitableCoins, amuIterator);
+                        profitableCoin = ChooseCoinFromList(sha256ProfitableCoins, sha256Iterator);
 
-                        amuIterator++;
-                        if (amuIterator >= sha256ProfitableCoins.Count())
-                            amuIterator = 0;
+                        sha256Iterator++;
+                        if (sha256Iterator >= sha256ProfitableCoins.Count())
+                            sha256Iterator = 0;
                     }
 
                     Engine.Data.Configuration.Device configEntry = new Engine.Data.Configuration.Device();
