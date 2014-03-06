@@ -349,8 +349,8 @@ namespace MultiMiner.Engine
             //order by adjusted profitability
             List<CoinInformation> filteredCoinInformation = GetFilteredCoinInformation(orderedCoinInformation);
 
-            //get sha256 only options
-            List<CoinInformation> sha256ProfitableCoins = filteredCoinInformation.Where(c => c.Algorithm.Equals("SHA-256")).ToList();
+            //get algorithm only options
+            List<CoinInformation> sha256ProfitableCoins = filteredCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmNames.SHA256, StringComparison.OrdinalIgnoreCase)).ToList();
 
             //ABM - always be mining
             if (filteredCoinInformation.Count == 0)
@@ -358,9 +358,10 @@ namespace MultiMiner.Engine
 
             if (sha256ProfitableCoins.Count == 0)
             {
-                CoinInformation sha256Info = orderedCoinInformation.Where(c => c.Algorithm.Equals("SHA-256")).FirstOrDefault();
-                if (sha256Info != null)
-                    sha256ProfitableCoins.Add(sha256Info);
+                CoinInformation sha256Coin = orderedCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmNames.SHA256)).FirstOrDefault();
+                if (sha256Coin != null)
+                    sha256ProfitableCoins.Add(sha256Coin);
+            }
             }
             //end ABM
 

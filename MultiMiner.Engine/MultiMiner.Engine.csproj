@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlgorithmNames.cs" />
     <Compile Include="ApplicationPaths.cs" />
     <Compile Include="CoinSuggestions.cs" />
     <Compile Include="Data\CoinSuggestionsAlgorithm.cs" />

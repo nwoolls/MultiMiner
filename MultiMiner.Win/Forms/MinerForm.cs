@@ -1856,7 +1856,7 @@ namespace MultiMiner.Win.Forms
                 knownCoin.Name = item.Name;
 
                 //needs to be a case insensitive check to work with both CoinChoose and CoinWarz
-                if (item.Algorithm.ToLower().Contains("scrypt"))
+                if (item.Algorithm.ToLower().Contains(AlgorithmNames.Scrypt.ToLower()))
                     knownCoin.Algorithm = CoinAlgorithm.Scrypt;
                 else
                     knownCoin.Algorithm = CoinAlgorithm.SHA256;
@@ -4096,7 +4096,7 @@ namespace MultiMiner.Win.Forms
                         MinerName = versionInformation.Name,
                         CoinName = NetworkDeviceCoinName,
                         CoinSymbol = NetworkDeviceCoinSymbol,
-                        Algorithm = "SHA-256"
+                        Algorithm = AlgorithmNames.SHA256
                     };
 
                     miningStatistics.PopulateFrom(deviceInformation);
@@ -4185,9 +4185,9 @@ namespace MultiMiner.Win.Forms
             miningStatistics.CoinSymbol = coin.Symbol;
 
             if (coin.Algorithm == CoinAlgorithm.Scrypt)
-                miningStatistics.Algorithm = "scrypt";
+                miningStatistics.Algorithm = AlgorithmNames.Scrypt;
             else if (coin.Algorithm == CoinAlgorithm.SHA256)
-                miningStatistics.Algorithm = "SHA-256";
+                miningStatistics.Algorithm = AlgorithmNames.SHA256;
 
             miningStatistics.PopulateFrom(deviceInformation);
         }
