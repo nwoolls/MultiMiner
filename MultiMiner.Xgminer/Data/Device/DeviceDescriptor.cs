@@ -21,10 +21,12 @@ namespace MultiMiner.Xgminer.Data
         }
 
         private const string DualMinerDriver = "dualminer";
+        private const string GridSeedDriver = "gridseed";
 
         private bool IsScryptAsic()
         {
-            return Driver.Equals(DualMinerDriver, StringComparison.OrdinalIgnoreCase);
+            return Driver.Equals(DualMinerDriver, StringComparison.OrdinalIgnoreCase) ||
+                Driver.Equals(GridSeedDriver, StringComparison.OrdinalIgnoreCase);
         }
 
         public bool SupportsAlgorithm(CoinAlgorithm algorithm)
