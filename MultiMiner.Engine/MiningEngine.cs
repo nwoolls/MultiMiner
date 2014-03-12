@@ -627,6 +627,9 @@ namespace MultiMiner.Engine
         private Xgminer.Data.Configuration.Miner CreateMinerConfiguration(int port, string coinSymbol, DeviceKind includeKinds)
         {
             Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.CryptoCoin.Symbol.Equals(coinSymbol));
+            if (coinConfiguration.Pools.Count == 0)
+                // no pools configured
+                return null;
 
             IList<Engine.Data.Configuration.Device> enabledConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol)).ToList();
 

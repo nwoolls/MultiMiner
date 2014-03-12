@@ -1803,10 +1803,21 @@ namespace MultiMiner.Win.Forms
             }
         }
 
+        private bool DeviceConfigurationValid(Engine.Data.Configuration.Device deviceConfiguration)
+        {
+            bool result = deviceConfiguration.Enabled && !string.IsNullOrEmpty(deviceConfiguration.CoinSymbol);
+            if (result)
+            {
+                Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.CryptoCoin.Symbol.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+                result = coinConfiguration == null ? false : coinConfiguration.Pools.Count > 0;
+            }
+            return result;
+        }
+
         private bool MiningConfigurationValid()
         {
             bool miningConfigurationValid = engineConfiguration.DeviceConfigurations.Count(
-                c => c.Enabled && !string.IsNullOrEmpty(c.CoinSymbol)) > 0;
+                c => DeviceConfigurationValid(c)) > 0;
             if (!miningConfigurationValid)
             {
                 miningConfigurationValid = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
