@@ -85,6 +85,10 @@ namespace MultiMiner.Xgminer.Api
             TcpClient tcpClient = new TcpClient(this.ipAddress, port);
             NetworkStream tcpStream = tcpClient.GetStream();
 
+            // set a read timeout, otherwise it is infinite and could lock the app
+            // if a miner is locked up
+            tcpStream.ReadTimeout = 500; //500ms
+
             Byte[] request = Encoding.ASCII.GetBytes(apiVerb);
 
             long timeoutTicks = timeoutMs * TimeSpan.TicksPerMillisecond;
