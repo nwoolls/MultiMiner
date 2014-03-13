@@ -4138,14 +4138,15 @@ namespace MultiMiner.Win.Forms
 
                 List<PoolInformation> poolInformationList = GetCachedPoolInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
 
-                Xgminer.Api.Data.VersionInformation versionInformation = new Xgminer.Api.ApiContext(networkDevice.Port, networkDevice.IPAddress).GetVersionInformation();
+                Xgminer.Api.Data.VersionInformation versionInformation = GetVersionInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
 
                 foreach (DeviceInformation deviceInformation in deviceInformationList)
                 {
                     MobileMiner.Data.MiningStatistics miningStatistics = new MobileMiner.Data.MiningStatistics()
                     {
                         MachineName = String.Format("{0}:{1}", networkDevice.IPAddress, networkDevice.Port),
-                        MinerName = versionInformation.Name,
+                        // versionInformation may be null if the read timed out
+                        MinerName = versionInformation == null ? String.Empty : versionInformation.Name,
                         CoinName = NetworkDeviceCoinName,
                         CoinSymbol = NetworkDeviceCoinSymbol,
                         Algorithm = "SHA-256"
@@ -4162,6 +4163,36 @@ namespace MultiMiner.Win.Forms
                     statisticsList.Add(miningStatistics);
                 }
             }
+        }
+
+        private VersionInformation GetVersionInfoFromAddress(string ipAddress, int port)
+        {
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            VersionInformation versionInformation = null;
+            try
+            {
+                try
+                {
+                    versionInformation = apiContext.GetVersionInformation();
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    versionInformation = null;
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
+                versionInformation = null;
+            }
+
+            return versionInformation;
         }
 
         private void AddLocalMinerStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
