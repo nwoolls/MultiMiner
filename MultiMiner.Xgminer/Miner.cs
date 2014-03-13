@@ -53,7 +53,7 @@ namespace MultiMiner.Xgminer
         }
 
         //uses -d?, returns driver information
-        public List<Device> ListDevices(bool prettyNames = false)
+        public List<Device> ListDevices(bool prettyNames = false, Version minerVersion = null)
         {
             string arguments = MinerParameter.DeviceList;
             bool redirectOutput = true;
@@ -63,7 +63,8 @@ namespace MultiMiner.Xgminer
             arguments = String.Format("{0} {1}", arguments, serialArg);
 
             //include Scrypt ASICs
-            arguments = String.Format("{0} {1}", arguments, MinerParameter.Scrypt);
+            if ((minerVersion != null) && (minerVersion.Major >= 4))
+                arguments = String.Format("{0} {1}", arguments, MinerParameter.Scrypt);
 
             //include the args specified by the user so we pickup manual devices (e.g. Avalon)
             arguments = String.Format("{0} {1}", arguments, minerConfiguration.ScanArguments);

@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Xgminer.Data;
+using System;
 using System.Collections.Generic;
 
 namespace MultiMiner.Services
@@ -29,7 +30,9 @@ namespace MultiMiner.Services
 
             Xgminer.Miner miner = new Xgminer.Miner(minerConfiguration);
 
-            List<Device> detectedDevices = miner.ListDevices(true);
+            string minerPath = MultiMiner.Engine.MinerPath.GetPathToInstalledMiner();
+            Version minerVersion = new Version(Xgminer.Installer.GetInstalledMinerVersion(minerPath));
+            List<Device> detectedDevices = miner.ListDevices(true, minerVersion);
 
             if (xgminerConfiguration.StratumProxy)
             {
