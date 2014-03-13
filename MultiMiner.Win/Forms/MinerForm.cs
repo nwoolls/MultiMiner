@@ -89,6 +89,7 @@ namespace MultiMiner.Win.Forms
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
         private bool applicationSetup = false;
         private bool editingDeviceListView = false;
+        private Action notificationClickHandler;
 
         //logic
         private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
@@ -2742,6 +2743,11 @@ namespace MultiMiner.Win.Forms
         {
             RestartNetworkDevice();
         }
+
+        private void notifyIcon1_BalloonTipClicked(object sender, EventArgs e)
+        {
+            notificationClickHandler();
+        }
         #endregion
 
         #region Timer setup
@@ -3015,10 +3021,10 @@ namespace MultiMiner.Win.Forms
                 {
                     //code to update UI
                     string message = "MultiMiner Remoting signature verification failed";
-                    notificationsControl.AddNotification(message,
+                    PostNotification(message,
                         message, () =>
                         {
-                        });
+                        }, ToolTipIcon.Error);
                 }));
 
                 return;
@@ -3605,11 +3611,11 @@ namespace MultiMiner.Win.Forms
             {
                 //code to update UI
                 string message = "MultiMiner Remoting communication failed";
-                notificationsControl.AddNotification(message,
+                PostNotification(message,
                     message, () =>
                     {
                         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    });
+                    }, ToolTipIcon.Error);
             }));
         }
 
@@ -3884,12 +3890,12 @@ namespace MultiMiner.Win.Forms
             string apiUrl = apiContext.GetApiUrl();
             string apiName = apiContext.GetApiName();
 
-            notificationsControl.AddNotification(ex.Message,
+            PostNotification(ex.Message,
                 String.Format("Error parsing the {0} JSON API", apiName), () =>
                 {
                     Process.Start(apiUrl);
                 },
-                siteUrl);
+                ToolTipIcon.Error, siteUrl);
         }
 
         private bool ApplyCoinInformationToViewModel(IApiContext apiContext)
@@ -4022,12 +4028,12 @@ namespace MultiMiner.Win.Forms
             string apiUrl = Coinbase.ApiContext.GetApiUrl();
             string apiName = Coinbase.ApiContext.GetApiName();
 
-            notificationsControl.AddNotification(ex.Message,
+            PostNotification(ex.Message,
                 String.Format("Error parsing the {0} JSON API", apiName), () =>
                 {
                     Process.Start(apiUrl);
                 },
-                siteUrl);
+                ToolTipIcon.Error, siteUrl);
         }
         #endregion
 
@@ -4493,12 +4499,12 @@ namespace MultiMiner.Win.Forms
 
         private void ShowMobileMinerApiErrorNotification(WebException ex)
         {
-            notificationsControl.AddNotification(ex.Message,
+            PostNotification(ex.Message,
                 String.Format("Error accessing the MobileMiner API ({0})", (int)((HttpWebResponse)ex.Response).StatusCode), () =>
                 {
                     Process.Start("http://mobileminerapp.com");
                 },
-                "");
+                ToolTipIcon.Error, "");
         }
         #endregion
 
@@ -5233,10 +5239,10 @@ namespace MultiMiner.Win.Forms
                         notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
                     }
 
-                    notificationsControl.AddNotification(notificationReason, notificationReason, () =>
+                    PostNotification(notificationReason, notificationReason, () =>
                     {
                         ConfigureCoinsLocally();
-                    }, "");
+                    }, ToolTipIcon.Error, "");
                 }
                 else
                 {
@@ -5249,10 +5255,10 @@ namespace MultiMiner.Win.Forms
                     {
                         //just notify - relaunching option will take care of the rest
                         string notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
-                        notificationsControl.AddNotification(notificationReason, notificationReason, () =>
+                        PostNotification(notificationReason, notificationReason, () =>
                         {
                             ConfigureCoinsLocally();
-                        }, "");
+                        }, ToolTipIcon.Error, "");
                     }
                 }
             }));
@@ -5263,10 +5269,10 @@ namespace MultiMiner.Win.Forms
             this.BeginInvoke((Action)(() =>
             {
                 //code to update UI
-                notificationsControl.AddNotification(ea.Reason, ea.Reason, () =>
+                PostNotification(ea.Reason, ea.Reason, () =>
                 {
                     ConfigureCoinsLocally();
-                }, "");
+                }, ToolTipIcon.Error, "");
             }));
         }
 
@@ -5421,7 +5427,7 @@ namespace MultiMiner.Win.Forms
             {
                 case 0:
                     tip = "Tip: right-click device names to change coins";
-                    notificationsControl.AddNotification(tip, tip, () =>
+                    PostNotification(tip, tip, () =>
                     {
                         if (deviceListView.Items.Count > 0)
                         {
@@ -5433,30 +5439,30 @@ namespace MultiMiner.Win.Forms
                             popupPosition.Offset(14, 6);
                             coinPopupMenu.Show(deviceListView, popupPosition);
                         }
-                    }, "");
+                    }, ToolTipIcon.Info, "");
                     applicationConfiguration.TipsShown++;
                     break;
                 case 1:
                     tip = "Tip: right-click the main window for common tasks";
-                    notificationsControl.AddNotification(tip, tip, () =>
+                    PostNotification(tip, tip, () =>
                     {
                         deviceListContextMenu.Show(deviceListView, 150, 100);
-                    }, "");
+                    }, ToolTipIcon.Info, "");
                     applicationConfiguration.TipsShown++;
                     break;
                 case 2:
                     tip = "Tip: restart mining after changing any settings";
-                    notificationsControl.AddNotification(tip, tip, () =>
+                    PostNotification(tip, tip, () =>
                     {
-                    }, "");
+                    }, ToolTipIcon.Info, "");
                     applicationConfiguration.TipsShown++;
                     break;
                 case 3:
                     tip = "Tip: enabling perks gives back to the author";
-                    notificationsControl.AddNotification(tip, tip, () =>
+                    PostNotification(tip, tip, () =>
                     {
                         ConfigurePerksLocally();
-                    }, "");
+                    }, ToolTipIcon.Info, "");
                     applicationConfiguration.TipsShown++;
                     break;
             }
@@ -5859,24 +5865,25 @@ namespace MultiMiner.Win.Forms
                 //app is closing
                 return;
 
-            notificationsControl.AddNotification(multiMinerNotificationId.ToString(),
-                                String.Format("MultiMiner version {0} is available ({1} installed)",
-                                    availableMinerVersion, installedMinerVersion), () =>
-                                    {
-                                        bool allRigs = ShouldUpdateAllRigs();
+            PostNotification(multiMinerNotificationId.ToString(),
+                String.Format("MultiMiner version {0} is available ({1} installed)",
+                    availableMinerVersion, installedMinerVersion), 
+                () =>
+                    {
+                        bool allRigs = ShouldUpdateAllRigs();
                                         
-                                        bool wasMining = miningEngine.Mining;
+                        bool wasMining = miningEngine.Mining;
 
-                                        if (wasMining)
-                                            StopMiningLocally();
+                        if (wasMining)
+                            StopMiningLocally();
 
-                                        //remote first as we'll be restarting
-                                        if (allRigs)
-                                            InstallMultiMinerRemotely();
+                        //remote first as we'll be restarting
+                        if (allRigs)
+                            InstallMultiMinerRemotely();
 
-                                        //this will restart the app
-                                        InstallMultiMinerLocally();
-                                    }, "http://releases.multiminerapp.com");
+                        //this will restart the app
+                        InstallMultiMinerLocally();
+                    }, ToolTipIcon.Info, "http://releases.multiminerapp.com");
         }
 
         private bool ShouldUpdateAllRigs()
@@ -5957,9 +5964,10 @@ namespace MultiMiner.Win.Forms
 
             string minerName = MinerPath.GetMinerName();
 
-            notificationsControl.AddNotification(notificationId.ToString(),
+            PostNotification(notificationId.ToString(),
                 String.Format("{0} version {1} is available ({2} installed)",
-                    minerName, availableMinerVersion, installedMinerVersion), () =>
+                    minerName, availableMinerVersion, installedMinerVersion), 
+                () =>
                     {
                         bool allRigs = ShouldUpdateAllRigs();
 
@@ -5976,7 +5984,7 @@ namespace MultiMiner.Win.Forms
                         //only start mining if we stopped mining
                         if (wasMining)
                             StartMiningLocally();
-                    }, informationUrl);
+                    }, ToolTipIcon.Info, informationUrl);
         }
 
         private static string GetAvailableBackendVersion()
@@ -6109,9 +6117,9 @@ namespace MultiMiner.Win.Forms
             catch (ArgumentException ex)
             {
                 string error = String.Format("Error checking for {0} updates", "bfgminer");
-                notificationsControl.AddNotification(error, error, () =>
+                PostNotification(error, error, () =>
                 {
-                }, "");
+                }, ToolTipIcon.Warning, "");
             }
         }
 
@@ -6323,6 +6331,25 @@ namespace MultiMiner.Win.Forms
             }
         }
 
+        public void PostNotification(string id, string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
+        {
+            notificationsControl.AddNotification(id, text, clickHandler, informationUrl);
+
+            if (notifyIcon1.Visible)
+                ShowBalloonNotification(text, clickHandler, icon);
+        }
+
+        private void ShowBalloonNotification(string text, Action clickHandler, ToolTipIcon icon)
+        {
+            notifyIcon1.BalloonTipText = text;
+            notifyIcon1.BalloonTipTitle = "MultiMiner";
+            notifyIcon1.BalloonTipIcon = icon;
+
+            notificationClickHandler = clickHandler;
+
+            notifyIcon1.ShowBalloonTip(1000); // ms
+        }
+
         private void ShowCoinChangeNotification()
         {
             IEnumerable<string> coinList = miningEngine.MinerProcesses.Select(mp => mp.CoinSymbol);
@@ -6333,12 +6360,12 @@ namespace MultiMiner.Win.Forms
                 engineConfiguration.StrategyConfiguration.MiningBasis);
             string url = successfulApiContext.GetInfoUrl();
 
-            notificationsControl.AddNotification(id,
+            PostNotification(id,
                 String.Format(text), () =>
                 {
                     ConfigureStrategies();
                 },
-                url);
+                ToolTipIcon.Info, url);
         }
 
         private void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
@@ -6356,9 +6383,9 @@ namespace MultiMiner.Win.Forms
                 string notificationReason = String.Format("Block(s) found for {0} (block {1})",
                     coinName, minerProcess.FoundBlocks);
 
-                notificationsControl.AddNotification(notificationReason, notificationReason, () =>
+                PostNotification(notificationReason, notificationReason, () =>
                 {
-                }, "");
+                }, ToolTipIcon.Info, "");
             }
         }
 
@@ -6377,9 +6404,9 @@ namespace MultiMiner.Win.Forms
                 string notificationReason = String.Format("Share(s) accepted for {0} (share {1})",
                     coinName, minerProcess.AcceptedShares);
 
-                notificationsControl.AddNotification(notificationReason, notificationReason, () =>
+                PostNotification(notificationReason, notificationReason, () =>
                 {
-                }, "");
+                }, ToolTipIcon.Info, "");
             }
         }
 
@@ -6625,13 +6652,14 @@ namespace MultiMiner.Win.Forms
 
             string infoUrl = apiContext.GetInfoUrl();
 
-            notificationsControl.AddNotification(coin.Symbol,
+            PostNotification(coin.Symbol,
                 String.Format("Consider mining {0} ({1} {2})",
-                    coin.Symbol, value, noun), () =>
+                    coin.Symbol, value, noun), 
+                () =>
                     {
                         Process.Start(String.Format("https://www.google.com/search?q={0}+{1}+mining+pools",
                             coin.Symbol, coin.Name));
-                    }, infoUrl);
+                    }, ToolTipIcon.Info, infoUrl);
         }
 
         private void CancelMiningOnStartup()
