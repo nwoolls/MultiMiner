@@ -6300,13 +6300,14 @@ namespace MultiMiner.Win.Forms
                 //ensure the user isn't editing settings
                 !ShowingModalDialog())
             {
-                miningEngine.ApplyMiningStrategy(coinApiInformation);
+                bool changed = miningEngine.ApplyMiningStrategy(coinApiInformation);
+
                 //save any changes made by the engine
                 engineConfiguration.SaveDeviceConfigurations();
 
                 //create a deep clone of the mining & device configurations
                 //this is so we can accurately display e.g. the currently mining pools
-                //even if the user changes pool info without restartinging mining
+                //even if the user changes pool info without restarting mining
                 this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Coin>, List<Engine.Data.Configuration.Coin>>(engineConfiguration.CoinConfigurations);
                 this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Device>, List<Engine.Data.Configuration.Device>>(engineConfiguration.DeviceConfigurations);
 
@@ -6316,7 +6317,28 @@ namespace MultiMiner.Win.Forms
                 //to get changes from strategy config
                 //to refresh coin stats due to changed coin selections
                 RefreshListViewFromViewModel();
+
+                if (changed)
+                    ShowCoinChangeNotification();
             }
+        }
+
+        private void ShowCoinChangeNotification()
+        {
+            IEnumerable<string> coinList = miningEngine.MinerProcesses.Select(mp => mp.CoinSymbol);
+
+            string id = Guid.NewGuid().ToString();
+            string text = String.Format("Mining switched to {0} based on {1}", 
+                String.Join(", ", coinList.ToArray()), 
+                engineConfiguration.StrategyConfiguration.MiningBasis);
+            string url = successfulApiContext.GetInfoUrl();
+
+            notificationsControl.AddNotification(id,
+                String.Format(text), () =>
+                {
+                    ConfigureStrategies();
+                },
+                url);
         }
 
         private void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
@@ -6532,6 +6554,9 @@ namespace MultiMiner.Win.Forms
             AutoSizeListViewColumns();
 
             UpdateMiningButtons();
+
+            if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+                ShowCoinChangeNotification();
         }
 
         private void ToggleDynamicIntensityLocally(bool enabled)

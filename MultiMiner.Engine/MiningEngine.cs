@@ -218,10 +218,12 @@ namespace MultiMiner.Engine
 
         private List<CoinInformation> coinInformation;
         //update engineConfiguration.DeviceConfiguration based on mining strategy & coin info
-        public void ApplyMiningStrategy(List<CoinInformation> coinInformation)
+        public bool ApplyMiningStrategy(List<CoinInformation> coinInformation)
         {
+            bool changed = false;
+
             if (coinInformation == null) //null if no network connection
-                return;
+                return changed;
             
             //store this off so we can reference prices for logging
             this.coinInformation = coinInformation;
@@ -264,8 +266,12 @@ namespace MultiMiner.Engine
                     //restart mining if stored bool is true
                     if (configDifferent)
                         RestartMining();
+
+                    changed = configDifferent;
                 }
             }
+
+            return changed;
         }
 
         private static List<CoinInformation> CopyCoinInformation(List<CoinInformation> coinInformation)
