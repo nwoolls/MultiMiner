@@ -36,7 +36,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.saveButton = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.licenseTextBox = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -99,18 +99,18 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // textBox1
+            // licenseTextBox
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.licenseTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(14, 102);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(516, 294);
-            this.textBox1.TabIndex = 8;
-            this.textBox1.Text = resources.GetString("textBox1.Text");
+            this.licenseTextBox.Location = new System.Drawing.Point(14, 102);
+            this.licenseTextBox.Multiline = true;
+            this.licenseTextBox.Name = "licenseTextBox";
+            this.licenseTextBox.ReadOnly = true;
+            this.licenseTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.licenseTextBox.Size = new System.Drawing.Size(516, 294);
+            this.licenseTextBox.TabIndex = 8;
+            this.licenseTextBox.Text = resources.GetString("licenseTextBox.Text");
             // 
             // pictureBox1
             // 
@@ -127,7 +127,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(547, 465);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.licenseTextBox);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.multiMinerLink);
             this.Controls.Add(this.bfgminerLabel);
@@ -157,6 +157,6 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox licenseTextBox;
     }
 }
