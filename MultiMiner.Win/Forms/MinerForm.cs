@@ -4127,7 +4127,10 @@ namespace MultiMiner.Win.Forms
                     //ensure poolIndex is valid for poolInformationList
                     //user(s) reported index errors so we can't out on the RPC API here
                     //https://github.com/nwoolls/MultiMiner/issues/64
-                    if ((deviceInformation.PoolIndex >= 0) && (deviceInformation.PoolIndex < poolInformationList.Count))
+                    if ((deviceInformation.PoolIndex >= 0) && 
+                        // poolInformationList may be null if an RPC API call timed out
+                        (poolInformationList != null) &&
+                        (deviceInformation.PoolIndex < poolInformationList.Count))
                         miningStatistics.PoolName = poolInformationList[deviceInformation.PoolIndex].Url.DomainFromHost();
 
                     statisticsList.Add(miningStatistics);
