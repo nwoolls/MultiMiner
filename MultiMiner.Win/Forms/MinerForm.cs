@@ -1832,7 +1832,9 @@ namespace MultiMiner.Win.Forms
         {
             //get the actual device configuration, text in the ListViewItem may be unsaved
             Engine.Data.Configuration.Device deviceConfiguration = null;
-            if (miningEngine.Mining)
+            if (miningEngine.Mining &&
+                // if the timing is right, we may be .Mining but not yet have data in miningDeviceConfigurations
+                (miningDeviceConfigurations != null))
                 deviceConfiguration = miningDeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
             else
                 deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
