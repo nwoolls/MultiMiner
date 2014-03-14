@@ -4109,9 +4109,12 @@ namespace MultiMiner.Win.Forms
                 {
                     MobileMiner.Data.MiningStatistics miningStatistics = new MobileMiner.Data.MiningStatistics()
                     {
-                        MachineName = String.Format("{0}:{1}", networkDevice.IPAddress, networkDevice.Port),
+                        // submit the Friendly device / machine name
+                        MachineName = GetFriendlyDeviceName(String.Format("{0}:{1}", networkDevice.IPAddress, networkDevice.Port)),
+
                         // versionInformation may be null if the read timed out
                         MinerName = versionInformation == null ? String.Empty : versionInformation.Name,
+
                         CoinName = NetworkDeviceCoinName,
                         CoinSymbol = NetworkDeviceCoinSymbol,
                         Algorithm = AlgorithmNames.SHA256
