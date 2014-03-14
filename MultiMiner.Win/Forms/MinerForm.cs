@@ -478,14 +478,16 @@ namespace MultiMiner.Win.Forms
                         else
                             listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
 
+                        // null for a Network Device if this machine never setup BTC
+                        if (deviceViewModel.Coin != null)
+                        {
+                            double difficulty = GetMinerNetworkDifficulty(deviceViewModel.Coin.Symbol);
+                            if (difficulty == 0.0)
+                                difficulty = deviceViewModel.Difficulty;
 
-
-                        double difficulty = GetMinerNetworkDifficulty(deviceViewModel.Coin.Symbol);
-                        if (difficulty == 0.0)
-                            difficulty = deviceViewModel.Difficulty;
-
-                        listViewItem.SubItems["Difficulty"].Tag = difficulty;
-                        listViewItem.SubItems["Difficulty"].Text = difficulty.ToDifficultyString();
+                            listViewItem.SubItems["Difficulty"].Tag = difficulty;
+                            listViewItem.SubItems["Difficulty"].Text = difficulty.ToDifficultyString();
+                        }
 
                         string unit = KnownCoins.BitcoinSymbol;
 
