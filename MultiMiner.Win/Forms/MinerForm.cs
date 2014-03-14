@@ -6788,7 +6788,10 @@ namespace MultiMiner.Win.Forms
             networkDevicePoolMenu.DropDownItems.Clear();
 
             DeviceViewModel viewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
-            List<PoolInformation> poolInformation = networkDevicePools[viewModel.Name];
+
+            // networkDevicePools is keyed by IP:port, use .Path
+            List<PoolInformation> poolInformation = networkDevicePools[viewModel.Path];
+
             for (int i = 0; i < poolInformation.Count; i++)
             {
                 PoolInformation pool = poolInformation[i];
