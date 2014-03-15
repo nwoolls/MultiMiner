@@ -95,7 +95,7 @@ namespace MultiMiner.Xgminer.Api
 
             // set a read timeout, otherwise it is infinite and could lock the app
             // if a miner is locked up
-            tcpStream.ReadTimeout = 750; // ms
+            tcpStream.ReadTimeout = 1000; // ms
 
             Byte[] request = Encoding.ASCII.GetBytes(apiVerb);
 
