@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -43,28 +44,38 @@ namespace MultiMiner.Engine
             if (!Process.HasExited)
             {
                 if (!TerminateProcess)
-                {
-                    try
-                    {
-                        ApiContext.QuitMining();
-
-                        //try to give the miner time to close
-                        //killing it could leave (Win)USB devices tied up
-                        int count = 0;
-                        const int max = 10;
-                        while (!Process.HasExited && (count < max))
-                        {
-                            Thread.Sleep(500);
-                            count++;
-                        }
-                    }
-                    catch (SocketException ex)
-                    {
-                        //won't be able to connect for the first 5s or so
-                    }
-                }
+                    QuitMining();
 
                 KillProcess(Process);
+            }
+        }
+
+        private void QuitMining()
+        {
+            try
+            {
+                try
+                {
+                    ApiContext.QuitMining();
+
+                    //try to give the miner time to close
+                    //killing it could leave (Win)USB devices tied up
+                    int count = 0;
+                    const int max = 10;
+                    while (!Process.HasExited && (count < max))
+                    {
+                        Thread.Sleep(500);
+                        count++;
+                    }
+                }
+                catch (IOException ex)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                }
+            }
+            catch (SocketException ex)
+            {
+                //won't be able to connect for the first 5s or so
             }
         }
 
