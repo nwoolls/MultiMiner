@@ -1847,7 +1847,9 @@ namespace MultiMiner.Win.Forms
             string itemCoinSymbol = deviceConfiguration.CoinSymbol;
 
             List<Engine.Data.Configuration.Coin> configurations;
-            if (miningEngine.Mining)
+            if (miningEngine.Mining &&
+                // if the timing is right, we may be .Mining but not yet have data in miningCoinConfigurations
+                (miningCoinConfigurations != null))
                 configurations = this.miningCoinConfigurations;
             else
                 configurations = engineConfiguration.CoinConfigurations;
