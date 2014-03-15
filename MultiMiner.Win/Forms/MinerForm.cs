@@ -6395,7 +6395,12 @@ namespace MultiMiner.Win.Forms
 
         private void ShowCoinChangeNotification()
         {
-            IEnumerable<string> coinList = miningEngine.MinerProcesses.Select(mp => mp.CoinSymbol);
+            IEnumerable<string> coinList = miningEngine.MinerProcesses
+                .Select(mp => mp.CoinSymbol)
+                // there may be multiple processes for one coin symbol
+                .Distinct()
+                // sort the symbols
+                .OrderBy(cs => cs);
 
             string id = Guid.NewGuid().ToString();
             string text = String.Format("Mining switched to {0} based on {1}", 
