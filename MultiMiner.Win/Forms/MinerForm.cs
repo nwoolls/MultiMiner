@@ -5326,7 +5326,9 @@ namespace MultiMiner.Win.Forms
             logEntry.DateTime = eventArgs.DateTime;
             logEntry.Request = eventArgs.Request;
             logEntry.Response = eventArgs.Response;
-            logEntry.CoinName = GetCoinNameForApiContext((Xgminer.Api.ApiContext)sender);
+            Xgminer.Api.ApiContext apiContext = (Xgminer.Api.ApiContext)sender;
+            logEntry.CoinName = GetCoinNameForApiContext(apiContext);
+            logEntry.Machine = apiContext.IpAddress + ":" + apiContext.Port;
 
             this.BeginInvoke((Action)(() =>
             {

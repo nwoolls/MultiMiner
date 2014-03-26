@@ -8,5 +8,6 @@ namespace MultiMiner.Win.Data
         public string Request { get; set; }
         public string Response { get; set; }
         public string CoinName { get; set; }
+        public string Machine { get; set; }
     }
 }
