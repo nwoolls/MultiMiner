@@ -6210,6 +6210,9 @@ namespace MultiMiner.Win.Forms
             if (briefMode)
                 SetBriefMode(false);
 
+            closeApiButton.Top = 0;
+            closeApiButton.Left = closeApiButton.Parent.Width - closeApiButton.Width - 1;
+
             closeApiButton.Visible = true;
             apiLogGridView.Visible = true;
             advancedAreaContainer.Panel2Collapsed = false;
