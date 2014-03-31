@@ -27,7 +27,7 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //MEC
-            donationConfiguration = CreateCoinConfiguration("MEC", "http://mega.minepool.net", 3441);
+            donationConfiguration = CreateCoinConfiguration("MEC", "stratum+tcp://us3.miningpool.co", 4202);
             configurations.Add(donationConfiguration);
 
             //PPC
@@ -172,6 +172,46 @@ namespace MultiMiner.Engine.Helpers
 
             //BEE
             donationConfiguration = CreateCoinConfiguration("BEE", "stratum+tcp://ca1.miningpool.co", 14804);
+            configurations.Add(donationConfiguration);
+            
+            //AIR
+            donationConfiguration = CreateCoinConfiguration("AIR", "stratum+tcp://us4.miningpool.co", 4252);
+            configurations.Add(donationConfiguration);
+
+            //888
+            donationConfiguration = CreateCoinConfiguration("888", "stratum+tcp://ca1.miningpool.co", 8888);
+            configurations.Add(donationConfiguration);
+
+            //GLD
+            donationConfiguration = CreateCoinConfiguration("GLD", "http://gld.minepool.net", 3333);
+            configurations.Add(donationConfiguration);
+
+            //RDD
+            donationConfiguration = CreateCoinConfiguration("GLD", "stratum+tcp://redd.oakpool.com", 3333);
+            configurations.Add(donationConfiguration);
+
+            //EMC2
+            donationConfiguration = CreateCoinConfiguration("EMC2", "stratum+tcp://emc2.cryptopools.com", 3006);
+            configurations.Add(donationConfiguration);
+
+            //MEOW
+            donationConfiguration = CreateCoinConfiguration("MEOW", "stratum+tcp://stratum-eu.meow.luckyminers.com", 3316);
+            configurations.Add(donationConfiguration);
+
+            //HBN
+            donationConfiguration = CreateCoinConfiguration("HBN", "stratum+tcp://hbn.stratum.smartmining.net", 17373);
+            configurations.Add(donationConfiguration);
+
+            //EZC
+            donationConfiguration = CreateCoinConfiguration("EZC", "stratum+tcp://mp.ultimatecoinpool.com", 6000);
+            configurations.Add(donationConfiguration);
+
+            //ELC
+            donationConfiguration = CreateCoinConfiguration("ELC", "stratum+tcp://elc.blocksolved.com", 3304);
+            configurations.Add(donationConfiguration);
+
+            //EAC
+            donationConfiguration = CreateCoinConfiguration("EAC", "stratum+tcp://eac.poolerino.com", 3334);
             configurations.Add(donationConfiguration);
         }
 
