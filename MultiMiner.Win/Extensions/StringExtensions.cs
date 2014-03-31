@@ -17,26 +17,34 @@ namespace MultiMiner.Win.Extensions
             if (hostDomainNames.ContainsKey(host))
                 return hostDomainNames[host];
 
-            string domainName;
+            string domainName = host.Trim();
 
             if (!host.Contains(":"))
                 host = "http://" + host;
 
-            Uri uri = new Uri(host);
-
-            domainName = uri.Host;
-
-            if (uri.HostNameType == UriHostNameType.Dns)
+            try
             {
-                //remove subdomain if there is one
-                if (domainName.Split('.').Length > 2)
-                {
-                    int index = domainName.IndexOf(".") + 1;
-                    domainName = domainName.Substring(index, domainName.Length - index);
-                }
+                Uri uri = new Uri(host);
 
-                //remove TLD
-                domainName = Path.GetFileNameWithoutExtension(domainName);
+                domainName = uri.Host;
+
+                if (uri.HostNameType == UriHostNameType.Dns)
+                {
+                    // remove subdomain if there is one
+                    if (domainName.Split('.').Length > 2)
+                    {
+                        int index = domainName.IndexOf(".") + 1;
+                        domainName = domainName.Substring(index, domainName.Length - index);
+                    }
+
+                    // remove TLD
+                    domainName = Path.GetFileNameWithoutExtension(domainName);
+                }
+            }
+            catch (UriFormatException ex)
+            {
+                // System.UriFormatException: Invalid URI: The hostname could not be parsed.
+                // don't crash - fall back on domainName = host (initialized above)
             }
 
             hostDomainNames[host] = domainName;
