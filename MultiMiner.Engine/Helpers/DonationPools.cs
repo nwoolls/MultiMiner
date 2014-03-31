@@ -187,7 +187,7 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //RDD
-            donationConfiguration = CreateCoinConfiguration("GLD", "stratum+tcp://redd.oakpool.com", 3333);
+            donationConfiguration = CreateCoinConfiguration("RDD", "stratum+tcp://redd.oakpool.com", 3333);
             configurations.Add(donationConfiguration);
 
             //EMC2
