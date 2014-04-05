@@ -51,11 +51,11 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //DOGE
-            donationConfiguration = CreateCoinConfiguration("DOGE", "stratum+tcp://stratum11.dogehouse.org", 8081);
+            donationConfiguration = CreateCoinConfiguration("DOGE", "stratum+tcp://shibe.dogehouse.org", 3333);
             configurations.Add(donationConfiguration);
 
             //DOG
-            donationConfiguration = CreateCoinConfiguration("DOG", "stratum+tcp://stratum11.dogehouse.org", 8081);
+            donationConfiguration = CreateCoinConfiguration("DOG", "stratum+tcp://shibe.dogehouse.org", 3333);
             configurations.Add(donationConfiguration);
 
             //ASC
