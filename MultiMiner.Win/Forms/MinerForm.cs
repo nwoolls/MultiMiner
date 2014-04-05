@@ -6635,7 +6635,9 @@ namespace MultiMiner.Win.Forms
 
             UpdateMiningButtons();
 
-            if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+            if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
+                // if no Internet / network connection, we did not Auto-Mine
+                (this.coinApiInformation != null))
                 ShowCoinChangeNotification();
         }
 
