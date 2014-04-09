@@ -4050,14 +4050,12 @@ namespace MultiMiner.Win.Forms
             if (!applicationConfiguration.MobileMinerUsesHttps)
                 prefix = "http://";
 
-            //deprecate api.mobileminerapp.com starting 11/28
-            //more expensive for no functional benefit
-            //string result = prefix + "api.mobileminerapp.com";
+            //custom domain makes it easier to migrate hosts if needed
+            string result = prefix + "api.mobileminerapp.com";
 
-            //if (!OSVersionPlatform.IsWindowsVistaOrHigher())
-            //    //SNI SSL not supported on XP
-
-            string result = prefix + "mobileminer.azurewebsites.net/api";
+            if (!OSVersionPlatform.IsWindowsVistaOrHigher())
+                //SNI SSL not supported on XP
+                result = prefix + "mobileminer.azurewebsites.net/api";
 
             return result;
         }
