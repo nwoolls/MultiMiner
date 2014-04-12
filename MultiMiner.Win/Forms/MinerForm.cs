@@ -392,6 +392,14 @@ namespace MultiMiner.Win.Forms
         private const string NetworkDeviceCoinName = KnownCoins.BitcoinName;
         private const string NetworkDeviceCoinSymbol = KnownCoins.BitcoinSymbol;
 
+        private double WorkUtilityToHashrate(double workUtility)
+        {
+            //this will be wrong for Scrypt until 3.10.1
+            double multiplier = 71582788 / 1000;
+            double hashrate = workUtility * multiplier;
+            return hashrate;
+        }
+
         private void RefreshListViewFromViewModel()
         {
             if (editingDeviceListView)
@@ -526,9 +534,7 @@ namespace MultiMiner.Win.Forms
                     listViewItem.SubItems["Average"].Text = deviceViewModel.AverageHashrate == 0 ? String.Empty : deviceViewModel.AverageHashrate.ToHashrateString();
                     listViewItem.SubItems["Current"].Text = deviceViewModel.CurrentHashrate == 0 ? String.Empty : deviceViewModel.CurrentHashrate.ToHashrateString();
 
-                    //this will be wrong for Scrypt until 3.10.1
-                    double shaMultiplier = 71582788 / 1000;
-                    double hashrate = deviceViewModel.WorkUtility * shaMultiplier;
+                    double hashrate = WorkUtilityToHashrate(deviceViewModel.WorkUtility);
                     listViewItem.SubItems["Effective"].Text = hashrate == 0 ? String.Empty : hashrate.ToHashrateString();
 
                     //check for >= 0.05 so we don't show 0% (due to the format string)
@@ -4895,6 +4901,15 @@ namespace MultiMiner.Win.Forms
                         minerProcess.HasPoorPerformingDevice = true;
                 }
             }
+
+            double effectiveHashrate = WorkUtilityToHashrate(deviceInformation.WorkUtility);
+            //avoid div by 0
+            if (deviceInformation.AverageHashrate > 0)
+            {
+                double performanceRatio = effectiveHashrate / deviceInformation.AverageHashrate;
+                if (performanceRatio <= 0.50)
+                    minerProcess.StoppedAcceptingShares = true;
+            }
         }
 
         private static void ClearSuspectProcessFlags(MinerProcess minerProcess)
@@ -4904,6 +4919,7 @@ namespace MultiMiner.Win.Forms
             minerProcess.HasZeroHashrateDevice = false;
             minerProcess.MinerIsFrozen = false;
             minerProcess.HasPoorPerformingDevice = false;
+            minerProcess.StoppedAcceptingShares = false;
         }
 
         private void RefreshPoolInfo()

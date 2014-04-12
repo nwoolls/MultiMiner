@@ -23,6 +23,7 @@ namespace MultiMiner.Engine
         public bool HasZeroHashrateDevice { get; set; }
         public bool MinerIsFrozen { get; set; }
         public bool HasPoorPerformingDevice { get; set; }
+        public bool StoppedAcceptingShares { get; set; }
         public long FoundBlocks { get; set; }
         public long AcceptedShares { get; set; }
         //set TerminateProcess to True to skip using the QUIT RPC API command
