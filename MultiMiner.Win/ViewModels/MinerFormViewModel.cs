@@ -279,10 +279,16 @@ namespace MultiMiner.Win.ViewModels
                 else
                 {
                     deviceViewModel.Enabled = true;
-                    Engine.Data.Configuration.Coin coinConfiguration = coinConfigurations.SingleOrDefault(
+
+                    Engine.Data.Configuration.Coin btcConfiguration = coinConfigurations.SingleOrDefault(
                         cc => cc.CryptoCoin.Symbol.Equals(KnownCoins.BitcoinSymbol, StringComparison.OrdinalIgnoreCase));
-                    if (coinConfiguration != null)
-                        deviceViewModel.Coin = coinConfiguration.CryptoCoin;
+                    Engine.Data.Configuration.Coin ltcConfiguration = coinConfigurations.SingleOrDefault(
+                        cc => cc.CryptoCoin.Symbol.Equals(KnownCoins.LitecoinSymbol, StringComparison.OrdinalIgnoreCase));
+
+                    if (deviceViewModel.SupportsAlgorithm(CoinAlgorithm.Scrypt) && (ltcConfiguration != null))
+                        deviceViewModel.Coin = ltcConfiguration.CryptoCoin;
+                    else if (deviceViewModel.SupportsAlgorithm(CoinAlgorithm.SHA256) && (btcConfiguration != null))
+                        deviceViewModel.Coin = btcConfiguration.CryptoCoin;
                 }
             }
         }

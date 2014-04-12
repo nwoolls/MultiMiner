@@ -1447,6 +1447,9 @@ namespace MultiMiner.Win.Forms
                 engineConfiguration.SaveDeviceConfigurations();
                 applicationConfiguration.SaveApplicationConfiguration();
 
+                //may be able to auto-assign more devices now that coins are setup
+                AddMissingDeviceConfigurations();
+                
                 ApplyModelsToViewModel();
                 RefreshViewForConfigurationChanges();
 
@@ -1783,8 +1786,8 @@ namespace MultiMiner.Win.Forms
         //for instance if the user starts up the app with a new device
         private void AddMissingDeviceConfigurations()
         {
-            const string btcSymbol = KnownCoins.BitcoinSymbol;
-            bool hasBtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.CryptoCoin.Symbol.Equals(btcSymbol, StringComparison.OrdinalIgnoreCase));
+            bool hasBtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.CryptoCoin.Symbol.Equals(KnownCoins.BitcoinSymbol, StringComparison.OrdinalIgnoreCase));
+            bool hasLtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.CryptoCoin.Symbol.Equals(KnownCoins.LitecoinSymbol, StringComparison.OrdinalIgnoreCase));
 
             foreach (Xgminer.Data.Device device in devices)
             {
@@ -1796,9 +1799,10 @@ namespace MultiMiner.Win.Forms
 
                     newConfiguration.Assign(device);
 
-                    //if the user has BTC configured, default to that
-                    if (hasBtcConfigured)
-                        newConfiguration.CoinSymbol = btcSymbol;
+                    if (device.SupportsAlgorithm(CoinAlgorithm.Scrypt) && hasLtcConfigured)
+                        newConfiguration.CoinSymbol = KnownCoins.LitecoinSymbol;
+                    else if (device.SupportsAlgorithm(CoinAlgorithm.SHA256) && hasBtcConfigured)
+                        newConfiguration.CoinSymbol = KnownCoins.BitcoinSymbol;
 
                     newConfiguration.Enabled = true;
                     engineConfiguration.DeviceConfigurations.Add(newConfiguration);
@@ -5412,6 +5416,9 @@ namespace MultiMiner.Win.Forms
             //scan for Network Devices after scanning for local hardware
             //makes more sense visually
             SetupNetworkDeviceDetection();
+            
+            //may need to do this if XML files became corrupt
+            AddMissingDeviceConfigurations();
 
             UpdateMiningButtons();
 
