@@ -95,6 +95,7 @@ namespace MultiMiner.Win.Forms
         private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
         private readonly MiningEngine miningEngine = new MiningEngine();
         private readonly List<int> processedCommandIds = new List<int>();
+        private readonly List<string> queuedNotifications = new List<string>();
 
         //controls
         private NotificationsControl notificationsControl;
@@ -2623,7 +2624,7 @@ namespace MultiMiner.Win.Forms
         private void notificationsControl1_NotificationAdded(string text)
         {
             LogNotificationToFile(text);
-            SubmitMobileMinerNotification(text);
+            QueueMobileMinerNotification(text);
         }
 
         private void closeApiButton_Click(object sender, EventArgs e)
@@ -2806,6 +2807,7 @@ namespace MultiMiner.Win.Forms
             timers.CreateTimer(Timers.OneMinuteInterval, oneMinuteTimer_Tick);
             timers.CreateTimer(Timers.ThirtySecondInterval, thirtySecondTimer_Tick);
             timers.CreateTimer(Timers.FiveSecondInterval, fiveSecondTimer_Tick);
+            timers.CreateTimer(Timers.FiveMinuteInterval, fiveMinuteTimer_Tick);
             timers.CreateTimer(Timers.TenSecondInterval, tenSecondTimer_Tick);
             timers.CreateTimer(Timers.TenMinuteInterval, tenMinuteTimer_Tick);
             timers.CreateTimer(Timers.ThirtyMinuteInterval, thirtyMinuteTimer_Tick);
@@ -2872,6 +2874,12 @@ namespace MultiMiner.Win.Forms
             CheckForUpdates();
 
             ClearPoolsFlaggedDown();
+        }
+
+        private void fiveMinuteTimer_Tick(object sender, EventArgs e)
+        {
+            //submit queued notifications to MobileMiner
+            SubmitMobileMinerNotifications();
         }
 
         private void oneMinuteTimer_Tick(object sender, EventArgs e)
@@ -4313,7 +4321,12 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private void SubmitMobileMinerNotification(string text)
+        private void QueueMobileMinerNotification(string text)
+        {
+            queuedNotifications.Add(text);
+        }
+
+        private void SubmitMobileMinerNotifications()
         {
             //are remote notifications enabled?
             if (!applicationConfiguration.MobileMinerPushNotifications)
@@ -4324,22 +4337,26 @@ namespace MultiMiner.Win.Forms
                 string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
                 return;
 
-            if (submitNotificationDelegate == null)
-                submitNotificationDelegate = SubmitNotification;
+            //do we have notifications to push?
+            if (queuedNotifications.Count == 0)
+                return;
 
-            submitNotificationDelegate.BeginInvoke(text, submitNotificationDelegate.EndInvoke, null);
+            if (submitNotificationsDelegate == null)
+                submitNotificationsDelegate = SubmitNotifications;
+
+            submitNotificationsDelegate.BeginInvoke(submitNotificationsDelegate.EndInvoke, null);
         }
 
-        private Action<string> submitNotificationDelegate;
+        private Action submitNotificationsDelegate;
 
-        private void SubmitNotification(string text)
+        private void SubmitNotifications()
         {
             try
             {
-                string notificationText = String.Format("{0}: {1}", Environment.MachineName, text);
                 MobileMiner.ApiContext.SubmitNotifications(GetMobileMinerUrl(), mobileMinerApiKey,
                         applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                        new List<string> { notificationText });
+                        queuedNotifications);
+                queuedNotifications.Clear();
             }
             catch (Exception ex)
             {
