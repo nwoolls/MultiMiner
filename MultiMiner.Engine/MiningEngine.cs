@@ -136,7 +136,7 @@ namespace MultiMiner.Engine
                     return true;
                 }
 
-                else if (minerProcess.HasZeroHashrateDevice || minerProcess.MinerIsFrozen || minerProcess.HasPoorPerformingDevice || minerProcess.StoppedAcceptingShares)
+                else if (minerProcess.HasZeroHashrateDevice || minerProcess.MinerIsFrozen || minerProcess.HasPoorPerformingDevice)
                 {
                     TimeSpan processAge = DateTime.Now - minerProcess.Process.StartTime;
                     //this needs to give the devices long enough to spin up
@@ -148,6 +148,22 @@ namespace MultiMiner.Engine
                         minerProcess.StopMining();
                         string reason = minerProcess.StoppedAcceptingShares ? "Subpar shares" : minerProcess.HasZeroHashrateDevice ? "Zero hashrate" : minerProcess.HasPoorPerformingDevice ? "Subpar hashrate" : "Frozen miner";
                         minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, reason);
+                        setupProcessStartInfo(minerProcess);
+                        return true;
+                    }
+                }
+
+                else if (minerProcess.StoppedAcceptingShares)
+                {
+                    TimeSpan processAge = DateTime.Now - minerProcess.Process.StartTime;
+                    //this needs to give the devices long enough to spin up
+                    //AND get accepted shares
+                    //AND have luck play out...
+                    if (processAge.TotalSeconds > (30 * 60))
+                    {
+                        logProcessClose(minerProcess);
+                        minerProcess.StopMining();
+                        minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Subpar shares");
                         setupProcessStartInfo(minerProcess);
                         return true;
                     }

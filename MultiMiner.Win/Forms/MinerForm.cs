@@ -4924,7 +4924,7 @@ namespace MultiMiner.Win.Forms
             if (deviceInformation.AverageHashrate > 0)
             {
                 double performanceRatio = effectiveHashrate / deviceInformation.AverageHashrate;
-                if (performanceRatio <= 0.50)
+                if (performanceRatio <= 0.25)
                     minerProcess.StoppedAcceptingShares = true;
             }
         }
