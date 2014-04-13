@@ -55,6 +55,29 @@ namespace MultiMiner.Xgminer
         //uses -d?, returns driver information
         public List<Device> ListDevices(bool prettyNames = false, Version minerVersion = null)
         {
+            //include Scrypt ASICs
+            if ((minerVersion != null) && (((minerVersion.Major == 3) && (minerVersion.Minor >= 99)) || (minerVersion.Major >= 4)))
+            {
+                List<Device> scryptDevices = ListDevices(prettyNames, CoinAlgorithm.Scrypt);
+                List<Device> sha256Devices = ListDevices(prettyNames, CoinAlgorithm.SHA256);
+
+                return MergeDeviceLists(sha256Devices, scryptDevices);
+            }
+            else
+            {
+                return ListDevices(prettyNames, CoinAlgorithm.SHA256);
+            }
+        }
+
+        private static List<Device> MergeDeviceLists(List<Device> list1, List<Device> list2)
+        {
+            List<Device> result = new List<Device>(list1);
+            result.AddRange(list2.Where(d2 => !list1.Any(d1 => d1.Equals(d2))));
+            return result;
+        }        
+
+        private List<Device> ListDevices(bool prettyNames, CoinAlgorithm algorithm)
+        {
             string arguments = MinerParameter.DeviceList;
             bool redirectOutput = true;
 
@@ -63,7 +86,7 @@ namespace MultiMiner.Xgminer
             arguments = String.Format("{0} {1}", arguments, serialArg);
 
             //include Scrypt ASICs
-            if ((minerVersion != null) && (minerVersion.Major >= 4))
+            if (algorithm == CoinAlgorithm.Scrypt)
                 arguments = String.Format("{0} {1}", arguments, MinerParameter.Scrypt);
 
             //include the args specified by the user so we pickup manual devices (e.g. Avalon)
