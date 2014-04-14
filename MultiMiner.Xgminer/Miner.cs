@@ -143,7 +143,7 @@ namespace MultiMiner.Xgminer
                     if (device.Driver.Equals("erupter", StringComparison.OrdinalIgnoreCase))
                         device.Name = "Block Erupter";
                     else if (device.Driver.Equals("antminer", StringComparison.OrdinalIgnoreCase))
-                        device.Name = "AntMiner U1";
+                        device.Name = "AntMiner USB";
                     else
                         device.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(device.Driver);
                 }
