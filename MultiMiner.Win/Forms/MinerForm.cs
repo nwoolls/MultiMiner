@@ -4625,7 +4625,6 @@ namespace MultiMiner.Win.Forms
                 ClearSuspectProcessFlags(minerProcess);
 
                 List<DeviceInformation> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
-
                 if (deviceInformationList == null) //handled failure getting API info
                 {
                     minerProcess.MinerIsFrozen = true;
@@ -4636,6 +4635,11 @@ namespace MultiMiner.Win.Forms
 
                 //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
                 List<DeviceDetails> processDevices = GetProcessDeviceDetails(minerProcess, deviceInformationList);
+                if (processDevices == null) //handled failure getting API info
+                {
+                    minerProcess.MinerIsFrozen = true;
+                    continue;
+                }
 
                 //clear accepted shares as we'll be summing that as well
                 minerProcess.AcceptedShares = 0;
