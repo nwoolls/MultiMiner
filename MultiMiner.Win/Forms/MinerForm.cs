@@ -5996,10 +5996,6 @@ namespace MultiMiner.Win.Forms
 
         private static bool ThisVersionGreater(string thisVersion, string thatVersion)
         {
-#if DEBUG
-            return true;
-#endif
-
             Version thisVersionObj = new Version(thisVersion);
             Version thatVersionObj = new Version(thatVersion);
 

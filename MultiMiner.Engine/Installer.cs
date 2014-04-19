@@ -26,8 +26,15 @@ namespace MultiMiner.Engine
         public static string GetInstalledMinerVersion()
         {
             Version assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            return String.Format("{0}.{1}.{2}", assemblyVersion.Major, assemblyVersion.Minor,
-                assemblyVersion.Build);
+            string version = String.Format("{0}.{1}.{2}", assemblyVersion.Major, assemblyVersion.Minor,
+                            assemblyVersion.Build);
+
+#if DEBUG
+            Version fuzzVersion = new Version(version);
+            version = new Version(fuzzVersion.Major, fuzzVersion.Minor - 1, fuzzVersion.Build).ToString();
+#endif
+
+            return version;
         }
 
         //begin to deprecate the -Debug packages 11/28
