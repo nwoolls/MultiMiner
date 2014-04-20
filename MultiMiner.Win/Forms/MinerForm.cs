@@ -4211,6 +4211,9 @@ namespace MultiMiner.Win.Forms
                 //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
                 List<DeviceDetails> processDevices = GetProcessDeviceDetails(minerProcess, deviceInformationList);
 
+                if (processDevices == null) //handled failure getting API info
+                    continue;
+
                 foreach (DeviceInformation deviceInformation in deviceInformationList)
                 {
                     MobileMiner.Data.MiningStatistics miningStatistics = new MobileMiner.Data.MiningStatistics();
@@ -5062,7 +5065,10 @@ namespace MultiMiner.Win.Forms
             if (processDevices == null)
             {
                 processDevices = GetDeviceDetailsFromProcess(minerProcess);
-                processDeviceDetails[minerProcess] = processDevices;
+
+                //null returned if there is an RCP API error
+                if (processDevices != null)
+                    processDeviceDetails[minerProcess] = processDevices;
             }
             return processDevices;
         }
