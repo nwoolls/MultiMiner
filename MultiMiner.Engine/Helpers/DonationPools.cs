@@ -13,7 +13,6 @@ namespace MultiMiner.Engine.Helpers
             donationConfiguration = CreateCoinConfiguration("BTC", "stratum+tcp://stratum.mining.eligius.st", 3334, "1LKwyLK4KhojsJUEvUx8bEmnmjohNMjRDM");
             configurations.Add(donationConfiguration);
 
-
             //LTC
             donationConfiguration = CreateCoinConfiguration("LTC", "stratum+tcp://usa.wemineltc.com", 3335);
             configurations.Add(donationConfiguration);
@@ -212,6 +211,18 @@ namespace MultiMiner.Engine.Helpers
 
             //EAC
             donationConfiguration = CreateCoinConfiguration("EAC", "stratum+tcp://eac.poolerino.com", 3334);
+            configurations.Add(donationConfiguration);
+
+            //CARB
+            donationConfiguration = CreateCoinConfiguration("CARB", "stratum+tcp://us4.miningpool.co", 15615);
+            configurations.Add(donationConfiguration);
+
+            //MZC
+            donationConfiguration = CreateCoinConfiguration("MZC", "stratum+tcp://de3.miningpool.co", 18383);
+            configurations.Add(donationConfiguration);
+
+            //SPC
+            donationConfiguration = CreateCoinConfiguration("SPC", "stratum+tcp://us4.miningpool.co", 18665);
             configurations.Add(donationConfiguration);
         }
 
