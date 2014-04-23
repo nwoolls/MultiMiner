@@ -9,7 +9,7 @@ namespace MultiMiner.Win.Controls.Notifications
         //events
         //delegate declarations
         public delegate void NotificationsChangedHandler(object sender);
-        public delegate void NotificationAddedHandler(string text);
+        public delegate void NotificationAddedHandler(string text, MobileMiner.Data.NotificationKind kind);
 
         //event declarations        
         public event NotificationsChangedHandler NotificationsChanged;
@@ -36,7 +36,7 @@ namespace MultiMiner.Win.Controls.Notifications
             }
         }
 
-        public void AddNotification(string id, string text, Action clickHandler, string informationUrl = "")
+        public void AddNotification(string id, string text, Action clickHandler, MobileMiner.Data.NotificationKind kind, string informationUrl = "")
         {
             NotificationControl notificationControl;
 
@@ -65,7 +65,7 @@ namespace MultiMiner.Win.Controls.Notifications
             containerPanel.ScrollControlIntoView(notificationControl);
 
             if (NotificationAdded != null)
-                NotificationAdded(text);
+                NotificationAdded(text, kind);
 
             if (NotificationsChanged != null)
                 NotificationsChanged(this);           

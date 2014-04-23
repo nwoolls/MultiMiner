@@ -95,7 +95,7 @@ namespace MultiMiner.Win.Forms
         private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
         private readonly MiningEngine miningEngine = new MiningEngine();
         private readonly List<int> processedCommandIds = new List<int>();
-        private readonly List<string> queuedNotifications = new List<string>();
+        private readonly List<MobileMiner.Data.Notification> queuedNotifications = new List<MobileMiner.Data.Notification>();
 
         //controls
         private NotificationsControl notificationsControl;
@@ -2621,10 +2621,10 @@ namespace MultiMiner.Win.Forms
             RefreshQuickSwitchMenu(quickSwitchItem);
         }
 
-        private void notificationsControl1_NotificationAdded(string text)
+        private void notificationsControl1_NotificationAdded(string text, MobileMiner.Data.NotificationKind kind)
         {
             LogNotificationToFile(text);
-            QueueMobileMinerNotification(text);
+            QueueMobileMinerNotification(text, kind);
         }
 
         private void closeApiButton_Click(object sender, EventArgs e)
@@ -3919,7 +3919,7 @@ namespace MultiMiner.Win.Forms
                 {
                     Process.Start(apiUrl);
                 },
-                ToolTipIcon.Error, siteUrl);
+                ToolTipIcon.Warning, siteUrl);
         }
 
         private bool ApplyCoinInformationToViewModel(IApiContext apiContext)
@@ -4057,7 +4057,7 @@ namespace MultiMiner.Win.Forms
                 {
                     Process.Start(apiUrl);
                 },
-                ToolTipIcon.Error, siteUrl);
+                ToolTipIcon.Warning, siteUrl);
         }
         #endregion
 
@@ -4336,9 +4336,15 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private void QueueMobileMinerNotification(string text)
+        private void QueueMobileMinerNotification(string text, MobileMiner.Data.NotificationKind kind)
         {
-            queuedNotifications.Add(text);
+            MobileMiner.Data.Notification notification = new MobileMiner.Data.Notification() 
+            { 
+                NotificationText = text, 
+                MachineName = Environment.MachineName, 
+                NotificationKind = kind 
+            };
+            queuedNotifications.Add(notification);
         }
 
         private void SubmitMobileMinerNotifications()
@@ -4587,7 +4593,7 @@ namespace MultiMiner.Win.Forms
                 {
                     Process.Start("http://mobileminerapp.com");
                 },
-                ToolTipIcon.Error, "");
+                ToolTipIcon.Warning, "");
         }
         #endregion
 
@@ -6437,7 +6443,24 @@ namespace MultiMiner.Win.Forms
 
         public void PostNotification(string id, string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
         {
-            notificationsControl.AddNotification(id, text, clickHandler, informationUrl);
+            MobileMiner.Data.NotificationKind kind = MobileMiner.Data.NotificationKind.Information;
+            switch (icon)
+            {
+                case ToolTipIcon.None:
+                    kind = MobileMiner.Data.NotificationKind.Default;
+                    break;
+                case ToolTipIcon.Info:
+                    kind = MobileMiner.Data.NotificationKind.Information;
+                    break;
+                case ToolTipIcon.Warning:
+                    kind = MobileMiner.Data.NotificationKind.Warning;
+                    break;
+                case ToolTipIcon.Error:
+                    kind = MobileMiner.Data.NotificationKind.Danger;
+                    break;
+            }
+
+            notificationsControl.AddNotification(id, text, clickHandler, kind, informationUrl);
 
             if (notifyIcon1.Visible)
                 ShowBalloonNotification(text, clickHandler, icon);

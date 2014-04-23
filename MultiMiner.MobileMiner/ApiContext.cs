@@ -73,11 +73,11 @@ namespace MultiMiner.MobileMiner
             return response;
         }
 
-        public static void SubmitNotifications(string url, string apiKey, string emailAddress, string applicationKey, List<string> notifications)
+        public static void SubmitNotifications(string url, string apiKey, string emailAddress, string applicationKey, List<Data.Notification> notifications)
         {
             if (!url.EndsWith("/"))
                 url = url + "/";
-            string fullUrl = String.Format("{0}NotificationsInput?emailAddress={1}&applicationKey={2}&apiKey={3}",
+            string fullUrl = String.Format("{0}NotificationsInput?emailAddress={1}&applicationKey={2}&apiKey={3}&detailed=true",
                 url, emailAddress, applicationKey, apiKey);
             using (WebClient client = new ApiWebClient())
             {

@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiContext.cs" />
+    <Compile Include="Data\Notification.cs" />
+    <Compile Include="Data\NotificationKind.cs" />
     <Compile Include="Helpers\InputValidation.cs" />
     <Compile Include="Data\MiningStatistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
