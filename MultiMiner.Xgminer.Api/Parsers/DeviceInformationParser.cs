@@ -71,9 +71,15 @@ namespace MultiMiner.Xgminer.Api.Parsers
 
                     //seen both MHS 5s and MHS 1s
                     //the key here is based on the value passed for --log to bfgminer
-                    string currentRateKey = String.Format("MHS {0}s", logInterval);
-                    if (keyValuePairs.ContainsKey(currentRateKey))
-                        newDevice.CurrentHashrate = TryToParseDouble(keyValuePairs, currentRateKey, 0.00) * 1000;
+                    newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, logInterval);
+
+                    if (newDevice.CurrentHashrate == 0.0)
+                        //check for 20s
+                        newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, 20);
+
+                    if (newDevice.CurrentHashrate == 0.0)
+                        //check for 5s
+                        newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, 5);
                     
                     newDevice.AcceptedShares = TryToParseInt(keyValuePairs, "Accepted", 0);                    
                     newDevice.RejectedShares = TryToParseInt(keyValuePairs, "Rejected", 0);                    
@@ -87,6 +93,14 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     deviceInformation.Add(newDevice);
                 }
             }
+        }
+
+        private static double GetCurrentHashrate(Dictionary<string, string> keyValuePairs, int logInterval)
+        {
+            string currentRateKey = String.Format("MHS {0}s", logInterval);
+            if (keyValuePairs.ContainsKey(currentRateKey))
+                return TryToParseDouble(keyValuePairs, currentRateKey, 0.00) * 1000;
+            return 0.0;
         }
     }
 }
