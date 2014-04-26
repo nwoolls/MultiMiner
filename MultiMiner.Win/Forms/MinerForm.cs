@@ -6512,7 +6512,7 @@ namespace MultiMiner.Win.Forms
             if (configuration == null)
                 return;
 
-            if (configuration.NotifyOnBlockFound && (foundBlocks > minerProcess.FoundBlocks))
+            if (configuration.NotifyOnBlockFound2 && (foundBlocks > minerProcess.FoundBlocks))
             {
                 minerProcess.FoundBlocks = foundBlocks;
 
@@ -6533,7 +6533,7 @@ namespace MultiMiner.Win.Forms
             if (configuration == null)
                 return;
 
-            if (configuration.NotifyOnShareAccepted && (acceptedShares > minerProcess.AcceptedShares))
+            if (configuration.NotifyOnShareAccepted2 && (acceptedShares > minerProcess.AcceptedShares))
             {
                 minerProcess.AcceptedShares = acceptedShares;
 

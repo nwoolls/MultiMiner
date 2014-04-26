@@ -31,8 +31,9 @@ namespace MultiMiner.Engine.Data.Configuration
         public AdjustmentType ProfitabilityAdjustmentType { get; set; }
         public bool Enabled { get; set; }
         public bool PoolsDown { get; set; }
-
-        public bool NotifyOnBlockFound { get; set; }
-        public bool NotifyOnShareAccepted { get; set; }
+        
+        //rolled over so we can do a 1-time disable of these
+        public bool NotifyOnBlockFound2 { get; set; }
+        public bool NotifyOnShareAccepted2 { get; set; }
     }
 }
