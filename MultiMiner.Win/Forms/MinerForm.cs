@@ -2900,6 +2900,10 @@ namespace MultiMiner.Win.Forms
             RefreshStrategiesCountdown();
 
             PopulateSummaryInfoFromProcesses();
+
+#if DEBUG
+            SubmitMobileMinerNotifications();
+#endif
         }
 
         private void thirtySecondTimer_Tick(object sender, EventArgs e)
