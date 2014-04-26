@@ -61,6 +61,14 @@ namespace MultiMiner.Win.ViewModels
                 }
             }
 
+            //apply metadata ASAP for MobileMiner
+            foreach (Metadata.DeviceMetadata metadata in deviceMetadata)
+            {
+                DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Equals(metadata));
+                if (deviceViewModel != null)
+                    ObjectCopier.CopyObject(metadata, deviceViewModel);
+            }
+
             //remove entries from Devices not found in deviceModels or  networkDeviceModels
             foreach (DeviceViewModel deviceViewModel in Devices.ToList())
             {
@@ -73,14 +81,6 @@ namespace MultiMiner.Win.ViewModels
 
                 if (!found)
                     Devices.Remove(deviceViewModel);
-            }
-
-            //apply metadata
-            foreach (Metadata.DeviceMetadata metadata in deviceMetadata)
-            {
-                DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Equals(metadata));
-                if (deviceViewModel != null)
-                    ObjectCopier.CopyObject(metadata, deviceViewModel);
             }
         }
 
