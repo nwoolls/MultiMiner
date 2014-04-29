@@ -25,6 +25,7 @@ namespace MultiMiner.Win.Extensions
             miningStatistics.RejectedShares = deviceInformation.RejectedShares;
             miningStatistics.Status = deviceInformation.Status;
             miningStatistics.Temperature = deviceInformation.Temperature;
+            miningStatistics.Utility = deviceInformation.Utility;
             //new properties from bfgminer
             miningStatistics.Name = deviceInformation.Name;
             miningStatistics.DeviceID = deviceInformation.ID;
