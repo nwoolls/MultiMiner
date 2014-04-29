@@ -4101,17 +4101,33 @@ namespace MultiMiner.Win.Forms
                 return;
 
             List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList = new List<MobileMiner.Data.MiningStatistics>();
+            
+            Action<List<MultiMiner.MobileMiner.Data.MiningStatistics>> asyncAction = AddAllMinerStatistics;
+            asyncAction.BeginInvoke(statisticsList,
+                ar =>
+                {
+                    asyncAction.EndInvoke(ar);
+                    BeginInvoke((Action)(() =>
+                    {
+                        //code to update UI
 
+                        if (statisticsList.Count > 0)
+                        {
+                            if (submitMiningStatisticsDelegate == null)
+                                submitMiningStatisticsDelegate = SubmitMiningStatistics;
+
+                            submitMiningStatisticsDelegate.BeginInvoke(statisticsList, submitMiningStatisticsDelegate.EndInvoke, null);
+                        }
+
+                    }));
+
+                }, null);
+        }
+
+        private void AddAllMinerStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
+        {
             AddLocalMinerStatistics(statisticsList);
             AddNetworkMinerStatistics(statisticsList);
-
-            if (statisticsList.Count > 0)
-            {
-                if (submitMiningStatisticsDelegate == null)
-                    submitMiningStatisticsDelegate = SubmitMiningStatistics;
-
-                submitMiningStatisticsDelegate.BeginInvoke(statisticsList, submitMiningStatisticsDelegate.EndInvoke, null);
-            }
         }
 
         private void AddNetworkMinerStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
