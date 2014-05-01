@@ -4150,6 +4150,12 @@ namespace MultiMiner.Win.Forms
                 foreach (DeviceInformation deviceInformation in deviceInformationList)
                 {
                     string devicePath = String.Format("{0}:{1}", networkDevice.IPAddress, networkDevice.Port);
+
+                    //don't submit stats until we have a valid ViewModel for the Network Device
+                    DeviceViewModel deviceViewModel = localViewModel.Devices.SingleOrDefault(d => d.Path.Equals(devicePath));
+                    if (deviceViewModel == null)
+                        continue;
+
                     MobileMiner.Data.MiningStatistics miningStatistics = new MobileMiner.Data.MiningStatistics()
                     {
                         // submit the Friendly device / machine name
