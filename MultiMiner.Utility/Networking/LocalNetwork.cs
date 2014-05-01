@@ -36,7 +36,7 @@ namespace MultiMiner.Utility.Networking
                 return String.Empty;
             
             string[] portions = localIpAddress.Split('.');
-            portions[portions.Length - 1] = "0/24";
+            portions[portions.Length - 1] = "1-255";
 
             return String.Join(".", portions);
         }
