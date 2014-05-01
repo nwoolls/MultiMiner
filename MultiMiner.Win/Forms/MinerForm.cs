@@ -4732,6 +4732,8 @@ namespace MultiMiner.Win.Forms
                     }
                 }
 
+                FlagSuspiciousProxy(minerProcess, deviceInformationList);
+
                 if (!String.IsNullOrEmpty(coinSymbol))
                     CheckAndSetNetworkDifficulty(minerProcess.ApiContext.IpAddress, minerProcess.ApiContext.Port, coinSymbol);
 
@@ -4977,6 +4979,23 @@ namespace MultiMiner.Win.Forms
                 double performanceRatio = effectiveHashrate / deviceInformation.AverageHashrate;
                 if (performanceRatio <= 0.25)
                     minerProcess.StoppedAcceptingShares = true;
+            }
+        }
+
+        private static void FlagSuspiciousProxy(MinerProcess minerProcess, List<DeviceInformation> deviceInformationList)
+        {
+            double currentProxyHashrate = deviceInformationList
+                                .Where(device => device.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
+                                .Sum(device => device.CurrentHashrate);
+
+            double averageProxyHashrate = deviceInformationList
+                .Where(device => device.Name.Equals("PXY", StringComparison.OrdinalIgnoreCase))
+                .Sum(device => device.AverageHashrate);
+
+            //proxy is 0 hashrate and used to have a positive hashrate
+            if ((averageProxyHashrate > 0) && (currentProxyHashrate == 0))
+            {
+                minerProcess.HasZeroHashrateDevice = true;
             }
         }
 
