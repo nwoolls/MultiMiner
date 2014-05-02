@@ -1,6 +1,7 @@
 ﻿using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Xgminer.Data;
+using MultiMiner.Win.Extensions;
 using System;
 
 namespace MultiMiner.Win.Forms
@@ -16,7 +17,15 @@ namespace MultiMiner.Win.Forms
 
         private void CoinEditForm_Load(object sender, EventArgs e)
         {
+            PopulateAlgorithmCombo();
             LoadSettings();
+        }
+
+        private void PopulateAlgorithmCombo()
+        {
+            algorithmCombo.Items.Clear();
+            foreach (CoinAlgorithm algorithm in (CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm)))
+                algorithmCombo.Items.Add(algorithm.ToString().ToSpaceDelimitedWords());
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -41,15 +50,15 @@ namespace MultiMiner.Win.Forms
 
         private void LoadSettings()
         {
-            sha256RadioButton.Checked = cryptoCoin.Algorithm == CoinAlgorithm.SHA256;
-            scryptRadioButton.Checked = cryptoCoin.Algorithm == CoinAlgorithm.Scrypt;
+            algorithmCombo.SelectedIndex = (int)cryptoCoin.Algorithm;
+
             cryptoCoinBindingSource.DataSource = cryptoCoin;
 
         }
 
         private void SaveSettings()
         {
-            cryptoCoin.Algorithm = sha256RadioButton.Checked ? CoinAlgorithm.SHA256 : CoinAlgorithm.Scrypt;
+            cryptoCoin.Algorithm = (CoinAlgorithm)algorithmCombo.SelectedIndex;
         }
     }
 }

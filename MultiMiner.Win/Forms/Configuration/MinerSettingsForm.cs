@@ -33,7 +33,15 @@ namespace MultiMiner.Win.Forms.Configuration
             applicationConfigurationBindingSource.DataSource = workingApplicationConfiguration;
             autoDesktopCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
             PopulateIntervalCombo();
+            PopulateAlgorithmCombo();
             LoadSettings();
+        }
+
+        private void PopulateAlgorithmCombo()
+        {
+            algoArgCombo.Items.Clear();
+            foreach (CoinAlgorithm algorithm in (CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm)))
+                algoArgCombo.Items.Add(algorithm.ToString().ToSpaceDelimitedWords());
         }
 
         private void PopulateIntervalCombo()
@@ -55,11 +63,8 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             intervalCombo.SelectedIndex = (int)workingApplicationConfiguration.ScheduledRestartMiningInterval;
 
-            if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.SHA256))
-                sha256ParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256];
-            if (minerConfiguration.AlgorithmFlags.ContainsKey(CoinAlgorithm.Scrypt))
-                scryptParamsEdit.Text = minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt];
-
+            algoArgCombo.SelectedIndex = 0;
+            
             autoDesktopCheckBox.Enabled = !disableGpuCheckbox.Checked;
         }
 
@@ -71,9 +76,6 @@ namespace MultiMiner.Win.Forms.Configuration
                 workingMinerConfiguration.DesktopMode = false;
 
             workingApplicationConfiguration.ScheduledRestartMiningInterval = (Application.TimerInterval)intervalCombo.SelectedIndex;
-
-            minerConfiguration.AlgorithmFlags[CoinAlgorithm.SHA256] = sha256ParamsEdit.Text;
-            minerConfiguration.AlgorithmFlags[CoinAlgorithm.Scrypt] = scryptParamsEdit.Text;
         }
 
         private void disableGpuCheckbox_CheckedChanged(object sender, EventArgs e)
@@ -84,6 +86,21 @@ namespace MultiMiner.Win.Forms.Configuration
         private void scryptConfigLink_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://litecoin.info/Mining_hardware_comparison#GPU");
+        }
+
+        private void argAlgoCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CoinAlgorithm algorithm = (CoinAlgorithm)algoArgCombo.SelectedIndex;
+            if (workingMinerConfiguration.AlgorithmFlags.ContainsKey(algorithm))
+                algoArgEdit.Text = workingMinerConfiguration.AlgorithmFlags[algorithm];
+            else
+                algoArgEdit.Text = String.Empty;
+        }
+
+        private void algoArgEdit_Validated(object sender, EventArgs e)
+        {
+            CoinAlgorithm algorithm = (CoinAlgorithm)algoArgCombo.SelectedIndex;
+            workingMinerConfiguration.AlgorithmFlags[algorithm] = algoArgEdit.Text;
         }
     }
 }

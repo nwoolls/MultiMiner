@@ -54,7 +54,7 @@ namespace MultiMiner.Win.Extensions
 
         public static string ToSpaceDelimitedWords(this string text)
         {
-            return Regex.Replace(text, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
+            return Regex.Replace(Regex.Replace(text, @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"), @"(\p{Ll})(\P{Ll})", "$1 $2");
         }
     }
 }
