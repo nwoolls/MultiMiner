@@ -3344,7 +3344,7 @@ namespace MultiMiner.Win.Forms
                 if (wasMining)
                     StopMiningLocally();
 
-                InstallBackendMinerLocally();
+                InstallBackendMinerLocally(MinerFactory.Instance.GetDefaultMiner());
 
                 //only start mining if we stopped mining
                 if (wasMining)
@@ -5548,7 +5548,7 @@ namespace MultiMiner.Win.Forms
 
             //do this after all other data has loaded to prevent errors when the delay is set very low (1s)
             SetupMiningOnStartup();
-            if (!MinerIsInstalled())
+            if (!MinerIsInstalled(MinerFactory.Instance.GetDefaultMiner()))
                 CancelMiningOnStartup();
             if (!MiningConfigurationValid())
                 CancelMiningOnStartup();
@@ -5733,13 +5733,13 @@ namespace MultiMiner.Win.Forms
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
                 return; //can't auto download binaries on Linux
 
-            if (!MinerIsInstalled())
-                InstallBackendMinerLocally();
+            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
+            if (!MinerIsInstalled(miner))
+                InstallBackendMinerLocally(miner);
         }
 
-        private void InstallBackendMinerLocally()
+        private void InstallBackendMinerLocally(MinerDescriptor miner)
         {
-            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
             string minerName = miner.Name;
             IMinerInstaller installer = miner.Installer;
 
@@ -5765,9 +5765,9 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private static bool MinerIsInstalled()
+        private static bool MinerIsInstalled(MinerDescriptor miner)
         {
-            string path = MinerPath.GetPathToInstalledMiner(MinerFactory.Instance.GetDefaultMiner());
+            string path = MinerPath.GetPathToInstalledMiner(miner);
             return File.Exists(path);
         }
 
@@ -5803,7 +5803,8 @@ namespace MultiMiner.Win.Forms
 
             if (OSVersionPlatform.GetConcretePlatform() != PlatformID.Unix)
             {
-                string minerName = MinerFactory.Instance.GetDefaultMiner().Name;
+                MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
+                string minerName = miner.Name;
 
                 DialogResult dialogResult = MessageBox.Show(String.Format(
                     "No copy of {0} was detected. " +
@@ -5813,7 +5814,7 @@ namespace MultiMiner.Win.Forms
 
                 if (dialogResult == System.Windows.Forms.DialogResult.Yes)
                 {
-                    InstallBackendMinerLocally();
+                    InstallBackendMinerLocally(miner);
                     ScanHardwareLocally();
                     showWarning = false;
                 }
@@ -6092,7 +6093,9 @@ namespace MultiMiner.Win.Forms
             availableVersion = String.Empty;
             installedVersion = String.Empty;
 
-            if (!MinerIsInstalled())
+            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
+
+            if (!MinerIsInstalled(miner))
                 return false;
 
             availableVersion = GetAvailableBackendVersion();
@@ -6100,7 +6103,6 @@ namespace MultiMiner.Win.Forms
             if (String.IsNullOrEmpty(availableVersion))
                 return false;
 
-            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
             installedVersion = miner.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(miner));
 
             if (ThisVersionGreater(availableVersion, installedVersion))
@@ -6119,29 +6121,30 @@ namespace MultiMiner.Win.Forms
 
             string informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
 
-            string minerName = MinerFactory.Instance.GetDefaultMiner().Name;
+            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
+            string minerName = miner.Name;
 
             PostNotification(notificationId.ToString(),
                 String.Format("{0} version {1} is available ({2} installed)",
-                    minerName, availableMinerVersion, installedMinerVersion), 
+                    minerName, availableMinerVersion, installedMinerVersion),
                 () =>
-                    {
-                        bool allRigs = ShouldUpdateAllRigs();
+                {
+                    bool allRigs = ShouldUpdateAllRigs();
 
-                        bool wasMining = miningEngine.Mining;
+                    bool wasMining = miningEngine.Mining;
 
-                        if (wasMining)
-                            StopMiningLocally();
+                    if (wasMining)
+                        StopMiningLocally();
 
-                        if (allRigs)
-                            InstallBackendMinerRemotely();
+                    if (allRigs)
+                        InstallBackendMinerRemotely();
 
-                        InstallBackendMinerLocally();
+                    InstallBackendMinerLocally(miner);
 
-                        //only start mining if we stopped mining
-                        if (wasMining)
-                            StartMiningLocally();
-                    }, ToolTipIcon.Info, informationUrl);
+                    //only start mining if we stopped mining
+                    if (wasMining)
+                        StartMiningLocally();
+                }, ToolTipIcon.Info, informationUrl);
         }
 
         private static string GetAvailableBackendVersion()
@@ -6794,14 +6797,11 @@ namespace MultiMiner.Win.Forms
                 CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(algorithm));
         }
 
-        private static void CheckAndDownloadMiner(MinerDescriptor miner)
+        private void CheckAndDownloadMiner(MinerDescriptor miner)
         {
             string installedFilePath = MinerPath.GetPathToInstalledMiner(miner);
             if (!File.Exists(installedFilePath))
-            {
-                string destinationFolder = Path.GetDirectoryName(installedFilePath);
-                miner.Installer.InstallMiner(destinationFolder);
-            }
+                InstallBackendMinerLocally(miner);
         }
 
         private void ToggleDynamicIntensityLocally(bool enabled)
