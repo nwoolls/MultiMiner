@@ -6782,40 +6782,25 @@ namespace MultiMiner.Win.Forms
                 .Distinct();
 
             CoinAlgorithm algorithm = CoinAlgorithm.ScryptJane;
-
             if (configuredAlgorithms.Contains(algorithm))
-            {
-                MinerDescriptor miner = MinerFactory.Instance.GetMiner(algorithm);
-                string installedFilePath = MinerPath.GetPathToInstalledMiner(miner);
-                if (!File.Exists(installedFilePath))
-                {
-                    string destinationFolder = Path.GetDirectoryName(installedFilePath);
-                    miner.Installer.InstallMiner(destinationFolder);
-                }
-            }
+                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(algorithm));
 
             algorithm = CoinAlgorithm.ScryptN;
             if (configuredAlgorithms.Contains(algorithm))
-            {
-                MinerDescriptor miner = MinerFactory.Instance.GetMiner(algorithm);
-                string installedFilePath = MinerPath.GetPathToInstalledMiner(miner);
-                if (!File.Exists(installedFilePath))
-                {
-                    string destinationFolder = Path.GetDirectoryName(installedFilePath);
-                    miner.Installer.InstallMiner(destinationFolder);
-                }
-            }
+                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(algorithm));
 
             algorithm = CoinAlgorithm.X11;
             if (configuredAlgorithms.Contains(algorithm))
+                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(algorithm));
+        }
+
+        private static void CheckAndDownloadMiner(MinerDescriptor miner)
+        {
+            string installedFilePath = MinerPath.GetPathToInstalledMiner(miner);
+            if (!File.Exists(installedFilePath))
             {
-                MinerDescriptor miner = MinerFactory.Instance.GetMiner(algorithm);
-                string installedFilePath = MinerPath.GetPathToInstalledMiner(miner);
-                if (!File.Exists(installedFilePath))
-                {
-                    string destinationFolder = Path.GetDirectoryName(installedFilePath);
-                    miner.Installer.InstallMiner(destinationFolder);
-                }
+                string destinationFolder = Path.GetDirectoryName(installedFilePath);
+                miner.Installer.InstallMiner(destinationFolder);
             }
         }
 
