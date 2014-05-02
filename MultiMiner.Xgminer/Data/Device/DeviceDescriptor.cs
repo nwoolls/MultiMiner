@@ -37,9 +37,13 @@ namespace MultiMiner.Xgminer.Data
             {
                 result = (Kind == DeviceKind.GPU) || (Kind == DeviceKind.CPU) || IsScryptAsic();
             }
-            else
+            else if (algorithm == CoinAlgorithm.SHA256)
             {
                 result = !IsScryptAsic();
+            }
+            else
+            {
+                result = (Kind == DeviceKind.GPU);
             }
 
             return result;
