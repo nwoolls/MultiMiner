@@ -172,11 +172,11 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
             string minerPath = Path.Combine("Miners", minerName);
             string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
 
-            downloadingMinerLabel.Text = String.Format("Please wait while {0} is downloaded from {2} and installed into the folder {1}", minerName, destinationFolder, Xgminer.Installer.GetMinerDownloadRoot());
+            downloadingMinerLabel.Text = String.Format("Please wait while {0} is downloaded from {2} and installed into the folder {1}", minerName, destinationFolder, Xgminer.Installer.BFGMinerInstaller.GetMinerDownloadRoot());
             System.Windows.Forms.Application.DoEvents();
 
             Cursor = Cursors.WaitCursor;
-            Xgminer.Installer.InstallMiner(destinationFolder);
+            new Xgminer.Installer.BFGMinerInstaller().InstallMiner(destinationFolder);
             Cursor = Cursors.Default;
 
             wizardTabControl.SelectedTab = chooseCoinPage;

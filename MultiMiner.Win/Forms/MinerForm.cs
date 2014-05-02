@@ -5742,7 +5742,7 @@ namespace MultiMiner.Win.Forms
         {
             string minerName = MinerPath.GetMinerName();
 
-            ProgressForm progressForm = new ProgressForm(String.Format("Downloading and installing {0} from {1}", minerName, Xgminer.Installer.GetMinerDownloadRoot()));
+            ProgressForm progressForm = new ProgressForm(String.Format("Downloading and installing {0} from {1}", minerName, Xgminer.Installer.BFGMinerInstaller.GetMinerDownloadRoot()));
             progressForm.Show();
 
             //for Mono - show the UI
@@ -5753,7 +5753,7 @@ namespace MultiMiner.Win.Forms
             {
                 string minerPath = Path.Combine("Miners", minerName);
                 string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
-                Xgminer.Installer.InstallMiner(destinationFolder);
+                new Xgminer.Installer.BFGMinerInstaller().InstallMiner(destinationFolder);
                 //may have been installed via Remoting - dismiss notification
                 notificationsControl.RemoveNotification(bfgminerNotificationId.ToString());
             }
@@ -6096,7 +6096,7 @@ namespace MultiMiner.Win.Forms
             if (String.IsNullOrEmpty(availableVersion))
                 return false;
 
-            installedVersion = Xgminer.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner());
+            installedVersion = new Xgminer.Installer.BFGMinerInstaller().GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner());
 
             if (ThisVersionGreater(availableVersion, installedVersion))
                 return true;
@@ -6144,7 +6144,7 @@ namespace MultiMiner.Win.Forms
             string result = String.Empty;
             try
             {
-                result = Xgminer.Installer.GetAvailableMinerVersion();
+                result = new Xgminer.Installer.BFGMinerInstaller().GetAvailableMinerVersion();
             }
             catch (WebException ex)
             {

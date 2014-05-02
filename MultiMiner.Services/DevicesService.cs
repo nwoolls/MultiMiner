@@ -30,7 +30,7 @@ namespace MultiMiner.Services
 
             Xgminer.Miner miner = new Xgminer.Miner(minerConfiguration);
 
-            Version minerVersion = new Version(Xgminer.Installer.GetInstalledMinerVersion(executablePath));
+            Version minerVersion = new Version(new Xgminer.Installer.BFGMinerInstaller().GetInstalledMinerVersion(executablePath));
             List<Device> detectedDevices = miner.ListDevices(true, minerVersion);
 
             if (xgminerConfiguration.StratumProxy)

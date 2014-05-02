@@ -64,7 +64,7 @@ namespace MultiMiner.Engine
             {
                 this.engineConfiguration = engineConfiguration;
                 this.devices = devices;
-                this.backendVersion = new Version(Xgminer.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner()));
+                this.backendVersion = new Version(new Xgminer.Installer.BFGMinerInstaller().GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner()));
                 this.donationPercent = donationPercent;
 
                 if (coinInformation != null) //null if no network connection

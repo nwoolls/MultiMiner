@@ -48,7 +48,9 @@
     <Compile Include="Data\Device\DeviceDescriptor.cs" />
     <Compile Include="Data\Device\DeviceKind.cs" />
     <Compile Include="Data\Device\DevicePlatform.cs" />
-    <Compile Include="Installer.cs" />
+    <Compile Include="Installer\BaseInstaller.cs" />
+    <Compile Include="Installer\BFGMinerInstaller.cs" />
+    <Compile Include="Installer\IMinerInstaller.cs" />
     <Compile Include="LaunchFailedArgs.cs" />
     <Compile Include="LogLaunchArgs.cs" />
     <Compile Include="MinerLaunchException.cs" />
