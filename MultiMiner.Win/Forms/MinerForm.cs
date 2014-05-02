@@ -2286,6 +2286,21 @@ namespace MultiMiner.Win.Forms
                     e.FormattingApplied = true;
                 }
             }
+            else if (e.ColumnIndex == 2)
+            {
+                if (e.Value != null)
+                {
+                    e.Value = MakeRelative((String)e.Value, AppDomain.CurrentDomain.BaseDirectory);
+                    e.FormattingApplied = true;
+                }
+            }
+        }
+
+        private static string MakeRelative(string absolutePath, string referencePath)
+        {
+            var fileUri = new Uri(absolutePath);
+            var referenceUri = new Uri(referencePath);
+            return referenceUri.MakeRelativeUri(fileUri).ToString().Replace('/', Path.DirectorySeparatorChar);
         }
 
         private void apiLogGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
