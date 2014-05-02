@@ -2175,7 +2175,9 @@ namespace MultiMiner.Win.Forms
             string arguments = args.Arguments;
             arguments = arguments.Replace("-T -q", String.Empty).Trim();
 
-            Process.Start(args.ExecutablePath, arguments);
+            ProcessStartInfo startInfo = new ProcessStartInfo(args.ExecutablePath, arguments);
+            startInfo.WorkingDirectory = Path.GetDirectoryName(args.ExecutablePath);
+            Process.Start(startInfo);
         }
 
         private void processLogGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)

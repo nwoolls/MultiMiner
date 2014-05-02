@@ -323,6 +323,7 @@ namespace MultiMiner.Xgminer
             ProcessStartInfo startInfo = new ProcessStartInfo();
             
             startInfo.FileName = minerConfiguration.ExecutablePath;
+            startInfo.WorkingDirectory = Path.GetDirectoryName(startInfo.FileName); //so miners can find kernels
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
 
