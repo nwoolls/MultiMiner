@@ -41,7 +41,7 @@ namespace MultiMiner.Xgminer.Installer
             return GetDownloadUrl(downloadRoot, downloadPath, filePattern);
         }
 
-        public static string GetMinerDownloadRoot()
+        public string GetMinerDownloadRoot()
         {
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
                 //use https - we'll just get redirected

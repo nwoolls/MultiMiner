@@ -15,7 +15,12 @@
 
         private string GetMinerDownloadUrl()
         {
-            return "http://www.darkcoin.io/downloads/darkcoin-sgminer-windows.zip";
+            return GetMinerDownloadRoot() + "/downloads/darkcoin-sgminer-windows.zip";
+        }
+
+        public string GetMinerDownloadRoot()
+        {
+            return "http://www.darkcoin.io";
         }
     }
 }

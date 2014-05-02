@@ -5,5 +5,6 @@ namespace MultiMiner.Xgminer.Installer
         void InstallMiner(string destinationFolder);
         string GetAvailableMinerVersion();
         string GetInstalledMinerVersion(string executablePath);
+        string GetMinerDownloadRoot();
     }
 }

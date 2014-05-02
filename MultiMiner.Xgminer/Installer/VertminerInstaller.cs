@@ -14,12 +14,17 @@
 
         private string GetMinerDownloadUrl()
         {
-            const string htmlRoot = "http://vertcoin.org";
+            string htmlRoot = GetMinerDownloadRoot();
             const string htmlPath = "/";
             const string filePattern = @".*<a href=""/downloads/(vertminer-.+?.zip)"">Windows</a>";
             const string downloadPath = "downloads/";
 
             return GetDownloadUrl(htmlRoot, htmlPath, filePattern, downloadPath);
+        }
+
+        public string GetMinerDownloadRoot()
+        {
+            return "http://vertcoin.org";
         }
     }
 }

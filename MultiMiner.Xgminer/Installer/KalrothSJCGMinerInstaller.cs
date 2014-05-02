@@ -14,12 +14,17 @@
 
         private string GetMinerDownloadUrl()
         {
-            const string htmlRoot = "https://sites.google.com/site/rmdavidson";
+            string htmlRoot = GetMinerDownloadRoot();
             const string htmlPath = "/";
             const string filePattern = @".*<a href=""https://sites.google.com/site/rmdavidson/(cgminer-.+?-kalroth-sj0.03.zip)";
             const string downloadPath = "";
 
             return GetDownloadUrl(htmlRoot, htmlPath, filePattern, downloadPath);
+        }
+
+        public string GetMinerDownloadRoot()
+        {
+            return "https://sites.google.com/site/rmdavidson";
         }
     }
 }
