@@ -4299,10 +4299,11 @@ namespace MultiMiner.Win.Forms
             CryptoCoin coin = coinConfiguration.CryptoCoin;
             miningStatistics.CoinSymbol = coin.Symbol;
 
-            if (coin.Algorithm == CoinAlgorithm.Scrypt)
-                miningStatistics.Algorithm = AlgorithmNames.Scrypt;
-            else if (coin.Algorithm == CoinAlgorithm.SHA256)
+            if (coin.Algorithm == CoinAlgorithm.SHA256)
                 miningStatistics.Algorithm = AlgorithmNames.SHA256;
+            else
+                //assume Scrypt until MobileMiner supports more
+                miningStatistics.Algorithm = AlgorithmNames.Scrypt;
 
             miningStatistics.PopulateFrom(deviceInformation);
         }
