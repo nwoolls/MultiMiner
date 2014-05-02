@@ -5776,6 +5776,11 @@ namespace MultiMiner.Win.Forms
             //to-do: detect disowned miners for all types of running miners
             string minerName = MinerFactory.Instance.GetDefaultMiner().Name;
 
+            CheckForDisownedMiners(minerName);
+        }
+
+        private void CheckForDisownedMiners(string minerName)
+        {
             List<Process> disownedMiners = Process.GetProcessesByName(minerName).ToList();
 
             foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
@@ -5798,11 +5803,10 @@ namespace MultiMiner.Win.Forms
 
             if (OSVersionPlatform.GetConcretePlatform() != PlatformID.Unix)
             {
-                //to-do: detect disowned miners for all types of running miners
                 string minerName = MinerFactory.Instance.GetDefaultMiner().Name;
 
                 DialogResult dialogResult = MessageBox.Show(String.Format(
-                    "No copy of bfgminer was detected. " +
+                    "No copy of {0} was detected. " +
                     "Would you like to download and install {0} now?", minerName), "Miner Not Found",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 

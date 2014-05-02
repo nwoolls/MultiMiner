@@ -31,11 +31,11 @@ namespace MultiMiner.Engine
             }
         }
 
-        private readonly List<MinerDescriptor> registeredMiners = new List<MinerDescriptor>();
+        public readonly List<MinerDescriptor> Miners = new List<MinerDescriptor>();
 
         public MinerDescriptor GetMiner(CoinAlgorithm algorithm)
         {
-            return registeredMiners
+            return Miners
                 .SingleOrDefault(miner => miner.Algorithm == algorithm);
         }
 
@@ -48,7 +48,7 @@ namespace MultiMiner.Engine
         {
             if (GetMiner(algorithm) == null)
             {
-                registeredMiners.Add(new MinerDescriptor()
+                Miners.Add(new MinerDescriptor()
                 {
                     Algorithm = algorithm,
                     Name = name,
