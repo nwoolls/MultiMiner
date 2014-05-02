@@ -5847,9 +5847,18 @@ namespace MultiMiner.Win.Forms
 
         private static bool ConfigFileHandled()
         {
-            const string bakExtension = ".mmbak";
+            foreach (MinerDescriptor miner in MinerFactory.Instance.Miners)
+            {
+                if (!ConfigFileHandledForMiner(miner))
+                    return false;                
+            }
 
-            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
+            return true;
+        }
+
+        private static bool ConfigFileHandledForMiner(MinerDescriptor miner)
+        {
+            const string bakExtension = ".mmbak";
             string minerName = miner.Name;
             string minerExecutablePath = MinerPath.GetPathToInstalledMiner(miner);
             string confFileFilePath = String.Empty;
