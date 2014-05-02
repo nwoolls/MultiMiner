@@ -5547,7 +5547,7 @@ namespace MultiMiner.Win.Forms
 
             //do this after all other data has loaded to prevent errors when the delay is set very low (1s)
             SetupMiningOnStartup();
-            if (!HasMinersInstalled())
+            if (!MinerIsInstalled())
                 CancelMiningOnStartup();
             if (!MiningConfigurationValid())
                 CancelMiningOnStartup();
@@ -5732,9 +5732,7 @@ namespace MultiMiner.Win.Forms
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
                 return; //can't auto download binaries on Linux
 
-            bool hasMiners = HasMinersInstalled();
-
-            if (!hasMiners)
+            if (!MinerIsInstalled())
                 InstallBackendMinerLocally();
         }
 
@@ -5761,11 +5759,6 @@ namespace MultiMiner.Win.Forms
             {
                 progressForm.Close();
             }
-        }
-
-        private static bool HasMinersInstalled()
-        {
-            return MinerIsInstalled();
         }
 
         private static bool MinerIsInstalled()
