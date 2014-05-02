@@ -224,6 +224,18 @@ namespace MultiMiner.Engine.Helpers
             //SPC
             donationConfiguration = CreateCoinConfiguration("SPC", "stratum+tcp://us4.miningpool.co", 18665);
             configurations.Add(donationConfiguration);
+
+            //KGC
+            donationConfiguration = CreateCoinConfiguration("KGC", "stratum+tcp://mining.botpool.net", 5888);
+            configurations.Add(donationConfiguration);
+
+            //CAI
+            donationConfiguration = CreateCoinConfiguration("CAI", "stratum+tcp://caishen.nitro.org", 8888);
+            configurations.Add(donationConfiguration);
+
+            //BTB
+            donationConfiguration = CreateCoinConfiguration("BTB", "stratum+tcp://btb.scrypthp.com", 3333);
+            configurations.Add(donationConfiguration);
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
