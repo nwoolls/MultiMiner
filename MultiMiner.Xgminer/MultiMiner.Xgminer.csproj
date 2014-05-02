@@ -51,6 +51,7 @@
     <Compile Include="Installer\BaseInstaller.cs" />
     <Compile Include="Installer\BFGMinerInstaller.cs" />
     <Compile Include="Installer\IMinerInstaller.cs" />
+    <Compile Include="Installer\KalrothSJCGMinerInstaller.cs" />
     <Compile Include="Installer\VertminerInstaller.cs" />
     <Compile Include="LaunchFailedArgs.cs" />
     <Compile Include="LogLaunchArgs.cs" />
