@@ -9,5 +9,6 @@ namespace MultiMiner.Engine
         public string Name { get; set; }
         public string FileName { get; set; }
         public IMinerInstaller Installer { get; set; }
+        public bool LegacyApi { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace MultiMiner.Example
                 {
                     ExecutablePath = Path.Combine(executablePath, executableName)
                 };
-                Xgminer.Miner miner = new Xgminer.Miner(minerConfiguration);
+                Xgminer.Miner miner = new Xgminer.Miner(minerConfiguration, false);
 
                 //use it to iterate through devices
                 List<Device> deviceList = miner.ListDevices();
@@ -73,7 +73,7 @@ namespace MultiMiner.Example
                     Console.WriteLine("Launching {0}", executableName);
 
                     //start mining
-                    miner = new Xgminer.Miner(minerConfiguration);
+                    miner = new Xgminer.Miner(minerConfiguration, false);
                     System.Diagnostics.Process minerProcess = miner.Launch();
                     try
                     {

@@ -46,7 +46,7 @@ namespace MultiMiner.Win.Forms
             string xgminerVersion = String.Empty;
 
             if (File.Exists(xgminerPath))
-                xgminerVersion = miner.Installer.GetInstalledMinerVersion(xgminerPath);
+                xgminerVersion = miner.Installer.GetInstalledMinerVersion(xgminerPath, miner.LegacyApi);
 
             if (string.IsNullOrEmpty(xgminerVersion))
                 targetLabel.Text = String.Format("{0} not installed", xgminerName);

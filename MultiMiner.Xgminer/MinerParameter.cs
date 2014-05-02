@@ -14,5 +14,7 @@
         public const string ScanSerialNoAuto = "--scan noauto";
         public const string ScanSerialAuto = "--scan auto";
         public const string Scrypt = "--scrypt";
+        public const string ScryptN = "--scrypt-vert";
+        public const string ScryptJane = "--scrypt-jane";
     }
 }

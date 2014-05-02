@@ -249,9 +249,6 @@ namespace MultiMiner.Win.Forms
             //format prices in the History grid
             startPriceColumn.DefaultCellStyle.Format = ".########";
             endPriceColumn.DefaultCellStyle.Format = ".########";
-
-            //only one executable now - preserve space
-            executablePathDataGridViewTextBoxColumn.Visible = false;
         }
 
         private void PositionCoinChooseLabels()
@@ -6103,7 +6100,7 @@ namespace MultiMiner.Win.Forms
             if (String.IsNullOrEmpty(availableVersion))
                 return false;
 
-            installedVersion = miner.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(miner));
+            installedVersion = miner.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(miner), miner.LegacyApi);
 
             if (ThisVersionGreater(availableVersion, installedVersion))
                 return true;

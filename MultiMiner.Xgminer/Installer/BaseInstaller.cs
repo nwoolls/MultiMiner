@@ -10,7 +10,7 @@ namespace MultiMiner.Xgminer.Installer
 {
     public class BaseInstaller
     {
-        public string GetInstalledMinerVersion(string executablePath)
+        public string GetInstalledMinerVersion(string executablePath, bool legacyApi)
         {
             string version = String.Empty;
 
@@ -21,7 +21,7 @@ namespace MultiMiner.Xgminer.Installer
             startInfo.CreateNoWindow = true;
             startInfo.RedirectStandardOutput = true;
 
-            startInfo.Arguments = String.Format("{0} {1}", startInfo.Arguments, MinerParameter.ScanSerialOpenCLNoAuto);
+            startInfo.Arguments = String.Format("{0} {1}", startInfo.Arguments, legacyApi ? String.Empty : MinerParameter.ScanSerialOpenCLNoAuto);
 
             Process process = Process.Start(startInfo);
 

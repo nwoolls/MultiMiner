@@ -34,11 +34,11 @@ namespace MultiMiner.Engine
 
         private static void RegisterMiners()
         {
-            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.SHA256, "BFGMiner", "BFGMiner", new BFGMinerInstaller());
-            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.Scrypt, "BFGMiner", "BFGMiner", new BFGMinerInstaller());
-            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.ScryptJane, "KalrothSJCGMiner", "CGMiner", new KalrothSJCGMinerInstaller());
-            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.ScryptN, "Vertminer", "Vertminer", new VertminerInstaller());
-            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.X11, "DarkcoinSGMiner", "SGMiner", new DarkcoinSGMinerInstaller());
+            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.SHA256, "BFGMiner", "BFGMiner", new BFGMinerInstaller(), false);
+            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.Scrypt, "BFGMiner", "BFGMiner", new BFGMinerInstaller(), false);
+            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.ScryptJane, "KalrothSJCGMiner", "CGMiner", new KalrothSJCGMinerInstaller(), true);
+            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.ScryptN, "Vertminer", "Vertminer", new VertminerInstaller(), true);
+            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.X11, "DarkcoinSGMiner", "SGMiner", new DarkcoinSGMinerInstaller(), true);
         }
 
         public bool Donating
@@ -80,7 +80,7 @@ namespace MultiMiner.Engine
                 this.engineConfiguration = engineConfiguration;
                 this.devices = devices;
                 MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
-                this.backendVersion = new Version(miner.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(miner)));
+                this.backendVersion = new Version(miner.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(miner), miner.LegacyApi));
                 this.donationPercent = donationPercent;
 
                 if (coinInformation != null) //null if no network connection
@@ -654,7 +654,10 @@ namespace MultiMiner.Engine
         private Process LaunchMinerProcess(Xgminer.Data.Configuration.Miner minerConfiguration, string reason)
         {
             minerConfiguration.Priority = this.engineConfiguration.XgminerConfiguration.Priority;
-            Xgminer.Miner miner = new Xgminer.Miner(minerConfiguration);
+
+            MinerDescriptor descriptor = MinerFactory.Instance.GetMiner(minerConfiguration.Algorithm);
+
+            Xgminer.Miner miner = new Xgminer.Miner(minerConfiguration, descriptor.LegacyApi);
             miner.LogLaunch += this.LogProcessLaunch;
             miner.LaunchFailed += this.ProcessLaunchFailed;
             miner.AuthenticationFailed += this.ProcessAuthenticationFailed;

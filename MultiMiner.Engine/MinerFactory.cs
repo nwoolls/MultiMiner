@@ -44,7 +44,7 @@ namespace MultiMiner.Engine
             return GetMiner(CoinAlgorithm.SHA256);
         }
 
-        public void RegisterMiner(CoinAlgorithm algorithm, string name, string fileName, IMinerInstaller installer)
+        public void RegisterMiner(CoinAlgorithm algorithm, string name, string fileName, IMinerInstaller installer, bool legacyApi)
         {
             if (GetMiner(algorithm) == null)
             {
@@ -53,7 +53,8 @@ namespace MultiMiner.Engine
                     Algorithm = algorithm,
                     Name = name,
                     FileName = fileName,
-                    Installer = installer
+                    Installer = installer,
+                    LegacyApi = legacyApi
                 });
             }
             else throw new ArgumentException(algorithm + " is already registered");

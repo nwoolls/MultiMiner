@@ -24,10 +24,12 @@ namespace MultiMiner.Xgminer
         public event AuthenticationFailedHandler AuthenticationFailed;
 
         private readonly Data.Configuration.Miner minerConfiguration;
+        private readonly bool legacyApi;
 
-        public Miner(Data.Configuration.Miner minerConfig)
+        public Miner(Data.Configuration.Miner minerConfig, bool legacyApi)
         {
             this.minerConfiguration = minerConfig;
+            this.legacyApi = legacyApi;
         }
 
         //uses --ndevs, returns platform information
@@ -36,7 +38,7 @@ namespace MultiMiner.Xgminer
             string arguments = MinerParameter.EnumerateDevices;
             bool redirectOutput = true;
 
-            Process minerProcess = StartMinerProcess(arguments, redirectOutput);
+            Process minerProcess = StartMinerProcess(arguments, redirectOutput, legacyApi);
 
             List<string> output = new List<string>();
 
@@ -99,7 +101,7 @@ namespace MultiMiner.Xgminer
             
             //this must be done async, with 70+ devices doing this synchronous
             //locks up the process
-            Process minerProcess = StartMinerProcess(arguments, redirectOutput, false, "", false);
+            Process minerProcess = StartMinerProcess(arguments, redirectOutput, legacyApi, false, "", false);
             List<string> output = new List<string>();
             minerProcess.OutputDataReceived += (sender, e) =>
             {
@@ -189,15 +191,21 @@ namespace MultiMiner.Xgminer
 
             string arguments = minerConfiguration.LaunchArguments;
 
-            string serialArg = MinerParameter.ScanSerialNoAuto;
-            arguments = String.Format("{0} {1}", arguments, serialArg);
+            string serialArg = String.Empty;
 
-            if (minerConfiguration.StratumProxy)
+            if (!legacyApi)
             {
-                if (minerConfiguration.StratumProxyPort > 0)
-                    arguments = String.Format("{0} --http-port {1}", arguments, minerConfiguration.StratumProxyPort);
-                if (minerConfiguration.StratumProxyStratumPort > 0)
-                    arguments = String.Format("{0} --stratum-port {1}", arguments, minerConfiguration.StratumProxyStratumPort);
+                serialArg = MinerParameter.ScanSerialNoAuto;
+
+                arguments = String.Format("{0} {1}", arguments, serialArg);
+
+                if (minerConfiguration.StratumProxy)
+                {
+                    if (minerConfiguration.StratumProxyPort > 0)
+                        arguments = String.Format("{0} --http-port {1}", arguments, minerConfiguration.StratumProxyPort);
+                    if (minerConfiguration.StratumProxyStratumPort > 0)
+                        arguments = String.Format("{0} --stratum-port {1}", arguments, minerConfiguration.StratumProxyStratumPort);
+                }
             }
 
             foreach (MiningPool pool in minerConfiguration.Pools)
@@ -223,41 +231,55 @@ namespace MultiMiner.Xgminer
                 arguments = string.Format("{0} {1}", arguments, argument);
             }
 
-            if (minerConfiguration.DeviceDescriptors.Exists(d => d.Kind == DeviceKind.GPU))
-                arguments = String.Format("{0} {1}", arguments, MinerParameter.ScanSerialOpenCL);
+            if (!legacyApi)
+            {
+                if (minerConfiguration.DeviceDescriptors.Exists(d => d.Kind == DeviceKind.GPU))
+                    arguments = String.Format("{0} {1}", arguments, MinerParameter.ScanSerialOpenCL);
 
-            if (minerConfiguration.DeviceDescriptors.Exists(d => d.Kind == DeviceKind.CPU))
-                arguments = String.Format("{0} {1}", arguments, MinerParameter.ScanSerialCpu);
+                if (minerConfiguration.DeviceDescriptors.Exists(d => d.Kind == DeviceKind.CPU))
+                    arguments = String.Format("{0} {1}", arguments, MinerParameter.ScanSerialCpu);
+            }
 
             foreach (DeviceDescriptor deviceDescriptor in minerConfiguration.DeviceDescriptors)
             {
-                if (deviceDescriptor.Kind == DeviceKind.GPU)
-                    arguments = string.Format("{0} -d OCL{1}", arguments, deviceDescriptor.RelativeIndex);
-                else if (deviceDescriptor.Kind == DeviceKind.CPU)
-                    arguments = string.Format("{0} -d CPU{1}", arguments, deviceDescriptor.RelativeIndex);
-                else if (deviceDescriptor.Kind == DeviceKind.USB)
+                if (legacyApi)
                 {
-                    //hashbuster may not have path - but does in later versions of bfgminer
-                    //leaving as a code-path (for now)
-                    if (deviceDescriptor.Driver.Equals("hashbusterusb", StringComparison.OrdinalIgnoreCase))
+                    arguments = string.Format("{0} -d {1}", arguments, deviceDescriptor.RelativeIndex);
+                }
+                else
+                {
+                    if (deviceDescriptor.Kind == DeviceKind.GPU)
+                        arguments = string.Format("{0} -d OCL{1}", arguments, deviceDescriptor.RelativeIndex);
+                    else if (deviceDescriptor.Kind == DeviceKind.CPU)
+                        arguments = string.Format("{0} -d CPU{1}", arguments, deviceDescriptor.RelativeIndex);
+                    else if (deviceDescriptor.Kind == DeviceKind.USB)
                     {
-                        //FIXED IN BFGMINER 3.9
-                        //SAFE TO REMOVE THIS CODE PATH ONCE 3.9 HAS BEEN RELEASE & STABLE
+                        //hashbuster may not have path - but does in later versions of bfgminer
+                        //leaving as a code-path (for now)
+                        if (deviceDescriptor.Driver.Equals("hashbusterusb", StringComparison.OrdinalIgnoreCase))
+                        {
+                            //FIXED IN BFGMINER 3.9
+                            //SAFE TO REMOVE THIS CODE PATH ONCE 3.9 HAS BEEN RELEASED & STABLE
 
-                        //hard-coded implementation for now until the bfgminer implementation is a bit more stable
-                        //3.8.1 introduced a Path for HashBuster Micro, but the path is not usable with -S -d
-                        arguments = string.Format("{0} -S {1}:auto -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Serial);
+                            //hard-coded implementation for now until the bfgminer implementation is a bit more stable
+                            //3.8.1 introduced a Path for HashBuster Micro, but the path is not usable with -S -d
+                            arguments = string.Format("{0} -S {1}:auto -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Serial);
+                        }
+                        else if (String.IsNullOrEmpty(deviceDescriptor.Path))
+                            arguments = string.Format("{0} -S {1}:{2} -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Serial);
+                        else
+                            arguments = string.Format("{0} -S {1}:{2} -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Path);
                     }
-                    else if (String.IsNullOrEmpty(deviceDescriptor.Path))
-                        arguments = string.Format("{0} -S {1}:{2} -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Serial);
-                    else
-                        arguments = string.Format("{0} -S {1}:{2} -d {1}@{2}", arguments, deviceDescriptor.Driver, deviceDescriptor.Path);
                 }
             }
 
+            //the --scrypt param must come before the --intensity params to use over 13 in latest cgminer
             if (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
-                //the --scrypt param must come before the --intensity params to use over 13 in latest cgminer
                 arguments = MinerParameter.Scrypt + " " + arguments.TrimStart();
+            else if (minerConfiguration.Algorithm == CoinAlgorithm.ScryptN)
+                arguments = MinerParameter.ScryptN + " " + arguments.TrimStart();
+            else if (minerConfiguration.Algorithm == CoinAlgorithm.ScryptJane)
+                arguments = MinerParameter.ScryptJane + " " + arguments.TrimStart();
 
             if (minerConfiguration.ApiListen)
             {
@@ -290,12 +312,12 @@ namespace MultiMiner.Xgminer
             //specify a value for --log so we can depend on the API RPC current hashrate key
             arguments = String.Format("{0} --log {1}", arguments, minerConfiguration.LogInterval);
 
-            Process process = StartMinerProcess(arguments, redirectOutput, ensureProcessStarts, reason);
+            Process process = StartMinerProcess(arguments, redirectOutput, legacyApi, ensureProcessStarts, reason);
 
             return process;
         }
 
-        private Process StartMinerProcess(string arguments, bool redirectOutput, 
+        private Process StartMinerProcess(string arguments, bool redirectOutput, bool legacyApi,
             bool ensureProcessStarts = false, string reason = "", bool startProcess = true)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
