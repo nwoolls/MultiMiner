@@ -5,5 +5,6 @@ namespace MultiMiner.Engine
     {
         public const string SHA256 = "SHA-256";
         public const string Scrypt = "Scrypt";
+        public const string ScryptN = "Scrypt-Adaptive-Nfactor";
     }
 }

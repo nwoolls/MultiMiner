@@ -1883,7 +1883,9 @@ namespace MultiMiner.Win.Forms
                 knownCoin.Name = item.Name;
 
                 //needs to be a case insensitive check to work with both CoinChoose and CoinWarz
-                if (item.Algorithm.ToLower().Contains(AlgorithmNames.Scrypt.ToLower()))
+                if (item.Algorithm.ToLower().Contains(AlgorithmNames.ScryptN.ToLower()))
+                    knownCoin.Algorithm = CoinAlgorithm.ScryptN;
+                else if (item.Algorithm.ToLower().Contains(AlgorithmNames.Scrypt.ToLower()))
                     knownCoin.Algorithm = CoinAlgorithm.Scrypt;
                 else
                     knownCoin.Algorithm = CoinAlgorithm.SHA256;
