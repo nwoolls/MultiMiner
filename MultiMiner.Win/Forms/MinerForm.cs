@@ -6713,8 +6713,14 @@ namespace MultiMiner.Win.Forms
             MinerFormViewModel viewModel = GetViewModelToView();
             //don't include Network Devices in the count for Remote ViewModels
             deviceTotalLabel.Text = String.Format("{0} device(s)", viewModel.Devices.Count(d => (viewModel == localViewModel) || (d.Kind != DeviceKind.NET)));
-            
-            double scryptHashRate = GetVisibleInstanceHashrate(CoinAlgorithm.Scrypt, viewModel == localViewModel);
+
+            double scryptHashRate = 0;
+
+            //for now we total all scrypt alts together
+            foreach (MinerDescriptor miner in MinerFactory.Instance.Miners)
+                if (miner.Algorithm != CoinAlgorithm.SHA256)
+                    scryptHashRate += GetVisibleInstanceHashrate(miner.Algorithm, viewModel == localViewModel);
+
             double sha256HashRate = GetVisibleInstanceHashrate(CoinAlgorithm.SHA256, viewModel == localViewModel);
 
             //Mh not mh, mh is milli
