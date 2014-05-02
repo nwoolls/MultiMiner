@@ -13,6 +13,7 @@ using MultiMiner.Utility.Forms;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
 using MultiMiner.Win.Data;
+using MultiMiner.Xgminer.Installer;
 
 namespace MultiMiner.Win.Forms
 {
@@ -77,7 +78,7 @@ namespace MultiMiner.Win.Forms
 
         private static bool MinerIsInstalled()
         {
-            string path = MinerPath.GetPathToInstalledMiner();
+            string path = MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256);
             return File.Exists(path);
         }
 
@@ -168,15 +169,17 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
 
         private void DownloadChosenMiner()
         {
-            string minerName = MinerPath.GetMinerName();
+            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
+            string minerName = miner.Name;
             string minerPath = Path.Combine("Miners", minerName);
             string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
+            IMinerInstaller installer = miner.Installer;
 
-            downloadingMinerLabel.Text = String.Format("Please wait while {0} is downloaded from {2} and installed into the folder {1}", minerName, destinationFolder, Xgminer.Installer.BFGMinerInstaller.GetMinerDownloadRoot());
+            downloadingMinerLabel.Text = String.Format("Please wait while {0} is downloaded from {2} and installed into the folder {1}", minerName, destinationFolder, installer.GetMinerDownloadRoot());
             System.Windows.Forms.Application.DoEvents();
 
             Cursor = Cursors.WaitCursor;
-            new Xgminer.Installer.BFGMinerInstaller().InstallMiner(destinationFolder);
+            installer.InstallMiner(destinationFolder);
             Cursor = Cursors.Default;
 
             wizardTabControl.SelectedTab = chooseCoinPage;

@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows.Forms;
 using MultiMiner.Win.Extensions;
 using System.Reflection;
+using MultiMiner.Xgminer.Data;
 
 namespace MultiMiner.Win.Forms
 {
@@ -39,12 +40,13 @@ namespace MultiMiner.Win.Forms
 
         private static void PopulateXgminerVersion(Label targetLabel)
         {
-            string xgminerName = MinerPath.GetMinerName();
-            string xgminerPath = MinerPath.GetPathToInstalledMiner();
+            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
+            string xgminerName = miner.Name;
+            string xgminerPath = MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256);
             string xgminerVersion = String.Empty;
 
             if (File.Exists(xgminerPath))
-                xgminerVersion = new Xgminer.Installer.BFGMinerInstaller().GetInstalledMinerVersion(xgminerPath);
+                xgminerVersion = miner.Installer.GetInstalledMinerVersion(xgminerPath);
 
             if (string.IsNullOrEmpty(xgminerVersion))
                 targetLabel.Text = String.Format("{0} not installed", xgminerName);

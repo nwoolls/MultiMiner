@@ -1,6 +1,7 @@
 ﻿using MultiMiner.CoinApi.Data;
 using MultiMiner.Engine.Data.Configuration;
 using MultiMiner.Xgminer.Data;
+using MultiMiner.Xgminer.Installer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,12 +26,26 @@ namespace MultiMiner.Engine
         private List<Xgminer.Data.Device> devices;
         private Version backendVersion;
         private int donationPercent;
-        
+
+        public MiningEngine()
+        {
+            RegisterMiners();
+        }
+
+        private static void RegisterMiners()
+        {
+            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.SHA256, "BFGMiner", "BFGMiner", new BFGMinerInstaller());
+            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.Scrypt, "BFGMiner", "BFGMiner", new BFGMinerInstaller());
+            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.ScryptJane, "KalrothSJCGMiner", "CGMiner", new KalrothSJCGMinerInstaller());
+            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.ScryptN, "Vertminer", "Vertminer", new VertminerInstaller());
+            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.X11, "DarkcoinSGMiner", "SGMiner", new DarkcoinSGMinerInstaller());
+        }
+
         public bool Donating
         {
             get { return donationPercent > 0; }
-        }        
-
+        }
+        
         public List<MinerProcess> MinerProcesses
         {
             get
@@ -64,7 +79,7 @@ namespace MultiMiner.Engine
             {
                 this.engineConfiguration = engineConfiguration;
                 this.devices = devices;
-                this.backendVersion = new Version(new Xgminer.Installer.BFGMinerInstaller().GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner()));
+                this.backendVersion = new Version(MinerFactory.Instance.GetDefaultMiner().Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256)));
                 this.donationPercent = donationPercent;
 
                 if (coinInformation != null) //null if no network connection
@@ -657,7 +672,7 @@ namespace MultiMiner.Engine
 
             Xgminer.Data.Configuration.Miner minerConfiguration = new Xgminer.Data.Configuration.Miner() 
             { 
-                ExecutablePath = MinerPath.GetPathToInstalledMiner(), 
+                ExecutablePath = MinerPath.GetPathToInstalledMiner(coinConfiguration.CryptoCoin.Algorithm), 
                 Algorithm = coinConfiguration.CryptoCoin.Algorithm, 
                 ApiPort = port, 
                 ApiListen = true, 

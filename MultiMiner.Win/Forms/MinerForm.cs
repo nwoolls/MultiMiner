@@ -36,6 +36,7 @@ using MultiMiner.Win.Controls;
 using MultiMiner.Win.Forms.Configuration;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
+using MultiMiner.Xgminer.Installer;
 
 namespace MultiMiner.Win.Forms
 {
@@ -5738,9 +5739,12 @@ namespace MultiMiner.Win.Forms
 
         private void InstallBackendMinerLocally()
         {
-            string minerName = MinerPath.GetMinerName();
+            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
+            string minerName = miner.Name;
+            IMinerInstaller installer = miner.Installer;
 
-            ProgressForm progressForm = new ProgressForm(String.Format("Downloading and installing {0} from {1}", minerName, Xgminer.Installer.BFGMinerInstaller.GetMinerDownloadRoot()));
+            ProgressForm progressForm = new ProgressForm(String.Format("Downloading and installing {0} from {1}",
+                minerName, installer.GetMinerDownloadRoot()));
             progressForm.Show();
 
             //for Mono - show the UI
@@ -5751,7 +5755,7 @@ namespace MultiMiner.Win.Forms
             {
                 string minerPath = Path.Combine("Miners", minerName);
                 string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
-                new Xgminer.Installer.BFGMinerInstaller().InstallMiner(destinationFolder);
+                installer.InstallMiner(destinationFolder);
                 //may have been installed via Remoting - dismiss notification
                 notificationsControl.RemoveNotification(bfgminerNotificationId.ToString());
             }
@@ -5763,13 +5767,14 @@ namespace MultiMiner.Win.Forms
 
         private static bool MinerIsInstalled()
         {
-            string path = MinerPath.GetPathToInstalledMiner();
+            string path = MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256);
             return File.Exists(path);
         }
 
         private void CheckForDisownedMiners()
         {
-            string minerName = MinerPath.GetMinerName();
+            //to-do: detect disowned miners for all types of running miners
+            string minerName = MinerFactory.Instance.GetDefaultMiner().Name;
 
             List<Process> disownedMiners = Process.GetProcessesByName(minerName).ToList();
 
@@ -5793,7 +5798,8 @@ namespace MultiMiner.Win.Forms
 
             if (OSVersionPlatform.GetConcretePlatform() != PlatformID.Unix)
             {
-                string minerName = MinerPath.GetMinerName();
+                //to-do: detect disowned miners for all types of running miners
+                string minerName = MinerFactory.Instance.GetDefaultMiner().Name;
 
                 DialogResult dialogResult = MessageBox.Show(String.Format(
                     "No copy of bfgminer was detected. " +
@@ -5838,8 +5844,8 @@ namespace MultiMiner.Win.Forms
         {
             const string bakExtension = ".mmbak";
 
-            string minerName = MinerPath.GetMinerName();
-            string minerExecutablePath = MinerPath.GetPathToInstalledMiner();
+            string minerName = MinerFactory.Instance.GetDefaultMiner().Name;
+            string minerExecutablePath = MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256);
             string confFileFilePath = String.Empty;
 
             if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
@@ -6089,7 +6095,7 @@ namespace MultiMiner.Win.Forms
             if (String.IsNullOrEmpty(availableVersion))
                 return false;
 
-            installedVersion = new Xgminer.Installer.BFGMinerInstaller().GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner());
+            installedVersion = MinerFactory.Instance.GetDefaultMiner().Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256));
 
             if (ThisVersionGreater(availableVersion, installedVersion))
                 return true;
@@ -6107,7 +6113,7 @@ namespace MultiMiner.Win.Forms
 
             string informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
 
-            string minerName = MinerPath.GetMinerName();
+            string minerName = MinerFactory.Instance.GetDefaultMiner().Name;
 
             PostNotification(notificationId.ToString(),
                 String.Format("{0} version {1} is available ({2} installed)",
@@ -6137,7 +6143,7 @@ namespace MultiMiner.Win.Forms
             string result = String.Empty;
             try
             {
-                result = new Xgminer.Installer.BFGMinerInstaller().GetAvailableMinerVersion();
+                result = MinerFactory.Instance.GetDefaultMiner().Installer.GetAvailableMinerVersion();
             }
             catch (WebException ex)
             {
@@ -6261,7 +6267,8 @@ namespace MultiMiner.Win.Forms
             }
             catch (ArgumentException ex)
             {
-                string error = String.Format("Error checking for {0} updates", "bfgminer");
+                string error = String.Format("Error checking for {0} updates", 
+                    MinerFactory.Instance.GetDefaultMiner().Name);
                 PostNotification(error, error, () =>
                 {
                 }, ToolTipIcon.Warning, "");
@@ -6606,7 +6613,7 @@ namespace MultiMiner.Win.Forms
                     using (new HourGlass())
                     {
                         DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
-                        devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner());
+                        devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256));
 
                         //safe to do here as we are Scanning Hardware - we are not mining
                         //no data to lose in the ViewModel
@@ -6704,6 +6711,8 @@ namespace MultiMiner.Win.Forms
             if (!ConfigFileHandled())
                 return;
 
+            DownloadRequiredMiners();
+
             startButton.Enabled = false; //immediately disable, update after
             startMenuItem.Enabled = false;
 
@@ -6756,6 +6765,52 @@ namespace MultiMiner.Win.Forms
                 // if no Internet / network connection, we did not Auto-Mine
                 (this.coinApiInformation != null))
                 ShowCoinChangeNotification();
+        }
+
+        //download miners required for configured coins / algorithms
+        private void DownloadRequiredMiners()
+        {
+            IEnumerable<CoinAlgorithm> configuredAlgorithms = engineConfiguration.CoinConfigurations
+                .Where(config => config.Enabled)
+                .Select(config => config.CryptoCoin.Algorithm)
+                .Distinct();
+
+            CoinAlgorithm algorithm = CoinAlgorithm.ScryptJane;
+
+            if (configuredAlgorithms.Contains(algorithm))
+            {
+                MinerDescriptor miner = MinerFactory.Instance.GetMiner(algorithm);
+                string installedFilePath = MinerPath.GetPathToInstalledMiner(algorithm);
+                if (!File.Exists(installedFilePath))
+                {
+                    string destinationFolder = Path.GetDirectoryName(installedFilePath);
+                    miner.Installer.InstallMiner(destinationFolder);
+                }
+            }
+
+            algorithm = CoinAlgorithm.ScryptN;
+            if (configuredAlgorithms.Contains(algorithm))
+            {
+                MinerDescriptor miner = MinerFactory.Instance.GetMiner(algorithm);
+                string installedFilePath = MinerPath.GetPathToInstalledMiner(algorithm);
+                if (!File.Exists(installedFilePath))
+                {
+                    string destinationFolder = Path.GetDirectoryName(installedFilePath);
+                    miner.Installer.InstallMiner(destinationFolder);
+                }
+            }
+
+            algorithm = CoinAlgorithm.X11;
+            if (configuredAlgorithms.Contains(algorithm))
+            {
+                MinerDescriptor miner = MinerFactory.Instance.GetMiner(algorithm);
+                string installedFilePath = MinerPath.GetPathToInstalledMiner(algorithm);
+                if (!File.Exists(installedFilePath))
+                {
+                    string destinationFolder = Path.GetDirectoryName(installedFilePath);
+                    miner.Installer.InstallMiner(destinationFolder);
+                }
+            }
         }
 
         private void ToggleDynamicIntensityLocally(bool enabled)

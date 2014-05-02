@@ -55,6 +55,8 @@
     <Compile Include="Helpers\DonationPools.cs" />
     <Compile Include="Installer.cs" />
     <Compile Include="LogProcessCloseArgs.cs" />
+    <Compile Include="MinerDescriptor.cs" />
+    <Compile Include="MinerFactory.cs" />
     <Compile Include="MinerPath.cs" />
     <Compile Include="MinerProcess.cs" />
     <Compile Include="MiningEngine.cs" />
