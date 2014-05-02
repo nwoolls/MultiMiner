@@ -7,28 +7,26 @@ namespace MultiMiner.Engine
 {
     public static class MinerPath
     {
-        public static string GetPathToInstalledMiner(CoinAlgorithm algorithm)
+        public static string GetPathToInstalledMiner(MinerDescriptor miner)
         {
             string executablePath = string.Empty;
-            string minerName = MinerFactory.Instance.GetMiner(algorithm).Name;
-            string minerFileName = MinerFactory.Instance.GetMiner(algorithm).FileName;
 
-            switch (algorithm)
+            switch (miner.Algorithm)
             {
                 case CoinAlgorithm.SHA256:
-                    executablePath = GetPathToBFGMiner(minerFileName);
+                    executablePath = GetPathToBFGMiner(miner.FileName);
                     break;
                 case CoinAlgorithm.Scrypt:
-                    executablePath = GetPathToBFGMiner(minerFileName);
+                    executablePath = GetPathToBFGMiner(miner.FileName);
                     break;
                 case CoinAlgorithm.ScryptJane:
-                    executablePath = GetPathToMinerOnWindows(minerName, minerFileName);
+                    executablePath = GetPathToMinerOnWindows(miner.Name, miner.FileName);
                     break;
                 case CoinAlgorithm.ScryptN:
-                    executablePath = GetPathToMinerOnWindows(minerName, minerFileName);
+                    executablePath = GetPathToMinerOnWindows(miner.Name, miner.FileName);
                     break;
                 case CoinAlgorithm.X11:
-                    executablePath = GetPathToMinerOnWindows(minerName, minerFileName);
+                    executablePath = GetPathToMinerOnWindows(miner.Name, miner.FileName);
                     break;
             }
 

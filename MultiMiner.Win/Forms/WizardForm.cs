@@ -78,7 +78,7 @@ namespace MultiMiner.Win.Forms
 
         private static bool MinerIsInstalled()
         {
-            string path = MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256);
+            string path = MinerPath.GetPathToInstalledMiner(MinerFactory.Instance.GetDefaultMiner());
             return File.Exists(path);
         }
 

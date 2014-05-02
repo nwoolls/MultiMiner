@@ -79,7 +79,8 @@ namespace MultiMiner.Engine
             {
                 this.engineConfiguration = engineConfiguration;
                 this.devices = devices;
-                this.backendVersion = new Version(MinerFactory.Instance.GetDefaultMiner().Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256)));
+                MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
+                this.backendVersion = new Version(miner.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(miner)));
                 this.donationPercent = donationPercent;
 
                 if (coinInformation != null) //null if no network connection
@@ -670,9 +671,11 @@ namespace MultiMiner.Engine
 
             IList<Engine.Data.Configuration.Device> enabledConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol)).ToList();
 
+            MinerDescriptor miner = MinerFactory.Instance.GetMiner(coinConfiguration.CryptoCoin.Algorithm);
+
             Xgminer.Data.Configuration.Miner minerConfiguration = new Xgminer.Data.Configuration.Miner() 
-            { 
-                ExecutablePath = MinerPath.GetPathToInstalledMiner(coinConfiguration.CryptoCoin.Algorithm), 
+            {
+                ExecutablePath = MinerPath.GetPathToInstalledMiner(miner), 
                 Algorithm = coinConfiguration.CryptoCoin.Algorithm, 
                 ApiPort = port, 
                 ApiListen = true, 

@@ -42,7 +42,7 @@ namespace MultiMiner.Win.Forms
         {
             MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
             string xgminerName = miner.Name;
-            string xgminerPath = MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256);
+            string xgminerPath = MinerPath.GetPathToInstalledMiner(miner);
             string xgminerVersion = String.Empty;
 
             if (File.Exists(xgminerPath))

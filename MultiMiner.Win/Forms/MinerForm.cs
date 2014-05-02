@@ -5767,7 +5767,7 @@ namespace MultiMiner.Win.Forms
 
         private static bool MinerIsInstalled()
         {
-            string path = MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256);
+            string path = MinerPath.GetPathToInstalledMiner(MinerFactory.Instance.GetDefaultMiner());
             return File.Exists(path);
         }
 
@@ -5844,8 +5844,9 @@ namespace MultiMiner.Win.Forms
         {
             const string bakExtension = ".mmbak";
 
-            string minerName = MinerFactory.Instance.GetDefaultMiner().Name;
-            string minerExecutablePath = MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256);
+            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
+            string minerName = miner.Name;
+            string minerExecutablePath = MinerPath.GetPathToInstalledMiner(miner);
             string confFileFilePath = String.Empty;
 
             if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
@@ -6095,7 +6096,8 @@ namespace MultiMiner.Win.Forms
             if (String.IsNullOrEmpty(availableVersion))
                 return false;
 
-            installedVersion = MinerFactory.Instance.GetDefaultMiner().Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256));
+            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
+            installedVersion = miner.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(miner));
 
             if (ThisVersionGreater(availableVersion, installedVersion))
                 return true;
@@ -6613,7 +6615,7 @@ namespace MultiMiner.Win.Forms
                     using (new HourGlass())
                     {
                         DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
-                        devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner(CoinAlgorithm.SHA256));
+                        devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner(MinerFactory.Instance.GetDefaultMiner()));
 
                         //safe to do here as we are Scanning Hardware - we are not mining
                         //no data to lose in the ViewModel
@@ -6780,7 +6782,7 @@ namespace MultiMiner.Win.Forms
             if (configuredAlgorithms.Contains(algorithm))
             {
                 MinerDescriptor miner = MinerFactory.Instance.GetMiner(algorithm);
-                string installedFilePath = MinerPath.GetPathToInstalledMiner(algorithm);
+                string installedFilePath = MinerPath.GetPathToInstalledMiner(miner);
                 if (!File.Exists(installedFilePath))
                 {
                     string destinationFolder = Path.GetDirectoryName(installedFilePath);
@@ -6792,7 +6794,7 @@ namespace MultiMiner.Win.Forms
             if (configuredAlgorithms.Contains(algorithm))
             {
                 MinerDescriptor miner = MinerFactory.Instance.GetMiner(algorithm);
-                string installedFilePath = MinerPath.GetPathToInstalledMiner(algorithm);
+                string installedFilePath = MinerPath.GetPathToInstalledMiner(miner);
                 if (!File.Exists(installedFilePath))
                 {
                     string destinationFolder = Path.GetDirectoryName(installedFilePath);
@@ -6804,7 +6806,7 @@ namespace MultiMiner.Win.Forms
             if (configuredAlgorithms.Contains(algorithm))
             {
                 MinerDescriptor miner = MinerFactory.Instance.GetMiner(algorithm);
-                string installedFilePath = MinerPath.GetPathToInstalledMiner(algorithm);
+                string installedFilePath = MinerPath.GetPathToInstalledMiner(miner);
                 if (!File.Exists(installedFilePath))
                 {
                     string destinationFolder = Path.GetDirectoryName(installedFilePath);
