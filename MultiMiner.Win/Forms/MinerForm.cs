@@ -6824,17 +6824,8 @@ namespace MultiMiner.Win.Forms
                 .Select(config => config.CryptoCoin.Algorithm)
                 .Distinct();
 
-            CoinAlgorithm algorithm = CoinAlgorithm.ScryptJane;
-            if (configuredAlgorithms.Contains(algorithm))
-                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(algorithm));
-
-            algorithm = CoinAlgorithm.ScryptN;
-            if (configuredAlgorithms.Contains(algorithm))
-                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(algorithm));
-
-            algorithm = CoinAlgorithm.X11;
-            if (configuredAlgorithms.Contains(algorithm))
-                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(algorithm));
+            foreach (CoinAlgorithm configuredAlgorithm in configuredAlgorithms)
+                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(configuredAlgorithm));
         }
 
         private void CheckAndDownloadMiner(MinerDescriptor miner)
