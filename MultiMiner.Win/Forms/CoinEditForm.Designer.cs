@@ -52,7 +52,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 115);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(272, 45);
-            this.panel1.TabIndex = 2;
+            this.panel1.TabIndex = 3;
             // 
             // saveButton
             // 
@@ -101,7 +101,7 @@
             this.textBox1.Location = new System.Drawing.Point(129, 16);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(125, 23);
-            this.textBox1.TabIndex = 3;
+            this.textBox1.TabIndex = 0;
             // 
             // cryptoCoinBindingSource
             // 
@@ -116,7 +116,7 @@
             this.symbolEdit.MaxLength = 5;
             this.symbolEdit.Name = "symbolEdit";
             this.symbolEdit.Size = new System.Drawing.Size(125, 23);
-            this.symbolEdit.TabIndex = 0;
+            this.symbolEdit.TabIndex = 1;
             // 
             // algorithmCombo
             // 
@@ -125,7 +125,7 @@
             this.algorithmCombo.Location = new System.Drawing.Point(129, 75);
             this.algorithmCombo.Name = "algorithmCombo";
             this.algorithmCombo.Size = new System.Drawing.Size(125, 23);
-            this.algorithmCombo.TabIndex = 8;
+            this.algorithmCombo.TabIndex = 2;
             // 
             // label3
             // 
