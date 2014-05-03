@@ -42,7 +42,27 @@ namespace MultiMiner.Xgminer.Installer
 
         protected string GetDownloadUrl(string htmlRoot, string htmlPath, string filePattern, string downloadPath = "")
         {
-            string availableDownloadsHtml = new WebClient().DownloadString(String.Format("{0}{1}", htmlRoot, htmlPath));
+            WebClient webClient = new WebClient();
+            string availableDownloadsHtml = String.Empty;
+
+            try
+            {
+                availableDownloadsHtml = webClient.DownloadString(String.Format("{0}{1}", htmlRoot, htmlPath));
+            }
+            catch (WebException ex)
+            {
+                //specifically for handling http://www.sgminerforwindows.com/binaries/
+                //if you check Chrome Dev Tools, it returns a 403 but also returns an HTML response
+                if (ex.Status == WebExceptionStatus.ProtocolError)
+                {
+                    HttpWebResponse response = (HttpWebResponse)ex.Response;
+
+                    if ((int)response.StatusCode == 403)
+                        using (StreamReader sr = new StreamReader(response.GetResponseStream()))
+                            availableDownloadsHtml = sr.ReadToEnd();
+                }
+            }
+
             Match match = Regex.Match(availableDownloadsHtml, filePattern);
             if (match.Success)
             {
