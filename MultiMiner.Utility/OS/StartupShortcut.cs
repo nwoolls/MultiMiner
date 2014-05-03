@@ -13,12 +13,18 @@ namespace MultiMiner.Utility.OS
 #if !__MonoCS__
         public static void CreateStartupFolderShortcut()
         {
+            string startUpFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+            string shortcutFilePath = Path.Combine(startUpFolderPath, Application.ProductName + ".lnk");
+
+            if (System.IO.File.Exists(shortcutFilePath))
+                //shortcut already exists
+                return;
+
             WshShellClass wshShell = new WshShellClass();
             IWshShortcut shortcut;
-            string startUpFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
 
             // Create the shortcut
-            shortcut = (IWshShortcut)wshShell.CreateShortcut(Path.Combine(startUpFolderPath, Application.ProductName + ".lnk"));
+            shortcut = (IWshShortcut)wshShell.CreateShortcut(shortcutFilePath);
 
             shortcut.TargetPath = Application.ExecutablePath;
             shortcut.WorkingDirectory = Application.StartupPath;

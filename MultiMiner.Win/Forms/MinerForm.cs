@@ -6582,6 +6582,10 @@ namespace MultiMiner.Win.Forms
 
         private void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
         {
+            //started mining but haven't yet assigned mining members
+            if (miningCoinConfigurations == null)
+                return;
+
             string coinName = minerProcess.MinerConfiguration.CoinName;
             //reference miningCoinConfigurations so that we get access to the mining coins
             Engine.Data.Configuration.Coin configuration = miningCoinConfigurations.SingleOrDefault(c => c.CryptoCoin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
@@ -6603,6 +6607,10 @@ namespace MultiMiner.Win.Forms
 
         private void CheckAndNotifyAcceptedShares(MinerProcess minerProcess, long acceptedShares)
         {
+            //started mining but haven't yet assigned mining members
+            if (miningCoinConfigurations == null)
+                return;
+
             string coinName = minerProcess.MinerConfiguration.CoinName;
             //reference miningCoinConfigurations so that we get access to the mining coins
             Engine.Data.Configuration.Coin configuration = miningCoinConfigurations.SingleOrDefault(c => c.CryptoCoin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
