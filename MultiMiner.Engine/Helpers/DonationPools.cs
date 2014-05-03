@@ -236,6 +236,14 @@ namespace MultiMiner.Engine.Helpers
             //BTB
             donationConfiguration = CreateCoinConfiguration("BTB", "stratum+tcp://btb.scrypthp.com", 3333);
             configurations.Add(donationConfiguration);
+
+            //VTC
+            donationConfiguration = CreateCoinConfiguration("VTC", "stratum+tcp://vtc.poolz.net", 3333);
+            configurations.Add(donationConfiguration);
+
+            //DRK
+            donationConfiguration = CreateCoinConfiguration("DRK", "stratum+tcp://drkpool.com", 3333);
+            configurations.Add(donationConfiguration);
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
