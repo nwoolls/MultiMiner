@@ -4990,13 +4990,21 @@ namespace MultiMiner.Win.Forms
                 }
             }
 
-            double effectiveHashrate = WorkUtilityToHashrate(deviceInformation.WorkUtility);
-            //avoid div by 0
-            if (deviceInformation.AverageHashrate > 0)
+            Coin coinConfiguration = miningCoinConfigurations
+                .Single(config => config.CryptoCoin.Symbol.Equals(minerProcess.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+            MinerDescriptor miner = MinerFactory.Instance.GetMiner(coinConfiguration.CryptoCoin.Algorithm);
+
+            //Work Utility not returned by legacy API miners
+            if (!miner.LegacyApi)
             {
-                double performanceRatio = effectiveHashrate / deviceInformation.AverageHashrate;
-                if (performanceRatio <= 0.25)
-                    minerProcess.StoppedAcceptingShares = true;
+                double effectiveHashrate = WorkUtilityToHashrate(deviceInformation.WorkUtility);
+                //avoid div by 0
+                if (deviceInformation.AverageHashrate > 0)
+                {
+                    double performanceRatio = effectiveHashrate / deviceInformation.AverageHashrate;
+                    if (performanceRatio <= 0.25)
+                        minerProcess.StoppedAcceptingShares = true;
+                }
             }
         }
 
