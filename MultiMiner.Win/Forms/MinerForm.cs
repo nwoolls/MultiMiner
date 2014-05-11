@@ -4147,6 +4147,10 @@ namespace MultiMiner.Win.Forms
 
                 Xgminer.Api.Data.VersionInformation versionInformation = GetVersionInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
 
+                //we cannot continue without versionInformation as the MinerName is required by MobileMiner or it returns HTTP 400
+                if (versionInformation == null) //handled failure getting API info
+                    continue;
+
                 foreach (DeviceInformation deviceInformation in deviceInformationList)
                 {
                     string devicePath = String.Format("{0}:{1}", networkDevice.IPAddress, networkDevice.Port);
