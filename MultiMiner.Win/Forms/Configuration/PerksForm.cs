@@ -37,6 +37,8 @@ namespace MultiMiner.Win.Forms.Configuration
             this.percentLabel1.Enabled = perksCheckBox.Checked;
             this.percentLabel2.Enabled = perksCheckBox.Checked;
             this.remotingCheckBox.Enabled = perksCheckBox.Checked;
+            this.remotingPasswordEdit.Enabled = perksCheckBox.Checked;
+            this.advancedProxyCheckBox.Enabled = perksCheckBox.Checked;
         }
 
         private void PerksForm_Load(object sender, EventArgs e)

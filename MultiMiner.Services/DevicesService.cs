@@ -35,12 +35,16 @@ namespace MultiMiner.Services
 
             if (xgminerConfiguration.StratumProxy)
             {
-                detectedDevices.Add(new Device()
+                for (int i = 0; i < xgminerConfiguration.StratumProxies.Count; i++)
                 {
-                    Kind = DeviceKind.PXY,
-                    Driver = "proxy",
-                    Name = "Stratum Proxy"
-                });
+                    detectedDevices.Add(new Device() 
+                    { 
+                        Kind = DeviceKind.PXY,
+                        Driver = "proxy", 
+                        Name = "Stratum Proxy",
+                        RelativeIndex = i
+                    });
+                }
             }
 
             SortDevices(detectedDevices);

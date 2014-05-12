@@ -76,7 +76,7 @@ namespace MultiMiner.Xgminer.Data
             DeviceDescriptor target = (DeviceDescriptor)obj;
 
             if (this.Kind == DeviceKind.PXY)
-                return target.Kind == DeviceKind.PXY;
+                return target.Kind == DeviceKind.PXY && target.RelativeIndex == this.RelativeIndex;
             else if (this.Kind == DeviceKind.GPU)
                 return target.Kind == DeviceKind.GPU && target.RelativeIndex == this.RelativeIndex;
             else if (this.Kind == DeviceKind.CPU)

@@ -42,6 +42,7 @@
             this.percentLabel1 = new System.Windows.Forms.Label();
             this.percentLabel2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.advancedProxyCheckBox = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.remotingPasswordEdit = new System.Windows.Forms.TextBox();
             this.remotingCheckBox = new System.Windows.Forms.CheckBox();
@@ -106,7 +107,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 323);
+            this.panel1.Location = new System.Drawing.Point(0, 349);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(407, 54);
             this.panel1.TabIndex = 3;
@@ -136,7 +137,7 @@
             // percentEdit
             // 
             this.percentEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.perksConfigurationBindingSource, "DonationPercent", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.percentEdit.Location = new System.Drawing.Point(271, 272);
+            this.percentEdit.Location = new System.Drawing.Point(271, 303);
             this.percentEdit.Name = "percentEdit";
             this.percentEdit.Size = new System.Drawing.Size(45, 23);
             this.percentEdit.TabIndex = 2;
@@ -146,7 +147,7 @@
             // percentLabel1
             // 
             this.percentLabel1.AutoSize = true;
-            this.percentLabel1.Location = new System.Drawing.Point(53, 275);
+            this.percentLabel1.Location = new System.Drawing.Point(53, 306);
             this.percentLabel1.Name = "percentLabel1";
             this.percentLabel1.Size = new System.Drawing.Size(207, 15);
             this.percentLabel1.TabIndex = 5;
@@ -155,7 +156,7 @@
             // percentLabel2
             // 
             this.percentLabel2.AutoSize = true;
-            this.percentLabel2.Location = new System.Drawing.Point(322, 275);
+            this.percentLabel2.Location = new System.Drawing.Point(322, 306);
             this.percentLabel2.Name = "percentLabel2";
             this.percentLabel2.Size = new System.Drawing.Size(17, 15);
             this.percentLabel2.TabIndex = 13;
@@ -163,6 +164,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.advancedProxyCheckBox);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.remotingPasswordEdit);
             this.groupBox1.Controls.Add(this.remotingCheckBox);
@@ -170,10 +172,21 @@
             this.groupBox1.Controls.Add(this.coinbaseCheckBox);
             this.groupBox1.Location = new System.Drawing.Point(56, 100);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(291, 158);
+            this.groupBox1.Size = new System.Drawing.Size(291, 181);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Perks";
+            // 
+            // advancedProxyCheckBox
+            // 
+            this.advancedProxyCheckBox.AutoSize = true;
+            this.advancedProxyCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.perksConfigurationBindingSource, "AdvancedProxying", true));
+            this.advancedProxyCheckBox.Location = new System.Drawing.Point(16, 147);
+            this.advancedProxyCheckBox.Name = "advancedProxyCheckBox";
+            this.advancedProxyCheckBox.Size = new System.Drawing.Size(236, 19);
+            this.advancedProxyCheckBox.TabIndex = 21;
+            this.advancedProxyCheckBox.Text = "Enable advanced Stratum Proxy support";
+            this.advancedProxyCheckBox.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
@@ -232,7 +245,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(407, 377);
+            this.ClientSize = new System.Drawing.Size(407, 403);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.percentEdit);
             this.Controls.Add(this.percentLabel2);
@@ -280,5 +293,6 @@
         private System.Windows.Forms.CheckBox remotingCheckBox;
         private System.Windows.Forms.CheckBox incomeCheckBox;
         private System.Windows.Forms.CheckBox coinbaseCheckBox;
+        private System.Windows.Forms.CheckBox advancedProxyCheckBox;
     }
 }

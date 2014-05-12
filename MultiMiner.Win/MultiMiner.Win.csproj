@@ -119,6 +119,12 @@
     <Compile Include="Extensions\MiningStatisticsExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TimeIntervalExtensions.cs" />
+    <Compile Include="Forms\Configuration\ProxySettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Configuration\ProxySettingsForm.Designer.cs">
+      <DependentUpon>ProxySettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MinerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -202,6 +208,9 @@
     <EmbeddedResource Include="Forms\Configuration\CoinsForm.resx">
       <DependentUpon>CoinsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Configuration\ProxySettingsForm.resx">
+      <DependentUpon>ProxySettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MinerForm.resx">
       <DependentUpon>MinerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -249,6 +258,7 @@
     <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.StrategyConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.Configuration.XgminerConfiguration.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.CryptoCoin.datasource" />
+    <None Include="Properties\DataSources\MultiMiner.Engine.Data.Configuration.Xgminer+ProxyDescriptor.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.LogProcessCloseArgs.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Engine.MiningPool.datasource" />
     <None Include="Properties\DataSources\MultiMiner.Win.Configuration.ApplicationConfiguration.datasource" />

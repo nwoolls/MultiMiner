@@ -1259,14 +1259,21 @@ namespace MultiMiner.Win.Forms
             Data.Configuration.Application workingApplicationConfiguration = new Data.Configuration.Application();
             Engine.Data.Configuration.Engine workingEngineConfiguration = new Engine.Data.Configuration.Engine();
             Paths workingPathConfiguration = new Paths();
+            Perks workingPerksConfiguration = new Perks();
 
             GetRemoteApplicationConfiguration(this.selectedRemoteInstance);
 
             ObjectCopier.CopyObject(this.remoteApplicationConfig.ToModelObject(), workingApplicationConfiguration);
             ObjectCopier.CopyObject(this.remoteEngineConfig.ToModelObject(), workingEngineConfiguration);
             ObjectCopier.CopyObject(this.remotePathConfig, workingPathConfiguration);
+            ObjectCopier.CopyObject(this.remotePerksConfig, workingPerksConfiguration);
 
-            SettingsForm settingsForm = new SettingsForm(workingApplicationConfiguration, workingEngineConfiguration.XgminerConfiguration, workingPathConfiguration);
+            SettingsForm settingsForm = new SettingsForm(
+                workingApplicationConfiguration, 
+                workingEngineConfiguration.XgminerConfiguration, 
+                workingPathConfiguration,
+                workingPerksConfiguration);
+
             settingsForm.Text = String.Format("{0}: {1}", settingsForm.Text, this.selectedRemoteInstance.MachineName);
             DialogResult dialogResult = settingsForm.ShowDialog();
 
@@ -1275,6 +1282,7 @@ namespace MultiMiner.Win.Forms
                 ObjectCopier.CopyObject(workingApplicationConfiguration.ToTransferObject(), this.remoteApplicationConfig);
                 ObjectCopier.CopyObject(workingEngineConfiguration.ToTransferObject(), this.remoteEngineConfig);
                 ObjectCopier.CopyObject(workingPathConfiguration, this.remotePathConfig);
+                ObjectCopier.CopyObject(workingPerksConfiguration, this.remotePerksConfig);
 
                 SetConfigurationRemotely(this.selectedRemoteInstance, this.remoteApplicationConfig, this.remoteEngineConfig, this.remotePathConfig, null);
             }
@@ -1288,7 +1296,12 @@ namespace MultiMiner.Win.Forms
 
             string oldConfigPath = pathConfiguration.SharedConfigPath;
 
-            SettingsForm settingsForm = new SettingsForm(applicationConfiguration, engineConfiguration.XgminerConfiguration, pathConfiguration);
+            SettingsForm settingsForm = new SettingsForm(
+                applicationConfiguration, 
+                engineConfiguration.XgminerConfiguration, 
+                pathConfiguration,
+                perksConfiguration);
+
             DialogResult dialogResult = settingsForm.ShowDialog();
 
             if (dialogResult == System.Windows.Forms.DialogResult.OK)

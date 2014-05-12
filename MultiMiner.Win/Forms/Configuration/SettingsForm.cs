@@ -13,15 +13,17 @@ namespace MultiMiner.Win.Forms.Configuration
         private readonly MultiMiner.Engine.Data.Configuration.Xgminer minerConfiguration;
         private readonly Data.Configuration.Application applicationConfiguration;
         private readonly Paths pathConfiguration;
+        private readonly Perks perksConfiguration;
 
         public SettingsForm(Data.Configuration.Application applicationConfiguration, MultiMiner.Engine.Data.Configuration.Xgminer minerConfiguration,
-            Paths pathConfiguration)
+            Paths pathConfiguration, Perks perksConfiguration)
         {
             InitializeComponent();
 
             this.minerConfiguration = minerConfiguration;
             this.applicationConfiguration = applicationConfiguration;
             this.pathConfiguration = pathConfiguration;
+            this.perksConfiguration = perksConfiguration;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -119,8 +121,10 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            MinerSettingsForm advancedSettingsForm = new MinerSettingsForm(minerConfiguration, applicationConfiguration);
-            advancedSettingsForm.ShowDialog();
+            using (MinerSettingsForm advancedSettingsForm = new MinerSettingsForm(minerConfiguration, applicationConfiguration, perksConfiguration))
+            {
+                advancedSettingsForm.ShowDialog();
+            }
         }
 
         private void apiKeyLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -130,14 +134,18 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void advancedSettingsLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            AdvancedSettingsForm advancedSettingsForm = new AdvancedSettingsForm(applicationConfiguration, pathConfiguration);
-            advancedSettingsForm.ShowDialog();
+            using (AdvancedSettingsForm advancedSettingsForm = new AdvancedSettingsForm(applicationConfiguration, pathConfiguration))
+            {
+                advancedSettingsForm.ShowDialog();
+            }
         }
 
         private void serviceSettingsLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            OnlineSettingsForm advancedSettingsForm = new OnlineSettingsForm(applicationConfiguration);
-            advancedSettingsForm.ShowDialog();
+            using (OnlineSettingsForm advancedSettingsForm = new OnlineSettingsForm(applicationConfiguration))
+            {
+                advancedSettingsForm.ShowDialog();
+            }
         }
     }
 }

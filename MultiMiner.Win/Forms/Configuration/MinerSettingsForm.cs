@@ -6,6 +6,7 @@ using MultiMiner.Xgminer.Data;
 using System;
 using System.Diagnostics;
 using MultiMiner.Win.Extensions;
+using System.Linq;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -17,7 +18,10 @@ namespace MultiMiner.Win.Forms.Configuration
         private readonly Application applicationConfiguration;
         private readonly Application workingApplicationConfiguration;
 
-        public MinerSettingsForm(MultiMiner.Engine.Data.Configuration.Xgminer minerConfiguration, Application applicationConfiguration)
+        private readonly Perks perksConfiguration;
+
+        public MinerSettingsForm(MultiMiner.Engine.Data.Configuration.Xgminer minerConfiguration, Application applicationConfiguration,
+            Perks perksConfiguration)
         {
             InitializeComponent();
             this.minerConfiguration = minerConfiguration;
@@ -25,6 +29,8 @@ namespace MultiMiner.Win.Forms.Configuration
 
             this.applicationConfiguration = applicationConfiguration;
             this.workingApplicationConfiguration = ObjectCopier.CloneObject<Application, Application>(applicationConfiguration);
+
+            this.perksConfiguration = perksConfiguration;
         }
 
         private void AdvancedSettingsForm_Load(object sender, EventArgs e)
@@ -66,6 +72,16 @@ namespace MultiMiner.Win.Forms.Configuration
             algoArgCombo.SelectedIndex = 0;
             
             autoDesktopCheckBox.Enabled = !disableGpuCheckbox.Checked;
+
+            LoadProxySettings();
+        }
+
+        private void LoadProxySettings()
+        {
+            MultiMiner.Engine.Data.Configuration.Xgminer.ProxyDescriptor proxy = minerConfiguration.StratumProxies.First();
+
+            proxyPortEdit.Text = proxy.GetworkPort.ToString();
+            stratumProxyPortEdit.Text = proxy.StratumPort.ToString();
         }
 
         private void SaveSettings()
@@ -76,6 +92,16 @@ namespace MultiMiner.Win.Forms.Configuration
                 workingMinerConfiguration.DesktopMode = false;
 
             workingApplicationConfiguration.ScheduledRestartMiningInterval = (Application.TimerInterval)intervalCombo.SelectedIndex;
+
+            SaveProxySettings();
+        }
+
+        private void SaveProxySettings()
+        {
+            MultiMiner.Engine.Data.Configuration.Xgminer.ProxyDescriptor proxy = minerConfiguration.StratumProxies.First();
+
+            proxy.GetworkPort = int.Parse(proxyPortEdit.Text);
+            proxy.StratumPort = int.Parse(stratumProxyPortEdit.Text);
         }
 
         private void disableGpuCheckbox_CheckedChanged(object sender, EventArgs e)
@@ -101,6 +127,42 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             CoinAlgorithm algorithm = (CoinAlgorithm)algoArgCombo.SelectedIndex;
             workingMinerConfiguration.AlgorithmFlags[algorithm] = algoArgEdit.Text;
+        }
+
+        private void advancedProxiesButton_Click(object sender, EventArgs e)
+        {
+            if (!perksConfiguration.PerksEnabled)
+            {
+                if (!perksConfiguration.PerksEnabled)
+                {
+                    System.Windows.Forms.MessageBox.Show("This feature requires you to enable Perks at a 1% donation to the software author.",
+                        "Perks Required", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+                }
+
+                using (PerksForm perksForm = new PerksForm(perksConfiguration))
+                {
+                    perksForm.ShowDialog();
+                }
+            }
+            else
+            {
+                using (ProxySettingsForm proxySettingsForm = new ProxySettingsForm(minerConfiguration))
+                {
+                    System.Windows.Forms.DialogResult dialogResult = proxySettingsForm.ShowDialog();
+                    if (dialogResult == System.Windows.Forms.DialogResult.OK)
+                    {
+                        perksConfiguration.AdvancedProxying = true;
+                        perksConfiguration.SavePerksConfiguration();
+
+                        LoadProxySettings();
+                    }
+                }
+            }
+        }
+
+        private void proxyPortEdit_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
     }
 }

@@ -15,6 +15,7 @@ namespace MultiMiner.Win.Data.Configuration
         public bool ShowIncomeInUsd { get; set; }
         public bool EnableRemoting { get; set; }
         public string RemotingPassword { get; set; }
+        public bool AdvancedProxying { get; set; }
 
         private int donationPercent = 1;
         public int DonationPercent

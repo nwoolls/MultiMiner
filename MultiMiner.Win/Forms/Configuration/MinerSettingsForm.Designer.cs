@@ -30,16 +30,19 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MinerSettingsForm));
-            this.xgminerConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.algoArgEdit = new System.Windows.Forms.TextBox();
+            this.algoArgCombo = new System.Windows.Forms.ComboBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.xgminerConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.scryptConfigLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.advancedProxiesButton = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.stratumProxyPortEdit = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.proxyPortEdit = new System.Windows.Forms.TextBox();
             this.proxyCheckBox = new System.Windows.Forms.CheckBox();
@@ -57,21 +60,15 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.algoArgCombo = new System.Windows.Forms.ComboBox();
-            this.algoArgEdit = new System.Windows.Forms.TextBox();
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).BeginInit();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
-            // 
-            // xgminerConfigurationBindingSource
-            // 
-            this.xgminerConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Data.Configuration.Xgminer);
             // 
             // groupBox3
             // 
@@ -89,6 +86,33 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Arguments";
             // 
+            // algoArgEdit
+            // 
+            this.algoArgEdit.AccessibleName = "Permitted IPs";
+            this.algoArgEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.algoArgEdit.Location = new System.Drawing.Point(119, 22);
+            this.algoArgEdit.Name = "algoArgEdit";
+            this.algoArgEdit.Size = new System.Drawing.Size(300, 23);
+            this.algoArgEdit.TabIndex = 1;
+            this.algoArgEdit.Validated += new System.EventHandler(this.algoArgEdit_Validated);
+            // 
+            // algoArgCombo
+            // 
+            this.algoArgCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.algoArgCombo.FormattingEnabled = true;
+            this.algoArgCombo.Items.AddRange(new object[] {
+            "SHA-256",
+            "Scrypt",
+            "Scrypt-Jane",
+            "Scrypt-N",
+            "X11"});
+            this.algoArgCombo.Location = new System.Drawing.Point(14, 22);
+            this.algoArgCombo.Name = "algoArgCombo";
+            this.algoArgCombo.Size = new System.Drawing.Size(99, 23);
+            this.algoArgCombo.TabIndex = 0;
+            this.algoArgCombo.SelectedIndexChanged += new System.EventHandler(this.argAlgoCombo_SelectedIndexChanged);
+            // 
             // checkBox3
             // 
             this.checkBox3.AutoSize = true;
@@ -99,6 +123,10 @@
             this.checkBox3.TabIndex = 5;
             this.checkBox3.Text = "Disable USB probing";
             this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // xgminerConfigurationBindingSource
+            // 
+            this.xgminerConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Data.Configuration.Xgminer);
             // 
             // textBox4
             // 
@@ -140,8 +168,9 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.advancedProxiesButton);
             this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Controls.Add(this.textBox3);
+            this.groupBox2.Controls.Add(this.stratumProxyPortEdit);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.proxyPortEdit);
             this.groupBox2.Controls.Add(this.proxyCheckBox);
@@ -152,6 +181,16 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Proxy Settings";
             // 
+            // advancedProxiesButton
+            // 
+            this.advancedProxiesButton.Location = new System.Drawing.Point(341, 24);
+            this.advancedProxiesButton.Name = "advancedProxiesButton";
+            this.advancedProxiesButton.Size = new System.Drawing.Size(81, 28);
+            this.advancedProxiesButton.TabIndex = 16;
+            this.advancedProxiesButton.Text = "Advanced";
+            this.advancedProxiesButton.UseVisualStyleBackColor = true;
+            this.advancedProxiesButton.Click += new System.EventHandler(this.advancedProxiesButton_Click);
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -161,16 +200,16 @@
             this.label5.TabIndex = 15;
             this.label5.Text = "Stratum port:";
             // 
-            // textBox3
+            // stratumProxyPortEdit
             // 
-            this.textBox3.AccessibleName = "Stratum port";
-            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.stratumProxyPortEdit.AccessibleName = "Stratum port";
+            this.stratumProxyPortEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "StratumProxyStratumPort", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox3.Location = new System.Drawing.Point(124, 90);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(128, 23);
-            this.textBox3.TabIndex = 4;
+            this.stratumProxyPortEdit.Location = new System.Drawing.Point(124, 90);
+            this.stratumProxyPortEdit.Name = "stratumProxyPortEdit";
+            this.stratumProxyPortEdit.Size = new System.Drawing.Size(128, 23);
+            this.stratumProxyPortEdit.TabIndex = 4;
+            this.stratumProxyPortEdit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.proxyPortEdit_KeyPress);
             // 
             // label4
             // 
@@ -186,11 +225,11 @@
             this.proxyPortEdit.AccessibleName = "Getwork port";
             this.proxyPortEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.proxyPortEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "StratumProxyPort", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.proxyPortEdit.Location = new System.Drawing.Point(124, 60);
             this.proxyPortEdit.Name = "proxyPortEdit";
             this.proxyPortEdit.Size = new System.Drawing.Size(128, 23);
             this.proxyPortEdit.TabIndex = 3;
+            this.proxyPortEdit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.proxyPortEdit_KeyPress);
             // 
             // proxyCheckBox
             // 
@@ -368,33 +407,6 @@
             this.checkBox2.Text = "Terminate GPU miners";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
-            // algoArgCombo
-            // 
-            this.algoArgCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.algoArgCombo.FormattingEnabled = true;
-            this.algoArgCombo.Items.AddRange(new object[] {
-            "SHA-256",
-            "Scrypt",
-            "Scrypt-Jane",
-            "Scrypt-N",
-            "X11"});
-            this.algoArgCombo.Location = new System.Drawing.Point(14, 22);
-            this.algoArgCombo.Name = "algoArgCombo";
-            this.algoArgCombo.Size = new System.Drawing.Size(99, 23);
-            this.algoArgCombo.TabIndex = 0;
-            this.algoArgCombo.SelectedIndexChanged += new System.EventHandler(this.argAlgoCombo_SelectedIndexChanged);
-            // 
-            // algoArgEdit
-            // 
-            this.algoArgEdit.AccessibleName = "Permitted IPs";
-            this.algoArgEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.algoArgEdit.Location = new System.Drawing.Point(119, 22);
-            this.algoArgEdit.Name = "algoArgEdit";
-            this.algoArgEdit.Size = new System.Drawing.Size(300, 23);
-            this.algoArgEdit.TabIndex = 1;
-            this.algoArgEdit.Validated += new System.EventHandler(this.algoArgEdit_Validated);
-            // 
             // applicationConfigurationBindingSource
             // 
             this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
@@ -422,9 +434,9 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Configure Miner Settings";
             this.Load += new System.EventHandler(this.AdvancedSettingsForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -459,7 +471,7 @@
         private System.Windows.Forms.TextBox proxyPortEdit;
         private System.Windows.Forms.CheckBox proxyCheckBox;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox stratumProxyPortEdit;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.LinkLabel scryptConfigLink;
         private System.Windows.Forms.PictureBox pictureBox1;
@@ -469,5 +481,6 @@
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.ComboBox algoArgCombo;
         private System.Windows.Forms.TextBox algoArgEdit;
+        private System.Windows.Forms.Button advancedProxiesButton;
     }
 }
