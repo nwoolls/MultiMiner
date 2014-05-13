@@ -24,7 +24,6 @@ namespace MultiMiner.Engine
         private List<MinerProcess> minerProcesses = new List<MinerProcess>();
         private Data.Configuration.Engine engineConfiguration;
         private List<Xgminer.Data.Device> devices;
-        private Version backendVersion;
         private int donationPercent;
 
         public MiningEngine()
@@ -80,7 +79,6 @@ namespace MultiMiner.Engine
                 this.engineConfiguration = engineConfiguration;
                 this.devices = devices;
                 MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
-                this.backendVersion = new Version(miner.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(miner), miner.LegacyApi));
                 this.donationPercent = donationPercent;
 
                 if (coinInformation != null) //null if no network connection
