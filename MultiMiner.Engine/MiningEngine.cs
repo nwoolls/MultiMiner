@@ -12,6 +12,7 @@ namespace MultiMiner.Engine
 {
     public class MiningEngine
     {
+        public const string AdvancedProxiesRequirePerksMessage = "Mining with multiple Stratum Proxies requires Perks to be enabled.";
         //events
         //delegate declarations
         public delegate void LogProcessCloseHandler(object sender, LogProcessCloseArgs ea);
@@ -732,17 +733,25 @@ namespace MultiMiner.Engine
 
                 deviceCount++;
 
+                minerConfiguration.DeviceDescriptors.Add(device);
+
                 //don't actually add stratum device as a device index
-                if (device.Kind != DeviceKind.PXY)
-                {
-                    minerConfiguration.DeviceDescriptors.Add(device);
-                }
-                else
+                if (device.Kind == DeviceKind.PXY)
                 {
                     //only enable the stratum proxy if these devices contain the PXY device
                     minerConfiguration.StratumProxy = engineConfiguration.XgminerConfiguration.StratumProxy;
-                    minerConfiguration.StratumProxyPort = engineConfiguration.XgminerConfiguration.StratumProxyPort;
-                    minerConfiguration.StratumProxyStratumPort = engineConfiguration.XgminerConfiguration.StratumProxyStratumPort;
+
+                    int index = Math.Max(0, device.RelativeIndex);
+
+                    if ((donationPercent == 0) && (index > 0))
+                    {
+                        throw new Exception(AdvancedProxiesRequirePerksMessage);
+                    }
+
+                    MultiMiner.Engine.Data.Configuration.Xgminer.ProxyDescriptor proxy = engineConfiguration.XgminerConfiguration.StratumProxies[index];
+                    
+                    minerConfiguration.StratumProxyPort = proxy.GetworkPort;
+                    minerConfiguration.StratumProxyStratumPort = proxy.StratumPort;
                 }
             }
             return deviceCount;

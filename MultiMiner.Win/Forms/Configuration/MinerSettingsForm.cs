@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics;
 using MultiMiner.Win.Extensions;
 using System.Linq;
+using MultiMiner.Engine;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -135,7 +136,7 @@ namespace MultiMiner.Win.Forms.Configuration
             {
                 if (!perksConfiguration.PerksEnabled)
                 {
-                    System.Windows.Forms.MessageBox.Show("This feature requires you to enable Perks at a 1% donation to the software author.",
+                    System.Windows.Forms.MessageBox.Show(MiningEngine.AdvancedProxiesRequirePerksMessage,
                         "Perks Required", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
                 }
 

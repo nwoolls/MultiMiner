@@ -1576,6 +1576,12 @@ namespace MultiMiner.Win.Forms
 
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
+                bool miningWithMultipleProxies = miningEngine.Mining && (devices.Count(d => d.Kind == DeviceKind.PXY) > 1);
+                if (!perksConfiguration.PerksEnabled && miningWithMultipleProxies)
+                {
+                    throw new Exception(MiningEngine.AdvancedProxiesRequirePerksMessage);
+                }
+
                 perksConfiguration.SavePerksConfiguration();
 
                 RefreshViewForConfigurationChanges();
@@ -4296,7 +4302,7 @@ namespace MultiMiner.Win.Forms
 
                     DeviceDetails deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
                         && (d.ID == deviceInformation.ID));
-                    int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
+                    int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails, minerProcess);
                     Xgminer.Data.Device device = devices[deviceIndex];
                     Engine.Data.Configuration.Coin coinConfiguration = CoinConfigurationForDevice(device);
                     
@@ -4736,7 +4742,7 @@ namespace MultiMiner.Win.Forms
 
                     DeviceDetails deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
                         && (d.ID == deviceInformation.ID));
-                    int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails);
+                    int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails, minerProcess);
 
                     if (deviceIndex >= 0)
                     {
@@ -4945,42 +4951,37 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private int GetDeviceIndexForDeviceDetails(DeviceDetails deviceDetails)
+        private int GetDeviceIndexForDeviceDetails(DeviceDetails deviceDetails, MinerProcess minerProcess)
         {
-            for (int i = 0; i < devices.Count; i++)
-            {
-                Xgminer.Data.Device device = devices[i];
-
-                if (device.Driver.Equals(deviceDetails.Driver, StringComparison.OrdinalIgnoreCase)
+            int result = devices
+                .FindIndex((device) => {
+                    return device.Driver.Equals(deviceDetails.Driver, StringComparison.OrdinalIgnoreCase)
                     &&
                     (
-                    //serial == serial && path == path (serial may not be unique)
-                    (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
-                      && !String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
+                        //serial == serial && path == path (serial may not be unique)
+                        (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
+                            && !String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
 
-                    //serial == serial && path == String.Empty - WinUSB/LibUSB has no path, but has a serial #
-                    || (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
-                      && String.IsNullOrEmpty(device.Path) && String.IsNullOrEmpty(deviceDetails.DevicePath))
+                        //serial == serial && path == String.Empty - WinUSB/LibUSB has no path, but has a serial #
+                        || (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
+                            && String.IsNullOrEmpty(device.Path) && String.IsNullOrEmpty(deviceDetails.DevicePath))
 
-                    //path == path
-                    || (!String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
+                        //path == path
+                        || (!String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
 
-                    //proxy == proxy
-                    || (device.Driver.Equals("proxy", StringComparison.OrdinalIgnoreCase))
+                        //proxy == proxy && ID = RelativeIndex
+                        || (device.Driver.Equals("proxy", StringComparison.OrdinalIgnoreCase) && (minerProcess.MinerConfiguration.DeviceDescriptors.Contains(device)))
 
-                    //opencl = opencl && ID = RelativeIndex
-                    || (device.Driver.Equals("opencl", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+                        //opencl = opencl && ID = RelativeIndex
+                        || (device.Driver.Equals("opencl", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
 
-                    //cpu = cpu && ID = RelativeIndex
-                    || (device.Driver.Equals("cpu", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+                        //cpu = cpu && ID = RelativeIndex
+                        || (device.Driver.Equals("cpu", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+                    );
+            
+                });
 
-                    ))
-                {
-                    return i;
-                }
-            }
-
-            return -1;
+            return result;
         }
 
         private void FlagSuspiciousMiner(MinerProcess minerProcess, DeviceInformation deviceInformation)
@@ -5356,7 +5357,11 @@ namespace MultiMiner.Win.Forms
             //check and include the index of the virtual stratum proxy "device"
             if (ea.MinerConfiguration.StratumProxy)
             {
-                Xgminer.Data.Device proxyDevice = devices.SingleOrDefault(d => d.Kind == DeviceKind.PXY);
+                int proxyIndex = engineConfiguration.XgminerConfiguration.StratumProxies
+                    .FindIndex(p => (p.GetworkPort == ea.MinerConfiguration.StratumProxyPort) && 
+                        (p.StratumPort == ea.MinerConfiguration.StratumProxyStratumPort));
+
+                Xgminer.Data.Device proxyDevice = devices.SingleOrDefault(d => (d.Kind == DeviceKind.PXY) && (d.RelativeIndex == proxyIndex));
                 if (proxyDevice != null)
                     ea.DeviceDescriptors.Add(proxyDevice);
             }
