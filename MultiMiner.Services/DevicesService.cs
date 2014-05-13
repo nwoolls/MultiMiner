@@ -40,8 +40,8 @@ namespace MultiMiner.Services
                     detectedDevices.Add(new Device() 
                     { 
                         Kind = DeviceKind.PXY,
-                        Driver = "proxy", 
-                        Name = "Stratum Proxy",
+                        Driver = "proxy",
+                        Name = String.Format("Stratum Proxy #{0}", (i + 1)),
                         RelativeIndex = i
                     });
                 }
