@@ -1,5 +1,6 @@
 ﻿using MultiMiner.CoinApi.Data;
 using MultiMiner.Engine.Data.Configuration;
+using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Xgminer.Installer;
 using System;
@@ -310,24 +311,12 @@ namespace MultiMiner.Engine
             foreach (CoinInformation realCoin in coinInformation)
             {
                 CoinInformation coinCopy = new CoinInformation();
-                CopyPoco(realCoin, coinCopy);
+                ObjectCopier.CopyObject(realCoin, coinCopy);
                 coinInformationCopy.Add(coinCopy);
             }
             return coinInformationCopy;
         }
-
-        private static void CopyPoco(object source, object destination)
-        {
-            Type destionationType = destination.GetType();
-            foreach (PropertyInfo sourceProperty in source.GetType().GetProperties())
-            {
-                MethodInfo sourcePropertyGetter = sourceProperty.GetGetMethod();
-                MethodInfo sourcePropertySetter = destionationType.GetProperty(sourceProperty.Name).GetSetMethod();
-                object valueToSet = sourcePropertyGetter.Invoke(source, null);
-                sourcePropertySetter.Invoke(destination, new[] { valueToSet });
-            }
-        }
-
+        
         private List<CoinInformation> GetCoinInformationOrderedByMiningBasis(IEnumerable<CoinInformation> configuredCoins)
         {
             List<CoinInformation> orderedCoins = configuredCoins.ToList();
