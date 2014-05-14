@@ -3020,14 +3020,18 @@ namespace MultiMiner.Win.Forms
             return GetTotalHashrate(GetViewModelToView(), algorithm, includeNetworkDevices);
         }
 
-        private double GetTotalHashrate(MinerFormViewModel viewModel, CoinAlgorithm algorithm, bool includeNetworkDevices)
+        private static double GetTotalHashrate(MinerFormViewModel viewModel, CoinAlgorithm algorithm, bool includeNetworkDevices)
         {
             double result = 0.00;
 
             //only include Visible devices
             foreach (DeviceViewModel device in viewModel.Devices.Where(d => d.Visible))
             {
-                if ((device.Coin != null) && (device.Coin.Algorithm == algorithm) &&
+                if ((device.Coin != null) && 
+                    
+                    //lump Scrypt-alts in with Scrypt for now
+                    ((device.Coin.Algorithm == algorithm) || ((device.Coin.Algorithm != CoinAlgorithm.SHA256) && (algorithm == CoinAlgorithm.Scrypt))) &&
+
                     //optionally filter out Network Devices
                     (includeNetworkDevices || (device.Kind != DeviceKind.NET)))
                     result += device.CurrentHashrate;
@@ -6764,14 +6768,8 @@ namespace MultiMiner.Win.Forms
             MinerFormViewModel viewModel = GetViewModelToView();
             //don't include Network Devices in the count for Remote ViewModels
             deviceTotalLabel.Text = String.Format("{0} device(s)", viewModel.Devices.Count(d => (viewModel == localViewModel) || (d.Kind != DeviceKind.NET)));
-
-            double scryptHashRate = 0;
-
-            //for now we total all scrypt alts together
-            foreach (MinerDescriptor miner in MinerFactory.Instance.Miners)
-                if (miner.Algorithm != CoinAlgorithm.SHA256)
-                    scryptHashRate += GetVisibleInstanceHashrate(miner.Algorithm, viewModel == localViewModel);
-
+            
+            double scryptHashRate = GetVisibleInstanceHashrate(CoinAlgorithm.Scrypt, viewModel == localViewModel);
             double sha256HashRate = GetVisibleInstanceHashrate(CoinAlgorithm.SHA256, viewModel == localViewModel);
 
             //Mh not mh, mh is milli
