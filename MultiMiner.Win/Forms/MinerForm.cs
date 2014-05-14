@@ -6280,6 +6280,17 @@ namespace MultiMiner.Win.Forms
                     deviceConfiguration.CoinSymbol = NetworkDeviceCoinSymbol;
                     deviceConfiguration.Enabled = true;
                 }
+                else if (viewModel.Kind == DeviceKind.PXY)
+                {
+                    if (viewModel.SupportsAlgorithm(coinConfiguration.CryptoCoin.Algorithm) &&
+                        //don't change the Algo a Proxy is mining - don't know what is pointed at it
+                        (viewModel.Coin.Algorithm == coinConfiguration.CryptoCoin.Algorithm))
+                        deviceConfiguration.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
+                    else
+                        deviceConfiguration.CoinSymbol = viewModel.Coin == null ? String.Empty : viewModel.Coin.Name;
+
+                    deviceConfiguration.Enabled = viewModel.Enabled;
+                }
                 else
                 {
                     if (viewModel.SupportsAlgorithm(coinConfiguration.CryptoCoin.Algorithm))
