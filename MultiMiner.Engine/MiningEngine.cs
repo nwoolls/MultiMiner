@@ -79,7 +79,6 @@ namespace MultiMiner.Engine
             {
                 this.engineConfiguration = engineConfiguration;
                 this.devices = devices;
-                MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
                 this.donationPercent = donationPercent;
 
                 if (coinInformation != null) //null if no network connection
@@ -686,14 +685,15 @@ namespace MultiMiner.Engine
             }
         }
 
-        private MinerProcess StoreMinerProcess(Process process, string coinSymbol, Xgminer.Data.Configuration.Miner minerConfiguration, int port)
+        private MinerProcess StoreMinerProcess(Process process, string coinSymbol, Xgminer.Data.Configuration.Miner minerConfiguration, int apiPort)
         {
-            MinerProcess minerProcess = new MinerProcess();
-
-            minerProcess.Process = process;
-            minerProcess.ApiPort = port;
-            minerProcess.MinerConfiguration = minerConfiguration;
-            minerProcess.CoinSymbol = coinSymbol;
+            MinerProcess minerProcess = new MinerProcess() 
+            { 
+                Process = process, 
+                ApiPort = apiPort, 
+                MinerConfiguration = minerConfiguration, 
+                CoinSymbol = coinSymbol 
+            };
 
             setupProcessStartInfo(minerProcess);
 
