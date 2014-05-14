@@ -4,7 +4,6 @@ using MultiMiner.Utility.Serialization;
 using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Xgminer.Data;
 using System;
-using System.Diagnostics;
 using MultiMiner.Win.Extensions;
 using System.Linq;
 using MultiMiner.Engine;
@@ -72,7 +71,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
             algoArgCombo.SelectedIndex = 0;
             
-            autoDesktopCheckBox.Enabled = !disableGpuCheckbox.Checked;
+            autoDesktopCheckBox.Enabled = !workingMinerConfiguration.DisableGpu;
 
             LoadProxySettings();
         }
@@ -103,16 +102,6 @@ namespace MultiMiner.Win.Forms.Configuration
 
             proxy.GetworkPort = int.Parse(proxyPortEdit.Text);
             proxy.StratumPort = int.Parse(stratumProxyPortEdit.Text);
-        }
-
-        private void disableGpuCheckbox_CheckedChanged(object sender, EventArgs e)
-        {
-            autoDesktopCheckBox.Enabled = !disableGpuCheckbox.Checked;
-        }
-
-        private void scryptConfigLink_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start("https://litecoin.info/Mining_hardware_comparison#GPU");
         }
 
         private void argAlgoCombo_SelectedIndexChanged(object sender, EventArgs e)
@@ -164,6 +153,14 @@ namespace MultiMiner.Win.Forms.Configuration
         private void proxyPortEdit_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+        }
+
+        private void gpuSettingsLink_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+        {
+            using (GPUMinerSettingsForm gpuSettingsForm = new GPUMinerSettingsForm(workingMinerConfiguration))
+            {
+                System.Windows.Forms.DialogResult dialogResult = gpuSettingsForm.ShowDialog();
+            }
         }
     }
 }

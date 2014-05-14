@@ -19,13 +19,15 @@ namespace MultiMiner.Engine.Data.Configuration
         public Xgminer()
         {
             AlgorithmFlags = new SerializableDictionary<CoinAlgorithm, string>();
+            AlgorithmMiners = new SerializableDictionary<CoinAlgorithm, string>();
             Priority = ProcessPriorityClass.Normal;
             StartingApiPort = 4028;
 
             StratumProxies = new List<ProxyDescriptor>();
         }
-        
+
         public SerializableDictionary<CoinAlgorithm, string> AlgorithmFlags { get; set; }
+        public SerializableDictionary<CoinAlgorithm, string> AlgorithmMiners { get; set; }
         public string ScanArguments { get; set; }
         public bool DesktopMode { get; set; }
         public bool DisableGpu { get; set; }
