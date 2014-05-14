@@ -422,14 +422,30 @@ namespace MultiMiner.Engine
                 {
                     profitableCoin = null;
 
-                    if (device.SupportsAlgorithm(CoinAlgorithm.Scrypt) && !device.SupportsAlgorithm(CoinAlgorithm.SHA256))
+                    if (device.Kind == DeviceKind.PXY)
+                    {
+                        Data.Configuration.Coin existingCoinConfig = engineConfiguration.CoinConfigurations.Single(cc => cc.CryptoCoin.Symbol.Equals(existingConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+
+                        //keep Proxies on the same algo - don't know what is pointed at them
+                        if (existingCoinConfig.CryptoCoin.Algorithm == CoinAlgorithm.Scrypt)
+                        {
+                            profitableCoin = ChooseCoinFromList(scryptProfitableCoins, scryptIterator);
+
+                            scryptIterator++;
+                        }
+                        else
+                        {
+                            profitableCoin = ChooseCoinFromList(sha256ProfitableCoins, sha256Iterator);
+
+                            sha256Iterator++;
+                        }
+                    }
+                    else if (device.SupportsAlgorithm(CoinAlgorithm.Scrypt) && !device.SupportsAlgorithm(CoinAlgorithm.SHA256))
                     {
                         //scrypt only
                         profitableCoin = ChooseCoinFromList(scryptProfitableCoins, scryptIterator);
 
                         scryptIterator++;
-                        if (scryptIterator >= scryptProfitableCoins.Count())
-                            scryptIterator = 0;
                     }
                     else if (device.SupportsAlgorithm(CoinAlgorithm.Scrypt) && device.SupportsAlgorithm(CoinAlgorithm.SHA256))
                     {
@@ -437,8 +453,6 @@ namespace MultiMiner.Engine
                         profitableCoin = ChooseCoinFromList(allProfitableCoins, comboAlgoIterator);
 
                         comboAlgoIterator++;
-                        if (comboAlgoIterator >= allProfitableCoins.Count())
-                            comboAlgoIterator = 0;
                     }
                     else if (sha256ProfitableCoins.Count > 0)
                     {
@@ -446,9 +460,14 @@ namespace MultiMiner.Engine
                         profitableCoin = ChooseCoinFromList(sha256ProfitableCoins, sha256Iterator);
 
                         sha256Iterator++;
-                        if (sha256Iterator >= sha256ProfitableCoins.Count())
-                            sha256Iterator = 0;
                     }
+
+                    if (comboAlgoIterator >= allProfitableCoins.Count())
+                        comboAlgoIterator = 0;
+                    if (sha256Iterator >= sha256ProfitableCoins.Count())
+                        sha256Iterator = 0;
+                    if (scryptIterator >= scryptProfitableCoins.Count())
+                        scryptIterator = 0;
 
                     Engine.Data.Configuration.Device configEntry = new Engine.Data.Configuration.Device();
 
