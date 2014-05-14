@@ -4778,7 +4778,7 @@ namespace MultiMiner.Win.Forms
                 if (!String.IsNullOrEmpty(coinSymbol))
                     CheckAndSetNetworkDifficulty(minerProcess.ApiContext.IpAddress, minerProcess.ApiContext.Port, coinSymbol);
 
-                localViewModel.ApplyDeviceDetailsResponseModels(minerProcess.CoinSymbol, processDevices);
+                localViewModel.ApplyDeviceDetailsResponseModels(minerProcess.MinerConfiguration.DeviceDescriptors, processDevices);
             }
 
             RefreshViewFromDeviceStats();

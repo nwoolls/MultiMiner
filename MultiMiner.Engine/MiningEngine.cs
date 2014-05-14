@@ -602,36 +602,88 @@ namespace MultiMiner.Engine
                 .Select(c => c.CoinSymbol)
                 .Distinct();
 
-            int port = engineConfiguration.XgminerConfiguration.StartingApiPort;
+            int startingApiPort = engineConfiguration.XgminerConfiguration.StartingApiPort;
 
             foreach (string coinSymbol in coinSymbols)
             {
-                //launch separate processes for CPU & GPU vs USB & PXY (for stability)
-                Xgminer.Data.Configuration.Miner minerConfiguration = CreateMinerConfiguration(port, coinSymbol, DeviceKind.CPU | DeviceKind.GPU);
-                if (minerConfiguration != null)
-                {
-                    Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
-                    if (!process.HasExited)
-                    {
-                        MinerProcess minerProcess = StoreMinerProcess(process, coinSymbol, minerConfiguration, port);
-                        minerProcess.TerminateProcess = engineConfiguration.XgminerConfiguration.TerminateGpuMiners;
-                    }
+                LaunchConsumerMiners(ref startingApiPort, coinSymbol);
 
-                    port++;
-                }
-
-                minerConfiguration = CreateMinerConfiguration(port, coinSymbol, DeviceKind.PXY | DeviceKind.USB);
-                if (minerConfiguration != null)
-                {
-                    Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
-                    if (!process.HasExited)
-                        StoreMinerProcess(process, coinSymbol, minerConfiguration, port);
-
-                    port++;
-                }
+                LaunchDedicatedMiners(ref startingApiPort, coinSymbol);
             }
 
+            //launch proxies separately now that we support any number of proxies pointed at any coin
+            //e.g. could have two setup and pointed at BTC, cannot handle launching with above processes
+            LaunchProxyMiners(startingApiPort);
+
             mining = true;
+        }
+
+        private void LaunchProxyMiners(int apiPort)
+        {
+            IEnumerable<Xgminer.Data.Device> proxyDevices = devices.Where(d => d.Kind == DeviceKind.PXY);
+            foreach (Xgminer.Data.Device proxyDevice in proxyDevices)
+            {
+                Data.Configuration.Device deviceConfiguration = engineConfiguration.DeviceConfigurations.Single(d => d.Equals(proxyDevice));
+
+                Xgminer.Data.Configuration.Miner minerConfiguration = CreateProxyConfiguration(apiPort, deviceConfiguration.CoinSymbol);
+                //null if no pools configured
+                if (minerConfiguration != null)
+                {
+                    minerConfiguration.DeviceDescriptors.Add(proxyDevice);
+
+                    minerConfiguration.StratumProxy = engineConfiguration.XgminerConfiguration.StratumProxy;
+
+                    int index = Math.Max(0, proxyDevice.RelativeIndex);
+
+                    if ((donationPercent == 0) && (index > 0))
+                    {
+                        throw new Exception(AdvancedProxiesRequirePerksMessage);
+                    }
+
+                    MultiMiner.Engine.Data.Configuration.Xgminer.ProxyDescriptor proxyDescriptor = engineConfiguration.XgminerConfiguration.StratumProxies[index];
+
+                    minerConfiguration.StratumProxyPort = proxyDescriptor.GetworkPort;
+                    minerConfiguration.StratumProxyStratumPort = proxyDescriptor.StratumPort;
+
+                    Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
+                    if (!process.HasExited)
+                        StoreMinerProcess(process, deviceConfiguration.CoinSymbol, minerConfiguration, apiPort);
+
+                    apiPort++;
+                }
+            }
+        }
+
+        private void LaunchConsumerMiners(ref int apiPort, string coinSymbol)
+        {
+            //launch separate processes for CPU & GPU vs USB & PXY (for stability)
+            Xgminer.Data.Configuration.Miner minerConfiguration = CreateMinerConfiguration(apiPort, coinSymbol, DeviceKind.CPU | DeviceKind.GPU);
+            //null if no pools configured
+            if (minerConfiguration != null)
+            {
+                Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
+                if (!process.HasExited)
+                {
+                    MinerProcess minerProcess = StoreMinerProcess(process, coinSymbol, minerConfiguration, apiPort);
+                    minerProcess.TerminateProcess = engineConfiguration.XgminerConfiguration.TerminateGpuMiners;
+                }
+
+                apiPort++;
+            }
+        }
+
+        private void LaunchDedicatedMiners(ref int port, string coinSymbol)
+        {
+            Xgminer.Data.Configuration.Miner minerConfiguration = CreateMinerConfiguration(port, coinSymbol, DeviceKind.USB);
+            //null if no pools configured
+            if (minerConfiguration != null)
+            {
+                Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
+                if (!process.HasExited)
+                    StoreMinerProcess(process, coinSymbol, minerConfiguration, port);
+
+                port++;
+            }
         }
 
         private MinerProcess StoreMinerProcess(Process process, string coinSymbol, Xgminer.Data.Configuration.Miner minerConfiguration, int port)
@@ -664,33 +716,58 @@ namespace MultiMiner.Engine
             return process;
         }
 
-        private Xgminer.Data.Configuration.Miner CreateMinerConfiguration(int port, string coinSymbol, DeviceKind includeKinds)
+        private Xgminer.Data.Configuration.Miner CreateMinerConfiguration(int apiPort, string coinSymbol, DeviceKind includeKinds)
+        {
+            Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.CryptoCoin.Symbol.Equals(coinSymbol));
+            if (coinConfiguration.Pools.Count == 0)
+                // no pools configured
+                return null;
+            
+            MinerDescriptor miner = MinerFactory.Instance.GetMiner(coinConfiguration.CryptoCoin.Algorithm);
+
+            Xgminer.Data.Configuration.Miner minerConfiguration = CreateBasicConfiguration(miner, coinConfiguration, apiPort);
+
+            IList<Engine.Data.Configuration.Device> enabledConfigurations = 
+                engineConfiguration.DeviceConfigurations
+                .Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol)).ToList();
+
+            int deviceCount = SetupConfigurationDevices(minerConfiguration, includeKinds, enabledConfigurations);
+            if (deviceCount == 0)
+                return null;
+
+            return minerConfiguration;
+        }
+
+        private Xgminer.Data.Configuration.Miner CreateProxyConfiguration(int apiPort, string coinSymbol)
         {
             Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.CryptoCoin.Symbol.Equals(coinSymbol));
             if (coinConfiguration.Pools.Count == 0)
                 // no pools configured
                 return null;
 
-            IList<Engine.Data.Configuration.Device> enabledConfigurations = engineConfiguration.DeviceConfigurations.Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol)).ToList();
+            //BFGMiner for proxying
+            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner(); 
 
-            MinerDescriptor miner = MinerFactory.Instance.GetMiner(coinConfiguration.CryptoCoin.Algorithm);
+            return CreateBasicConfiguration(miner, coinConfiguration, apiPort);
+        }
 
-            Xgminer.Data.Configuration.Miner minerConfiguration = new Xgminer.Data.Configuration.Miner() 
+        private Xgminer.Data.Configuration.Miner CreateBasicConfiguration(
+            MinerDescriptor miner, 
+            Data.Configuration.Coin coinConfiguration, 
+            int apiPort)
+        {            
+            Xgminer.Data.Configuration.Miner minerConfiguration = new Xgminer.Data.Configuration.Miner()
             {
-                ExecutablePath = MinerPath.GetPathToInstalledMiner(miner), 
-                Algorithm = coinConfiguration.CryptoCoin.Algorithm, 
-                ApiPort = port, 
-                ApiListen = true, 
-                AllowedApiIps = engineConfiguration.XgminerConfiguration.AllowedApiIps, 
-                CoinName = coinConfiguration.CryptoCoin.Name, 
-                DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu 
+                ExecutablePath = MinerPath.GetPathToInstalledMiner(miner),
+                Algorithm = coinConfiguration.CryptoCoin.Algorithm,
+                ApiPort = apiPort,
+                ApiListen = true,
+                AllowedApiIps = engineConfiguration.XgminerConfiguration.AllowedApiIps,
+                CoinName = coinConfiguration.CryptoCoin.Name,
+                DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu
             };
-            
-            SetupConfigurationPools(minerConfiguration, coinConfiguration);
 
-            int deviceCount = SetupConfigurationDevices(minerConfiguration, includeKinds, enabledConfigurations);
-            if (deviceCount == 0)
-                return null;
+            SetupConfigurationPools(minerConfiguration, coinConfiguration);
 
             SetupConfigurationArguments(minerConfiguration, coinConfiguration);
 
@@ -734,25 +811,6 @@ namespace MultiMiner.Engine
                 deviceCount++;
 
                 minerConfiguration.DeviceDescriptors.Add(device);
-
-                //don't actually add stratum device as a device index
-                if (device.Kind == DeviceKind.PXY)
-                {
-                    //only enable the stratum proxy if these devices contain the PXY device
-                    minerConfiguration.StratumProxy = engineConfiguration.XgminerConfiguration.StratumProxy;
-
-                    int index = Math.Max(0, device.RelativeIndex);
-
-                    if ((donationPercent == 0) && (index > 0))
-                    {
-                        throw new Exception(AdvancedProxiesRequirePerksMessage);
-                    }
-
-                    MultiMiner.Engine.Data.Configuration.Xgminer.ProxyDescriptor proxy = engineConfiguration.XgminerConfiguration.StratumProxies[index];
-                    
-                    minerConfiguration.StratumProxyPort = proxy.GetworkPort;
-                    minerConfiguration.StratumProxyStratumPort = proxy.StratumPort;
-                }
             }
             return deviceCount;
         }
