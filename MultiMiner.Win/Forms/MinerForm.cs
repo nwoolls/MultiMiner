@@ -5012,6 +5012,11 @@ namespace MultiMiner.Win.Forms
                 }
             }
 
+            if (miningCoinConfigurations == null)
+                //started mining but haven't yet assigned mining members
+                //cannot check the following yet
+                return;
+
             Coin coinConfiguration = miningCoinConfigurations
                 .Single(config => config.CryptoCoin.Symbol.Equals(minerProcess.CoinSymbol, StringComparison.OrdinalIgnoreCase));
             MinerDescriptor miner = MinerFactory.Instance.GetMiner(coinConfiguration.CryptoCoin.Algorithm);
