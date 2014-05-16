@@ -55,5 +55,10 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             PopulateMinerCombo();
         }
+
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

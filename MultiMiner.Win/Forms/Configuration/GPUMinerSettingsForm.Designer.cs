@@ -34,8 +34,8 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.disableGpuCheckbox = new System.Windows.Forms.CheckBox();
             this.xgminerConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.disableGpuCheckbox = new System.Windows.Forms.CheckBox();
             this.algoCombo = new System.Windows.Forms.ComboBox();
             this.minerCombo = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -63,6 +63,7 @@
             this.saveButton.TabIndex = 0;
             this.saveButton.Text = "OK";
             this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
             // cancelButton
             // 
@@ -86,6 +87,10 @@
             this.checkBox2.Text = "Terminate GPU miners";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
+            // xgminerConfigurationBindingSource
+            // 
+            this.xgminerConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Data.Configuration.Xgminer);
+            // 
             // disableGpuCheckbox
             // 
             this.disableGpuCheckbox.AutoSize = true;
@@ -97,17 +102,13 @@
             this.disableGpuCheckbox.Text = "Disable GPU mining";
             this.disableGpuCheckbox.UseVisualStyleBackColor = true;
             // 
-            // xgminerConfigurationBindingSource
-            // 
-            this.xgminerConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Data.Configuration.Xgminer);
-            // 
             // algoCombo
             // 
             this.algoCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.algoCombo.FormattingEnabled = true;
             this.algoCombo.Location = new System.Drawing.Point(17, 22);
             this.algoCombo.Name = "algoCombo";
-            this.algoCombo.Size = new System.Drawing.Size(80, 23);
+            this.algoCombo.Size = new System.Drawing.Size(105, 23);
             this.algoCombo.TabIndex = 7;
             this.algoCombo.SelectedIndexChanged += new System.EventHandler(this.algoCombo_SelectedIndexChanged);
             // 
@@ -115,15 +116,15 @@
             // 
             this.minerCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.minerCombo.FormattingEnabled = true;
-            this.minerCombo.Location = new System.Drawing.Point(154, 22);
+            this.minerCombo.Location = new System.Drawing.Point(175, 22);
             this.minerCombo.Name = "minerCombo";
-            this.minerCombo.Size = new System.Drawing.Size(174, 23);
+            this.minerCombo.Size = new System.Drawing.Size(153, 23);
             this.minerCombo.TabIndex = 8;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(107, 25);
+            this.label1.Location = new System.Drawing.Point(128, 25);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(41, 15);
             this.label1.TabIndex = 9;
