@@ -49,8 +49,8 @@ namespace MultiMiner.Engine
             miner = factory.RegisterMiner("DarkcoinSGMiner", "SGMiner", true);
             factory.DefaultMiners[CoinAlgorithm.X11] = miner;
 
-            miner = factory.RegisterMiner("SGMiner", "SGMiner", false);
-            miner = factory.RegisterMiner("SPHSGMiner", "SGMiner", false);
+            miner = factory.RegisterMiner("SGMiner", "SGMiner", true);
+            miner = factory.RegisterMiner("SPHSGMiner", "SGMiner", true);
         }
 
         public bool Donating
