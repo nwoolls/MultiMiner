@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MultiMiner.Engine.Data;
+using MultiMiner.Utility.Serialization;
 
 namespace MultiMiner.Engine
 {
@@ -32,27 +33,31 @@ namespace MultiMiner.Engine
         }
 
         public readonly List<MinerDescriptor> Miners = new List<MinerDescriptor>();
+        public readonly Dictionary<CoinAlgorithm, MinerDescriptor> DefaultMiners = new Dictionary<CoinAlgorithm, MinerDescriptor>();
 
-        public MinerDescriptor GetMiner(CoinAlgorithm algorithm)
+        public MinerDescriptor GetMiner(CoinAlgorithm algorithm, SerializableDictionary<CoinAlgorithm, string> miners)
         {
-            return Miners
-                .SingleOrDefault(miner => miner.Algorithm == algorithm);
+            if (miners.ContainsKey(algorithm))
+                return Miners.Single(m => m.Name.Equals(miners[algorithm], StringComparison.OrdinalIgnoreCase));
+            else
+                return DefaultMiners[algorithm];
         }
 
         public MinerDescriptor GetDefaultMiner()
         {
-            return GetMiner(CoinAlgorithm.SHA256);
+            return Miners.First();
         }
 
-        public void RegisterMiner(CoinAlgorithm algorithm, string name, string fileName, bool legacyApi)
+        public MinerDescriptor RegisterMiner(string name, string fileName, bool legacyApi)
         {
-            Miners.Add(new MinerDescriptor()
+            MinerDescriptor miner = new MinerDescriptor()
             {
-                Algorithm = algorithm,
                 Name = name,
                 FileName = fileName,
                 LegacyApi = legacyApi
-            });
+            };
+            Miners.Add(miner);
+            return miner;
         }
     }
 }

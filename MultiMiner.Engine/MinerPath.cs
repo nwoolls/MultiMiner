@@ -12,24 +12,10 @@ namespace MultiMiner.Engine
         {
             string executablePath = string.Empty;
 
-            switch (miner.Algorithm)
-            {
-                case CoinAlgorithm.SHA256:
-                    executablePath = GetPathToBFGMiner(miner.FileName);
-                    break;
-                case CoinAlgorithm.Scrypt:
-                    executablePath = GetPathToBFGMiner(miner.FileName);
-                    break;
-                case CoinAlgorithm.ScryptJane:
-                    executablePath = GetPathToMinerOnWindows(miner.Name, miner.FileName);
-                    break;
-                case CoinAlgorithm.ScryptN:
-                    executablePath = GetPathToMinerOnWindows(miner.Name, miner.FileName);
-                    break;
-                case CoinAlgorithm.X11:
-                    executablePath = GetPathToMinerOnWindows(miner.Name, miner.FileName);
-                    break;
-            }
+            if (miner.Name.Equals("bfgminer", StringComparison.OrdinalIgnoreCase))
+                executablePath = GetPathToBFGMiner(miner.FileName);
+            else
+                executablePath = GetPathToMinerOnWindows(miner.Name, miner.FileName);
 
             return executablePath;
         }

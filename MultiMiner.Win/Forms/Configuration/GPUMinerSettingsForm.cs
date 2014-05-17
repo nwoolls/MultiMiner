@@ -5,21 +5,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MultiMiner.Engine;
+using MultiMiner.Engine.Data;
+using MultiMiner.Utility.Serialization;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
     public partial class GPUMinerSettingsForm : MessageBoxFontForm
     {
         private IList<CoinAlgorithm> algorithms;
+
+        private Engine.Data.Configuration.Xgminer minerConfiguration;
+        private Engine.Data.Configuration.Xgminer workingMinerConfiguration;
+
         public GPUMinerSettingsForm(Engine.Data.Configuration.Xgminer minerConfiguration)
         {
             InitializeComponent();
-            xgminerConfigurationBindingSource.DataSource = minerConfiguration;
+            this.minerConfiguration = minerConfiguration;
+            this.workingMinerConfiguration = ObjectCopier.CloneObject<Engine.Data.Configuration.Xgminer, Engine.Data.Configuration.Xgminer>(minerConfiguration);
         }
 
         private void GPUMinerSettingsForm_Load(object sender, EventArgs e)
         {
             PopulateAlgorithmCombo();
+            xgminerConfigurationBindingSource.DataSource = workingMinerConfiguration;
             LoadSettings();
         }
 
@@ -28,19 +36,29 @@ namespace MultiMiner.Win.Forms.Configuration
             algoCombo.SelectedIndex = 0;
         }
 
+        private void SaveSettings()
+        {
+        }
+
         private void PopulateMinerCombo()
         {
             CoinAlgorithm algorithm = algorithms[algoCombo.SelectedIndex];
 
             minerCombo.Items.Clear();
             IEnumerable<string> miners = MinerFactory.Instance.Miners
-                .Where(miner => miner.Algorithm == algorithm)
-                .Select(m => m.Name);
+                .Select(m => m.Name)
+                .OrderBy(m => m);
+
+
             foreach (string miner in miners)
-            {
                 minerCombo.Items.Add(miner);
-            }
-            minerCombo.SelectedIndex = 0;
+
+            string currentMiner = MinerFactory.Instance.DefaultMiners[algorithm].Name;
+
+            if (minerConfiguration.AlgorithmMiners.ContainsKey(algorithm))
+                currentMiner = minerConfiguration.AlgorithmMiners[algorithm];
+
+            minerCombo.SelectedItem = currentMiner;
         }
 
         private void PopulateAlgorithmCombo()
@@ -58,6 +76,20 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void saveButton_Click(object sender, EventArgs e)
         {
+            SaveSettings();
+            ObjectCopier.CopyObject(workingMinerConfiguration, minerConfiguration);
+            DialogResult = System.Windows.Forms.DialogResult.OK;
+        }
+
+        private void minerCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SaveMinerChoice();
+        }
+
+        private void SaveMinerChoice()
+        {
+            CoinAlgorithm algorithm = algorithms[algoCombo.SelectedIndex];
+            workingMinerConfiguration.AlgorithmMiners[algorithm] = minerCombo.Text;
 
         }
     }

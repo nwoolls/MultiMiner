@@ -5024,7 +5024,8 @@ namespace MultiMiner.Win.Forms
 
             Coin coinConfiguration = miningCoinConfigurations
                 .Single(config => config.CryptoCoin.Symbol.Equals(minerProcess.CoinSymbol, StringComparison.OrdinalIgnoreCase));
-            MinerDescriptor miner = MinerFactory.Instance.GetMiner(coinConfiguration.CryptoCoin.Algorithm);
+            MinerDescriptor miner = MinerFactory.Instance.GetMiner(coinConfiguration.CryptoCoin.Algorithm,
+                engineConfiguration.XgminerConfiguration.AlgorithmMiners);
 
             //Work Utility not returned by legacy API miners
             if (!miner.LegacyApi)
@@ -6806,10 +6807,11 @@ namespace MultiMiner.Win.Forms
             if (miningEngine.Mining)
                 return;
 
+            //download miners BEFORE checking for config files
+            DownloadRequiredMiners();
+
             if (!ConfigFileHandled())
                 return;
-
-            DownloadRequiredMiners();
 
             startButton.Enabled = false; //immediately disable, update after
             startMenuItem.Enabled = false;
@@ -6874,7 +6876,8 @@ namespace MultiMiner.Win.Forms
                 .Distinct();
 
             foreach (CoinAlgorithm configuredAlgorithm in configuredAlgorithms)
-                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(configuredAlgorithm));
+                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(configuredAlgorithm,
+                    engineConfiguration.XgminerConfiguration.AlgorithmMiners));
         }
 
         private void CheckAndDownloadMiner(MinerDescriptor miner)

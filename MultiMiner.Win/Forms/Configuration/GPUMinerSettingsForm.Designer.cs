@@ -120,6 +120,7 @@
             this.minerCombo.Name = "minerCombo";
             this.minerCombo.Size = new System.Drawing.Size(153, 23);
             this.minerCombo.TabIndex = 8;
+            this.minerCombo.SelectedIndexChanged += new System.EventHandler(this.minerCombo_SelectedIndexChanged);
             // 
             // label1
             // 

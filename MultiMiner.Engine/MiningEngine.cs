@@ -2,12 +2,11 @@
 using MultiMiner.Engine.Data.Configuration;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer.Data;
-using MultiMiner.Xgminer.Installers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
+using MultiMiner.Engine.Data;
 
 namespace MultiMiner.Engine
 {
@@ -35,11 +34,23 @@ namespace MultiMiner.Engine
 
         private static void RegisterMiners()
         {
-            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.SHA256, "BFGMiner", "BFGMiner", new BFGMinerInstaller(), false);
-            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.Scrypt, "BFGMiner", "BFGMiner", new BFGMinerInstaller(), false);
-            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.ScryptJane, "KalrothSJCGMiner", "CGMiner", new KalrothSJCGMinerInstaller(), true);
-            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.ScryptN, "Vertminer", "Vertminer", new VertminerInstaller(), true);
-            MinerFactory.Instance.RegisterMiner(CoinAlgorithm.X11, "DarkcoinSGMiner", "SGMiner", new DarkcoinSGMinerInstaller(), true);
+            MinerFactory factory = MinerFactory.Instance;
+
+            MinerDescriptor miner = factory.RegisterMiner("BFGMiner", "BFGMiner", false);
+            factory.DefaultMiners[CoinAlgorithm.SHA256] = miner;
+            factory.DefaultMiners[CoinAlgorithm.Scrypt] = miner;
+
+            miner = factory.RegisterMiner("KalrothSJCGMiner", "CGMiner", true);
+            factory.DefaultMiners[CoinAlgorithm.ScryptJane] = miner;
+
+            miner = factory.RegisterMiner("Vertminer", "Vertminer", true);
+            factory.DefaultMiners[CoinAlgorithm.ScryptN] = miner;
+
+            miner = factory.RegisterMiner("DarkcoinSGMiner", "SGMiner", true);
+            factory.DefaultMiners[CoinAlgorithm.X11] = miner;
+
+            miner = factory.RegisterMiner("SGMiner", "SGMiner", false);
+            miner = factory.RegisterMiner("SPHSGMiner", "SGMiner", false);
         }
 
         public bool Donating
@@ -714,7 +725,7 @@ namespace MultiMiner.Engine
         {
             minerConfiguration.Priority = this.engineConfiguration.XgminerConfiguration.Priority;
 
-            MinerDescriptor descriptor = MinerFactory.Instance.GetMiner(minerConfiguration.Algorithm);
+            MinerDescriptor descriptor = MinerFactory.Instance.GetMiner(minerConfiguration.Algorithm, engineConfiguration.XgminerConfiguration.AlgorithmMiners);
 
             Xgminer.Miner miner = new Xgminer.Miner(minerConfiguration, descriptor.LegacyApi);
             miner.LogLaunch += this.LogProcessLaunch;
@@ -731,7 +742,7 @@ namespace MultiMiner.Engine
                 // no pools configured
                 return null;
             
-            MinerDescriptor miner = MinerFactory.Instance.GetMiner(coinConfiguration.CryptoCoin.Algorithm);
+            MinerDescriptor miner = MinerFactory.Instance.GetMiner(coinConfiguration.CryptoCoin.Algorithm, engineConfiguration.XgminerConfiguration.AlgorithmMiners);
 
             Xgminer.Data.Configuration.Miner minerConfiguration = CreateBasicConfiguration(miner, coinConfiguration, apiPort);
 
