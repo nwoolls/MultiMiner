@@ -643,6 +643,10 @@ namespace MultiMiner.Engine
             {
                 Data.Configuration.Device deviceConfiguration = engineConfiguration.DeviceConfigurations.Single(d => d.Equals(proxyDevice));
 
+                //proxy is disabled
+                if (!deviceConfiguration.Enabled)
+                    continue;
+
                 Xgminer.Data.Configuration.Miner minerConfiguration = CreateProxyConfiguration(apiPort, deviceConfiguration.CoinSymbol);
                 //null if no pools configured
                 if (minerConfiguration != null)
