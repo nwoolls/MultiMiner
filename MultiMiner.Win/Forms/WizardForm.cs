@@ -13,7 +13,7 @@ using MultiMiner.Utility.Forms;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
 using MultiMiner.Win.Data;
-using MultiMiner.Xgminer.Installer;
+using MultiMiner.Xgminer.Installers;
 
 namespace MultiMiner.Win.Forms
 {

@@ -1,7 +1,7 @@
 ﻿using MultiMiner.Utility.OS;
 using System;
 
-namespace MultiMiner.Xgminer.Installer
+namespace MultiMiner.Xgminer.Installers
 {
     public class BFGMinerInstaller : BaseInstaller, IMinerInstaller
     {

@@ -36,7 +36,7 @@ using MultiMiner.Win.Controls;
 using MultiMiner.Win.Forms.Configuration;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
-using MultiMiner.Xgminer.Installer;
+using MultiMiner.Xgminer.Installers;
 
 namespace MultiMiner.Win.Forms
 {

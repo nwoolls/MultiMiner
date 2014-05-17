@@ -1,5 +1,5 @@
 ﻿using MultiMiner.Xgminer.Data;
-using MultiMiner.Xgminer.Installer;
+using MultiMiner.Xgminer.Installers;
 
 namespace MultiMiner.Engine
 {

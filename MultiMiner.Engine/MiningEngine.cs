@@ -2,7 +2,7 @@
 using MultiMiner.Engine.Data.Configuration;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer.Data;
-using MultiMiner.Xgminer.Installer;
+using MultiMiner.Xgminer.Installers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

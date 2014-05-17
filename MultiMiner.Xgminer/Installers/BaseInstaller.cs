@@ -6,7 +6,7 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace MultiMiner.Xgminer.Installer
+namespace MultiMiner.Xgminer.Installers
 {
     public class BaseInstaller
     {

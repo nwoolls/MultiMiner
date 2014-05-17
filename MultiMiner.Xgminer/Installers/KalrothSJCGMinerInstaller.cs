@@ -1,4 +1,4 @@
-﻿namespace MultiMiner.Xgminer.Installer
+﻿namespace MultiMiner.Xgminer.Installers
 {
     public class KalrothSJCGMinerInstaller : BaseInstaller, IMinerInstaller
     {
