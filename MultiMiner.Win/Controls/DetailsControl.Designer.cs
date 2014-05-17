@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DetailsControl));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.closeDetailsButton = new System.Windows.Forms.Button();
@@ -52,6 +52,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.hashrateLabel = new System.Windows.Forms.Label();
             this.workersGridView = new System.Windows.Forms.DataGridView();
+            this.temperatureDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.workersTitleLabel = new System.Windows.Forms.Label();
             this.tempLabel = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
@@ -83,13 +84,17 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.currentRateLabel = new System.Windows.Forms.Label();
             this.label29 = new System.Windows.Forms.Label();
+            this.proxyInfoPanel = new System.Windows.Forms.Panel();
+            this.proxyGetworkLabel = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.proxyStratumLabel = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
             this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.workerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.workerNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.temperatureDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.hardwareErrorsPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.utilityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.workerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.workersGridView)).BeginInit();
             this.noDetailsPanel.SuspendLayout();
@@ -97,6 +102,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.proxyInfoPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.workerBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -309,6 +315,16 @@
             this.workersGridView.Size = new System.Drawing.Size(587, 226);
             this.workersGridView.TabIndex = 17;
             this.workersGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.workersGridView_CellFormatting);
+            // 
+            // temperatureDataGridViewTextBoxColumn
+            // 
+            this.temperatureDataGridViewTextBoxColumn.DataPropertyName = "Temperature";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.temperatureDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            this.temperatureDataGridViewTextBoxColumn.FillWeight = 60F;
+            this.temperatureDataGridViewTextBoxColumn.HeaderText = "Temp";
+            this.temperatureDataGridViewTextBoxColumn.Name = "temperatureDataGridViewTextBoxColumn";
+            this.temperatureDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // workersTitleLabel
             // 
@@ -633,13 +649,69 @@
             this.label29.TabIndex = 43;
             this.label29.Text = "Current:";
             // 
+            // proxyInfoPanel
+            // 
+            this.proxyInfoPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.proxyInfoPanel.Controls.Add(this.proxyStratumLabel);
+            this.proxyInfoPanel.Controls.Add(this.label25);
+            this.proxyInfoPanel.Controls.Add(this.proxyGetworkLabel);
+            this.proxyInfoPanel.Controls.Add(this.label20);
+            this.proxyInfoPanel.Location = new System.Drawing.Point(4, 109);
+            this.proxyInfoPanel.Name = "proxyInfoPanel";
+            this.proxyInfoPanel.Size = new System.Drawing.Size(590, 31);
+            this.proxyInfoPanel.TabIndex = 45;
+            this.proxyInfoPanel.Visible = false;
+            // 
+            // proxyGetworkLabel
+            // 
+            this.proxyGetworkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.proxyGetworkLabel.AutoEllipsis = true;
+            this.proxyGetworkLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.proxyGetworkLabel.Location = new System.Drawing.Point(88, 1);
+            this.proxyGetworkLabel.Name = "proxyGetworkLabel";
+            this.proxyGetworkLabel.Size = new System.Drawing.Size(498, 15);
+            this.proxyGetworkLabel.TabIndex = 34;
+            this.proxyGetworkLabel.Text = "label14";
+            this.proxyGetworkLabel.UseMnemonic = false;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label20.Location = new System.Drawing.Point(3, 1);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(54, 15);
+            this.label20.TabIndex = 33;
+            this.label20.Text = "Getwork:";
+            // 
+            // proxyStratumLabel
+            // 
+            this.proxyStratumLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.proxyStratumLabel.AutoEllipsis = true;
+            this.proxyStratumLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.proxyStratumLabel.Location = new System.Drawing.Point(88, 16);
+            this.proxyStratumLabel.Name = "proxyStratumLabel";
+            this.proxyStratumLabel.Size = new System.Drawing.Size(498, 15);
+            this.proxyStratumLabel.TabIndex = 36;
+            this.proxyStratumLabel.Text = "label14";
+            this.proxyStratumLabel.UseMnemonic = false;
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label25.Location = new System.Drawing.Point(3, 16);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(52, 15);
+            this.label25.TabIndex = 35;
+            this.label25.Text = "Stratum:";
+            // 
             // deviceBindingSource
             // 
             this.deviceBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
-            // 
-            // workerBindingSource
-            // 
-            this.workerBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
             // 
             // workerNameDataGridViewTextBoxColumn
             // 
@@ -657,16 +729,6 @@
             this.currentHashrateDataGridViewTextBoxColumn.HeaderText = "Current";
             this.currentHashrateDataGridViewTextBoxColumn.Name = "currentHashrateDataGridViewTextBoxColumn";
             this.currentHashrateDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // temperatureDataGridViewTextBoxColumn
-            // 
-            this.temperatureDataGridViewTextBoxColumn.DataPropertyName = "Temperature";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.temperatureDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
-            this.temperatureDataGridViewTextBoxColumn.FillWeight = 60F;
-            this.temperatureDataGridViewTextBoxColumn.HeaderText = "Temp";
-            this.temperatureDataGridViewTextBoxColumn.Name = "temperatureDataGridViewTextBoxColumn";
-            this.temperatureDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // hardwareErrorsPercentDataGridViewTextBoxColumn
             // 
@@ -688,11 +750,16 @@
             this.utilityDataGridViewTextBoxColumn.Name = "utilityDataGridViewTextBoxColumn";
             this.utilityDataGridViewTextBoxColumn.ReadOnly = true;
             // 
+            // workerBindingSource
+            // 
+            this.workerBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
+            // 
             // DetailsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Controls.Add(this.proxyInfoPanel);
             this.Controls.Add(this.currentRateLabel);
             this.Controls.Add(this.label29);
             this.Controls.Add(this.panel1);
@@ -747,6 +814,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.proxyInfoPanel.ResumeLayout(false);
+            this.proxyInfoPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.workerBindingSource)).EndInit();
             this.ResumeLayout(false);
@@ -812,5 +881,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn temperatureDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn hardwareErrorsPercentDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn utilityDataGridViewTextBoxColumn;
+        private System.Windows.Forms.Panel proxyInfoPanel;
+        private System.Windows.Forms.Label proxyStratumLabel;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label proxyGetworkLabel;
+        private System.Windows.Forms.Label label20;
     }
 }

@@ -39,11 +39,15 @@ namespace MultiMiner.Services
             {
                 for (int i = 0; i < xgminerConfiguration.StratumProxies.Count; i++)
                 {
+                    MultiMiner.Engine.Data.Configuration.Xgminer.ProxyDescriptor proxy = xgminerConfiguration.StratumProxies[i];
                     detectedDevices.Add(new Device() 
                     { 
                         Kind = DeviceKind.PXY,
                         Driver = "proxy",
                         Name = String.Format("Stratum Proxy #{0}", (i + 1)),
+                        //we want the path in the ViewModel for Remoting
+                        //can't rely on having the Stratum Proxy settings
+                        Path = String.Format("{0}:{1}", proxy.GetworkPort, proxy.StratumPort),
                         RelativeIndex = i
                     });
                 }

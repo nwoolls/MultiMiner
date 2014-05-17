@@ -6,6 +6,7 @@ using MultiMiner.Win.ViewModels;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
+using MultiMiner.Utility.Net;
 
 namespace MultiMiner.Win.Controls
 {
@@ -66,6 +67,7 @@ namespace MultiMiner.Win.Controls
             noDetailsPanel.BringToFront();
             noDetailsPanel.Visible = true;
             closeDetailsButton.BringToFront();
+            proxyInfoPanel.Visible = false;
         }
 
         public void InspectDetails(DeviceViewModel deviceViewModel, bool showWorkUtility)
@@ -77,6 +79,15 @@ namespace MultiMiner.Win.Controls
 
             workersGridView.Visible = (deviceViewModel.Workers.Count > 0);
             workersTitleLabel.Visible = workersGridView.Visible;
+
+            if (deviceViewModel.Kind == DeviceKind.PXY)
+            {
+                string[] ports = deviceViewModel.Path.Split(':');
+                string localIPAddress = LocalNetwork.GetLocalIPAddress();
+                proxyGetworkLabel.Text = String.Format("http://{0}:{1}", localIPAddress, ports[0]);
+                proxyStratumLabel.Text = String.Format("stratum+tcp://{0}:{1}", localIPAddress, ports[1]);
+            }
+            proxyInfoPanel.Visible = deviceViewModel.Kind == DeviceKind.PXY;
             
             //device may not be configured
             if (deviceViewModel.Coin != null)
