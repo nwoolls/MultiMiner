@@ -272,9 +272,14 @@ namespace MultiMiner.Xgminer
                     }
                 }
             }
+            
+            string filePath = minerConfiguration.ExecutablePath;
+            string fullFileName = Path.GetFileName(minerConfiguration.ExecutablePath);
+            string shortFileName = Path.GetFileNameWithoutExtension(Path.GetFileName(minerConfiguration.ExecutablePath));
+            bool isSGMiner = shortFileName.Equals("sgminer", StringComparison.OrdinalIgnoreCase);
 
             //the --scrypt param must come before the --intensity params to use over 13 in latest cgminer
-            if (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt)
+            if (!isSGMiner && (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt))
                 arguments = String.Format("{0} {1}", MinerParameter.Scrypt, arguments.TrimStart());
             else if (minerConfiguration.Algorithm == CoinAlgorithm.ScryptN)
                 arguments = String.Format("{0} {1}", MinerParameter.ScryptN, arguments.TrimStart());
