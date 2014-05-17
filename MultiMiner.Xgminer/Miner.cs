@@ -101,7 +101,7 @@ namespace MultiMiner.Xgminer
             
             //this must be done async, with 70+ devices doing this synchronous
             //locks up the process
-            Process minerProcess = StartMinerProcess(arguments, redirectOutput, legacyApi, false, "", false);
+            Process minerProcess = StartMinerProcess(arguments, redirectOutput, false, "", false);
             List<string> output = new List<string>();
             minerProcess.OutputDataReceived += (sender, e) =>
             {
@@ -273,8 +273,6 @@ namespace MultiMiner.Xgminer
                 }
             }
             
-            string filePath = minerConfiguration.ExecutablePath;
-            string fullFileName = Path.GetFileName(minerConfiguration.ExecutablePath);
             string shortFileName = Path.GetFileNameWithoutExtension(Path.GetFileName(minerConfiguration.ExecutablePath));
             bool isSGMiner = shortFileName.Equals("sgminer", StringComparison.OrdinalIgnoreCase);
 
@@ -317,12 +315,40 @@ namespace MultiMiner.Xgminer
             //specify a value for --log so we can depend on the API RPC current hashrate key
             arguments = String.Format("{0} --log {1}", arguments, minerConfiguration.LogInterval);
 
-            Process process = StartMinerProcess(arguments, redirectOutput, legacyApi, ensureProcessStarts, reason);
+            if (legacyApi)
+            {
+                //remove --set-device ABC and --set ABC
+                arguments = RemoveArgumentPairs(arguments, "--set-device");
+                arguments = RemoveArgumentPairs(arguments, "--set");
+
+            }
+
+            Process process = StartMinerProcess(arguments, redirectOutput, ensureProcessStarts, reason);
 
             return process;
         }
 
-        private Process StartMinerProcess(string arguments, bool redirectOutput, bool legacyApi,
+        private static string RemoveArgumentPairs(string arguments, string key)
+        {
+            List<string> input = arguments.Split(' ').ToList();
+            List<string> output = new List<string>();
+
+            bool skipNext = false;
+
+            foreach (string argument in input)
+            {
+                if (argument.Equals(key, StringComparison.OrdinalIgnoreCase))
+                    skipNext = true;
+                else if (!skipNext)
+                    output.Add(argument);
+                else
+                    skipNext = false;
+            }
+
+            return String.Join(" ", output.ToArray());
+        }
+
+        private Process StartMinerProcess(string arguments, bool redirectOutput,
             bool ensureProcessStarts = false, string reason = "", bool startProcess = true)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
