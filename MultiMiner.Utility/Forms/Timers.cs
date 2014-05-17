@@ -18,6 +18,7 @@ namespace MultiMiner.Utility.Forms
         public const int FiveMinuteInterval = OneMinuteInterval * 5;
         public const int ThirtyMinuteInterval = 3 * TenMinuteInterval;
         public const int OneHourInterval = OneMinuteInterval * minutesPerHour;
+        public const int TwelveHourInterval = OneHourInterval * 12;
 
         private List<System.Windows.Forms.Timer> timers = new List<System.Windows.Forms.Timer>();
 

@@ -1,4 +1,6 @@
-﻿using MultiMiner.Xgminer.Data;
+﻿using MultiMiner.Engine.Data;
+using MultiMiner.Engine.Installers;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 
@@ -18,7 +20,7 @@ namespace MultiMiner.Services
             this.xgminerConfiguration.LoadMinerConfiguration();
         }
 
-        public List<Device> GetDevices(string executablePath)
+        public List<Device> GetDevices(MinerDescriptor minerDescriptor, string executablePath)
         {
             Xgminer.Data.Configuration.Miner minerConfiguration = new Xgminer.Data.Configuration.Miner()
             {
@@ -30,7 +32,7 @@ namespace MultiMiner.Services
 
             Xgminer.Miner miner = new Xgminer.Miner(minerConfiguration, false);
 
-            Version minerVersion = new Version(new Xgminer.Installers.BFGMinerInstaller().GetInstalledMinerVersion(executablePath, false));
+            Version minerVersion = new Version(MinerInstaller.GetInstalledMinerVersion(minerDescriptor, executablePath, false));
             List<Device> detectedDevices = miner.ListDevices(true, minerVersion);
 
             if (xgminerConfiguration.StratumProxy)

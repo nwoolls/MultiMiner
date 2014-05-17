@@ -1,8 +1,11 @@
-﻿using MultiMiner.Xgminer.Data;
+﻿using MultiMiner.Engine.Installers;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Linq;
+using MultiMiner.Engine.Data;
 
 namespace MultiMiner.Example
 {
@@ -16,13 +19,14 @@ namespace MultiMiner.Example
             const string executablePath = @"D:\bfgminer\";
             const string executableName = "bfgminer.exe";
 
-            //download and install bfgminer from the official website
-            MultiMiner.Xgminer.Installers.BFGMinerInstaller installer = new Xgminer.Installers.BFGMinerInstaller();
-
+            List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners();
+            AvailableMiner bfgminer = availableMiners.Single(am => am.Name.Equals("BFGMiner", StringComparison.OrdinalIgnoreCase));
+            
             Console.WriteLine("Downloading and installing {0} from {1} to the directory {2}",
-                executableName, installer, executablePath);
+                executableName, new Uri(bfgminer.Url).Authority, executablePath);
 
-            installer.InstallMiner(executablePath);
+            //download and install bfgminer from MultiMinerApp.com
+            MinerInstaller.InstallMiner(bfgminer, executablePath);
             try
             {
                 //create an instance of Miner with the downloaded executable

@@ -36,7 +36,7 @@ using MultiMiner.Win.Controls;
 using MultiMiner.Win.Forms.Configuration;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
-using MultiMiner.Xgminer.Installers;
+using MultiMiner.Engine.Installers;
 
 namespace MultiMiner.Win.Forms
 {
@@ -2848,7 +2848,9 @@ namespace MultiMiner.Win.Forms
             timers.CreateTimer(Timers.TenMinuteInterval, tenMinuteTimer_Tick);
             timers.CreateTimer(Timers.ThirtyMinuteInterval, thirtyMinuteTimer_Tick);
             timers.CreateTimer(Timers.OneSecondInterval, oneSecondTimer_Tick);
+            timers.CreateTimer(Timers.TwelveHourInterval, twelveHourTimer_Tick);
         }
+
         #endregion
 
         #region Timer event handlers
@@ -2906,10 +2908,13 @@ namespace MultiMiner.Win.Forms
         private void oneHourTimer_Tick(object sender, EventArgs e)
         {
             ClearCachedNetworkCoinInformation();
-
-            CheckForUpdates();
-
+            
             ClearPoolsFlaggedDown();
+        }
+
+        private void twelveHourTimer_Tick(object sender, EventArgs e)
+        {
+            CheckForUpdates();
         }
 
         private void fiveMinuteTimer_Tick(object sender, EventArgs e)
@@ -4671,7 +4676,7 @@ namespace MultiMiner.Win.Forms
         #region Stats API
         private void SubmitMultiMinerStatistics()
         {
-            string installedVersion = Engine.Installer.GetInstalledMinerVersion();
+            string installedVersion = Engine.Installers.MultiMinerInstaller.GetInstalledMinerVersion();
             if (installedVersion.Equals(applicationConfiguration.SubmittedStatsVersion))
                 return;
 
@@ -5563,6 +5568,7 @@ namespace MultiMiner.Win.Forms
 
             SetupStatusBarLabelLayouts();
 
+            UpdateBackendMinerAvailability(); //before CheckAndDownloadMiners()
             CheckAndDownloadMiners();
 
             CheckForUpdates();
@@ -5797,10 +5803,9 @@ namespace MultiMiner.Win.Forms
         private void InstallBackendMinerLocally(MinerDescriptor miner)
         {
             string minerName = miner.Name;
-            IMinerInstaller installer = miner.Installer;
 
             ProgressForm progressForm = new ProgressForm(String.Format("Downloading and installing {0} from {1}",
-                minerName, installer.GetMinerDownloadRoot()));
+                minerName, new Uri(miner.Url).Authority));
             progressForm.Show();
 
             //for Mono - show the UI
@@ -5811,7 +5816,7 @@ namespace MultiMiner.Win.Forms
             {
                 string minerPath = Path.Combine("Miners", minerName);
                 string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
-                installer.InstallMiner(destinationFolder);
+                MinerInstaller.InstallMiner(miner, destinationFolder);
                 //may have been installed via Remoting - dismiss notification
                 notificationsControl.RemoveNotification(bfgminerNotificationId.ToString());
             }
@@ -6063,7 +6068,7 @@ namespace MultiMiner.Win.Forms
 
             try
             {
-                availableVersion = Engine.Installer.GetAvailableMinerVersion();
+                availableVersion = Engine.Installers.MultiMinerInstaller.GetAvailableMinerVersion();
             }
             catch (WebException ex)
             {
@@ -6074,7 +6079,7 @@ namespace MultiMiner.Win.Forms
             if (String.IsNullOrEmpty(availableVersion))
                 return false;
 
-            installedVersion = Engine.Installer.GetInstalledMinerVersion();
+            installedVersion = Engine.Installers.MultiMinerInstaller.GetInstalledMinerVersion();
 
             if (!AutomaticUpgradeAllowed(installedVersion, availableVersion))
                 return false;
@@ -6153,6 +6158,20 @@ namespace MultiMiner.Win.Forms
                 DisplayBackendMinerUpdateNotification(availableVersion, installedVersion);
         }
 
+        private static void UpdateBackendMinerAvailability()
+        {
+            using (new HourGlass())
+            {
+                List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners();
+                foreach (MinerDescriptor minerDescriptor in MinerFactory.Instance.Miners)
+                {
+                    AvailableMiner availableMiner = availableMiners.Single(am => am.Name.Equals(minerDescriptor.Name, StringComparison.OrdinalIgnoreCase));
+                    minerDescriptor.Version = availableMiner.Version;
+                    minerDescriptor.Url = availableMiner.Url;
+                }
+            }
+        }
+
         private static bool BackendMinerHasUpdates(out string availableVersion, out string installedVersion)
         {
             availableVersion = String.Empty;
@@ -6163,12 +6182,12 @@ namespace MultiMiner.Win.Forms
             if (!MinerIsInstalled(miner))
                 return false;
 
-            availableVersion = GetAvailableBackendVersion();
+            availableVersion = MinerFactory.Instance.GetDefaultMiner().Version;
 
             if (String.IsNullOrEmpty(availableVersion))
                 return false;
 
-            installedVersion = miner.Installer.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(miner), miner.LegacyApi);
+            installedVersion = MinerInstaller.GetInstalledMinerVersion(miner, MinerPath.GetPathToInstalledMiner(miner), miner.LegacyApi);
 
             if (ThisVersionGreater(availableVersion, installedVersion))
                 return true;
@@ -6212,23 +6231,9 @@ namespace MultiMiner.Win.Forms
                 }, ToolTipIcon.Info, informationUrl);
         }
 
-        private static string GetAvailableBackendVersion()
-        {
-            string result = String.Empty;
-            try
-            {
-                result = MinerFactory.Instance.GetDefaultMiner().Installer.GetAvailableMinerVersion();
-            }
-            catch (WebException ex)
-            {
-                //downloads website is down
-            }
-            return result;
-        }
-
         private static void InstallMultiMinerLocally()
         {
-            ProgressForm progressForm = new ProgressForm("Downloading and installing MultiMiner from " + Engine.Installer.GetMinerDownloadRoot());
+            ProgressForm progressForm = new ProgressForm("Downloading and installing MultiMiner from " + Engine.Installers.MultiMinerInstaller.GetMinerDownloadRoot());
             progressForm.Show();
 
             //for Mono - show the UI
@@ -6237,7 +6242,7 @@ namespace MultiMiner.Win.Forms
             System.Windows.Forms.Application.DoEvents();
             try
             {
-                MultiMiner.Engine.Installer.InstallMiner(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath));
+                MultiMiner.Engine.Installers.MultiMinerInstaller.InstallMiner(Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath));
             }
             finally
             {
@@ -6705,7 +6710,8 @@ namespace MultiMiner.Win.Forms
                     using (new HourGlass())
                     {
                         DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
-                        devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner(MinerFactory.Instance.GetDefaultMiner()));
+                        MinerDescriptor defaultMiner = MinerFactory.Instance.GetDefaultMiner();
+                        devices = devicesService.GetDevices(defaultMiner, MinerPath.GetPathToInstalledMiner(defaultMiner));
 
                         //safe to do here as we are Scanning Hardware - we are not mining
                         //no data to lose in the ViewModel

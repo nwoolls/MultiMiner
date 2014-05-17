@@ -1,8 +1,8 @@
 ﻿using MultiMiner.Xgminer.Data;
-using MultiMiner.Xgminer.Installers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MultiMiner.Engine.Data;
 
 namespace MultiMiner.Engine
 {
@@ -44,20 +44,15 @@ namespace MultiMiner.Engine
             return GetMiner(CoinAlgorithm.SHA256);
         }
 
-        public void RegisterMiner(CoinAlgorithm algorithm, string name, string fileName, IMinerInstaller installer, bool legacyApi)
+        public void RegisterMiner(CoinAlgorithm algorithm, string name, string fileName, bool legacyApi)
         {
-            if (GetMiner(algorithm) == null)
+            Miners.Add(new MinerDescriptor()
             {
-                Miners.Add(new MinerDescriptor()
-                {
-                    Algorithm = algorithm,
-                    Name = name,
-                    FileName = fileName,
-                    Installer = installer,
-                    LegacyApi = legacyApi
-                });
-            }
-            else throw new ArgumentException(algorithm + " is already registered");
+                Algorithm = algorithm,
+                Name = name,
+                FileName = fileName,
+                LegacyApi = legacyApi
+            });
         }
     }
 }

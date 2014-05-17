@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using MultiMiner.Win.Extensions;
 using System.Reflection;
 using MultiMiner.Xgminer.Data;
+using MultiMiner.Engine.Data;
+using MultiMiner.Engine.Installers;
 
 namespace MultiMiner.Win.Forms
 {
@@ -32,7 +34,7 @@ namespace MultiMiner.Win.Forms
 
         private void PopulateAppVersions()
         {
-            string multiMinerVersion = Engine.Installer.GetInstalledMinerVersion();
+            string multiMinerVersion = Engine.Installers.MultiMinerInstaller.GetInstalledMinerVersion();
             multiMinerLabel.Text = "MultiMiner " + multiMinerVersion;
 
             PopulateXgminerVersion(bfgminerLabel);
@@ -46,7 +48,7 @@ namespace MultiMiner.Win.Forms
             string xgminerVersion = String.Empty;
 
             if (File.Exists(xgminerPath))
-                xgminerVersion = miner.Installer.GetInstalledMinerVersion(xgminerPath, miner.LegacyApi);
+                xgminerVersion = MinerInstaller.GetInstalledMinerVersion(miner, xgminerPath, miner.LegacyApi);
 
             if (string.IsNullOrEmpty(xgminerVersion))
                 targetLabel.Text = String.Format("{0} not installed", xgminerName);

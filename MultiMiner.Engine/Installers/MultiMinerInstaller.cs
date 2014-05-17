@@ -6,9 +6,9 @@ using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace MultiMiner.Engine
+namespace MultiMiner.Engine.Installers
 {
-    public class Installer
+    public class MultiMinerInstaller
     {
         public static string GetAvailableMinerVersion()
         {

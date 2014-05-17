@@ -39,7 +39,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -51,6 +50,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MultiMiner.Engine\MultiMiner.Engine.csproj">
+      <Project>{845687bb-ec47-46d3-ac9d-6fcfb63de8f5}</Project>
+      <Name>MultiMiner.Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj">
       <Project>{5B43AD9D-8B67-4AA8-B76D-AA83CAF9D29F}</Project>
       <Name>MultiMiner.Xgminer.Api</Name>
