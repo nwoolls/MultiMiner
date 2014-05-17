@@ -17,7 +17,8 @@ namespace MultiMiner.Engine.Installers
             WebClient webClient = new ApiWebClient();
 
             string hash = GetSimpleDeterrent();
-            string url = "http://multiminerapp.com/miners?id=" + Uri.EscapeDataString(hash);
+            //include www. to avoid redirect
+            string url = "http://www.multiminerapp.com/miners?id=" + Uri.EscapeDataString(hash);
             string response = webClient.DownloadString(new Uri(url));
 
             List<AvailableMiner> availableMiners = JsonConvert.DeserializeObject<List<AvailableMiner>>(response);
