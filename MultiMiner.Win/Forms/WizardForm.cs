@@ -178,7 +178,7 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
             System.Windows.Forms.Application.DoEvents();
 
             Cursor = Cursors.WaitCursor;
-            MinerInstaller.InstallMiner(miner, destinationFolder);
+            MinerInstaller.InstallMiner(UserAgent.AgentString, miner, destinationFolder);
             Cursor = Cursors.Default;
 
             wizardTabControl.SelectedTab = chooseCoinPage;

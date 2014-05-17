@@ -19,14 +19,15 @@ namespace MultiMiner.Example
             const string executablePath = @"D:\bfgminer\";
             const string executableName = "bfgminer.exe";
 
-            List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners();
+            //download and install bfgminer from MultiMinerApp.com
+            string userAgent = "MultiMiner/V3-Example";
+            List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners(userAgent);
             AvailableMiner bfgminer = availableMiners.Single(am => am.Name.Equals("BFGMiner", StringComparison.OrdinalIgnoreCase));
-            
+
             Console.WriteLine("Downloading and installing {0} from {1} to the directory {2}",
                 executableName, new Uri(bfgminer.Url).Authority, executablePath);
 
-            //download and install bfgminer from MultiMinerApp.com
-            MinerInstaller.InstallMiner(bfgminer, executablePath);
+            MinerInstaller.InstallMiner(userAgent, bfgminer, executablePath);
             try
             {
                 //create an instance of Miner with the downloaded executable

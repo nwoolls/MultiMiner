@@ -2914,6 +2914,7 @@ namespace MultiMiner.Win.Forms
 
         private void twelveHourTimer_Tick(object sender, EventArgs e)
         {
+            UpdateBackendMinerAvailability();
             CheckForUpdates();
         }
 
@@ -5812,7 +5813,7 @@ namespace MultiMiner.Win.Forms
             {
                 string minerPath = Path.Combine("Miners", minerName);
                 string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
-                MinerInstaller.InstallMiner(miner, destinationFolder);
+                MinerInstaller.InstallMiner(UserAgent.AgentString, miner, destinationFolder);
                 //may have been installed via Remoting - dismiss notification
                 notificationsControl.RemoveNotification(bfgminerNotificationId.ToString());
             }
@@ -6158,7 +6159,7 @@ namespace MultiMiner.Win.Forms
         {
             using (new HourGlass())
             {
-                List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners();
+                List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners(UserAgent.AgentString);
                 foreach (MinerDescriptor minerDescriptor in MinerFactory.Instance.Miners)
                 {
                     AvailableMiner availableMiner = availableMiners.Single(am => am.Name.Equals(minerDescriptor.Name, StringComparison.OrdinalIgnoreCase));

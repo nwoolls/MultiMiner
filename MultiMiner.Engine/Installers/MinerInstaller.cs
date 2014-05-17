@@ -12,7 +12,7 @@ namespace MultiMiner.Engine.Installers
 {
     public class MinerInstaller
     {
-        public static void InstallMiner(AvailableMiner miner, string destinationFolder)
+        public static void InstallMiner(string userAgent, AvailableMiner miner, string destinationFolder)
         {
             //support Windows and OS X for now, we'll go for Linux in the future
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
@@ -21,7 +21,10 @@ namespace MultiMiner.Engine.Installers
             string minerDownloadFile = Path.Combine(Path.GetTempPath(), "miner.zip");
             File.Delete(minerDownloadFile);
 
-            new WebClient().DownloadFile(new Uri(miner.Url), minerDownloadFile);
+            WebClient webClient = new WebClient();
+            webClient.Headers.Add("user-agent", userAgent);
+
+            webClient.DownloadFile(new Uri(miner.Url), minerDownloadFile);
             try
             {
                 //first delete the folder contents. this became necessary with cgminer 3.8.0 because
