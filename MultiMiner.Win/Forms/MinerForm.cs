@@ -1671,7 +1671,7 @@ namespace MultiMiner.Win.Forms
 
         private void FindNetworkDevices()
         {
-            string localIpRange = Utility.Networking.LocalNetwork.GetLocalIPAddressRange();
+            string localIpRange = Utility.Net.LocalNetwork.GetLocalIPAddressRange();
             if (String.IsNullOrEmpty(localIpRange))
                 return; //no network connection
 
@@ -1681,7 +1681,7 @@ namespace MultiMiner.Win.Forms
             List<IPEndPoint> miners = MinerFinder.Find(localIpRange, startingPort, endingPort);
 
             //remove own miners
-            miners.RemoveAll(m => m.Address.ToString().Equals(Utility.Networking.LocalNetwork.GetLocalIPAddress()));
+            miners.RemoveAll(m => m.Address.ToString().Equals(Utility.Net.LocalNetwork.GetLocalIPAddress()));
 
             List<NetworkDevices.NetworkDevice> devices = miners.ToNetworkDevices();
 
@@ -1694,7 +1694,7 @@ namespace MultiMiner.Win.Forms
             List<IPEndPoint> endpoints = networkDevicesConfiguration.Devices.ToIPEndPoints();
 
             //remove own miners
-            endpoints.RemoveAll(m => m.Address.ToString().Equals(Utility.Networking.LocalNetwork.GetLocalIPAddress()));
+            endpoints.RemoveAll(m => m.Address.ToString().Equals(Utility.Net.LocalNetwork.GetLocalIPAddress()));
 
             endpoints = MinerFinder.Check(endpoints);
 
@@ -3449,7 +3449,7 @@ namespace MultiMiner.Win.Forms
             fingerprint = random.Next();
 
             if (workGroupName == null)
-                this.workGroupName = Utility.Networking.LocalNetwork.GetWorkGroupName();
+                this.workGroupName = Utility.Net.LocalNetwork.GetWorkGroupName();
 
             //start Broadcast Listener before Discovery so we can
             //get initial info (hashrates) sent by other instances
@@ -4863,8 +4863,8 @@ namespace MultiMiner.Win.Forms
         }
 
         private void RemoveSelfReferencingNetworkDevices()
-        {            
-            string localIpAddress = Utility.Networking.LocalNetwork.GetLocalIPAddress();
+        {
+            string localIpAddress = Utility.Net.LocalNetwork.GetLocalIPAddress();
             IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET).ToList();
             foreach (DeviceViewModel networkDevice in networkDevices)
             {
@@ -6336,7 +6336,6 @@ namespace MultiMiner.Win.Forms
         {
             PlatformID concretePlatform = OSVersionPlatform.GetConcretePlatform();
 
-            //we cannot auto update the .app file (yet)
             CheckForMultiMinerUpdates();
 
             //we cannot auto install miners on Unix (yet)

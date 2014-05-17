@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Linq;
 
-namespace MultiMiner.Utility.Networking
+namespace MultiMiner.Utility.Net
 {
     public class PortScanner
     {

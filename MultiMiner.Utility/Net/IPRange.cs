@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 
-namespace MultiMiner.Utility.Networking
+namespace MultiMiner.Utility.Net
 {
     public class IPRange
     {

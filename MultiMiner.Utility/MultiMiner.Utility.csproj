@@ -71,14 +71,17 @@
       <DependentUpon>NoFlickerListView.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Timers.cs" />
+    <Compile Include="Net\ApiWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="OS\StartupShortcut.cs" />
     <Compile Include="Serialization\ConfigurationReaderWriter.cs" />
     <Compile Include="IO\FileCopier.cs" />
     <Compile Include="OS\IdleTimeFinder.cs" />
     <Compile Include="Parsers\IniFileParser.cs" />
-    <Compile Include="Networking\IPRange.cs" />
-    <Compile Include="Networking\PortScanner.cs" />
-    <Compile Include="Networking\LocalNetwork.cs" />
+    <Compile Include="Net\IPRange.cs" />
+    <Compile Include="Net\PortScanner.cs" />
+    <Compile Include="Net\LocalNetwork.cs" />
     <Compile Include="Serialization\ObjectCopier.cs" />
     <Compile Include="Serialization\ObjectLogger.cs" />
     <Compile Include="OS\OSVersionPlatform.cs" />

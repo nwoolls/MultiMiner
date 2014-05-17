@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 
-namespace MultiMiner.Utility.Networking
+namespace MultiMiner.Utility.Net
 {
     public class LocalNetwork
     {

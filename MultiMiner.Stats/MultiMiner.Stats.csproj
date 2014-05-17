@@ -46,6 +46,12 @@
     <Compile Include="Data\Machine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
+      <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
+      <Name>MultiMiner.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

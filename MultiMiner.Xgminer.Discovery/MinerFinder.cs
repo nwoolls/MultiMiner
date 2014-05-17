@@ -1,4 +1,4 @@
-﻿using MultiMiner.Utility.Networking;
+﻿using MultiMiner.Utility.Net;
 using System;
 using System.Collections.Generic;
 using System.Net;

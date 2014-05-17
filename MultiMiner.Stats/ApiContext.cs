@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiMiner.Utility.Net;
+using System;
 using System.Net;
 using System.Text;
 using System.Web.Script.Serialization;
@@ -7,19 +8,6 @@ namespace MultiMiner.Stats
 {
     public class ApiContext
     {
-        private class ApiWebClient : WebClient
-        {
-            protected override WebRequest GetWebRequest(Uri uri)
-            {
-                WebRequest w = base.GetWebRequest(uri);
-                //default is 100s - far too long for our API calls
-                //if API is being flakey we don't want calls taking 100s to timeout
-                //lets go with 10s
-                w.Timeout = 10 * 1000;
-                return w;
-            }
-        }
-
         public static void SubmitMinerStatistics(string url, Data.Machine machine)
         {
             if (!url.EndsWith("/"))

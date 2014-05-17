@@ -53,6 +53,10 @@
       <Project>{9E86F77A-68B9-4D72-82D2-855878BA8CB1}</Project>
       <Name>MultiMiner.CoinApi</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
+      <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
+      <Name>MultiMiner.Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
