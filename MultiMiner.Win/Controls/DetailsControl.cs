@@ -80,15 +80,8 @@ namespace MultiMiner.Win.Controls
             workersGridView.Visible = (deviceViewModel.Workers.Count > 0);
             workersTitleLabel.Visible = workersGridView.Visible;
 
-            if (deviceViewModel.Kind == DeviceKind.PXY)
-            {
-                string[] ports = deviceViewModel.Path.Split(':');
-                string localIPAddress = LocalNetwork.GetLocalIPAddress();
-                proxyGetworkLabel.Text = String.Format("http://{0}:{1}", localIPAddress, ports[0]);
-                proxyStratumLabel.Text = String.Format("stratum+tcp://{0}:{1}", localIPAddress, ports[1]);
-            }
-            proxyInfoPanel.Visible = deviceViewModel.Kind == DeviceKind.PXY;
-            
+            SetupProxyDetails(deviceViewModel);
+                        
             //device may not be configured
             if (deviceViewModel.Coin != null)
                 cryptoCoinBindingSource.DataSource = deviceViewModel.Coin;
@@ -102,24 +95,7 @@ namespace MultiMiner.Win.Controls
             workerBindingSource.DataSource = deviceViewModel.Workers;
             workerBindingSource.ResetBindings(false);
 
-            switch (deviceViewModel.Kind)
-            {
-                case DeviceKind.CPU:
-                    pictureBox1.Image = imageList1.Images[3];
-                    break;
-                case DeviceKind.GPU:
-                    pictureBox1.Image = imageList1.Images[0];
-                    break;
-                case DeviceKind.USB:
-                    pictureBox1.Image = imageList1.Images[1];
-                    break;
-                case DeviceKind.PXY:
-                    pictureBox1.Image = imageList1.Images[2];
-                    break;
-                case DeviceKind.NET:
-                    pictureBox1.Image = imageList1.Images[4];
-                    break;
-            }
+            SetupDevicePicture(deviceViewModel);
 
             nameLabel.Width = this.Width - nameLabel.Left - closeDetailsButton.Width;
 
@@ -150,6 +126,40 @@ namespace MultiMiner.Win.Controls
                 fanLabel.Text = String.Empty;
 
             UpdateColumnVisibility();
+        }
+
+        private void SetupDevicePicture(DeviceViewModel deviceViewModel)
+        {
+            switch (deviceViewModel.Kind)
+            {
+                case DeviceKind.CPU:
+                    pictureBox1.Image = imageList1.Images[3];
+                    break;
+                case DeviceKind.GPU:
+                    pictureBox1.Image = imageList1.Images[0];
+                    break;
+                case DeviceKind.USB:
+                    pictureBox1.Image = imageList1.Images[1];
+                    break;
+                case DeviceKind.PXY:
+                    pictureBox1.Image = imageList1.Images[2];
+                    break;
+                case DeviceKind.NET:
+                    pictureBox1.Image = imageList1.Images[4];
+                    break;
+            }
+        }
+
+        private void SetupProxyDetails(DeviceViewModel deviceViewModel)
+        {
+            if (deviceViewModel.Kind == DeviceKind.PXY)
+            {
+                string[] ports = deviceViewModel.Path.Split(':');
+                string localIPAddress = LocalNetwork.GetLocalIPAddress();
+                proxyGetworkLabel.Text = String.Format("http://{0}:{1}", localIPAddress, ports[0]);
+                proxyStratumLabel.Text = String.Format("stratum+tcp://{0}:{1}", localIPAddress, ports[1]);
+            }
+            proxyInfoPanel.Visible = deviceViewModel.Kind == DeviceKind.PXY;
         }
 
         private void UpdateColumnVisibility()
