@@ -35,8 +35,11 @@ namespace MultiMiner.Engine
         public readonly List<MinerDescriptor> Miners = new List<MinerDescriptor>();
         public readonly Dictionary<CoinAlgorithm, MinerDescriptor> DefaultMiners = new Dictionary<CoinAlgorithm, MinerDescriptor>();
 
-        public MinerDescriptor GetMiner(CoinAlgorithm algorithm, SerializableDictionary<CoinAlgorithm, string> miners)
+        public MinerDescriptor GetMiner(DeviceKind deviceKind, CoinAlgorithm algorithm, SerializableDictionary<CoinAlgorithm, string> miners)
         {
+            if (deviceKind != DeviceKind.GPU)
+                return GetDefaultMiner();
+
             if (miners.ContainsKey(algorithm))
                 return Miners.Single(m => m.Name.Equals(miners[algorithm], StringComparison.OrdinalIgnoreCase));
             else

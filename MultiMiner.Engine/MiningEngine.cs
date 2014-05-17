@@ -624,9 +624,11 @@ namespace MultiMiner.Engine
 
             foreach (string coinSymbol in coinSymbols)
             {
-                LaunchConsumerMiners(ref startingApiPort, coinSymbol);
+                LaunchGPUMiners(ref startingApiPort, coinSymbol);
 
-                LaunchDedicatedMiners(ref startingApiPort, coinSymbol);
+                LaunchCPUMiners(ref startingApiPort, coinSymbol);
+
+                LaunchUSBMiners(ref startingApiPort, coinSymbol);
             }
 
             //launch proxies separately now that we support any number of proxies pointed at any coin
@@ -669,53 +671,58 @@ namespace MultiMiner.Engine
 
                     Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
                     if (!process.HasExited)
-                        StoreMinerProcess(process, deviceConfiguration.CoinSymbol, minerConfiguration, apiPort);
+                        StoreMinerProcess(process, MinerFactory.Instance.GetDefaultMiner(), deviceConfiguration.CoinSymbol, minerConfiguration, apiPort);
 
                     apiPort++;
                 }
             }
         }
 
-        private void LaunchConsumerMiners(ref int apiPort, string coinSymbol)
+        private void LaunchCPUMiners(ref int apiPort, string coinSymbol)
         {
-            //launch separate processes for CPU & GPU vs USB & PXY (for stability)
-            Xgminer.Data.Configuration.Miner minerConfiguration = CreateMinerConfiguration(apiPort, coinSymbol, DeviceKind.CPU | DeviceKind.GPU);
+            LaunchMiners(ref apiPort, coinSymbol, DeviceKind.CPU, false);
+        }
+
+        private void LaunchGPUMiners(ref int apiPort, string coinSymbol)
+        {
+            LaunchMiners(ref apiPort, coinSymbol, DeviceKind.GPU,
+                engineConfiguration.XgminerConfiguration.TerminateGpuMiners);
+        }
+
+        private void LaunchUSBMiners(ref int apiPort, string coinSymbol)
+        {
+            LaunchMiners(ref apiPort, coinSymbol, DeviceKind.USB, false);
+        }
+
+        private void LaunchMiners(ref int apiPort, string coinSymbol, DeviceKind deviceKind, bool terminateProcess)
+        {
+            Xgminer.Data.Configuration.Miner minerConfiguration = CreateMinerConfiguration(apiPort, coinSymbol, deviceKind);
+
+            
             //null if no pools configured
             if (minerConfiguration != null)
             {
                 Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
                 if (!process.HasExited)
                 {
-                    MinerProcess minerProcess = StoreMinerProcess(process, coinSymbol, minerConfiguration, apiPort);
-                    minerProcess.TerminateProcess = engineConfiguration.XgminerConfiguration.TerminateGpuMiners;
+                    MinerDescriptor miner = MinerFactory.Instance.GetMiner(deviceKind, minerConfiguration.Algorithm, engineConfiguration.XgminerConfiguration.AlgorithmMiners);
+                    MinerProcess minerProcess = StoreMinerProcess(process, miner, coinSymbol, minerConfiguration, apiPort);
+                    minerProcess.TerminateProcess = terminateProcess;
                 }
 
                 apiPort++;
             }
         }
 
-        private void LaunchDedicatedMiners(ref int port, string coinSymbol)
-        {
-            Xgminer.Data.Configuration.Miner minerConfiguration = CreateMinerConfiguration(port, coinSymbol, DeviceKind.USB);
-            //null if no pools configured
-            if (minerConfiguration != null)
-            {
-                Process process = LaunchMinerProcess(minerConfiguration, "Starting mining");
-                if (!process.HasExited)
-                    StoreMinerProcess(process, coinSymbol, minerConfiguration, port);
-
-                port++;
-            }
-        }
-
-        private MinerProcess StoreMinerProcess(Process process, string coinSymbol, Xgminer.Data.Configuration.Miner minerConfiguration, int apiPort)
+        private MinerProcess StoreMinerProcess(Process process, MinerDescriptor miner, string coinSymbol, Xgminer.Data.Configuration.Miner minerConfiguration, int apiPort)
         {
             MinerProcess minerProcess = new MinerProcess() 
             { 
-                Process = process, 
+                Process = process,
+                Miner = miner,
                 ApiPort = apiPort, 
                 MinerConfiguration = minerConfiguration, 
-                CoinSymbol = coinSymbol 
+                CoinSymbol = coinSymbol
             };
 
             setupProcessStartInfo(minerProcess);
@@ -729,7 +736,10 @@ namespace MultiMiner.Engine
         {
             minerConfiguration.Priority = this.engineConfiguration.XgminerConfiguration.Priority;
 
-            MinerDescriptor descriptor = MinerFactory.Instance.GetMiner(minerConfiguration.Algorithm, engineConfiguration.XgminerConfiguration.AlgorithmMiners);
+            //we launch 1 process per device kind now
+            DeviceKind deviceKind = minerConfiguration.DeviceDescriptors.First().Kind;
+
+            MinerDescriptor descriptor = MinerFactory.Instance.GetMiner(deviceKind, minerConfiguration.Algorithm, engineConfiguration.XgminerConfiguration.AlgorithmMiners);
 
             Xgminer.Miner miner = new Xgminer.Miner(minerConfiguration, descriptor.LegacyApi);
             miner.LogLaunch += this.LogProcessLaunch;
@@ -739,14 +749,14 @@ namespace MultiMiner.Engine
             return process;
         }
 
-        private Xgminer.Data.Configuration.Miner CreateMinerConfiguration(int apiPort, string coinSymbol, DeviceKind includeKinds)
+        private Xgminer.Data.Configuration.Miner CreateMinerConfiguration(int apiPort, string coinSymbol, DeviceKind deviceKind)
         {
             Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.CryptoCoin.Symbol.Equals(coinSymbol));
             if (coinConfiguration.Pools.Count == 0)
                 // no pools configured
                 return null;
             
-            MinerDescriptor miner = MinerFactory.Instance.GetMiner(coinConfiguration.CryptoCoin.Algorithm, engineConfiguration.XgminerConfiguration.AlgorithmMiners);
+            MinerDescriptor miner = MinerFactory.Instance.GetMiner(deviceKind, coinConfiguration.CryptoCoin.Algorithm, engineConfiguration.XgminerConfiguration.AlgorithmMiners);
 
             Xgminer.Data.Configuration.Miner minerConfiguration = CreateBasicConfiguration(miner, coinConfiguration, apiPort);
 
@@ -754,7 +764,7 @@ namespace MultiMiner.Engine
                 engineConfiguration.DeviceConfigurations
                 .Where(c => c.Enabled && c.CoinSymbol.Equals(coinSymbol)).ToList();
 
-            int deviceCount = SetupConfigurationDevices(minerConfiguration, includeKinds, enabledConfigurations);
+            int deviceCount = SetupConfigurationDevices(minerConfiguration, deviceKind, enabledConfigurations);
             if (deviceCount == 0)
                 return null;
 
@@ -819,7 +829,7 @@ namespace MultiMiner.Engine
             minerConfiguration.LaunchArguments = arguments;
         }
 
-        private int SetupConfigurationDevices(Xgminer.Data.Configuration.Miner minerConfiguration, DeviceKind deviceKinds, IList<Engine.Data.Configuration.Device> deviceConfigurations)
+        private int SetupConfigurationDevices(Xgminer.Data.Configuration.Miner minerConfiguration, DeviceKind deviceKind, IList<Engine.Data.Configuration.Device> deviceConfigurations)
         {
             int deviceCount = 0;
             for (int i = 0; i < deviceConfigurations.Count; i++)
@@ -828,7 +838,7 @@ namespace MultiMiner.Engine
 
                 Xgminer.Data.Device device = devices.SingleOrDefault(d => d.Equals(enabledConfiguration));
 
-                if ((deviceKinds & device.Kind) == 0)
+                if (deviceKind != device.Kind)
                     continue;
 
                 deviceCount++;

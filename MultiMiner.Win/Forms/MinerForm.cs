@@ -5021,14 +5021,9 @@ namespace MultiMiner.Win.Forms
                 //started mining but haven't yet assigned mining members
                 //cannot check the following yet
                 return;
-
-            Coin coinConfiguration = miningCoinConfigurations
-                .Single(config => config.CryptoCoin.Symbol.Equals(minerProcess.CoinSymbol, StringComparison.OrdinalIgnoreCase));
-            MinerDescriptor miner = MinerFactory.Instance.GetMiner(coinConfiguration.CryptoCoin.Algorithm,
-                engineConfiguration.XgminerConfiguration.AlgorithmMiners);
-
+                        
             //Work Utility not returned by legacy API miners
-            if (!miner.LegacyApi)
+            if (!minerProcess.Miner.LegacyApi)
             {
                 double effectiveHashrate = WorkUtilityToHashrate(deviceInformation.WorkUtility);
                 //avoid div by 0
@@ -6876,7 +6871,8 @@ namespace MultiMiner.Win.Forms
                 .Distinct();
 
             foreach (CoinAlgorithm configuredAlgorithm in configuredAlgorithms)
-                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(configuredAlgorithm,
+                //safe to assume we are downloading GPU miners here
+                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(DeviceKind.GPU, configuredAlgorithm,
                     engineConfiguration.XgminerConfiguration.AlgorithmMiners));
         }
 

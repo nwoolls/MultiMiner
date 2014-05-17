@@ -1,4 +1,5 @@
-﻿using MultiMiner.Xgminer.Api;
+﻿using MultiMiner.Engine.Data;
+using MultiMiner.Xgminer.Api;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -11,6 +12,7 @@ namespace MultiMiner.Engine
     public class MinerProcess
     {
         public Process Process { get; set; }
+        public MinerDescriptor Miner { get; set; }
         public int ApiPort { get; set; }
         public Xgminer.Data.Configuration.Miner MinerConfiguration { get; set; } //for relaunching crashed miners
         public DateTime StartDate { get; set; }
