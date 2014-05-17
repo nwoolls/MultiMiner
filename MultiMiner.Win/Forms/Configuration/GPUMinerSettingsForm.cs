@@ -14,14 +14,19 @@ namespace MultiMiner.Win.Forms.Configuration
     {
         private IList<CoinAlgorithm> algorithms;
 
-        private Engine.Data.Configuration.Xgminer minerConfiguration;
-        private Engine.Data.Configuration.Xgminer workingMinerConfiguration;
+        private readonly Engine.Data.Configuration.Xgminer minerConfiguration;
+        private readonly Engine.Data.Configuration.Xgminer workingMinerConfiguration;
 
         public GPUMinerSettingsForm(Engine.Data.Configuration.Xgminer minerConfiguration)
         {
             InitializeComponent();
             this.minerConfiguration = minerConfiguration;
             this.workingMinerConfiguration = ObjectCopier.CloneObject<Engine.Data.Configuration.Xgminer, Engine.Data.Configuration.Xgminer>(minerConfiguration);
+
+            //manual clone needed
+            this.workingMinerConfiguration.AlgorithmMiners = new SerializableDictionary<CoinAlgorithm, string>();
+            foreach (CoinAlgorithm key in this.minerConfiguration.AlgorithmMiners.Keys)
+                this.workingMinerConfiguration.AlgorithmMiners[key] = this.minerConfiguration.AlgorithmMiners[key];
         }
 
         private void GPUMinerSettingsForm_Load(object sender, EventArgs e)
