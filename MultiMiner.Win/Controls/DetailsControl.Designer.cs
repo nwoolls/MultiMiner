@@ -41,14 +41,14 @@
             this.cryptoCoinBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.processorsTitleLabel = new System.Windows.Forms.Label();
+            this.processorsValueLabel = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
+            this.pathValueLabel = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
+            this.serialValueLabel = new System.Windows.Forms.Label();
+            this.serialTitleLabel = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.hashrateLabel = new System.Windows.Forms.Label();
             this.workersGridView = new System.Windows.Forms.DataGridView();
@@ -180,26 +180,26 @@
             this.label4.TabIndex = 6;
             this.label4.Text = "label4";
             // 
-            // label1
+            // processorsTitleLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
-            this.label1.Location = new System.Drawing.Point(183, 110);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(66, 15);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "Processors:";
+            this.processorsTitleLabel.AutoSize = true;
+            this.processorsTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.processorsTitleLabel.Location = new System.Drawing.Point(183, 110);
+            this.processorsTitleLabel.Name = "processorsTitleLabel";
+            this.processorsTitleLabel.Size = new System.Drawing.Size(66, 15);
+            this.processorsTitleLabel.TabIndex = 7;
+            this.processorsTitleLabel.Text = "Processors:";
             // 
-            // label5
+            // processorsValueLabel
             // 
-            this.label5.AutoSize = true;
-            this.label5.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "ProcessorCount", true));
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
-            this.label5.Location = new System.Drawing.Point(255, 110);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(38, 15);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "label5";
+            this.processorsValueLabel.AutoSize = true;
+            this.processorsValueLabel.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "ProcessorCount", true));
+            this.processorsValueLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.processorsValueLabel.Location = new System.Drawing.Point(255, 110);
+            this.processorsValueLabel.Name = "processorsValueLabel";
+            this.processorsValueLabel.Size = new System.Drawing.Size(38, 15);
+            this.processorsValueLabel.TabIndex = 8;
+            this.processorsValueLabel.Text = "label5";
             // 
             // label6
             // 
@@ -222,16 +222,16 @@
             this.label7.TabIndex = 9;
             this.label7.Text = "Driver:";
             // 
-            // label8
+            // pathValueLabel
             // 
-            this.label8.AutoEllipsis = true;
-            this.label8.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Path", true));
-            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
-            this.label8.Location = new System.Drawing.Point(92, 125);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(85, 15);
-            this.label8.TabIndex = 12;
-            this.label8.Text = "label8";
+            this.pathValueLabel.AutoEllipsis = true;
+            this.pathValueLabel.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Path", true));
+            this.pathValueLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.pathValueLabel.Location = new System.Drawing.Point(92, 125);
+            this.pathValueLabel.Name = "pathValueLabel";
+            this.pathValueLabel.Size = new System.Drawing.Size(85, 15);
+            this.pathValueLabel.TabIndex = 12;
+            this.pathValueLabel.Text = "label8";
             // 
             // label9
             // 
@@ -243,28 +243,28 @@
             this.label9.TabIndex = 11;
             this.label9.Text = "Path:";
             // 
-            // label10
+            // serialValueLabel
             // 
-            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.serialValueLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label10.AutoEllipsis = true;
-            this.label10.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Serial", true));
-            this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
-            this.label10.Location = new System.Drawing.Point(255, 125);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(339, 15);
-            this.label10.TabIndex = 14;
-            this.label10.Text = "label10";
+            this.serialValueLabel.AutoEllipsis = true;
+            this.serialValueLabel.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "Serial", true));
+            this.serialValueLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.serialValueLabel.Location = new System.Drawing.Point(255, 125);
+            this.serialValueLabel.Name = "serialValueLabel";
+            this.serialValueLabel.Size = new System.Drawing.Size(339, 15);
+            this.serialValueLabel.TabIndex = 14;
+            this.serialValueLabel.Text = "label10";
             // 
-            // label11
+            // serialTitleLabel
             // 
-            this.label11.AutoSize = true;
-            this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
-            this.label11.Location = new System.Drawing.Point(183, 125);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(38, 15);
-            this.label11.TabIndex = 13;
-            this.label11.Text = "Serial:";
+            this.serialTitleLabel.AutoSize = true;
+            this.serialTitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.serialTitleLabel.Location = new System.Drawing.Point(183, 125);
+            this.serialTitleLabel.Name = "serialTitleLabel";
+            this.serialTitleLabel.Size = new System.Drawing.Size(38, 15);
+            this.serialTitleLabel.TabIndex = 13;
+            this.serialTitleLabel.Text = "Serial:";
             // 
             // label12
             // 
@@ -759,7 +759,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Controls.Add(this.proxyInfoPanel);
             this.Controls.Add(this.currentRateLabel);
             this.Controls.Add(this.label29);
             this.Controls.Add(this.panel1);
@@ -790,19 +789,20 @@
             this.Controls.Add(this.workersGridView);
             this.Controls.Add(this.hashrateLabel);
             this.Controls.Add(this.label12);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.label11);
-            this.Controls.Add(this.label8);
+            this.Controls.Add(this.serialValueLabel);
+            this.Controls.Add(this.serialTitleLabel);
+            this.Controls.Add(this.pathValueLabel);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.processorsValueLabel);
+            this.Controls.Add(this.processorsTitleLabel);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.nameLabel);
             this.Controls.Add(this.closeDetailsButton);
+            this.Controls.Add(this.proxyInfoPanel);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Name = "DetailsControl";
             this.Size = new System.Drawing.Size(601, 517);
@@ -832,14 +832,14 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label processorsTitleLabel;
+        private System.Windows.Forms.Label processorsValueLabel;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label pathValueLabel;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label serialValueLabel;
+        private System.Windows.Forms.Label serialTitleLabel;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label hashrateLabel;
         private System.Windows.Forms.DataGridView workersGridView;

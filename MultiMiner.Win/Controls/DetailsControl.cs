@@ -81,6 +81,8 @@ namespace MultiMiner.Win.Controls
             workersTitleLabel.Visible = workersGridView.Visible;
 
             SetupProxyDetails(deviceViewModel);
+
+            SetupNetworkDeviceDetails(deviceViewModel);
                         
             //device may not be configured
             if (deviceViewModel.Coin != null)
@@ -152,14 +154,37 @@ namespace MultiMiner.Win.Controls
 
         private void SetupProxyDetails(DeviceViewModel deviceViewModel)
         {
+            proxyInfoPanel.Visible = false;
             if (deviceViewModel.Kind == DeviceKind.PXY)
             {
                 string[] ports = deviceViewModel.Path.Split(':');
-                string localIPAddress = LocalNetwork.GetLocalIPAddress();
-                proxyGetworkLabel.Text = String.Format("http://{0}:{1}", localIPAddress, ports[0]);
-                proxyStratumLabel.Text = String.Format("stratum+tcp://{0}:{1}", localIPAddress, ports[1]);
+                if (ports.Length == 2)
+                {
+                    string localIPAddress = LocalNetwork.GetLocalIPAddress();
+                    proxyGetworkLabel.Text = String.Format("http://{0}:{1}", localIPAddress, ports[0]);
+                    proxyStratumLabel.Text = String.Format("stratum+tcp://{0}:{1}", localIPAddress, ports[1]);
+
+                    proxyInfoPanel.BringToFront();
+                    proxyInfoPanel.Visible = true;
+                }
             }
-            proxyInfoPanel.Visible = deviceViewModel.Kind == DeviceKind.PXY;
+        }
+
+        private void SetupNetworkDeviceDetails(DeviceViewModel deviceViewModel)
+        {
+            serialTitleLabel.Visible = deviceViewModel.Kind != DeviceKind.NET;
+            serialValueLabel.Visible = deviceViewModel.Kind != DeviceKind.NET;
+            processorsTitleLabel.Visible = deviceViewModel.Kind != DeviceKind.NET;
+            processorsValueLabel.Visible = deviceViewModel.Kind != DeviceKind.NET;
+
+            if (deviceViewModel.Kind == DeviceKind.NET)
+            {
+                pathValueLabel.Width = Width - pathValueLabel.Left - 6;
+            }
+            else
+            {
+                pathValueLabel.Width = serialTitleLabel.Left - pathValueLabel.Left - 6;                
+            }
         }
 
         private void UpdateColumnVisibility()
