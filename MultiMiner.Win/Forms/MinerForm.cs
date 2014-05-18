@@ -5538,6 +5538,7 @@ namespace MultiMiner.Win.Forms
 
             FetchInitialCoinStats();
 
+            UpdateBackendMinerAvailability(); //before CheckAndShowGettingStarted()
             CheckAndShowGettingStarted();
 
             LoadSettings();
@@ -5565,7 +5566,6 @@ namespace MultiMiner.Win.Forms
 
             SetupStatusBarLabelLayouts();
 
-            UpdateBackendMinerAvailability(); //before CheckAndDownloadMiners()
             CheckAndDownloadMiners();
 
             CheckForUpdates();
