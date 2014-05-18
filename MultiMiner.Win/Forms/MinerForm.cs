@@ -5645,7 +5645,8 @@ namespace MultiMiner.Win.Forms
                     tip = "Tip: right-click device names to change coins";
                     PostNotification(tip, tip, () =>
                     {
-                        if (deviceListView.Items.Count > 0)
+                        //only if we have non-network devices
+                        if (localViewModel.Devices.Count(d => d.Kind != DeviceKind.NET) > 0)
                         {
                             string currentCoin = GetCurrentlySelectedCoinName();
                             CheckCoinInPopupMenu(currentCoin);
