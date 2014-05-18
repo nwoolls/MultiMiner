@@ -5573,7 +5573,10 @@ namespace MultiMiner.Win.Forms
             SetHasChangesLocally(false);
 
             LoadKnownDevicesFromFile();
-            if ((devices == null) || (devices.Count == 0))
+            //ONLY if null, e.g. first launch or no XML
+            //don't keep scanning on startup if there are no devices
+            //maybe just using to monitor network devices
+            if (devices == null)
                 ScanHardwareLocally();
 
             //after refreshing devices
