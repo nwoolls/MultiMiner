@@ -44,10 +44,10 @@ namespace MultiMiner.Engine
             factory.DefaultMiners[CoinAlgorithm.ScryptJane] = miner;
 
             miner = factory.RegisterMiner("Vertminer", "Vertminer", true);
-            factory.DefaultMiners[CoinAlgorithm.ScryptN] = miner;
 
             miner = factory.RegisterMiner("DarkcoinSGMiner", "SGMiner", true);
             factory.DefaultMiners[CoinAlgorithm.X11] = miner;
+            factory.DefaultMiners[CoinAlgorithm.ScryptN] = miner;
 
             miner = factory.RegisterMiner("SGMiner", "SGMiner", true);
             miner = factory.RegisterMiner("SPHSGMiner", "SGMiner", true);
