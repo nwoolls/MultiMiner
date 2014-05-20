@@ -280,7 +280,16 @@ namespace MultiMiner.Xgminer
             if (!isSGMiner && (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt))
                 arguments = String.Format("{0} {1}", MinerParameter.Scrypt, arguments.TrimStart());
             else if (minerConfiguration.Algorithm == CoinAlgorithm.ScryptN)
-                arguments = String.Format("{0} {1}", MinerParameter.ScryptN, arguments.TrimStart());
+            {
+                if (isSGMiner)
+                {
+                    arguments = String.Format("{0} {1}", MinerParameter.AlgorithmNScrypt, arguments.TrimStart());
+                }
+                else
+                {
+                    arguments = String.Format("{0} {1}", MinerParameter.ScryptVert, arguments.TrimStart());
+                }
+            }
             else if (minerConfiguration.Algorithm == CoinAlgorithm.ScryptJane)
                 arguments = String.Format("{0} {1}", MinerParameter.ScryptJane, arguments.TrimStart());
 
