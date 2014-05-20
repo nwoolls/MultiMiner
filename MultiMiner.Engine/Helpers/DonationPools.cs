@@ -244,6 +244,26 @@ namespace MultiMiner.Engine.Helpers
             //DRK
             donationConfiguration = CreateCoinConfiguration("DRK", "stratum+tcp://drkpool.com", 3333);
             configurations.Add(donationConfiguration);
+
+            //MYR1
+            donationConfiguration = CreateCoinConfiguration("MYR1", "stratum+tcp://de1.miningpool.co", 19653);
+            configurations.Add(donationConfiguration);
+
+            //GPUC
+            donationConfiguration = CreateCoinConfiguration("GPUC", "stratum+tcp://gpu-stratum.hashfever.com", 3262);
+            configurations.Add(donationConfiguration);
+
+            //EXE
+            donationConfiguration = CreateCoinConfiguration("EXE", "stratum+tcp://stratum.execoin.net", 3333);
+            configurations.Add(donationConfiguration);
+
+            //SPA
+            donationConfiguration = CreateCoinConfiguration("SPA", "stratum+tcp://east1.us.stratum.dedicatedpool.com", 3372);
+            configurations.Add(donationConfiguration);
+
+            //HIRO
+            donationConfiguration = CreateCoinConfiguration("HIRO", "stratum+tcp://stratum.forkpool.com", 6347);
+            configurations.Add(donationConfiguration);
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
