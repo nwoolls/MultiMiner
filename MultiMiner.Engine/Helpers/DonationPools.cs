@@ -92,11 +92,7 @@ namespace MultiMiner.Engine.Helpers
             //SBC
             donationConfiguration = CreateCoinConfiguration("SBC", "stratum+tcp://au1.miningpool.co", 9203);
             configurations.Add(donationConfiguration);
-
-            //QRK
-            donationConfiguration = CreateCoinConfiguration("QRK", "stratum+tcp://mine1.coinmine.pl", 6010);
-            configurations.Add(donationConfiguration);
-
+            
             //SPT
             donationConfiguration = CreateCoinConfiguration("SPT", "stratum+tcp://spt.coinmine.pl", 9108);
             configurations.Add(donationConfiguration);
