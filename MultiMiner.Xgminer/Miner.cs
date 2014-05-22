@@ -292,6 +292,8 @@ namespace MultiMiner.Xgminer
             }
             else if (minerConfiguration.Algorithm == CoinAlgorithm.ScryptJane)
                 arguments = String.Format("{0} {1}", MinerParameter.ScryptJane, arguments.TrimStart());
+            else if (minerConfiguration.Algorithm == CoinAlgorithm.X11)
+                arguments = String.Format("{0} {1}", MinerParameter.KernelDarkcoin, arguments.TrimStart());
 
             if (minerConfiguration.ApiListen)
             {

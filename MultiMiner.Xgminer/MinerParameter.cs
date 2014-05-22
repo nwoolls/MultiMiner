@@ -17,5 +17,6 @@
         public const string ScryptVert = "--scrypt-vert";
         public const string AlgorithmNScrypt = "--algorithm nscrypt";
         public const string ScryptJane = "--scrypt-jane";
+        public const string KernelDarkcoin = "--kernel darkcoin";
     }
 }
