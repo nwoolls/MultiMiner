@@ -1,6 +1,5 @@
 ﻿using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Win.ViewModels;
-using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;

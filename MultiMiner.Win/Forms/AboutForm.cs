@@ -6,7 +6,6 @@ using System.IO;
 using System.Windows.Forms;
 using MultiMiner.Win.Extensions;
 using System.Reflection;
-using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Installers;
 

@@ -1,6 +1,4 @@
-﻿using MultiMiner.Xgminer.Data;
-
-namespace MultiMiner.Engine.Data
+﻿namespace MultiMiner.Engine.Data
 {
     public class MinerDescriptor : AvailableMiner
     {

@@ -353,7 +353,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Miners\bfgminer\Extract bfgminer here.txt">
+    <Content Include="Miners\BFGMiner\Extract BFGMiner here.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="MultiMiner.ico" />

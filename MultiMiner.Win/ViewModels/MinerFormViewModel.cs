@@ -8,7 +8,6 @@ using MultiMiner.Win.Extensions;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
-using MultiMiner.Win.Data;
 
 namespace MultiMiner.Win.ViewModels
 {

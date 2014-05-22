@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MultiMiner.Engine;
-using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Serialization;
 
 namespace MultiMiner.Win.Forms.Configuration
