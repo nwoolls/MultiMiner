@@ -54,7 +54,20 @@ namespace MultiMiner.Win.ViewModels
 
                     if (Devices.SingleOrDefault(d => d.Equals(deviceViewModel)) == null)
                     {
+                        //set Visible to false until we have details
                         deviceViewModel.Visible = false;
+
+                        //network devices always enabled
+                        deviceViewModel.Enabled = true;
+
+                        //assume BTC until we have pool info
+                        deviceViewModel.Coin = new CryptoCoin()
+                        {
+                            Name = KnownCoins.BitcoinName,
+                            Symbol = KnownCoins.BitcoinSymbol,
+                            Algorithm = CoinAlgorithm.SHA256
+                        };
+
                         Devices.Add(deviceViewModel);
                     }
                 }
@@ -96,12 +109,6 @@ namespace MultiMiner.Win.ViewModels
             foreach (DeviceViewModel deviceViewModel in Devices.Where(d => d.Coin != null))
             {
                 string coinSymbol = deviceViewModel.Coin.Symbol;
-                ApplyCoinInformationToViewModel(coinInformationModels, coinSymbol, deviceViewModel);
-            }
-
-            foreach (DeviceViewModel deviceViewModel in Devices.Where(d => d.Kind == DeviceKind.NET))
-            {
-                const string coinSymbol = KnownCoins.BitcoinSymbol;
                 ApplyCoinInformationToViewModel(coinInformationModels, coinSymbol, deviceViewModel);
             }
         }
@@ -257,7 +264,7 @@ namespace MultiMiner.Win.ViewModels
 
         public void ApplyDeviceConfigurationModels(List<Engine.Data.Configuration.Device> deviceConfigurations, List<Engine.Data.Configuration.Coin> coinConfigurations)
         {
-            foreach (DeviceViewModel deviceViewModel in Devices)
+            foreach (DeviceViewModel deviceViewModel in Devices.Where(d => d.Kind != DeviceKind.NET))
             {
                 Engine.Data.Configuration.Device deviceConfiguration = deviceConfigurations.SingleOrDefault(dc => dc.Equals(deviceViewModel));
                 if (deviceConfiguration != null)

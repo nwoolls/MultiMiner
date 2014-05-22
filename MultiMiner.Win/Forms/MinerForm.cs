@@ -388,9 +388,6 @@ namespace MultiMiner.Win.Forms
             return listViewItem;
         }
 
-        private const string NetworkDeviceCoinName = KnownCoins.BitcoinName;
-        private const string NetworkDeviceCoinSymbol = KnownCoins.BitcoinSymbol;
-
         private double WorkUtilityToHashrate(double workUtility)
         {
             //this will be wrong for Scrypt until 3.10.1
@@ -469,7 +466,7 @@ namespace MultiMiner.Win.Forms
                      * */
                     //check for Coin != null, device may not have a coin configured
                     //Network Devices assume BTC (for now)
-                    if ((deviceViewModel.Coin == null) && (deviceViewModel.Kind != DeviceKind.NET))
+                    if (deviceViewModel.Coin == null)
                     {
                         listViewItem.SubItems["Coin"].Text = String.Empty;
                         listViewItem.SubItems["Difficulty"].Text = String.Empty;
@@ -479,11 +476,7 @@ namespace MultiMiner.Win.Forms
                     }
                     else
                     {
-                        if (deviceViewModel.Kind == DeviceKind.NET)
-                            //Network Devices assume BTC (for now)
-                            listViewItem.SubItems["Coin"].Text = NetworkDeviceCoinName;
-                        else
-                            listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
+                        listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
 
                         // null for a Network Device if this machine never setup BTC
                         if (deviceViewModel.Coin != null)
@@ -1900,21 +1893,58 @@ namespace MultiMiner.Win.Forms
 
                 knownCoin.Symbol = item.Symbol;
                 knownCoin.Name = item.Name;
-
-                //needs to be a case insensitive check to work with both CoinChoose and CoinWarz
-                if (item.Algorithm.ToLower().Contains(AlgorithmNames.Groestl.ToLower()))
-                    knownCoin.Algorithm = CoinAlgorithm.Groestl;
-                else if (item.Algorithm.ToLower().Contains(AlgorithmNames.Quark.ToLower()))
-                    knownCoin.Algorithm = CoinAlgorithm.Quark;
-                else if (item.Algorithm.ToLower().Contains(AlgorithmNames.ScryptN.ToLower()))
-                    knownCoin.Algorithm = CoinAlgorithm.ScryptN;
-                else if (item.Algorithm.ToLower().Contains(AlgorithmNames.Scrypt.ToLower()))
-                    knownCoin.Algorithm = CoinAlgorithm.Scrypt;
-                else
-                    knownCoin.Algorithm = CoinAlgorithm.SHA256;
-
+                knownCoin.Algorithm = AlgorithmNameToAlgorithm(item.Algorithm);
             }
             SaveKnownCoinsToFile();
+        }
+
+
+        private static CoinAlgorithm AlgorithmNameToAlgorithm(string algorithmName)
+        {
+            string algorithm = algorithmName.ToLower();
+
+            //needs to be a case insensitive check to work with both CoinChoose and CoinWarz
+            if (algorithm.Contains(AlgorithmNames.Groestl.ToLower()))
+                return CoinAlgorithm.Groestl;
+            else if (algorithm.Contains(AlgorithmNames.Quark.ToLower()))
+                return CoinAlgorithm.Quark;
+            else if (algorithm.Contains(AlgorithmNames.ScryptN.ToLower()))
+                return CoinAlgorithm.ScryptN;
+            else if (algorithm.Contains(AlgorithmNames.Scrypt.ToLower()))
+                return CoinAlgorithm.Scrypt;
+            else if (algorithm.Contains(AlgorithmNames.X11.ToLower()))
+                return CoinAlgorithm.X11;
+            else if (algorithm.Contains(AlgorithmNames.ScryptJane.ToLower()))
+                return CoinAlgorithm.ScryptJane;
+            else if (algorithm.Contains(AlgorithmNames.Keccak.ToLower()))
+                return CoinAlgorithm.Keccak;
+            else
+                return CoinAlgorithm.SHA256;
+        }
+
+        private static string AlgorithmToAlgorithmName(CoinAlgorithm algorithm)
+        {
+            switch (algorithm)
+            {
+                case CoinAlgorithm.SHA256:
+                    return AlgorithmNames.SHA256;
+                case CoinAlgorithm.Scrypt:
+                    return AlgorithmNames.Scrypt;
+                case CoinAlgorithm.ScryptJane:
+                    return AlgorithmNames.ScryptJane;
+                case CoinAlgorithm.ScryptN:
+                    return AlgorithmNames.ScryptN;
+                case CoinAlgorithm.X11:
+                    return AlgorithmNames.X11;
+                case CoinAlgorithm.Quark:
+                    return AlgorithmNames.Quark;
+                case CoinAlgorithm.Groestl:
+                    return AlgorithmNames.Groestl;
+                case CoinAlgorithm.Keccak:
+                    return AlgorithmNames.Keccak;
+            }
+
+            return AlgorithmNames.SHA256;
         }
 
         private static string KnownDevicesFileName()
@@ -4218,8 +4248,8 @@ namespace MultiMiner.Win.Forms
                         // versionInformation may be null if the read timed out
                         MinerName = versionInformation == null ? String.Empty : versionInformation.Name,
 
-                        CoinName = NetworkDeviceCoinName,
-                        CoinSymbol = NetworkDeviceCoinSymbol,
+                        CoinName = KnownCoins.BitcoinName,
+                        CoinSymbol = KnownCoins.BitcoinSymbol,
                         Algorithm = AlgorithmNames.SHA256
                     };
 
@@ -4228,11 +4258,32 @@ namespace MultiMiner.Win.Forms
                     //ensure poolIndex is valid for poolInformationList
                     //user(s) reported index errors so we can't out on the RPC API here
                     //https://github.com/nwoolls/MultiMiner/issues/64
-                    if ((deviceInformation.PoolIndex >= 0) && 
+                    if ((deviceInformation.PoolIndex >= 0) &&
                         // poolInformationList may be null if an RPC API call timed out
                         (poolInformationList != null) &&
                         (deviceInformation.PoolIndex < poolInformationList.Count))
-                        miningStatistics.PoolName = poolInformationList[deviceInformation.PoolIndex].Url.DomainFromHost();
+                    {
+                        string poolUrl = poolInformationList[deviceInformation.PoolIndex].Url;
+                        miningStatistics.PoolName = poolUrl.DomainFromHost();
+
+                        Coin coinConfiguration = 
+                            engineConfiguration.CoinConfigurations
+                                .FirstOrDefault(cc => 
+                                    cc.Pools
+                                        .Any(p => String.Format("{0}:{1}", p.Host, p.Port).Equals(poolUrl, StringComparison.OrdinalIgnoreCase))
+                                );
+                        if (coinConfiguration != null)
+                        {
+                            miningStatistics.CoinName = coinConfiguration.CryptoCoin.Name;
+                            miningStatistics.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
+
+                            //MobileMiner is only SHA & Scrypt for now
+                            if (coinConfiguration.CryptoCoin.Algorithm == CoinAlgorithm.SHA256)
+                                miningStatistics.Algorithm = AlgorithmNames.SHA256;
+                            else
+                                miningStatistics.Algorithm = AlgorithmNames.Scrypt;
+                        }
+                    }
 
                     statisticsList.Add(miningStatistics);
                 }
@@ -4927,7 +4978,7 @@ namespace MultiMiner.Win.Forms
                     List<PoolInformation> poolInformationList = GetCachedPoolInfoFromAddress(ipAddress, port);
                     if ((poolInformationList != null) &&
                         //ensure poolIndex is valid for poolInformationList
-                        //user(s) reported index errors so we can't out on the RPC API here
+                        //user(s) reported index errors so we can't count on the RPC API here
                         //https://github.com/nwoolls/MultiMiner/issues/64
                         ((poolIndex >= 0) && (poolIndex < poolInformationList.Count)))
                     {
@@ -4942,15 +4993,33 @@ namespace MultiMiner.Win.Forms
                         deviceViewModel.PoolStalePercent = poolInformation.PoolStalePercent;
 
                         deviceViewModel.Visible = true;
+
+                        Coin coinConfiguration = CoinConfigurationForPoolUrl(poolInformation.Url);
+                        if (coinConfiguration != null)
+                            deviceViewModel.Coin = coinConfiguration.CryptoCoin;
                     }
                 }
 
                 CheckAndSetNetworkDifficulty(ipAddress, port, KnownCoins.BitcoinSymbol);
             }
 
+            ApplyCoinInformationToViewModel();
+
             RemoveSelfReferencingNetworkDevices();
 
             RefreshViewFromDeviceStats();
+        }
+
+        private Coin CoinConfigurationForPoolUrl(string poolUrl)
+        {
+            Coin coinConfiguration =
+                engineConfiguration.CoinConfigurations
+                    .FirstOrDefault(cc =>
+                        cc.Pools
+                            .Any(p => String.Format("{0}:{1}", p.Host.ShortHostFromHost(), p.Port).Equals(poolUrl.ShortHostFromHost(), StringComparison.OrdinalIgnoreCase))
+                    );
+
+            return coinConfiguration;
         }
 
         private void UpdateInstancesStatsFromLocal()
@@ -6296,7 +6365,7 @@ namespace MultiMiner.Win.Forms
                 if (viewModel.Kind == DeviceKind.NET)
                 {
                     //assume BTC for Network Devices (for now)
-                    deviceConfiguration.CoinSymbol = NetworkDeviceCoinSymbol;
+                    deviceConfiguration.CoinSymbol = KnownCoins.BitcoinSymbol;
                     deviceConfiguration.Enabled = true;
                 }
                 else if (viewModel.Kind == DeviceKind.PXY)
@@ -6802,7 +6871,7 @@ namespace MultiMiner.Win.Forms
             //don't want to override
 
             CancelMiningOnStartup(); //in case clicked during countdown
-
+            
             SaveChangesLocally();
 
             if (!MiningConfigurationValid())
