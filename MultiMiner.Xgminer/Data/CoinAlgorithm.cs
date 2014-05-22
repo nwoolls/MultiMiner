@@ -6,6 +6,8 @@
         Scrypt = 1,
         ScryptJane = 2,
         ScryptN = 3,
-        X11 = 4
+        X11 = 4,
+        Quark = 5,
+        Groestl = 6
     }
 }

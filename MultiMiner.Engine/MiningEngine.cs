@@ -52,6 +52,8 @@ namespace MultiMiner.Engine
             //SPH-SGMiner as the default X11 miner
             miner = factory.RegisterMiner("SPHSGMiner", "SGMiner", true);
             factory.DefaultMiners[CoinAlgorithm.X11] = miner;
+            factory.DefaultMiners[CoinAlgorithm.Quark] = miner;
+            factory.DefaultMiners[CoinAlgorithm.Groestl] = miner;
 
             //non-default, but "official" miners for Vertcoin and Darkcoin
             miner = factory.RegisterMiner("Vertminer", "Vertminer", true);

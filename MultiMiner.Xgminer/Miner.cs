@@ -294,6 +294,10 @@ namespace MultiMiner.Xgminer
                 arguments = String.Format("{0} {1}", MinerParameter.ScryptJane, arguments.TrimStart());
             else if (minerConfiguration.Algorithm == CoinAlgorithm.X11)
                 arguments = String.Format("{0} {1}", MinerParameter.KernelDarkcoin, arguments.TrimStart());
+            else if (minerConfiguration.Algorithm == CoinAlgorithm.Quark)
+                arguments = String.Format("{0} {1}", MinerParameter.KernelQuarkcoin, arguments.TrimStart());
+            else if (minerConfiguration.Algorithm == CoinAlgorithm.Groestl)
+                arguments = String.Format("{0} {1}", MinerParameter.KernelGroestcoin, arguments.TrimStart());
 
             if (minerConfiguration.ApiListen)
             {
