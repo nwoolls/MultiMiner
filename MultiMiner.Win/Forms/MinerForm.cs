@@ -5426,8 +5426,6 @@ namespace MultiMiner.Win.Forms
 
         private void LogProcessClose(object sender, LogProcessCloseArgs ea)
         {
-            CheckAndAddStratumDeviceIndex(ea);
-
             logProcessCloseArgsBindingSource.Position = logProcessCloseArgsBindingSource.Add(ea);
 
             while (logProcessCloseArgsBindingSource.Count > MaxHistoryOnScreen)
@@ -5435,22 +5433,7 @@ namespace MultiMiner.Win.Forms
 
             LogProcessCloseToFile(ea);
         }
-
-        private void CheckAndAddStratumDeviceIndex(LogProcessCloseArgs ea)
-        {
-            //check and include the index of the virtual stratum proxy "device"
-            if (ea.MinerConfiguration.StratumProxy)
-            {
-                int proxyIndex = engineConfiguration.XgminerConfiguration.StratumProxies
-                    .FindIndex(p => (p.GetworkPort == ea.MinerConfiguration.StratumProxyPort) && 
-                        (p.StratumPort == ea.MinerConfiguration.StratumProxyStratumPort));
-
-                Xgminer.Data.Device proxyDevice = devices.SingleOrDefault(d => (d.Kind == DeviceKind.PXY) && (d.RelativeIndex == proxyIndex));
-                if (proxyDevice != null)
-                    ea.DeviceDescriptors.Add(proxyDevice);
-            }
-        }
-
+        
         private void LogProcessCloseToFile(LogProcessCloseArgs ea)
         {
             const string logFileName = "MiningLog.json";
