@@ -8,6 +8,7 @@
         ScryptN = 3,
         X11 = 4,
         Quark = 5,
-        Groestl = 6
+        Groestl = 6,
+        Keccak = 7
     }
 }
