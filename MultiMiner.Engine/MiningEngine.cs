@@ -36,21 +36,26 @@ namespace MultiMiner.Engine
         {
             MinerFactory factory = MinerFactory.Instance;
 
+            //BFGMiner as the default SHA-2 and Scrypt miner
             MinerDescriptor miner = factory.RegisterMiner("BFGMiner", "BFGMiner", false);
             factory.DefaultMiners[CoinAlgorithm.SHA256] = miner;
             factory.DefaultMiners[CoinAlgorithm.Scrypt] = miner;
 
+            //Kalroth SJ-CGMiner as the default Scrypt-Jane miner
             miner = factory.RegisterMiner("KalrothSJCGMiner", "CGMiner", true);
             factory.DefaultMiners[CoinAlgorithm.ScryptJane] = miner;
-
-            miner = factory.RegisterMiner("Vertminer", "Vertminer", true);
-
-            miner = factory.RegisterMiner("DarkcoinSGMiner", "SGMiner", true);
-            factory.DefaultMiners[CoinAlgorithm.X11] = miner;
+            
+            //SGMiner is the default Scrypt-N miner
+            miner = factory.RegisterMiner("SGMiner", "SGMiner", true);
             factory.DefaultMiners[CoinAlgorithm.ScryptN] = miner;
 
-            miner = factory.RegisterMiner("SGMiner", "SGMiner", true);
+            //SPH-SGMiner as the default X11 miner
             miner = factory.RegisterMiner("SPHSGMiner", "SGMiner", true);
+            factory.DefaultMiners[CoinAlgorithm.X11] = miner;
+
+            //non-default, but "official" miners for Vertcoin and Darkcoin
+            miner = factory.RegisterMiner("Vertminer", "Vertminer", true);
+            miner = factory.RegisterMiner("DarkcoinSGMiner", "SGMiner", true);
         }
 
         public bool Donating
