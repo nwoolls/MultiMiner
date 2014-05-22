@@ -2845,7 +2845,7 @@ namespace MultiMiner.Win.Forms
             timers.CreateTimer(Timers.FiveSecondInterval, fiveSecondTimer_Tick);
             timers.CreateTimer(Timers.FiveMinuteInterval, fiveMinuteTimer_Tick);
             timers.CreateTimer(Timers.TenSecondInterval, tenSecondTimer_Tick);
-            timers.CreateTimer(Timers.TenMinuteInterval, tenMinuteTimer_Tick);
+            timers.CreateTimer(Timers.FifteenMinuteInterval, fifteenMinuteTimer_Tick);
             timers.CreateTimer(Timers.ThirtyMinuteInterval, thirtyMinuteTimer_Tick);
             timers.CreateTimer(Timers.OneSecondInterval, oneSecondTimer_Tick);
             timers.CreateTimer(Timers.TwelveHourInterval, twelveHourTimer_Tick);
@@ -2967,7 +2967,7 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private void tenMinuteTimer_Tick(object sender, EventArgs e)
+        private void fifteenMinuteTimer_Tick(object sender, EventArgs e)
         {
             if (applicationConfiguration.NetworkDeviceDetection)
             {
