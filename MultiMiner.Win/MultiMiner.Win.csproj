@@ -357,6 +357,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="MultiMiner.ico" />
+    <None Include="Resources\hardware-find1.png" />
     <None Include="Resources\hardware-option.png" />
     <None Include="Resources\clipboard_copy.png" />
     <None Include="Resources\computer-control_play.png" />

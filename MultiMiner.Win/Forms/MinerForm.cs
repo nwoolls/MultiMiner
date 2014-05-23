@@ -6796,9 +6796,13 @@ namespace MultiMiner.Win.Forms
             if (miningEngine.Mining)
                 return;
 
+            ProgressForm progressForm = new ProgressForm("Scanning hardware for devices capable of mining. Please be patient.");
             updatingListView = true;
             try
             {
+                progressForm.IsDownload = false;
+                //not ShowDialog()
+                progressForm.Show();
                 try
                 {
                     using (new HourGlass())
@@ -6864,6 +6868,8 @@ namespace MultiMiner.Win.Forms
             finally
             {
                 updatingListView = false;
+                progressForm.Close();
+                progressForm.Dispose();
             }
         }
 
