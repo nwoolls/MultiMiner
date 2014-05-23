@@ -4299,12 +4299,7 @@ namespace MultiMiner.Win.Forms
                         string poolUrl = poolInformationList[deviceInformation.PoolIndex].Url;
                         miningStatistics.PoolName = poolUrl.DomainFromHost();
 
-                        Coin coinConfiguration = 
-                            engineConfiguration.CoinConfigurations
-                                .FirstOrDefault(cc => 
-                                    cc.Pools
-                                        .Any(p => String.Format("{0}:{1}", p.Host, p.Port).Equals(poolUrl, StringComparison.OrdinalIgnoreCase))
-                                );
+                        Coin coinConfiguration = CoinConfigurationForPoolUrl(poolUrl);
                         if (coinConfiguration != null)
                         {
                             miningStatistics.CoinName = coinConfiguration.CryptoCoin.Name;
