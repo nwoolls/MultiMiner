@@ -2835,6 +2835,23 @@ namespace MultiMiner.Win.Forms
         {
             notificationClickHandler();
         }
+
+        private void advancedTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //best / only way to ensure that items like History show initially scrolled to
+            //the bottom so new entries don't require user intervention to see them
+            EnsureRecentLogDataVisibility();
+        }
+
+        private void EnsureRecentLogDataVisibility()
+        {
+            if (advancedTabControl.SelectedTab == historyPage)
+                logProcessCloseArgsBindingSource.MoveLast();
+            else if (advancedTabControl.SelectedTab == processLogPage)
+                logLaunchArgsBindingSource.MoveLast();
+            else if (advancedTabControl.SelectedTab == apiMonitorPage)
+                apiLogEntryBindingSource.MoveLast();
+        }
         #endregion
 
         #region Timer setup
@@ -5588,7 +5605,6 @@ namespace MultiMiner.Win.Forms
 
             logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
             LoadPreviousHistory();
-            logProcessCloseArgsBindingSource.MoveLast();
             
             CloseDetailsArea();
 
@@ -6470,6 +6486,8 @@ namespace MultiMiner.Win.Forms
             apiLogGridView.Visible = true;
             advancedAreaContainer.Panel2Collapsed = false;
             advancedAreaContainer.Panel2.Show();
+
+            EnsureRecentLogDataVisibility();
         }
 
         private void ShowApiMonitor()

@@ -741,6 +741,7 @@
             this.advancedTabControl.SelectedIndex = 0;
             this.advancedTabControl.Size = new System.Drawing.Size(1293, 112);
             this.advancedTabControl.TabIndex = 15;
+            this.advancedTabControl.SelectedIndexChanged += new System.EventHandler(this.advancedTabControl_SelectedIndexChanged);
             // 
             // historyPage
             // 
