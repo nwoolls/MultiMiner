@@ -6405,23 +6405,38 @@ namespace MultiMiner.Win.Forms
             localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
                 engineConfiguration.CoinConfigurations);
 
-            if (disableStrategies)
-            {
-                engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false;
-            }
 
             engineConfiguration.SaveDeviceConfigurations();
-            engineConfiguration.SaveStrategyConfiguration();
 
             RefreshListViewFromViewModel();
 
             AutoSizeListViewColumns();
 
             if (wasMining)
+            {
+                EnableMiningStrategies(false);
+
                 StartMiningLocally();
+
+                if (!disableStrategies)
+                    EnableMiningStrategies(true);
+            }
             else
+            {
+                if (disableStrategies)
+                    EnableMiningStrategies(false);
+
                 //so the Start button becomes enabled if we now have a valid config
                 UpdateMiningButtons();
+            }
+
+            RefreshStrategiesCountdown();
+        }
+
+        private void EnableMiningStrategies(bool enabled = true)
+        {
+            engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = enabled;
+            engineConfiguration.SaveStrategyConfiguration();
         }
 
         private void CheckForUpdates()
