@@ -116,9 +116,9 @@ namespace MultiMiner.Remoting
             ApplicationProxy.Instance.CancelChanges(this, GetClientIpAddress(), signature);
         }
 
-        public void SetAllDevicesToCoin(string signature, string coinSymbol)
+        public void SetAllDevicesToCoin(string signature, string coinSymbol, bool disableStrategies)
         {
-            ApplicationProxy.Instance.SetAllDevicesToCoin(this, GetClientIpAddress(), signature, coinSymbol);
+            ApplicationProxy.Instance.SetAllDevicesToCoin(this, GetClientIpAddress(), signature, coinSymbol, disableStrategies);
         }
 
         public void SetDevicesToCoin(string signature, DeviceDescriptor[] devices, string coinSymbol)

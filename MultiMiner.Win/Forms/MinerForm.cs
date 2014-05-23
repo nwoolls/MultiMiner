@@ -2776,10 +2776,26 @@ namespace MultiMiner.Win.Forms
 
             bool allRigs = ShouldQuickSwitchAllRigs(coinSymbol);
 
-            SetAllDevicesToCoin(coinSymbol);
+            bool disableStrategies = ShouldDisableStrategies();
+
+            SetAllDevicesToCoin(coinSymbol, disableStrategies);
 
             if (allRigs)
-                SetAllDevicesToCoinOnAllRigs(coinSymbol);
+                SetAllDevicesToCoinOnAllRigs(coinSymbol, disableStrategies);
+        }
+
+        private bool ShouldDisableStrategies()
+        {
+            bool disableStrategies = false;
+            if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+            {
+                DialogResult dialogResult = MessageBox.Show(
+                    "Would you like to disable Auto-Mining Strategies after switching coins?",
+                    "Quick Switch", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                    disableStrategies = true;
+            }
+            return disableStrategies;
         }
 
         private bool ShouldQuickSwitchAllRigs(string coinSymbol)
@@ -3206,14 +3222,14 @@ namespace MultiMiner.Win.Forms
             });
         }
 
-        private void SetAllDevicesToCoinRequested(object sender, string coinSymbol, RemoteCommandEventArgs ea)
+        private void SetAllDevicesToCoinRequested(object sender, string coinSymbol, bool disableStrategies, RemoteCommandEventArgs ea)
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
                 BeginInvoke((Action)(() =>
                 {
                     //code to update UI
-                    SetAllDevicesToCoinLocally(coinSymbol);
+                    SetAllDevicesToCoinLocally(coinSymbol, disableStrategies);
                 }));
             });
         }
@@ -3862,11 +3878,11 @@ namespace MultiMiner.Win.Forms
             });
         }
 
-        private void SetAllDevicesToCoinRemotely(Instance instance, string coinSymbol)
+        private void SetAllDevicesToCoinRemotely(Instance instance, string coinSymbol, bool disableStrategies)
         {
             PerformRemoteCommand(instance, (service) =>
             {
-                service.SetAllDevicesToCoin(GetSendingSignature(instance), coinSymbol);
+                service.SetAllDevicesToCoin(GetSendingSignature(instance), coinSymbol, disableStrategies);
                 UpdateViewFromRemoteInTheFuture(2);
             });
         }
@@ -4703,7 +4719,7 @@ namespace MultiMiner.Win.Forms
                     string coinName = parts[1];
                     Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.CryptoCoin.Name.Equals(coinName));
                     if (coinConfiguration != null)
-                        SetAllDevicesToCoinLocally(coinConfiguration.CryptoCoin.Symbol);
+                        SetAllDevicesToCoinLocally(coinConfiguration.CryptoCoin.Symbol, true);
                 }
 
                 if (deleteRemoteCommandDelegate == null)
@@ -6323,28 +6339,28 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private void SetAllDevicesToCoin(string coinSymbol)
+        private void SetAllDevicesToCoin(string coinSymbol, bool disableStrategies)
         {
             if (this.selectedRemoteInstance == null)
             {
-                SetAllDevicesToCoinLocally(coinSymbol);
+                SetAllDevicesToCoinLocally(coinSymbol, disableStrategies);
             }
             else
             {
-                SetAllDevicesToCoinRemotely(this.selectedRemoteInstance, coinSymbol);
+                SetAllDevicesToCoinRemotely(this.selectedRemoteInstance, coinSymbol, disableStrategies);
             }
         }
 
-        private void SetAllDevicesToCoinOnAllRigs(string coinSymbol)
+        private void SetAllDevicesToCoinOnAllRigs(string coinSymbol, bool disableStrategies)
         {
             //call ToList() so we can get a copy - otherwise risk:
             //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
             List<Instance> instancesCopy = instancesControl.Instances.Where(i => i != instancesControl.ThisPCInstance).ToList();
             foreach (Instance instance in instancesCopy)
-                SetAllDevicesToCoinRemotely(instance, coinSymbol);
+                SetAllDevicesToCoinRemotely(instance, coinSymbol, disableStrategies);
         }
 
-        private void SetAllDevicesToCoinLocally(string coinSymbol)
+        private void SetAllDevicesToCoinLocally(string coinSymbol, bool disableStrategies)
         {
             bool wasMining = miningEngine.Mining;
             StopMiningLocally();
@@ -6394,7 +6410,10 @@ namespace MultiMiner.Win.Forms
             localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
                 engineConfiguration.CoinConfigurations);
 
-            engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false;
+            if (disableStrategies)
+            {
+                engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false;
+            }
 
             engineConfiguration.SaveDeviceConfigurations();
             engineConfiguration.SaveStrategyConfiguration();

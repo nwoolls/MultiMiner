@@ -43,7 +43,7 @@ namespace MultiMiner.Remoting
         [OperationContract]
         void ScanHardware(string signature);
         [OperationContract]
-        void SetAllDevicesToCoin(string signature, string coinSymbol);
+        void SetAllDevicesToCoin(string signature, string coinSymbol, bool disableStrategies);
         [OperationContract]
         void SetDevicesToCoin(string signature, DeviceDescriptor[] devices, string coinSymbol);
         [OperationContract]

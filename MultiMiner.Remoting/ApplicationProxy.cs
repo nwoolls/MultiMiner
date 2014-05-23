@@ -10,7 +10,7 @@ namespace MultiMiner.Remoting
         //events
         //delegate declarations
         public delegate void RemoteEventHandler(object sender, RemoteCommandEventArgs ea);
-        public delegate void AllCoinEventHandler(object sender, string coinSymbol, RemoteCommandEventArgs ea);
+        public delegate void AllCoinEventHandler(object sender, string coinSymbol, bool disableStrategies, RemoteCommandEventArgs ea);
         public delegate void DevicesCoinEventHandler(object sender, IEnumerable<DeviceDescriptor> devices, string coinSymbol, RemoteCommandEventArgs ea);
         public delegate void ToggleDevicesEventHandler(object sender, IEnumerable<DeviceDescriptor> devices, bool enabled, RemoteCommandEventArgs ea);
         public delegate void ToggleEventHandler(object sender, bool enabled, RemoteCommandEventArgs ea);
@@ -82,10 +82,10 @@ namespace MultiMiner.Remoting
                 ScanHardwareRequested(sender, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
         }
 
-        public void SetAllDevicesToCoin(RemotingService sender, string clientAddress, string signature, string coinSymbol)
+        public void SetAllDevicesToCoin(RemotingService sender, string clientAddress, string signature, string coinSymbol, bool disableStrategies)
         {
             if (SetAllDevicesToCoinRequested != null)
-                SetAllDevicesToCoinRequested(sender, coinSymbol, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
+                SetAllDevicesToCoinRequested(sender, coinSymbol, disableStrategies, new RemoteCommandEventArgs { IpAddress = clientAddress, Signature = signature });
         }
 
         public void SetDevicesToCoin(RemotingService sender, string clientAddress, string signature, IEnumerable<DeviceDescriptor> devices, string coinSymbol)
