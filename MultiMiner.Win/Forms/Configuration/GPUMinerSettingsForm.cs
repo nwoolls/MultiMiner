@@ -70,7 +70,15 @@ namespace MultiMiner.Win.Forms.Configuration
             algoCombo.Items.Clear();
             algorithms = ((CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm))).ToList().Where(algo => algo != CoinAlgorithm.SHA256).ToList();
             foreach (CoinAlgorithm algorithm in algorithms)
+            {
+                if (AlgorithmIsSupported(algorithm))
                     algoCombo.Items.Add(algorithm.ToString().ToSpaceDelimitedWords());
+            }
+        }
+
+        private static bool AlgorithmIsSupported(CoinAlgorithm algorithm)
+        {
+            return MinerFactory.Instance.DefaultMiners.ContainsKey(algorithm);
         }
 
         private void algoCombo_SelectedIndexChanged(object sender, EventArgs e)

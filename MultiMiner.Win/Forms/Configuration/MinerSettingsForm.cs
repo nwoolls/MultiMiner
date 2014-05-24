@@ -47,7 +47,15 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             algoArgCombo.Items.Clear();
             foreach (CoinAlgorithm algorithm in (CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm)))
-                algoArgCombo.Items.Add(algorithm.ToString().ToSpaceDelimitedWords());
+            {
+                if (AlgorithmIsSupported(algorithm))
+                    algoArgCombo.Items.Add(algorithm.ToString().ToSpaceDelimitedWords());
+            }
+        }
+
+        private static bool AlgorithmIsSupported(CoinAlgorithm algorithm)
+        {
+            return MinerFactory.Instance.DefaultMiners.ContainsKey(algorithm);
         }
 
         private void PopulateIntervalCombo()
