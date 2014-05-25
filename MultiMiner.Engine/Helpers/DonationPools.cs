@@ -268,6 +268,10 @@ namespace MultiMiner.Engine.Helpers
             //GRS
             donationConfiguration = CreateCoinConfiguration("GRS", "stratum+tcp://grs.cpu-pool.net", 3650);
             configurations.Add(donationConfiguration);
+
+            //MAX
+            donationConfiguration = CreateCoinConfiguration("MAX", "stratum+tcp://us-east1.maxcoin.miningpoolhub.com", 20461);
+            configurations.Add(donationConfiguration);
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
