@@ -6009,10 +6009,7 @@ namespace MultiMiner.Win.Forms
                 return false;
 
             installedVersion = Engine.Installer.GetInstalledMinerVersion();
-
-            if (!AutomaticUpgradeAllowed(installedVersion, availableVersion))
-                return false;
-
+            
             if (ThisVersionGreater(availableVersion, installedVersion))
                 return true;
 
@@ -6058,15 +6055,7 @@ namespace MultiMiner.Win.Forms
             }
             return allRigs;
         }
-
-        private static bool AutomaticUpgradeAllowed(string installedMinerVersion, string availableMinerVersion)
-        {
-            //don't automatically prompt to upgrade from 1.0 to 2.0
-            Version sourceVersion = new Version(installedMinerVersion);
-            Version targetVersion = new Version(availableMinerVersion);
-            return sourceVersion.Major == targetVersion.Major;
-        }
-
+        
         private static bool ThisVersionGreater(string thisVersion, string thatVersion)
         {
             Version thisVersionObj = new Version(thisVersion);
