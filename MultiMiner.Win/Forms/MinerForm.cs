@@ -260,12 +260,9 @@ namespace MultiMiner.Win.Forms
 
         private void SetupStatusBarLabelLayouts()
         {
-            sha256RateLabel.AutoSize = true;
-            sha256RateLabel.Spring = true;
-
-            scryptRateLabel.AutoSize = true;
-            scryptRateLabel.Padding = new Padding(12, 0, 0, 0);
-
+            hashRateStatusLabel.AutoSize = true;
+            hashRateStatusLabel.Spring = true;
+            
             deviceTotalLabel.AutoSize = true;
             deviceTotalLabel.Padding = new Padding(12, 0, 0, 0);
         }
@@ -3103,7 +3100,7 @@ namespace MultiMiner.Win.Forms
                 if ((device.Coin != null) && 
                     
                     //lump Scrypt-alts in with Scrypt for now
-                    ((device.Coin.Algorithm == algorithm) || ((device.Coin.Algorithm != CoinAlgorithm.SHA256) && (algorithm == CoinAlgorithm.Scrypt))) &&
+                    (device.Coin.Algorithm == algorithm) &&
 
                     //optionally filter out Network Devices
                     (includeNetworkDevices || (device.Kind != DeviceKind.NET)))
@@ -4941,7 +4938,11 @@ namespace MultiMiner.Win.Forms
             RefreshListViewFromViewModel();
             RefreshStatusBarFromViewModel();
 
-            notifyIcon1.Text = string.Format("MultiMiner - {0} {1}", scryptRateLabel.Text, sha256RateLabel.Text);
+            //max length for notify icon text is 64
+            string bubbleText = string.Format("MultiMiner - {0}", hashRateStatusLabel.Text);
+            if (bubbleText.Length > 64)
+                bubbleText = bubbleText.Substring(0, 60) + "...";
+            notifyIcon1.Text = bubbleText;
 
             //auto sizing the columns is moderately CPU intensive, so only do it every /count/ times
             AutoSizeListViewColumnsEvery(2);
@@ -6600,8 +6601,7 @@ namespace MultiMiner.Win.Forms
             processDeviceDetails.Clear();
             lastDevicePoolMapping.Clear();
             RefreshStrategiesCountdown();
-            scryptRateLabel.Text = string.Empty;
-            sha256RateLabel.Text = string.Empty;
+            hashRateStatusLabel.Text = string.Empty;
             notifyIcon1.Text = "MultiMiner - Stopped";
             UpdateMiningButtons();
             RefreshIncomeSummary();
@@ -6881,18 +6881,27 @@ namespace MultiMiner.Win.Forms
             //don't include Network Devices in the count for Remote ViewModels
             deviceTotalLabel.Text = String.Format("{0} device(s)", viewModel.Devices.Count(d => (viewModel == localViewModel) || (d.Kind != DeviceKind.NET)));
             
-            double scryptHashRate = GetVisibleInstanceHashrate(CoinAlgorithm.Scrypt, viewModel == localViewModel);
-            double sha256HashRate = GetVisibleInstanceHashrate(CoinAlgorithm.SHA256, viewModel == localViewModel);
+            hashRateStatusLabel.Text = GetHashRateStatusText(viewModel);
 
-            //Mh not mh, mh is milli
-            scryptRateLabel.Text = scryptHashRate == 0 ? String.Empty : String.Format("Scrypt: {0}", scryptHashRate.ToHashrateString());
-            //spacing used to pad out the status bar item
-            sha256RateLabel.Text = sha256HashRate == 0 ? String.Empty : String.Format("SHA-2: {0}", sha256HashRate.ToHashrateString());
-
-            scryptRateLabel.AutoSize = true;
-            sha256RateLabel.AutoSize = true;
+            hashRateStatusLabel.AutoSize = true;
         }
 
+        private string GetHashRateStatusText(MinerFormViewModel viewModel)
+        {
+            string hashRateText = String.Empty;
+            IList<CoinAlgorithm> algorithms = ((CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm))).ToList();
+            foreach (CoinAlgorithm algorithm in algorithms)
+            {
+                double hashRate = GetVisibleInstanceHashrate(algorithm, viewModel == localViewModel);
+                if (hashRate > 0.00)
+                {
+                    if (!String.IsNullOrEmpty(hashRateText))
+                        hashRateText = hashRateText + "   ";
+                    hashRateText = String.Format("{0}{1}: {2}", hashRateText, algorithm, hashRate.ToHashrateString());
+                }
+            }
+            return hashRateText;
+        }
         private void StartMiningLocally()
         {
             //do not set Dynamic Intensity here - may have already been set by idleTimer_Tick
