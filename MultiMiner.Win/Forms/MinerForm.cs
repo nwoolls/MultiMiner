@@ -6394,7 +6394,6 @@ namespace MultiMiner.Win.Forms
             localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
                 engineConfiguration.CoinConfigurations);
 
-
             engineConfiguration.SaveDeviceConfigurations();
 
             RefreshListViewFromViewModel();
@@ -6403,11 +6402,14 @@ namespace MultiMiner.Win.Forms
 
             if (wasMining)
             {
-                EnableMiningStrategies(false);
+                bool wasAutoMining = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
+                if (wasAutoMining)
+                    EnableMiningStrategies(false);
 
                 StartMiningLocally();
 
-                if (!disableStrategies)
+                //only re-enable if they were enabled before
+                if (!disableStrategies && wasAutoMining)
                     EnableMiningStrategies(true);
             }
             else
