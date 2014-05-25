@@ -4306,7 +4306,8 @@ namespace MultiMiner.Win.Forms
                             miningStatistics.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
 
                             //MobileMiner is only SHA & Scrypt for now
-                            if (coinConfiguration.CryptoCoin.Algorithm == CoinAlgorithm.SHA256)
+                            if ((coinConfiguration.CryptoCoin.Algorithm == CoinAlgorithm.SHA256) ||
+                                (coinConfiguration.CryptoCoin.Algorithm == CoinAlgorithm.Keccak))
                                 miningStatistics.Algorithm = AlgorithmNames.SHA256;
                             else
                                 miningStatistics.Algorithm = AlgorithmNames.Scrypt;
