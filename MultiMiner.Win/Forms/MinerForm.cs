@@ -4401,7 +4401,7 @@ namespace MultiMiner.Win.Forms
 
                     miningStatistics.MachineName = Environment.MachineName;
 
-                    PopulateMiningStatistics(miningStatistics, deviceInformation, GetCoinNameForApiContext(minerProcess.ApiContext));
+                    PopulateMobileMinerStatistics(miningStatistics, deviceInformation, GetCoinNameForApiContext(minerProcess.ApiContext));
 
                     DeviceDetails deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
                         && (d.ID == deviceInformation.ID));
@@ -4435,7 +4435,7 @@ namespace MultiMiner.Win.Forms
             return coinName;
         }
 
-        private void PopulateMiningStatistics(MultiMiner.MobileMiner.Data.MiningStatistics miningStatistics, DeviceInformation deviceInformation,
+        private void PopulateMobileMinerStatistics(MultiMiner.MobileMiner.Data.MiningStatistics miningStatistics, DeviceInformation deviceInformation,
             string coinName)
         {
             miningStatistics.MinerName = "MultiMiner";
