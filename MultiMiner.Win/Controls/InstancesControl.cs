@@ -146,25 +146,17 @@ namespace MultiMiner.Win.Controls
             TreeNode[] nodes = treeView1.Nodes[0].Nodes.Find(ipAddress, false);
             if (nodes.Length > 0)
             {
-                if ((machine.TotalSha256Hashrate > 0) && (machine.TotalScryptHashrate > 0))
+                if (machine.TotalHashrates.Keys.Count > 0)
                 {
-                    nodes[0].Text = String.Format("{0} ({1}, {2})",
-                        GetMachineName(ipAddress),
-                        machine.TotalSha256Hashrate.ToHashrateString(),
-                        machine.TotalScryptHashrate.ToHashrateString());
-                }
-                else if (machine.TotalSha256Hashrate > 0)
-                {
-                    nodes[0].Text = String.Format("{0} ({1})",
-                        GetMachineName(ipAddress),
-                        machine.TotalSha256Hashrate.ToHashrateString());
-                }
-                else if (machine.TotalScryptHashrate > 0)
-                {
-                    nodes[0].Text = String.Format("{0} ({1})",
-                        GetMachineName(ipAddress),
-                        machine.TotalScryptHashrate.ToHashrateString());
-                }
+                    string text = String.Empty;
+                    foreach (string algorithm in machine.TotalHashrates.Keys)
+                    {
+                        if (!String.IsNullOrEmpty(text))
+                            text = text + ", ";
+                        text = String.Format("{0}{1}: {2}", text, algorithm, machine.TotalHashrates[algorithm].ToHashrateString());
+                    }
+                    nodes[0].Text = String.Format("{0} ({1})", GetMachineName(ipAddress), text);
+                }                
                 else
                 {
                     nodes[0].Text = GetMachineName(ipAddress);
@@ -189,32 +181,40 @@ namespace MultiMiner.Win.Controls
 
         private void RefreshNetworkTotals()
         {
-            double totalScrypt = instanceMachines.Values.Sum(m => m.TotalScryptHashrate);
-            double totalSha256 = instanceMachines.Values.Sum(m => m.TotalSha256Hashrate);
+            Dictionary<string, double> algorithmTotals = new Dictionary<string, double>();
 
-            if ((totalSha256 > 0) && (totalScrypt > 0))
+            foreach (KeyValuePair<Instance, Remoting.Data.Transfer.Machine> instanceMachine in instanceMachines)
             {
-                treeView1.Nodes[0].Text = String.Format("{0} ({1}, {2})",
-                    NetworkText,
-                    totalSha256.ToHashrateString(),
-                    totalScrypt.ToHashrateString());
+                Instance instance = instanceMachine.Key;
+                Remoting.Data.Transfer.Machine machine = instanceMachine.Value;
+
+                foreach (KeyValuePair<string, double> totalHashrate in machine.TotalHashrates)
+                {
+                    string algorithm = totalHashrate.Key;
+                    double hashrate = totalHashrate.Value;
+                    if (hashrate > 0.00)
+                    {
+                        if (algorithmTotals.ContainsKey(algorithm))
+                            hashrate += algorithmTotals[algorithm];
+                        algorithmTotals[algorithm] = hashrate;
+                    }
+                }
             }
-            else if (totalSha256 > 0)
+
+            string text = String.Empty;
+            foreach (KeyValuePair<string, double> algorithmTotal in algorithmTotals)
             {
-                treeView1.Nodes[0].Text = String.Format("{0} ({1})",
-                    NetworkText,
-                    totalSha256.ToHashrateString());
+                string algorithm = algorithmTotal.Key;
+                double hashrate = algorithmTotal.Value;
+                if (!String.IsNullOrEmpty(text))
+                    text = text + ", ";
+                text = String.Format("{0}{1}: {2}", text, algorithm, hashrate.ToHashrateString());
             }
-            else if (totalScrypt > 0)
-            {
-                treeView1.Nodes[0].Text = String.Format("{0} ({1})",
-                    NetworkText,
-                    totalScrypt.ToHashrateString());
-            }
+
+            if (!String.IsNullOrEmpty(text))
+                treeView1.Nodes[0].Text = String.Format("{0}, ({1})", NetworkText, text);
             else
-            {
                 treeView1.Nodes[0].Text = NetworkText;
-            }
         }
 
         private void SortTree()

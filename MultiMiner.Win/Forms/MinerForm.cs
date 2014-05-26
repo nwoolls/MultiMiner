@@ -3114,8 +3114,7 @@ namespace MultiMiner.Win.Forms
         {
             //broadcast 0 (e.g. even if not mining)
             Remoting.Data.Transfer.Machine machine = new Remoting.Data.Transfer.Machine();
-            machine.TotalScryptHashrate = GetLocalInstanceHashrate(CoinAlgorithm.Scrypt, false);
-            machine.TotalSha256Hashrate = GetLocalInstanceHashrate(CoinAlgorithm.SHA256, false);
+            PopulateLocalMachineHashrates(machine, false);
 
             try
             {
@@ -3125,6 +3124,20 @@ namespace MultiMiner.Win.Forms
             {
                 //e.g. no network connection on Linux
                 ShowMultiMinerRemotingError(ex);
+            }
+        }
+
+        private void PopulateLocalMachineHashrates(Remoting.Data.Transfer.Machine machine, bool includeNetworkDevices)
+        {
+            machine.TotalScryptHashrate = GetLocalInstanceHashrate(CoinAlgorithm.Scrypt, includeNetworkDevices);
+            machine.TotalSha256Hashrate = GetLocalInstanceHashrate(CoinAlgorithm.SHA256, includeNetworkDevices);
+
+            IList<CoinAlgorithm> algorithms = ((CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm))).ToList();
+            foreach (CoinAlgorithm algorithm in algorithms)
+            {
+                double hashrate = GetLocalInstanceHashrate(algorithm, includeNetworkDevices);
+                if (hashrate > 0.00)
+                    machine.TotalHashrates[algorithm.ToString()] = hashrate;
             }
         }
 
@@ -3618,8 +3631,7 @@ namespace MultiMiner.Win.Forms
         private void SendHashrate(string ipAddress)
         {
             Remoting.Data.Transfer.Machine machine = new Remoting.Data.Transfer.Machine();
-            machine.TotalScryptHashrate = GetLocalInstanceHashrate(CoinAlgorithm.Scrypt, false);
-            machine.TotalSha256Hashrate = GetLocalInstanceHashrate(CoinAlgorithm.SHA256, false);
+            PopulateLocalMachineHashrates(machine, false);
             Remoting.Broadcast.Sender.Send(IPAddress.Parse(ipAddress), machine);
         }
 
@@ -5057,8 +5069,8 @@ namespace MultiMiner.Win.Forms
             if (instancesControl.Visible)
             {
                 Remoting.Data.Transfer.Machine machine = new Remoting.Data.Transfer.Machine();
-                machine.TotalScryptHashrate = GetLocalInstanceHashrate(CoinAlgorithm.Scrypt, true);
-                machine.TotalSha256Hashrate = GetLocalInstanceHashrate(CoinAlgorithm.SHA256, true);
+                PopulateLocalMachineHashrates(machine, true);
+
                 instancesControl.ApplyMachineInformation("localhost", machine);
                 UpdateInstancesVisibility();
             }
