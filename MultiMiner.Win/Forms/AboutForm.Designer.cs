@@ -37,9 +37,11 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.licenseTextBox = new System.Windows.Forms.TextBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.revisionLabel = new System.Windows.Forms.Label();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,12 +58,14 @@
             // bfgminerLabel
             // 
             this.bfgminerLabel.AutoSize = true;
+            this.bfgminerLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.bfgminerLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.bfgminerLabel.Location = new System.Drawing.Point(106, 73);
+            this.bfgminerLabel.Location = new System.Drawing.Point(131, 72);
             this.bfgminerLabel.Name = "bfgminerLabel";
             this.bfgminerLabel.Size = new System.Drawing.Size(124, 15);
             this.bfgminerLabel.TabIndex = 3;
             this.bfgminerLabel.Text = "xgminer 1.1.1 installed";
+            this.bfgminerLabel.Click += new System.EventHandler(this.backendMinerLabel_Click);
             // 
             // multiMinerLink
             // 
@@ -113,15 +117,6 @@
             this.licenseTextBox.TabIndex = 8;
             this.licenseTextBox.Text = resources.GetString("licenseTextBox.Text");
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.computer_coins;
-            this.pictureBox1.Location = new System.Drawing.Point(14, 14);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(75, 74);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            // 
             // revisionLabel
             // 
             this.revisionLabel.AutoSize = true;
@@ -132,17 +127,38 @@
             this.revisionLabel.TabIndex = 9;
             this.revisionLabel.Text = "(rev 214)";
             // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pictureBox2.Image = global::MultiMiner.Win.Properties.Resources.mouse_new;
+            this.pictureBox2.Location = new System.Drawing.Point(109, 72);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(45, 16);
+            this.pictureBox2.TabIndex = 10;
+            this.pictureBox2.TabStop = false;
+            this.pictureBox2.Click += new System.EventHandler(this.backendMinerLabel_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.computer_coins;
+            this.pictureBox1.Location = new System.Drawing.Point(14, 14);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(75, 74);
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            // 
             // AboutForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(547, 465);
+            this.Controls.Add(this.bfgminerLabel);
+            this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.revisionLabel);
             this.Controls.Add(this.licenseTextBox);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.multiMinerLink);
-            this.Controls.Add(this.bfgminerLabel);
             this.Controls.Add(this.multiMinerLabel);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -154,6 +170,7 @@
             this.Text = "About MultiMiner";
             this.Load += new System.EventHandler(this.AboutForm_Load);
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -171,5 +188,6 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.TextBox licenseTextBox;
         private System.Windows.Forms.Label revisionLabel;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }

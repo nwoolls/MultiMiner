@@ -8,11 +8,15 @@ using MultiMiner.Win.Extensions;
 using System.Reflection;
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Installers;
+using System.Collections.Generic;
+using MultiMiner.Xgminer.Data;
 
 namespace MultiMiner.Win.Forms
 {
     public partial class AboutForm : MessageBoxFontForm
     {
+        public int backendMinerIndex {get; set;}
+
         public AboutForm()
         {
             InitializeComponent();
@@ -37,28 +41,37 @@ namespace MultiMiner.Win.Forms
             revisionLabel.Text = String.Format("(rev {0})", MultiMinerInstaller.GetInstalledMinerRevision());
             revisionLabel.Left = multiMinerLabel.Left + multiMinerLabel.Width;
 
-            PopulateXgminerVersion(bfgminerLabel);
-        }
-
-        private static void PopulateXgminerVersion(Label targetLabel)
-        {
-            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
-            string xgminerName = miner.Name;
-            string xgminerPath = MinerPath.GetPathToInstalledMiner(miner);
-            string xgminerVersion = String.Empty;
-
-            if (File.Exists(xgminerPath))
-                xgminerVersion = MinerInstaller.GetInstalledMinerVersion(miner, xgminerPath, miner.LegacyApi);
-
-            if (string.IsNullOrEmpty(xgminerVersion))
-                targetLabel.Text = String.Format("{0} not installed", xgminerName);
-            else
-                targetLabel.Text = String.Format("{0} {1} installed", xgminerName, xgminerVersion);
+            PopulateBackendMinerVersion();
         }
 
         private void multiMinerLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("http://multiminerapp.com/");
+        }
+
+        private void PopulateBackendMinerVersion()
+        {
+            MinerDescriptor miner = MinerFactory.Instance.Miners[backendMinerIndex];
+            string xgminerName = miner.Name;
+            string xgminerPath = MinerPath.GetPathToInstalledMiner(miner);
+            string xgminerVersion = String.Empty;
+
+            if (File.Exists(xgminerPath))
+                xgminerVersion = MinerInstaller.GetInstalledMinerVersion(xgminerPath, miner.LegacyApi);
+
+            if (string.IsNullOrEmpty(xgminerVersion))
+                bfgminerLabel.Text = String.Format("{0} not installed", xgminerName);
+            else
+                bfgminerLabel.Text = String.Format("{0} {1} installed", xgminerName, xgminerVersion);
+        }
+
+        private void backendMinerLabel_Click(object sender, EventArgs e)
+        {
+            backendMinerIndex++;
+            if (backendMinerIndex == MinerFactory.Instance.Miners.Count)
+                backendMinerIndex = 0;
+
+            PopulateBackendMinerVersion();
         }
     }
 }
