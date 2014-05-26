@@ -81,8 +81,11 @@ namespace MultiMiner.Engine.Installers
                 version = match.Groups[1].Value;
 
 #if DEBUG
-            Version fuzzVersion = new Version(version);
-            version = new Version(fuzzVersion.Major, fuzzVersion.Minor - 1, fuzzVersion.Build).ToString();
+            if (!String.IsNullOrEmpty(version))
+            {
+                Version fuzzVersion = new Version(version);
+                version = new Version(fuzzVersion.Major, fuzzVersion.Minor - 1, fuzzVersion.Build).ToString();
+            }
 #endif
 
             return version;
