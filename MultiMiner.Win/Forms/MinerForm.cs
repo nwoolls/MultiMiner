@@ -4444,10 +4444,15 @@ namespace MultiMiner.Win.Forms
             CryptoCoin coin = coinConfiguration.CryptoCoin;
             miningStatistics.CoinSymbol = coin.Symbol;
 
-            if (coin.Algorithm == CoinAlgorithm.SHA256)
+            //MobileMiner currently only supports SHA and Scrypt
+            //attempt to treat them as "Families" for now
+            if ((coin.Algorithm == CoinAlgorithm.SHA256) ||
+                (coin.Algorithm == CoinAlgorithm.Keccak) ||
+                (coin.Algorithm == CoinAlgorithm.Groestl))
+                //SHA family algorithms grouped together
                 miningStatistics.Algorithm = AlgorithmNames.SHA256;
             else
-                //assume Scrypt until MobileMiner supports more
+                //assume Scrypt for rest until MobileMiner supports more
                 miningStatistics.Algorithm = AlgorithmNames.Scrypt;
 
             miningStatistics.PopulateFrom(deviceInformation);
