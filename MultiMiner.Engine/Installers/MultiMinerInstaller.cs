@@ -23,6 +23,11 @@ namespace MultiMiner.Engine.Installers
             return version;
         }
 
+        public static int GetInstalledMinerRevision()
+        {
+            return Assembly.GetExecutingAssembly().GetName().Version.Revision;
+        }
+
         public static string GetInstalledMinerVersion()
         {
             Version assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;

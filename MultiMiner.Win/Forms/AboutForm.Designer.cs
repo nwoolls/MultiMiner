@@ -38,6 +38,7 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.licenseTextBox = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.revisionLabel = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -121,12 +122,23 @@
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
+            // revisionLabel
+            // 
+            this.revisionLabel.AutoSize = true;
+            this.revisionLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.revisionLabel.Location = new System.Drawing.Point(226, 14);
+            this.revisionLabel.Name = "revisionLabel";
+            this.revisionLabel.Size = new System.Drawing.Size(52, 15);
+            this.revisionLabel.TabIndex = 9;
+            this.revisionLabel.Text = "(rev 214)";
+            // 
             // AboutForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(547, 465);
+            this.Controls.Add(this.revisionLabel);
             this.Controls.Add(this.licenseTextBox);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.multiMinerLink);
@@ -158,5 +170,6 @@
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.TextBox licenseTextBox;
+        private System.Windows.Forms.Label revisionLabel;
     }
 }

@@ -33,8 +33,9 @@ namespace MultiMiner.Win.Forms
 
         private void PopulateAppVersions()
         {
-            string multiMinerVersion = Engine.Installers.MultiMinerInstaller.GetInstalledMinerVersion();
-            multiMinerLabel.Text = "MultiMiner " + multiMinerVersion;
+            multiMinerLabel.Text = "MultiMiner " + MultiMinerInstaller.GetInstalledMinerVersion();
+            revisionLabel.Text = String.Format("(rev {0})", MultiMinerInstaller.GetInstalledMinerRevision());
+            revisionLabel.Left = multiMinerLabel.Left + multiMinerLabel.Width;
 
             PopulateXgminerVersion(bfgminerLabel);
         }
