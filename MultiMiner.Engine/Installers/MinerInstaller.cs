@@ -58,7 +58,7 @@ namespace MultiMiner.Engine.Installers
             }
         }
 
-        public static string GetInstalledMinerVersion(AvailableMiner miner, string executablePath, bool legacyApi)
+        public static string GetInstalledMinerVersion(string executablePath, bool legacyApi)
         {
             string version = String.Empty;
 

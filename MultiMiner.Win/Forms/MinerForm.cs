@@ -6279,7 +6279,7 @@ namespace MultiMiner.Win.Forms
             if (String.IsNullOrEmpty(availableVersion))
                 return false;
 
-            installedVersion = MinerInstaller.GetInstalledMinerVersion(miner, MinerPath.GetPathToInstalledMiner(miner), miner.LegacyApi);
+            installedVersion = MinerInstaller.GetInstalledMinerVersion(MinerPath.GetPathToInstalledMiner(miner), miner.LegacyApi);
 
             if (ThisVersionGreater(availableVersion, installedVersion))
                 return true;
