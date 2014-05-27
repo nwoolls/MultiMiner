@@ -82,7 +82,7 @@ namespace MultiMiner.Engine.Installers
 
 #if DEBUG
             Version fuzzVersion = new Version(version);
-            version = new Version(fuzzVersion.Major, fuzzVersion.Minor - 1, fuzzVersion.Build).ToString();
+            version = new Version(fuzzVersion.Major, Math.Max(0, fuzzVersion.Minor - 1), fuzzVersion.Build).ToString();
 #endif
 
             return version;
