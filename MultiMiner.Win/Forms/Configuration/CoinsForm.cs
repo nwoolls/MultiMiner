@@ -346,5 +346,28 @@ namespace MultiMiner.Win.Forms.Configuration
                 miningPoolBindingSource.ResetBindings(false);
             }
         }
+
+        private void coinListBox_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            //draw disabled Coin configurations with SystemColors.GrayText
+            Engine.Data.Configuration.Coin configuration = configurations[e.Index];
+
+            Color textColor = SystemColors.WindowText;
+            if (!configuration.Enabled)
+                textColor = SystemColors.GrayText;
+            if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
+                textColor = SystemColors.HighlightText;
+
+            Rectangle textBounds = e.Bounds;
+            textBounds.Inflate(0, 2);
+
+            e.DrawBackground();
+            using (Brush myBrush = new SolidBrush(textColor))
+            {
+                e.Graphics.DrawString(((ListBox)sender).Items[e.Index].ToString(),
+                    e.Font, myBrush, textBounds, StringFormat.GenericDefault);
+            }
+            e.DrawFocusRectangle();
+        }
     }
 }

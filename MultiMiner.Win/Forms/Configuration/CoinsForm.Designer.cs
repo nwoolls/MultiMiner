@@ -186,12 +186,14 @@
             // coinListBox
             // 
             this.coinListBox.Dock = System.Windows.Forms.DockStyle.Left;
+            this.coinListBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.coinListBox.FormattingEnabled = true;
             this.coinListBox.ItemHeight = 15;
             this.coinListBox.Location = new System.Drawing.Point(0, 25);
             this.coinListBox.Name = "coinListBox";
             this.coinListBox.Size = new System.Drawing.Size(186, 364);
             this.coinListBox.TabIndex = 1;
+            this.coinListBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.coinListBox_DrawItem);
             this.coinListBox.SelectedIndexChanged += new System.EventHandler(this.coinListBox_SelectedIndexChanged);
             this.coinListBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.coinListBox_DragDrop);
             this.coinListBox.DragOver += new System.Windows.Forms.DragEventHandler(this.coinListBox_DragOver);
