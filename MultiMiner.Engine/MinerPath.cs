@@ -10,62 +10,53 @@ namespace MultiMiner.Engine
         public static string GetPathToInstalledMiner(MinerDescriptor miner)
         {
             string executablePath = string.Empty;
-
-            if (miner.Name.Equals("bfgminer", StringComparison.OrdinalIgnoreCase))
-                executablePath = GetPathToBFGMiner(miner.FileName);
-            else
-                executablePath = GetPathToMinerOnWindows(miner.Name, miner.FileName);
-
-            return executablePath;
-        }
-
-        private static string GetPathToBFGMiner(string minerName)
-        {
-            string executablePath;
-
+            
             switch (OSVersionPlatform.GetConcretePlatform())
             {
                 case PlatformID.MacOSX:
-                    executablePath = GetPathToMinerOnMacOSX(minerName);
+                    executablePath = GetPathToMinerOnMacOSX(miner.Name, miner.FileName);
                     break;
 
                 //support Unix - there is no bin folder for the executables like on Mac OS X
                 case PlatformID.Unix:
-                    executablePath = GetPathToMinerOnLinux(minerName);
+                    executablePath = GetPathToMinerOnLinux(miner.FileName, miner.FileName);
                     break;
 
                 default:
-                    executablePath = GetPathToMinerOnWindows(minerName, minerName);
+                    executablePath = GetPathToMinerOnWindows(miner.Name, miner.FileName);
                     break;
             }
+
             return executablePath;
         }
 
-        private static string GetPathToMinerOnMacOSX(string minerName)
+        private static string GetPathToMinerOnMacOSX(string minerName, string minerFileName)
         {
             string executablePath;
             //try local path first
-            executablePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(@"Miners/{0}/bin/{0}", minerName));
+            executablePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(@"Miners/{0}/bin/{1}", 
+                minerName, minerFileName));
 
             if (!File.Exists(executablePath))
                 //try global path (Homebrew)
-                executablePath = string.Format(@"/usr/local/bin/{0}", minerName);
+                executablePath = string.Format(@"/usr/local/bin/{0}", minerFileName);
             return executablePath;
         }
 
-        private static string GetPathToMinerOnLinux(string minerName)
+        private static string GetPathToMinerOnLinux(string minerName, string minerFileName)
         {
             string executablePath;
             //try local path first
-            executablePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(@"Miners/{0}/{0}", minerName));
+            executablePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(@"Miners/{0}/bin/{1}",
+                minerName, minerFileName));
 
             if (!File.Exists(executablePath))
                 //try /usr/local/bin
-                executablePath = string.Format(@"/usr/local/bin/{0}", minerName);
+                executablePath = string.Format(@"/usr/local/bin/{0}", minerFileName);
 
             if (!File.Exists(executablePath))
                 //try /usr/bin
-                executablePath = string.Format(@"/usr/bin/{0}", minerName);
+                executablePath = string.Format(@"/usr/bin/{0}", minerFileName);
             return executablePath;
         }
 

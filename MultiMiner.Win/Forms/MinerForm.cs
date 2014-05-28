@@ -6257,9 +6257,13 @@ namespace MultiMiner.Win.Forms
                 List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners(UserAgent.AgentString);
                 foreach (MinerDescriptor minerDescriptor in MinerFactory.Instance.Miners)
                 {
-                    AvailableMiner availableMiner = availableMiners.Single(am => am.Name.Equals(minerDescriptor.Name, StringComparison.OrdinalIgnoreCase));
-                    minerDescriptor.Version = availableMiner.Version;
-                    minerDescriptor.Url = availableMiner.Url;
+                    AvailableMiner availableMiner = availableMiners.SingleOrDefault(am => am.Name.Equals(minerDescriptor.Name, StringComparison.OrdinalIgnoreCase));
+                    //no Scrypt-Jane miner for OS X (yet)
+                    if (availableMiner != null)
+                    {
+                        minerDescriptor.Version = availableMiner.Version;
+                        minerDescriptor.Url = availableMiner.Url;
+                    }
                 }
             }
         }
