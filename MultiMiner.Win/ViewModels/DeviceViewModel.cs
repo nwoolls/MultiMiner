@@ -51,7 +51,7 @@ namespace MultiMiner.Win.ViewModels
         public double LastShareDifficulty { get; set; }
         public DateTime? LastShareTime { get; set; }
         public string Url { get; set; }
-        public int BestShare { get; set; }
+        public double BestShare { get; set; }
         public double PoolStalePercent { get; set; }
 
         //worker info

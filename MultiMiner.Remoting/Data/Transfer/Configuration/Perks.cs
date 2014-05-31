@@ -23,5 +23,8 @@ namespace MultiMiner.Remoting.Data.Transfer.Configuration
 
         [DataMember]
         public string RemotingPassword { get; set; }
+
+        [DataMember]
+        public bool AdvancedProxying { get; set; }
     }
 }

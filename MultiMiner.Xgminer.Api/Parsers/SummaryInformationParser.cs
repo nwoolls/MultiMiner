@@ -51,7 +51,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
                 summaryInformation.DifficultyAccepted = TryToParseDouble(keyValuePairs, "Difficulty Accepted", 0);
                 summaryInformation.DifficultyRejected = TryToParseDouble(keyValuePairs, "Difficulty Rejected", 0);
                 summaryInformation.DifficultyStale = TryToParseDouble(keyValuePairs, "Difficulty Stale", 0);
-                summaryInformation.BestShare = TryToParseInt(keyValuePairs, "Best Share", 0);
+                summaryInformation.BestShare = TryToParseDouble(keyValuePairs, "Best Share", 0);
                 summaryInformation.DeviceHardwarePercent = TryToParseInt(keyValuePairs, "Device Hardware", 0);
                 summaryInformation.DeviceRejectedPercent = TryToParseInt(keyValuePairs, "Device Rejected", 0);
                 summaryInformation.PoolRejectedPercent = TryToParseInt(keyValuePairs, "Pool Rejected", 0);

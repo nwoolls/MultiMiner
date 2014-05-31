@@ -60,8 +60,10 @@ namespace MultiMiner.Xgminer
             //include Scrypt ASICs
             if ((minerVersion != null) && (((minerVersion.Major == 3) && (minerVersion.Minor >= 99)) || (minerVersion.Major >= 4)))
             {
-                List<Device> scryptDevices = ListDevices(prettyNames, CoinAlgorithm.Scrypt);
+                //order is important here - scan SHA then Scrypt, scanning Scrypt bricks bigpic until reset
+                //at least with this order it will be detected, but needs a reset before starting mining again
                 List<Device> sha256Devices = ListDevices(prettyNames, CoinAlgorithm.SHA256);
+                List<Device> scryptDevices = ListDevices(prettyNames, CoinAlgorithm.Scrypt);
 
                 return MergeDeviceLists(sha256Devices, scryptDevices);
             }

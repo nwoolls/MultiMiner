@@ -10,6 +10,7 @@ namespace MultiMiner.Remoting.Data.Transfer.Configuration
         public Xgminer()
         {
             AlgorithmFlags = new Hashtable();
+            AlgorithmMiners = new Hashtable();
             Priority = ProcessPriorityClass.Normal;
         }
 
@@ -48,5 +49,11 @@ namespace MultiMiner.Remoting.Data.Transfer.Configuration
 
         [DataMember]
         public int StratumProxyStratumPort { get; set; }
+
+        [DataMember]
+        public MultiMiner.Engine.Data.Configuration.Xgminer.ProxyDescriptor[] StratumProxies { get; set; }
+
+        [DataMember]
+        public Hashtable AlgorithmMiners { get; set; }
     }
 }

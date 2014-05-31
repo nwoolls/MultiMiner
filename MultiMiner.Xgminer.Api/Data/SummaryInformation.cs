@@ -21,7 +21,7 @@
         public double DifficultyAccepted { get; set; }
         public double DifficultyRejected { get; set; }
         public double DifficultyStale { get; set; }
-        public long BestShare { get; set; }
+        public double BestShare { get; set; }
         public double DeviceHardwarePercent { get; set; }
         public double DeviceRejectedPercent { get; set; }
         public double PoolRejectedPercent { get; set; }

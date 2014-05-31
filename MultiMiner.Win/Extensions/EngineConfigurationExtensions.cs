@@ -1,6 +1,4 @@
 ﻿using MultiMiner.Utility.Serialization;
-using MultiMiner.Xgminer.Data;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace MultiMiner.Win.Extensions
@@ -15,12 +13,10 @@ namespace MultiMiner.Win.Extensions
             
             transferObject.DeviceConfigurations = modelObject.DeviceConfigurations.ToTransferObjects().ToArray();
 
-            ObjectCopier.CopyObject(modelObject.XgminerConfiguration, transferObject.XgminerConfiguration, "AlgorithmFlags");
-            foreach (KeyValuePair<CoinAlgorithm, string> pair in modelObject.XgminerConfiguration.AlgorithmFlags)
-                transferObject.XgminerConfiguration.AlgorithmFlags.Add(pair.Key, pair.Value);
+            transferObject.XgminerConfiguration = modelObject.XgminerConfiguration.ToTransferObject();
 
             transferObject.CoinConfigurations = modelObject.CoinConfigurations.ToArray();
-
+            
             return transferObject;
         }
 
@@ -32,10 +28,7 @@ namespace MultiMiner.Win.Extensions
 
             modelObject.DeviceConfigurations = transferObject.DeviceConfigurations.ToList().ToModelObjects();
 
-            ObjectCopier.CopyObject(transferObject.XgminerConfiguration, modelObject.XgminerConfiguration, "AlgorithmFlags");
-
-            foreach (CoinAlgorithm key in transferObject.XgminerConfiguration.AlgorithmFlags.Keys)
-                modelObject.XgminerConfiguration.AlgorithmFlags.Add(key, (string)transferObject.XgminerConfiguration.AlgorithmFlags[key]);
+            modelObject.XgminerConfiguration = transferObject.XgminerConfiguration.ToModelObject();
 
             modelObject.CoinConfigurations = transferObject.CoinConfigurations.ToList();
 
