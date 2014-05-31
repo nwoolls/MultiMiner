@@ -125,7 +125,7 @@ namespace MultiMiner.Remoting.Data.Transfer
         public string Url { get; set; }
 
         [DataMember]
-        public int BestShare { get; set; }
+        public double BestShare { get; set; }
 
         [DataMember]
         public double PoolStalePercent { get; set; }

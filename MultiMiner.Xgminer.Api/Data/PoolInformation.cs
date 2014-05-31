@@ -29,7 +29,7 @@ namespace MultiMiner.Xgminer.Api.Data
         public bool HasStratum { get; set; }
         public bool StratumActive { get; set; }
         public string StratumUrl { get; set; }
-        public int BestShare { get; set; }
+        public double BestShare { get; set; }
         public double PoolRejectedPercent { get; set; }
         public double PoolStalePercent { get; set; }
     }

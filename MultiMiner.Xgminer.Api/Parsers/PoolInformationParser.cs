@@ -86,7 +86,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     if (keyValuePairs.ContainsKey("Stratum URL"))
                         newPool.StratumUrl = keyValuePairs["Stratum URL"];
 
-                    newPool.BestShare = TryToParseInt(keyValuePairs, "Best Share", 0);
+                    newPool.BestShare = TryToParseDouble(keyValuePairs, "Best Share", 0);
                     newPool.PoolRejectedPercent = TryToParseDouble(keyValuePairs, "Pool Rejected%", 0.0);
                     newPool.PoolStalePercent = TryToParseDouble(keyValuePairs, "Pool Stale%", 0.0);
 
