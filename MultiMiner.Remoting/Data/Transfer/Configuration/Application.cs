@@ -94,7 +94,6 @@ namespace MultiMiner.Remoting.Data.Transfer.Configuration
 
         [DataMember]
         public bool ShowWorkUtility { get; set; }
-        public bool NetworkDeviceDetection { get; set; }
 
         [DataMember]
         public bool MobileMinerMonitoring { get; set; }
@@ -152,5 +151,8 @@ namespace MultiMiner.Remoting.Data.Transfer.Configuration
 
         [DataMember]
         public TimerInterval ScheduledRestartMiningInterval { get; set; }
+
+        [DataMember]
+        public bool NetworkDeviceDetection { get; set; }
     }
 }
