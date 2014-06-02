@@ -1676,9 +1676,17 @@ namespace MultiMiner.Win.Forms
             //remove own miners
             miners.RemoveAll(m => m.Address.ToString().Equals(Utility.Net.LocalNetwork.GetLocalIPAddress()));
 
-            List<NetworkDevices.NetworkDevice> devices = miners.ToNetworkDevices();
+            List<NetworkDevices.NetworkDevice> newDevices = miners.ToNetworkDevices();
 
-            networkDevicesConfiguration.Devices = devices;
+            //merge in miners, don't remove miners here
+            //let CheckNetworkDevices() remove miners since it does not depend on port scanning
+            //some users are manually entering devices in the XML
+            List<NetworkDevices.NetworkDevice> existingDevices = networkDevicesConfiguration.Devices;
+            newDevices = newDevices
+                .Where(d1 => !existingDevices.Any(d2 => d2.IPAddress.Equals(d1.IPAddress) && (d2.Port == d1.Port)))
+                .ToList();
+            networkDevicesConfiguration.Devices.AddRange(newDevices);
+
             networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
 
