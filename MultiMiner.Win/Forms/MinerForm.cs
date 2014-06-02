@@ -1696,7 +1696,16 @@ namespace MultiMiner.Win.Forms
 
             endpoints = MinerFinder.Check(endpoints);
 
-            networkDevicesConfiguration.Devices = endpoints.ToNetworkDevices();
+            List<NetworkDevices.NetworkDevice> existingDevices = networkDevicesConfiguration.Devices;
+            List<NetworkDevices.NetworkDevice> prunedDevices = endpoints.ToNetworkDevices();
+            //add in Sticky devices not already in the pruned devices
+            //Sticky devices allow users to mark Network Devices that should never be removed
+            prunedDevices.AddRange(
+                existingDevices
+                    .Where(d1 => d1.Sticky && !prunedDevices.Any(d2 => d2.IPAddress.Equals(d1.IPAddress) && (d2.Port == d1.Port)))
+            );                
+
+            networkDevicesConfiguration.Devices = prunedDevices;
             networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
 
