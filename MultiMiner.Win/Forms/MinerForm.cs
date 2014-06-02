@@ -1673,9 +1673,17 @@ namespace MultiMiner.Win.Forms
             //remove own miners
             miners.RemoveAll(m => m.Address.ToString().Equals(Utility.Net.LocalNetwork.GetLocalIPAddress()));
 
-            List<NetworkDevices.NetworkDevice> devices = miners.ToNetworkDevices();
+            List<NetworkDevices.NetworkDevice> newDevices = miners.ToNetworkDevices();
 
-            networkDevicesConfiguration.Devices = devices;
+            //merge in miners, don't remove miners here
+            //let CheckNetworkDevices() remove miners since it does not depend on port scanning
+            //some users are manually entering devices in the XML
+            List<NetworkDevices.NetworkDevice> existingDevices = networkDevicesConfiguration.Devices;
+            newDevices = newDevices
+                .Where(d1 => !existingDevices.Any(d2 => d2.IPAddress.Equals(d1.IPAddress) && (d2.Port == d1.Port)))
+                .ToList();
+            networkDevicesConfiguration.Devices.AddRange(newDevices);
+
             networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
 
@@ -6250,22 +6258,47 @@ namespace MultiMiner.Win.Forms
                 DisplayBackendMinerUpdateNotification(availableVersion, installedVersion);
         }
 
-        private static void UpdateBackendMinerAvailability()
+        private void UpdateBackendMinerAvailability()
         {
             using (new HourGlass())
             {
-                List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners(UserAgent.AgentString);
-                foreach (MinerDescriptor minerDescriptor in MinerFactory.Instance.Miners)
+                List<AvailableMiner> availableMiners = null;
+                try
                 {
-                    AvailableMiner availableMiner = availableMiners.SingleOrDefault(am => am.Name.Equals(minerDescriptor.Name, StringComparison.OrdinalIgnoreCase));
-                    //no Scrypt-Jane miner for OS X (yet)
-                    if (availableMiner != null)
+                    availableMiners = AvailableMiners.GetAvailableMiners(UserAgent.AgentString);                    
+                }
+                catch (WebException ex)
+                {
+                    //user has reported the following as a transient error and I have seen it as well
+                    //for myself it may have potentially been a Fiddler proxy issue
+                    //System.Net.WebException: The remote name could not be resolved: 'www.multiminerapp.com'
+                    ShowMinerCheckErrorNotification(ex);
+                }
+
+                if (availableMiners != null)
+                {
+                    foreach (MinerDescriptor minerDescriptor in MinerFactory.Instance.Miners)
                     {
-                        minerDescriptor.Version = availableMiner.Version;
-                        minerDescriptor.Url = availableMiner.Url;
+                        AvailableMiner availableMiner = availableMiners.SingleOrDefault(am => am.Name.Equals(minerDescriptor.Name, StringComparison.OrdinalIgnoreCase));
+                        //no Scrypt-Jane miner for OS X (yet)
+                        if (availableMiner != null)
+                        {
+                            minerDescriptor.Version = availableMiner.Version;
+                            minerDescriptor.Url = availableMiner.Url;
+                        }
                     }
                 }
             }
+        }
+
+        private void ShowMinerCheckErrorNotification(WebException ex)
+        {
+            PostNotification(ex.Message,
+                String.Format("Error checking for backend miner availability ({0})", (int)((HttpWebResponse)ex.Response).StatusCode), () =>
+                {
+                    Process.Start("http://www.multiminerapp.com");
+                },
+                ToolTipIcon.Warning, "");
         }
 
         private static bool BackendMinerHasUpdates(out string availableVersion, out string installedVersion)
