@@ -6231,18 +6231,43 @@ namespace MultiMiner.Win.Forms
                 DisplayBackendMinerUpdateNotification(availableVersion, installedVersion);
         }
 
-        private static void UpdateBackendMinerAvailability()
+        private void UpdateBackendMinerAvailability()
         {
             using (new HourGlass())
             {
-                List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners(UserAgent.AgentString);
-                foreach (MinerDescriptor minerDescriptor in MinerFactory.Instance.Miners)
+                List<AvailableMiner> availableMiners = null;
+                try
                 {
-                    AvailableMiner availableMiner = availableMiners.Single(am => am.Name.Equals(minerDescriptor.Name, StringComparison.OrdinalIgnoreCase));
-                    minerDescriptor.Version = availableMiner.Version;
-                    minerDescriptor.Url = availableMiner.Url;
+                    availableMiners = AvailableMiners.GetAvailableMiners(UserAgent.AgentString);                    
+                }
+                catch (WebException ex)
+                {
+                    //user has reported the following as a transient error and I have seen it as well
+                    //for myself it may have potentially been a Fiddler proxy issue
+                    //System.Net.WebException: The remote name could not be resolved: 'www.multiminerapp.com'
+                    ShowMinerCheckErrorNotification(ex);
+                }
+
+                if (availableMiners != null)
+                {
+                    foreach (MinerDescriptor minerDescriptor in MinerFactory.Instance.Miners)
+                    {
+                        AvailableMiner availableMiner = availableMiners.Single(am => am.Name.Equals(minerDescriptor.Name, StringComparison.OrdinalIgnoreCase));
+                        minerDescriptor.Version = availableMiner.Version;
+                        minerDescriptor.Url = availableMiner.Url;
+                    }
                 }
             }
+        }
+
+        private void ShowMinerCheckErrorNotification(WebException ex)
+        {
+            PostNotification(ex.Message,
+                String.Format("Error checking for backend miner availability ({0})", (int)((HttpWebResponse)ex.Response).StatusCode), () =>
+                {
+                    Process.Start("http://www.multiminerapp.com");
+                },
+                ToolTipIcon.Warning, "");
         }
 
         private static bool BackendMinerHasUpdates(out string availableVersion, out string installedVersion)
