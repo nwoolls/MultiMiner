@@ -57,6 +57,7 @@
     <Compile Include="Data\Configuration\Metadata.cs" />
     <Compile Include="Extensions\ApplicationConfigurationExtensions.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
+    <Compile Include="Extensions\CoinAlgorithmExtensions.cs" />
     <Compile Include="Extensions\DeviceConfigurationExtensions.cs" />
     <Compile Include="Extensions\EngineConfigurationExtensions.cs" />
     <Compile Include="Extensions\XgminerConfigurationExtensions.cs" />
