@@ -2954,6 +2954,10 @@ namespace MultiMiner.Win.Forms
         {
             //submit queued notifications to MobileMiner
             SubmitMobileMinerNotifications();
+
+            //clear cached pool information for Network Devices
+            //(so we pick up pool changes)
+            networkDevicePools.Clear();
         }
 
         private void oneMinuteTimer_Tick(object sender, EventArgs e)
