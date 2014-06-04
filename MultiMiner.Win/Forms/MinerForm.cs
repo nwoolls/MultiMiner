@@ -937,7 +937,10 @@ namespace MultiMiner.Win.Forms
 
             MinerFormViewModel viewModelToView = GetViewModelToView();
 
-            foreach (CryptoCoin coinConfiguration in viewModelToView.ConfiguredCoins)
+            List<CryptoCoin> coinConfigurations = viewModelToView.ConfiguredCoins;
+            
+
+            foreach (CryptoCoin coinConfiguration in coinConfigurations)
             {
                 ToolStripMenuItem coinSwitchItem = new ToolStripMenuItem()
                 {
@@ -946,7 +949,33 @@ namespace MultiMiner.Win.Forms
                 };
                 coinSwitchItem.Click += HandleQuickSwitchClick;
 
-                quickCoinMenu.Items.Add(coinSwitchItem);
+                if (coinConfigurations.Count > 10)
+                {
+                    //if there are more than 10 Coin Configurations, break up the menu by algo
+                    ToolStripMenuItem algoItem = null;
+                    foreach (ToolStripMenuItem item in quickCoinMenu.Items)
+                    {
+                        if (item.Text.Equals(coinConfiguration.Algorithm.ToString()))
+                        {
+                            algoItem = item;
+                            break;
+                        }
+                    }
+                    if (algoItem == null)
+                    {
+                        algoItem = new ToolStripMenuItem()
+                        {
+                            Text = coinConfiguration.Algorithm.ToString()
+                        };
+                        quickCoinMenu.Items.Add(algoItem);
+                    }
+                    algoItem.DropDownItems.Add(coinSwitchItem);
+
+                }
+                else
+                {
+                    quickCoinMenu.Items.Add(coinSwitchItem);
+                }
             }
 
             //Mono under Linux absolutely doesn't like having one context menu assigned to multiple
