@@ -2967,9 +2967,7 @@ namespace MultiMiner.Win.Forms
         }
 
         private void oneHourTimer_Tick(object sender, EventArgs e)
-        {
-            ClearCachedNetworkCoinInformation();
-            
+        {            
             ClearPoolsFlaggedDown();
         }
 
@@ -3034,6 +3032,8 @@ namespace MultiMiner.Win.Forms
 
         private void fifteenMinuteTimer_Tick(object sender, EventArgs e)
         {
+            ClearCachedNetworkCoinInformation();
+
             if (applicationConfiguration.NetworkDeviceDetection)
             {
                 CheckNetworkDevicesAsync();
