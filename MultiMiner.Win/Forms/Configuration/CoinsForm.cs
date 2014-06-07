@@ -350,6 +350,10 @@ namespace MultiMiner.Win.Forms.Configuration
         private void coinListBox_DrawItem(object sender, DrawItemEventArgs e)
         {
             //draw disabled Coin configurations with SystemColors.GrayText
+            //e.Index will be -1 if the user deletes all items in the list
+            if (e.Index == -1)
+                return;
+
             Engine.Data.Configuration.Coin configuration = configurations[e.Index];
 
             Color textColor = SystemColors.WindowText;
