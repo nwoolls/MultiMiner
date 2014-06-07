@@ -4956,9 +4956,10 @@ namespace MultiMiner.Win.Forms
             RefreshListViewFromViewModel();
             RefreshStatusBarFromViewModel();
 
-            //max length for notify icon text is 64
+            //max length for notify icon text is 63
             string bubbleText = string.Format("MultiMiner - {0}", hashRateStatusLabel.Text);
-            if (bubbleText.Length > 64)
+            //must be less than (not equal to) 64 characters
+            if (bubbleText.Length >= 64)
                 bubbleText = bubbleText.Substring(0, 60) + "...";
             notifyIcon1.Text = bubbleText;
 
