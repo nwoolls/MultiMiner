@@ -302,6 +302,8 @@ namespace MultiMiner.Xgminer
                 arguments = String.Format("{0} {1}", MinerParameter.KernelGroestcoin, arguments.TrimStart());
             else if (minerConfiguration.Algorithm == CoinAlgorithm.Keccak)
                 arguments = String.Format("{0} {1}", MinerParameter.Keccak, arguments.TrimStart());
+            else if (minerConfiguration.Algorithm == CoinAlgorithm.X13)
+                arguments = String.Format("{0} {1}", MinerParameter.KernelX13Mod, arguments.TrimStart());
 
             if (minerConfiguration.ApiListen)
             {

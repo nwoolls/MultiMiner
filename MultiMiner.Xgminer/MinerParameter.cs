@@ -21,5 +21,6 @@
         public const string KernelQuarkcoin = "--kernel quarkcoin";
         public const string KernelGroestcoin = "--kernel groestlcoin";
         public const string Keccak = "--keccak";
+        public const string KernelX13Mod = "--kernel x13mod";
     }
 }

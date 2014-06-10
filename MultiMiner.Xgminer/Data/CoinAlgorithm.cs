@@ -9,6 +9,7 @@
         X11 = 4,
         Quark = 5,
         Groestl = 6,
-        Keccak = 7
+        Keccak = 7,
+        X13 = 8
     }
 }
