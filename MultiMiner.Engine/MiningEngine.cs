@@ -49,9 +49,13 @@ namespace MultiMiner.Engine
             miner = factory.RegisterMiner("SGMiner", "SGMiner", true);
             factory.DefaultMiners[CoinAlgorithm.ScryptN] = miner;
 
-            //SPH-SGMiner as the default X11 miner
-            miner = factory.RegisterMiner("SPHSGMiner", "SGMiner", true);
+            //LasyBear SPH-SGMiner as the default X11, X13 miner
+            miner = factory.RegisterMiner("LBSPHSGMiner", "SGMiner", true);
             factory.DefaultMiners[CoinAlgorithm.X11] = miner;
+            factory.DefaultMiners[CoinAlgorithm.X13] = miner;
+
+            //SPH-SGMiner as the default Quark and Groestl miner
+            miner = factory.RegisterMiner("SPHSGMiner", "SGMiner", true);
             factory.DefaultMiners[CoinAlgorithm.Quark] = miner;
             factory.DefaultMiners[CoinAlgorithm.Groestl] = miner;
 
