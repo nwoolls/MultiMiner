@@ -295,15 +295,22 @@ namespace MultiMiner.Xgminer
             else if (minerConfiguration.Algorithm == CoinAlgorithm.ScryptJane)
                 arguments = String.Format("{0} {1}", MinerParameter.ScryptJane, arguments.TrimStart());
             else if (minerConfiguration.Algorithm == CoinAlgorithm.X11)
-                arguments = String.Format("{0} {1}", MinerParameter.KernelDarkcoin, arguments.TrimStart());
+            {
+                //minerConfiguration.ExecutablePath
+                //lazy check for x11mod
+                if (minerConfiguration.ExecutablePath.IndexOf("LBSPHSGMiner", StringComparison.OrdinalIgnoreCase) == -1)
+                    arguments = String.Format("{0} {1}", MinerParameter.KernelDarkcoin, arguments.TrimStart());
+                else
+                    arguments = String.Format("{0} {1}", MinerParameter.KernelX13Mod, arguments.TrimStart());
+            }
+            else if (minerConfiguration.Algorithm == CoinAlgorithm.X13)
+                arguments = String.Format("{0} {1}", MinerParameter.KernelX13Mod, arguments.TrimStart());
             else if (minerConfiguration.Algorithm == CoinAlgorithm.Quark)
                 arguments = String.Format("{0} {1}", MinerParameter.KernelQuarkcoin, arguments.TrimStart());
             else if (minerConfiguration.Algorithm == CoinAlgorithm.Groestl)
                 arguments = String.Format("{0} {1}", MinerParameter.KernelGroestcoin, arguments.TrimStart());
             else if (minerConfiguration.Algorithm == CoinAlgorithm.Keccak)
                 arguments = String.Format("{0} {1}", MinerParameter.Keccak, arguments.TrimStart());
-            else if (minerConfiguration.Algorithm == CoinAlgorithm.X13)
-                arguments = String.Format("{0} {1}", MinerParameter.KernelX13Mod, arguments.TrimStart());
 
             if (minerConfiguration.ApiListen)
             {
