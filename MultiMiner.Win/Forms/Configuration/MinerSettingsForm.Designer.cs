@@ -106,6 +106,7 @@
             this.algoArgCombo.Location = new System.Drawing.Point(14, 22);
             this.algoArgCombo.Name = "algoArgCombo";
             this.algoArgCombo.Size = new System.Drawing.Size(99, 23);
+            this.algoArgCombo.Sorted = true;
             this.algoArgCombo.TabIndex = 0;
             this.algoArgCombo.SelectedIndexChanged += new System.EventHandler(this.argAlgoCombo_SelectedIndexChanged);
             // 

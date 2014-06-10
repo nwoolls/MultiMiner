@@ -109,6 +109,7 @@
             this.algoCombo.Location = new System.Drawing.Point(17, 22);
             this.algoCombo.Name = "algoCombo";
             this.algoCombo.Size = new System.Drawing.Size(105, 23);
+            this.algoCombo.Sorted = true;
             this.algoCombo.TabIndex = 7;
             this.algoCombo.SelectedIndexChanged += new System.EventHandler(this.algoCombo_SelectedIndexChanged);
             // 

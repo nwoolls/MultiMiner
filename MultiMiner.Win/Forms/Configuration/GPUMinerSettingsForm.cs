@@ -33,6 +33,8 @@ namespace MultiMiner.Win.Forms.Configuration
             PopulateAlgorithmCombo();
             xgminerConfigurationBindingSource.DataSource = workingMinerConfiguration;
             LoadSettings();
+
+            algoCombo.Text = CoinAlgorithm.Scrypt.ToString().ToSpaceDelimitedWords();
         }
 
         private void LoadSettings()
@@ -46,13 +48,12 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void PopulateMinerCombo()
         {
-            CoinAlgorithm algorithm = algorithms[algoCombo.SelectedIndex];
+            CoinAlgorithm algorithm = (CoinAlgorithm)Enum.Parse(typeof(CoinAlgorithm), algoCombo.Text.Replace(" ", String.Empty));
 
             minerCombo.Items.Clear();
             IEnumerable<string> miners = MinerFactory.Instance.Miners
                 .Select(m => m.Name)
                 .OrderBy(m => m);
-
 
             foreach (string miner in miners)
                 minerCombo.Items.Add(miner);
@@ -100,9 +101,8 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void SaveMinerChoice()
         {
-            CoinAlgorithm algorithm = algorithms[algoCombo.SelectedIndex];
+            CoinAlgorithm algorithm = (CoinAlgorithm)Enum.Parse(typeof(CoinAlgorithm), algoCombo.Text.Replace(" ", String.Empty));
             workingMinerConfiguration.AlgorithmMiners[algorithm] = minerCombo.Text;
-
         }
     }
 }

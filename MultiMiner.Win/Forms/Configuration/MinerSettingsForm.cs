@@ -41,6 +41,8 @@ namespace MultiMiner.Win.Forms.Configuration
             PopulateIntervalCombo();
             PopulateAlgorithmCombo();
             LoadSettings();
+
+            algoArgCombo.Text = CoinAlgorithm.SHA256.ToString().ToSpaceDelimitedWords();
         }
 
         private void PopulateAlgorithmCombo()
@@ -114,7 +116,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void argAlgoCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CoinAlgorithm algorithm = (CoinAlgorithm)algoArgCombo.SelectedIndex;
+            CoinAlgorithm algorithm = (CoinAlgorithm)Enum.Parse(typeof(CoinAlgorithm), algoArgCombo.Text.Replace(" ", String.Empty));
             if (workingMinerConfiguration.AlgorithmFlags.ContainsKey(algorithm))
                 algoArgEdit.Text = workingMinerConfiguration.AlgorithmFlags[algorithm];
             else
@@ -123,7 +125,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void algoArgEdit_Validated(object sender, EventArgs e)
         {
-            CoinAlgorithm algorithm = (CoinAlgorithm)algoArgCombo.SelectedIndex;
+            CoinAlgorithm algorithm = (CoinAlgorithm)Enum.Parse(typeof(CoinAlgorithm), algoArgCombo.Text.Replace(" ", String.Empty));
             workingMinerConfiguration.AlgorithmFlags[algorithm] = algoArgEdit.Text;
         }
 
