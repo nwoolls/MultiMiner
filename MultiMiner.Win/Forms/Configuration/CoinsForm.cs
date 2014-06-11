@@ -133,9 +133,17 @@ namespace MultiMiner.Win.Forms.Configuration
         private void addPoolButton_Click(object sender, EventArgs e)
         {
             Engine.Data.Configuration.Coin configuration = configurations[coinListBox.SelectedIndex];
-            miningPoolBindingSource.Add(new MiningPool());
+
+            MiningPool miningPool = new MiningPool() 
+            { 
+                Host = "stratum+tcp://", 
+                Port = 3333 
+            };
+            miningPoolBindingSource.Add(miningPool);
+
             poolListBox.SelectedIndex = configuration.Pools.Count - 1;
             hostEdit.Focus();
+            hostEdit.SelectionStart = hostEdit.SelectionLength;
         }
 
         private void removePoolButton_Click(object sender, EventArgs e)
