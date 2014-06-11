@@ -23,7 +23,7 @@ namespace MultiMiner.Engine
         public event Xgminer.Miner.LogLaunchHandler LogProcessLaunch;
         public event Xgminer.Miner.LaunchFailedHandler ProcessLaunchFailed;
         public event Xgminer.Miner.AuthenticationFailedHandler ProcessAuthenticationFailed;
-        private List<MinerProcess> minerProcesses = new List<MinerProcess>();
+        private readonly List<MinerProcess> minerProcesses = new List<MinerProcess>();
         private Data.Configuration.Engine engineConfiguration;
         private List<Xgminer.Data.Device> devices;
         private int donationPercent;
