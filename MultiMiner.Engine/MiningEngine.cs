@@ -64,10 +64,6 @@ namespace MultiMiner.Engine
             miner = factory.RegisterMiner("MaxcoinCGMiner", "CGMiner", true);
             factory.DefaultMiners[CoinAlgorithm.Keccak] = miner;
 
-            //non-default, but "official" miners for Vertcoin and Darkcoin
-            miner = factory.RegisterMiner("Vertminer", "Vertminer", true);
-            miner = factory.RegisterMiner("DarkcoinSGMiner", "SGMiner", true);
-
             string minersDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Miners");
             factory.RegisterMiners(minersDirectory);
         }
