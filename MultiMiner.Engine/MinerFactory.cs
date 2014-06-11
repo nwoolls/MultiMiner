@@ -81,7 +81,7 @@ namespace MultiMiner.Engine
 
                 FileInfo[] files = subDirectoryInfo.GetFiles(searchPattern);
                 if (files.Length > 0)
-                    RegisterMiner(minerName, files[0].Name, true);
+                    RegisterMiner(minerName, Path.GetFileNameWithoutExtension(files[0].Name), true);
             }
         }
     }
