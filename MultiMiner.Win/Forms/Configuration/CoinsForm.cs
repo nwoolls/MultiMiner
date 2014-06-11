@@ -395,6 +395,7 @@ namespace MultiMiner.Win.Forms.Configuration
             {
                 IEnumerable<string> coinWorkerNames = configuration.Pools
                     .Select(p => p.Username)
+                    .Where(p => !String.IsNullOrEmpty(p))
                     .Distinct();
 
                 userNameCombo.Items.AddRange(coinWorkerNames.Where(wn => !userNameCombo.Items.Contains(wn)).ToArray());
