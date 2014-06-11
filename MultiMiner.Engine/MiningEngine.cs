@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using MultiMiner.Engine.Data;
+using System.IO;
 
 namespace MultiMiner.Engine
 {
@@ -66,6 +67,9 @@ namespace MultiMiner.Engine
             //non-default, but "official" miners for Vertcoin and Darkcoin
             miner = factory.RegisterMiner("Vertminer", "Vertminer", true);
             miner = factory.RegisterMiner("DarkcoinSGMiner", "SGMiner", true);
+
+            string minersDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Miners");
+            factory.RegisterMiners(minersDirectory);
         }
 
         public bool Donating

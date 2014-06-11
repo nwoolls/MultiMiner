@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Serialization;
+using System.IO;
 
 namespace MultiMiner.Engine
 {
@@ -61,6 +62,27 @@ namespace MultiMiner.Engine
             };
             Miners.Add(miner);
             return miner;
+        }
+
+        public void RegisterMiners(string directory)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(directory);
+            DirectoryInfo[] subDirectories = directoryInfo.GetDirectories();
+            foreach (DirectoryInfo subDirectoryInfo in subDirectories)
+            {
+                string minerName = subDirectoryInfo.Name;
+
+                if (Miners.Any(m => m.Name.Equals(minerName, StringComparison.OrdinalIgnoreCase)))
+                    continue;
+
+                string searchPattern = "*miner";
+                if (Utility.OS.OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix)
+                    searchPattern = "*miner.exe";
+
+                FileInfo[] files = subDirectoryInfo.GetFiles(searchPattern);
+                if (files.Length > 0)
+                    RegisterMiner(minerName, files[0].Name, true);
+            }
         }
     }
 }
