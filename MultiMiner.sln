@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer", "MultiMiner.Xgminer\MultiMiner.Xgminer.csproj", "{0DBEF993-1B34-4D80-AB6A-F662604325DC}"
 EndProject
@@ -40,6 +40,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Discovery", "MultiMiner.Discovery\MultiMiner.Discovery.csproj", "{CCB532CD-4922-42A9-BAF9-0E651A592467}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Discovery", "MultiMiner.Xgminer.Discovery\MultiMiner.Xgminer.Discovery.csproj", "{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "MultiMiner.WebKit", "MultiMiner.WebKit\MultiMiner.WebKit.njsproj", "{5C6166BF-BEEC-439A-B0C3-EB6221514C00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Edge", "MultiMiner.Edge\MultiMiner.Edge.csproj", "{13E95B73-FA51-4400-B45B-B3EBF9B28B53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,6 +123,14 @@ Global
 		{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C6166BF-BEEC-439A-B0C3-EB6221514C00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C6166BF-BEEC-439A-B0C3-EB6221514C00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C6166BF-BEEC-439A-B0C3-EB6221514C00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C6166BF-BEEC-439A-B0C3-EB6221514C00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13E95B73-FA51-4400-B45B-B3EBF9B28B53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13E95B73-FA51-4400-B45B-B3EBF9B28B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13E95B73-FA51-4400-B45B-B3EBF9B28B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13E95B73-FA51-4400-B45B-B3EBF9B28B53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
