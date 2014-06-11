@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>MultiMiner</title>
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js" type="text/javascript"></script>
+</head>
+<body>
+    <button id="scan-hardware">Scan Hardware</button>
+    <div id="content"></div>
+
+    <script>
+        var edge = require('edge');
+
+        var getDevices = edge.func({
+            assemblyFile: 'MultiMiner.Edge.dll',
+            typeName: 'MultiMiner.Edge.HardwareScanner',
+            methodName: 'GetDevices'
+        });
+        
+        $('#scan-hardware').click(function (e) {
+
+		    getDevices(null, function (error, result) {
+			    if (error) throw error;
+
+			    $("#content").append(result + "<br/>");
+		    });
+
+		});
+    </script>
+</body>
+</html>
