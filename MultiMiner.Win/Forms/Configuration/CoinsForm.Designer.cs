@@ -48,10 +48,11 @@
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.userNameCombo = new System.Windows.Forms.ComboBox();
+            this.miningPoolBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.textBox4 = new System.Windows.Forms.TextBox();
-            this.miningPoolBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.poolDownButton = new System.Windows.Forms.Button();
             this.poolUpButton = new System.Windows.Forms.Button();
             this.addPoolButton = new System.Windows.Forms.Button();
@@ -61,10 +62,9 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.userNameEdit = new System.Windows.Forms.TextBox();
             this.hostEdit = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.passwordEdit = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.coinConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label5 = new System.Windows.Forms.Label();
@@ -264,6 +264,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.userNameCombo);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.textBox4);
@@ -276,16 +277,33 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.userNameEdit);
             this.groupBox1.Controls.Add(this.hostEdit);
             this.groupBox1.Controls.Add(this.textBox2);
-            this.groupBox1.Controls.Add(this.textBox1);
+            this.groupBox1.Controls.Add(this.passwordEdit);
             this.groupBox1.Location = new System.Drawing.Point(196, 63);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(443, 221);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pools";
+            // 
+            // userNameCombo
+            // 
+            this.userNameCombo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.userNameCombo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.userNameCombo.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Username", true));
+            this.userNameCombo.FormattingEnabled = true;
+            this.userNameCombo.Location = new System.Drawing.Point(129, 128);
+            this.userNameCombo.Name = "userNameCombo";
+            this.userNameCombo.Size = new System.Drawing.Size(174, 23);
+            this.userNameCombo.Sorted = true;
+            this.userNameCombo.TabIndex = 8;
+            this.userNameCombo.SelectedIndexChanged += new System.EventHandler(this.userNameCombo_SelectedIndexChanged);
+            // 
+            // miningPoolBindingSource
+            // 
+            this.miningPoolBindingSource.DataSource = typeof(MultiMiner.Xgminer.Data.MiningPool);
+            this.miningPoolBindingSource.CurrentChanged += new System.EventHandler(this.miningPoolBindingSource_CurrentChanged);
             // 
             // label10
             // 
@@ -313,11 +331,7 @@
             this.textBox4.Location = new System.Drawing.Point(129, 187);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(217, 23);
-            this.textBox4.TabIndex = 24;
-            // 
-            // miningPoolBindingSource
-            // 
-            this.miningPoolBindingSource.DataSource = typeof(MultiMiner.Xgminer.Data.MiningPool);
+            this.textBox4.TabIndex = 10;
             // 
             // poolDownButton
             // 
@@ -378,7 +392,7 @@
             this.poolListBox.ItemHeight = 15;
             this.poolListBox.Location = new System.Drawing.Point(7, 22);
             this.poolListBox.Name = "poolListBox";
-            this.poolListBox.Size = new System.Drawing.Size(294, 64);
+            this.poolListBox.Size = new System.Drawing.Size(296, 64);
             this.poolListBox.TabIndex = 0;
             this.poolListBox.SelectedIndexChanged += new System.EventHandler(this.poolListBox_SelectedIndexChanged);
             // 
@@ -418,22 +432,13 @@
             this.label1.TabIndex = 20;
             this.label1.Text = "Password:";
             // 
-            // userNameEdit
-            // 
-            this.userNameEdit.AccessibleName = "Worker name";
-            this.userNameEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Username", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.userNameEdit.Location = new System.Drawing.Point(129, 128);
-            this.userNameEdit.Name = "userNameEdit";
-            this.userNameEdit.Size = new System.Drawing.Size(173, 23);
-            this.userNameEdit.TabIndex = 11;
-            // 
             // hostEdit
             // 
             this.hostEdit.AccessibleName = "Host";
             this.hostEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Host", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.hostEdit.Location = new System.Drawing.Point(129, 98);
             this.hostEdit.Name = "hostEdit";
-            this.hostEdit.Size = new System.Drawing.Size(173, 23);
+            this.hostEdit.Size = new System.Drawing.Size(174, 23);
             this.hostEdit.TabIndex = 5;
             // 
             // textBox2
@@ -443,16 +448,16 @@
             this.textBox2.Location = new System.Drawing.Point(346, 98);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(81, 23);
-            this.textBox2.TabIndex = 10;
+            this.textBox2.TabIndex = 6;
             // 
-            // textBox1
+            // passwordEdit
             // 
-            this.textBox1.AccessibleName = "Password";
-            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Password", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox1.Location = new System.Drawing.Point(129, 157);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(173, 23);
-            this.textBox1.TabIndex = 12;
+            this.passwordEdit.AccessibleName = "Password";
+            this.passwordEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Password", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.passwordEdit.Location = new System.Drawing.Point(129, 157);
+            this.passwordEdit.Name = "passwordEdit";
+            this.passwordEdit.Size = new System.Drawing.Size(174, 23);
+            this.passwordEdit.TabIndex = 9;
             // 
             // textBox3
             // 
@@ -640,10 +645,9 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox userNameEdit;
         private System.Windows.Forms.TextBox hostEdit;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox passwordEdit;
         private System.Windows.Forms.BindingSource miningPoolBindingSource;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label5;
@@ -676,5 +680,6 @@
         private System.Windows.Forms.CheckBox saveToRemotingCheckBox;
         private System.Windows.Forms.BindingSource applicationBindingSource;
         private System.Windows.Forms.ToolStripButton copyCoinButton;
+        private System.Windows.Forms.ComboBox userNameCombo;
     }
 }

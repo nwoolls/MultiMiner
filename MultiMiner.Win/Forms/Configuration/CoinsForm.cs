@@ -218,7 +218,7 @@ namespace MultiMiner.Win.Forms.Configuration
             }
             else
             {
-                userNameEdit.Focus();
+                userNameCombo.Focus();
             }
         }
 
@@ -372,6 +372,46 @@ namespace MultiMiner.Win.Forms.Configuration
                     e.Font, myBrush, textBounds, StringFormat.GenericDefault);
             }
             e.DrawFocusRectangle();
+        }
+
+        private void miningPoolBindingSource_CurrentChanged(object sender, EventArgs e)
+        {
+            PopulateWorkerNames();
+        }
+
+        private void PopulateWorkerNames()
+        {
+            userNameCombo.Items.Clear();
+
+            foreach (Engine.Data.Configuration.Coin configuration in configurations)
+            {
+                IEnumerable<string> coinWorkerNames = configuration.Pools
+                    .Select(p => p.Username)
+                    .Distinct();
+
+                userNameCombo.Items.AddRange(coinWorkerNames.Where(wn => !userNameCombo.Items.Contains(wn)).ToArray());
+            }
+        }
+
+        private void userNameCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MiningPool currentPool = (MiningPool)miningPoolBindingSource.Current;
+
+            //if the password is blank
+            if (String.IsNullOrEmpty(currentPool.Password))
+            {
+                //and a workername is selected
+                if (userNameCombo.SelectedItem != null)
+                {
+                    string workerName = (string)userNameCombo.SelectedItem;
+                    MultiMiner.Engine.Data.Configuration.Coin configuration = configurations
+                                        .FirstOrDefault(c => c.Pools.Any(p => p.Username.Equals(workerName)));
+
+                    //default to the password used for the same worker on another config
+                    if (configuration != null)
+                        currentPool.Password = configuration.Pools.First(p => p.Username.Equals(workerName)).Password;
+                }
+            }
         }
     }
 }
