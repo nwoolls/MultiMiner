@@ -410,7 +410,7 @@ namespace MultiMiner.Win.Forms
                 {
                     utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
                 }
-                catch (InvalidOperationException ex)
+                catch (InvalidOperationException)
                 {
                     //user was resizing columns
                 }
@@ -4366,13 +4366,13 @@ namespace MultiMiner.Win.Forms
                 {
                     versionInformation = apiContext.GetVersionInformation();
                 }
-                catch (IOException ex)
+                catch (IOException)
                 {
                     //don't fail and crash out due to any issues communicating via the API
                     versionInformation = null;
                 }
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 //won't be able to connect for the first 5s or so
                 versionInformation = null;
@@ -4801,7 +4801,7 @@ namespace MultiMiner.Win.Forms
                 Stats.ApiContext.SubmitMinerStatistics("http://multiminerstats.azurewebsites.net/api/", machineStat);
                 applicationConfiguration.SubmittedStatsVersion = machineStat.MinerVersion;
             }
-            catch (WebException ex)
+            catch (WebException)
             {
                 //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
             }
@@ -4936,13 +4936,13 @@ namespace MultiMiner.Win.Forms
                 {
                     coinInformation = apiContext.GetCoinInformation();
                 }
-                catch (IOException ex)
+                catch (IOException)
                 {
                     //don't fail and crash out due to any issues communicating via the API
                     coinInformation = null;
                 }
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 //won't be able to connect for the first 5s or so
                 coinInformation = null;
@@ -5218,13 +5218,13 @@ namespace MultiMiner.Win.Forms
                 {
                     poolInformation = apiContext.GetPoolInformation();
                 }
-                catch (IOException ex)
+                catch (IOException)
                 {
                     //don't fail and crash out due to any issues communicating via the API
                     poolInformation = null;
                 }
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 //won't be able to connect for the first 5s or so
                 poolInformation = null;
@@ -5248,13 +5248,13 @@ namespace MultiMiner.Win.Forms
                 {
                     poolInformation = apiContext.GetPoolInformation();
                 }
-                catch (IOException ex)
+                catch (IOException)
                 {
                     //don't fail and crash out due to any issues communicating via the API
                     poolInformation = null;
                 }
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 //won't be able to connect for the first 5s or so
                 poolInformation = null;
@@ -5330,13 +5330,13 @@ namespace MultiMiner.Win.Forms
                     const int networkDeviceLogInterval = 5;
                     deviceInformationList = apiContext.GetDeviceInformation(networkDeviceLogInterval).Where(d => d.Enabled).ToList();
                 }
-                catch (IOException ex)
+                catch (IOException)
                 {
                     //don't fail and crash out due to any issues communicating via the API
                     deviceInformationList = null;
                 }
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 //won't be able to connect for the first 5s or so
                 deviceInformationList = null;
@@ -5360,13 +5360,13 @@ namespace MultiMiner.Win.Forms
                 {
                     deviceInformationList = apiContext.GetDeviceInformation(minerProcess.MinerConfiguration.LogInterval).Where(d => d.Enabled).ToList();
                 }
-                catch (IOException ex)
+                catch (IOException)
                 {
                     //don't fail and crash out due to any issues communicating via the API
                     deviceInformationList = null;
                 }
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 //won't be able to connect for the first 5s or so
                 deviceInformationList = null;
@@ -5390,13 +5390,13 @@ namespace MultiMiner.Win.Forms
                 {
                     deviceDetailsList = apiContext.GetDeviceDetails().ToList();
                 }
-                catch (IOException ex)
+                catch (IOException)
                 {
                     //don't fail and crash out due to any issues communicating via the API
                     deviceDetailsList = null;
                 }
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 //won't be able to connect for the first 5s or so
                 deviceDetailsList = null;
@@ -5420,13 +5420,13 @@ namespace MultiMiner.Win.Forms
                 {
                     summaryInformation = apiContext.GetSummaryInformation();
                 }
-                catch (IOException ex)
+                catch (IOException)
                 {
                     //don't fail and crash out due to any issues communicating via the API
                     summaryInformation = null;
                 }
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 //won't be able to connect for the first 5s or so
                 summaryInformation = null;
@@ -5857,7 +5857,7 @@ namespace MultiMiner.Win.Forms
                         logProcessCloseArgsBindingSource.Add(logProcessCloseArgs);
                     logProcessCloseArgsBindingSource.ResumeBinding();
                 }
-                catch (ArgumentException ex)
+                catch (ArgumentException)
                 {
                     //old MiningLog.json file - wrong format serialized
                     //MiningLog.json rolls over so we will eventually be able to
@@ -6175,7 +6175,7 @@ namespace MultiMiner.Win.Forms
             {
                 availableVersion = Engine.Installers.MultiMinerInstaller.GetAvailableMinerVersion();
             }
-            catch (WebException ex)
+            catch (WebException)
             {
                 //downloads website is down
                 return false;
@@ -6497,7 +6497,7 @@ namespace MultiMiner.Win.Forms
             {
                 CheckForBackendMinerUpdates();
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
                 string error = String.Format("Error checking for {0} updates", 
                     MinerFactory.Instance.GetDefaultMiner().Name);
@@ -6873,7 +6873,7 @@ namespace MultiMiner.Win.Forms
                         RefreshListViewFromViewModel();
                     }
                 }
-                catch (Win32Exception ex)
+                catch (Win32Exception)
                 {
                     //miner not installed/not launched
                     devices = new List<Xgminer.Data.Device>(); //dummy empty device list

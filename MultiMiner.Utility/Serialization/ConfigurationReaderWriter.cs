@@ -27,7 +27,7 @@ namespace MultiMiner.Utility.Serialization
                     {
                         result = (T)serializer.Deserialize(reader);
                     }
-                    catch (InvalidOperationException ex)
+                    catch (InvalidOperationException)
                     {
                         //close reader so we can delete the file
                         reader.Close();

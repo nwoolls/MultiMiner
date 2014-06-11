@@ -119,7 +119,7 @@ namespace MultiMiner.Example
                             minerProcess.WaitForExit();
                             minerProcess.Close();
                         }
-                        catch (InvalidOperationException ex)
+                        catch (InvalidOperationException)
                         {
                             //already closed
                         }

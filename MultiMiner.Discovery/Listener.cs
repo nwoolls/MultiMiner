@@ -47,7 +47,7 @@ namespace MultiMiner.Discovery
                     tryCount++;
                     udpClient = new UdpClient(Config.Port);
                 }
-                catch (SocketException ex)
+                catch (SocketException)
                 {
                     if (tryCount == maxTries)
                         throw;

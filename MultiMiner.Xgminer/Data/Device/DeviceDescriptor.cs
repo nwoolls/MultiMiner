@@ -68,7 +68,7 @@ namespace MultiMiner.Xgminer.Data
             this.Serial = source.Serial;
         }
 
-        public bool Equals(Object obj)
+        public new bool Equals(Object obj)
         {
             if (obj == null)
                 return false;

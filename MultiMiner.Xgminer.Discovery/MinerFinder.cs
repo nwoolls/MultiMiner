@@ -45,7 +45,7 @@ namespace MultiMiner.Xgminer.Discovery
             {
                 response = context.GetResponse(ApiVerb.Version);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 response = null;
             }

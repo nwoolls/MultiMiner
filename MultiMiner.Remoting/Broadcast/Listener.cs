@@ -40,7 +40,7 @@ namespace MultiMiner.Remoting.Broadcast
                     tryCount++;
                     udpClient = new UdpClient(Config.BroadcastPort);
                 }
-                catch (SocketException ex)
+                catch (SocketException)
                 {
                     if (tryCount == maxTries)
                         throw;

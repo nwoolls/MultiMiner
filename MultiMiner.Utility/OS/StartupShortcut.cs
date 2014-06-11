@@ -46,7 +46,7 @@ namespace MultiMiner.Utility.OS
                 {
                     link = (Shell32.ShellLinkObject)folderItem.GetLink;
                 }
-                catch (COMException ex)
+                catch (COMException)
                 {
                     return String.Empty; // reported by user
                 }

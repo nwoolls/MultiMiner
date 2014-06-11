@@ -41,7 +41,7 @@ namespace MultiMiner.Win.Extensions
                     domainName = Path.GetFileNameWithoutExtension(domainName);
                 }
             }
-            catch (UriFormatException ex)
+            catch (UriFormatException)
             {
                 // System.UriFormatException: Invalid URI: The hostname could not be parsed.
                 // don't crash - fall back on domainName = host (initialized above)

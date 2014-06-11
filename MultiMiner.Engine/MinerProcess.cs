@@ -71,12 +71,12 @@ namespace MultiMiner.Engine
                         count++;
                     }
                 }
-                catch (IOException ex)
+                catch (IOException)
                 {
                     //don't fail and crash out due to any issues communicating via the API
                 }
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 //won't be able to connect for the first 5s or so
             }
