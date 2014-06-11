@@ -301,7 +301,7 @@ namespace MultiMiner.Xgminer
                 if (minerConfiguration.ExecutablePath.IndexOf("LBSPHSGMiner", StringComparison.OrdinalIgnoreCase) == -1)
                     arguments = String.Format("{0} {1}", MinerParameter.KernelDarkcoin, arguments.TrimStart());
                 else
-                    arguments = String.Format("{0} {1}", MinerParameter.KernelX13Mod, arguments.TrimStart());
+                    arguments = String.Format("{0} {1}", MinerParameter.KernelX11Mod, arguments.TrimStart());
             }
             else if (minerConfiguration.Algorithm == CoinAlgorithm.X13)
                 arguments = String.Format("{0} {1}", MinerParameter.KernelX13Mod, arguments.TrimStart());
