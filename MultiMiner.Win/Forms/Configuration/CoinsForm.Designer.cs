@@ -34,6 +34,7 @@
             this.addCoinButton = new System.Windows.Forms.ToolStripButton();
             this.removeCoinButton = new System.Windows.Forms.ToolStripButton();
             this.copyCoinButton = new System.Windows.Forms.ToolStripButton();
+            this.editCoinButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -97,6 +98,7 @@
             this.addCoinButton,
             this.removeCoinButton,
             this.copyCoinButton,
+            this.editCoinButton,
             this.toolStripSeparator2,
             this.toolStripButton1,
             this.toolStripSeparator1,
@@ -140,6 +142,16 @@
             this.copyCoinButton.Size = new System.Drawing.Size(23, 22);
             this.copyCoinButton.Text = "Copy Coin";
             this.copyCoinButton.Click += new System.EventHandler(this.copyCoinButton_Click);
+            // 
+            // editCoinButton
+            // 
+            this.editCoinButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.editCoinButton.Image = global::MultiMiner.Win.Properties.Resources.document_text_edit;
+            this.editCoinButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.editCoinButton.Name = "editCoinButton";
+            this.editCoinButton.Size = new System.Drawing.Size(23, 22);
+            this.editCoinButton.Text = "Edit Coin";
+            this.editCoinButton.Click += new System.EventHandler(this.editCoinButton_Click);
             // 
             // toolStripSeparator2
             // 
@@ -440,7 +452,6 @@
             this.hostEdit.Name = "hostEdit";
             this.hostEdit.Size = new System.Drawing.Size(174, 23);
             this.hostEdit.TabIndex = 5;
-            
             this.hostEdit.Validated += new System.EventHandler(this.hostEdit_Validated);
             // 
             // textBox2
@@ -683,5 +694,6 @@
         private System.Windows.Forms.BindingSource applicationBindingSource;
         private System.Windows.Forms.ToolStripButton copyCoinButton;
         private System.Windows.Forms.ComboBox userNameCombo;
+        private System.Windows.Forms.ToolStripButton editCoinButton;
     }
 }

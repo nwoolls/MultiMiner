@@ -359,6 +359,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="MultiMiner.ico" />
+    <None Include="Resources\document_text-edit.png" />
     <None Include="Resources\mouse-new.png" />
     <None Include="Resources\hardware-find1.png" />
     <None Include="Resources\hardware-option.png" />

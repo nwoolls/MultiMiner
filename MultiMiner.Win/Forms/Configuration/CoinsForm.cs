@@ -161,8 +161,9 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             addPoolButton.Enabled = coinListBox.SelectedIndex >= 0;
             removePoolButton.Enabled = (coinListBox.SelectedIndex >= 0) && (poolListBox.SelectedIndex >= 0);
-            removeCoinButton.Enabled = (coinListBox.SelectedIndex >= 0) && (coinListBox.SelectedIndex >= 0);
-            copyCoinButton.Enabled = (coinListBox.SelectedIndex >= 0) && (coinListBox.SelectedIndex >= 0);
+            removeCoinButton.Enabled = (coinListBox.SelectedIndex >= 0);
+            copyCoinButton.Enabled = (coinListBox.SelectedIndex >= 0);
+            editCoinButton.Enabled = (coinListBox.SelectedIndex >= 0);
             poolUpButton.Enabled = (poolListBox.SelectedIndex >= 1);
             poolDownButton.Enabled = (poolListBox.SelectedIndex < poolListBox.Items.Count - 1);
         }
@@ -444,6 +445,32 @@ namespace MultiMiner.Win.Forms.Configuration
                 //required since we are validating this edit
                 hostEdit.Text = newHost;
             }
+        }
+
+        private void EditCurrentCoin()
+        {
+            if (coinListBox.SelectedIndex == -1)
+                return;
+
+            Engine.Data.Configuration.Coin currentConfiguration = configurations[coinListBox.SelectedIndex];
+
+            CryptoCoin workingCoin = new CryptoCoin();
+            ObjectCopier.CopyObject(currentConfiguration.CryptoCoin, workingCoin);
+
+            using (CoinEditForm coinEditForm = new CoinEditForm(workingCoin))
+            {
+                DialogResult dialogResult = coinEditForm.ShowDialog();
+                if (dialogResult == System.Windows.Forms.DialogResult.OK)
+                {
+                    ObjectCopier.CopyObject(workingCoin, currentConfiguration.CryptoCoin);
+                    coinListBox.Items[coinListBox.SelectedIndex] = workingCoin.Name;
+                }
+            }
+        }
+
+        private void editCoinButton_Click(object sender, EventArgs e)
+        {
+            EditCurrentCoin();
         }
     }
 }
