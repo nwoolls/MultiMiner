@@ -20,7 +20,7 @@ namespace MultiMiner.Utility.OS
                 //shortcut already exists
                 return;
 
-            WshShellClass wshShell = new WshShellClass();
+            WshShell wshShell = new WshShell();
             IWshShortcut shortcut;
 
             // Create the shortcut
