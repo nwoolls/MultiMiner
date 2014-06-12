@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace MultiMiner.Win.Extensions
 {
@@ -60,6 +61,39 @@ namespace MultiMiner.Win.Extensions
         public static string ToSpaceDelimitedWords(this string text)
         {
             return Regex.Replace(Regex.Replace(text, @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"), @"(\p{Ll})(\P{Ll})", "$1 $2");
+        }
+        
+        public static bool ParseHostAndPort(this string hostAndPort, out string host, out int port)
+        {
+            const char Separator = ':';
+            host = String.Empty;
+            port = 0;
+
+            if (hostAndPort.Contains(Separator))
+            {
+                string[] parts = hostAndPort.Split(Separator);
+                int newPort = 0;
+
+                if (Int32.TryParse(parts.Last(), out newPort))
+                {
+                    string newHost = String.Empty;
+
+                    //loop through all but last (- 1)
+                    for (int i = 0; i < parts.Length - 1; i++)
+                    {
+                        if (!String.IsNullOrEmpty(newHost))
+                            newHost = newHost + Separator;
+                        newHost = newHost + parts[i];
+                    }
+
+                    host = newHost;
+                    port = newPort;
+                    
+                    return true;
+                }
+            }
+
+            return false;
         }
 
     }

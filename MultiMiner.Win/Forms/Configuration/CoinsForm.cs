@@ -3,6 +3,7 @@ using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer.Data;
+using MultiMiner.Win.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -420,6 +421,28 @@ namespace MultiMiner.Win.Forms.Configuration
                     if (configuration != null)
                         currentPool.Password = configuration.Pools.First(p => p.Username.Equals(workerName)).Password;
                 }
+            }
+        }
+
+        //parse the port out for folks that paste in host:port
+        private void hostEdit_Validated(object sender, EventArgs e)
+        {
+            ParseHostForPort();
+        }
+
+        private void ParseHostForPort()
+        {
+            MiningPool currentPool = (MiningPool)miningPoolBindingSource.Current;
+            int newPort;
+            string newHost;
+
+            if (currentPool.Host.ParseHostAndPort(out newHost, out newPort))
+            {
+                currentPool.Host = newHost;
+                currentPool.Port = newPort;
+
+                //required since we are validating this edit
+                hostEdit.Text = newHost;
             }
         }
     }
