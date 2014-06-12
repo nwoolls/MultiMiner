@@ -3,6 +3,7 @@ using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer.Data;
+using MultiMiner.Win.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -160,8 +161,9 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             addPoolButton.Enabled = coinListBox.SelectedIndex >= 0;
             removePoolButton.Enabled = (coinListBox.SelectedIndex >= 0) && (poolListBox.SelectedIndex >= 0);
-            removeCoinButton.Enabled = (coinListBox.SelectedIndex >= 0) && (coinListBox.SelectedIndex >= 0);
-            copyCoinButton.Enabled = (coinListBox.SelectedIndex >= 0) && (coinListBox.SelectedIndex >= 0);
+            removeCoinButton.Enabled = (coinListBox.SelectedIndex >= 0);
+            copyCoinButton.Enabled = (coinListBox.SelectedIndex >= 0);
+            editCoinButton.Enabled = (coinListBox.SelectedIndex >= 0);
             poolUpButton.Enabled = (poolListBox.SelectedIndex >= 1);
             poolDownButton.Enabled = (poolListBox.SelectedIndex < poolListBox.Items.Count - 1);
         }
@@ -421,6 +423,54 @@ namespace MultiMiner.Win.Forms.Configuration
                         currentPool.Password = configuration.Pools.First(p => p.Username.Equals(workerName)).Password;
                 }
             }
+        }
+
+        //parse the port out for folks that paste in host:port
+        private void hostEdit_Validated(object sender, EventArgs e)
+        {
+            ParseHostForPort();
+        }
+
+        private void ParseHostForPort()
+        {
+            MiningPool currentPool = (MiningPool)miningPoolBindingSource.Current;
+            int newPort;
+            string newHost;
+
+            if (currentPool.Host.ParseHostAndPort(out newHost, out newPort))
+            {
+                currentPool.Host = newHost;
+                currentPool.Port = newPort;
+
+                //required since we are validating this edit
+                hostEdit.Text = newHost;
+            }
+        }
+
+        private void EditCurrentCoin()
+        {
+            if (coinListBox.SelectedIndex == -1)
+                return;
+
+            Engine.Data.Configuration.Coin currentConfiguration = configurations[coinListBox.SelectedIndex];
+
+            CryptoCoin workingCoin = new CryptoCoin();
+            ObjectCopier.CopyObject(currentConfiguration.CryptoCoin, workingCoin);
+
+            using (CoinEditForm coinEditForm = new CoinEditForm(workingCoin))
+            {
+                DialogResult dialogResult = coinEditForm.ShowDialog();
+                if (dialogResult == System.Windows.Forms.DialogResult.OK)
+                {
+                    ObjectCopier.CopyObject(workingCoin, currentConfiguration.CryptoCoin);
+                    coinListBox.Items[coinListBox.SelectedIndex] = workingCoin.Name;
+                }
+            }
+        }
+
+        private void editCoinButton_Click(object sender, EventArgs e)
+        {
+            EditCurrentCoin();
         }
     }
 }
