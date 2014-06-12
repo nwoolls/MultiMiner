@@ -1,33 +1,31 @@
-﻿using MultiMiner.UX.Data.Configuration;
-
-namespace MultiMiner.UX.Extensions
+﻿namespace MultiMiner.UX.Extensions
 {
     public static class TimeIntervalExtensions
     {
-        public static int ToMinutes(this Application.TimerInterval timerInterval)
+        public static int ToMinutes(this Data.Configuration.Application.TimerInterval timerInterval)
         {
             int coinStatsMinutes;
             switch (timerInterval)
             {
-                case Application.TimerInterval.FiveMinutes:
+                case Data.Configuration.Application.TimerInterval.FiveMinutes:
                     coinStatsMinutes = 5;
                     break;
-                case Application.TimerInterval.ThirtyMinutes:
+                case Data.Configuration.Application.TimerInterval.ThirtyMinutes:
                     coinStatsMinutes = 30;
                     break;
-                case Application.TimerInterval.OneHour:
+                case Data.Configuration.Application.TimerInterval.OneHour:
                     coinStatsMinutes = 1 * 60;
                     break;
-                case Application.TimerInterval.TwoHours:
+                case Data.Configuration.Application.TimerInterval.TwoHours:
                     coinStatsMinutes = 2 * 60;
                     break;
-                case Application.TimerInterval.ThreeHours:
+                case Data.Configuration.Application.TimerInterval.ThreeHours:
                     coinStatsMinutes = 3 * 60;
                     break;
-                case Application.TimerInterval.SixHours:
+                case Data.Configuration.Application.TimerInterval.SixHours:
                     coinStatsMinutes = 6 * 60;
                     break;
-                case Application.TimerInterval.TwelveHours:
+                case Data.Configuration.Application.TimerInterval.TwelveHours:
                     coinStatsMinutes = 12 * 60;
                     break;
                 default:
