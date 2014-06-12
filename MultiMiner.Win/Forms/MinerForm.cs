@@ -6423,6 +6423,117 @@ namespace MultiMiner.Win.Forms
             deviceViewModel.FriendlyName = name;
         }
         #endregion
+        
+        #region UI notifications
+        public void PostNotification(string id, string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
+        {
+            MobileMiner.Data.NotificationKind kind = MobileMiner.Data.NotificationKind.Information;
+            switch (icon)
+            {
+                case ToolTipIcon.None:
+                    kind = MobileMiner.Data.NotificationKind.Default;
+                    break;
+                case ToolTipIcon.Info:
+                    kind = MobileMiner.Data.NotificationKind.Information;
+                    break;
+                case ToolTipIcon.Warning:
+                    kind = MobileMiner.Data.NotificationKind.Warning;
+                    break;
+                case ToolTipIcon.Error:
+                    kind = MobileMiner.Data.NotificationKind.Danger;
+                    break;
+            }
+
+            notificationsControl.AddNotification(id, text, clickHandler, kind, informationUrl);
+
+            if (notifyIcon1.Visible)
+                ShowBalloonNotification(text, clickHandler, icon);
+        }
+
+        private void ShowBalloonNotification(string text, Action clickHandler, ToolTipIcon icon)
+        {
+            notifyIcon1.BalloonTipText = text;
+            notifyIcon1.BalloonTipTitle = "MultiMiner";
+            notifyIcon1.BalloonTipIcon = icon;
+
+            notificationClickHandler = clickHandler;
+
+            notifyIcon1.ShowBalloonTip(1000); // ms
+        }
+
+        private void ShowCoinChangeNotification()
+        {
+            IEnumerable<string> coinList = application.MiningEngine.MinerProcesses
+                .Select(mp => mp.CoinSymbol)
+                // there may be multiple processes for one coin symbol
+                .Distinct()
+                // sort the symbols
+                .OrderBy(cs => cs);
+
+            string id = Guid.NewGuid().ToString();
+            string text = String.Format("Mining switched to {0} based on {1}",
+                String.Join(", ", coinList.ToArray()),
+                application.EngineConfiguration.StrategyConfiguration.MiningBasis);
+            string url = successfulApiContext.GetInfoUrl();
+
+            PostNotification(id,
+                String.Format(text), () =>
+                {
+                    ConfigureStrategies();
+                },
+                ToolTipIcon.Info, url);
+        }
+
+        private void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
+        {
+            //started mining but haven't yet assigned mining members
+            if (miningCoinConfigurations == null)
+                return;
+
+            string coinName = minerProcess.MinerConfiguration.CoinName;
+            //reference miningCoinConfigurations so that we get access to the mining coins
+            Engine.Data.Configuration.Coin configuration = miningCoinConfigurations.SingleOrDefault(c => c.CryptoCoin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            if (configuration == null)
+                return;
+
+            if (configuration.NotifyOnBlockFound2 && (foundBlocks > minerProcess.FoundBlocks))
+            {
+                minerProcess.FoundBlocks = foundBlocks;
+
+                string notificationReason = String.Format("Block(s) found for {0} (block {1})",
+                    coinName, minerProcess.FoundBlocks);
+
+                PostNotification(notificationReason, notificationReason, () =>
+                {
+                }, ToolTipIcon.Info, "");
+            }
+        }
+
+        private void CheckAndNotifyAcceptedShares(MinerProcess minerProcess, long acceptedShares)
+        {
+            //started mining but haven't yet assigned mining members
+            if (miningCoinConfigurations == null)
+                return;
+
+            string coinName = minerProcess.MinerConfiguration.CoinName;
+            //reference miningCoinConfigurations so that we get access to the mining coins
+            Engine.Data.Configuration.Coin configuration = miningCoinConfigurations.SingleOrDefault(c => c.CryptoCoin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            if (configuration == null)
+                return;
+
+            if (configuration.NotifyOnShareAccepted2 && (acceptedShares > minerProcess.AcceptedShares))
+            {
+                minerProcess.AcceptedShares = acceptedShares;
+
+                string notificationReason = String.Format("Share(s) accepted for {0} (share {1})",
+                    coinName, minerProcess.AcceptedShares);
+
+                PostNotification(notificationReason, notificationReason, () =>
+                {
+                }, ToolTipIcon.Info, "");
+            }
+        }
+        #endregion
 
         #region Primary mining logic
         private void StartMining()
@@ -6503,24 +6614,16 @@ namespace MultiMiner.Win.Forms
 
         private void CheckAndApplyMiningStrategy()
         {
-            if (application.MiningEngine.Mining && application.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
-                //ensure the user isn't editing settings
-                !ShowingModalDialog())
+            if (!ShowingModalDialog())
             {
-                bool changed = application.MiningEngine.ApplyMiningStrategy(application.CoinApiInformation);
-
-                //save any changes made by the engine
-                application.EngineConfiguration.SaveDeviceConfigurations();
-
+                bool changed =  application.CheckAndApplyMiningStrategy();
+                
                 //create a deep clone of the mining & device configurations
                 //this is so we can accurately display e.g. the currently mining pools
                 //even if the user changes pool info without restarting mining
                 this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Coin>, List<Engine.Data.Configuration.Coin>>(application.EngineConfiguration.CoinConfigurations);
                 this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Device>, List<Engine.Data.Configuration.Device>>(application.EngineConfiguration.DeviceConfigurations);
-
-                //update the ViewModel
-                application.ApplyModelsToViewModel();
-
+                
                 //to get changes from strategy config
                 //to refresh coin stats due to changed coin selections
                 RefreshListViewFromViewModel();
@@ -6529,116 +6632,7 @@ namespace MultiMiner.Win.Forms
                     ShowCoinChangeNotification();
             }
         }
-
-        public void PostNotification(string id, string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
-        {
-            MobileMiner.Data.NotificationKind kind = MobileMiner.Data.NotificationKind.Information;
-            switch (icon)
-            {
-                case ToolTipIcon.None:
-                    kind = MobileMiner.Data.NotificationKind.Default;
-                    break;
-                case ToolTipIcon.Info:
-                    kind = MobileMiner.Data.NotificationKind.Information;
-                    break;
-                case ToolTipIcon.Warning:
-                    kind = MobileMiner.Data.NotificationKind.Warning;
-                    break;
-                case ToolTipIcon.Error:
-                    kind = MobileMiner.Data.NotificationKind.Danger;
-                    break;
-            }
-
-            notificationsControl.AddNotification(id, text, clickHandler, kind, informationUrl);
-
-            if (notifyIcon1.Visible)
-                ShowBalloonNotification(text, clickHandler, icon);
-        }
-
-        private void ShowBalloonNotification(string text, Action clickHandler, ToolTipIcon icon)
-        {
-            notifyIcon1.BalloonTipText = text;
-            notifyIcon1.BalloonTipTitle = "MultiMiner";
-            notifyIcon1.BalloonTipIcon = icon;
-
-            notificationClickHandler = clickHandler;
-
-            notifyIcon1.ShowBalloonTip(1000); // ms
-        }
-
-        private void ShowCoinChangeNotification()
-        {
-            IEnumerable<string> coinList = application.MiningEngine.MinerProcesses
-                .Select(mp => mp.CoinSymbol)
-                // there may be multiple processes for one coin symbol
-                .Distinct()
-                // sort the symbols
-                .OrderBy(cs => cs);
-
-            string id = Guid.NewGuid().ToString();
-            string text = String.Format("Mining switched to {0} based on {1}", 
-                String.Join(", ", coinList.ToArray()), 
-                application.EngineConfiguration.StrategyConfiguration.MiningBasis);
-            string url = successfulApiContext.GetInfoUrl();
-
-            PostNotification(id,
-                String.Format(text), () =>
-                {
-                    ConfigureStrategies();
-                },
-                ToolTipIcon.Info, url);
-        }
-
-        private void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
-        {
-            //started mining but haven't yet assigned mining members
-            if (miningCoinConfigurations == null)
-                return;
-
-            string coinName = minerProcess.MinerConfiguration.CoinName;
-            //reference miningCoinConfigurations so that we get access to the mining coins
-            Engine.Data.Configuration.Coin configuration = miningCoinConfigurations.SingleOrDefault(c => c.CryptoCoin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
-            if (configuration == null)
-                return;
-
-            if (configuration.NotifyOnBlockFound2 && (foundBlocks > minerProcess.FoundBlocks))
-            {
-                minerProcess.FoundBlocks = foundBlocks;
-
-                string notificationReason = String.Format("Block(s) found for {0} (block {1})",
-                    coinName, minerProcess.FoundBlocks);
-
-                PostNotification(notificationReason, notificationReason, () =>
-                {
-                }, ToolTipIcon.Info, "");
-            }
-        }
-
-        private void CheckAndNotifyAcceptedShares(MinerProcess minerProcess, long acceptedShares)
-        {
-            //started mining but haven't yet assigned mining members
-            if (miningCoinConfigurations == null)
-                return;
-
-            string coinName = minerProcess.MinerConfiguration.CoinName;
-            //reference miningCoinConfigurations so that we get access to the mining coins
-            Engine.Data.Configuration.Coin configuration = miningCoinConfigurations.SingleOrDefault(c => c.CryptoCoin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
-            if (configuration == null)
-                return;
-
-            if (configuration.NotifyOnShareAccepted2 && (acceptedShares > minerProcess.AcceptedShares))
-            {
-                minerProcess.AcceptedShares = acceptedShares;
-
-                string notificationReason = String.Format("Share(s) accepted for {0} (share {1})",
-                    coinName, minerProcess.AcceptedShares);
-
-                PostNotification(notificationReason, notificationReason, () =>
-                {
-                }, ToolTipIcon.Info, "");
-            }
-        }
-
+        
         private bool updatingListView = false;
         private void ScanHardware()
         {

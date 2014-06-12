@@ -211,6 +211,22 @@ namespace MultiMiner.UX.ViewModels
             LocalViewModel.ClearDeviceInformationFromViewModel();
         }
 
+        public bool CheckAndApplyMiningStrategy()
+        {
+            bool changed = false;
+            if (MiningEngine.Mining && EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+            {
+                changed = MiningEngine.ApplyMiningStrategy(CoinApiInformation);
+
+                //save any changes made by the engine
+                EngineConfiguration.SaveDeviceConfigurations();
+
+                //update the ViewModel
+                ApplyModelsToViewModel();
+            }
+            return changed;
+        }
+
         public bool MiningConfigurationValid()
         {
             bool miningConfigurationValid = EngineConfiguration.DeviceConfigurations.Count(
