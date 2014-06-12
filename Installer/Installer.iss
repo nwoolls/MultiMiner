@@ -79,26 +79,28 @@ Filename: "{app}\{#MyAppExeName}"; Flags: nowait postinstall skipifsilent; Descr
 Type: dirifempty; Name: "{app}"
 
 [CustomMessages]
-DotNetMissing={#MyAppName} requires version 3.5 of the Microsoft .NET Framework. Would you like to download it now?
+DotNetMissing={#MyAppName} requires version 4.5 of the Microsoft .NET Framework. Would you like to download it now?
 
 [Code]
-function IsDotNET35Detected: Boolean;
+function IsDotNET45Detected: Boolean;
 var
   ErrorCode: Integer;
   InstallValue: Cardinal;  
 begin
   Result := True;
-  if not RegQueryDWordValue(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5', 
-    'Install', InstallValue) or (InstallValue <> 1) then
+  //The existence of the Release DWORD indicates that the .NET Framework 4.5 or later has been installed on a computer.
+  //The value of the keyword indicates the installed version.
+  //http://msdn.microsoft.com/en-us/library/hh925568(v=vs.110).aspx#net_d
+  if not RegQueryDWordValue(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full', 'Release', InstallValue) then
   begin
     Result := False;
     if MsgBox(ExpandConstant('{cm:DotNetMissing}'), mbConfirmation, MB_YESNO) = IDYES then
-      ShellExec('', 'http://www.microsoft.com/downloads/details.aspx?FamilyID=333325fd-ae52-4e35-b531-508d977d32a6&DisplayLang=en',
+      ShellExec('', 'http://www.microsoft.com/en-us/download/details.aspx?id=30653',
         '', '', SW_SHOWNORMAL, ewNoWait, ErrorCode);
   end;
 end;
 
 function InitializeSetup: Boolean;
 begin
-  Result := IsDotNET35Detected;
+  Result := IsDotNET45Detected;
 end;
