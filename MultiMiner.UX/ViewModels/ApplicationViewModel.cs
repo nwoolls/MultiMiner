@@ -3,6 +3,7 @@ using MultiMiner.Engine;
 using MultiMiner.Engine.Data;
 using MultiMiner.Services;
 using MultiMiner.Utility.Serialization;
+using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
@@ -38,12 +39,14 @@ namespace MultiMiner.UX.ViewModels
 
         //hardware information
         private List<Xgminer.Data.Device> devices = new List<Xgminer.Data.Device>();
-
         public List<Xgminer.Data.Device> Devices { get { return devices; } }
         
         //Coin API information
-
         public List<CoinInformation> CoinApiInformation { get; set; }
+        
+        //logic
+        private readonly MiningEngine miningEngine = new MiningEngine();
+        public MiningEngine MiningEngine { get { return miningEngine; } }
 
         #region Primary mining logic
         public void ScanHardwareLocally()
@@ -169,6 +172,68 @@ namespace MultiMiner.UX.ViewModels
         {
             EngineConfiguration.DeviceConfigurations.RemoveAll(c => !devices.Exists(d => d.Equals(c)));
         }
+        
+        public void StartMiningLocally()
+        {
+            //do not set Dynamic Intensity here - may have already been set by idleTimer_Tick
+            //don't want to override
+
+            SaveChangesLocally();
+
+            if (!MiningConfigurationValid())
+                return;
+
+            if (miningEngine.Mining)
+                return;
+            
+            try
+            {
+                int donationPercent = 0;
+                if (PerksConfiguration.PerksEnabled)
+                    donationPercent = PerksConfiguration.DonationPercent;
+                miningEngine.StartMining(EngineConfiguration, Devices, CoinApiInformation, donationPercent);
+            }
+            catch (MinerLaunchException ex)
+            {
+                return;
+            }
+
+            EngineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
+
+            //update ViewModel with potential changes 
+            ApplyModelsToViewModel();
+        }
+
+        public void StopMiningLocally()
+        {
+            MiningEngine.StopMining();
+
+            LocalViewModel.ClearDeviceInformationFromViewModel();
+        }
+
+        public bool MiningConfigurationValid()
+        {
+            bool miningConfigurationValid = EngineConfiguration.DeviceConfigurations.Count(
+                c => DeviceConfigurationValid(c)) > 0;
+            if (!miningConfigurationValid)
+            {
+                miningConfigurationValid = EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
+                    (EngineConfiguration.CoinConfigurations.Count(c => c.Enabled) > 0) &&
+                    (EngineConfiguration.DeviceConfigurations.Count(c => c.Enabled) > 0);
+            }
+            return miningConfigurationValid;
+        }
+
+        private bool DeviceConfigurationValid(Engine.Data.Configuration.Device deviceConfiguration)
+        {
+            bool result = deviceConfiguration.Enabled && !string.IsNullOrEmpty(deviceConfiguration.CoinSymbol);
+            if (result)
+            {
+                Engine.Data.Configuration.Coin coinConfiguration = EngineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.CryptoCoin.Symbol.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+                result = coinConfiguration == null ? false : coinConfiguration.Pools.Count > 0;
+            }
+            return result;
+        }
         #endregion
 
         #region Settings logic
@@ -191,6 +256,35 @@ namespace MultiMiner.UX.ViewModels
         private void SaveKnownDevicesToFile()
         {
             ConfigurationReaderWriter.WriteConfiguration(devices, KnownDevicesFileName());
+        }
+
+        public void SaveChangesLocally()
+        {
+            SaveViewModelValuesToConfiguration();
+            EngineConfiguration.SaveDeviceConfigurations();
+
+            LocalViewModel.ApplyDeviceConfigurationModels(EngineConfiguration.DeviceConfigurations,
+                EngineConfiguration.CoinConfigurations);
+        }
+
+        private void SaveViewModelValuesToConfiguration()
+        {
+            EngineConfiguration.DeviceConfigurations.Clear();
+
+            foreach (Xgminer.Data.Device device in Devices)
+            {
+                //don't assume 1-to-1 of Devices and ViewModel.Devices
+                //Devices doesn't include Network Devices
+                DeviceViewModel viewModel = LocalViewModel.Devices.Single(vm => vm.Equals(device));
+
+                //pull this from coin configurations, not known coins, may not be in CoinChoose
+                CryptoCoin coin = viewModel.Coin;
+                Engine.Data.Configuration.Device deviceConfiguration = new Engine.Data.Configuration.Device();
+                deviceConfiguration.Assign(viewModel);
+                deviceConfiguration.Enabled = viewModel.Enabled;
+                deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
+                EngineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+            }
         }
         #endregion
 
