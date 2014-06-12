@@ -250,6 +250,12 @@ namespace MultiMiner.UX.ViewModels
             }
             return result;
         }
+
+        public void ToggleDynamicIntensityLocally(bool enabled)
+        {
+            EngineConfiguration.XgminerConfiguration.DesktopMode = enabled;
+            EngineConfiguration.SaveMinerConfiguration();
+        }
         #endregion
 
         #region Settings logic

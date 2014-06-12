@@ -6804,10 +6804,9 @@ namespace MultiMiner.Win.Forms
 
         private void ToggleDynamicIntensityLocally(bool enabled)
         {
-            application.EngineConfiguration.XgminerConfiguration.DesktopMode = enabled;
-            dynamicIntensityButton.Checked = application.EngineConfiguration.XgminerConfiguration.DesktopMode;
-            application.EngineConfiguration.SaveMinerConfiguration();
+            application.ToggleDynamicIntensityLocally(enabled);
 
+            dynamicIntensityButton.Checked = enabled;
             GetViewModelToView().DynamicIntensity = enabled;
         }
 
