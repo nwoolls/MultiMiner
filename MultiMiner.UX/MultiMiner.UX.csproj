@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ViewModels\ApplicationViewModel.cs" />
     <Compile Include="Data\ApiLogEntry.cs" />
     <Compile Include="Data\Configuration\Application.cs" />
     <Compile Include="Data\Configuration\Metadata.cs" />
@@ -81,6 +82,10 @@
     <ProjectReference Include="..\MultiMiner.Remoting\MultiMiner.Remoting.csproj">
       <Project>{db1b318b-b57f-4bf4-8e05-befe7970f64c}</Project>
       <Name>MultiMiner.Remoting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Services\MultiMiner.Services.csproj">
+      <Project>{cffa60ec-9486-4f45-bef2-05c1a3d68ea6}</Project>
+      <Name>MultiMiner.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
       <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
