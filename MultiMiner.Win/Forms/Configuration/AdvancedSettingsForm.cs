@@ -2,7 +2,7 @@
 using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.IO;
 using MultiMiner.Utility.Serialization;
-using MultiMiner.Win.Data.Configuration;
+using MultiMiner.UX.Data.Configuration;
 using System;
 
 namespace MultiMiner.Win.Forms.Configuration

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using MultiMiner.Win.Extensions;
-using MultiMiner.Win.ViewModels;
+using MultiMiner.UX.Extensions;
+using MultiMiner.UX.ViewModels;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;

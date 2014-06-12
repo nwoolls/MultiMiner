@@ -1,9 +1,9 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Xgminer.Data;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
-    internal static class CoinAlgorithmExtensions
+    public static class CoinAlgorithmExtensions
     {
 
         public static CoinAlgorithm ToAlgorithm(this string algorithmName)

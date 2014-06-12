@@ -3,15 +3,15 @@ using MultiMiner.Xgminer.Api.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MultiMiner.Win.Data.Configuration;
-using MultiMiner.Win.Extensions;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
+using MultiMiner.UX.Data.Configuration;
+using MultiMiner.UX.Extensions;
 
-namespace MultiMiner.Win.ViewModels
+namespace MultiMiner.UX.ViewModels
 {
-    class MinerFormViewModel
+    public class MinerFormViewModel
     {
         public List<DeviceViewModel> Devices { get; set; }
         public List<CryptoCoin> ConfiguredCoins { get; set; }

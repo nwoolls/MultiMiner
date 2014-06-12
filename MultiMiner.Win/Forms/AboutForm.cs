@@ -4,7 +4,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
-using MultiMiner.Win.Extensions;
+using MultiMiner.UX.Extensions;
 using System.Reflection;
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Installers;

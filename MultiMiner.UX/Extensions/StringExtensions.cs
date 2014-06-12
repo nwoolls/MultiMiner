@@ -4,9 +4,9 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Linq;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
-    static class StringExtensions
+    public static class StringExtensions
     {
         private readonly static Dictionary<string, string> hostDomainNames = new Dictionary<string, string>();
 

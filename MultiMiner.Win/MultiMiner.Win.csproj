@@ -57,13 +57,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Configuration\Metadata.cs" />
-    <Compile Include="Extensions\ApplicationConfigurationExtensions.cs" />
-    <Compile Include="Extensions\AssemblyExtensions.cs" />
-    <Compile Include="Extensions\CoinAlgorithmExtensions.cs" />
-    <Compile Include="Extensions\DeviceConfigurationExtensions.cs" />
-    <Compile Include="Extensions\EngineConfigurationExtensions.cs" />
-    <Compile Include="Extensions\XgminerConfigurationExtensions.cs" />
     <Compile Include="Forms\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,16 +69,12 @@
     <Compile Include="Forms\Configuration\AdvancedSettingsForm.Designer.cs">
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\Configuration\NetworkDevices.cs" />
-    <Compile Include="Data\Configuration\Paths.cs" />
     <Compile Include="Controls\DetailsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\DetailsControl.Designer.cs">
       <DependentUpon>DetailsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\IPEndPointExtensions.cs" />
-    <Compile Include="Extensions\NetworkDeviceExtensions.cs" />
     <Compile Include="Controls\InstancesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -104,7 +93,6 @@
     <Compile Include="Forms\Configuration\MinerSettingsForm.Designer.cs">
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\Configuration\Application.cs" />
     <Compile Include="Forms\CoinChooseForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,13 +111,6 @@
     <Compile Include="Forms\Configuration\CoinsForm.Designer.cs">
       <DependentUpon>CoinsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\ApiLogEntry.cs" />
-    <Compile Include="Data\Configuration\Perks.cs" />
-    <Compile Include="Extensions\DateTimeExtensions.cs" />
-    <Compile Include="Extensions\DoubleExtensions.cs" />
-    <Compile Include="Extensions\MiningStatisticsExtensions.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Extensions\TimeIntervalExtensions.cs" />
     <Compile Include="Forms\Configuration\ProxySettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -186,9 +167,6 @@
     <Compile Include="Forms\Configuration\StrategiesForm.Designer.cs">
       <DependentUpon>StrategiesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\UserAgent.cs" />
-    <Compile Include="ViewModels\DeviceViewModel.cs" />
-    <Compile Include="ViewModels\MinerFormViewModel.cs" />
     <Compile Include="Forms\WizardForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -344,6 +322,10 @@
       <Project>{99B0F266-EFF7-4416-8C36-8356396A11CA}</Project>
       <Name>MultiMiner.Utility</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.UX\MultiMiner.UX.csproj">
+      <Project>{cc5a52f4-3811-40b1-bc40-b0e76b38fcd5}</Project>
+      <Name>MultiMiner.UX</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj">
       <Project>{5B43AD9D-8B67-4AA8-B76D-AA83CAF9D29F}</Project>
       <Name>MultiMiner.Xgminer.Api</Name>
@@ -358,9 +340,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Miners\BFGMiner\Extract BFGMiner here.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="MultiMiner.ico" />
     <None Include="Resources\document_text-edit.png" />
     <None Include="Resources\mouse-new.png" />

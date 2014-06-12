@@ -383,7 +383,7 @@
             // 
             // applicationConfigurationBindingSource
             // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.UX.Data.Configuration.Application);
             // 
             // MinerSettingsForm
             // 

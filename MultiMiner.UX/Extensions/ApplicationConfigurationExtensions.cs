@@ -1,11 +1,11 @@
 ﻿using MultiMiner.Utility.Serialization;
 using System.Linq;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
     public static class ApplicationConfigurationExtensions
     {
-        public static Remoting.Data.Transfer.Configuration.Application ToTransferObject(this Data.Configuration.Application modelObject)
+        public static Remoting.Data.Transfer.Configuration.Application ToTransferObject(this UX.Data.Configuration.Application modelObject)
         {
             Remoting.Data.Transfer.Configuration.Application transferObject = new Remoting.Data.Transfer.Configuration.Application();
             
@@ -15,9 +15,9 @@ namespace MultiMiner.Win.Extensions
             return transferObject;
         }
 
-        public static Data.Configuration.Application ToModelObject(this Remoting.Data.Transfer.Configuration.Application transferObject)
+        public static UX.Data.Configuration.Application ToModelObject(this Remoting.Data.Transfer.Configuration.Application transferObject)
         {
-            Data.Configuration.Application modelObject = new Data.Configuration.Application();
+            UX.Data.Configuration.Application modelObject = new UX.Data.Configuration.Application();
 
             ObjectCopier.CopyObject(transferObject, modelObject, "HiddenColumns");
             modelObject.HiddenColumns = transferObject.HiddenColumns.ToList();

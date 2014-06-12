@@ -1,8 +1,8 @@
-﻿using MultiMiner.Win.Data.Configuration;
+﻿using MultiMiner.UX.Data.Configuration;
 using System.Collections.Generic;
 using System.Net;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
     public static class IPEndPointExtensions
     {

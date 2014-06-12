@@ -35,8 +35,6 @@ PrivilegesRequired=lowest
 [Files]
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Win.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Win.pdb"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\Interop.IWshRuntimeLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\Interop.Shell32.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinApi.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinApi.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Coinbase.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -64,9 +62,10 @@ Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Remoting.pdb"; DestDir: "{app}
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Services.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Services.pdb"; DestDir: "{app}"; Flags: ignoreversion       
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Discovery.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Discovery.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Discovery.pdb"; DestDir: "{app}"; Flags: ignoreversion      
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.UX.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.UX.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\Miners\bfgminer\Extract bfgminer here.txt"; DestDir: "{app}\Miners\bfgminer\"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

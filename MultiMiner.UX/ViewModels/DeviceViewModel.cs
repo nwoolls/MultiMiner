@@ -3,7 +3,7 @@ using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 
-namespace MultiMiner.Win.ViewModels
+namespace MultiMiner.UX.ViewModels
 {
     public class DeviceViewModel : DeviceDescriptor
     {

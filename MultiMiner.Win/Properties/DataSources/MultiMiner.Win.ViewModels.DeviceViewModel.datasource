@@ -6,5 +6,5 @@
     cause the file to be unrecognizable by the program.
 -->
 <GenericObjectDataSource DisplayName="DeviceViewModel" Version="1.0" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
-   <TypeInfo>MultiMiner.Win.ViewModels.DeviceViewModel, MultiMiner.Win, Version=2.4.1.106, Culture=neutral, PublicKeyToken=null</TypeInfo>
+   <TypeInfo>MultiMiner.UX.ViewModels.DeviceViewModel, MultiMiner.Win, Version=2.4.1.106, Culture=neutral, PublicKeyToken=null</TypeInfo>
 </GenericObjectDataSource>

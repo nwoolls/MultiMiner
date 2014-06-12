@@ -45,6 +45,8 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "MultiMiner.WebKit", "MultiM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Edge", "MultiMiner.Edge\MultiMiner.Edge.csproj", "{13E95B73-FA51-4400-B45B-B3EBF9B28B53}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.UX", "MultiMiner.UX\MultiMiner.UX.csproj", "{CC5A52F4-3811-40B1-BC40-B0E76B38FCD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +133,10 @@ Global
 		{13E95B73-FA51-4400-B45B-B3EBF9B28B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13E95B73-FA51-4400-B45B-B3EBF9B28B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13E95B73-FA51-4400-B45B-B3EBF9B28B53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC5A52F4-3811-40B1-BC40-B0E76B38FCD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC5A52F4-3811-40B1-BC40-B0E76B38FCD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC5A52F4-3811-40B1-BC40-B0E76B38FCD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC5A52F4-3811-40B1-BC40-B0E76B38FCD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

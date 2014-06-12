@@ -3,7 +3,7 @@ using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer.Data;
-using MultiMiner.Win.Extensions;
+using MultiMiner.UX.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,7 +19,7 @@ namespace MultiMiner.Win.Forms.Configuration
         private readonly List<CryptoCoin> knownCoins;
 
         public CoinsForm(List<Engine.Data.Configuration.Coin> coinConfigurations, List<CryptoCoin> knownCoins,
-            Data.Configuration.Application applicationConfiguration, Data.Configuration.Perks perksConfiguration)
+            UX.Data.Configuration.Application applicationConfiguration, UX.Data.Configuration.Perks perksConfiguration)
         {
             this.configurations = coinConfigurations;
             this.knownCoins = knownCoins;

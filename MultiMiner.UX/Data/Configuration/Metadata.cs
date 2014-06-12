@@ -3,7 +3,7 @@ using MultiMiner.Utility.Serialization;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MultiMiner.Win.Data.Configuration
+namespace MultiMiner.UX.Data.Configuration
 {
     public class Metadata
     {

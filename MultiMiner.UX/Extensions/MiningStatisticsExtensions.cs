@@ -1,9 +1,9 @@
 ﻿using MultiMiner.MobileMiner.Data;
 using MultiMiner.Xgminer.Api.Data;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
-    static class MiningStatisticsExtensions
+    public static class MiningStatisticsExtensions
     {
         public static void PopulateFrom(this MiningStatistics miningStatistics, DeviceInformation deviceInformation)
         {

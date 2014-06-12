@@ -3,7 +3,7 @@ using MultiMiner.Utility.Serialization;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace MultiMiner.Win.Data.Configuration
+namespace MultiMiner.UX.Data.Configuration
 {
     [XmlType(TypeName = "PathConfiguration")]
     public class Paths

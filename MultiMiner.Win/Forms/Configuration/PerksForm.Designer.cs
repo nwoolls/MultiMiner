@@ -87,7 +87,7 @@
             // 
             // perksConfigurationBindingSource
             // 
-            this.perksConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Perks);
+            this.perksConfigurationBindingSource.DataSource = typeof(MultiMiner.UX.Data.Configuration.Perks);
             // 
             // perksCheckBox
             // 

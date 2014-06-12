@@ -1,5 +1,5 @@
 ﻿using MultiMiner.Utility.OS;
-using MultiMiner.Win.Data.Configuration;
+using MultiMiner.UX.Data.Configuration;
 using MultiMiner.Win.Forms;
 using System;
 using System.Diagnostics;
@@ -12,7 +12,7 @@ namespace MultiMiner.Win
 {
     static class Program
     {
-        private static string appGuid = "E78D8F73-9241-4BE2-800D-DCD01259BB97";
+        private readonly static string appGuid = "E78D8F73-9241-4BE2-800D-DCD01259BB97";
 
         /// <summary>
         /// The main entry point for the application.
@@ -26,7 +26,7 @@ namespace MultiMiner.Win
                 {
                     Paths pathConfig = new Paths();
                     pathConfig.LoadPathConfiguration();
-                    Data.Configuration.Application appConfig = new Data.Configuration.Application();
+                    Application appConfig = new Application();
                     appConfig.LoadApplicationConfiguration(pathConfig.SharedConfigPath);
                     if (!appConfig.AllowMultipleInstances)
                         return;
@@ -38,7 +38,7 @@ namespace MultiMiner.Win
 
         private static void RunApplication()
         {
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             
 
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)

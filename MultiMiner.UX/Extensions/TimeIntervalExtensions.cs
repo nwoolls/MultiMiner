@@ -1,8 +1,8 @@
-﻿using MultiMiner.Win.Data.Configuration;
+﻿using MultiMiner.UX.Data.Configuration;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
-    static class TimeIntervalExtensions
+    public static class TimeIntervalExtensions
     {
         public static int ToMinutes(this Application.TimerInterval timerInterval)
         {

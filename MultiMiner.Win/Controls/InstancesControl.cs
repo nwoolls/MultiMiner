@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using MultiMiner.Discovery.Data;
-using MultiMiner.Win.Extensions;
+using MultiMiner.UX.Extensions;
 using System.Collections;
 using MultiMiner.Utility.Forms;
 

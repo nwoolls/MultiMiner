@@ -1,7 +1,7 @@
 ﻿using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Xgminer.Data;
-using MultiMiner.Win.Extensions;
+using MultiMiner.UX.Extensions;
 using System;
 
 namespace MultiMiner.Win.Forms

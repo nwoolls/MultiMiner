@@ -20,6 +20,7 @@ msbuild.updateAssemblyVersion("../MultiMiner.Remoting/Properties/AssemblyInfo.cs
 msbuild.updateAssemblyVersion("../MultiMiner.Services/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Discovery/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Utility/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.UX/Properties/AssemblyInfo.cs", appVersion);
 
 //rebuild each .NET project - Release configurations
 msbuild.rebuild("../MultiMiner.CoinApi/MultiMiner.CoinApi.csproj", { configuration: "Release" });
@@ -38,6 +39,7 @@ msbuild.rebuild("../MultiMiner.Stats/MultiMiner.Stats.csproj", { configuration: 
 msbuild.rebuild("../MultiMiner.Remoting/MultiMiner.Remoting.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Services/MultiMiner.Services.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Discovery/MultiMiner.Discovery.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.UX/MultiMiner.UX.csproj", { configuration: "Release" });
 
 //export environment variable for InnoSetup to use for app version
 export("MM_AppVersion", shortAppVersion);
@@ -48,13 +50,10 @@ inno.build("Installer.iss", { });
 //create a regular Zip release
 //only this contains the Update.exe as this is the only update package
 folder.remove("PF", true);
-folder.create("PF/Miners/bfgminer");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Win.exe", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Win.pdb", "PF/");
 file.copy("../MultiMiner.Update/bin/Release/MultiMiner.Update.exe", "PF/");
 file.copy("../MultiMiner.Update/bin/Release/MultiMiner.Update.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/Interop.IWshRuntimeLibrary.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/Interop.Shell32.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.CoinApi.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.CoinApi.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Coinbase.dll", "PF/");
@@ -83,8 +82,9 @@ file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Services.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Services.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Discovery.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Discovery.pdb", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.UX.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.UX.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/Miners/bfgminer/Extract bfgminer here.txt", "PF/Miners/bfgminer");
 zip.compress("Output/MultiMiner-" + shortAppVersion + ".zip", "PF/", "*.*", true);
 folder.remove("PF", true);
 
@@ -99,8 +99,6 @@ shell.exec(macPackPath,
 -m winforms \
 -r \
 ../MultiMiner.Win/bin/Release/MultiMiner.Win.pdb,\
-../MultiMiner.Win/bin/Release/Interop.IWshRuntimeLibrary.dll,\
-../MultiMiner.Win/bin/Release/Interop.Shell32.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.CoinApi.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.CoinApi.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Coinbase.dll,\
@@ -129,6 +127,8 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.Services.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Discovery.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Discovery.pdb,\
+../MultiMiner.Win/bin/Release/MultiMiner.UX.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.UX.pdb,\
 ../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll,\
 Miners \
 -i ../MultiMiner.Win/MultiMiner.icns \

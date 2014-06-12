@@ -1,4 +1,4 @@
-﻿namespace MultiMiner.Win.Data
+﻿namespace MultiMiner.UX.Data
 {
     public static class UserAgent
     {

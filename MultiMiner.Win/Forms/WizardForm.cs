@@ -6,13 +6,13 @@ using System.IO;
 using System.Windows.Forms;
 using System.Linq;
 using System.Drawing;
-using MultiMiner.Win.Data.Configuration;
+using MultiMiner.UX.Data.Configuration;
 using MultiMiner.Utility.OS;
 using MultiMiner.MobileMiner.Helpers;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
-using MultiMiner.Win.Data;
+using MultiMiner.UX.Data;
 using MultiMiner.Engine.Installers;
 
 namespace MultiMiner.Win.Forms
@@ -263,7 +263,7 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
         }
 
         public void CreateConfigurations(out Engine.Data.Configuration.Engine engineConfiguration,
-            out Data.Configuration.Application applicationConfiguraion,
+            out UX.Data.Configuration.Application applicationConfiguraion,
             out Perks perksConfiguration)
         {
             engineConfiguration = CreateEngineConfiguration();
@@ -331,10 +331,10 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
             return engineConfiguration;
         }
 
-        private Data.Configuration.Application CreateApplicationConfiguration()
+        private UX.Data.Configuration.Application CreateApplicationConfiguration()
         {
-            Data.Configuration.Application applicationConfiguraion;
-            applicationConfiguraion = new Data.Configuration.Application();
+            UX.Data.Configuration.Application applicationConfiguraion;
+            applicationConfiguraion = new UX.Data.Configuration.Application();
             applicationConfiguraion.MobileMinerMonitoring = remoteMonitoringCheck.Checked;
             applicationConfiguraion.MobileMinerRemoteCommands = remoteCommandsCheck.Checked;
             applicationConfiguraion.MobileMinerEmailAddress = emailAddressEdit.Text;
