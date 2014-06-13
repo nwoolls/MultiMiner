@@ -4382,8 +4382,12 @@ namespace MultiMiner.Win.Forms
         }
 
         private void AddLocalMinerStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
-        {
-            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+        {            
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<MinerProcess> minerProcesses = miningEngine.MinerProcesses.ToList();
+
+            foreach (MinerProcess minerProcess in minerProcesses)
             {
                 List<DeviceInformation> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
 
