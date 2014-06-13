@@ -30,7 +30,10 @@ namespace MultiMiner.Engine.Installers
                 //first delete the folder contents. this became necessary with cgminer 3.8.0 because
                 //ck stopped shipping cgminer-nogpu.exe, which would leave an old executable behind
                 //and gum up the works later (running an older exe to find the installed version)
-                DeleteFolderContents(destinationFolder);
+
+                //only delete files and not folders though - we want to leave behind any OpenCL
+                //kernels the user may have installed
+                DeleteFolderContents(destinationFolder, true);
 
                 Unzipper.UnzipFileToFolder(minerDownloadFile, destinationFolder);
             }
@@ -40,7 +43,7 @@ namespace MultiMiner.Engine.Installers
             }
         }
 
-        private static void DeleteFolderContents(string folderPath)
+        private static void DeleteFolderContents(string folderPath, bool preserveKernels)
         {
             if (!Directory.Exists(folderPath))
                 //necessary or an Exception is thrown under Mono for OS X
@@ -49,12 +52,11 @@ namespace MultiMiner.Engine.Installers
             DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
 
             foreach (FileInfo fileInfo in directoryInfo.GetFiles())
-                fileInfo.Delete();
-
-            foreach (DirectoryInfo di in directoryInfo.GetDirectories())
             {
-                DeleteFolderContents(di.FullName);
-                di.Delete();
+                if (fileInfo.Extension.Equals(".cl", StringComparison.OrdinalIgnoreCase) && preserveKernels)
+                    continue;
+
+                fileInfo.Delete();
             }
         }
 

@@ -4215,8 +4215,12 @@ namespace MultiMiner.Win.Forms
         }
 
         private void AddLocalMinerStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
-        {
-            foreach (MinerProcess minerProcess in application.MiningEngine.MinerProcesses)
+        {            
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<MinerProcess> minerProcesses = application.MiningEngine.MinerProcesses.ToList();
+
+            foreach (MinerProcess minerProcess in minerProcesses)
             {
                 List<DeviceInformation> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
 
@@ -5773,27 +5777,53 @@ namespace MultiMiner.Win.Forms
         private void CheckForDisownedMiners()
         {
             //to-do: detect disowned miners for all types of running miners
-            string minerName = MinerFactory.Instance.GetDefaultMiner().Name;
 
-            CheckForDisownedMiners(minerName);
+            if (DisownedMinersDetected())
+            {
+                DialogResult messageBoxResult = MessageBox.Show("MultiMiner has detected running miners that it does not own. Would you like to kill them?",
+                    "Disowned Miners Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (messageBoxResult == System.Windows.Forms.DialogResult.Yes)
+                {
+                    KillDisownedMiners();
+                }
+            }
         }
 
-        private void CheckForDisownedMiners(string minerName)
+        private bool DisownedMinersDetected()
+        {
+            foreach (MinerDescriptor miner in MinerFactory.Instance.Miners)
+                if (DisownedMinersDetected(miner.FileName))
+                    return true;
+
+            return false;
+        }
+
+        private bool DisownedMinersDetected(string minerName)
         {
             List<Process> disownedMiners = Process.GetProcessesByName(minerName).ToList();
 
             foreach (MinerProcess minerProcess in application.MiningEngine.MinerProcesses)
                 disownedMiners.Remove(minerProcess.Process);
 
-            if (disownedMiners.Count > 0)
-            {
-                DialogResult messageBoxResult = MessageBox.Show("MultiMiner has detected running miners that it does not own. Would you like to kill them?",
-                    "Disowned Miners Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            return disownedMiners.Count > 0;
+        }
 
-                if (messageBoxResult == System.Windows.Forms.DialogResult.Yes)
-                    foreach (Process disownedMiner in disownedMiners)
-                        MinerProcess.KillProcess(disownedMiner);
-            }
+        private void KillDisownedMiners()
+        {
+            foreach (MinerDescriptor miner in MinerFactory.Instance.Miners)
+                KillDisownedMiners(miner.FileName);
+        }
+
+        private void KillDisownedMiners(string fileName)
+        {
+            List<Process> disownedMiners = Process.GetProcessesByName(fileName).ToList();
+
+            foreach (MinerProcess minerProcess in application.MiningEngine.MinerProcesses)
+                disownedMiners.Remove(minerProcess.Process);
+
+            foreach (Process disownedMiner in disownedMiners)
+                MinerProcess.KillProcess(disownedMiner);
         }
 
         private void ShowNotInstalledMinerWarning()
