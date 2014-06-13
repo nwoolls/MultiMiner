@@ -66,6 +66,10 @@ namespace MultiMiner.Engine
 
         public void RegisterMiners(string directory)
         {
+            if (!Directory.Exists(directory))
+                //otherwise raises a DirectoryNotFoundException under Mono
+                return;
+
             DirectoryInfo directoryInfo = new DirectoryInfo(directory);
             DirectoryInfo[] subDirectories = directoryInfo.GetDirectories();
             foreach (DirectoryInfo subDirectoryInfo in subDirectories)
