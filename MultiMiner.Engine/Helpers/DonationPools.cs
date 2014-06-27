@@ -158,7 +158,7 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //NEC
-            donationConfiguration = CreateCoinConfiguration("NEC", "stratum+tcp://neo.cryptcoins.net", 3331);
+            donationConfiguration = CreateCoinConfiguration("NEC", "stratum+tcp://de1.miningpool.co", 19664);
             configurations.Add(donationConfiguration);
 
             //TAG
