@@ -6317,8 +6317,13 @@ namespace MultiMiner.Win.Forms
 
         private void ShowMinerCheckErrorNotification(WebException ex)
         {
+            string notificationText = "Error checking for backend miner availability";
+            //ensure Response is HttpWebResponse to avoid NullReferenceException
+            if ((ex.Response != null) && (ex.Response is HttpWebResponse))
+                notificationText = String.Format("{1} ({0})", (int)((HttpWebResponse)ex.Response).StatusCode, notificationText);
+        
             PostNotification(ex.Message,
-                String.Format("Error checking for backend miner availability ({0})", (int)((HttpWebResponse)ex.Response).StatusCode), () =>
+                notificationText, () =>
                 {
                     Process.Start("http://www.multiminerapp.com");
                 },
