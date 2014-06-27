@@ -664,6 +664,10 @@ namespace MultiMiner.Engine
                 if (!deviceConfiguration.Enabled)
                     continue;
 
+                //no coin assigned
+                if (String.IsNullOrEmpty(deviceConfiguration.CoinSymbol))
+                    continue;
+
                 Xgminer.Data.Configuration.Miner minerConfiguration = CreateProxyConfiguration(apiPort, deviceConfiguration.CoinSymbol);
                 //null if no pools configured
                 if (minerConfiguration != null)
