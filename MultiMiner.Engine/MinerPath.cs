@@ -19,7 +19,8 @@ namespace MultiMiner.Engine
 
                 //support Unix - there is no bin folder for the executables like on Mac OS X
                 case PlatformID.Unix:
-                    executablePath = GetPathToMinerOnLinux(miner.FileName, miner.FileName);
+                    //file launching is case-sensitive, lower-case the filename
+                    executablePath = GetPathToMinerOnLinux(miner.FileName, miner.FileName.ToLower());
                     break;
 
                 default:

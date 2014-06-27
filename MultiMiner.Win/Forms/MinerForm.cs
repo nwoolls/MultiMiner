@@ -4092,7 +4092,11 @@ namespace MultiMiner.Win.Forms
             if (!application.ApplicationConfiguration.NetworkDeviceDetection)
                 return;
 
-            foreach (UX.Data.Configuration.NetworkDevices.NetworkDevice networkDevice in application.NetworkDevicesConfiguration.Devices)
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<UX.Data.Configuration.NetworkDevices.NetworkDevice> networkDevices = application.NetworkDevicesConfiguration.Devices.ToList();
+
+            foreach (UX.Data.Configuration.NetworkDevices.NetworkDevice networkDevice in networkDevices)
             {
                 List<DeviceInformation> deviceInformationList = GetDeviceInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
 
@@ -6130,8 +6134,13 @@ namespace MultiMiner.Win.Forms
 
         private void ShowMinerCheckErrorNotification(WebException ex)
         {
+            string notificationText = "Error checking for backend miner availability";
+            //ensure Response is HttpWebResponse to avoid NullReferenceException
+            if ((ex.Response != null) && (ex.Response is HttpWebResponse))
+                notificationText = String.Format("{1} ({0})", (int)((HttpWebResponse)ex.Response).StatusCode, notificationText);
+        
             PostNotification(ex.Message,
-                String.Format("Error checking for backend miner availability ({0})", (int)((HttpWebResponse)ex.Response).StatusCode), () =>
+                notificationText, () =>
                 {
                     Process.Start("http://www.multiminerapp.com");
                 },
