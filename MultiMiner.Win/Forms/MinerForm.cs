@@ -4259,7 +4259,11 @@ namespace MultiMiner.Win.Forms
             if (!applicationConfiguration.NetworkDeviceDetection)
                 return;
 
-            foreach (Data.Configuration.NetworkDevices.NetworkDevice networkDevice in networkDevicesConfiguration.Devices)
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<NetworkDevices.NetworkDevice> networkDevices = networkDevicesConfiguration.Devices.ToList();
+
+            foreach (Data.Configuration.NetworkDevices.NetworkDevice networkDevice in networkDevices)
             {
                 List<DeviceInformation> deviceInformationList = GetDeviceInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
 
