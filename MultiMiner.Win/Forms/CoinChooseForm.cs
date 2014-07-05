@@ -1,6 +1,7 @@
 ﻿using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Win.Extensions;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,17 +32,16 @@ namespace MultiMiner.Win.Forms
 
         private void PopulateAlgorithmCombo()
         {
-            IEnumerable<string> algorithms = sortedCoins
-                .OrderBy(c => c.Algorithm)
-                .Select(c => c.Algorithm.ToString())
-                .Distinct();
-            algoCombo.Items.AddRange(algorithms.ToArray());            
+            algoCombo.Items.Clear();
+            foreach (CoinAlgorithm algorithm in (CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm)))
+                algoCombo.Items.Add(algorithm.ToString().ToSpaceDelimitedWords());           
         }
 
         private void PopulateCoinCombo()
         {
-            filteredCoins = sortedCoins.Where(sc => sc.Algorithm.ToString().Equals(algoCombo.Text)).ToList();
+            filteredCoins = sortedCoins.Where(sc => sc.Algorithm.ToString().ToSpaceDelimitedWords().Equals(algoCombo.Text)).ToList();
 
+            coinCombo.Text = String.Empty;
             coinCombo.Items.Clear();
             foreach (CryptoCoin sortedCoin in filteredCoins)
                 coinCombo.Items.Add(String.Format("{0} ({1})", sortedCoin.Name, sortedCoin.Symbol));
