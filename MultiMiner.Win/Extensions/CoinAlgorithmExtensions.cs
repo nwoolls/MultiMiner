@@ -23,6 +23,10 @@ namespace MultiMiner.Win.Extensions
                 return CoinAlgorithm.X11;
             else if (algorithm.Contains(AlgorithmNames.X13.ToLower()))
                 return CoinAlgorithm.X13;
+            else if (algorithm.Contains(AlgorithmNames.X14.ToLower()))
+                return CoinAlgorithm.X14;
+            else if (algorithm.Contains(AlgorithmNames.X15.ToLower()))
+                return CoinAlgorithm.X15;
             else if (algorithm.Contains(AlgorithmNames.ScryptJane.ToLower()))
                 return CoinAlgorithm.ScryptJane;
             else if (algorithm.Contains(AlgorithmNames.Keccak.ToLower()))
@@ -47,6 +51,10 @@ namespace MultiMiner.Win.Extensions
                     return AlgorithmNames.X11;
                 case CoinAlgorithm.X13:
                     return AlgorithmNames.X13;
+                case CoinAlgorithm.X14:
+                    return AlgorithmNames.X14;
+                case CoinAlgorithm.X15:
+                    return AlgorithmNames.X15;
                 case CoinAlgorithm.Quark:
                     return AlgorithmNames.Quark;
                 case CoinAlgorithm.Groestl:

@@ -23,5 +23,7 @@
         public const string Keccak = "--keccak";
         public const string KernelX11Mod = "--kernel x11mod";
         public const string KernelX13Mod = "--kernel x13mod";
+        public const string PoolAlgorithmBitBlockOld = "--pool-algorithm bitblockold";
+        public const string PoolAlgorithmX14Old = "--pool-algorithm x14old";
     }
 }
