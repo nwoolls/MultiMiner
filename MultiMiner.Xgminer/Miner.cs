@@ -305,6 +305,10 @@ namespace MultiMiner.Xgminer
             }
             else if (minerConfiguration.Algorithm == CoinAlgorithm.X13)
                 arguments = String.Format("{0} {1}", MinerParameter.KernelX13Mod, arguments.TrimStart());
+            else if (minerConfiguration.Algorithm == CoinAlgorithm.X14)
+                arguments = String.Format("{0} {1}", MinerParameter.PoolAlgorithmX14Old, arguments.TrimStart());
+            else if (minerConfiguration.Algorithm == CoinAlgorithm.X15)
+                arguments = String.Format("{0} {1}", MinerParameter.PoolAlgorithmBitBlockOld, arguments.TrimStart());
             else if (minerConfiguration.Algorithm == CoinAlgorithm.Quark)
                 arguments = String.Format("{0} {1}", MinerParameter.KernelQuarkcoin, arguments.TrimStart());
             else if (minerConfiguration.Algorithm == CoinAlgorithm.Groestl)

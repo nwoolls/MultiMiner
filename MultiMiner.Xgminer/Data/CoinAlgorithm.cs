@@ -10,6 +10,8 @@
         Quark = 5,
         Groestl = 6,
         Keccak = 7,
-        X13 = 8
+        X13 = 8,
+        X14 = 9,
+        X15 = 10
     }
 }

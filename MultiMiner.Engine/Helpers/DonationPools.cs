@@ -238,7 +238,7 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //DRK
-            donationConfiguration = CreateCoinConfiguration("DRK", "stratum+tcp://drkpool.com", 3333);
+            donationConfiguration = CreateCoinConfiguration("DRK", "stratum+tcp://us-east1.darkcoin.miningpoolhub.com", 20465);
             configurations.Add(donationConfiguration);
 
             //MYR1

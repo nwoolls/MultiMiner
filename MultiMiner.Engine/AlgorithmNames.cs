@@ -9,6 +9,8 @@
         public const string Groestl = "Groestl";
         public const string X11 = "X11";
         public const string X13 = "X13";
+        public const string X14 = "X14";
+        public const string X15 = "X15";
         public const string ScryptJane = "Scrypt-Jane";
         public const string Keccak = "Keccak";
     }
