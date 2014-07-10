@@ -187,7 +187,7 @@ namespace MultiMiner.Engine
                     {
                         logProcessClose(minerProcess);
                         minerProcess.StopMining();
-                        string reason = minerProcess.StoppedAcceptingShares ? "Subpar shares" : minerProcess.HasZeroHashrateDevice ? "Zero hashrate" : minerProcess.HasPoorPerformingDevice ? "Subpar hashrate" : "Frozen miner";
+                        string reason = minerProcess.HasZeroHashrateDevice ? "Zero hashrate" : minerProcess.HasPoorPerformingDevice ? "Subpar hashrate" : "Frozen miner";
                         minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, reason);
                         setupProcessStartInfo(minerProcess);
                         return true;
