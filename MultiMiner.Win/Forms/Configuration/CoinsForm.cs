@@ -100,7 +100,12 @@ namespace MultiMiner.Win.Forms.Configuration
                     configuration.CryptoCoin.Algorithm = cryptoCoin.Algorithm;
                 }
 
-                configuration.Pools.Add(new MiningPool());
+                MiningPool miningPool = new MiningPool()
+                {
+                    Host = "stratum+tcp://",
+                    Port = 3333
+                };
+                configuration.Pools.Add(miningPool);
 
                 configurations.Add(configuration);
 
@@ -109,6 +114,7 @@ namespace MultiMiner.Win.Forms.Configuration
             }
 
             hostEdit.Focus();
+            hostEdit.SelectionStart = hostEdit.SelectionLength;
 
             return configuration;
         }
