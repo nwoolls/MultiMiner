@@ -4892,7 +4892,7 @@ namespace MultiMiner.Win.Forms
 
                 FlagSuspiciousProxy(minerProcess, deviceInformationList);
                 
-                if (!String.IsNullOrEmpty(coinSymbol) && !minerProcess.Miner.LegacyApi)
+                if (!String.IsNullOrEmpty(coinSymbol))
                     CheckAndSetNetworkDifficulty(minerProcess.ApiContext.IpAddress, minerProcess.ApiContext.Port, coinSymbol);
 
                 localViewModel.ApplyDeviceDetailsResponseModels(minerProcess.MinerConfiguration.DeviceDescriptors, processDevices);
