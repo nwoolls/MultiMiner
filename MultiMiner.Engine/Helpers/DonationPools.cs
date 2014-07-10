@@ -272,6 +272,14 @@ namespace MultiMiner.Engine.Helpers
             //MAX
             donationConfiguration = CreateCoinConfiguration("MAX", "stratum+tcp://us-east1.maxcoin.miningpoolhub.com", 20461);
             configurations.Add(donationConfiguration);
+
+            //X14
+            donationConfiguration = CreateCoinConfiguration("X14", "stratum+tcp://stratum.pool.mn", 7838);
+            configurations.Add(donationConfiguration);
+
+            //MAIA
+            donationConfiguration = CreateCoinConfiguration("MAIA", "stratum+tcp://stratum.pool.mn", 7822);
+            configurations.Add(donationConfiguration);
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
