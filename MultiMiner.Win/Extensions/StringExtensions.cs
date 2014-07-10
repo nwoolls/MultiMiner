@@ -39,7 +39,8 @@ namespace MultiMiner.Win.Extensions
                     }
 
                     // remove TLD
-                    domainName = Path.GetFileNameWithoutExtension(domainName);
+                    if (domainName.Length > 7)
+                        domainName = Path.GetFileNameWithoutExtension(domainName);
                 }
             }
             catch (UriFormatException)
