@@ -701,6 +701,31 @@ namespace MultiMiner.Win.Forms
             }
         }
 
+        private static ToolStripMenuItem FindOrCreateAlgoMenuItem(ToolStripItemCollection parent, CoinAlgorithm algorithm)
+        {
+            ToolStripMenuItem algoItem = null;
+
+            foreach (ToolStripMenuItem item in parent)
+            {
+                if (item.Text.Equals(algorithm.ToString()))
+                {
+                    algoItem = item;
+                    break;
+                }
+            }
+
+            if (algoItem == null)
+            {
+                algoItem = new ToolStripMenuItem()
+                {
+                    Text = algorithm.ToString()
+                };
+                parent.Add(algoItem);
+            }
+
+            return algoItem;
+        }
+
         private void RefreshCountdownLabel()
         {
             startupMiningPanel.Left = (this.Width / 2) - (startupMiningPanel.Width / 2);
@@ -936,10 +961,8 @@ namespace MultiMiner.Win.Forms
             quickCoinMenu.Items.Clear();
 
             MinerFormViewModel viewModelToView = GetViewModelToView();
-
             List<CryptoCoin> coinConfigurations = viewModelToView.ConfiguredCoins;
             
-
             foreach (CryptoCoin coinConfiguration in coinConfigurations)
             {
                 ToolStripMenuItem coinSwitchItem = new ToolStripMenuItem()
@@ -952,23 +975,7 @@ namespace MultiMiner.Win.Forms
                 if (coinConfigurations.Count > 10)
                 {
                     //if there are more than 10 Coin Configurations, break up the menu by algo
-                    ToolStripMenuItem algoItem = null;
-                    foreach (ToolStripMenuItem item in quickCoinMenu.Items)
-                    {
-                        if (item.Text.Equals(coinConfiguration.Algorithm.ToString()))
-                        {
-                            algoItem = item;
-                            break;
-                        }
-                    }
-                    if (algoItem == null)
-                    {
-                        algoItem = new ToolStripMenuItem()
-                        {
-                            Text = coinConfiguration.Algorithm.ToString()
-                        };
-                        quickCoinMenu.Items.Add(algoItem);
-                    }
+                    ToolStripMenuItem algoItem = FindOrCreateAlgoMenuItem(quickCoinMenu.Items, coinConfiguration.Algorithm);
                     algoItem.DropDownItems.Add(coinSwitchItem);
 
                 }
