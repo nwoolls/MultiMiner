@@ -696,8 +696,23 @@ namespace MultiMiner.Win.Forms
             MinerFormViewModel viewModelToView = GetViewModelToView();
             foreach (CryptoCoin configuredCoin in viewModelToView.ConfiguredCoins)
             {
-                ToolStripItem menuItem = coinPopupMenu.Items.Add(configuredCoin.Name);
+                ToolStripMenuItem menuItem = new ToolStripMenuItem()
+                {
+                    Text = configuredCoin.Name,
+                    Tag = configuredCoin.Symbol
+                };
                 menuItem.Click += CoinMenuItemClick;
+
+                if (viewModelToView.ConfiguredCoins.Count > 10)
+                {
+                    //if there are more than 10 Coin Configurations, break up the menu by algo
+                    ToolStripMenuItem algoItem = FindOrCreateAlgoMenuItem(coinPopupMenu.Items, configuredCoin.Algorithm);
+                    algoItem.DropDownItems.Add(menuItem);
+                }
+                else
+                {
+                    coinPopupMenu.Items.Add(menuItem);
+                }
             }
         }
 
