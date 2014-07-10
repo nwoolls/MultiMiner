@@ -428,7 +428,8 @@ namespace MultiMiner.Win.Forms.Configuration
         //parse the port out for folks that paste in host:port
         private void hostEdit_Validated(object sender, EventArgs e)
         {
-            ParseHostForPort();
+            if (miningPoolBindingSource.Current != null)
+                ParseHostForPort();
         }
 
         private void ParseHostForPort()
