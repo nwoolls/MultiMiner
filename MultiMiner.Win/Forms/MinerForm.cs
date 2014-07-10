@@ -1005,7 +1005,7 @@ namespace MultiMiner.Win.Forms
             parent.DropDown = quickCoinMenu;
         }
 
-        private string GetPoolNameByIndex(Engine.Data.Configuration.Coin coinConfiguration, int poolIndex)
+        private static string GetPoolNameByIndex(Engine.Data.Configuration.Coin coinConfiguration, int poolIndex)
         {
             string result = String.Empty;
 
