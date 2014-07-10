@@ -242,13 +242,14 @@ namespace MultiMiner.Xgminer
                     arguments = String.Format("{0} {1}", arguments, MinerParameter.ScanSerialCpu);
             }
 
-            foreach (DeviceDescriptor deviceDescriptor in minerConfiguration.DeviceDescriptors)
+            if (legacyApi)
             {
-                if (legacyApi)
-                {
-                    arguments = string.Format("{0} -d {1}", arguments, deviceDescriptor.RelativeIndex);
-                }
-                else
+                //AZNSGMiner doesn't understand -d 1 -d 2 -d 3, we need to use -d 1,2,3
+                arguments = string.Format("{0} -d {1}", arguments, String.Join(",", minerConfiguration.DeviceDescriptors.Select(dd => dd.RelativeIndex.ToString()).ToArray()));
+            }
+            else
+            {
+                foreach (DeviceDescriptor deviceDescriptor in minerConfiguration.DeviceDescriptors)
                 {
                     if (deviceDescriptor.Kind == DeviceKind.GPU)
                         arguments = string.Format("{0} -d OCL{1}", arguments, deviceDescriptor.RelativeIndex);
