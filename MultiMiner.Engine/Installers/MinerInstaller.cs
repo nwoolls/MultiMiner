@@ -90,7 +90,23 @@ namespace MultiMiner.Engine.Installers
             }
 #endif
 
-            return version;
+            return SemanticVersionToStandardVersion(version);
+        }
+
+        private static string SemanticVersionToStandardVersion(string semanticVersion)
+        {
+            string result = semanticVersion;
+
+            const string Dash = "-";
+            int dashIndex = semanticVersion.IndexOf(Dash);
+            if (dashIndex >= 0)
+            {
+                string primaryInfo = semanticVersion.Substring(0, dashIndex);
+                string preReleaseInfo = semanticVersion.Substring(dashIndex + 1, semanticVersion.IndexOf(Dash, dashIndex + 1) - dashIndex - 1);
+                result = String.Format("{0}.{1}", primaryInfo, preReleaseInfo);
+            }
+
+            return result;
         }
     }
 }
