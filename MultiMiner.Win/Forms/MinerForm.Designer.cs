@@ -102,7 +102,6 @@
             this.errorsColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.utilityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.intensityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.detailsControl1 = new MultiMiner.Win.Controls.DetailsControl();
             this.advancedTabControl = new System.Windows.Forms.TabControl();
             this.historyPage = new System.Windows.Forms.TabPage();
             this.historyGridView = new System.Windows.Forms.DataGridView();
@@ -128,12 +127,8 @@
             this.logLaunchArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.apiMonitorPage = new System.Windows.Forms.TabPage();
             this.apiLogGridView = new System.Windows.Forms.DataGridView();
-            this.dateTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Machine = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CoinName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.requestDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.responseDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.apiLogEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
             this.closeApiButton = new System.Windows.Forms.Button();
             this.processLogMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -158,6 +153,10 @@
             this.coinsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.strategiesButton = new System.Windows.Forms.ToolStripMenuItem();
             this.perksButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsPlainButton = new System.Windows.Forms.ToolStripButton();
+            this.poolsPlainButton = new System.Windows.Forms.ToolStripButton();
+            this.strategiesPlainButton = new System.Windows.Forms.ToolStripButton();
+            this.perksPlainButton = new System.Windows.Forms.ToolStripButton();
             this.saveSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.saveButton = new System.Windows.Forms.ToolStripButton();
             this.cancelButton = new System.Windows.Forms.ToolStripButton();
@@ -214,6 +213,11 @@
             this.aToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restartMiningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.detailsControl1 = new MultiMiner.Win.Controls.DetailsControl();
+            this.dateTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.requestDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.responseDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.apiLogEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -236,7 +240,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).BeginInit();
             this.apiMonitorPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).BeginInit();
             this.panel2.SuspendLayout();
             this.processLogMenu.SuspendLayout();
             this.footerPanel.SuspendLayout();
@@ -244,6 +247,7 @@
             this.standardToolBar.SuspendLayout();
             this.accessibleMenu.SuspendLayout();
             this.networkDeviceContextMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // coinStatsTimer
@@ -570,7 +574,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(1293, 375);
-            this.detailsAreaContainer.SplitterDistance = 1035;
+            this.detailsAreaContainer.SplitterDistance = 1038;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -621,7 +625,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(1035, 375);
+            this.deviceListView.Size = new System.Drawing.Size(1038, 375);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -728,18 +732,6 @@
             // 
             this.intensityColumnHeader.Text = "Intensity";
             // 
-            // detailsControl1
-            // 
-            this.detailsControl1.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.detailsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.detailsControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.detailsControl1.Location = new System.Drawing.Point(0, 0);
-            this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(255, 375);
-            this.detailsControl1.TabIndex = 0;
-            this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
-            // 
             // advancedTabControl
             // 
             this.advancedTabControl.Controls.Add(this.historyPage);
@@ -761,7 +753,7 @@
             this.historyPage.Location = new System.Drawing.Point(4, 24);
             this.historyPage.Name = "historyPage";
             this.historyPage.Padding = new System.Windows.Forms.Padding(3);
-            this.historyPage.Size = new System.Drawing.Size(1285, 84);
+            this.historyPage.Size = new System.Drawing.Size(142, 0);
             this.historyPage.TabIndex = 2;
             this.historyPage.Text = "History";
             this.historyPage.UseVisualStyleBackColor = true;
@@ -795,7 +787,7 @@
             this.historyGridView.Name = "historyGridView";
             this.historyGridView.ReadOnly = true;
             this.historyGridView.RowHeadersVisible = false;
-            this.historyGridView.Size = new System.Drawing.Size(1279, 78);
+            this.historyGridView.Size = new System.Drawing.Size(136, 0);
             this.historyGridView.TabIndex = 0;
             this.historyGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.historyGridView_CellFormatting);
             this.historyGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.historyGridView_RowsAdded);
@@ -891,7 +883,7 @@
             this.processLogPage.Location = new System.Drawing.Point(4, 24);
             this.processLogPage.Name = "processLogPage";
             this.processLogPage.Padding = new System.Windows.Forms.Padding(3);
-            this.processLogPage.Size = new System.Drawing.Size(1285, 84);
+            this.processLogPage.Size = new System.Drawing.Size(142, 0);
             this.processLogPage.TabIndex = 1;
             this.processLogPage.Text = "Process Log";
             this.processLogPage.UseVisualStyleBackColor = true;
@@ -920,7 +912,7 @@
             this.processLogGridView.Name = "processLogGridView";
             this.processLogGridView.ReadOnly = true;
             this.processLogGridView.RowHeadersVisible = false;
-            this.processLogGridView.Size = new System.Drawing.Size(1279, 78);
+            this.processLogGridView.Size = new System.Drawing.Size(136, 0);
             this.processLogGridView.TabIndex = 14;
             this.processLogGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.processLogGridView_CellFormatting);
             this.processLogGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.processLogGridView_CellMouseDown);
@@ -975,7 +967,7 @@
             this.apiMonitorPage.Location = new System.Drawing.Point(4, 24);
             this.apiMonitorPage.Name = "apiMonitorPage";
             this.apiMonitorPage.Padding = new System.Windows.Forms.Padding(3);
-            this.apiMonitorPage.Size = new System.Drawing.Size(1285, 84);
+            this.apiMonitorPage.Size = new System.Drawing.Size(142, 0);
             this.apiMonitorPage.TabIndex = 0;
             this.apiMonitorPage.Text = "API Monitor";
             this.apiMonitorPage.UseVisualStyleBackColor = true;
@@ -1004,17 +996,9 @@
             this.apiLogGridView.Location = new System.Drawing.Point(3, 3);
             this.apiLogGridView.Name = "apiLogGridView";
             this.apiLogGridView.RowHeadersVisible = false;
-            this.apiLogGridView.Size = new System.Drawing.Size(1279, 78);
+            this.apiLogGridView.Size = new System.Drawing.Size(136, 0);
             this.apiLogGridView.TabIndex = 13;
             this.apiLogGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.apiLogGridView_CellFormatting);
-            // 
-            // dateTimeDataGridViewTextBoxColumn
-            // 
-            this.dateTimeDataGridViewTextBoxColumn.DataPropertyName = "DateTime";
-            this.dateTimeDataGridViewTextBoxColumn.HeaderText = "Date/Time";
-            this.dateTimeDataGridViewTextBoxColumn.Name = "dateTimeDataGridViewTextBoxColumn";
-            this.dateTimeDataGridViewTextBoxColumn.ReadOnly = true;
-            this.dateTimeDataGridViewTextBoxColumn.Width = 125;
             // 
             // Machine
             // 
@@ -1029,25 +1013,6 @@
             this.CoinName.HeaderText = "Coin Name";
             this.CoinName.Name = "CoinName";
             this.CoinName.ReadOnly = true;
-            // 
-            // requestDataGridViewTextBoxColumn
-            // 
-            this.requestDataGridViewTextBoxColumn.DataPropertyName = "Request";
-            this.requestDataGridViewTextBoxColumn.HeaderText = "Request";
-            this.requestDataGridViewTextBoxColumn.Name = "requestDataGridViewTextBoxColumn";
-            this.requestDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // responseDataGridViewTextBoxColumn
-            // 
-            this.responseDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.responseDataGridViewTextBoxColumn.DataPropertyName = "Response";
-            this.responseDataGridViewTextBoxColumn.HeaderText = "Response";
-            this.responseDataGridViewTextBoxColumn.Name = "responseDataGridViewTextBoxColumn";
-            this.responseDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // apiLogEntryBindingSource
-            // 
-            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.Data.ApiLogEntry);
             // 
             // panel2
             // 
@@ -1215,6 +1180,10 @@
             this.stopButton,
             this.settingsSeparator,
             this.settingsButton,
+            this.settingsPlainButton,
+            this.poolsPlainButton,
+            this.strategiesPlainButton,
+            this.perksPlainButton,
             this.saveSeparator,
             this.saveButton,
             this.cancelButton,
@@ -1283,15 +1252,16 @@
             this.settingsButton.Size = new System.Drawing.Size(81, 22);
             this.settingsButton.Text = "Settings";
             this.settingsButton.ToolTipText = "Configure application settings";
+            this.settingsButton.Visible = false;
             this.settingsButton.ButtonClick += new System.EventHandler(this.settingsButton_ButtonClick);
             // 
             // coinsButton
             // 
-            this.coinsButton.AccessibleName = "Coins";
-            this.coinsButton.Image = global::MultiMiner.Win.Properties.Resources.application_gear;
+            this.coinsButton.AccessibleName = "Pools";
+            this.coinsButton.Image = ((System.Drawing.Image)(resources.GetObject("coinsButton.Image")));
             this.coinsButton.Name = "coinsButton";
             this.coinsButton.Size = new System.Drawing.Size(125, 22);
-            this.coinsButton.Text = "Coins";
+            this.coinsButton.Text = "Pools";
             this.coinsButton.ToolTipText = "Configure coins and pools";
             this.coinsButton.Click += new System.EventHandler(this.coinsButton_Click_1);
             // 
@@ -1313,6 +1283,50 @@
             this.perksButton.Size = new System.Drawing.Size(125, 22);
             this.perksButton.Text = "Perks";
             this.perksButton.Click += new System.EventHandler(this.perksToolStripMenuItem_Click);
+            // 
+            // settingsPlainButton
+            // 
+            this.settingsPlainButton.AccessibleName = "Settings";
+            this.settingsPlainButton.Image = global::MultiMiner.Win.Properties.Resources.application_option;
+            this.settingsPlainButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.settingsPlainButton.Name = "settingsPlainButton";
+            this.settingsPlainButton.Size = new System.Drawing.Size(69, 22);
+            this.settingsPlainButton.Text = "Settings";
+            this.settingsPlainButton.ToolTipText = "Configure application settings";
+            this.settingsPlainButton.Click += new System.EventHandler(this.settingsPlainButton_Click);
+            // 
+            // poolsPlainButton
+            // 
+            this.poolsPlainButton.AccessibleName = "Pools";
+            this.poolsPlainButton.Image = ((System.Drawing.Image)(resources.GetObject("poolsPlainButton.Image")));
+            this.poolsPlainButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.poolsPlainButton.Name = "poolsPlainButton";
+            this.poolsPlainButton.Size = new System.Drawing.Size(56, 22);
+            this.poolsPlainButton.Text = "Pools";
+            this.poolsPlainButton.ToolTipText = "Configure coins and pools";
+            this.poolsPlainButton.Click += new System.EventHandler(this.poolsPlainButton_Click);
+            // 
+            // strategiesPlainButton
+            // 
+            this.strategiesPlainButton.AccessibleName = "Strategies";
+            this.strategiesPlainButton.Image = global::MultiMiner.Win.Properties.Resources.application_execute;
+            this.strategiesPlainButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.strategiesPlainButton.Name = "strategiesPlainButton";
+            this.strategiesPlainButton.Size = new System.Drawing.Size(78, 22);
+            this.strategiesPlainButton.Text = "Strategies";
+            this.strategiesPlainButton.ToolTipText = "Configure profitability strategies";
+            this.strategiesPlainButton.Click += new System.EventHandler(this.strategiesPlainButton_Click);
+            // 
+            // perksPlainButton
+            // 
+            this.perksPlainButton.AccessibleName = "Perks";
+            this.perksPlainButton.Image = global::MultiMiner.Win.Properties.Resources.application_add;
+            this.perksPlainButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.perksPlainButton.Name = "perksPlainButton";
+            this.perksPlainButton.Size = new System.Drawing.Size(55, 22);
+            this.perksPlainButton.Text = "Perks";
+            this.perksPlainButton.ToolTipText = "Enable and configure perks";
+            this.perksPlainButton.Click += new System.EventHandler(this.perksPlainButton_Click);
             // 
             // saveSeparator
             // 
@@ -1599,29 +1613,29 @@
             // settingsToolStripMenuItem1
             // 
             this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
-            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
+            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.settingsToolStripMenuItem1.Text = "&Settings";
             this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click);
             // 
             // coinsToolStripMenuItem1
             // 
             this.coinsToolStripMenuItem1.Name = "coinsToolStripMenuItem1";
-            this.coinsToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
-            this.coinsToolStripMenuItem1.Text = "&Coins";
+            this.coinsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.coinsToolStripMenuItem1.Text = "&Pools";
             this.coinsToolStripMenuItem1.Click += new System.EventHandler(this.coinsToolStripMenuItem1_Click);
             // 
             // strategiesToolStripMenuItem1
             // 
             this.strategiesToolStripMenuItem1.Name = "strategiesToolStripMenuItem1";
-            this.strategiesToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
+            this.strategiesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.strategiesToolStripMenuItem1.Text = "S&trategies";
             this.strategiesToolStripMenuItem1.Click += new System.EventHandler(this.strategiesToolStripMenuItem1_Click);
             // 
             // perksToolStripMenuItem
             // 
             this.perksToolStripMenuItem.Name = "perksToolStripMenuItem";
-            this.perksToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.perksToolStripMenuItem.Text = "&Perks";
+            this.perksToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.perksToolStripMenuItem.Text = "P&erks";
             this.perksToolStripMenuItem.Click += new System.EventHandler(this.perksToolStripMenuItem_Click_1);
             // 
             // viewToolStripMenuItem
@@ -1639,35 +1653,35 @@
             // largeIconsToolStripMenuItem1
             // 
             this.largeIconsToolStripMenuItem1.Name = "largeIconsToolStripMenuItem1";
-            this.largeIconsToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.largeIconsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.largeIconsToolStripMenuItem1.Text = "&Large Icons";
             this.largeIconsToolStripMenuItem1.Click += new System.EventHandler(this.largeIconsToolStripMenuItem1_Click);
             // 
             // smallIconsToolStripMenuItem1
             // 
             this.smallIconsToolStripMenuItem1.Name = "smallIconsToolStripMenuItem1";
-            this.smallIconsToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.smallIconsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.smallIconsToolStripMenuItem1.Text = "&Small Icons";
             this.smallIconsToolStripMenuItem1.Click += new System.EventHandler(this.smallIconsToolStripMenuItem1_Click);
             // 
             // listToolStripMenuItem1
             // 
             this.listToolStripMenuItem1.Name = "listToolStripMenuItem1";
-            this.listToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.listToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.listToolStripMenuItem1.Text = "L&ist";
             this.listToolStripMenuItem1.Click += new System.EventHandler(this.listToolStripMenuItem1_Click);
             // 
             // detailsToolStripMenuItem1
             // 
             this.detailsToolStripMenuItem1.Name = "detailsToolStripMenuItem1";
-            this.detailsToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.detailsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.detailsToolStripMenuItem1.Text = "&Details";
             this.detailsToolStripMenuItem1.Click += new System.EventHandler(this.detailsToolStripMenuItem1_Click);
             // 
             // tilesToolStripMenuItem1
             // 
             this.tilesToolStripMenuItem1.Name = "tilesToolStripMenuItem1";
-            this.tilesToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.tilesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.tilesToolStripMenuItem1.Text = "&Tiles";
             this.tilesToolStripMenuItem1.Click += new System.EventHandler(this.tilesToolStripMenuItem1_Click);
             // 
@@ -1800,6 +1814,45 @@
             this.restartMiningToolStripMenuItem.Text = "Restart Mining";
             this.restartMiningToolStripMenuItem.Click += new System.EventHandler(this.restartMiningToolStripMenuItem_Click);
             // 
+            // detailsControl1
+            // 
+            this.detailsControl1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.detailsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.detailsControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.detailsControl1.Location = new System.Drawing.Point(0, 0);
+            this.detailsControl1.Name = "detailsControl1";
+            this.detailsControl1.Size = new System.Drawing.Size(252, 375);
+            this.detailsControl1.TabIndex = 0;
+            this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
+            // 
+            // dateTimeDataGridViewTextBoxColumn
+            // 
+            this.dateTimeDataGridViewTextBoxColumn.DataPropertyName = "DateTime";
+            this.dateTimeDataGridViewTextBoxColumn.HeaderText = "Date/Time";
+            this.dateTimeDataGridViewTextBoxColumn.Name = "dateTimeDataGridViewTextBoxColumn";
+            this.dateTimeDataGridViewTextBoxColumn.ReadOnly = true;
+            this.dateTimeDataGridViewTextBoxColumn.Width = 125;
+            // 
+            // requestDataGridViewTextBoxColumn
+            // 
+            this.requestDataGridViewTextBoxColumn.DataPropertyName = "Request";
+            this.requestDataGridViewTextBoxColumn.HeaderText = "Request";
+            this.requestDataGridViewTextBoxColumn.Name = "requestDataGridViewTextBoxColumn";
+            this.requestDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // responseDataGridViewTextBoxColumn
+            // 
+            this.responseDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.responseDataGridViewTextBoxColumn.DataPropertyName = "Response";
+            this.responseDataGridViewTextBoxColumn.HeaderText = "Response";
+            this.responseDataGridViewTextBoxColumn.Name = "responseDataGridViewTextBoxColumn";
+            this.responseDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // apiLogEntryBindingSource
+            // 
+            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.Data.ApiLogEntry);
+            // 
             // MinerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1844,7 +1897,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).EndInit();
             this.apiMonitorPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).EndInit();
             this.panel2.ResumeLayout(false);
             this.processLogMenu.ResumeLayout(false);
             this.footerPanel.ResumeLayout(false);
@@ -1856,6 +1908,7 @@
             this.accessibleMenu.ResumeLayout(false);
             this.accessibleMenu.PerformLayout();
             this.networkDeviceContextMenu.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1919,7 +1972,6 @@
         private System.Windows.Forms.ToolStripStatusLabel deviceTotalLabel;
         private System.Windows.Forms.ToolStripSplitButton settingsButton;
         private System.Windows.Forms.ToolStripMenuItem coinsButton;
-        private System.Windows.Forms.ToolStripMenuItem strategiesButton;
         private System.Windows.Forms.Timer restartTimer;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
@@ -1971,7 +2023,6 @@
         private System.Windows.Forms.ToolStripMenuItem tilesToolStripMenuItem;
         private MultiMiner.Utility.Forms.ListViewEx deviceListView;
         private System.Windows.Forms.ToolStripMenuItem restartButton;
-        private System.Windows.Forms.ToolStripMenuItem perksButton;
         private System.Windows.Forms.ToolStripMenuItem perksToolStripMenuItem1;
         private System.Windows.Forms.ColumnHeader exchangeColumnHeader;
         private System.Windows.Forms.ColumnHeader incomeColumnHeader;
@@ -2031,6 +2082,12 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn CoinName;
         private System.Windows.Forms.DataGridViewTextBoxColumn requestDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn responseDataGridViewTextBoxColumn;
+        private System.Windows.Forms.ToolStripButton settingsPlainButton;
+        private System.Windows.Forms.ToolStripButton poolsPlainButton;
+        private System.Windows.Forms.ToolStripButton strategiesPlainButton;
+        private System.Windows.Forms.ToolStripButton perksPlainButton;
+        private System.Windows.Forms.ToolStripMenuItem strategiesButton;
+        private System.Windows.Forms.ToolStripMenuItem perksButton;
     }
 }
 

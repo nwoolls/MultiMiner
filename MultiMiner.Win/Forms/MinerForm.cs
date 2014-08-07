@@ -2884,6 +2884,26 @@ namespace MultiMiner.Win.Forms
             else if (advancedTabControl.SelectedTab == apiMonitorPage)
                 apiLogEntryBindingSource.MoveLast();
         }
+
+        private void settingsPlainButton_Click(object sender, EventArgs e)
+        {
+            ConfigureSettings();
+        }
+
+        private void poolsPlainButton_Click(object sender, EventArgs e)
+        {
+            ConfigureCoins();
+        }
+
+        private void strategiesPlainButton_Click(object sender, EventArgs e)
+        {
+            ConfigureStrategies();
+        }
+
+        private void perksPlainButton_Click(object sender, EventArgs e)
+        {
+            ConfigurePerks();
+        }
         #endregion
 
         #region Timer setup
@@ -6152,6 +6172,12 @@ namespace MultiMiner.Win.Forms
                     Size = new Size(Math.Max(Size.Width, 720), Math.Max(Size.Height, 500));
                 }
             }
+
+            settingsPlainButton.Visible = !briefMode;
+            strategiesPlainButton.Visible = !briefMode;
+            poolsPlainButton.Visible = !briefMode;
+            perksPlainButton.Visible = !briefMode;
+            settingsButton.Visible = briefMode;
 
             strategiesLabel.Visible = !briefMode;
             strategyCountdownLabel.Visible = !briefMode;

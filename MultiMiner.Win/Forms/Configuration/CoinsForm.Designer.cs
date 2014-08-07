@@ -625,7 +625,7 @@
             this.MinimizeBox = false;
             this.Name = "CoinsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Configure Coins";
+            this.Text = "Configure Pools";
             this.Load += new System.EventHandler(this.CoinsForm_Load);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
