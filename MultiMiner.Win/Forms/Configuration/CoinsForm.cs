@@ -467,10 +467,20 @@ namespace MultiMiner.Win.Forms.Configuration
             using (CoinEditForm coinEditForm = new CoinEditForm(workingCoin))
             {
                 DialogResult dialogResult = coinEditForm.ShowDialog();
+
                 if (dialogResult == System.Windows.Forms.DialogResult.OK)
                 {
-                    ObjectCopier.CopyObject(workingCoin, currentConfiguration.CryptoCoin);
-                    coinListBox.Items[coinListBox.SelectedIndex] = workingCoin.Name;
+                    if (configurations.SingleOrDefault(c => c.CryptoCoin.Symbol.Equals(workingCoin.Symbol, StringComparison.OrdinalIgnoreCase)) == null)
+                    {
+                        ObjectCopier.CopyObject(workingCoin, currentConfiguration.CryptoCoin);
+                        coinListBox.Items[coinListBox.SelectedIndex] = workingCoin.Name;
+                    }
+                    else
+                    {
+                        //don't create a dupe
+                        MessageBox.Show(String.Format("A configuration for {0} already exists.", workingCoin.Symbol), 
+                            "Duplicate Configuration", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
             }
         }
