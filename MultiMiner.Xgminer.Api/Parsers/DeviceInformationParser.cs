@@ -90,6 +90,17 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     newDevice.HardwareErrorsPercent = TryToParseDouble(keyValuePairs, "Device Hardware%", 0.00);
                     newDevice.RejectedSharesPercent = TryToParseDouble(keyValuePairs, "Device Rejected%", 0.00);
                     
+                    newDevice.LastShareDifficulty = TryToParseDouble(keyValuePairs, "Last Share Difficulty", 0.00);
+                    newDevice.DifficultyAccepted = TryToParseDouble(keyValuePairs, "Difficulty Accepted", 0.00);
+                    newDevice.DeviceElapsed = TryToParseInt(keyValuePairs, "Device Elapsed", 0);
+                    if (newDevice.WorkUtility == 0.0)
+                    {
+                        if (newDevice.DeviceElapsed > 0)
+                            newDevice.WorkUtility = newDevice.DifficultyAccepted / newDevice.DeviceElapsed * 60;
+                        else if (newDevice.LastShareDifficulty > 0)
+                            newDevice.WorkUtility = newDevice.Utility / newDevice.LastShareDifficulty;
+                    }
+
                     deviceInformation.Add(newDevice);
                 }
             }

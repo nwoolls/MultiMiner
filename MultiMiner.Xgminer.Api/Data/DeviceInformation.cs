@@ -35,5 +35,8 @@ namespace MultiMiner.Xgminer.Api.Data
         public int PoolIndex { get; set; }
         public double RejectedSharesPercent { get; set; }
         public double HardwareErrorsPercent { get; set; }
+        public double LastShareDifficulty { get; set; }
+        public double DifficultyAccepted { get; set; }
+        public int DeviceElapsed { get; set; }
     }
 }

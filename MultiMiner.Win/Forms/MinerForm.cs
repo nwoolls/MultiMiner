@@ -4859,6 +4859,27 @@ namespace MultiMiner.Win.Forms
         #endregion
 
         #region RPC API
+
+        private static double AdjustWorkUtilityForPoolMultipliers(double workUtility, CoinAlgorithm algorithm)
+        {
+            if ((algorithm == CoinAlgorithm.Scrypt) ||
+                (algorithm == CoinAlgorithm.ScryptN) ||
+                (algorithm == CoinAlgorithm.ScryptJane))
+            {
+                const int DumbScryptMultiplier = 65536;
+                return workUtility / DumbScryptMultiplier;
+            }
+
+            if ((algorithm == CoinAlgorithm.Keccak) ||
+                (algorithm == CoinAlgorithm.Groestl))
+            {
+                const int DumbSHA3Multiplier = 256;
+                return workUtility / DumbSHA3Multiplier;
+            }
+
+            return workUtility;
+        }
+        
         private void RefreshDeviceStats()
         {
             allDeviceInformation.Clear();
@@ -4908,10 +4929,14 @@ namespace MultiMiner.Win.Forms
                         minerProcess.AcceptedShares += deviceInformation.AcceptedShares;
 
                         Xgminer.Data.Device device = devices[deviceIndex];
+                        Engine.Data.Configuration.Coin coinConfiguration = CoinConfigurationForDevice(device);
+
+                        if (minerProcess.Miner.LegacyApi && (coinConfiguration != null))
+                            deviceInformation.WorkUtility = AdjustWorkUtilityForPoolMultipliers(deviceInformation.WorkUtility, coinConfiguration.CryptoCoin.Algorithm);
+
                         DeviceViewModel deviceViewModel = localViewModel.ApplyDeviceInformationResponseModel(device, deviceInformation);
                         deviceDetailsMapping[deviceViewModel] = deviceDetails;
 
-                        Engine.Data.Configuration.Coin coinConfiguration = CoinConfigurationForDevice(device);
                         if (coinConfiguration != null)
                         {
                             coinSymbol = coinConfiguration.CryptoCoin.Symbol;
