@@ -4095,7 +4095,8 @@ namespace MultiMiner.Win.Forms
         {
             try
             {
-                coinApiInformation = apiContext.GetCoinInformation(UserAgent.AgentString).ToList();
+                //remove dupes by Symbol in case the Coin API returns them - seen from user
+                coinApiInformation = apiContext.GetCoinInformation(UserAgent.AgentString).GroupBy(c => c.Symbol).Select(g => g.First()).ToList();
 
                 successfulApiContext = apiContext;
 
