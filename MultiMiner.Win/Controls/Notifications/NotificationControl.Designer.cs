@@ -28,24 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.linkLabel = new System.Windows.Forms.LinkLabel();
             this.closeButton = new System.Windows.Forms.Button();
             this.infoPicture = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.infoPicture)).BeginInit();
             this.SuspendLayout();
             // 
-            // linkLabel1
+            // linkLabel
             // 
-            this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.linkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.linkLabel1.AutoEllipsis = true;
-            this.linkLabel1.Location = new System.Drawing.Point(7, 7);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(273, 15);
-            this.linkLabel1.TabIndex = 0;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "cgminer 3.4.0 is available";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.linkLabel.AutoEllipsis = true;
+            this.linkLabel.Location = new System.Drawing.Point(7, 7);
+            this.linkLabel.Name = "linkLabel";
+            this.linkLabel.Size = new System.Drawing.Size(273, 15);
+            this.linkLabel.TabIndex = 0;
+            this.linkLabel.TabStop = true;
+            this.linkLabel.Text = "cgminer 3.4.0 is available";
+            this.linkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // closeButton
             // 
@@ -79,7 +79,7 @@
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.Controls.Add(this.infoPicture);
             this.Controls.Add(this.closeButton);
-            this.Controls.Add(this.linkLabel1);
+            this.Controls.Add(this.linkLabel);
             this.Name = "NotificationControl";
             this.Size = new System.Drawing.Size(336, 67);
             this.Load += new System.EventHandler(this.NotificationControl_Load);
@@ -90,7 +90,7 @@
 
         #endregion
 
-        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.LinkLabel linkLabel;
         private System.Windows.Forms.Button closeButton;
         private System.Windows.Forms.PictureBox infoPicture;
     }

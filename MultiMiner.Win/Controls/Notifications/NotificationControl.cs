@@ -17,7 +17,7 @@ namespace MultiMiner.Win.Controls.Notifications
         {
             InitializeComponent();
 
-            linkLabel1.Text = text;
+            linkLabel.Text = text;
             this.clickHandler = clickHandler;
             this.closeHandler = closeHandler;
             this.informationUrl = informationUrl;
@@ -42,15 +42,20 @@ namespace MultiMiner.Win.Controls.Notifications
         private void NotificationControl_Load(object sender, EventArgs e)
         {
             infoPicture.Visible = !String.IsNullOrEmpty(informationUrl);
-            PositionCloseButton(); 
+            PositionControls();
         }
 
-        private void PositionCloseButton()
+        //needs handling on Ubuntu/Linux
+        private void PositionControls()
         {
             closeButton.Size = new Size(22, 22);
-            const int offset = 2;
-            closeButton.Location = new Point(this.Width - closeButton.Width - offset, 0 + offset);
-            infoPicture.Location = new Point(closeButton.Left - infoPicture.Width - 2, closeButton.Top + 3);
+            const int Offset = 2;
+            closeButton.Location = new Point(this.Width - closeButton.Width - Offset, 0 + Offset);
+            infoPicture.Location = new Point(closeButton.Left - infoPicture.Width - Offset, closeButton.Top + 3);
+            int labelWidth = infoPicture.Left - linkLabel.Left - Offset;
+            if (!infoPicture.Visible)
+                labelWidth += infoPicture.Width + Offset;
+            linkLabel.Size = new Size(labelWidth, 20);
         }
     }
 }

@@ -5843,7 +5843,7 @@ namespace MultiMiner.Win.Forms
                     applicationConfiguration.TipsShown++;
                     break;
                 case 1:
-                    tip = "Tip: right-click the main window for common tasks";
+                    tip = "Tip: right-click the main screen for common tasks";
                     PostNotification(tip, tip, () =>
                     {
                         deviceListContextMenu.Show(deviceListView, 150, 100);
