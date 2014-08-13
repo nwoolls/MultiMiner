@@ -63,7 +63,18 @@ namespace MultiMiner.Utility.Serialization
                     backupFilePath = Path.ChangeExtension(logFilePath, i.ToString());
                     string previousFilePath = Path.ChangeExtension(logFilePath, (i - 1).ToString());
                     if (File.Exists(backupFilePath))
-                        File.Delete(backupFilePath);
+                    {
+                        try
+                        {
+                            File.Delete(backupFilePath);
+                        }
+                        catch (UnauthorizedAccessException err)
+                        {
+                            //users report occasionally receiving access denied rolling log files
+                            //rename/move the file instead
+                            File.Move(backupFilePath, Path.ChangeExtension(backupFilePath, "deleteme"));
+                        }
+                    }
                     if (File.Exists(previousFilePath))
                         File.Move(previousFilePath, backupFilePath);
                 }
