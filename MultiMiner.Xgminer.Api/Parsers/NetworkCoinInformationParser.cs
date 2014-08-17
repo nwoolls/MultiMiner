@@ -20,7 +20,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
                 
                 keyValuePairs = GetDictionaryFromTextChunk(textChunks[1]);
 
-                coinInformation.Algorithm = keyValuePairs["Hash Method"].Equals("scrypt", StringComparison.OrdinalIgnoreCase) ? Xgminer.Data.CoinAlgorithm.Scrypt : Xgminer.Data.CoinAlgorithm.SHA256;
+                coinInformation.Algorithm = keyValuePairs["Hash Method"];
                 coinInformation.CurrentBlockTime = TryToParseInt(keyValuePairs, "Current Block Time", 0);
                 coinInformation.CurrentBlockHash = keyValuePairs["Current Block Hash"];
                 coinInformation.LongPoll = keyValuePairs["LP"].Equals("true", StringComparison.OrdinalIgnoreCase);

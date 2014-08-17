@@ -1,4 +1,4 @@
-﻿namespace MultiMiner.Engine
+﻿namespace MultiMiner.Xgminer.Data
 {
     public static class AlgorithmNames
     {

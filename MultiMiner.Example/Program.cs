@@ -22,7 +22,7 @@ namespace MultiMiner.Example
             //download and install bfgminer from MultiMinerApp.com
             string userAgent = "MultiMiner/V3-Example";
             List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners(userAgent);
-            AvailableMiner bfgminer = availableMiners.Single(am => am.Name.Equals("BFGMiner", StringComparison.OrdinalIgnoreCase));
+            AvailableMiner bfgminer = availableMiners.Single(am => am.Name.Equals(MinerNames.BFGMiner, StringComparison.OrdinalIgnoreCase));
 
             Console.WriteLine("Downloading and installing {0} from {1} to the directory {2}",
                 executableName, new Uri(bfgminer.Url).Authority, executablePath);
@@ -62,7 +62,7 @@ namespace MultiMiner.Example
                     minerConfiguration.Pools.Add(pool);
 
                     //specify algorithm
-                    minerConfiguration.Algorithm = CoinAlgorithm.SHA256;
+                    //minerConfiguration.Algorithm = CoinAlgorithm.SHA256;
 
                     //disable GPU mining
                     minerConfiguration.DisableGpu = true;

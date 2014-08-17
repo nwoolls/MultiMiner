@@ -65,7 +65,7 @@ namespace MultiMiner.Win.ViewModels
                         {
                             Name = KnownCoins.BitcoinName,
                             Symbol = KnownCoins.BitcoinSymbol,
-                            Algorithm = CoinAlgorithm.SHA256
+                            Algorithm = AlgorithmNames.SHA256
                         };
 
                         Devices.Add(deviceViewModel);

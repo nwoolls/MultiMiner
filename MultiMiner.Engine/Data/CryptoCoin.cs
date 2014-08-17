@@ -9,6 +9,6 @@ namespace MultiMiner.Engine.Data
     {
         public string Name { get; set; }
         public string Symbol { get; set; }
-        public CoinAlgorithm Algorithm { get; set; }
+        public string Algorithm { get; set; }
     }
 }

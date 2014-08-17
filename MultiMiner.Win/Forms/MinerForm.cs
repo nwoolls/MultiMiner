@@ -1402,9 +1402,9 @@ namespace MultiMiner.Win.Forms
                 {
                     Engine.Data.Configuration.Coin coinConfiguration = null;
                     if (deviceConfiguration.Kind == DeviceKind.GPU)
-                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.CryptoCoin.Algorithm == CoinAlgorithm.Scrypt);
+                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.CryptoCoin.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase));
                     if (coinConfiguration == null)
-                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.CryptoCoin.Algorithm == CoinAlgorithm.SHA256);
+                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.CryptoCoin.Algorithm.Equals(AlgorithmNames.SHA256, StringComparison.OrdinalIgnoreCase));
 
                     if (coinConfiguration != null)
                         deviceConfiguration.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
@@ -1881,9 +1881,9 @@ namespace MultiMiner.Win.Forms
 
                     newConfiguration.Assign(device);
 
-                    if (device.SupportsAlgorithm(CoinAlgorithm.Scrypt) && hasLtcConfigured)
+                    if (device.SupportsAlgorithm(AlgorithmNames.Scrypt) && hasLtcConfigured)
                         newConfiguration.CoinSymbol = KnownCoins.LitecoinSymbol;
-                    else if (device.SupportsAlgorithm(CoinAlgorithm.SHA256) && hasBtcConfigured)
+                    else if (device.SupportsAlgorithm(AlgorithmNames.SHA256) && hasBtcConfigured)
                         newConfiguration.CoinSymbol = KnownCoins.BitcoinSymbol;
 
                     newConfiguration.Enabled = true;
@@ -3172,8 +3172,8 @@ namespace MultiMiner.Win.Forms
 
         private void PopulateLocalMachineHashrates(Remoting.Data.Transfer.Machine machine, bool includeNetworkDevices)
         {
-            machine.TotalScryptHashrate = GetLocalInstanceHashrate(CoinAlgorithm.Scrypt, includeNetworkDevices);
-            machine.TotalSha256Hashrate = GetLocalInstanceHashrate(CoinAlgorithm.SHA256, includeNetworkDevices);
+            machine.TotalScryptHashrate = GetLocalInstanceHashrate(AlgorithmNames.Scrypt, includeNetworkDevices);
+            machine.TotalSha256Hashrate = GetLocalInstanceHashrate(AlgorithmNames.SHA256, includeNetworkDevices);
 
             IList<CoinAlgorithm> algorithms = ((CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm))).ToList();
             foreach (CoinAlgorithm algorithm in algorithms)
@@ -4863,16 +4863,13 @@ namespace MultiMiner.Win.Forms
 
         private static double AdjustWorkUtilityForPoolMultipliers(double workUtility, CoinAlgorithm algorithm)
         {
-            if ((algorithm == CoinAlgorithm.Scrypt) ||
-                (algorithm == CoinAlgorithm.ScryptN) ||
-                (algorithm == CoinAlgorithm.ScryptJane))
+            if (algorithm.Family == CoinAlgorithm.AlgorithmFamily.Scrypt)
             {
                 const int DumbScryptMultiplier = 65536;
                 return workUtility / DumbScryptMultiplier;
             }
 
-            if ((algorithm == CoinAlgorithm.Keccak) ||
-                (algorithm == CoinAlgorithm.Groestl))
+            if (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3)
             {
                 const int DumbSHA3Multiplier = 256;
                 return workUtility / DumbSHA3Multiplier;

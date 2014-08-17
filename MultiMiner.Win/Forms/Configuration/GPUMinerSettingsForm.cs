@@ -34,7 +34,7 @@ namespace MultiMiner.Win.Forms.Configuration
             xgminerConfigurationBindingSource.DataSource = workingMinerConfiguration;
             LoadSettings();
 
-            algoCombo.Text = CoinAlgorithm.Scrypt.ToString().ToSpaceDelimitedWords();
+            algoCombo.Text = AlgorithmNames.Scrypt.ToString().ToSpaceDelimitedWords();
         }
 
         private void LoadSettings()

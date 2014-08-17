@@ -301,12 +301,12 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
 
                 if (coin.Name.Equals(KnownCoins.LitecoinName, StringComparison.OrdinalIgnoreCase))
                 {
-                    coin.Algorithm = CoinAlgorithm.Scrypt;
+                    coin.Algorithm = AlgorithmNames.Scrypt;
                     coin.Symbol = KnownCoins.LitecoinSymbol;
                 }
                 else
                 {
-                    coin.Algorithm = CoinAlgorithm.SHA256;
+                    coin.Algorithm = AlgorithmNames.SHA256;
                     coin.Symbol = KnownCoins.BitcoinSymbol;
                 }
             }

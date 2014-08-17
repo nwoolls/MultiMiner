@@ -42,7 +42,7 @@ namespace MultiMiner.Win.Forms.Configuration
             PopulateAlgorithmCombo();
             LoadSettings();
 
-            algoArgCombo.Text = CoinAlgorithm.SHA256.ToString().ToSpaceDelimitedWords();
+            algoArgCombo.Text = AlgorithmNames.SHA256.ToString().ToSpaceDelimitedWords();
         }
 
         private void PopulateAlgorithmCombo()

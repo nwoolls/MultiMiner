@@ -1,6 +1,7 @@
 ﻿using MultiMiner.CoinApi.Data;
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Data.Configuration;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;

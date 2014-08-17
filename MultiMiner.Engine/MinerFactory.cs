@@ -34,7 +34,7 @@ namespace MultiMiner.Engine
         }
 
         public readonly List<MinerDescriptor> Miners = new List<MinerDescriptor>();
-        public readonly Dictionary<CoinAlgorithm, MinerDescriptor> DefaultMiners = new Dictionary<CoinAlgorithm, MinerDescriptor>();
+        public readonly List<CoinAlgorithm> Algorithms = new List<CoinAlgorithm>();
 
         public MinerDescriptor GetMiner(DeviceKind deviceKind, CoinAlgorithm algorithm, SerializableDictionary<CoinAlgorithm, string> miners)
         {
@@ -44,7 +44,7 @@ namespace MultiMiner.Engine
             if (miners.ContainsKey(algorithm))
                 return Miners.Single(m => m.Name.Equals(miners[algorithm], StringComparison.OrdinalIgnoreCase));
             else
-                return DefaultMiners[algorithm];
+                return Miners.Single(m => m.Name.Equals(algorithm.DefaultMiner, StringComparison.OrdinalIgnoreCase));
         }
 
         public MinerDescriptor GetDefaultMiner()
@@ -62,6 +62,18 @@ namespace MultiMiner.Engine
             };
             Miners.Add(miner);
             return miner;
+        }
+
+        public CoinAlgorithm RegisterAlgorithm(string name, string fullName, CoinAlgorithm.AlgorithmFamily family)
+        {
+            CoinAlgorithm algorithm = new CoinAlgorithm()
+            {
+                FriendlyName = name,
+                FullName = fullName,
+                Family = family
+            };
+            Algorithms.Add(algorithm);
+            return algorithm;
         }
 
         public void RegisterMiners(string directory)

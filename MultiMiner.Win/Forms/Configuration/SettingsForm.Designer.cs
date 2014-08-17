@@ -1,4 +1,5 @@
-﻿namespace MultiMiner.Win.Forms.Configuration
+﻿using MultiMiner.Engine.Data;
+namespace MultiMiner.Win.Forms.Configuration
 {
     partial class SettingsForm
     {
@@ -424,8 +425,8 @@
             this.priorityCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.priorityCombo.FormattingEnabled = true;
             this.priorityCombo.Items.AddRange(new object[] {
-            "cgminer",
-            "bfgminer"});
+            MinerNames.CGMiner,
+            MinerNames.BFGMiner});
             this.priorityCombo.Location = new System.Drawing.Point(345, 48);
             this.priorityCombo.Name = "priorityCombo";
             this.priorityCombo.Size = new System.Drawing.Size(124, 23);
