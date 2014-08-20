@@ -264,6 +264,38 @@ namespace MultiMiner.Engine.Helpers
             //MAX
             donationConfiguration = CreateCoinConfiguration("MAX", "stratum+tcp://us-east1.maxcoin.miningpoolhub.com", 20461);
             configurations.Add(donationConfiguration);
+
+            //Bitmark
+            donationConfiguration = CreateCoinConfiguration("BTM", "stratum+tcp://de3.miningpool.co", 22011);
+            configurations.Add(donationConfiguration);
+
+            //Cannabiscoin
+            donationConfiguration = CreateCoinConfiguration("CANN", "stratum+tcp://de2.miningpool.co", 42000);
+            configurations.Add(donationConfiguration);
+
+            //Syscoin
+            donationConfiguration = CreateCoinConfiguration("SYS", "stratum+tcp://de2.miningpool.co", 22222);
+            configurations.Add(donationConfiguration);
+
+            //Terracoin
+            donationConfiguration = CreateCoinConfiguration("TRC", "stratum+tcp://trc.coin-pool.org", 3340);
+            configurations.Add(donationConfiguration);
+
+            //eMark
+            donationConfiguration = CreateCoinConfiguration("DEM", "stratum+tcp://dem.coin-pool.org", 3453);
+            configurations.Add(donationConfiguration);
+
+            //TEKcoin
+            donationConfiguration = CreateCoinConfiguration("TEK", "stratum+tcp://pool.dsync.net", 6666);
+            configurations.Add(donationConfiguration);
+
+            //Takcoin
+            donationConfiguration = CreateCoinConfiguration("TAK", "stratum+tcp://tak.minebig.com", 3339);
+            configurations.Add(donationConfiguration);
+
+            //YAC
+            donationConfiguration = CreateCoinConfiguration("YAC", "stratum+tcp://yac.coinmine.pl", 9088);
+            configurations.Add(donationConfiguration);
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
