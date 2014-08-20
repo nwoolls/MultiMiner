@@ -261,24 +261,8 @@ namespace MultiMiner.Engine.Helpers
             donationConfiguration = CreateCoinConfiguration("HIRO", "stratum+tcp://stratum.forkpool.com", 6347);
             configurations.Add(donationConfiguration);
 
-            //QRK
-            donationConfiguration = CreateCoinConfiguration("QRK", "stratum+tcp://qrk.cpu-pool.net", 3350);
-            configurations.Add(donationConfiguration);
-
-            //GRS
-            donationConfiguration = CreateCoinConfiguration("GRS", "stratum+tcp://grs.cpu-pool.net", 3650);
-            configurations.Add(donationConfiguration);
-
             //MAX
             donationConfiguration = CreateCoinConfiguration("MAX", "stratum+tcp://us-east1.maxcoin.miningpoolhub.com", 20461);
-            configurations.Add(donationConfiguration);
-
-            //X14
-            donationConfiguration = CreateCoinConfiguration("X14", "stratum+tcp://stratum.pool.mn", 7838);
-            configurations.Add(donationConfiguration);
-
-            //MAIA
-            donationConfiguration = CreateCoinConfiguration("MAIA", "stratum+tcp://stratum.pool.mn", 7822);
             configurations.Add(donationConfiguration);
         }
 
