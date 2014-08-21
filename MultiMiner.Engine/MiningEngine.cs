@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Linq;
 using MultiMiner.Engine.Data;
 using System.IO;
-using MultiMiner.Xgminer;
 
 namespace MultiMiner.Engine
 {
@@ -36,6 +35,35 @@ namespace MultiMiner.Engine
         }
 
         private static void RegisterAlgorithms()
+        {
+            RegisterBuiltInAgorithms();
+            RegisterCustomAlgorithms();
+        }
+
+        private static void RegisterCustomAlgorithms()
+        {
+            string dataDirectory = ApplicationPaths.AppDataPath();
+            const string DataFileName = "AlgorithmConfigurations.xml";
+            string dataFilePath = Path.Combine(dataDirectory, DataFileName);
+            List<CoinAlgorithm> existingAlgorithms = MinerFactory.Instance.Algorithms;
+
+            if (File.Exists(dataFilePath))
+            {
+                List<CoinAlgorithm> customAlgorithms = ConfigurationReaderWriter.ReadConfiguration<List<CoinAlgorithm>>(dataFilePath);
+                foreach (CoinAlgorithm customAlgorithm in customAlgorithms)
+                {
+                    CoinAlgorithm existingAlgorithm = existingAlgorithms.SingleOrDefault(ea => ea.Name.Equals(customAlgorithm.Name));
+                    if (existingAlgorithm != null)
+                        ObjectCopier.CopyObject(customAlgorithm, existingAlgorithm);
+                    else
+                        existingAlgorithms.Add(customAlgorithm);
+                }
+            }
+
+            ConfigurationReaderWriter.WriteConfiguration(MinerFactory.Instance.Algorithms, dataFilePath);
+        }
+
+        private static void RegisterBuiltInAgorithms()
         {
             MinerFactory factory = MinerFactory.Instance;
 
@@ -80,7 +108,7 @@ namespace MultiMiner.Engine
 
             algorithm = factory.RegisterAlgorithm(AlgorithmNames.X15, AlgorithmFullNames.X15, CoinAlgorithm.AlgorithmFamily.Unknown);
             algorithm.DefaultMiner = MinerNames.AZNSGMiner;
-            algorithm.MinerArguments[MinerNames.AZNSGMiner] = AlgorithmParameter.PoolAlgorithmBitBlockOld; 
+            algorithm.MinerArguments[MinerNames.AZNSGMiner] = AlgorithmParameter.PoolAlgorithmBitBlockOld;
         }
 
         private static void RegisterMiners()

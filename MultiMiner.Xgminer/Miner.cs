@@ -276,8 +276,6 @@ namespace MultiMiner.Xgminer
                 }
             }
             
-            string shortFileName = Path.GetFileNameWithoutExtension(Path.GetFileName(minerConfiguration.ExecutablePath));
-
             string minerName = Path.GetFileName(Path.GetDirectoryName(minerConfiguration.ExecutablePath));
 
             if (minerConfiguration.Algorithm.MinerArguments.ContainsKey(minerName))
