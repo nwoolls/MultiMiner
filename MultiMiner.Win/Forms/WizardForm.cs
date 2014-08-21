@@ -38,8 +38,15 @@ namespace MultiMiner.Win.Forms
             PopulateCoins();
             coinComboBox.SelectedIndex = 0;
             UpdateCheckStates();
+            SetupPoolDefaults();
         }
-        
+
+        private void SetupPoolDefaults()
+        {
+            hostEdit.Text = PoolDefaults.HostPrefix;
+            portEdit.Text = PoolDefaults.Port.ToString();
+        }
+
         private void PopulateCoins()
         {
             coinComboBox.Items.Clear();
@@ -165,6 +172,9 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
         private void wizardTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateButtons();
+
+            if (wizardTabControl.SelectedTab == configurePoolPage)
+                hostEdit.SelectionStart = hostEdit.SelectionLength;
         }
 
         private void DownloadChosenMiner()
