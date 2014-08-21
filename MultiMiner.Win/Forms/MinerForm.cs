@@ -716,7 +716,7 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private static ToolStripMenuItem FindOrCreateAlgoMenuItem(ToolStripItemCollection parent, CoinAlgorithm algorithm)
+        private static ToolStripMenuItem FindOrCreateAlgoMenuItem(ToolStripItemCollection parent, string algorithm)
         {
             ToolStripMenuItem algoItem = null;
 
@@ -1958,7 +1958,7 @@ namespace MultiMiner.Win.Forms
 
                 knownCoin.Symbol = item.Symbol;
                 knownCoin.Name = item.Name;
-                knownCoin.Algorithm = item.Algorithm.ToAlgorithm();
+                knownCoin.Algorithm = item.Algorithm;
             }
             SaveKnownCoinsToFile();
         }
@@ -3123,17 +3123,17 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private double GetLocalInstanceHashrate(CoinAlgorithm algorithm, bool includeNetworkDevices)
+        private double GetLocalInstanceHashrate(string algorithm, bool includeNetworkDevices)
         {
             return GetTotalHashrate(localViewModel, algorithm, includeNetworkDevices);
         }
 
-        private double GetVisibleInstanceHashrate(CoinAlgorithm algorithm, bool includeNetworkDevices)
+        private double GetVisibleInstanceHashrate(string algorithm, bool includeNetworkDevices)
         {
             return GetTotalHashrate(GetViewModelToView(), algorithm, includeNetworkDevices);
         }
 
-        private static double GetTotalHashrate(MinerFormViewModel viewModel, CoinAlgorithm algorithm, bool includeNetworkDevices)
+        private static double GetTotalHashrate(MinerFormViewModel viewModel, string algorithm, bool includeNetworkDevices)
         {
             double result = 0.00;
 
@@ -3142,8 +3142,7 @@ namespace MultiMiner.Win.Forms
             {
                 if ((device.Coin != null) && 
                     
-                    //lump Scrypt-alts in with Scrypt for now
-                    (device.Coin.Algorithm == algorithm) &&
+                    (device.Coin.Algorithm.Equals(algorithm, StringComparison.OrdinalIgnoreCase)) &&
 
                     //optionally filter out Network Devices
                     (includeNetworkDevices || (device.Kind != DeviceKind.NET)))
@@ -3175,10 +3174,10 @@ namespace MultiMiner.Win.Forms
             machine.TotalScryptHashrate = GetLocalInstanceHashrate(AlgorithmNames.Scrypt, includeNetworkDevices);
             machine.TotalSha256Hashrate = GetLocalInstanceHashrate(AlgorithmNames.SHA256, includeNetworkDevices);
 
-            IList<CoinAlgorithm> algorithms = ((CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm))).ToList();
+            IList<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
             foreach (CoinAlgorithm algorithm in algorithms)
             {
-                double hashrate = GetLocalInstanceHashrate(algorithm, includeNetworkDevices);
+                double hashrate = GetLocalInstanceHashrate(algorithm.Name, includeNetworkDevices);
                 if (hashrate > 0.00)
                     machine.TotalHashrates[algorithm.ToString()] = hashrate;
             }
@@ -4361,10 +4360,11 @@ namespace MultiMiner.Win.Forms
                         {
                             miningStatistics.CoinName = coinConfiguration.CryptoCoin.Name;
                             miningStatistics.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
+                            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(coinConfiguration.CryptoCoin.Algorithm);
 
                             //MobileMiner is only SHA & Scrypt for now
-                            if ((coinConfiguration.CryptoCoin.Algorithm == CoinAlgorithm.SHA256) ||
-                                (coinConfiguration.CryptoCoin.Algorithm == CoinAlgorithm.Keccak))
+                            if ((algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA2) ||
+                                (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3))
                                 miningStatistics.Algorithm = AlgorithmNames.SHA256;
                             else
                                 miningStatistics.Algorithm = AlgorithmNames.Scrypt;
@@ -4496,11 +4496,12 @@ namespace MultiMiner.Win.Forms
             CryptoCoin coin = coinConfiguration.CryptoCoin;
             miningStatistics.CoinSymbol = coin.Symbol;
 
+            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(coin.Algorithm);
+
             //MobileMiner currently only supports SHA and Scrypt
             //attempt to treat them as "Families" for now
-            if ((coin.Algorithm == CoinAlgorithm.SHA256) ||
-                (coin.Algorithm == CoinAlgorithm.Keccak) ||
-                (coin.Algorithm == CoinAlgorithm.Groestl))
+            if ((algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA2) ||
+                (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3))
                 //SHA family algorithms grouped together
                 miningStatistics.Algorithm = AlgorithmNames.SHA256;
             else
@@ -4861,8 +4862,9 @@ namespace MultiMiner.Win.Forms
 
         #region RPC API
 
-        private static double AdjustWorkUtilityForPoolMultipliers(double workUtility, CoinAlgorithm algorithm)
+        private static double AdjustWorkUtilityForPoolMultipliers(double workUtility, string algorithmName)
         {
+            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
             if (algorithm.Family == CoinAlgorithm.AlgorithmFamily.Scrypt)
             {
                 const int DumbScryptMultiplier = 65536;
@@ -7047,10 +7049,10 @@ namespace MultiMiner.Win.Forms
         private string GetHashRateStatusText(MinerFormViewModel viewModel)
         {
             string hashRateText = String.Empty;
-            IList<CoinAlgorithm> algorithms = ((CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm))).ToList();
+            IList<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
             foreach (CoinAlgorithm algorithm in algorithms)
             {
-                double hashRate = GetVisibleInstanceHashrate(algorithm, viewModel == localViewModel);
+                double hashRate = GetVisibleInstanceHashrate(algorithm.Name, viewModel == localViewModel);
                 if (hashRate > 0.00)
                 {
                     if (!String.IsNullOrEmpty(hashRateText))
@@ -7138,14 +7140,14 @@ namespace MultiMiner.Win.Forms
         //download miners required for configured coins / algorithms
         private void DownloadRequiredMiners()
         {
-            IEnumerable<CoinAlgorithm> configuredAlgorithms = engineConfiguration.CoinConfigurations
+            IEnumerable<string> configuredAlgorithms = engineConfiguration.CoinConfigurations
                 .Where(config => config.Enabled)
                 .Select(config => config.CryptoCoin.Algorithm)
                 .Distinct();
 
-            foreach (CoinAlgorithm configuredAlgorithm in configuredAlgorithms)
+            foreach (string algorithmName in configuredAlgorithms)
                 //safe to assume we are downloading GPU miners here
-                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(DeviceKind.GPU, configuredAlgorithm,
+                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(DeviceKind.GPU, algorithmName,
                     engineConfiguration.XgminerConfiguration.AlgorithmMiners));
         }
 

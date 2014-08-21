@@ -13,7 +13,7 @@ namespace MultiMiner.Xgminer.Data
         }
 
         //general info
-        public string FriendlyName { get; set; }
+        public string Name { get; set; }
         public AlgorithmFamily Family { get; set; } 
         
         //coin API info

@@ -23,8 +23,8 @@ namespace MultiMiner.Win.Forms.Configuration
             this.workingMinerConfiguration = ObjectCopier.CloneObject<Engine.Data.Configuration.Xgminer, Engine.Data.Configuration.Xgminer>(minerConfiguration);
 
             //manual clone needed
-            this.workingMinerConfiguration.AlgorithmMiners = new SerializableDictionary<CoinAlgorithm, string>();
-            foreach (CoinAlgorithm key in this.minerConfiguration.AlgorithmMiners.Keys)
+            this.workingMinerConfiguration.AlgorithmMiners = new SerializableDictionary<string, string>();
+            foreach (string key in this.minerConfiguration.AlgorithmMiners.Keys)
                 this.workingMinerConfiguration.AlgorithmMiners[key] = this.minerConfiguration.AlgorithmMiners[key];
         }
 
@@ -48,7 +48,8 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void PopulateMinerCombo()
         {
-            CoinAlgorithm algorithm = (CoinAlgorithm)Enum.Parse(typeof(CoinAlgorithm), algoCombo.Text.Replace(" ", String.Empty));
+            string algorithmName = algoCombo.Text.Replace(" ", String.Empty);
+            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
 
             minerCombo.Items.Clear();
             IEnumerable<string> miners = MinerFactory.Instance.Miners
@@ -58,10 +59,10 @@ namespace MultiMiner.Win.Forms.Configuration
             foreach (string miner in miners)
                 minerCombo.Items.Add(miner);
 
-            string currentMiner = MinerFactory.Instance.DefaultMiners[algorithm].Name;
+            string currentMiner = algorithm.DefaultMiner;
 
-            if (minerConfiguration.AlgorithmMiners.ContainsKey(algorithm))
-                currentMiner = minerConfiguration.AlgorithmMiners[algorithm];
+            if (minerConfiguration.AlgorithmMiners.ContainsKey(algorithmName))
+                currentMiner = minerConfiguration.AlgorithmMiners[algorithmName];
 
             minerCombo.SelectedItem = currentMiner;
         }
@@ -69,17 +70,10 @@ namespace MultiMiner.Win.Forms.Configuration
         private void PopulateAlgorithmCombo()
         {
             algoCombo.Items.Clear();
-            algorithms = ((CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm))).ToList().Where(algo => algo != CoinAlgorithm.SHA256).ToList();
-            foreach (CoinAlgorithm algorithm in algorithms)
+            foreach (CoinAlgorithm algorithm in MinerFactory.Instance.Algorithms)
             {
-                if (AlgorithmIsSupported(algorithm))
-                    algoCombo.Items.Add(algorithm.ToString().ToSpaceDelimitedWords());
+                algoCombo.Items.Add(algorithm.Name.ToSpaceDelimitedWords());
             }
-        }
-
-        private static bool AlgorithmIsSupported(CoinAlgorithm algorithm)
-        {
-            return MinerFactory.Instance.DefaultMiners.ContainsKey(algorithm);
         }
 
         private void algoCombo_SelectedIndexChanged(object sender, EventArgs e)
@@ -101,7 +95,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void SaveMinerChoice()
         {
-            CoinAlgorithm algorithm = (CoinAlgorithm)Enum.Parse(typeof(CoinAlgorithm), algoCombo.Text.Replace(" ", String.Empty));
+            string algorithm = algoCombo.Text.Replace(" ", String.Empty);
             workingMinerConfiguration.AlgorithmMiners[algorithm] = minerCombo.Text;
         }
     }

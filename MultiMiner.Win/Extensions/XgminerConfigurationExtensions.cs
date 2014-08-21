@@ -16,10 +16,10 @@ namespace MultiMiner.Win.Extensions
                 "StratumProxies",
                 "AlgorithmMiners");
 
-            foreach (KeyValuePair<CoinAlgorithm, string> pair in modelObject.AlgorithmFlags)
+            foreach (KeyValuePair<string, string> pair in modelObject.AlgorithmFlags)
                 transferObject.AlgorithmFlags.Add(pair.Key, pair.Value);
 
-            foreach (KeyValuePair<CoinAlgorithm, string> pair in modelObject.AlgorithmMiners)
+            foreach (KeyValuePair<string, string> pair in modelObject.AlgorithmMiners)
                 transferObject.AlgorithmMiners.Add(pair.Key, pair.Value);
 
             transferObject.StratumProxies = modelObject.StratumProxies.ToArray();
@@ -36,10 +36,10 @@ namespace MultiMiner.Win.Extensions
                 "StratumProxies",
                 "AlgorithmMiners");
 
-            foreach (CoinAlgorithm key in transferObject.AlgorithmFlags.Keys)
+            foreach (string key in transferObject.AlgorithmFlags.Keys)
                 modelObject.AlgorithmFlags.Add(key, (string)transferObject.AlgorithmFlags[key]);
 
-            foreach (CoinAlgorithm key in transferObject.AlgorithmMiners.Keys)
+            foreach (string key in transferObject.AlgorithmMiners.Keys)
                 modelObject.AlgorithmMiners.Add(key, (string)transferObject.AlgorithmMiners[key]);
 
             modelObject.StratumProxies = transferObject.StratumProxies.ToList();

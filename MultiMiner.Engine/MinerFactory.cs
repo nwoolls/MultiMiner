@@ -36,15 +36,24 @@ namespace MultiMiner.Engine
         public readonly List<MinerDescriptor> Miners = new List<MinerDescriptor>();
         public readonly List<CoinAlgorithm> Algorithms = new List<CoinAlgorithm>();
 
-        public MinerDescriptor GetMiner(DeviceKind deviceKind, CoinAlgorithm algorithm, SerializableDictionary<CoinAlgorithm, string> miners)
+        public MinerDescriptor GetMiner(DeviceKind deviceKind, CoinAlgorithm algorithm, SerializableDictionary<string, string> miners)
         {
             if (deviceKind != DeviceKind.GPU)
                 return GetDefaultMiner();
 
-            if (miners.ContainsKey(algorithm))
-                return Miners.Single(m => m.Name.Equals(miners[algorithm], StringComparison.OrdinalIgnoreCase));
+            string algorithmName = algorithm.Name;
+
+            if (miners.ContainsKey(algorithmName))
+                return Miners.Single(m => m.Name.Equals(miners[algorithmName], StringComparison.OrdinalIgnoreCase));
             else
                 return Miners.Single(m => m.Name.Equals(algorithm.DefaultMiner, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public MinerDescriptor GetMiner(DeviceKind deviceKind, string algorithmName, SerializableDictionary<string, string> miners)
+        {
+            CoinAlgorithm algorithm = GetAlgorithm(algorithmName);
+
+            return GetMiner(deviceKind, algorithm, miners);
         }
 
         public MinerDescriptor GetDefaultMiner()
@@ -64,11 +73,16 @@ namespace MultiMiner.Engine
             return miner;
         }
 
+        public CoinAlgorithm GetAlgorithm(string name)
+        {
+            return Algorithms.SingleOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
         public CoinAlgorithm RegisterAlgorithm(string name, string fullName, CoinAlgorithm.AlgorithmFamily family)
         {
             CoinAlgorithm algorithm = new CoinAlgorithm()
             {
-                FriendlyName = name,
+                Name = name,
                 FullName = fullName,
                 Family = family
             };

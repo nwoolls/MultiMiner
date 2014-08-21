@@ -280,7 +280,8 @@ namespace MultiMiner.Xgminer
 
             string minerName = Path.GetFileName(Path.GetDirectoryName(minerConfiguration.ExecutablePath));
 
-            arguments = String.Format("{0} {1}", minerConfiguration.Algorithm.MinerArguments[minerName], arguments.TrimStart());
+            if (minerConfiguration.Algorithm.MinerArguments.ContainsKey(minerName))
+                arguments = String.Format("{0} {1}", minerConfiguration.Algorithm.MinerArguments[minerName], arguments.TrimStart());
 
             if (minerConfiguration.ApiListen)
             {

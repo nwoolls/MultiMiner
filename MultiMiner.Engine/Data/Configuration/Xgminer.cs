@@ -50,13 +50,23 @@ namespace MultiMiner.Engine.Data.Configuration
 
         public void LoadMinerConfiguration()
         {
-            Xgminer minerConfiguration = ConfigurationReaderWriter.ReadConfiguration<Xgminer>(XgminerConfigurationFileName());
+            string fileName = XgminerConfigurationFileName();
+            UpgradeMinerConfigurationFile(fileName);
+            Xgminer minerConfiguration = ConfigurationReaderWriter.ReadConfiguration<Xgminer>(fileName);
             ObjectCopier.CopyObject(minerConfiguration, this);
 
             UpgradeConfiguration();
 
             if (StratumProxies.Count == 0)
                 AddDefaultProxy();
+        }
+
+        private static void UpgradeMinerConfigurationFile(string fileName)
+        {
+            //we no longer serialize CoinAlgorithm - it is now a class, not an enum
+            string configurationText = File.ReadAllText(fileName);
+            configurationText = configurationText.Replace("CoinAlgorithm>", "string>");
+            File.WriteAllText(fileName, configurationText);
         }
 
         private void AddDefaultProxy()
