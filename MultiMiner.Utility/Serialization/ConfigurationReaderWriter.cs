@@ -36,7 +36,8 @@ namespace MultiMiner.Utility.Serialization
                     }
 
                     //backup settings
-                    BackupConfiguration(fileName);
+                    if (File.Exists(fileName))
+                        BackupConfiguration(fileName);
 
                     return result;
                 }
@@ -66,6 +67,12 @@ namespace MultiMiner.Utility.Serialization
                     Path.GetFileName(fileName)), "Invalid Configuration", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 File.Delete(fileName);
                 File.Copy(backupFileName, fileName);
+
+                //delete the backup file
+                //reasoning: if the backup file is itself corrupt (0 bytes) it will keep being restored on
+                //startup, showing the Warning dialog, unless the user makes some setting changes
+                File.Delete(backupFileName);
+
                 result = ConfigurationReaderWriter.ReadConfiguration<T>(fileName, rootElement);
             }
             else
@@ -73,6 +80,11 @@ namespace MultiMiner.Utility.Serialization
                 //load defaults
                 MessageBox.Show(String.Format("The file {0} was 0 bytes (likely due to a crash on startup).\n\nDefault settings for this file will be loaded.",
                     Path.GetFileName(fileName)), "Invalid Configuration", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                //delete the corrupt file
+                //reasoning: if the user does not make some setting changes, the error will persist on startup
+                File.Delete(fileName);
+
                 result = new T();
             }
 

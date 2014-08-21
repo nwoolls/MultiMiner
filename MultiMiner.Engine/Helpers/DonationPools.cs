@@ -261,24 +261,40 @@ namespace MultiMiner.Engine.Helpers
             donationConfiguration = CreateCoinConfiguration("HIRO", "stratum+tcp://stratum.forkpool.com", 6347);
             configurations.Add(donationConfiguration);
 
-            //QRK
-            donationConfiguration = CreateCoinConfiguration("QRK", "stratum+tcp://qrk.cpu-pool.net", 3350);
-            configurations.Add(donationConfiguration);
-
-            //GRS
-            donationConfiguration = CreateCoinConfiguration("GRS", "stratum+tcp://grs.cpu-pool.net", 3650);
-            configurations.Add(donationConfiguration);
-
             //MAX
             donationConfiguration = CreateCoinConfiguration("MAX", "stratum+tcp://us-east1.maxcoin.miningpoolhub.com", 20461);
             configurations.Add(donationConfiguration);
 
-            //X14
-            donationConfiguration = CreateCoinConfiguration("X14", "stratum+tcp://stratum.pool.mn", 7838);
+            //Bitmark
+            donationConfiguration = CreateCoinConfiguration("BTM", "stratum+tcp://de3.miningpool.co", 22011);
             configurations.Add(donationConfiguration);
 
-            //MAIA
-            donationConfiguration = CreateCoinConfiguration("MAIA", "stratum+tcp://stratum.pool.mn", 7822);
+            //Cannabiscoin
+            donationConfiguration = CreateCoinConfiguration("CANN", "stratum+tcp://de2.miningpool.co", 42000);
+            configurations.Add(donationConfiguration);
+
+            //Syscoin
+            donationConfiguration = CreateCoinConfiguration("SYS", "stratum+tcp://de2.miningpool.co", 22222);
+            configurations.Add(donationConfiguration);
+
+            //Terracoin
+            donationConfiguration = CreateCoinConfiguration("TRC", "stratum+tcp://trc.coin-pool.org", 3340);
+            configurations.Add(donationConfiguration);
+
+            //eMark
+            donationConfiguration = CreateCoinConfiguration("DEM", "stratum+tcp://dem.coin-pool.org", 3453);
+            configurations.Add(donationConfiguration);
+
+            //TEKcoin
+            donationConfiguration = CreateCoinConfiguration("TEK", "stratum+tcp://pool.dsync.net", 6666);
+            configurations.Add(donationConfiguration);
+
+            //Takcoin
+            donationConfiguration = CreateCoinConfiguration("TAK", "stratum+tcp://tak.minebig.com", 3339);
+            configurations.Add(donationConfiguration);
+
+            //YAC
+            donationConfiguration = CreateCoinConfiguration("YAC", "stratum+tcp://yac.coinmine.pl", 9088);
             configurations.Add(donationConfiguration);
         }
 

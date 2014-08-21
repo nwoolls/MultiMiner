@@ -69,7 +69,21 @@ namespace MultiMiner.Utility.OS
         {
             string startUpFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
 
-            DirectoryInfo di = new DirectoryInfo(startUpFolderPath);
+            DirectoryInfo di = null;
+
+            try
+            {
+                di = new DirectoryInfo(startUpFolderPath);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(String.Format("An error occurred enumerating startup folder {0}{1}{2}", startUpFolderPath, Environment.NewLine, ex.Message),
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (di == null)
+                return;
+
             FileInfo[] files = di.GetFiles("*.lnk");
 
             foreach (FileInfo fi in files)
