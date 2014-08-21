@@ -4339,7 +4339,8 @@ namespace MultiMiner.Win.Forms
 
                         CoinName = KnownCoins.BitcoinName,
                         CoinSymbol = KnownCoins.BitcoinSymbol,
-                        Algorithm = AlgorithmFullNames.SHA256
+                        Algorithm = AlgorithmFullNames.SHA256,
+                        Appliance = true
                     };
 
                     miningStatistics.PopulateFrom(deviceInformation);
