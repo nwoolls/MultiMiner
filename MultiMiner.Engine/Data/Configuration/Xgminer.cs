@@ -64,9 +64,12 @@ namespace MultiMiner.Engine.Data.Configuration
         private static void UpgradeMinerConfigurationFile(string fileName)
         {
             //we no longer serialize CoinAlgorithm - it is now a class, not an enum
-            string configurationText = File.ReadAllText(fileName);
-            configurationText = configurationText.Replace("CoinAlgorithm>", "string>");
-            File.WriteAllText(fileName, configurationText);
+            if (File.Exists(fileName))
+            {
+                string configurationText = File.ReadAllText(fileName);
+                configurationText = configurationText.Replace("CoinAlgorithm>", "string>");
+                File.WriteAllText(fileName, configurationText);
+            }
         }
 
         private void AddDefaultProxy()
