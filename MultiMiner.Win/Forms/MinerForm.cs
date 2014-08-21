@@ -6088,7 +6088,7 @@ namespace MultiMiner.Win.Forms
             }
 
             if (showWarning)
-                MessageBox.Show("No copy of bfgminer was detected. Please go to https://github.com/nwoolls/multiminer for instructions on installing bfgminer.",
+                MessageBox.Show("No copy of " + MinerNames.BFGMiner + " was detected. Please go to https://github.com/nwoolls/multiminer for instructions on installing " + MinerNames.BFGMiner + ".",
                         "Miner Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
