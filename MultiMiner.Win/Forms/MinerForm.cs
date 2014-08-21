@@ -4702,8 +4702,8 @@ namespace MultiMiner.Win.Forms
             List<string> machineNames = new List<string>();
             machineNames.Add(Environment.MachineName);
 
-
-            foreach (DeviceViewModel deviceViewModel in localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET))
+            IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
+            foreach (DeviceViewModel deviceViewModel in networkDevices)
             {
                 string machineName = GetFriendlyDeviceName(deviceViewModel.Path, deviceViewModel.Path);
                 machineNames.Add(machineName);
@@ -4786,34 +4786,84 @@ namespace MultiMiner.Win.Forms
 
                 processedCommandIds.Add(command.Id);
 
-                if (command.CommandText.Equals("START", StringComparison.OrdinalIgnoreCase))
-                {
-                    SaveChangesLocally(); //necessary to ensure device configurations exist for devices
-                    StartMiningLocally();
-                }
-                else if (command.CommandText.Equals("STOP", StringComparison.OrdinalIgnoreCase))
-                    StopMiningLocally();
-                else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
-                {
-                    StopMiningLocally();
-                    SaveChangesLocally(); //necessary to ensure device configurations exist for devices
-                    StartMiningLocally();
-                }
-                else if (command.CommandText.StartsWith("SWITCH", StringComparison.OrdinalIgnoreCase))
-                {
-                    string[] parts = command.CommandText.Split('|');
-                    string verb = parts[0];
-                    string coinName = parts[1];
-                    Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.CryptoCoin.Name.Equals(coinName));
-                    if (coinConfiguration != null)
-                        SetAllDevicesToCoinLocally(coinConfiguration.CryptoCoin.Symbol, true);
-                }
-
                 if (deleteRemoteCommandDelegate == null)
                     deleteRemoteCommandDelegate = DeleteRemoteCommand;
 
-                deleteRemoteCommandDelegate.BeginInvoke(command, deleteRemoteCommandDelegate.EndInvoke, null);
+                if (command.Machine.Name.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (command.CommandText.Equals("START", StringComparison.OrdinalIgnoreCase))
+                    {
+                        SaveChangesLocally(); //necessary to ensure device configurations exist for devices
+                        StartMiningLocally();
+                    }
+                    else if (command.CommandText.Equals("STOP", StringComparison.OrdinalIgnoreCase))
+                        StopMiningLocally();
+                    else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
+                    {
+                        StopMiningLocally();
+                        SaveChangesLocally(); //necessary to ensure device configurations exist for devices
+                        StartMiningLocally();
+                    }
+                    else if (command.CommandText.StartsWith("SWITCH", StringComparison.OrdinalIgnoreCase))
+                    {
+                        string[] parts = command.CommandText.Split('|');
+                        string coinName = parts[1];
+                        Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.CryptoCoin.Name.Equals(coinName));
+                        if (coinConfiguration != null)
+                            SetAllDevicesToCoinLocally(coinConfiguration.CryptoCoin.Symbol, true);
+                    }
+
+                    deleteRemoteCommandDelegate.BeginInvoke(command, deleteRemoteCommandDelegate.EndInvoke, null);
+                }
+                else
+                {
+                    string remoteMachineName = command.Machine.Name;
+                    DeviceViewModel networkDevice = GetNetworkDeviceByFriendlyName(remoteMachineName);
+                    if (networkDevice != null)
+                    {
+                        Uri uri = new Uri("http://" + networkDevice.Path);
+                        Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
+
+                        //setup logging
+                        apiContext.LogEvent -= LogApiEvent;
+                        apiContext.LogEvent += LogApiEvent;
+
+                        if (command.CommandText.StartsWith("SWITCH", StringComparison.OrdinalIgnoreCase))
+                        {
+                            string[] parts = command.CommandText.Split('|');
+                            string poolName = parts[1];
+
+                            List<PoolInformation> pools = networkDevicePools[networkDevice.Path];
+                            int poolIndex = pools.FindIndex(pi => pi.Url.DomainFromHost().Equals(poolName, StringComparison.OrdinalIgnoreCase));
+                            
+                            apiContext.SwitchPool(poolIndex);
+                        }
+                        else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
+                        {
+                            apiContext.RestartMining();
+                        }
+
+                        deleteRemoteCommandDelegate.BeginInvoke(command, deleteRemoteCommandDelegate.EndInvoke, null);
+                    }
+                }
             }
+        }
+
+        private DeviceViewModel GetNetworkDeviceByFriendlyName(string friendlyDeviceName)
+        {
+            DeviceViewModel result = null;
+
+            IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
+            foreach (DeviceViewModel item in networkDevices)
+            {
+                if (GetFriendlyDeviceName(item.Path, item.Path).Equals(friendlyDeviceName, StringComparison.OrdinalIgnoreCase))
+                {
+                    result = item;
+                    break;
+                }
+            }
+
+            return result;
         }
 
         private Action<MobileMiner.Data.RemoteCommand> deleteRemoteCommandDelegate;
@@ -4824,7 +4874,7 @@ namespace MultiMiner.Win.Forms
             {
                 MobileMiner.ApiContext.DeleteCommand(GetMobileMinerUrl(), mobileMinerApiKey,
                                     applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                                    Environment.MachineName, command.Id);
+                                    command.Machine.Name, command.Id);
             }
             catch (Exception ex)
             {
