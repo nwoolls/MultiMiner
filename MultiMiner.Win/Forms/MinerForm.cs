@@ -4339,7 +4339,7 @@ namespace MultiMiner.Win.Forms
 
                         CoinName = KnownCoins.BitcoinName,
                         CoinSymbol = KnownCoins.BitcoinSymbol,
-                        Algorithm = AlgorithmNames.SHA256
+                        Algorithm = AlgorithmFullNames.SHA256
                     };
 
                     miningStatistics.PopulateFrom(deviceInformation);
@@ -4365,9 +4365,9 @@ namespace MultiMiner.Win.Forms
                             //MobileMiner is only SHA & Scrypt for now
                             if ((algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA2) ||
                                 (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3))
-                                miningStatistics.Algorithm = AlgorithmNames.SHA256;
+                                miningStatistics.Algorithm = AlgorithmFullNames.SHA256;
                             else
-                                miningStatistics.Algorithm = AlgorithmNames.Scrypt;
+                                miningStatistics.Algorithm = AlgorithmFullNames.Scrypt;
                         }
                     }
 
@@ -4503,10 +4503,10 @@ namespace MultiMiner.Win.Forms
             if ((algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA2) ||
                 (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3))
                 //SHA family algorithms grouped together
-                miningStatistics.Algorithm = AlgorithmNames.SHA256;
+                miningStatistics.Algorithm = AlgorithmFullNames.SHA256;
             else
                 //assume Scrypt for rest until MobileMiner supports more
-                miningStatistics.Algorithm = AlgorithmNames.Scrypt;
+                miningStatistics.Algorithm = AlgorithmFullNames.Scrypt;
 
             miningStatistics.PopulateFrom(deviceInformation);
         }
@@ -7057,7 +7057,7 @@ namespace MultiMiner.Win.Forms
                 {
                     if (!String.IsNullOrEmpty(hashRateText))
                         hashRateText = hashRateText + "   ";
-                    hashRateText = String.Format("{0}{1}: {2}", hashRateText, algorithm, hashRate.ToHashrateString());
+                    hashRateText = String.Format("{0}{1}: {2}", hashRateText, algorithm.Name, hashRate.ToHashrateString());
                 }
             }
             return hashRateText;
