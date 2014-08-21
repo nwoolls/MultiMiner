@@ -77,20 +77,26 @@ namespace MultiMiner.MobileMiner
             }
         }
 
-        public static List<Data.RemoteCommand> GetCommands(string url, string apiKey, string emailAddress, string applicationKey, string machineName)
+        public static List<Data.RemoteCommand> GetCommands(string url, string apiKey, string emailAddress, string applicationKey, List<string> machineNames)
         {
             if (!url.EndsWith("/"))
                 url = url + "/";
-            string fullUrl = String.Format("{0}RemoteCommands?emailAddress={1}&applicationKey={2}&machineName={3}&apiKey={4}", 
-                url, emailAddress, applicationKey, machineName, apiKey);
+            
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            string jsonData = serializer.Serialize(machineNames);
+
+            string fullUrl = String.Format("{0}RemoteCommands?emailAddress={1}&applicationKey={2}&apiKey={4}",
+                url, emailAddress, applicationKey, jsonData, apiKey);
+
             using (WebClient client = new ApiWebClient())
             {
+                client.Headers[HttpRequestHeader.ContentType] = "application/json";
+
                 string response = ExecuteWebAction(() =>
                 {
-                    return client.DownloadString(fullUrl);
+                    return client.UploadString(fullUrl, jsonData);
                 });
 
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
                 return serializer.Deserialize<List<Data.RemoteCommand>>(response);
             }
         }

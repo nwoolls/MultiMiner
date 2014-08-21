@@ -4699,11 +4699,21 @@ namespace MultiMiner.Win.Forms
         {
             List<MobileMiner.Data.RemoteCommand> commands = new List<MobileMiner.Data.RemoteCommand>();
 
+            List<string> machineNames = new List<string>();
+            machineNames.Add(Environment.MachineName);
+
+
+            foreach (DeviceViewModel deviceViewModel in localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET))
+            {
+                string machineName = GetFriendlyDeviceName(deviceViewModel.Path, deviceViewModel.Path);
+                machineNames.Add(machineName);
+            }
+
             try
             {
                 commands = MobileMiner.ApiContext.GetCommands(GetMobileMinerUrl(), mobileMinerApiKey,
                     applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                    Environment.MachineName);
+                    machineNames);
                 mobileMinerSuccess = true;
             }
             catch (Exception ex)
