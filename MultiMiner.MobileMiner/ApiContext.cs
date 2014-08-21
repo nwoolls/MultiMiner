@@ -113,17 +113,17 @@ namespace MultiMiner.MobileMiner
             }
         }
 
-        public static void SubmitMachinePools(string url, string apiKey, string emailAddress, string applicationKey, 
-            string machineName, List<string> pools)
+        public static void SubmitMachinePools(string url, string apiKey, string emailAddress, string applicationKey,
+            Dictionary<string, List<string>> machinePools)
         {
             if (!url.EndsWith("/"))
                 url = url + "/";
-            string fullUrl = String.Format("{0}PoolsInput?emailAddress={1}&applicationKey={2}&apiKey={3}&machineName={4}",
-                url, emailAddress, applicationKey, apiKey, machineName);
+            string fullUrl = String.Format("{0}PoolsInput?emailAddress={1}&applicationKey={2}&apiKey={3}",
+                url, emailAddress, applicationKey, apiKey);
             using (WebClient client = new ApiWebClient())
             {
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
-                string jsonData = serializer.Serialize(pools);
+                string jsonData = serializer.Serialize(machinePools);
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
 
                 ExecuteWebAction(() =>

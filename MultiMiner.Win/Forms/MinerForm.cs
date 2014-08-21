@@ -3024,6 +3024,9 @@ namespace MultiMiner.Win.Forms
             //submit queued notifications to MobileMiner
             SubmitMobileMinerNotifications();
 
+            //submit pools to MobileMiner before clearing cache
+            SubmitMobileMinerPools();
+
             //clear cached pool information for Network Devices
             //(so we pick up pool changes)
             networkDevicePools.Clear();
@@ -4631,25 +4634,35 @@ namespace MultiMiner.Win.Forms
                 string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
                 return;
 
+            Dictionary<string, List<string>> machinePools = new Dictionary<string, List<string>>();
             List<string> pools = new List<string>();
             foreach (Coin coin in engineConfiguration.CoinConfigurations.Where(cc => cc.Enabled))
                 pools.Add(coin.CryptoCoin.Name);
+            machinePools[Environment.MachineName] = pools;
+
+            foreach (KeyValuePair<string, List<PoolInformation>> networkDevicePool in networkDevicePools)
+            {
+                //ipAddress:port
+                string machinePath = networkDevicePool.Key;
+                string machineName = GetFriendlyDeviceName(machinePath, machinePath);
+                machinePools[machineName] = networkDevicePool.Value.Select(pi => pi.Url.DomainFromHost()).ToList();
+            }
 
             if (submitPoolsDelegate == null)
                 submitPoolsDelegate = SubmitPools;
 
-            submitPoolsDelegate.BeginInvoke(pools, submitPoolsDelegate.EndInvoke, null);
+            submitPoolsDelegate.BeginInvoke(machinePools, submitPoolsDelegate.EndInvoke, null);
         }
 
-        private Action<List<string>> submitPoolsDelegate;
+        private Action<Dictionary<string, List<string>>> submitPoolsDelegate;
 
-        private void SubmitPools(List<string> pools)
+        private void SubmitPools(Dictionary<string, List<string>> machinePools)
         {
             try
             {
                 MobileMiner.ApiContext.SubmitMachinePools(GetMobileMinerUrl(), mobileMinerApiKey,
                         applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                        Environment.MachineName, pools);
+                        machinePools);
             }
             catch (Exception ex)
             {
