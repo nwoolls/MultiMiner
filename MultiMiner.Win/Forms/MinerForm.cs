@@ -439,6 +439,10 @@ namespace MultiMiner.Win.Forms
                         (deviceViewModel.Kind == DeviceKind.NET))
                         continue;
 
+                    //app is closing
+                    if (tearingDown)
+                        break;
+
                     ListViewItem listViewItem = FindOrAddListViewItemForViewModel(deviceViewModel);
 
                     if (!String.IsNullOrEmpty(deviceViewModel.FriendlyName))
@@ -5878,8 +5882,10 @@ namespace MultiMiner.Win.Forms
             applicationSetup = true;
         }
 
+        private bool tearingDown = false;
         private void TearDownApplication()
         {
+            tearingDown = true;
             SaveSettings();
             StopMiningLocally();
             DisableRemoting();
