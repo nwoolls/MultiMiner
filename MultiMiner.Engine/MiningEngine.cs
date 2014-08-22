@@ -42,9 +42,7 @@ namespace MultiMiner.Engine
 
         private static void RegisterCustomAlgorithms()
         {
-            string dataDirectory = ApplicationPaths.AppDataPath();
-            const string DataFileName = "AlgorithmConfigurations.xml";
-            string dataFilePath = Path.Combine(dataDirectory, DataFileName);
+            string dataFilePath = AlgorithmConfigurationsFileName();
             List<CoinAlgorithm> existingAlgorithms = MinerFactory.Instance.Algorithms;
 
             if (File.Exists(dataFilePath))
@@ -60,7 +58,17 @@ namespace MultiMiner.Engine
                 }
             }
 
-            ConfigurationReaderWriter.WriteConfiguration(MinerFactory.Instance.Algorithms, dataFilePath);
+            SaveAlgorithmConfigurations();
+        }
+
+        public static void SaveAlgorithmConfigurations()
+        {
+            ConfigurationReaderWriter.WriteConfiguration(MinerFactory.Instance.Algorithms, AlgorithmConfigurationsFileName());
+        }
+
+        private static string AlgorithmConfigurationsFileName()
+        {
+            return Path.Combine(ApplicationPaths.AppDataPath(), "AlgorithmConfigurations.xml");
         }
 
         private static void RegisterBuiltInAgorithms()
