@@ -70,7 +70,11 @@ namespace MultiMiner.Win.Forms.Configuration
         private void PopulateAlgorithmCombo()
         {
             algoCombo.Items.Clear();
-            foreach (CoinAlgorithm algorithm in MinerFactory.Instance.Algorithms)
+
+            //don't list SHA256 - we use BFGMiner for ASICs
+            IEnumerable<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms.Where(a => a.Family != CoinAlgorithm.AlgorithmFamily.SHA2);
+
+            foreach (CoinAlgorithm algorithm in algorithms)
             {
                 algoCombo.Items.Add(algorithm.Name.ToSpaceDelimitedWords());
             }
@@ -90,13 +94,33 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void minerCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
+            UpdateKernelArguments();
             SaveMinerChoice();
+        }
+
+        private void UpdateKernelArguments()
+        {
+            string algorithmName = algoCombo.Text.Replace(" ", String.Empty);
+            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
+            string minerName = minerCombo.Text;
+            if (algorithm.MinerArguments.ContainsKey(minerName))
+                kernelArgsEdit.Text = algorithm.MinerArguments[minerName];
+            else
+                kernelArgsEdit.Text = String.Empty;
         }
 
         private void SaveMinerChoice()
         {
             string algorithm = algoCombo.Text.Replace(" ", String.Empty);
             workingMinerConfiguration.AlgorithmMiners[algorithm] = minerCombo.Text;
+        }
+
+        private void kernelArgsEdit_Validated(object sender, EventArgs e)
+        {
+            string algorithmName = algoCombo.Text.Replace(" ", String.Empty);
+            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
+            string minerName = minerCombo.Text;
+            algorithm.MinerArguments[minerName] = kernelArgsEdit.Text;
         }
     }
 }

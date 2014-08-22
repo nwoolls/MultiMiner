@@ -1366,6 +1366,7 @@ namespace MultiMiner.Win.Forms
                 engineConfiguration.SaveCoinConfigurations(newConfigPath);
                 engineConfiguration.SaveStrategyConfiguration(newConfigPath);
                 engineConfiguration.SaveMinerConfiguration();
+                MiningEngine.SaveAlgorithmConfigurations();
                 SaveKnownCoinsToFile();
 
                 //don't refresh coin stats excessively
