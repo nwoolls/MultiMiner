@@ -1712,28 +1712,31 @@ namespace MultiMiner.Win.Forms
 
         private void FindNetworkDevices()
         {
-            string localIpRange = Utility.Net.LocalNetwork.GetLocalIPAddressRange();
-            if (String.IsNullOrEmpty(localIpRange))
+            List<string> localIpRanges = Utility.Net.LocalNetwork.GetLocalIPAddressRanges();
+            if (localIpRanges.Count == 0)
                 return; //no network connection
 
             const int startingPort = 4028;
             const int endingPort = 4030;
 
-            List<IPEndPoint> miners = MinerFinder.Find(localIpRange, startingPort, endingPort);
+            foreach (string localIpRange in localIpRanges)
+            {
+                List<IPEndPoint> miners = MinerFinder.Find(localIpRange, startingPort, endingPort);
 
-            //remove own miners
-            miners.RemoveAll(m => m.Address.ToString().Equals(Utility.Net.LocalNetwork.GetLocalIPAddress()));
+                //remove own miners
+                miners.RemoveAll(m => m.Address.ToString().Equals(Utility.Net.LocalNetwork.GetLocalIPAddress()));
 
-            List<NetworkDevices.NetworkDevice> newDevices = miners.ToNetworkDevices();
+                List<NetworkDevices.NetworkDevice> newDevices = miners.ToNetworkDevices();
 
-            //merge in miners, don't remove miners here
-            //let CheckNetworkDevices() remove miners since it does not depend on port scanning
-            //some users are manually entering devices in the XML
-            List<NetworkDevices.NetworkDevice> existingDevices = networkDevicesConfiguration.Devices;
-            newDevices = newDevices
-                .Where(d1 => !existingDevices.Any(d2 => d2.IPAddress.Equals(d1.IPAddress) && (d2.Port == d1.Port)))
-                .ToList();
-            networkDevicesConfiguration.Devices.AddRange(newDevices);
+                //merge in miners, don't remove miners here
+                //let CheckNetworkDevices() remove miners since it does not depend on port scanning
+                //some users are manually entering devices in the XML
+                List<NetworkDevices.NetworkDevice> existingDevices = networkDevicesConfiguration.Devices;
+                newDevices = newDevices
+                    .Where(d1 => !existingDevices.Any(d2 => d2.IPAddress.Equals(d1.IPAddress) && (d2.Port == d1.Port)))
+                    .ToList();
+                networkDevicesConfiguration.Devices.AddRange(newDevices);                
+            }
 
             networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
