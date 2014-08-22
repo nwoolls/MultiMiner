@@ -14,7 +14,8 @@ namespace MultiMiner.Xgminer.Data
 
         //general info
         public string Name { get; set; }
-        public AlgorithmFamily Family { get; set; } 
+        public AlgorithmFamily Family { get; set; }
+        public bool BuiltIn { get; set; }
         
         //coin API info
         public string FullName { get; set; }

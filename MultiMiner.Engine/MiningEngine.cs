@@ -37,7 +37,17 @@ namespace MultiMiner.Engine
         private static void RegisterAlgorithms()
         {
             RegisterBuiltInAgorithms();
+
+            List<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
+            int builtInCount = algorithms.Count;
+
             RegisterCustomAlgorithms();
+
+            //flag built in aglos
+            for (int i = 0; i < algorithms.Count; i++)
+                algorithms[i].BuiltIn = i < builtInCount;
+
+            SaveAlgorithmConfigurations();
         }
 
         private static void RegisterCustomAlgorithms()
@@ -57,8 +67,6 @@ namespace MultiMiner.Engine
                         existingAlgorithms.Add(customAlgorithm);
                 }
             }
-
-            SaveAlgorithmConfigurations();
         }
 
         public static void SaveAlgorithmConfigurations()
