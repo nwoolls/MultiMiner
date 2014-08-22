@@ -29,7 +29,7 @@ namespace MultiMiner.Win.Forms
 
         private void mobileMinerInfoLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://mobileminerapp.com/");
+            Process.Start("http://web.mobileminerapp.com/");
         }
 
         private void WizardForm_Load(object sender, EventArgs e)
@@ -379,6 +379,11 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
             this.incomeCheckBox.Enabled = perksCheckBox.Checked;
             this.remotingCheckBox.Enabled = perksCheckBox.Checked;
             this.remotingPasswordEdit.Enabled = perksCheckBox.Checked;
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("http://mobileminerapp.com/");
         }
     }
 }

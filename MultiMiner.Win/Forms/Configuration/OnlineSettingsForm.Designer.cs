@@ -34,7 +34,6 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.checkBox5 = new System.Windows.Forms.CheckBox();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.httpsMobileMinerCheck = new System.Windows.Forms.CheckBox();
             this.pushNotificationsCheck = new System.Windows.Forms.CheckBox();
@@ -44,10 +43,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.intervalCombo = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -94,10 +94,6 @@
             this.checkBox5.Text = "Display API error notifications";
             this.checkBox5.UseVisualStyleBackColor = true;
             // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
-            // 
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -116,7 +112,7 @@
             // 
             this.httpsMobileMinerCheck.AutoSize = true;
             this.httpsMobileMinerCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerUsesHttps", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.httpsMobileMinerCheck.Location = new System.Drawing.Point(193, 22);
+            this.httpsMobileMinerCheck.Location = new System.Drawing.Point(239, 22);
             this.httpsMobileMinerCheck.Name = "httpsMobileMinerCheck";
             this.httpsMobileMinerCheck.Size = new System.Drawing.Size(84, 19);
             this.httpsMobileMinerCheck.TabIndex = 2;
@@ -140,9 +136,9 @@
             this.remoteCommandsCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerRemoteCommands", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.remoteCommandsCheck.Location = new System.Drawing.Point(10, 22);
             this.remoteCommandsCheck.Name = "remoteCommandsCheck";
-            this.remoteCommandsCheck.Size = new System.Drawing.Size(143, 19);
+            this.remoteCommandsCheck.Size = new System.Drawing.Size(176, 19);
             this.remoteCommandsCheck.TabIndex = 0;
-            this.remoteCommandsCheck.Text = "Enable remote control";
+            this.remoteCommandsCheck.Text = "Enable remote management";
             this.remoteCommandsCheck.UseVisualStyleBackColor = true;
             // 
             // groupBox2
@@ -214,6 +210,10 @@
             this.label5.TabIndex = 27;
             this.label5.Text = "Check every:";
             // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
+            // 
             // OnlineSettingsForm
             // 
             this.AcceptButton = this.saveButton;
@@ -235,11 +235,11 @@
             this.Text = "Configure Service Settings";
             this.Load += new System.EventHandler(this.OnlineSettingsForm_Load);
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

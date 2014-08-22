@@ -53,6 +53,8 @@
             this.passwordEdit = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.configureMobileMinerPage = new System.Windows.Forms.TabPage();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.mobileMinerInfoLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.remoteCommandsCheck = new System.Windows.Forms.CheckBox();
@@ -66,12 +68,12 @@
             this.label3 = new System.Windows.Forms.Label();
             this.remotingPasswordEdit = new System.Windows.Forms.TextBox();
             this.remotingCheckBox = new System.Windows.Forms.CheckBox();
-            this.smileyPicture = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.incomeCheckBox = new System.Windows.Forms.CheckBox();
             this.coinbaseCheckBox = new System.Windows.Forms.CheckBox();
             this.perksCheckBox = new System.Windows.Forms.CheckBox();
+            this.smileyPicture = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.whatNextPage = new System.Windows.Forms.TabPage();
             this.label13 = new System.Windows.Forms.Label();
             this.buttonPanel = new System.Windows.Forms.Panel();
@@ -83,6 +85,7 @@
             this.configurePoolPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.configureMobileMinerPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.configurePerksPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).BeginInit();
@@ -345,6 +348,8 @@
             // 
             // configureMobileMinerPage
             // 
+            this.configureMobileMinerPage.Controls.Add(this.linkLabel1);
+            this.configureMobileMinerPage.Controls.Add(this.pictureBox4);
             this.configureMobileMinerPage.Controls.Add(this.mobileMinerInfoLink);
             this.configureMobileMinerPage.Controls.Add(this.pictureBox1);
             this.configureMobileMinerPage.Controls.Add(this.remoteCommandsCheck);
@@ -362,21 +367,41 @@
             this.configureMobileMinerPage.Text = "Configure MobileMiner";
             this.configureMobileMinerPage.UseVisualStyleBackColor = true;
             // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(272, 177);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(172, 15);
+            this.linkLabel1.TabIndex = 35;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Learn more about MobileMiner";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
+            // pictureBox4
+            // 
+            this.pictureBox4.Image = global::MultiMiner.Win.Properties.Resources.info;
+            this.pictureBox4.Location = new System.Drawing.Point(247, 176);
+            this.pictureBox4.Name = "pictureBox4";
+            this.pictureBox4.Size = new System.Drawing.Size(19, 18);
+            this.pictureBox4.TabIndex = 34;
+            this.pictureBox4.TabStop = false;
+            // 
             // mobileMinerInfoLink
             // 
             this.mobileMinerInfoLink.AutoSize = true;
             this.mobileMinerInfoLink.Location = new System.Drawing.Point(63, 177);
             this.mobileMinerInfoLink.Name = "mobileMinerInfoLink";
-            this.mobileMinerInfoLink.Size = new System.Drawing.Size(172, 15);
+            this.mobileMinerInfoLink.Size = new System.Drawing.Size(141, 15);
             this.mobileMinerInfoLink.TabIndex = 14;
             this.mobileMinerInfoLink.TabStop = true;
-            this.mobileMinerInfoLink.Text = "Learn more about MobileMiner";
+            this.mobileMinerInfoLink.Text = "Sign up - it\'s fast and free";
             this.mobileMinerInfoLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.mobileMinerInfoLink_LinkClicked);
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.info;
-            this.pictureBox1.Location = new System.Drawing.Point(37, 174);
+            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.mail_key;
+            this.pictureBox1.Location = new System.Drawing.Point(37, 176);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(19, 18);
             this.pictureBox1.TabIndex = 13;
@@ -385,11 +410,11 @@
             // remoteCommandsCheck
             // 
             this.remoteCommandsCheck.AutoSize = true;
-            this.remoteCommandsCheck.Location = new System.Drawing.Point(275, 75);
+            this.remoteCommandsCheck.Location = new System.Drawing.Point(271, 75);
             this.remoteCommandsCheck.Name = "remoteCommandsCheck";
-            this.remoteCommandsCheck.Size = new System.Drawing.Size(165, 19);
+            this.remoteCommandsCheck.Size = new System.Drawing.Size(176, 19);
             this.remoteCommandsCheck.TabIndex = 9;
-            this.remoteCommandsCheck.Text = "Enable remote commands";
+            this.remoteCommandsCheck.Text = "Enable remote management";
             this.remoteCommandsCheck.UseVisualStyleBackColor = true;
             this.remoteCommandsCheck.CheckedChanged += new System.EventHandler(this.remoteCommandsCheck_CheckedChanged);
             // 
@@ -446,22 +471,23 @@
             this.label14.Location = new System.Drawing.Point(3, 3);
             this.label14.Name = "label14";
             this.label14.Padding = new System.Windows.Forms.Padding(0, 7, 0, 0);
-            this.label14.Size = new System.Drawing.Size(470, 78);
+            this.label14.Size = new System.Drawing.Size(470, 69);
             this.label14.TabIndex = 33;
-            this.label14.Text = "MobileMiner allows you to remotely monitor and control mining from your smartphon" +
-    "e. Enter your MobileMiner information below or click Next to skip this step.";
+            this.label14.Text = "MobileMiner allows you to remotely monitor and manage your mining from any browse" +
+    "r or phone. It\'s free and secure. Enter your MobileMiner information below or cl" +
+    "ick Next to skip this step.";
             // 
             // configurePerksPage
             // 
             this.configurePerksPage.Controls.Add(this.label3);
             this.configurePerksPage.Controls.Add(this.remotingPasswordEdit);
             this.configurePerksPage.Controls.Add(this.remotingCheckBox);
-            this.configurePerksPage.Controls.Add(this.smileyPicture);
-            this.configurePerksPage.Controls.Add(this.pictureBox3);
             this.configurePerksPage.Controls.Add(this.label2);
             this.configurePerksPage.Controls.Add(this.incomeCheckBox);
             this.configurePerksPage.Controls.Add(this.coinbaseCheckBox);
             this.configurePerksPage.Controls.Add(this.perksCheckBox);
+            this.configurePerksPage.Controls.Add(this.smileyPicture);
+            this.configurePerksPage.Controls.Add(this.pictureBox3);
             this.configurePerksPage.Location = new System.Drawing.Point(4, 24);
             this.configurePerksPage.Name = "configurePerksPage";
             this.configurePerksPage.Padding = new System.Windows.Forms.Padding(3);
@@ -496,25 +522,6 @@
             this.remotingCheckBox.TabIndex = 21;
             this.remotingCheckBox.Text = "Enable MultiMiner Remoting";
             this.remotingCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // smileyPicture
-            // 
-            this.smileyPicture.Image = global::MultiMiner.Win.Properties.Resources.smiley_happy;
-            this.smileyPicture.Location = new System.Drawing.Point(294, 83);
-            this.smileyPicture.Name = "smileyPicture";
-            this.smileyPicture.Size = new System.Drawing.Size(20, 20);
-            this.smileyPicture.TabIndex = 15;
-            this.smileyPicture.TabStop = false;
-            this.smileyPicture.Visible = false;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.Image = global::MultiMiner.Win.Properties.Resources.info1;
-            this.pictureBox3.Location = new System.Drawing.Point(10, 10);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(35, 34);
-            this.pictureBox3.TabIndex = 14;
-            this.pictureBox3.TabStop = false;
             // 
             // label2
             // 
@@ -557,6 +564,25 @@
             this.perksCheckBox.Text = "Enable perks (at a 1% donation)";
             this.perksCheckBox.UseVisualStyleBackColor = true;
             this.perksCheckBox.CheckedChanged += new System.EventHandler(this.perksCheckBox_CheckedChanged);
+            // 
+            // smileyPicture
+            // 
+            this.smileyPicture.Image = global::MultiMiner.Win.Properties.Resources.smiley_happy;
+            this.smileyPicture.Location = new System.Drawing.Point(294, 83);
+            this.smileyPicture.Name = "smileyPicture";
+            this.smileyPicture.Size = new System.Drawing.Size(20, 20);
+            this.smileyPicture.TabIndex = 15;
+            this.smileyPicture.TabStop = false;
+            this.smileyPicture.Visible = false;
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Image = global::MultiMiner.Win.Properties.Resources.info1;
+            this.pictureBox3.Location = new System.Drawing.Point(10, 10);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(35, 34);
+            this.pictureBox3.TabIndex = 14;
+            this.pictureBox3.TabStop = false;
             // 
             // whatNextPage
             // 
@@ -630,6 +656,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.configureMobileMinerPage.ResumeLayout(false);
             this.configureMobileMinerPage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.configurePerksPage.ResumeLayout(false);
             this.configurePerksPage.PerformLayout();
@@ -690,5 +717,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox remotingPasswordEdit;
         private System.Windows.Forms.CheckBox remotingCheckBox;
+        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.PictureBox pictureBox4;
     }
 }

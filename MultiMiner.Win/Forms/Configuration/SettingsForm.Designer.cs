@@ -35,7 +35,6 @@ namespace MultiMiner.Win.Forms.Configuration
             this.serviceSettingsLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.apiKeyEdit = new System.Windows.Forms.TextBox();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.apiKeyLabel = new System.Windows.Forms.LinkLabel();
             this.label11 = new System.Windows.Forms.Label();
             this.coinApiCombo = new System.Windows.Forms.ComboBox();
@@ -45,7 +44,6 @@ namespace MultiMiner.Win.Forms.Configuration
             this.appKeyEdit = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.emailAddressEdit = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.advancedSettingsLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
@@ -67,19 +65,22 @@ namespace MultiMiner.Win.Forms.Configuration
             this.panel1 = new System.Windows.Forms.Panel();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.linkLabel1);
             this.groupBox3.Controls.Add(this.serviceSettingsLink);
             this.groupBox3.Controls.Add(this.pictureBox4);
             this.groupBox3.Controls.Add(this.apiKeyEdit);
@@ -92,7 +93,6 @@ namespace MultiMiner.Win.Forms.Configuration
             this.groupBox3.Controls.Add(this.appKeyEdit);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.emailAddressEdit);
-            this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Location = new System.Drawing.Point(14, 267);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(490, 163);
@@ -107,7 +107,7 @@ namespace MultiMiner.Win.Forms.Configuration
             this.serviceSettingsLink.Location = new System.Drawing.Point(36, 129);
             this.serviceSettingsLink.Name = "serviceSettingsLink";
             this.serviceSettingsLink.Size = new System.Drawing.Size(143, 15);
-            this.serviceSettingsLink.TabIndex = 9;
+            this.serviceSettingsLink.TabIndex = 10;
             this.serviceSettingsLink.TabStop = true;
             this.serviceSettingsLink.Text = "Advanced service settings";
             this.serviceSettingsLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.serviceSettingsLink_LinkClicked);
@@ -129,10 +129,6 @@ namespace MultiMiner.Win.Forms.Configuration
             this.apiKeyEdit.Name = "apiKeyEdit";
             this.apiKeyEdit.Size = new System.Drawing.Size(124, 23);
             this.apiKeyEdit.TabIndex = 2;
-            // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
             // 
             // apiKeyLabel
             // 
@@ -206,7 +202,7 @@ namespace MultiMiner.Win.Forms.Configuration
             this.appKeyEdit.Location = new System.Drawing.Point(345, 91);
             this.appKeyEdit.Name = "appKeyEdit";
             this.appKeyEdit.Size = new System.Drawing.Size(124, 23);
-            this.appKeyEdit.TabIndex = 8;
+            this.appKeyEdit.TabIndex = 9;
             // 
             // label8
             // 
@@ -226,15 +222,6 @@ namespace MultiMiner.Win.Forms.Configuration
             this.emailAddressEdit.Name = "emailAddressEdit";
             this.emailAddressEdit.Size = new System.Drawing.Size(121, 23);
             this.emailAddressEdit.TabIndex = 7;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(253, 94);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(53, 15);
-            this.label6.TabIndex = 0;
-            this.label6.Text = "App key:";
             // 
             // groupBox2
             // 
@@ -425,8 +412,8 @@ namespace MultiMiner.Win.Forms.Configuration
             this.priorityCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.priorityCombo.FormattingEnabled = true;
             this.priorityCombo.Items.AddRange(new object[] {
-            MinerNames.CGMiner,
-            MinerNames.BFGMiner});
+            "CGMiner",
+            "BFGMiner"});
             this.priorityCombo.Location = new System.Drawing.Point(345, 48);
             this.priorityCombo.Name = "priorityCombo";
             this.priorityCombo.Size = new System.Drawing.Size(124, 23);
@@ -478,6 +465,21 @@ namespace MultiMiner.Win.Forms.Configuration
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(253, 94);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(84, 15);
+            this.linkLabel1.TabIndex = 8;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "App key (free):";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -499,7 +501,6 @@ namespace MultiMiner.Win.Forms.Configuration
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -508,6 +509,7 @@ namespace MultiMiner.Win.Forms.Configuration
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -528,7 +530,6 @@ namespace MultiMiner.Win.Forms.Configuration
         private System.Windows.Forms.CheckBox autoLaunchCheckBox;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox appKeyEdit;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox emailAddressEdit;
@@ -550,5 +551,6 @@ namespace MultiMiner.Win.Forms.Configuration
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.LinkLabel serviceSettingsLink;
         private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }
