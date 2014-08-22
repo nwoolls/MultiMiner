@@ -130,6 +130,9 @@
   <data name="view_small_icons" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\view_small_icons.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="view_options" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\view_options.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="internet_download" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\internet_download.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -160,11 +163,8 @@
   <data name="info1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\info1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="window_text" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\window_text.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="remove" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\remove.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="mail-key" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\mail-key.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="help" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\help.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -175,14 +175,17 @@
   <data name="application-gear" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\application-gear.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="list-internet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\list-internet.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="hardware-option" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\hardware-option.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="view_list" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\view_list.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="application_internet" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\application-internet.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="hardware-find1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\hardware-find1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="application-control_play" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\application-control_play.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -205,8 +208,8 @@
   <data name="smiley_happy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\smiley_happy.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="view_options" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\view_options.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="window_text" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\window_text.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="application-execute1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\application-execute1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -232,14 +235,11 @@
   <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\info.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="view_large_icons" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\view_large_icons.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="computer-coins" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\computer-coins.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="list-internet" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\list-internet.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="view_large_icons" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\view_large_icons.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="clipboard_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\clipboard_copy.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -247,8 +247,11 @@
   <data name="application-add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\application-add.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="hardware-find1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\hardware-find1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="remove" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\remove.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="document_text-edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\document_text-edit.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="settings_options" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\settings_options.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -262,14 +265,14 @@
   <data name="list-export" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\list-export.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="document_text-edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\document_text-edit.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="application_internet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\application-internet.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="settings-option" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\settings-option.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="mail-key" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\mail-key.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="application-help" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\application-help.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

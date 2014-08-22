@@ -50,28 +50,14 @@
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.notifyIconMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.startMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.showAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.quitAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restartTimer = new System.Windows.Forms.Timer(this.components);
             this.coinPopupMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.largeImageList = new System.Windows.Forms.ImageList(this.components);
             this.smallImageList = new System.Windows.Forms.ImageList(this.components);
             this.deviceListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.detectDevicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.quickSwitchPopupItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dummyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.historyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.processLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aPIMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.coinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.strategiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.perksToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quickCoinMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.columnHeaderMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.dummyToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -105,26 +91,14 @@
             this.advancedTabControl = new System.Windows.Forms.TabControl();
             this.historyPage = new System.Windows.Forms.TabPage();
             this.historyGridView = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.startPriceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.endPriceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AcceptedShares = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.durationColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.devicesColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.openLogMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.openLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.logProcessCloseArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.processLogPage = new System.Windows.Forms.TabPage();
             this.processLogGridView = new System.Windows.Forms.DataGridView();
-            this.dateTimeDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.executablePathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.argumentsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Reason = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.logLaunchArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.apiMonitorPage = new System.Windows.Forms.TabPage();
             this.apiLogGridView = new System.Windows.Forms.DataGridView();
             this.Machine = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -132,51 +106,19 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.closeApiButton = new System.Windows.Forms.Button();
             this.processLogMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.launchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.footerPanel = new System.Windows.Forms.Panel();
             this.incomeSummaryLabel = new System.Windows.Forms.Label();
             this.coinChooseSuffixLabel = new System.Windows.Forms.Label();
             this.coinApiLinkLabel = new System.Windows.Forms.LinkLabel();
             this.coinChoosePrefixLabel = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.detailsToggleButton = new System.Windows.Forms.ToolStripButton();
             this.strategiesLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.strategyCountdownLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.hashRateStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.deviceTotalLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.standardToolBar = new System.Windows.Forms.ToolStrip();
-            this.startButton = new System.Windows.Forms.ToolStripButton();
-            this.stopButton = new System.Windows.Forms.ToolStripSplitButton();
-            this.restartButton = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.settingsButton = new System.Windows.Forms.ToolStripSplitButton();
-            this.coinsButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.strategiesButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.perksButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.settingsPlainButton = new System.Windows.Forms.ToolStripButton();
-            this.poolsPlainButton = new System.Windows.Forms.ToolStripButton();
-            this.strategiesPlainButton = new System.Windows.Forms.ToolStripButton();
-            this.perksPlainButton = new System.Windows.Forms.ToolStripButton();
             this.saveSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.saveButton = new System.Windows.Forms.ToolStripButton();
-            this.cancelButton = new System.Windows.Forms.ToolStripButton();
-            this.aboutButton = new System.Windows.Forms.ToolStripButton();
-            this.listViewStyleButton = new System.Windows.Forms.ToolStripSplitButton();
-            this.largeIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.smallIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.detailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.advancedMenuItem = new System.Windows.Forms.ToolStripDropDownButton();
-            this.detectDevicesButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.quickSwitchItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dummyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.historySeperator = new System.Windows.Forms.ToolStripSeparator();
-            this.historyButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.processLogButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.apiMonitorButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.dynamicIntensitySeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.dynamicIntensityButton = new System.Windows.Forms.ToolStripMenuItem();
             this.accessibleMenu = new System.Windows.Forms.MenuStrip();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -213,6 +155,66 @@
             this.aToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restartMiningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.startPriceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.endPriceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.openLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.logProcessCloseArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.dateTimeDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.executablePathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.argumentsDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.logLaunchArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.detailsToggleButton = new System.Windows.Forms.ToolStripButton();
+            this.startButton = new System.Windows.Forms.ToolStripButton();
+            this.stopButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.restartButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.coinsButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.strategiesButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.perksButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsPlainButton = new System.Windows.Forms.ToolStripButton();
+            this.poolsPlainButton = new System.Windows.Forms.ToolStripButton();
+            this.strategiesPlainButton = new System.Windows.Forms.ToolStripButton();
+            this.perksPlainButton = new System.Windows.Forms.ToolStripButton();
+            this.saveButton = new System.Windows.Forms.ToolStripButton();
+            this.cancelButton = new System.Windows.Forms.ToolStripButton();
+            this.aboutButton = new System.Windows.Forms.ToolStripButton();
+            this.listViewStyleButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.largeIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.smallIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.detailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.advancedMenuItem = new System.Windows.Forms.ToolStripDropDownButton();
+            this.detectDevicesButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.quickSwitchItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dummyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.historySeperator = new System.Windows.Forms.ToolStripSeparator();
+            this.historyButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.processLogButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.apiMonitorButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.dynamicIntensitySeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.dynamicIntensityButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.startMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.quitAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.detectDevicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.quickSwitchPopupItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dummyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.historyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.processLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aPIMonitorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.coinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.strategiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.perksToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.launchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.detailsControl1 = new MultiMiner.Win.Controls.DetailsControl();
             this.dateTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.requestDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -234,10 +236,8 @@
             this.historyPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.historyGridView)).BeginInit();
             this.openLogMenu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).BeginInit();
             this.processLogPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.processLogGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).BeginInit();
             this.apiMonitorPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).BeginInit();
             this.panel2.SuspendLayout();
@@ -247,6 +247,8 @@
             this.standardToolBar.SuspendLayout();
             this.accessibleMenu.SuspendLayout();
             this.networkDeviceContextMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -284,42 +286,10 @@
             this.notifyIconMenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.notifyIconMenuStrip.Size = new System.Drawing.Size(104, 98);
             // 
-            // startMenuItem
-            // 
-            this.startMenuItem.Image = global::MultiMiner.Win.Properties.Resources.computer_control_play;
-            this.startMenuItem.Name = "startMenuItem";
-            this.startMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.startMenuItem.Text = "Start";
-            this.startMenuItem.Click += new System.EventHandler(this.startMenuItem_Click);
-            // 
-            // stopMenuItem
-            // 
-            this.stopMenuItem.Image = global::MultiMiner.Win.Properties.Resources.computer_control_stop;
-            this.stopMenuItem.Name = "stopMenuItem";
-            this.stopMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.stopMenuItem.Text = "Stop";
-            this.stopMenuItem.Click += new System.EventHandler(this.stopMenuItem_Click);
-            // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(100, 6);
-            // 
-            // showAppMenuItem
-            // 
-            this.showAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application;
-            this.showAppMenuItem.Name = "showAppMenuItem";
-            this.showAppMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.showAppMenuItem.Text = "Show";
-            this.showAppMenuItem.Click += new System.EventHandler(this.showAppMenuItem_Click);
-            // 
-            // quitAppMenuItem
-            // 
-            this.quitAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_delete;
-            this.quitAppMenuItem.Name = "quitAppMenuItem";
-            this.quitAppMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.quitAppMenuItem.Text = "Quit";
-            this.quitAppMenuItem.Click += new System.EventHandler(this.quitAppMenuItem_Click);
             // 
             // restartTimer
             // 
@@ -370,95 +340,15 @@
             this.deviceListContextMenu.Size = new System.Drawing.Size(154, 214);
             this.deviceListContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.deviceListContextMenu_Opening);
             // 
-            // detectDevicesToolStripMenuItem
-            // 
-            this.detectDevicesToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.hardware_find;
-            this.detectDevicesToolStripMenuItem.Name = "detectDevicesToolStripMenuItem";
-            this.detectDevicesToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.detectDevicesToolStripMenuItem.Text = "Scan Hardware";
-            this.detectDevicesToolStripMenuItem.Click += new System.EventHandler(this.detectDevicesToolStripMenuItem_Click);
-            // 
-            // quickSwitchPopupItem
-            // 
-            this.quickSwitchPopupItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.dummyToolStripMenuItem1});
-            this.quickSwitchPopupItem.Image = global::MultiMiner.Win.Properties.Resources.list_arrow_right;
-            this.quickSwitchPopupItem.Name = "quickSwitchPopupItem";
-            this.quickSwitchPopupItem.Size = new System.Drawing.Size(153, 22);
-            this.quickSwitchPopupItem.Text = "Quick Switch";
-            this.quickSwitchPopupItem.DropDownOpening += new System.EventHandler(this.quickSwitchPopupItem_DropDownOpening);
-            // 
-            // dummyToolStripMenuItem1
-            // 
-            this.dummyToolStripMenuItem1.Name = "dummyToolStripMenuItem1";
-            this.dummyToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
-            this.dummyToolStripMenuItem1.Text = "Dummy";
-            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(150, 6);
             // 
-            // historyToolStripMenuItem
-            // 
-            this.historyToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.history;
-            this.historyToolStripMenuItem.Name = "historyToolStripMenuItem";
-            this.historyToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.historyToolStripMenuItem.Text = "History";
-            this.historyToolStripMenuItem.Click += new System.EventHandler(this.historyToolStripMenuItem_Click);
-            // 
-            // processLogToolStripMenuItem
-            // 
-            this.processLogToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.window_text;
-            this.processLogToolStripMenuItem.Name = "processLogToolStripMenuItem";
-            this.processLogToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.processLogToolStripMenuItem.Text = "Process Log";
-            this.processLogToolStripMenuItem.Click += new System.EventHandler(this.processLogToolStripMenuItem_Click);
-            // 
-            // aPIMonitorToolStripMenuItem
-            // 
-            this.aPIMonitorToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.network_application;
-            this.aPIMonitorToolStripMenuItem.Name = "aPIMonitorToolStripMenuItem";
-            this.aPIMonitorToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.aPIMonitorToolStripMenuItem.Text = "API Monitor";
-            this.aPIMonitorToolStripMenuItem.Click += new System.EventHandler(this.aPIMonitorToolStripMenuItem_Click);
-            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(150, 6);
-            // 
-            // coinsToolStripMenuItem
-            // 
-            this.coinsToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_gear;
-            this.coinsToolStripMenuItem.Name = "coinsToolStripMenuItem";
-            this.coinsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.coinsToolStripMenuItem.Text = "Coins";
-            this.coinsToolStripMenuItem.Click += new System.EventHandler(this.coinsToolStripMenuItem_Click);
-            // 
-            // strategiesToolStripMenuItem
-            // 
-            this.strategiesToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_execute;
-            this.strategiesToolStripMenuItem.Name = "strategiesToolStripMenuItem";
-            this.strategiesToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.strategiesToolStripMenuItem.Text = "Strategies";
-            this.strategiesToolStripMenuItem.Click += new System.EventHandler(this.strategiesToolStripMenuItem_Click);
-            // 
-            // perksToolStripMenuItem1
-            // 
-            this.perksToolStripMenuItem1.Image = global::MultiMiner.Win.Properties.Resources.application_add;
-            this.perksToolStripMenuItem1.Name = "perksToolStripMenuItem1";
-            this.perksToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
-            this.perksToolStripMenuItem1.Text = "Perks";
-            this.perksToolStripMenuItem1.Click += new System.EventHandler(this.perksToolStripMenuItem1_Click);
-            // 
-            // settingsToolStripMenuItem
-            // 
-            this.settingsToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_option;
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.settingsToolStripMenuItem.Text = "Settings";
-            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // quickCoinMenu
             // 
@@ -488,7 +378,7 @@
             this.startupMiningPanel.Controls.Add(this.startStartupMiningButton);
             this.startupMiningPanel.Controls.Add(this.cancelStartupMiningButton);
             this.startupMiningPanel.Controls.Add(this.countdownLabel);
-            this.startupMiningPanel.Location = new System.Drawing.Point(460, 220);
+            this.startupMiningPanel.Location = new System.Drawing.Point(267, 146);
             this.startupMiningPanel.Name = "startupMiningPanel";
             this.startupMiningPanel.Size = new System.Drawing.Size(372, 42);
             this.startupMiningPanel.TabIndex = 6;
@@ -539,7 +429,7 @@
             this.advancedAreaContainer.Panel2.Controls.Add(this.advancedTabControl);
             this.advancedAreaContainer.Panel2.Controls.Add(this.panel2);
             this.advancedAreaContainer.Panel2Collapsed = true;
-            this.advancedAreaContainer.Size = new System.Drawing.Size(1293, 375);
+            this.advancedAreaContainer.Size = new System.Drawing.Size(907, 226);
             this.advancedAreaContainer.SplitterDistance = 232;
             this.advancedAreaContainer.SplitterWidth = 5;
             this.advancedAreaContainer.TabIndex = 10;
@@ -555,7 +445,7 @@
             // instancesContainer.Panel2
             // 
             this.instancesContainer.Panel2.Controls.Add(this.detailsAreaContainer);
-            this.instancesContainer.Size = new System.Drawing.Size(1293, 375);
+            this.instancesContainer.Size = new System.Drawing.Size(907, 226);
             this.instancesContainer.SplitterDistance = 186;
             this.instancesContainer.TabIndex = 4;
             // 
@@ -573,8 +463,8 @@
             // detailsAreaContainer.Panel2
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
-            this.detailsAreaContainer.Size = new System.Drawing.Size(1293, 375);
-            this.detailsAreaContainer.SplitterDistance = 1038;
+            this.detailsAreaContainer.Size = new System.Drawing.Size(907, 226);
+            this.detailsAreaContainer.SplitterDistance = 653;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -625,7 +515,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(1038, 375);
+            this.deviceListView.Size = new System.Drawing.Size(653, 226);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -792,49 +682,6 @@
             this.historyGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.historyGridView_CellFormatting);
             this.historyGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.historyGridView_RowsAdded);
             // 
-            // dataGridViewTextBoxColumn8
-            // 
-            this.dataGridViewTextBoxColumn8.DataPropertyName = "StartDate";
-            this.dataGridViewTextBoxColumn8.HeaderText = "Start Date/Time";
-            this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
-            this.dataGridViewTextBoxColumn8.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn9
-            // 
-            this.dataGridViewTextBoxColumn9.DataPropertyName = "EndDate";
-            this.dataGridViewTextBoxColumn9.HeaderText = "End Date/Time";
-            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
-            this.dataGridViewTextBoxColumn9.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn10
-            // 
-            this.dataGridViewTextBoxColumn10.DataPropertyName = "CoinName";
-            this.dataGridViewTextBoxColumn10.HeaderText = "Coin Name";
-            this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
-            this.dataGridViewTextBoxColumn10.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn11
-            // 
-            this.dataGridViewTextBoxColumn11.DataPropertyName = "CoinSymbol";
-            this.dataGridViewTextBoxColumn11.FillWeight = 80F;
-            this.dataGridViewTextBoxColumn11.HeaderText = "Coin Symbol";
-            this.dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
-            this.dataGridViewTextBoxColumn11.ReadOnly = true;
-            // 
-            // startPriceColumn
-            // 
-            this.startPriceColumn.DataPropertyName = "StartPrice";
-            this.startPriceColumn.HeaderText = "Start Price";
-            this.startPriceColumn.Name = "startPriceColumn";
-            this.startPriceColumn.ReadOnly = true;
-            // 
-            // endPriceColumn
-            // 
-            this.endPriceColumn.DataPropertyName = "EndPrice";
-            this.endPriceColumn.HeaderText = "End Price";
-            this.endPriceColumn.Name = "endPriceColumn";
-            this.endPriceColumn.ReadOnly = true;
-            // 
             // AcceptedShares
             // 
             this.AcceptedShares.DataPropertyName = "AcceptedShares";
@@ -863,18 +710,6 @@
             this.openLogMenu.Name = "contextMenuStrip1";
             this.openLogMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.openLogMenu.Size = new System.Drawing.Size(148, 26);
-            // 
-            // openLogToolStripMenuItem
-            // 
-            this.openLogToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.document_find;
-            this.openLogToolStripMenuItem.Name = "openLogToolStripMenuItem";
-            this.openLogToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-            this.openLogToolStripMenuItem.Text = "Open Log File";
-            this.openLogToolStripMenuItem.Click += new System.EventHandler(this.openLogToolStripMenuItem_Click);
-            // 
-            // logProcessCloseArgsBindingSource
-            // 
-            this.logProcessCloseArgsBindingSource.DataSource = typeof(MultiMiner.Engine.LogProcessCloseArgs);
             // 
             // processLogPage
             // 
@@ -918,14 +753,6 @@
             this.processLogGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.processLogGridView_CellMouseDown);
             this.processLogGridView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.processLogGridView_MouseDown);
             // 
-            // dateTimeDataGridViewTextBoxColumn1
-            // 
-            this.dateTimeDataGridViewTextBoxColumn1.DataPropertyName = "DateTime";
-            this.dateTimeDataGridViewTextBoxColumn1.HeaderText = "Date/Time";
-            this.dateTimeDataGridViewTextBoxColumn1.Name = "dateTimeDataGridViewTextBoxColumn1";
-            this.dateTimeDataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dateTimeDataGridViewTextBoxColumn1.Width = 125;
-            // 
             // dataGridViewTextBoxColumn1
             // 
             this.dataGridViewTextBoxColumn1.DataPropertyName = "CoinName";
@@ -933,32 +760,12 @@
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             this.dataGridViewTextBoxColumn1.ReadOnly = true;
             // 
-            // executablePathDataGridViewTextBoxColumn
-            // 
-            this.executablePathDataGridViewTextBoxColumn.DataPropertyName = "ExecutablePath";
-            this.executablePathDataGridViewTextBoxColumn.HeaderText = "Executable Path";
-            this.executablePathDataGridViewTextBoxColumn.Name = "executablePathDataGridViewTextBoxColumn";
-            this.executablePathDataGridViewTextBoxColumn.ReadOnly = true;
-            this.executablePathDataGridViewTextBoxColumn.Width = 250;
-            // 
-            // argumentsDataGridViewTextBoxColumn
-            // 
-            this.argumentsDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.argumentsDataGridViewTextBoxColumn.DataPropertyName = "Arguments";
-            this.argumentsDataGridViewTextBoxColumn.HeaderText = "Arguments";
-            this.argumentsDataGridViewTextBoxColumn.Name = "argumentsDataGridViewTextBoxColumn";
-            this.argumentsDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
             // Reason
             // 
             this.Reason.DataPropertyName = "Reason";
             this.Reason.HeaderText = "Reason";
             this.Reason.Name = "Reason";
             this.Reason.ReadOnly = true;
-            // 
-            // logLaunchArgsBindingSource
-            // 
-            this.logLaunchArgsBindingSource.DataSource = typeof(MultiMiner.Xgminer.LogLaunchArgs);
             // 
             // apiMonitorPage
             // 
@@ -1044,14 +851,6 @@
             this.processLogMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.processLogMenu.Size = new System.Drawing.Size(114, 26);
             // 
-            // launchToolStripMenuItem
-            // 
-            this.launchToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_control_play;
-            this.launchToolStripMenuItem.Name = "launchToolStripMenuItem";
-            this.launchToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
-            this.launchToolStripMenuItem.Text = "Launch";
-            this.launchToolStripMenuItem.Click += new System.EventHandler(this.launchToolStripMenuItem_Click);
-            // 
             // footerPanel
             // 
             this.footerPanel.BackColor = System.Drawing.SystemColors.ControlLightLight;
@@ -1060,9 +859,9 @@
             this.footerPanel.Controls.Add(this.coinApiLinkLabel);
             this.footerPanel.Controls.Add(this.coinChoosePrefixLabel);
             this.footerPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.footerPanel.Location = new System.Drawing.Point(0, 424);
+            this.footerPanel.Location = new System.Drawing.Point(0, 275);
             this.footerPanel.Name = "footerPanel";
-            this.footerPanel.Size = new System.Drawing.Size(1293, 35);
+            this.footerPanel.Size = new System.Drawing.Size(907, 35);
             this.footerPanel.TabIndex = 9;
             // 
             // incomeSummaryLabel
@@ -1071,7 +870,7 @@
             this.incomeSummaryLabel.Dock = System.Windows.Forms.DockStyle.Right;
             this.incomeSummaryLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.incomeSummaryLabel.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.incomeSummaryLabel.Location = new System.Drawing.Point(1149, 0);
+            this.incomeSummaryLabel.Location = new System.Drawing.Point(763, 0);
             this.incomeSummaryLabel.MinimumSize = new System.Drawing.Size(35, 0);
             this.incomeSummaryLabel.Name = "incomeSummaryLabel";
             this.incomeSummaryLabel.Padding = new System.Windows.Forms.Padding(0, 10, 8, 0);
@@ -1120,23 +919,13 @@
             this.strategyCountdownLabel,
             this.hashRateStatusLabel,
             this.deviceTotalLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 459);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 310);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1293, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(907, 22);
             this.statusStrip1.TabIndex = 8;
             this.statusStrip1.TabStop = true;
             this.statusStrip1.Text = "statusStrip1";
-            // 
-            // detailsToggleButton
-            // 
-            this.detailsToggleButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.detailsToggleButton.Image = ((System.Drawing.Image)(resources.GetObject("detailsToggleButton.Image")));
-            this.detailsToggleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.detailsToggleButton.Name = "detailsToggleButton";
-            this.detailsToggleButton.Size = new System.Drawing.Size(92, 20);
-            this.detailsToggleButton.Text = "▾ Fewer details";
-            this.detailsToggleButton.Click += new System.EventHandler(this.detailsToggleButton_ButtonClick);
             // 
             // strategiesLabel
             // 
@@ -1158,7 +947,7 @@
             // 
             this.hashRateStatusLabel.AutoSize = false;
             this.hashRateStatusLabel.Name = "hashRateStatusLabel";
-            this.hashRateStatusLabel.Size = new System.Drawing.Size(799, 17);
+            this.hashRateStatusLabel.Size = new System.Drawing.Size(413, 17);
             this.hashRateStatusLabel.Spring = true;
             this.hashRateStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -1187,6 +976,8 @@
             this.saveSeparator,
             this.saveButton,
             this.cancelButton,
+            this.toolStripButton1,
+            this.toolStripSeparator5,
             this.aboutButton,
             this.listViewStyleButton,
             this.advancedMenuItem});
@@ -1194,10 +985,398 @@
             this.standardToolBar.Location = new System.Drawing.Point(0, 24);
             this.standardToolBar.Name = "standardToolBar";
             this.standardToolBar.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.standardToolBar.Size = new System.Drawing.Size(1293, 25);
+            this.standardToolBar.Size = new System.Drawing.Size(907, 25);
             this.standardToolBar.TabIndex = 7;
             this.standardToolBar.TabStop = true;
             this.standardToolBar.Text = "toolStrip1";
+            // 
+            // settingsSeparator
+            // 
+            this.settingsSeparator.Name = "settingsSeparator";
+            this.settingsSeparator.Size = new System.Drawing.Size(6, 25);
+            // 
+            // saveSeparator
+            // 
+            this.saveSeparator.Name = "saveSeparator";
+            this.saveSeparator.Size = new System.Drawing.Size(6, 25);
+            // 
+            // accessibleMenu
+            // 
+            this.accessibleMenu.AccessibleRole = System.Windows.Forms.AccessibleRole.MenuBar;
+            this.accessibleMenu.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.accessibleMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.actionsToolStripMenuItem,
+            this.toolsToolStripMenuItem,
+            this.viewToolStripMenuItem,
+            this.advancedToolStripMenuItem,
+            this.helpToolStripMenuItem});
+            this.accessibleMenu.Location = new System.Drawing.Point(0, 0);
+            this.accessibleMenu.Name = "accessibleMenu";
+            this.accessibleMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.accessibleMenu.Size = new System.Drawing.Size(907, 24);
+            this.accessibleMenu.TabIndex = 11;
+            this.accessibleMenu.Text = "menuStrip1";
+            // 
+            // actionsToolStripMenuItem
+            // 
+            this.actionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startToolStripMenuItem,
+            this.stopToolStripMenuItem,
+            this.restartToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.saveToolStripMenuItem,
+            this.cancelToolStripMenuItem});
+            this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
+            this.actionsToolStripMenuItem.Text = "&Actions";
+            // 
+            // startToolStripMenuItem
+            // 
+            this.startToolStripMenuItem.Name = "startToolStripMenuItem";
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.startToolStripMenuItem.Text = "&Start";
+            this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
+            // 
+            // stopToolStripMenuItem
+            // 
+            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.stopToolStripMenuItem.Text = "S&top";
+            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
+            // 
+            // restartToolStripMenuItem
+            // 
+            this.restartToolStripMenuItem.Name = "restartToolStripMenuItem";
+            this.restartToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.restartToolStripMenuItem.Text = "&Restart";
+            this.restartToolStripMenuItem.Click += new System.EventHandler(this.restartToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(107, 6);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.saveToolStripMenuItem.Text = "S&ave";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // cancelToolStripMenuItem
+            // 
+            this.cancelToolStripMenuItem.Name = "cancelToolStripMenuItem";
+            this.cancelToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.cancelToolStripMenuItem.Text = "&Cancel";
+            this.cancelToolStripMenuItem.Click += new System.EventHandler(this.cancelToolStripMenuItem_Click);
+            // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.settingsToolStripMenuItem1,
+            this.coinsToolStripMenuItem1,
+            this.strategiesToolStripMenuItem1,
+            this.perksToolStripMenuItem});
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.toolsToolStripMenuItem.Text = "&Tools";
+            // 
+            // settingsToolStripMenuItem1
+            // 
+            this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
+            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
+            this.settingsToolStripMenuItem1.Text = "&Settings";
+            this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click);
+            // 
+            // coinsToolStripMenuItem1
+            // 
+            this.coinsToolStripMenuItem1.Name = "coinsToolStripMenuItem1";
+            this.coinsToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
+            this.coinsToolStripMenuItem1.Text = "&Pools";
+            this.coinsToolStripMenuItem1.Click += new System.EventHandler(this.coinsToolStripMenuItem1_Click);
+            // 
+            // strategiesToolStripMenuItem1
+            // 
+            this.strategiesToolStripMenuItem1.Name = "strategiesToolStripMenuItem1";
+            this.strategiesToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
+            this.strategiesToolStripMenuItem1.Text = "S&trategies";
+            this.strategiesToolStripMenuItem1.Click += new System.EventHandler(this.strategiesToolStripMenuItem1_Click);
+            // 
+            // perksToolStripMenuItem
+            // 
+            this.perksToolStripMenuItem.Name = "perksToolStripMenuItem";
+            this.perksToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.perksToolStripMenuItem.Text = "P&erks";
+            this.perksToolStripMenuItem.Click += new System.EventHandler(this.perksToolStripMenuItem_Click_1);
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.largeIconsToolStripMenuItem1,
+            this.smallIconsToolStripMenuItem1,
+            this.listToolStripMenuItem1,
+            this.detailsToolStripMenuItem1,
+            this.tilesToolStripMenuItem1});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Text = "&View";
+            // 
+            // largeIconsToolStripMenuItem1
+            // 
+            this.largeIconsToolStripMenuItem1.Name = "largeIconsToolStripMenuItem1";
+            this.largeIconsToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.largeIconsToolStripMenuItem1.Text = "&Large Icons";
+            this.largeIconsToolStripMenuItem1.Click += new System.EventHandler(this.largeIconsToolStripMenuItem1_Click);
+            // 
+            // smallIconsToolStripMenuItem1
+            // 
+            this.smallIconsToolStripMenuItem1.Name = "smallIconsToolStripMenuItem1";
+            this.smallIconsToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.smallIconsToolStripMenuItem1.Text = "&Small Icons";
+            this.smallIconsToolStripMenuItem1.Click += new System.EventHandler(this.smallIconsToolStripMenuItem1_Click);
+            // 
+            // listToolStripMenuItem1
+            // 
+            this.listToolStripMenuItem1.Name = "listToolStripMenuItem1";
+            this.listToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.listToolStripMenuItem1.Text = "L&ist";
+            this.listToolStripMenuItem1.Click += new System.EventHandler(this.listToolStripMenuItem1_Click);
+            // 
+            // detailsToolStripMenuItem1
+            // 
+            this.detailsToolStripMenuItem1.Name = "detailsToolStripMenuItem1";
+            this.detailsToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.detailsToolStripMenuItem1.Text = "&Details";
+            this.detailsToolStripMenuItem1.Click += new System.EventHandler(this.detailsToolStripMenuItem1_Click);
+            // 
+            // tilesToolStripMenuItem1
+            // 
+            this.tilesToolStripMenuItem1.Name = "tilesToolStripMenuItem1";
+            this.tilesToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
+            this.tilesToolStripMenuItem1.Text = "&Tiles";
+            this.tilesToolStripMenuItem1.Click += new System.EventHandler(this.tilesToolStripMenuItem1_Click);
+            // 
+            // advancedToolStripMenuItem
+            // 
+            this.advancedToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.scanHardwareToolStripMenuItem,
+            this.quickSwitchToolStripMenuItem,
+            this.historyMenuSeperator,
+            this.historyToolStripMenuItem1,
+            this.processLogToolStripMenuItem1,
+            this.aPIMonitorToolStripMenuItem1,
+            this.dynamicIntensityMenuSeperator,
+            this.dynamicIntensityToolStripMenuItem});
+            this.advancedToolStripMenuItem.Name = "advancedToolStripMenuItem";
+            this.advancedToolStripMenuItem.Size = new System.Drawing.Size(72, 20);
+            this.advancedToolStripMenuItem.Text = "A&dvanced";
+            this.advancedToolStripMenuItem.DropDownOpening += new System.EventHandler(this.advancedToolStripMenuItem_DropDownOpening);
+            // 
+            // scanHardwareToolStripMenuItem
+            // 
+            this.scanHardwareToolStripMenuItem.Name = "scanHardwareToolStripMenuItem";
+            this.scanHardwareToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.scanHardwareToolStripMenuItem.Text = "&Scan Hardware";
+            this.scanHardwareToolStripMenuItem.Click += new System.EventHandler(this.scanHardwareToolStripMenuItem_Click);
+            // 
+            // quickSwitchToolStripMenuItem
+            // 
+            this.quickSwitchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.dummyToolStripMenuItem3});
+            this.quickSwitchToolStripMenuItem.Name = "quickSwitchToolStripMenuItem";
+            this.quickSwitchToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.quickSwitchToolStripMenuItem.Text = "&Quick Switch";
+            this.quickSwitchToolStripMenuItem.DropDownOpening += new System.EventHandler(this.quickSwitchToolStripMenuItem_DropDownOpening);
+            // 
+            // dummyToolStripMenuItem3
+            // 
+            this.dummyToolStripMenuItem3.Name = "dummyToolStripMenuItem3";
+            this.dummyToolStripMenuItem3.Size = new System.Drawing.Size(117, 22);
+            this.dummyToolStripMenuItem3.Text = "Dummy";
+            // 
+            // historyMenuSeperator
+            // 
+            this.historyMenuSeperator.Name = "historyMenuSeperator";
+            this.historyMenuSeperator.Size = new System.Drawing.Size(166, 6);
+            // 
+            // historyToolStripMenuItem1
+            // 
+            this.historyToolStripMenuItem1.Name = "historyToolStripMenuItem1";
+            this.historyToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
+            this.historyToolStripMenuItem1.Text = "&History";
+            this.historyToolStripMenuItem1.Click += new System.EventHandler(this.historyToolStripMenuItem1_Click);
+            // 
+            // processLogToolStripMenuItem1
+            // 
+            this.processLogToolStripMenuItem1.Name = "processLogToolStripMenuItem1";
+            this.processLogToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
+            this.processLogToolStripMenuItem1.Text = "&Process Log";
+            this.processLogToolStripMenuItem1.Click += new System.EventHandler(this.processLogToolStripMenuItem1_Click);
+            // 
+            // aPIMonitorToolStripMenuItem1
+            // 
+            this.aPIMonitorToolStripMenuItem1.Name = "aPIMonitorToolStripMenuItem1";
+            this.aPIMonitorToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
+            this.aPIMonitorToolStripMenuItem1.Text = "&API Monitor";
+            this.aPIMonitorToolStripMenuItem1.Click += new System.EventHandler(this.aPIMonitorToolStripMenuItem1_Click);
+            // 
+            // dynamicIntensityMenuSeperator
+            // 
+            this.dynamicIntensityMenuSeperator.Name = "dynamicIntensityMenuSeperator";
+            this.dynamicIntensityMenuSeperator.Size = new System.Drawing.Size(166, 6);
+            // 
+            // dynamicIntensityToolStripMenuItem
+            // 
+            this.dynamicIntensityToolStripMenuItem.CheckOnClick = true;
+            this.dynamicIntensityToolStripMenuItem.Name = "dynamicIntensityToolStripMenuItem";
+            this.dynamicIntensityToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.dynamicIntensityToolStripMenuItem.Text = "&Dynamic Intensity";
+            this.dynamicIntensityToolStripMenuItem.Click += new System.EventHandler(this.dynamicIntensityToolStripMenuItem_Click);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "&Help";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem.Text = "&About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // networkDeviceContextMenu
+            // 
+            this.networkDeviceContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.networkDevicePoolMenu,
+            this.restartMiningToolStripMenuItem});
+            this.networkDeviceContextMenu.Name = "remoteDeviceContextMenu";
+            this.networkDeviceContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.networkDeviceContextMenu.Size = new System.Drawing.Size(152, 48);
+            // 
+            // networkDevicePoolMenu
+            // 
+            this.networkDevicePoolMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aToolStripMenuItem,
+            this.bToolStripMenuItem});
+            this.networkDevicePoolMenu.Name = "networkDevicePoolMenu";
+            this.networkDevicePoolMenu.Size = new System.Drawing.Size(151, 22);
+            this.networkDevicePoolMenu.Text = "Switch Pool";
+            // 
+            // aToolStripMenuItem
+            // 
+            this.aToolStripMenuItem.Name = "aToolStripMenuItem";
+            this.aToolStripMenuItem.Size = new System.Drawing.Size(82, 22);
+            this.aToolStripMenuItem.Text = "A";
+            // 
+            // bToolStripMenuItem
+            // 
+            this.bToolStripMenuItem.Name = "bToolStripMenuItem";
+            this.bToolStripMenuItem.Size = new System.Drawing.Size(82, 22);
+            this.bToolStripMenuItem.Text = "B";
+            // 
+            // restartMiningToolStripMenuItem
+            // 
+            this.restartMiningToolStripMenuItem.Name = "restartMiningToolStripMenuItem";
+            this.restartMiningToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.restartMiningToolStripMenuItem.Text = "Restart Mining";
+            this.restartMiningToolStripMenuItem.Click += new System.EventHandler(this.restartMiningToolStripMenuItem_Click);
+            // 
+            // dataGridViewTextBoxColumn8
+            // 
+            this.dataGridViewTextBoxColumn8.DataPropertyName = "StartDate";
+            this.dataGridViewTextBoxColumn8.HeaderText = "Start Date/Time";
+            this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
+            this.dataGridViewTextBoxColumn8.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn9
+            // 
+            this.dataGridViewTextBoxColumn9.DataPropertyName = "EndDate";
+            this.dataGridViewTextBoxColumn9.HeaderText = "End Date/Time";
+            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
+            this.dataGridViewTextBoxColumn9.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn10
+            // 
+            this.dataGridViewTextBoxColumn10.DataPropertyName = "CoinName";
+            this.dataGridViewTextBoxColumn10.HeaderText = "Coin Name";
+            this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
+            this.dataGridViewTextBoxColumn10.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn11
+            // 
+            this.dataGridViewTextBoxColumn11.DataPropertyName = "CoinSymbol";
+            this.dataGridViewTextBoxColumn11.FillWeight = 80F;
+            this.dataGridViewTextBoxColumn11.HeaderText = "Coin Symbol";
+            this.dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
+            this.dataGridViewTextBoxColumn11.ReadOnly = true;
+            // 
+            // startPriceColumn
+            // 
+            this.startPriceColumn.DataPropertyName = "StartPrice";
+            this.startPriceColumn.HeaderText = "Start Price";
+            this.startPriceColumn.Name = "startPriceColumn";
+            this.startPriceColumn.ReadOnly = true;
+            // 
+            // endPriceColumn
+            // 
+            this.endPriceColumn.DataPropertyName = "EndPrice";
+            this.endPriceColumn.HeaderText = "End Price";
+            this.endPriceColumn.Name = "endPriceColumn";
+            this.endPriceColumn.ReadOnly = true;
+            // 
+            // openLogToolStripMenuItem
+            // 
+            this.openLogToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.document_find;
+            this.openLogToolStripMenuItem.Name = "openLogToolStripMenuItem";
+            this.openLogToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.openLogToolStripMenuItem.Text = "Open Log File";
+            this.openLogToolStripMenuItem.Click += new System.EventHandler(this.openLogToolStripMenuItem_Click);
+            // 
+            // logProcessCloseArgsBindingSource
+            // 
+            this.logProcessCloseArgsBindingSource.DataSource = typeof(MultiMiner.Engine.LogProcessCloseArgs);
+            // 
+            // dateTimeDataGridViewTextBoxColumn1
+            // 
+            this.dateTimeDataGridViewTextBoxColumn1.DataPropertyName = "DateTime";
+            this.dateTimeDataGridViewTextBoxColumn1.HeaderText = "Date/Time";
+            this.dateTimeDataGridViewTextBoxColumn1.Name = "dateTimeDataGridViewTextBoxColumn1";
+            this.dateTimeDataGridViewTextBoxColumn1.ReadOnly = true;
+            this.dateTimeDataGridViewTextBoxColumn1.Width = 125;
+            // 
+            // executablePathDataGridViewTextBoxColumn
+            // 
+            this.executablePathDataGridViewTextBoxColumn.DataPropertyName = "ExecutablePath";
+            this.executablePathDataGridViewTextBoxColumn.HeaderText = "Executable Path";
+            this.executablePathDataGridViewTextBoxColumn.Name = "executablePathDataGridViewTextBoxColumn";
+            this.executablePathDataGridViewTextBoxColumn.ReadOnly = true;
+            this.executablePathDataGridViewTextBoxColumn.Width = 250;
+            // 
+            // argumentsDataGridViewTextBoxColumn
+            // 
+            this.argumentsDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.argumentsDataGridViewTextBoxColumn.DataPropertyName = "Arguments";
+            this.argumentsDataGridViewTextBoxColumn.HeaderText = "Arguments";
+            this.argumentsDataGridViewTextBoxColumn.Name = "argumentsDataGridViewTextBoxColumn";
+            this.argumentsDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // logLaunchArgsBindingSource
+            // 
+            this.logLaunchArgsBindingSource.DataSource = typeof(MultiMiner.Xgminer.LogLaunchArgs);
+            // 
+            // detailsToggleButton
+            // 
+            this.detailsToggleButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.detailsToggleButton.Image = ((System.Drawing.Image)(resources.GetObject("detailsToggleButton.Image")));
+            this.detailsToggleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.detailsToggleButton.Name = "detailsToggleButton";
+            this.detailsToggleButton.Size = new System.Drawing.Size(92, 20);
+            this.detailsToggleButton.Text = "▾ Fewer details";
+            this.detailsToggleButton.Click += new System.EventHandler(this.detailsToggleButton_ButtonClick);
             // 
             // startButton
             // 
@@ -1233,11 +1412,6 @@
             this.restartButton.Text = "Restart";
             this.restartButton.ToolTipText = "Restart mining";
             this.restartButton.Click += new System.EventHandler(this.restartButton_Click);
-            // 
-            // settingsSeparator
-            // 
-            this.settingsSeparator.Name = "settingsSeparator";
-            this.settingsSeparator.Size = new System.Drawing.Size(6, 25);
             // 
             // settingsButton
             // 
@@ -1327,11 +1501,6 @@
             this.perksPlainButton.Text = "Perks";
             this.perksPlainButton.ToolTipText = "Enable and configure perks";
             this.perksPlainButton.Click += new System.EventHandler(this.perksPlainButton_Click);
-            // 
-            // saveSeparator
-            // 
-            this.saveSeparator.Name = "saveSeparator";
-            this.saveSeparator.Size = new System.Drawing.Size(6, 25);
             // 
             // saveButton
             // 
@@ -1529,290 +1698,142 @@
             this.dynamicIntensityButton.ToolTipText = "Dynamic GPU intensity";
             this.dynamicIntensityButton.Click += new System.EventHandler(this.dynamicIntensityButton_Click);
             // 
-            // accessibleMenu
-            // 
-            this.accessibleMenu.AccessibleRole = System.Windows.Forms.AccessibleRole.MenuBar;
-            this.accessibleMenu.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.accessibleMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.actionsToolStripMenuItem,
-            this.toolsToolStripMenuItem,
-            this.viewToolStripMenuItem,
-            this.advancedToolStripMenuItem,
-            this.helpToolStripMenuItem});
-            this.accessibleMenu.Location = new System.Drawing.Point(0, 0);
-            this.accessibleMenu.Name = "accessibleMenu";
-            this.accessibleMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.accessibleMenu.Size = new System.Drawing.Size(1293, 24);
-            this.accessibleMenu.TabIndex = 11;
-            this.accessibleMenu.Text = "menuStrip1";
-            // 
-            // actionsToolStripMenuItem
-            // 
-            this.actionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.startToolStripMenuItem,
-            this.stopToolStripMenuItem,
-            this.restartToolStripMenuItem,
-            this.toolStripSeparator3,
-            this.saveToolStripMenuItem,
-            this.cancelToolStripMenuItem});
-            this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
-            this.actionsToolStripMenuItem.Text = "&Actions";
-            // 
-            // startToolStripMenuItem
-            // 
-            this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.startToolStripMenuItem.Text = "&Start";
-            this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
-            // 
-            // stopToolStripMenuItem
-            // 
-            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.stopToolStripMenuItem.Text = "S&top";
-            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
-            // 
-            // restartToolStripMenuItem
-            // 
-            this.restartToolStripMenuItem.Name = "restartToolStripMenuItem";
-            this.restartToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.restartToolStripMenuItem.Text = "&Restart";
-            this.restartToolStripMenuItem.Click += new System.EventHandler(this.restartToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(107, 6);
-            // 
-            // saveToolStripMenuItem
-            // 
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.saveToolStripMenuItem.Text = "S&ave";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
-            // 
-            // cancelToolStripMenuItem
-            // 
-            this.cancelToolStripMenuItem.Name = "cancelToolStripMenuItem";
-            this.cancelToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.cancelToolStripMenuItem.Text = "&Cancel";
-            this.cancelToolStripMenuItem.Click += new System.EventHandler(this.cancelToolStripMenuItem_Click);
-            // 
-            // toolsToolStripMenuItem
-            // 
-            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.settingsToolStripMenuItem1,
-            this.coinsToolStripMenuItem1,
-            this.strategiesToolStripMenuItem1,
-            this.perksToolStripMenuItem});
-            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-            this.toolsToolStripMenuItem.Text = "&Tools";
-            // 
-            // settingsToolStripMenuItem1
-            // 
-            this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
-            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.settingsToolStripMenuItem1.Text = "&Settings";
-            this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click);
-            // 
-            // coinsToolStripMenuItem1
-            // 
-            this.coinsToolStripMenuItem1.Name = "coinsToolStripMenuItem1";
-            this.coinsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.coinsToolStripMenuItem1.Text = "&Pools";
-            this.coinsToolStripMenuItem1.Click += new System.EventHandler(this.coinsToolStripMenuItem1_Click);
-            // 
-            // strategiesToolStripMenuItem1
-            // 
-            this.strategiesToolStripMenuItem1.Name = "strategiesToolStripMenuItem1";
-            this.strategiesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.strategiesToolStripMenuItem1.Text = "S&trategies";
-            this.strategiesToolStripMenuItem1.Click += new System.EventHandler(this.strategiesToolStripMenuItem1_Click);
+            // toolStripButton1
+            // 
+            this.toolStripButton1.AccessibleName = "Help";
+            this.toolStripButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripButton1.Image = global::MultiMiner.Win.Properties.Resources.application_help;
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(52, 22);
+            this.toolStripButton1.Text = "&Help";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // startMenuItem
+            // 
+            this.startMenuItem.Image = global::MultiMiner.Win.Properties.Resources.computer_control_play;
+            this.startMenuItem.Name = "startMenuItem";
+            this.startMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.startMenuItem.Text = "Start";
+            this.startMenuItem.Click += new System.EventHandler(this.startMenuItem_Click);
+            // 
+            // stopMenuItem
+            // 
+            this.stopMenuItem.Image = global::MultiMiner.Win.Properties.Resources.computer_control_stop;
+            this.stopMenuItem.Name = "stopMenuItem";
+            this.stopMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.stopMenuItem.Text = "Stop";
+            this.stopMenuItem.Click += new System.EventHandler(this.stopMenuItem_Click);
+            // 
+            // showAppMenuItem
+            // 
+            this.showAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application;
+            this.showAppMenuItem.Name = "showAppMenuItem";
+            this.showAppMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.showAppMenuItem.Text = "Show";
+            this.showAppMenuItem.Click += new System.EventHandler(this.showAppMenuItem_Click);
+            // 
+            // quitAppMenuItem
+            // 
+            this.quitAppMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_delete;
+            this.quitAppMenuItem.Name = "quitAppMenuItem";
+            this.quitAppMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.quitAppMenuItem.Text = "Quit";
+            this.quitAppMenuItem.Click += new System.EventHandler(this.quitAppMenuItem_Click);
+            // 
+            // detectDevicesToolStripMenuItem
+            // 
+            this.detectDevicesToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.hardware_find;
+            this.detectDevicesToolStripMenuItem.Name = "detectDevicesToolStripMenuItem";
+            this.detectDevicesToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.detectDevicesToolStripMenuItem.Text = "Scan Hardware";
+            this.detectDevicesToolStripMenuItem.Click += new System.EventHandler(this.detectDevicesToolStripMenuItem_Click);
+            // 
+            // quickSwitchPopupItem
+            // 
+            this.quickSwitchPopupItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.dummyToolStripMenuItem1});
+            this.quickSwitchPopupItem.Image = global::MultiMiner.Win.Properties.Resources.list_arrow_right;
+            this.quickSwitchPopupItem.Name = "quickSwitchPopupItem";
+            this.quickSwitchPopupItem.Size = new System.Drawing.Size(153, 22);
+            this.quickSwitchPopupItem.Text = "Quick Switch";
+            this.quickSwitchPopupItem.DropDownOpening += new System.EventHandler(this.quickSwitchPopupItem_DropDownOpening);
+            // 
+            // dummyToolStripMenuItem1
+            // 
+            this.dummyToolStripMenuItem1.Name = "dummyToolStripMenuItem1";
+            this.dummyToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+            this.dummyToolStripMenuItem1.Text = "Dummy";
+            // 
+            // historyToolStripMenuItem
+            // 
+            this.historyToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.history;
+            this.historyToolStripMenuItem.Name = "historyToolStripMenuItem";
+            this.historyToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.historyToolStripMenuItem.Text = "History";
+            this.historyToolStripMenuItem.Click += new System.EventHandler(this.historyToolStripMenuItem_Click);
+            // 
+            // processLogToolStripMenuItem
+            // 
+            this.processLogToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.window_text;
+            this.processLogToolStripMenuItem.Name = "processLogToolStripMenuItem";
+            this.processLogToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.processLogToolStripMenuItem.Text = "Process Log";
+            this.processLogToolStripMenuItem.Click += new System.EventHandler(this.processLogToolStripMenuItem_Click);
+            // 
+            // aPIMonitorToolStripMenuItem
+            // 
+            this.aPIMonitorToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.network_application;
+            this.aPIMonitorToolStripMenuItem.Name = "aPIMonitorToolStripMenuItem";
+            this.aPIMonitorToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.aPIMonitorToolStripMenuItem.Text = "API Monitor";
+            this.aPIMonitorToolStripMenuItem.Click += new System.EventHandler(this.aPIMonitorToolStripMenuItem_Click);
+            // 
+            // coinsToolStripMenuItem
+            // 
+            this.coinsToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_gear;
+            this.coinsToolStripMenuItem.Name = "coinsToolStripMenuItem";
+            this.coinsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.coinsToolStripMenuItem.Text = "Coins";
+            this.coinsToolStripMenuItem.Click += new System.EventHandler(this.coinsToolStripMenuItem_Click);
+            // 
+            // strategiesToolStripMenuItem
+            // 
+            this.strategiesToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_execute;
+            this.strategiesToolStripMenuItem.Name = "strategiesToolStripMenuItem";
+            this.strategiesToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.strategiesToolStripMenuItem.Text = "Strategies";
+            this.strategiesToolStripMenuItem.Click += new System.EventHandler(this.strategiesToolStripMenuItem_Click);
             // 
-            // perksToolStripMenuItem
+            // perksToolStripMenuItem1
             // 
-            this.perksToolStripMenuItem.Name = "perksToolStripMenuItem";
-            this.perksToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.perksToolStripMenuItem.Text = "P&erks";
-            this.perksToolStripMenuItem.Click += new System.EventHandler(this.perksToolStripMenuItem_Click_1);
+            this.perksToolStripMenuItem1.Image = global::MultiMiner.Win.Properties.Resources.application_add;
+            this.perksToolStripMenuItem1.Name = "perksToolStripMenuItem1";
+            this.perksToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
+            this.perksToolStripMenuItem1.Text = "Perks";
+            this.perksToolStripMenuItem1.Click += new System.EventHandler(this.perksToolStripMenuItem1_Click);
             // 
-            // viewToolStripMenuItem
+            // settingsToolStripMenuItem
             // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.largeIconsToolStripMenuItem1,
-            this.smallIconsToolStripMenuItem1,
-            this.listToolStripMenuItem1,
-            this.detailsToolStripMenuItem1,
-            this.tilesToolStripMenuItem1});
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.viewToolStripMenuItem.Text = "&View";
+            this.settingsToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_option;
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
-            // largeIconsToolStripMenuItem1
+            // launchToolStripMenuItem
             // 
-            this.largeIconsToolStripMenuItem1.Name = "largeIconsToolStripMenuItem1";
-            this.largeIconsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.largeIconsToolStripMenuItem1.Text = "&Large Icons";
-            this.largeIconsToolStripMenuItem1.Click += new System.EventHandler(this.largeIconsToolStripMenuItem1_Click);
+            this.launchToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_control_play;
+            this.launchToolStripMenuItem.Name = "launchToolStripMenuItem";
+            this.launchToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.launchToolStripMenuItem.Text = "Launch";
+            this.launchToolStripMenuItem.Click += new System.EventHandler(this.launchToolStripMenuItem_Click);
             // 
-            // smallIconsToolStripMenuItem1
+            // toolStripSeparator5
             // 
-            this.smallIconsToolStripMenuItem1.Name = "smallIconsToolStripMenuItem1";
-            this.smallIconsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.smallIconsToolStripMenuItem1.Text = "&Small Icons";
-            this.smallIconsToolStripMenuItem1.Click += new System.EventHandler(this.smallIconsToolStripMenuItem1_Click);
-            // 
-            // listToolStripMenuItem1
-            // 
-            this.listToolStripMenuItem1.Name = "listToolStripMenuItem1";
-            this.listToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.listToolStripMenuItem1.Text = "L&ist";
-            this.listToolStripMenuItem1.Click += new System.EventHandler(this.listToolStripMenuItem1_Click);
-            // 
-            // detailsToolStripMenuItem1
-            // 
-            this.detailsToolStripMenuItem1.Name = "detailsToolStripMenuItem1";
-            this.detailsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.detailsToolStripMenuItem1.Text = "&Details";
-            this.detailsToolStripMenuItem1.Click += new System.EventHandler(this.detailsToolStripMenuItem1_Click);
-            // 
-            // tilesToolStripMenuItem1
-            // 
-            this.tilesToolStripMenuItem1.Name = "tilesToolStripMenuItem1";
-            this.tilesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.tilesToolStripMenuItem1.Text = "&Tiles";
-            this.tilesToolStripMenuItem1.Click += new System.EventHandler(this.tilesToolStripMenuItem1_Click);
-            // 
-            // advancedToolStripMenuItem
-            // 
-            this.advancedToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.scanHardwareToolStripMenuItem,
-            this.quickSwitchToolStripMenuItem,
-            this.historyMenuSeperator,
-            this.historyToolStripMenuItem1,
-            this.processLogToolStripMenuItem1,
-            this.aPIMonitorToolStripMenuItem1,
-            this.dynamicIntensityMenuSeperator,
-            this.dynamicIntensityToolStripMenuItem});
-            this.advancedToolStripMenuItem.Name = "advancedToolStripMenuItem";
-            this.advancedToolStripMenuItem.Size = new System.Drawing.Size(72, 20);
-            this.advancedToolStripMenuItem.Text = "A&dvanced";
-            this.advancedToolStripMenuItem.DropDownOpening += new System.EventHandler(this.advancedToolStripMenuItem_DropDownOpening);
-            // 
-            // scanHardwareToolStripMenuItem
-            // 
-            this.scanHardwareToolStripMenuItem.Name = "scanHardwareToolStripMenuItem";
-            this.scanHardwareToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.scanHardwareToolStripMenuItem.Text = "&Scan Hardware";
-            this.scanHardwareToolStripMenuItem.Click += new System.EventHandler(this.scanHardwareToolStripMenuItem_Click);
-            // 
-            // quickSwitchToolStripMenuItem
-            // 
-            this.quickSwitchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.dummyToolStripMenuItem3});
-            this.quickSwitchToolStripMenuItem.Name = "quickSwitchToolStripMenuItem";
-            this.quickSwitchToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.quickSwitchToolStripMenuItem.Text = "&Quick Switch";
-            this.quickSwitchToolStripMenuItem.DropDownOpening += new System.EventHandler(this.quickSwitchToolStripMenuItem_DropDownOpening);
-            // 
-            // dummyToolStripMenuItem3
-            // 
-            this.dummyToolStripMenuItem3.Name = "dummyToolStripMenuItem3";
-            this.dummyToolStripMenuItem3.Size = new System.Drawing.Size(117, 22);
-            this.dummyToolStripMenuItem3.Text = "Dummy";
-            // 
-            // historyMenuSeperator
-            // 
-            this.historyMenuSeperator.Name = "historyMenuSeperator";
-            this.historyMenuSeperator.Size = new System.Drawing.Size(166, 6);
-            // 
-            // historyToolStripMenuItem1
-            // 
-            this.historyToolStripMenuItem1.Name = "historyToolStripMenuItem1";
-            this.historyToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
-            this.historyToolStripMenuItem1.Text = "&History";
-            this.historyToolStripMenuItem1.Click += new System.EventHandler(this.historyToolStripMenuItem1_Click);
-            // 
-            // processLogToolStripMenuItem1
-            // 
-            this.processLogToolStripMenuItem1.Name = "processLogToolStripMenuItem1";
-            this.processLogToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
-            this.processLogToolStripMenuItem1.Text = "&Process Log";
-            this.processLogToolStripMenuItem1.Click += new System.EventHandler(this.processLogToolStripMenuItem1_Click);
-            // 
-            // aPIMonitorToolStripMenuItem1
-            // 
-            this.aPIMonitorToolStripMenuItem1.Name = "aPIMonitorToolStripMenuItem1";
-            this.aPIMonitorToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
-            this.aPIMonitorToolStripMenuItem1.Text = "&API Monitor";
-            this.aPIMonitorToolStripMenuItem1.Click += new System.EventHandler(this.aPIMonitorToolStripMenuItem1_Click);
-            // 
-            // dynamicIntensityMenuSeperator
-            // 
-            this.dynamicIntensityMenuSeperator.Name = "dynamicIntensityMenuSeperator";
-            this.dynamicIntensityMenuSeperator.Size = new System.Drawing.Size(166, 6);
-            // 
-            // dynamicIntensityToolStripMenuItem
-            // 
-            this.dynamicIntensityToolStripMenuItem.CheckOnClick = true;
-            this.dynamicIntensityToolStripMenuItem.Name = "dynamicIntensityToolStripMenuItem";
-            this.dynamicIntensityToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.dynamicIntensityToolStripMenuItem.Text = "&Dynamic Intensity";
-            this.dynamicIntensityToolStripMenuItem.Click += new System.EventHandler(this.dynamicIntensityToolStripMenuItem_Click);
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem});
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "&Help";
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.aboutToolStripMenuItem.Text = "&About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
-            // networkDeviceContextMenu
-            // 
-            this.networkDeviceContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.networkDevicePoolMenu,
-            this.restartMiningToolStripMenuItem});
-            this.networkDeviceContextMenu.Name = "remoteDeviceContextMenu";
-            this.networkDeviceContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.networkDeviceContextMenu.Size = new System.Drawing.Size(152, 48);
-            // 
-            // networkDevicePoolMenu
-            // 
-            this.networkDevicePoolMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aToolStripMenuItem,
-            this.bToolStripMenuItem});
-            this.networkDevicePoolMenu.Name = "networkDevicePoolMenu";
-            this.networkDevicePoolMenu.Size = new System.Drawing.Size(151, 22);
-            this.networkDevicePoolMenu.Text = "Switch Pool";
-            // 
-            // aToolStripMenuItem
-            // 
-            this.aToolStripMenuItem.Name = "aToolStripMenuItem";
-            this.aToolStripMenuItem.Size = new System.Drawing.Size(82, 22);
-            this.aToolStripMenuItem.Text = "A";
-            // 
-            // bToolStripMenuItem
-            // 
-            this.bToolStripMenuItem.Name = "bToolStripMenuItem";
-            this.bToolStripMenuItem.Size = new System.Drawing.Size(82, 22);
-            this.bToolStripMenuItem.Text = "B";
-            // 
-            // restartMiningToolStripMenuItem
-            // 
-            this.restartMiningToolStripMenuItem.Name = "restartMiningToolStripMenuItem";
-            this.restartMiningToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
-            this.restartMiningToolStripMenuItem.Text = "Restart Mining";
-            this.restartMiningToolStripMenuItem.Click += new System.EventHandler(this.restartMiningToolStripMenuItem_Click);
+            this.toolStripSeparator5.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
             // 
             // detailsControl1
             // 
@@ -1822,7 +1843,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(252, 375);
+            this.detailsControl1.Size = new System.Drawing.Size(251, 226);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -1857,7 +1878,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1293, 481);
+            this.ClientSize = new System.Drawing.Size(907, 332);
             this.Controls.Add(this.startupMiningPanel);
             this.Controls.Add(this.advancedAreaContainer);
             this.Controls.Add(this.footerPanel);
@@ -1891,10 +1912,8 @@
             this.historyPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.historyGridView)).EndInit();
             this.openLogMenu.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).EndInit();
             this.processLogPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.processLogGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).EndInit();
             this.apiMonitorPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).EndInit();
             this.panel2.ResumeLayout(false);
@@ -1908,6 +1927,8 @@
             this.accessibleMenu.ResumeLayout(false);
             this.accessibleMenu.PerformLayout();
             this.networkDeviceContextMenu.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.logProcessCloseArgsBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -2088,6 +2109,8 @@
         private System.Windows.Forms.ToolStripButton perksPlainButton;
         private System.Windows.Forms.ToolStripMenuItem strategiesButton;
         private System.Windows.Forms.ToolStripMenuItem perksButton;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
     }
 }
 

@@ -143,6 +143,16 @@ namespace MultiMiner.Win.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap application_help {
+            get {
+                object obj = ResourceManager.GetObject("application-help", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap application_info {
             get {
                 object obj = ResourceManager.GetObject("application-info", resourceCulture);
