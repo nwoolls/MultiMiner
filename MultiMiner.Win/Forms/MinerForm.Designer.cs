@@ -38,14 +38,14 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MinerForm));
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Network", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Network", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
@@ -165,9 +165,9 @@
             this.saveSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.saveButton = new System.Windows.Forms.ToolStripButton();
             this.cancelButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.aboutButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.helpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.listViewStyleButton = new System.Windows.Forms.ToolStripSplitButton();
             this.largeIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.smallIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -214,6 +214,7 @@
             this.dynamicIntensityMenuSeperator = new System.Windows.Forms.ToolStripSeparator();
             this.dynamicIntensityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.networkDeviceContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.networkDevicePoolMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -576,7 +577,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(907, 226);
-            this.detailsAreaContainer.SplitterDistance = 654;
+            this.detailsAreaContainer.SplitterDistance = 657;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -607,27 +608,27 @@
             this.intensityColumnHeader});
             this.deviceListView.ContextMenuStrip = this.columnHeaderMenu;
             this.deviceListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            listViewGroup1.Header = "CPU";
-            listViewGroup1.Name = "cpuListViewGroup";
-            listViewGroup2.Header = "GPU";
-            listViewGroup2.Name = "gpuListViewGroup";
-            listViewGroup3.Header = "USB";
-            listViewGroup3.Name = "usbListViewGroup";
-            listViewGroup4.Header = "Proxy";
-            listViewGroup4.Name = "proxyListViewGroup";
-            listViewGroup5.Header = "Network";
-            listViewGroup5.Name = "networkListViewGroup";
+            listViewGroup6.Header = "CPU";
+            listViewGroup6.Name = "cpuListViewGroup";
+            listViewGroup7.Header = "GPU";
+            listViewGroup7.Name = "gpuListViewGroup";
+            listViewGroup8.Header = "USB";
+            listViewGroup8.Name = "usbListViewGroup";
+            listViewGroup9.Header = "Proxy";
+            listViewGroup9.Name = "proxyListViewGroup";
+            listViewGroup10.Header = "Network";
+            listViewGroup10.Name = "networkListViewGroup";
             this.deviceListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3,
-            listViewGroup4,
-            listViewGroup5});
+            listViewGroup6,
+            listViewGroup7,
+            listViewGroup8,
+            listViewGroup9,
+            listViewGroup10});
             this.deviceListView.LabelEdit = true;
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(654, 226);
+            this.deviceListView.Size = new System.Drawing.Size(657, 226);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -742,7 +743,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(250, 226);
+            this.detailsControl1.Size = new System.Drawing.Size(247, 226);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -777,8 +778,8 @@
             this.historyGridView.AllowUserToAddRows = false;
             this.historyGridView.AllowUserToDeleteRows = false;
             this.historyGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
             this.historyGridView.AutoGenerateColumns = false;
             this.historyGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.historyGridView.BackgroundColor = System.Drawing.SystemColors.Window;
@@ -908,8 +909,8 @@
             this.processLogGridView.AllowUserToDeleteRows = false;
             this.processLogGridView.AllowUserToOrderColumns = true;
             this.processLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.processLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.processLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.processLogGridView.AutoGenerateColumns = false;
             this.processLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.processLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -992,8 +993,8 @@
             this.apiLogGridView.AllowUserToDeleteRows = false;
             this.apiLogGridView.AllowUserToOrderColumns = true;
             this.apiLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
             this.apiLogGridView.AutoGenerateColumns = false;
             this.apiLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.apiLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -1228,11 +1229,9 @@
             this.saveSeparator,
             this.saveButton,
             this.cancelButton,
-            this.toolStripSeparator5,
-            this.aboutButton,
+            this.toolStripDropDownButton1,
             this.listViewStyleButton,
-            this.advancedMenuItem,
-            this.toolStripButton1});
+            this.advancedMenuItem});
             this.standardToolBar.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.standardToolBar.Location = new System.Drawing.Point(0, 24);
             this.standardToolBar.Name = "standardToolBar";
@@ -1400,32 +1399,34 @@
             this.cancelButton.ToolTipText = "Cancel changes";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
-            // toolStripButton1
+            // toolStripDropDownButton1
             // 
-            this.toolStripButton1.AccessibleName = "Help";
-            this.toolStripButton1.Image = global::MultiMiner.Win.Properties.Resources.application_help;
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(52, 22);
-            this.toolStripButton1.Text = "&Help";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            this.toolStripDropDownButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem2,
+            this.aboutToolStripMenuItem1});
+            this.toolStripDropDownButton1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(29, 22);
+            this.toolStripDropDownButton1.Text = "Help";
             // 
-            // toolStripSeparator5
+            // helpToolStripMenuItem2
             // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+            this.helpToolStripMenuItem2.Image = global::MultiMiner.Win.Properties.Resources.application_help;
+            this.helpToolStripMenuItem2.Name = "helpToolStripMenuItem2";
+            this.helpToolStripMenuItem2.Size = new System.Drawing.Size(107, 22);
+            this.helpToolStripMenuItem2.Text = "Help";
+            this.helpToolStripMenuItem2.Click += new System.EventHandler(this.helpToolStripMenuItem2_Click);
             // 
-            // aboutButton
+            // aboutToolStripMenuItem1
             // 
-            this.aboutButton.AccessibleName = "Advanced";
-            this.aboutButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.aboutButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.aboutButton.Image = global::MultiMiner.Win.Properties.Resources.application_info;
-            this.aboutButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.aboutButton.Name = "aboutButton";
-            this.aboutButton.Size = new System.Drawing.Size(23, 22);
-            this.aboutButton.Text = "About";
-            this.aboutButton.Click += new System.EventHandler(this.aboutButton_Click);
+            this.aboutToolStripMenuItem1.Image = global::MultiMiner.Win.Properties.Resources.application_info;
+            this.aboutToolStripMenuItem1.Name = "aboutToolStripMenuItem1";
+            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem1.Text = "About";
+            this.aboutToolStripMenuItem1.Click += new System.EventHandler(this.aboutToolStripMenuItem1_Click);
             // 
             // listViewStyleButton
             // 
@@ -1823,10 +1824,18 @@
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem1,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "&Help";
+            // 
+            // helpToolStripMenuItem1
+            // 
+            this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.helpToolStripMenuItem1.Text = "&Help";
+            this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -1987,7 +1996,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Reason;
         private System.Windows.Forms.ToolStripMenuItem quickSwitchItem;
         private System.Windows.Forms.ToolStripMenuItem dummyToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton aboutButton;
         private System.Windows.Forms.ToolStripStatusLabel deviceTotalLabel;
         private System.Windows.Forms.ToolStripSplitButton settingsButton;
         private System.Windows.Forms.ToolStripMenuItem coinsButton;
@@ -2107,8 +2115,10 @@
         private System.Windows.Forms.ToolStripButton perksPlainButton;
         private System.Windows.Forms.ToolStripMenuItem strategiesButton;
         private System.Windows.Forms.ToolStripMenuItem perksButton;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem1;
     }
 }
 

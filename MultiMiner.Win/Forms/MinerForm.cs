@@ -2626,12 +2626,7 @@ namespace MultiMiner.Win.Forms
         {
             ToggleDynamicIntensity(dynamicIntensityButton.Checked);
         }
-
-        private void aboutButton_Click(object sender, EventArgs e)
-        {
-            ShowAboutDialog();
-        }
-
+        
         private void advancedAreaContainer_SplitterMoved(object sender, SplitterEventArgs e)
         {
             if (settingsLoaded)
@@ -2913,9 +2908,19 @@ namespace MultiMiner.Win.Forms
             ConfigurePerks();
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
+        private void helpToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/nwoolls/MultiMiner/wiki");
+        }
+
+        private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki");
+        }
+
+        private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ShowAboutDialog();
         }
         #endregion
 
