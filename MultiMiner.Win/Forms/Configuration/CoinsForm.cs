@@ -10,6 +10,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -488,6 +489,11 @@ namespace MultiMiner.Win.Forms.Configuration
         private void editCoinButton_Click(object sender, EventArgs e)
         {
             EditCurrentCoin();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Pools");
         }
     }
 }

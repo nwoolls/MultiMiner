@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Engine.Data;
+using System.Diagnostics;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -151,6 +152,11 @@ namespace MultiMiner.Win.Forms.Configuration
 
             profitabilityKindLabel.Enabled = profitabilityKindCombo.Enabled;
             thresholdValueLabel.Text = thresholdSymbolLabel.Text;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Auto-Mining-Strategies");
         }
     }
 

@@ -2,6 +2,7 @@
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Win.Data.Configuration;
 using System;
+using System.Diagnostics;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -76,6 +77,11 @@ namespace MultiMiner.Win.Forms.Configuration
             }
 
             DialogResult = System.Windows.Forms.DialogResult.OK;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Settings");
         }
     }
 }

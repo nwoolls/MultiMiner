@@ -7,6 +7,7 @@ using System;
 using MultiMiner.Win.Extensions;
 using System.Linq;
 using MultiMiner.Engine;
+using System.Diagnostics;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -166,6 +167,11 @@ namespace MultiMiner.Win.Forms.Configuration
             {
                 System.Windows.Forms.DialogResult dialogResult = gpuSettingsForm.ShowDialog();
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Settings");
         }
     }
 }

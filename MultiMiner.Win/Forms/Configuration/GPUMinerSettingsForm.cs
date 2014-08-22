@@ -7,6 +7,7 @@ using System.Linq;
 using MultiMiner.Engine;
 using MultiMiner.Utility.Serialization;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -190,6 +191,11 @@ namespace MultiMiner.Win.Forms.Configuration
                 MinerFactory.Instance.Algorithms.Remove(algorithm);
                 algoListView.Items.Remove(algoListView.SelectedItems[0]);
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/GPU-Algorithms");
         }
     }
 }

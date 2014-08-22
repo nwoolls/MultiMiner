@@ -78,6 +78,7 @@
             this.label13 = new System.Windows.Forms.Label();
             this.buttonPanel = new System.Windows.Forms.Panel();
             this.backButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.wizardTabControl.SuspendLayout();
             this.chooseMinerPage.SuspendLayout();
             this.downloadingMinerPage.SuspendLayout();
@@ -108,7 +109,7 @@
             // closeButton
             // 
             this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.closeButton.Location = new System.Drawing.Point(14, 7);
+            this.closeButton.Location = new System.Drawing.Point(43, 7);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(87, 27);
             this.closeButton.TabIndex = 2;
@@ -608,6 +609,7 @@
             // buttonPanel
             // 
             this.buttonPanel.BackColor = System.Drawing.SystemColors.Control;
+            this.buttonPanel.Controls.Add(this.button1);
             this.buttonPanel.Controls.Add(this.closeButton);
             this.buttonPanel.Controls.Add(this.nextButton);
             this.buttonPanel.Controls.Add(this.backButton);
@@ -627,6 +629,17 @@
             this.backButton.Text = "< Back";
             this.backButton.UseVisualStyleBackColor = true;
             this.backButton.Click += new System.EventHandler(this.backButton_Click);
+            // 
+            // button1
+            // 
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(10, 7);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 11;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // WizardForm
             // 
@@ -719,5 +732,6 @@
         private System.Windows.Forms.CheckBox remotingCheckBox;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.Button button1;
     }
 }

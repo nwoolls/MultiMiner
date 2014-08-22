@@ -2912,6 +2912,11 @@ namespace MultiMiner.Win.Forms
         {
             ConfigurePerks();
         }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki");
+        }
         #endregion
 
         #region Timer setup
@@ -7427,12 +7432,5 @@ namespace MultiMiner.Win.Forms
             }
         }
         #endregion
-
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            Process.Start("https://github.com/nwoolls/MultiMiner/wiki");
-        }
-
-
     }
 }

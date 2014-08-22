@@ -4,6 +4,7 @@ using MultiMiner.Utility.IO;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Win.Data.Configuration;
 using System;
+using System.Diagnostics;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -87,6 +88,11 @@ namespace MultiMiner.Win.Forms.Configuration
                 pathConfiguration.SharedConfigPath = folderBrowserDialog1.SelectedPath;
                 configPathEdit.Text = folderBrowserDialog1.SelectedPath;
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Settings");
         }
     }
 }

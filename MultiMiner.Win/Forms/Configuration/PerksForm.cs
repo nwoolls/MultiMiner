@@ -1,6 +1,7 @@
 ﻿using MultiMiner.Utility.Forms;
 using MultiMiner.Win.Data.Configuration;
 using System;
+using System.Diagnostics;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -58,6 +59,11 @@ namespace MultiMiner.Win.Forms.Configuration
                     success = false;
             }
             e.Cancel = !success;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Perks");
         }
     }
 }

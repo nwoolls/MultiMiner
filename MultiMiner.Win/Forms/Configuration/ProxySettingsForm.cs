@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Utility.Forms;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -69,6 +70,11 @@ namespace MultiMiner.Win.Forms.Configuration
                 proxyDescriptorBindingSource.RemoveAt(proxyListBox.SelectedIndex);
                 getworkPortEdit.Focus();
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Settings");
         }
     }
 }

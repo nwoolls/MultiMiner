@@ -385,5 +385,10 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
         {
             Process.Start("http://mobileminerapp.com/");
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Getting-Started");
+        }
     }
 }

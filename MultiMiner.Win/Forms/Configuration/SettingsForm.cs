@@ -152,5 +152,10 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             Process.Start("http://web.mobileminerapp.com/");
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Settings");
+        }
     }
 }
