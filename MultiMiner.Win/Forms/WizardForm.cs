@@ -29,7 +29,7 @@ namespace MultiMiner.Win.Forms
 
         private void mobileMinerInfoLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://mobileminerapp.com/");
+            Process.Start("http://web.mobileminerapp.com/");
         }
 
         private void WizardForm_Load(object sender, EventArgs e)
@@ -38,8 +38,15 @@ namespace MultiMiner.Win.Forms
             PopulateCoins();
             coinComboBox.SelectedIndex = 0;
             UpdateCheckStates();
+            SetupPoolDefaults();
         }
-        
+
+        private void SetupPoolDefaults()
+        {
+            hostEdit.Text = PoolDefaults.HostPrefix;
+            portEdit.Text = PoolDefaults.Port.ToString();
+        }
+
         private void PopulateCoins()
         {
             coinComboBox.Items.Clear();
@@ -119,9 +126,9 @@ namespace MultiMiner.Win.Forms
         private void showLinuxInstallationInstructions()
         {
             downloadingMinerLabel.Text =
-@"Unfortunately, prebuilt binaries of bfgminer are not available for Linux at this time.
+@"Unfortunately, prebuilt binaries of " + MinerNames.BFGMiner + @" are not available for Linux at this time.
 
-To install bfgminer on Linux please consult the website for bfgminer. There are repositories for many popular Linux distributions.";
+To install " + MinerNames.BFGMiner + @" on Linux please consult the website for " + MinerNames.BFGMiner + @". There are repositories for many popular Linux distributions.";
         }
 
         private bool ValidateInput()
@@ -165,6 +172,9 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
         private void wizardTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateButtons();
+
+            if (wizardTabControl.SelectedTab == configurePoolPage)
+                hostEdit.SelectionStart = hostEdit.SelectionLength;
         }
 
         private void DownloadChosenMiner()
@@ -301,12 +311,12 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
 
                 if (coin.Name.Equals(KnownCoins.LitecoinName, StringComparison.OrdinalIgnoreCase))
                 {
-                    coin.Algorithm = CoinAlgorithm.Scrypt;
+                    coin.Algorithm = AlgorithmNames.Scrypt;
                     coin.Symbol = KnownCoins.LitecoinSymbol;
                 }
                 else
                 {
-                    coin.Algorithm = CoinAlgorithm.SHA256;
+                    coin.Algorithm = AlgorithmNames.SHA256;
                     coin.Symbol = KnownCoins.BitcoinSymbol;
                 }
             }
@@ -369,6 +379,16 @@ To install bfgminer on Linux please consult the website for bfgminer. There are 
             this.incomeCheckBox.Enabled = perksCheckBox.Checked;
             this.remotingCheckBox.Enabled = perksCheckBox.Checked;
             this.remotingPasswordEdit.Enabled = perksCheckBox.Checked;
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("http://mobileminerapp.com/");
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Getting-Started");
         }
     }
 }

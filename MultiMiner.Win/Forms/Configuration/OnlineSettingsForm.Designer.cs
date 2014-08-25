@@ -44,6 +44,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.intervalCombo = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -53,20 +54,21 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 222);
+            this.panel1.Location = new System.Drawing.Point(0, 230);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(377, 62);
+            this.panel1.Size = new System.Drawing.Size(377, 54);
             this.panel1.TabIndex = 3;
             // 
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveButton.Location = new System.Drawing.Point(141, 16);
+            this.saveButton.Location = new System.Drawing.Point(151, 13);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(101, 31);
+            this.saveButton.Size = new System.Drawing.Size(101, 27);
             this.saveButton.TabIndex = 0;
             this.saveButton.Text = "OK";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -76,9 +78,9 @@
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(251, 16);
+            this.cancelButton.Location = new System.Drawing.Point(261, 13);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(101, 31);
+            this.cancelButton.Size = new System.Drawing.Size(101, 27);
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
@@ -116,7 +118,7 @@
             // 
             this.httpsMobileMinerCheck.AutoSize = true;
             this.httpsMobileMinerCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerUsesHttps", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.httpsMobileMinerCheck.Location = new System.Drawing.Point(193, 22);
+            this.httpsMobileMinerCheck.Location = new System.Drawing.Point(239, 22);
             this.httpsMobileMinerCheck.Name = "httpsMobileMinerCheck";
             this.httpsMobileMinerCheck.Size = new System.Drawing.Size(84, 19);
             this.httpsMobileMinerCheck.TabIndex = 2;
@@ -140,9 +142,9 @@
             this.remoteCommandsCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerRemoteCommands", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.remoteCommandsCheck.Location = new System.Drawing.Point(10, 22);
             this.remoteCommandsCheck.Name = "remoteCommandsCheck";
-            this.remoteCommandsCheck.Size = new System.Drawing.Size(143, 19);
+            this.remoteCommandsCheck.Size = new System.Drawing.Size(176, 19);
             this.remoteCommandsCheck.TabIndex = 0;
-            this.remoteCommandsCheck.Text = "Enable remote control";
+            this.remoteCommandsCheck.Text = "Enable remote management";
             this.remoteCommandsCheck.UseVisualStyleBackColor = true;
             // 
             // groupBox2
@@ -214,6 +216,17 @@
             this.label5.TabIndex = 27;
             this.label5.Text = "Check every:";
             // 
+            // button1
+            // 
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(12, 13);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 10;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // OnlineSettingsForm
             // 
             this.AcceptButton = this.saveButton;
@@ -261,5 +274,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox intervalCombo;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button button1;
     }
 }

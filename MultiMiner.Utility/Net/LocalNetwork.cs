@@ -5,6 +5,8 @@ using System.Management;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MultiMiner.Utility.Net
 {
@@ -12,7 +14,12 @@ namespace MultiMiner.Utility.Net
     {
         public static string GetLocalIPAddress()
         {
-            string result = String.Empty;
+            return GetLocalIPAddresses().FirstOrDefault();
+        }
+
+        public static List<string> GetLocalIPAddresses()
+        {
+            List<string> result = new List<string>();
 
             IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (IPAddress ip in host.AddressList)
@@ -20,25 +27,37 @@ namespace MultiMiner.Utility.Net
                 if ((ip.AddressFamily == AddressFamily.InterNetwork) &&
                     //don't include loopback address, e.g. 127.0.0.1
                     (!IPAddress.IsLoopback(ip)))
-                {
-                    result = ip.ToString();
-                    break;
-                }
+                    result.Add(ip.ToString());
             }
 
             return result;
         }
 
-        public static string GetLocalIPAddressRange()
+        public static string GetLocalIPAddressRange(string localIpAddress)
         {
-            string localIpAddress = GetLocalIPAddress();
             if (String.IsNullOrEmpty(localIpAddress))
                 return String.Empty;
-            
+
             string[] portions = localIpAddress.Split('.');
             portions[portions.Length - 1] = "1-255";
 
             return String.Join(".", portions);
+        }
+
+        public static string GetLocalIPAddressRange()
+        {
+            return GetLocalIPAddressRange(GetLocalIPAddress());
+        }
+
+        public static List<string> GetLocalIPAddressRanges()
+        {
+            List<string> result = new List<string>();
+
+            List<string> localIPAddresses = GetLocalIPAddresses();
+            foreach (string localIPAddress in localIPAddresses)
+                result.Add(GetLocalIPAddressRange(localIPAddress));
+
+            return result;
         }
 
         public static string GetWorkGroupName()

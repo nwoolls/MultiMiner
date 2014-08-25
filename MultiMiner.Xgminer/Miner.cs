@@ -62,14 +62,14 @@ namespace MultiMiner.Xgminer
             {
                 //order is important here - scan SHA then Scrypt, scanning Scrypt bricks bigpic until reset
                 //at least with this order it will be detected, but needs a reset before starting mining again
-                List<Device> sha256Devices = ListDevices(prettyNames, CoinAlgorithm.SHA256);
-                List<Device> scryptDevices = ListDevices(prettyNames, CoinAlgorithm.Scrypt);
+                List<Device> sha256Devices = ListDevices(prettyNames, AlgorithmNames.SHA256);
+                List<Device> scryptDevices = ListDevices(prettyNames, AlgorithmNames.Scrypt);
 
                 return MergeDeviceLists(sha256Devices, scryptDevices);
             }
             else
             {
-                return ListDevices(prettyNames, CoinAlgorithm.SHA256);
+                return ListDevices(prettyNames, AlgorithmNames.SHA256);
             }
         }
 
@@ -80,7 +80,7 @@ namespace MultiMiner.Xgminer
             return result;
         }        
 
-        private List<Device> ListDevices(bool prettyNames, CoinAlgorithm algorithm)
+        private List<Device> ListDevices(bool prettyNames, string algorithm)
         {
             string arguments = MinerParameter.DeviceList;
             bool redirectOutput = true;
@@ -90,7 +90,7 @@ namespace MultiMiner.Xgminer
             arguments = String.Format("{0} {1}", arguments, serialArg);
 
             //include Scrypt ASICs
-            if (algorithm == CoinAlgorithm.Scrypt)
+            if (algorithm.Equals(AlgorithmNames.Scrypt))
                 arguments = String.Format("{0} {1}", arguments, MinerParameter.Scrypt);
 
             //include the args specified by the user so we pickup manual devices (e.g. Avalon)
@@ -276,46 +276,10 @@ namespace MultiMiner.Xgminer
                 }
             }
             
-            string shortFileName = Path.GetFileNameWithoutExtension(Path.GetFileName(minerConfiguration.ExecutablePath));
-            bool isSGMiner = shortFileName.Equals("sgminer", StringComparison.OrdinalIgnoreCase);
+            string minerName = Path.GetFileName(Path.GetDirectoryName(minerConfiguration.ExecutablePath));
 
-            //the --scrypt param must come before the --intensity params to use over 13 in latest cgminer
-            if (!isSGMiner && (minerConfiguration.Algorithm == CoinAlgorithm.Scrypt))
-                arguments = String.Format("{0} {1}", MinerParameter.Scrypt, arguments.TrimStart());
-            else if (minerConfiguration.Algorithm == CoinAlgorithm.ScryptN)
-            {
-                if (isSGMiner)
-                {
-                    arguments = String.Format("{0} {1}", MinerParameter.AlgorithmNScrypt, arguments.TrimStart());
-                }
-                else
-                {
-                    arguments = String.Format("{0} {1}", MinerParameter.ScryptVert, arguments.TrimStart());
-                }
-            }
-            else if (minerConfiguration.Algorithm == CoinAlgorithm.ScryptJane)
-                arguments = String.Format("{0} {1}", MinerParameter.ScryptJane, arguments.TrimStart());
-            else if (minerConfiguration.Algorithm == CoinAlgorithm.X11)
-            {
-                //minerConfiguration.ExecutablePath
-                //lazy check for x11mod
-                if (minerConfiguration.ExecutablePath.IndexOf("LBSPHSGMiner", StringComparison.OrdinalIgnoreCase) == -1)
-                    arguments = String.Format("{0} {1}", MinerParameter.KernelDarkcoin, arguments.TrimStart());
-                else
-                    arguments = String.Format("{0} {1}", MinerParameter.KernelX11Mod, arguments.TrimStart());
-            }
-            else if (minerConfiguration.Algorithm == CoinAlgorithm.X13)
-                arguments = String.Format("{0} {1}", MinerParameter.KernelX13Mod, arguments.TrimStart());
-            else if (minerConfiguration.Algorithm == CoinAlgorithm.X14)
-                arguments = String.Format("{0} {1}", MinerParameter.PoolAlgorithmX14Old, arguments.TrimStart());
-            else if (minerConfiguration.Algorithm == CoinAlgorithm.X15)
-                arguments = String.Format("{0} {1}", MinerParameter.PoolAlgorithmBitBlockOld, arguments.TrimStart());
-            else if (minerConfiguration.Algorithm == CoinAlgorithm.Quark)
-                arguments = String.Format("{0} {1}", MinerParameter.KernelQuarkcoin, arguments.TrimStart());
-            else if (minerConfiguration.Algorithm == CoinAlgorithm.Groestl)
-                arguments = String.Format("{0} {1}", MinerParameter.KernelGroestcoin, arguments.TrimStart());
-            else if (minerConfiguration.Algorithm == CoinAlgorithm.Keccak)
-                arguments = String.Format("{0} {1}", MinerParameter.Keccak, arguments.TrimStart());
+            if (minerConfiguration.Algorithm.MinerArguments.ContainsKey(minerName))
+                arguments = String.Format("{0} {1}", minerConfiguration.Algorithm.MinerArguments[minerName], arguments.TrimStart());
 
             if (minerConfiguration.ApiListen)
             {

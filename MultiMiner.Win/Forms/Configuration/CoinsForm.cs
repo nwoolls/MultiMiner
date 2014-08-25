@@ -10,6 +10,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -102,8 +103,8 @@ namespace MultiMiner.Win.Forms.Configuration
 
                 MiningPool miningPool = new MiningPool()
                 {
-                    Host = "stratum+tcp://",
-                    Port = 3333
+                    Host = Data.Configuration.PoolDefaults.HostPrefix,
+                    Port = Data.Configuration.PoolDefaults.Port
                 };
                 configuration.Pools.Add(miningPool);
 
@@ -141,10 +142,10 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             Engine.Data.Configuration.Coin configuration = configurations[coinListBox.SelectedIndex];
 
-            MiningPool miningPool = new MiningPool() 
-            { 
-                Host = "stratum+tcp://", 
-                Port = 3333 
+            MiningPool miningPool = new MiningPool()
+            {
+                Host = Data.Configuration.PoolDefaults.HostPrefix,
+                Port = Data.Configuration.PoolDefaults.Port
             };
             miningPoolBindingSource.Add(miningPool);
 
@@ -488,6 +489,11 @@ namespace MultiMiner.Win.Forms.Configuration
         private void editCoinButton_Click(object sender, EventArgs e)
         {
             EditCurrentCoin();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Pools");
         }
     }
 }

@@ -7,6 +7,7 @@ using System;
 using MultiMiner.Win.Extensions;
 using System.Linq;
 using MultiMiner.Engine;
+using System.Diagnostics;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -42,22 +43,17 @@ namespace MultiMiner.Win.Forms.Configuration
             PopulateAlgorithmCombo();
             LoadSettings();
 
-            algoArgCombo.Text = CoinAlgorithm.SHA256.ToString().ToSpaceDelimitedWords();
+            algoArgCombo.Text = AlgorithmNames.SHA256.ToSpaceDelimitedWords();
         }
 
         private void PopulateAlgorithmCombo()
         {
             algoArgCombo.Items.Clear();
-            foreach (CoinAlgorithm algorithm in (CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm)))
+            System.Collections.Generic.List<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
+            foreach (CoinAlgorithm algorithm in algorithms)
             {
-                if (AlgorithmIsSupported(algorithm))
-                    algoArgCombo.Items.Add(algorithm.ToString().ToSpaceDelimitedWords());
+                algoArgCombo.Items.Add(algorithm.Name.ToSpaceDelimitedWords());
             }
-        }
-
-        private static bool AlgorithmIsSupported(CoinAlgorithm algorithm)
-        {
-            return MinerFactory.Instance.DefaultMiners.ContainsKey(algorithm);
         }
 
         private void PopulateIntervalCombo()
@@ -116,7 +112,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void argAlgoCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CoinAlgorithm algorithm = (CoinAlgorithm)Enum.Parse(typeof(CoinAlgorithm), algoArgCombo.Text.Replace(" ", String.Empty));
+            string algorithm = algoArgCombo.Text.Replace(" ", String.Empty);
             if (workingMinerConfiguration.AlgorithmFlags.ContainsKey(algorithm))
                 algoArgEdit.Text = workingMinerConfiguration.AlgorithmFlags[algorithm];
             else
@@ -125,7 +121,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void algoArgEdit_Validated(object sender, EventArgs e)
         {
-            CoinAlgorithm algorithm = (CoinAlgorithm)Enum.Parse(typeof(CoinAlgorithm), algoArgCombo.Text.Replace(" ", String.Empty));
+            string algorithm = algoArgCombo.Text.Replace(" ", String.Empty);
             workingMinerConfiguration.AlgorithmFlags[algorithm] = algoArgEdit.Text;
         }
 
@@ -171,6 +167,11 @@ namespace MultiMiner.Win.Forms.Configuration
             {
                 System.Windows.Forms.DialogResult dialogResult = gpuSettingsForm.ShowDialog();
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Settings");
         }
     }
 }

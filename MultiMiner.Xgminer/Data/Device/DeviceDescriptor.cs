@@ -31,15 +31,15 @@ namespace MultiMiner.Xgminer.Data
                 Driver.Equals(ZeusMinerDriver, StringComparison.OrdinalIgnoreCase);
         }
 
-        public bool SupportsAlgorithm(CoinAlgorithm algorithm)
+        public bool SupportsAlgorithm(string algorithm)
         {
             bool result = false;
 
-            if (algorithm == CoinAlgorithm.Scrypt)
+            if (algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase))
             {
                 result = (Kind == DeviceKind.GPU) || (Kind == DeviceKind.CPU) || (Kind == DeviceKind.PXY) || IsScryptAsic();
             }
-            else if (algorithm == CoinAlgorithm.SHA256)
+            else if (algorithm.Equals(AlgorithmNames.SHA256, StringComparison.OrdinalIgnoreCase))
             {
                 result = !IsScryptAsic();
             }

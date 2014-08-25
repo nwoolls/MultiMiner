@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationFailedArgs.cs" />
+    <Compile Include="Data\AlgorithmNames.cs" />
     <Compile Include="Data\CoinAlgorithm.cs" />
     <Compile Include="Data\Device\Device.cs" />
     <Compile Include="Data\Device\DeviceDescriptor.cs" />

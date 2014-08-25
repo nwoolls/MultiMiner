@@ -1,17 +1,33 @@
-﻿namespace MultiMiner.Xgminer.Data
+﻿using MultiMiner.Utility.Serialization;
+
+namespace MultiMiner.Xgminer.Data
 {
-    public enum CoinAlgorithm
+    public class CoinAlgorithm
     {
-        SHA256 = 0,
-        Scrypt = 1,
-        ScryptJane = 2,
-        ScryptN = 3,
-        X11 = 4,
-        Quark = 5,
-        Groestl = 6,
-        Keccak = 7,
-        X13 = 8,
-        X14 = 9,
-        X15 = 10
+        public enum AlgorithmFamily
+        {
+            Unknown,
+            SHA2,
+            SHA3,
+            Scrypt
+        }
+
+        //general info
+        public string Name { get; set; }
+        public AlgorithmFamily Family { get; set; }
+        public bool BuiltIn { get; set; }
+        
+        //coin API info
+        public string FullName { get; set; }
+
+        //miner info
+        public string DefaultMiner { get; set; }
+        //per-miner arguments, e.g. kernel args
+        public SerializableDictionary<string, string> MinerArguments { get; set; }
+
+        public CoinAlgorithm()
+        {
+            MinerArguments = new SerializableDictionary<string, string>();
+        }
     }
 }

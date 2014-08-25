@@ -48,6 +48,7 @@
             this.remotingCheckBox = new System.Windows.Forms.CheckBox();
             this.incomeCheckBox = new System.Windows.Forms.CheckBox();
             this.coinbaseCheckBox = new System.Windows.Forms.CheckBox();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.perksConfigurationBindingSource)).BeginInit();
@@ -104,6 +105,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -240,6 +242,17 @@
             this.coinbaseCheckBox.Text = "Show exchange rates from Coinbase.com";
             this.coinbaseCheckBox.UseVisualStyleBackColor = true;
             // 
+            // button1
+            // 
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(12, 14);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 5;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // PerksForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -294,5 +307,6 @@
         private System.Windows.Forms.CheckBox incomeCheckBox;
         private System.Windows.Forms.CheckBox coinbaseCheckBox;
         private System.Windows.Forms.CheckBox advancedProxyCheckBox;
+        private System.Windows.Forms.Button button1;
     }
 }

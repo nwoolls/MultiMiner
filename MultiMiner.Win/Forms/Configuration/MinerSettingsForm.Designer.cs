@@ -34,6 +34,7 @@
             this.algoArgEdit = new System.Windows.Forms.TextBox();
             this.algoArgCombo = new System.Windows.Forms.ComboBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.xgminerConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -44,6 +45,7 @@
             this.proxyPortEdit = new System.Windows.Forms.TextBox();
             this.proxyCheckBox = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.intervalCombo = new System.Windows.Forms.ComboBox();
             this.autoDesktopCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -57,15 +59,14 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.gpuSettingsLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.xgminerConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).BeginInit();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox3
@@ -98,10 +99,10 @@
             this.algoArgCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.algoArgCombo.FormattingEnabled = true;
             this.algoArgCombo.Items.AddRange(new object[] {
-            "SHA-256",
             "Scrypt",
             "Scrypt-Jane",
             "Scrypt-N",
+            "SHA-256",
             "X11"});
             this.algoArgCombo.Location = new System.Drawing.Point(14, 22);
             this.algoArgCombo.Name = "algoArgCombo";
@@ -120,6 +121,10 @@
             this.checkBox3.TabIndex = 5;
             this.checkBox3.Text = "Disable USB probing";
             this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // xgminerConfigurationBindingSource
+            // 
+            this.xgminerConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Data.Configuration.Xgminer);
             // 
             // textBox4
             // 
@@ -228,6 +233,10 @@
             this.checkBox1.Text = "Restart miners every:";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
+            // 
             // intervalCombo
             // 
             this.intervalCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -327,6 +336,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -377,13 +387,16 @@
             this.pictureBox1.TabIndex = 16;
             this.pictureBox1.TabStop = false;
             // 
-            // xgminerConfigurationBindingSource
+            // button1
             // 
-            this.xgminerConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Data.Configuration.Xgminer);
-            // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(14, 15);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 8;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // MinerSettingsForm
             // 
@@ -410,14 +423,14 @@
             this.Load += new System.EventHandler(this.AdvancedSettingsForm_Load);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -454,5 +467,6 @@
         private System.Windows.Forms.Button advancedProxiesButton;
         private System.Windows.Forms.LinkLabel gpuSettingsLink;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button button1;
     }
 }

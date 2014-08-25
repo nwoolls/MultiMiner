@@ -40,5 +40,7 @@ namespace MultiMiner.MobileMiner.Data
         //calculated properties from MultiMiner
         public string FullName { get; set; }
         public string PoolName { get; set; }
+        //is this a mining appliance?
+        public bool Appliance { get; set; }
     }
 }

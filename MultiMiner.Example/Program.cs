@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Linq;
 using MultiMiner.Engine.Data;
+using MultiMiner.Engine;
 
 namespace MultiMiner.Example
 {
@@ -15,14 +16,14 @@ namespace MultiMiner.Example
         {
             //examples of using MultiMiner.Xgminer.dll and MultiMiner.Xgminer.Api.dll
 
-            //download and install the latest version of bfgminer
+            //download and install the latest version of BFGMiner
             const string executablePath = @"D:\bfgminer\";
             const string executableName = "bfgminer.exe";
+            const string userAgent = "MultiMiner/V3-Example";
 
             //download and install bfgminer from MultiMinerApp.com
-            string userAgent = "MultiMiner/V3-Example";
             List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners(userAgent);
-            AvailableMiner bfgminer = availableMiners.Single(am => am.Name.Equals("BFGMiner", StringComparison.OrdinalIgnoreCase));
+            AvailableMiner bfgminer = availableMiners.Single(am => am.Name.Equals(MinerNames.BFGMiner, StringComparison.OrdinalIgnoreCase));
 
             Console.WriteLine("Downloading and installing {0} from {1} to the directory {2}",
                 executableName, new Uri(bfgminer.Url).Authority, executablePath);
@@ -62,7 +63,7 @@ namespace MultiMiner.Example
                     minerConfiguration.Pools.Add(pool);
 
                     //specify algorithm
-                    minerConfiguration.Algorithm = CoinAlgorithm.SHA256;
+                    minerConfiguration.Algorithm = MinerFactory.Instance.GetAlgorithm(AlgorithmNames.SHA256);
 
                     //disable GPU mining
                     minerConfiguration.DisableGpu = true;

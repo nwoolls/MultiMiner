@@ -34,7 +34,6 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.strategyConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.singleCoinRadio = new System.Windows.Forms.RadioButton();
             this.multiCoinRadio = new System.Windows.Forms.RadioButton();
             this.thresholdSymbolCombo = new System.Windows.Forms.ComboBox();
@@ -47,16 +46,19 @@
             this.profitabilityKindLabel = new System.Windows.Forms.Label();
             this.profitabilityKindCombo = new System.Windows.Forms.ComboBox();
             this.miningBasisCombo = new System.Windows.Forms.ComboBox();
+            this.strategyConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).BeginInit();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -98,10 +100,6 @@
             this.checkBox1.TabIndex = 0;
             this.checkBox1.Text = "Automatically mine coin(s) based on";
             this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // strategyConfigurationBindingSource
-            // 
-            this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Data.Configuration.Strategy);
             // 
             // singleCoinRadio
             // 
@@ -247,6 +245,21 @@
             this.miningBasisCombo.TabIndex = 1;
             this.miningBasisCombo.SelectedIndexChanged += new System.EventHandler(this.miningBasisCombo_SelectedIndexChanged);
             // 
+            // strategyConfigurationBindingSource
+            // 
+            this.strategyConfigurationBindingSource.DataSource = typeof(MultiMiner.Engine.Data.Configuration.Strategy);
+            // 
+            // button1
+            // 
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(14, 14);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 2;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // applicationConfigurationBindingSource
             // 
             this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
@@ -272,9 +285,9 @@
             this.Text = "Configure Strategies";
             this.Load += new System.EventHandler(this.StrategiesForm_Load);
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.strategyConfigurationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -301,5 +314,6 @@
         private System.Windows.Forms.ComboBox profitabilityKindCombo;
         private System.Windows.Forms.ComboBox miningBasisCombo;
         private System.Windows.Forms.BindingSource applicationConfigurationBindingSource;
+        private System.Windows.Forms.Button button1;
     }
 }

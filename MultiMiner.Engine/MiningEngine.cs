@@ -31,43 +31,113 @@ namespace MultiMiner.Engine
         public MiningEngine()
         {
             RegisterMiners();
+            RegisterAlgorithms();
+        }
+
+        private static void RegisterAlgorithms()
+        {
+            RegisterBuiltInAgorithms();
+
+            List<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
+            int builtInCount = algorithms.Count;
+
+            RegisterCustomAlgorithms();
+
+            //flag built in aglos
+            for (int i = 0; i < algorithms.Count; i++)
+                algorithms[i].BuiltIn = i < builtInCount;
+
+            SaveAlgorithmConfigurations();
+        }
+
+        private static void RegisterCustomAlgorithms()
+        {
+            string dataFilePath = AlgorithmConfigurationsFileName();
+            List<CoinAlgorithm> existingAlgorithms = MinerFactory.Instance.Algorithms;
+
+            if (File.Exists(dataFilePath))
+            {
+                List<CoinAlgorithm> customAlgorithms = ConfigurationReaderWriter.ReadConfiguration<List<CoinAlgorithm>>(dataFilePath);
+                foreach (CoinAlgorithm customAlgorithm in customAlgorithms)
+                {
+                    CoinAlgorithm existingAlgorithm = existingAlgorithms.SingleOrDefault(ea => ea.Name.Equals(customAlgorithm.Name));
+                    if (existingAlgorithm != null)
+                        ObjectCopier.CopyObject(customAlgorithm, existingAlgorithm);
+                    else
+                        existingAlgorithms.Add(customAlgorithm);
+                }
+            }
+        }
+
+        public static void SaveAlgorithmConfigurations()
+        {
+            ConfigurationReaderWriter.WriteConfiguration(MinerFactory.Instance.Algorithms, AlgorithmConfigurationsFileName());
+        }
+
+        private static string AlgorithmConfigurationsFileName()
+        {
+            return Path.Combine(ApplicationPaths.AppDataPath(), "AlgorithmConfigurations.xml");
+        }
+
+        private static void RegisterBuiltInAgorithms()
+        {
+            MinerFactory factory = MinerFactory.Instance;
+
+            CoinAlgorithm algorithm = factory.RegisterAlgorithm(AlgorithmNames.SHA256, AlgorithmFullNames.SHA256, CoinAlgorithm.AlgorithmFamily.SHA2);
+            algorithm.DefaultMiner = MinerNames.BFGMiner;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Scrypt, AlgorithmFullNames.Scrypt, CoinAlgorithm.AlgorithmFamily.Scrypt);
+            algorithm.DefaultMiner = MinerNames.BFGMiner;
+            algorithm.MinerArguments[MinerNames.BFGMiner] = AlgorithmParameter.Scrypt;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Keccak, AlgorithmFullNames.Keccak, CoinAlgorithm.AlgorithmFamily.SHA3);
+            algorithm.DefaultMiner = MinerNames.MaxcoinCGMiner;
+            algorithm.MinerArguments[MinerNames.MaxcoinCGMiner] = AlgorithmParameter.Keccak;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Groestl, AlgorithmFullNames.Groestl, CoinAlgorithm.AlgorithmFamily.SHA3);
+            algorithm.DefaultMiner = MinerNames.SPHSGMiner;
+            algorithm.MinerArguments[MinerNames.SPHSGMiner] = AlgorithmParameter.KernelGroestcoin;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.ScryptN, AlgorithmFullNames.ScryptN, CoinAlgorithm.AlgorithmFamily.Scrypt);
+            algorithm.DefaultMiner = MinerNames.SGMiner;
+            algorithm.MinerArguments[MinerNames.SGMiner] = AlgorithmParameter.AlgorithmNScrypt;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.ScryptJane, AlgorithmFullNames.ScryptJane, CoinAlgorithm.AlgorithmFamily.Scrypt);
+            algorithm.DefaultMiner = MinerNames.KalrothSJCGMiner;
+            algorithm.MinerArguments[MinerNames.KalrothSJCGMiner] = AlgorithmParameter.ScryptJane;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Quark, AlgorithmFullNames.Quark, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm.DefaultMiner = MinerNames.SPHSGMiner;
+            algorithm.MinerArguments[MinerNames.SPHSGMiner] = AlgorithmParameter.KernelQuarkcoin;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.X11, AlgorithmFullNames.X11, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm.DefaultMiner = MinerNames.LBSPHSGMiner;
+            algorithm.MinerArguments[MinerNames.LBSPHSGMiner] = AlgorithmParameter.KernelX11Mod;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.X13, AlgorithmFullNames.X13, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm.DefaultMiner = MinerNames.LBSPHSGMiner;
+            algorithm.MinerArguments[MinerNames.LBSPHSGMiner] = AlgorithmParameter.KernelX13Mod;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.X14, AlgorithmFullNames.X14, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm.DefaultMiner = MinerNames.AZNSGMiner;
+            algorithm.MinerArguments[MinerNames.AZNSGMiner] = AlgorithmParameter.PoolAlgorithmX14Old;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.X15, AlgorithmFullNames.X15, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm.DefaultMiner = MinerNames.AZNSGMiner;
+            algorithm.MinerArguments[MinerNames.AZNSGMiner] = AlgorithmParameter.PoolAlgorithmBitBlockOld;
         }
 
         private static void RegisterMiners()
         {
             MinerFactory factory = MinerFactory.Instance;
 
-            //BFGMiner as the default SHA-2 and Scrypt miner
-            MinerDescriptor miner = factory.RegisterMiner("BFGMiner", "BFGMiner", false);
-            factory.DefaultMiners[CoinAlgorithm.SHA256] = miner;
-            factory.DefaultMiners[CoinAlgorithm.Scrypt] = miner;
-
-            //Kalroth SJ-CGMiner as the default Scrypt-Jane miner
-            miner = factory.RegisterMiner("KalrothSJCGMiner", "CGMiner", true);
-            factory.DefaultMiners[CoinAlgorithm.ScryptJane] = miner;
-            
-            //SGMiner is the default Scrypt-N miner
-            miner = factory.RegisterMiner("SGMiner", "SGMiner", true);
-            factory.DefaultMiners[CoinAlgorithm.ScryptN] = miner;
-
-            //LasyBear SPH-SGMiner as the default X11, X13 miner
-            miner = factory.RegisterMiner("LBSPHSGMiner", "SGMiner", true);
-            factory.DefaultMiners[CoinAlgorithm.X11] = miner;
-            factory.DefaultMiners[CoinAlgorithm.X13] = miner;
-
-            //AZNBoy SGMiner as the default X14, X15 miner
-            miner = factory.RegisterMiner("AZNSGMiner", "SGMiner", true);
-            factory.DefaultMiners[CoinAlgorithm.X14] = miner;
-            factory.DefaultMiners[CoinAlgorithm.X15] = miner;
-
-            //SPH-SGMiner as the default Quark and Groestl miner
-            miner = factory.RegisterMiner("SPHSGMiner", "SGMiner", true);
-            factory.DefaultMiners[CoinAlgorithm.Quark] = miner;
-            factory.DefaultMiners[CoinAlgorithm.Groestl] = miner;
-
-            //MaxcoinCGMiner is the default Keccak miner
-            miner = factory.RegisterMiner("MaxcoinCGMiner", "CGMiner", true);
-            factory.DefaultMiners[CoinAlgorithm.Keccak] = miner;
+            factory.RegisterMiner(MinerNames.BFGMiner, MinerNames.BFGMiner, false);
+            factory.RegisterMiner(MinerNames.KalrothSJCGMiner, MinerNames.CGMiner, true);            
+            factory.RegisterMiner(MinerNames.SGMiner, MinerNames.SGMiner, true);
+            factory.RegisterMiner(MinerNames.LBSPHSGMiner, MinerNames.SGMiner, true);
+            factory.RegisterMiner(MinerNames.AZNSGMiner, MinerNames.SGMiner, true);
+            factory.RegisterMiner(MinerNames.SPHSGMiner, MinerNames.SGMiner, true);
+            factory.RegisterMiner(MinerNames.MaxcoinCGMiner, MinerNames.CGMiner, true);
 
             string minersDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Miners");
             factory.RegisterMiners(minersDirectory);
@@ -406,8 +476,8 @@ namespace MultiMiner.Engine
             List<CoinInformation> filteredCoinInformation = GetFilteredCoinInformation(orderedCoinInformation);
 
             //get algorithm only options
-            List<CoinInformation> sha256ProfitableCoins = filteredCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmNames.SHA256, StringComparison.OrdinalIgnoreCase)).ToList();
-            List<CoinInformation> scryptProfitableCoins = filteredCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase)).ToList();
+            List<CoinInformation> sha256ProfitableCoins = filteredCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmFullNames.SHA256, StringComparison.OrdinalIgnoreCase)).ToList();
+            List<CoinInformation> scryptProfitableCoins = filteredCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmFullNames.Scrypt, StringComparison.OrdinalIgnoreCase)).ToList();
 
 
             //ABM - always be mining
@@ -416,14 +486,14 @@ namespace MultiMiner.Engine
 
             if (sha256ProfitableCoins.Count == 0)
             {
-                CoinInformation sha256Coin = orderedCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmNames.SHA256)).FirstOrDefault();
+                CoinInformation sha256Coin = orderedCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmFullNames.SHA256)).FirstOrDefault();
                 if (sha256Coin != null)
                     sha256ProfitableCoins.Add(sha256Coin);
             }
 
             if (scryptProfitableCoins.Count == 0)
             {
-                CoinInformation scryptCoin = orderedCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmNames.Scrypt)).FirstOrDefault();
+                CoinInformation scryptCoin = orderedCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmFullNames.Scrypt)).FirstOrDefault();
                 if (scryptCoin != null)
                     scryptProfitableCoins.Add(scryptCoin);
             }
@@ -458,7 +528,7 @@ namespace MultiMiner.Engine
                         Data.Configuration.Coin existingCoinConfig = engineConfiguration.CoinConfigurations.Single(cc => cc.CryptoCoin.Symbol.Equals(existingConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
 
                         //keep Proxies on the same algo - don't know what is pointed at them
-                        if (existingCoinConfig.CryptoCoin.Algorithm == CoinAlgorithm.Scrypt)
+                        if (existingCoinConfig.CryptoCoin.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase))
                         {
                             profitableCoin = ChooseCoinFromList(scryptProfitableCoins, scryptIterator);
 
@@ -471,14 +541,14 @@ namespace MultiMiner.Engine
                             sha256Iterator++;
                         }
                     }
-                    else if (device.SupportsAlgorithm(CoinAlgorithm.Scrypt) && !device.SupportsAlgorithm(CoinAlgorithm.SHA256))
+                    else if (device.SupportsAlgorithm(AlgorithmNames.Scrypt) && !device.SupportsAlgorithm(AlgorithmNames.SHA256))
                     {
                         //scrypt only
                         profitableCoin = ChooseCoinFromList(scryptProfitableCoins, scryptIterator);
 
                         scryptIterator++;
                     }
-                    else if (device.SupportsAlgorithm(CoinAlgorithm.Scrypt) && device.SupportsAlgorithm(CoinAlgorithm.SHA256))
+                    else if (device.SupportsAlgorithm(AlgorithmNames.Scrypt) && device.SupportsAlgorithm(AlgorithmNames.SHA256))
                     {
                         //sha256 or scrypt
                         profitableCoin = ChooseCoinFromList(allProfitableCoins, comboAlgoIterator);
@@ -816,7 +886,7 @@ namespace MultiMiner.Engine
             Xgminer.Data.Configuration.Miner minerConfiguration = new Xgminer.Data.Configuration.Miner()
             {
                 ExecutablePath = MinerPath.GetPathToInstalledMiner(miner),
-                Algorithm = coinConfiguration.CryptoCoin.Algorithm,
+                Algorithm = MinerFactory.Instance.GetAlgorithm(coinConfiguration.CryptoCoin.Algorithm),
                 ApiPort = apiPort,
                 ApiListen = true,
                 AllowedApiIps = engineConfiguration.XgminerConfiguration.AllowedApiIps,

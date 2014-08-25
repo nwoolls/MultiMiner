@@ -143,6 +143,16 @@ namespace MultiMiner.Win.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap application_help {
+            get {
+                object obj = ResourceManager.GetObject("application-help", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap application_info {
             get {
                 object obj = ResourceManager.GetObject("application-info", resourceCulture);
@@ -323,6 +333,16 @@ namespace MultiMiner.Win.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap help1 {
+            get {
+                object obj = ResourceManager.GetObject("help1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap history {
             get {
                 object obj = ResourceManager.GetObject("history", resourceCulture);
@@ -406,6 +426,16 @@ namespace MultiMiner.Win.Properties {
         internal static System.Drawing.Bitmap list_internet {
             get {
                 object obj = ResourceManager.GetObject("list-internet", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mail_key {
+            get {
+                object obj = ResourceManager.GetObject("mail-key", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -1,6 +1,7 @@
 ﻿using MultiMiner.CoinApi.Data;
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Data.Configuration;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,9 +120,9 @@ namespace MultiMiner.Engine
         private static IEnumerable<CoinInformation> FilterCoinsOnAlgorithm(IEnumerable<CoinInformation> coins, CoinSuggestionsAlgorithm algorithm)
         {
             if (algorithm == CoinSuggestionsAlgorithm.SHA256)
-                coins = coins.Where(c => c.Algorithm.Equals(AlgorithmNames.SHA256, StringComparison.OrdinalIgnoreCase));
+                coins = coins.Where(c => c.Algorithm.Equals(AlgorithmFullNames.SHA256, StringComparison.OrdinalIgnoreCase));
             else if (algorithm == CoinSuggestionsAlgorithm.Scrypt)
-                coins = coins.Where(c => c.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase));
+                coins = coins.Where(c => c.Algorithm.Equals(AlgorithmFullNames.Scrypt, StringComparison.OrdinalIgnoreCase));
 
             return coins;
         }

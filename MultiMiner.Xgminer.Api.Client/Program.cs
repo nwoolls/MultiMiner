@@ -15,11 +15,11 @@ namespace MultiMiner.Xgminer.Api.Client
             if (args.Length > 1)
                 ipAddress = args[1];
 
-            Console.WriteLine(String.Format("Enter bfgminer API command verbs to send them to port {0}.", port));
-            Console.WriteLine("QUIT will quit both bfgminer and this utility.");
+            Console.WriteLine(String.Format("Enter BFGMiner API command verbs to send them to port {0}.", port));
+            Console.WriteLine("QUIT will quit both BFGMiner and this utility.");
             Console.WriteLine("EXIT will quit only this utility.");
             Console.WriteLine(String.Empty);
-            Console.WriteLine("Ensure bfgminer is running and try DEVS or POOLS to get started.");
+            Console.WriteLine("Ensure BFGMiner is running and try DEVS or POOLS to get started.");
             Console.WriteLine(String.Empty);
 
             MultiMiner.Xgminer.Api.ApiContext apiContext = new ApiContext(port, ipAddress);

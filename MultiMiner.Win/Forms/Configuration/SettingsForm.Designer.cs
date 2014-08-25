@@ -1,4 +1,5 @@
-﻿namespace MultiMiner.Win.Forms.Configuration
+﻿using MultiMiner.Engine.Data;
+namespace MultiMiner.Win.Forms.Configuration
 {
     partial class SettingsForm
     {
@@ -31,6 +32,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.serviceSettingsLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.apiKeyEdit = new System.Windows.Forms.TextBox();
@@ -44,7 +46,6 @@
             this.appKeyEdit = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.emailAddressEdit = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.advancedSettingsLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
@@ -66,6 +67,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
@@ -79,6 +81,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.linkLabel1);
             this.groupBox3.Controls.Add(this.serviceSettingsLink);
             this.groupBox3.Controls.Add(this.pictureBox4);
             this.groupBox3.Controls.Add(this.apiKeyEdit);
@@ -91,13 +94,23 @@
             this.groupBox3.Controls.Add(this.appKeyEdit);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.emailAddressEdit);
-            this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Location = new System.Drawing.Point(14, 267);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(490, 163);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Online Services";
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(253, 94);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(84, 15);
+            this.linkLabel1.TabIndex = 8;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "App key (free):";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
             // 
             // serviceSettingsLink
             // 
@@ -106,7 +119,7 @@
             this.serviceSettingsLink.Location = new System.Drawing.Point(36, 129);
             this.serviceSettingsLink.Name = "serviceSettingsLink";
             this.serviceSettingsLink.Size = new System.Drawing.Size(143, 15);
-            this.serviceSettingsLink.TabIndex = 9;
+            this.serviceSettingsLink.TabIndex = 10;
             this.serviceSettingsLink.TabStop = true;
             this.serviceSettingsLink.Text = "Advanced service settings";
             this.serviceSettingsLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.serviceSettingsLink_LinkClicked);
@@ -205,7 +218,7 @@
             this.appKeyEdit.Location = new System.Drawing.Point(345, 91);
             this.appKeyEdit.Name = "appKeyEdit";
             this.appKeyEdit.Size = new System.Drawing.Size(124, 23);
-            this.appKeyEdit.TabIndex = 8;
+            this.appKeyEdit.TabIndex = 9;
             // 
             // label8
             // 
@@ -225,15 +238,6 @@
             this.emailAddressEdit.Name = "emailAddressEdit";
             this.emailAddressEdit.Size = new System.Drawing.Size(121, 23);
             this.emailAddressEdit.TabIndex = 7;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(253, 94);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(53, 15);
-            this.label6.TabIndex = 0;
-            this.label6.Text = "App key:";
             // 
             // groupBox2
             // 
@@ -424,8 +428,8 @@
             this.priorityCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.priorityCombo.FormattingEnabled = true;
             this.priorityCombo.Items.AddRange(new object[] {
-            "cgminer",
-            "bfgminer"});
+            "CGMiner",
+            "BFGMiner"});
             this.priorityCombo.Location = new System.Drawing.Point(345, 48);
             this.priorityCombo.Name = "priorityCombo";
             this.priorityCombo.Size = new System.Drawing.Size(124, 23);
@@ -447,6 +451,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -476,6 +481,17 @@
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(14, 15);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 6;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // SettingsForm
             // 
@@ -527,7 +543,6 @@
         private System.Windows.Forms.CheckBox autoLaunchCheckBox;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox appKeyEdit;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox emailAddressEdit;
@@ -549,5 +564,7 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.LinkLabel serviceSettingsLink;
         private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.Button button1;
     }
 }

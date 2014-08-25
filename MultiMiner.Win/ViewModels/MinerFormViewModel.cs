@@ -65,7 +65,7 @@ namespace MultiMiner.Win.ViewModels
                         {
                             Name = KnownCoins.BitcoinName,
                             Symbol = KnownCoins.BitcoinSymbol,
-                            Algorithm = CoinAlgorithm.SHA256
+                            Algorithm = AlgorithmNames.SHA256
                         };
 
                         Devices.Add(deviceViewModel);
@@ -291,9 +291,9 @@ namespace MultiMiner.Win.ViewModels
                     Engine.Data.Configuration.Coin ltcConfiguration = coinConfigurations.SingleOrDefault(
                         cc => cc.CryptoCoin.Symbol.Equals(KnownCoins.LitecoinSymbol, StringComparison.OrdinalIgnoreCase));
 
-                    if (deviceViewModel.SupportsAlgorithm(CoinAlgorithm.Scrypt) && (ltcConfiguration != null))
+                    if (deviceViewModel.SupportsAlgorithm(AlgorithmNames.Scrypt) && (ltcConfiguration != null))
                         deviceViewModel.Coin = ltcConfiguration.CryptoCoin;
-                    else if (deviceViewModel.SupportsAlgorithm(CoinAlgorithm.SHA256) && (btcConfiguration != null))
+                    else if (deviceViewModel.SupportsAlgorithm(AlgorithmNames.SHA256) && (btcConfiguration != null))
                         deviceViewModel.Coin = btcConfiguration.CryptoCoin;
                 }
             }

@@ -147,5 +147,15 @@ namespace MultiMiner.Win.Forms.Configuration
                 advancedSettingsForm.ShowDialog();
             }
         }
+
+        private void linkLabel1_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("http://web.mobileminerapp.com/");
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Settings");
+        }
     }
 }

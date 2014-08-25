@@ -45,9 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlgorithmNames.cs" />
     <Compile Include="ApplicationPaths.cs" />
     <Compile Include="CoinSuggestions.cs" />
+    <Compile Include="Data\AlgorithmParameter.cs" />
     <Compile Include="Data\CoinSuggestionsAlgorithm.cs" />
     <Compile Include="Data\Configuration\Coin.cs" />
     <Compile Include="Data\Configuration\Strategy.cs" />
@@ -56,6 +56,7 @@
     <Compile Include="Data\Configuration\Engine.cs" />
     <Compile Include="Data\Configuration\Xgminer.cs" />
     <Compile Include="Data\KnownCoins.cs" />
+    <Compile Include="Data\MinerNames.cs" />
     <Compile Include="Helpers\DonationPools.cs" />
     <Compile Include="Installers\MultiMinerInstaller.cs" />
     <Compile Include="Data\AvailableMiner.cs" />

@@ -38,14 +38,14 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MinerForm));
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Network", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Network", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
@@ -102,6 +102,7 @@
             this.errorsColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.utilityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.intensityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.detailsControl1 = new MultiMiner.Win.Controls.DetailsControl();
             this.advancedTabControl = new System.Windows.Forms.TabControl();
             this.historyPage = new System.Windows.Forms.TabPage();
             this.historyGridView = new System.Windows.Forms.DataGridView();
@@ -127,8 +128,12 @@
             this.logLaunchArgsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.apiMonitorPage = new System.Windows.Forms.TabPage();
             this.apiLogGridView = new System.Windows.Forms.DataGridView();
+            this.dateTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Machine = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CoinName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.requestDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.responseDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.apiLogEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
             this.closeApiButton = new System.Windows.Forms.Button();
             this.processLogMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -160,7 +165,9 @@
             this.saveSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.saveButton = new System.Windows.Forms.ToolStripButton();
             this.cancelButton = new System.Windows.Forms.ToolStripButton();
-            this.aboutButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.helpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.listViewStyleButton = new System.Windows.Forms.ToolStripSplitButton();
             this.largeIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.smallIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -207,17 +214,13 @@
             this.dynamicIntensityMenuSeperator = new System.Windows.Forms.ToolStripSeparator();
             this.dynamicIntensityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.networkDeviceContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.networkDevicePoolMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.aToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restartMiningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.detailsControl1 = new MultiMiner.Win.Controls.DetailsControl();
-            this.dateTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.requestDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.responseDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.apiLogEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -240,6 +243,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).BeginInit();
             this.apiMonitorPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).BeginInit();
             this.panel2.SuspendLayout();
             this.processLogMenu.SuspendLayout();
             this.footerPanel.SuspendLayout();
@@ -247,7 +251,6 @@
             this.standardToolBar.SuspendLayout();
             this.accessibleMenu.SuspendLayout();
             this.networkDeviceContextMenu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // coinStatsTimer
@@ -488,7 +491,7 @@
             this.startupMiningPanel.Controls.Add(this.startStartupMiningButton);
             this.startupMiningPanel.Controls.Add(this.cancelStartupMiningButton);
             this.startupMiningPanel.Controls.Add(this.countdownLabel);
-            this.startupMiningPanel.Location = new System.Drawing.Point(460, 220);
+            this.startupMiningPanel.Location = new System.Drawing.Point(267, 146);
             this.startupMiningPanel.Name = "startupMiningPanel";
             this.startupMiningPanel.Size = new System.Drawing.Size(372, 42);
             this.startupMiningPanel.TabIndex = 6;
@@ -539,8 +542,8 @@
             this.advancedAreaContainer.Panel2.Controls.Add(this.advancedTabControl);
             this.advancedAreaContainer.Panel2.Controls.Add(this.panel2);
             this.advancedAreaContainer.Panel2Collapsed = true;
-            this.advancedAreaContainer.Size = new System.Drawing.Size(1293, 375);
-            this.advancedAreaContainer.SplitterDistance = 232;
+            this.advancedAreaContainer.Size = new System.Drawing.Size(907, 226);
+            this.advancedAreaContainer.SplitterDistance = 201;
             this.advancedAreaContainer.SplitterWidth = 5;
             this.advancedAreaContainer.TabIndex = 10;
             this.advancedAreaContainer.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.advancedAreaContainer_SplitterMoved);
@@ -555,7 +558,7 @@
             // instancesContainer.Panel2
             // 
             this.instancesContainer.Panel2.Controls.Add(this.detailsAreaContainer);
-            this.instancesContainer.Size = new System.Drawing.Size(1293, 375);
+            this.instancesContainer.Size = new System.Drawing.Size(907, 226);
             this.instancesContainer.SplitterDistance = 186;
             this.instancesContainer.TabIndex = 4;
             // 
@@ -573,8 +576,8 @@
             // detailsAreaContainer.Panel2
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
-            this.detailsAreaContainer.Size = new System.Drawing.Size(1293, 375);
-            this.detailsAreaContainer.SplitterDistance = 1038;
+            this.detailsAreaContainer.Size = new System.Drawing.Size(907, 226);
+            this.detailsAreaContainer.SplitterDistance = 657;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -605,27 +608,27 @@
             this.intensityColumnHeader});
             this.deviceListView.ContextMenuStrip = this.columnHeaderMenu;
             this.deviceListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            listViewGroup1.Header = "CPU";
-            listViewGroup1.Name = "cpuListViewGroup";
-            listViewGroup2.Header = "GPU";
-            listViewGroup2.Name = "gpuListViewGroup";
-            listViewGroup3.Header = "USB";
-            listViewGroup3.Name = "usbListViewGroup";
-            listViewGroup4.Header = "Proxy";
-            listViewGroup4.Name = "proxyListViewGroup";
-            listViewGroup5.Header = "Network";
-            listViewGroup5.Name = "networkListViewGroup";
+            listViewGroup6.Header = "CPU";
+            listViewGroup6.Name = "cpuListViewGroup";
+            listViewGroup7.Header = "GPU";
+            listViewGroup7.Name = "gpuListViewGroup";
+            listViewGroup8.Header = "USB";
+            listViewGroup8.Name = "usbListViewGroup";
+            listViewGroup9.Header = "Proxy";
+            listViewGroup9.Name = "proxyListViewGroup";
+            listViewGroup10.Header = "Network";
+            listViewGroup10.Name = "networkListViewGroup";
             this.deviceListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3,
-            listViewGroup4,
-            listViewGroup5});
+            listViewGroup6,
+            listViewGroup7,
+            listViewGroup8,
+            listViewGroup9,
+            listViewGroup10});
             this.deviceListView.LabelEdit = true;
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(1038, 375);
+            this.deviceListView.Size = new System.Drawing.Size(657, 226);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.TabIndex = 2;
             this.deviceListView.UseCompatibleStateImageBehavior = false;
@@ -732,6 +735,18 @@
             // 
             this.intensityColumnHeader.Text = "Intensity";
             // 
+            // detailsControl1
+            // 
+            this.detailsControl1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.detailsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.detailsControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.detailsControl1.Location = new System.Drawing.Point(0, 0);
+            this.detailsControl1.Name = "detailsControl1";
+            this.detailsControl1.Size = new System.Drawing.Size(247, 226);
+            this.detailsControl1.TabIndex = 0;
+            this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
+            // 
             // advancedTabControl
             // 
             this.advancedTabControl.Controls.Add(this.historyPage);
@@ -763,8 +778,8 @@
             this.historyGridView.AllowUserToAddRows = false;
             this.historyGridView.AllowUserToDeleteRows = false;
             this.historyGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
             this.historyGridView.AutoGenerateColumns = false;
             this.historyGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.historyGridView.BackgroundColor = System.Drawing.SystemColors.Window;
@@ -894,8 +909,8 @@
             this.processLogGridView.AllowUserToDeleteRows = false;
             this.processLogGridView.AllowUserToOrderColumns = true;
             this.processLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.processLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.processLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.processLogGridView.AutoGenerateColumns = false;
             this.processLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.processLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -978,8 +993,8 @@
             this.apiLogGridView.AllowUserToDeleteRows = false;
             this.apiLogGridView.AllowUserToOrderColumns = true;
             this.apiLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
             this.apiLogGridView.AutoGenerateColumns = false;
             this.apiLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.apiLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -1000,6 +1015,14 @@
             this.apiLogGridView.TabIndex = 13;
             this.apiLogGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.apiLogGridView_CellFormatting);
             // 
+            // dateTimeDataGridViewTextBoxColumn
+            // 
+            this.dateTimeDataGridViewTextBoxColumn.DataPropertyName = "DateTime";
+            this.dateTimeDataGridViewTextBoxColumn.HeaderText = "Date/Time";
+            this.dateTimeDataGridViewTextBoxColumn.Name = "dateTimeDataGridViewTextBoxColumn";
+            this.dateTimeDataGridViewTextBoxColumn.ReadOnly = true;
+            this.dateTimeDataGridViewTextBoxColumn.Width = 125;
+            // 
             // Machine
             // 
             this.Machine.DataPropertyName = "Machine";
@@ -1013,6 +1036,25 @@
             this.CoinName.HeaderText = "Coin Name";
             this.CoinName.Name = "CoinName";
             this.CoinName.ReadOnly = true;
+            // 
+            // requestDataGridViewTextBoxColumn
+            // 
+            this.requestDataGridViewTextBoxColumn.DataPropertyName = "Request";
+            this.requestDataGridViewTextBoxColumn.HeaderText = "Request";
+            this.requestDataGridViewTextBoxColumn.Name = "requestDataGridViewTextBoxColumn";
+            this.requestDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // responseDataGridViewTextBoxColumn
+            // 
+            this.responseDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.responseDataGridViewTextBoxColumn.DataPropertyName = "Response";
+            this.responseDataGridViewTextBoxColumn.HeaderText = "Response";
+            this.responseDataGridViewTextBoxColumn.Name = "responseDataGridViewTextBoxColumn";
+            this.responseDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // apiLogEntryBindingSource
+            // 
+            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.Data.ApiLogEntry);
             // 
             // panel2
             // 
@@ -1060,9 +1102,9 @@
             this.footerPanel.Controls.Add(this.coinApiLinkLabel);
             this.footerPanel.Controls.Add(this.coinChoosePrefixLabel);
             this.footerPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.footerPanel.Location = new System.Drawing.Point(0, 424);
+            this.footerPanel.Location = new System.Drawing.Point(0, 275);
             this.footerPanel.Name = "footerPanel";
-            this.footerPanel.Size = new System.Drawing.Size(1293, 35);
+            this.footerPanel.Size = new System.Drawing.Size(907, 35);
             this.footerPanel.TabIndex = 9;
             // 
             // incomeSummaryLabel
@@ -1071,7 +1113,7 @@
             this.incomeSummaryLabel.Dock = System.Windows.Forms.DockStyle.Right;
             this.incomeSummaryLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.incomeSummaryLabel.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.incomeSummaryLabel.Location = new System.Drawing.Point(1149, 0);
+            this.incomeSummaryLabel.Location = new System.Drawing.Point(763, 0);
             this.incomeSummaryLabel.MinimumSize = new System.Drawing.Size(35, 0);
             this.incomeSummaryLabel.Name = "incomeSummaryLabel";
             this.incomeSummaryLabel.Padding = new System.Windows.Forms.Padding(0, 10, 8, 0);
@@ -1120,10 +1162,10 @@
             this.strategyCountdownLabel,
             this.hashRateStatusLabel,
             this.deviceTotalLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 459);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 310);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1293, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(907, 22);
             this.statusStrip1.TabIndex = 8;
             this.statusStrip1.TabStop = true;
             this.statusStrip1.Text = "statusStrip1";
@@ -1158,7 +1200,7 @@
             // 
             this.hashRateStatusLabel.AutoSize = false;
             this.hashRateStatusLabel.Name = "hashRateStatusLabel";
-            this.hashRateStatusLabel.Size = new System.Drawing.Size(799, 17);
+            this.hashRateStatusLabel.Size = new System.Drawing.Size(413, 17);
             this.hashRateStatusLabel.Spring = true;
             this.hashRateStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -1187,14 +1229,14 @@
             this.saveSeparator,
             this.saveButton,
             this.cancelButton,
-            this.aboutButton,
+            this.toolStripDropDownButton1,
             this.listViewStyleButton,
             this.advancedMenuItem});
             this.standardToolBar.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.standardToolBar.Location = new System.Drawing.Point(0, 24);
             this.standardToolBar.Name = "standardToolBar";
             this.standardToolBar.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.standardToolBar.Size = new System.Drawing.Size(1293, 25);
+            this.standardToolBar.Size = new System.Drawing.Size(907, 25);
             this.standardToolBar.TabIndex = 7;
             this.standardToolBar.TabStop = true;
             this.standardToolBar.Text = "toolStrip1";
@@ -1357,17 +1399,34 @@
             this.cancelButton.ToolTipText = "Cancel changes";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
-            // aboutButton
+            // toolStripDropDownButton1
             // 
-            this.aboutButton.AccessibleName = "Advanced";
-            this.aboutButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.aboutButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.aboutButton.Image = global::MultiMiner.Win.Properties.Resources.application_info;
-            this.aboutButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.aboutButton.Name = "aboutButton";
-            this.aboutButton.Size = new System.Drawing.Size(23, 22);
-            this.aboutButton.Text = "About";
-            this.aboutButton.Click += new System.EventHandler(this.aboutButton_Click);
+            this.toolStripDropDownButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem2,
+            this.aboutToolStripMenuItem1});
+            this.toolStripDropDownButton1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(29, 22);
+            this.toolStripDropDownButton1.Text = "Help";
+            // 
+            // helpToolStripMenuItem2
+            // 
+            this.helpToolStripMenuItem2.Image = global::MultiMiner.Win.Properties.Resources.application_help;
+            this.helpToolStripMenuItem2.Name = "helpToolStripMenuItem2";
+            this.helpToolStripMenuItem2.Size = new System.Drawing.Size(107, 22);
+            this.helpToolStripMenuItem2.Text = "Help";
+            this.helpToolStripMenuItem2.Click += new System.EventHandler(this.helpToolStripMenuItem2_Click);
+            // 
+            // aboutToolStripMenuItem1
+            // 
+            this.aboutToolStripMenuItem1.Image = global::MultiMiner.Win.Properties.Resources.application_info;
+            this.aboutToolStripMenuItem1.Name = "aboutToolStripMenuItem1";
+            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem1.Text = "About";
+            this.aboutToolStripMenuItem1.Click += new System.EventHandler(this.aboutToolStripMenuItem1_Click);
             // 
             // listViewStyleButton
             // 
@@ -1542,7 +1601,7 @@
             this.accessibleMenu.Location = new System.Drawing.Point(0, 0);
             this.accessibleMenu.Name = "accessibleMenu";
             this.accessibleMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.accessibleMenu.Size = new System.Drawing.Size(1293, 24);
+            this.accessibleMenu.Size = new System.Drawing.Size(907, 24);
             this.accessibleMenu.TabIndex = 11;
             this.accessibleMenu.Text = "menuStrip1";
             // 
@@ -1613,28 +1672,28 @@
             // settingsToolStripMenuItem1
             // 
             this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
-            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
             this.settingsToolStripMenuItem1.Text = "&Settings";
             this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click);
             // 
             // coinsToolStripMenuItem1
             // 
             this.coinsToolStripMenuItem1.Name = "coinsToolStripMenuItem1";
-            this.coinsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.coinsToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
             this.coinsToolStripMenuItem1.Text = "&Pools";
             this.coinsToolStripMenuItem1.Click += new System.EventHandler(this.coinsToolStripMenuItem1_Click);
             // 
             // strategiesToolStripMenuItem1
             // 
             this.strategiesToolStripMenuItem1.Name = "strategiesToolStripMenuItem1";
-            this.strategiesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.strategiesToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
             this.strategiesToolStripMenuItem1.Text = "S&trategies";
             this.strategiesToolStripMenuItem1.Click += new System.EventHandler(this.strategiesToolStripMenuItem1_Click);
             // 
             // perksToolStripMenuItem
             // 
             this.perksToolStripMenuItem.Name = "perksToolStripMenuItem";
-            this.perksToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.perksToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.perksToolStripMenuItem.Text = "P&erks";
             this.perksToolStripMenuItem.Click += new System.EventHandler(this.perksToolStripMenuItem_Click_1);
             // 
@@ -1653,35 +1712,35 @@
             // largeIconsToolStripMenuItem1
             // 
             this.largeIconsToolStripMenuItem1.Name = "largeIconsToolStripMenuItem1";
-            this.largeIconsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.largeIconsToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
             this.largeIconsToolStripMenuItem1.Text = "&Large Icons";
             this.largeIconsToolStripMenuItem1.Click += new System.EventHandler(this.largeIconsToolStripMenuItem1_Click);
             // 
             // smallIconsToolStripMenuItem1
             // 
             this.smallIconsToolStripMenuItem1.Name = "smallIconsToolStripMenuItem1";
-            this.smallIconsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.smallIconsToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
             this.smallIconsToolStripMenuItem1.Text = "&Small Icons";
             this.smallIconsToolStripMenuItem1.Click += new System.EventHandler(this.smallIconsToolStripMenuItem1_Click);
             // 
             // listToolStripMenuItem1
             // 
             this.listToolStripMenuItem1.Name = "listToolStripMenuItem1";
-            this.listToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.listToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
             this.listToolStripMenuItem1.Text = "L&ist";
             this.listToolStripMenuItem1.Click += new System.EventHandler(this.listToolStripMenuItem1_Click);
             // 
             // detailsToolStripMenuItem1
             // 
             this.detailsToolStripMenuItem1.Name = "detailsToolStripMenuItem1";
-            this.detailsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.detailsToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
             this.detailsToolStripMenuItem1.Text = "&Details";
             this.detailsToolStripMenuItem1.Click += new System.EventHandler(this.detailsToolStripMenuItem1_Click);
             // 
             // tilesToolStripMenuItem1
             // 
             this.tilesToolStripMenuItem1.Name = "tilesToolStripMenuItem1";
-            this.tilesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.tilesToolStripMenuItem1.Size = new System.Drawing.Size(134, 22);
             this.tilesToolStripMenuItem1.Text = "&Tiles";
             this.tilesToolStripMenuItem1.Click += new System.EventHandler(this.tilesToolStripMenuItem1_Click);
             // 
@@ -1765,10 +1824,18 @@
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem1,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "&Help";
+            // 
+            // helpToolStripMenuItem1
+            // 
+            this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.helpToolStripMenuItem1.Text = "&Help";
+            this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -1814,50 +1881,11 @@
             this.restartMiningToolStripMenuItem.Text = "Restart Mining";
             this.restartMiningToolStripMenuItem.Click += new System.EventHandler(this.restartMiningToolStripMenuItem_Click);
             // 
-            // detailsControl1
-            // 
-            this.detailsControl1.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.detailsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.detailsControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.detailsControl1.Location = new System.Drawing.Point(0, 0);
-            this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(252, 375);
-            this.detailsControl1.TabIndex = 0;
-            this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
-            // 
-            // dateTimeDataGridViewTextBoxColumn
-            // 
-            this.dateTimeDataGridViewTextBoxColumn.DataPropertyName = "DateTime";
-            this.dateTimeDataGridViewTextBoxColumn.HeaderText = "Date/Time";
-            this.dateTimeDataGridViewTextBoxColumn.Name = "dateTimeDataGridViewTextBoxColumn";
-            this.dateTimeDataGridViewTextBoxColumn.ReadOnly = true;
-            this.dateTimeDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // requestDataGridViewTextBoxColumn
-            // 
-            this.requestDataGridViewTextBoxColumn.DataPropertyName = "Request";
-            this.requestDataGridViewTextBoxColumn.HeaderText = "Request";
-            this.requestDataGridViewTextBoxColumn.Name = "requestDataGridViewTextBoxColumn";
-            this.requestDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // responseDataGridViewTextBoxColumn
-            // 
-            this.responseDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.responseDataGridViewTextBoxColumn.DataPropertyName = "Response";
-            this.responseDataGridViewTextBoxColumn.HeaderText = "Response";
-            this.responseDataGridViewTextBoxColumn.Name = "responseDataGridViewTextBoxColumn";
-            this.responseDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // apiLogEntryBindingSource
-            // 
-            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.Data.ApiLogEntry);
-            // 
             // MinerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1293, 481);
+            this.ClientSize = new System.Drawing.Size(907, 332);
             this.Controls.Add(this.startupMiningPanel);
             this.Controls.Add(this.advancedAreaContainer);
             this.Controls.Add(this.footerPanel);
@@ -1897,6 +1925,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.logLaunchArgsBindingSource)).EndInit();
             this.apiMonitorPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.apiLogGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).EndInit();
             this.panel2.ResumeLayout(false);
             this.processLogMenu.ResumeLayout(false);
             this.footerPanel.ResumeLayout(false);
@@ -1908,7 +1937,6 @@
             this.accessibleMenu.ResumeLayout(false);
             this.accessibleMenu.PerformLayout();
             this.networkDeviceContextMenu.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.apiLogEntryBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1968,7 +1996,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Reason;
         private System.Windows.Forms.ToolStripMenuItem quickSwitchItem;
         private System.Windows.Forms.ToolStripMenuItem dummyToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton aboutButton;
         private System.Windows.Forms.ToolStripStatusLabel deviceTotalLabel;
         private System.Windows.Forms.ToolStripSplitButton settingsButton;
         private System.Windows.Forms.ToolStripMenuItem coinsButton;
@@ -2088,6 +2115,10 @@
         private System.Windows.Forms.ToolStripButton perksPlainButton;
         private System.Windows.Forms.ToolStripMenuItem strategiesButton;
         private System.Windows.Forms.ToolStripMenuItem perksButton;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem1;
     }
 }
 

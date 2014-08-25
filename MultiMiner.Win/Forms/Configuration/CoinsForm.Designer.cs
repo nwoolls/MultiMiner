@@ -81,6 +81,7 @@
             this.checkBox8 = new System.Windows.Forms.CheckBox();
             this.checkBox7 = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.applicationBindingSource)).BeginInit();
@@ -214,6 +215,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.saveToRemotingCheckBox);
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
@@ -227,7 +229,7 @@
             // 
             this.saveToRemotingCheckBox.AutoSize = true;
             this.saveToRemotingCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationBindingSource, "SaveCoinsToAllMachines", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.saveToRemotingCheckBox.Location = new System.Drawing.Point(12, 19);
+            this.saveToRemotingCheckBox.Location = new System.Drawing.Point(49, 19);
             this.saveToRemotingCheckBox.Name = "saveToRemotingCheckBox";
             this.saveToRemotingCheckBox.Size = new System.Drawing.Size(198, 19);
             this.saveToRemotingCheckBox.TabIndex = 2;
@@ -598,6 +600,17 @@
             this.label11.TabIndex = 27;
             this.label11.Text = "optional";
             // 
+            // button1
+            // 
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(12, 14);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 4;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // CoinsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -695,5 +708,6 @@
         private System.Windows.Forms.ToolStripButton copyCoinButton;
         private System.Windows.Forms.ComboBox userNameCombo;
         private System.Windows.Forms.ToolStripButton editCoinButton;
+        private System.Windows.Forms.Button button1;
     }
 }

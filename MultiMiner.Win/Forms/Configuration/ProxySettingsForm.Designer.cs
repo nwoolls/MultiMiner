@@ -41,6 +41,7 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.addProxyButton = new System.Windows.Forms.Button();
             this.removeProxyButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.proxyDescriptorBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -97,6 +98,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -153,6 +155,17 @@
             this.removeProxyButton.UseVisualStyleBackColor = false;
             this.removeProxyButton.Click += new System.EventHandler(this.removeProxyButton_Click);
             // 
+            // button1
+            // 
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(16, 14);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 9;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // ProxySettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -195,5 +208,6 @@
         private System.Windows.Forms.Button addProxyButton;
         private System.Windows.Forms.Button removeProxyButton;
         private System.Windows.Forms.BindingSource proxyDescriptorBindingSource;
+        private System.Windows.Forms.Button button1;
     }
 }

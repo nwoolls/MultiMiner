@@ -3,6 +3,7 @@ using MultiMiner.Utility.Forms;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Win.Extensions;
 using System;
+using MultiMiner.Engine;
 
 namespace MultiMiner.Win.Forms
 {
@@ -24,8 +25,9 @@ namespace MultiMiner.Win.Forms
         private void PopulateAlgorithmCombo()
         {
             algorithmCombo.Items.Clear();
-            foreach (CoinAlgorithm algorithm in (CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm)))
-                algorithmCombo.Items.Add(algorithm.ToString().ToSpaceDelimitedWords());
+            System.Collections.Generic.List<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
+            foreach (CoinAlgorithm algorithm in algorithms)
+                algorithmCombo.Items.Add(algorithm.Name.ToSpaceDelimitedWords());
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -50,7 +52,7 @@ namespace MultiMiner.Win.Forms
 
         private void LoadSettings()
         {
-            algorithmCombo.SelectedIndex = (int)cryptoCoin.Algorithm;
+            algorithmCombo.Text = cryptoCoin.Algorithm;
 
             cryptoCoinBindingSource.DataSource = cryptoCoin;
 
@@ -58,7 +60,7 @@ namespace MultiMiner.Win.Forms
 
         private void SaveSettings()
         {
-            cryptoCoin.Algorithm = (CoinAlgorithm)algorithmCombo.SelectedIndex;
+            cryptoCoin.Algorithm = algorithmCombo.Text;
         }
     }
 }

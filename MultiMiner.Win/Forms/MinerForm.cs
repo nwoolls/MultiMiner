@@ -439,6 +439,10 @@ namespace MultiMiner.Win.Forms
                         (deviceViewModel.Kind == DeviceKind.NET))
                         continue;
 
+                    //app is closing
+                    if (tearingDown)
+                        break;
+
                     ListViewItem listViewItem = FindOrAddListViewItemForViewModel(deviceViewModel);
 
                     if (!String.IsNullOrEmpty(deviceViewModel.FriendlyName))
@@ -716,7 +720,7 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private static ToolStripMenuItem FindOrCreateAlgoMenuItem(ToolStripItemCollection parent, CoinAlgorithm algorithm)
+        private static ToolStripMenuItem FindOrCreateAlgoMenuItem(ToolStripItemCollection parent, string algorithm)
         {
             ToolStripMenuItem algoItem = null;
 
@@ -1362,6 +1366,7 @@ namespace MultiMiner.Win.Forms
                 engineConfiguration.SaveCoinConfigurations(newConfigPath);
                 engineConfiguration.SaveStrategyConfiguration(newConfigPath);
                 engineConfiguration.SaveMinerConfiguration();
+                MiningEngine.SaveAlgorithmConfigurations();
                 SaveKnownCoinsToFile();
 
                 //don't refresh coin stats excessively
@@ -1402,9 +1407,9 @@ namespace MultiMiner.Win.Forms
                 {
                     Engine.Data.Configuration.Coin coinConfiguration = null;
                     if (deviceConfiguration.Kind == DeviceKind.GPU)
-                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.CryptoCoin.Algorithm == CoinAlgorithm.Scrypt);
+                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.CryptoCoin.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase));
                     if (coinConfiguration == null)
-                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.CryptoCoin.Algorithm == CoinAlgorithm.SHA256);
+                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.CryptoCoin.Algorithm.Equals(AlgorithmNames.SHA256, StringComparison.OrdinalIgnoreCase));
 
                     if (coinConfiguration != null)
                         deviceConfiguration.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
@@ -1712,28 +1717,31 @@ namespace MultiMiner.Win.Forms
 
         private void FindNetworkDevices()
         {
-            string localIpRange = Utility.Net.LocalNetwork.GetLocalIPAddressRange();
-            if (String.IsNullOrEmpty(localIpRange))
+            List<string> localIpRanges = Utility.Net.LocalNetwork.GetLocalIPAddressRanges();
+            if (localIpRanges.Count == 0)
                 return; //no network connection
 
             const int startingPort = 4028;
             const int endingPort = 4030;
 
-            List<IPEndPoint> miners = MinerFinder.Find(localIpRange, startingPort, endingPort);
+            foreach (string localIpRange in localIpRanges)
+            {
+                List<IPEndPoint> miners = MinerFinder.Find(localIpRange, startingPort, endingPort);
 
-            //remove own miners
-            miners.RemoveAll(m => m.Address.ToString().Equals(Utility.Net.LocalNetwork.GetLocalIPAddress()));
+                //remove own miners
+                miners.RemoveAll(m => m.Address.ToString().Equals(Utility.Net.LocalNetwork.GetLocalIPAddress()));
 
-            List<NetworkDevices.NetworkDevice> newDevices = miners.ToNetworkDevices();
+                List<NetworkDevices.NetworkDevice> newDevices = miners.ToNetworkDevices();
 
-            //merge in miners, don't remove miners here
-            //let CheckNetworkDevices() remove miners since it does not depend on port scanning
-            //some users are manually entering devices in the XML
-            List<NetworkDevices.NetworkDevice> existingDevices = networkDevicesConfiguration.Devices;
-            newDevices = newDevices
-                .Where(d1 => !existingDevices.Any(d2 => d2.IPAddress.Equals(d1.IPAddress) && (d2.Port == d1.Port)))
-                .ToList();
-            networkDevicesConfiguration.Devices.AddRange(newDevices);
+                //merge in miners, don't remove miners here
+                //let CheckNetworkDevices() remove miners since it does not depend on port scanning
+                //some users are manually entering devices in the XML
+                List<NetworkDevices.NetworkDevice> existingDevices = networkDevicesConfiguration.Devices;
+                newDevices = newDevices
+                    .Where(d1 => !existingDevices.Any(d2 => d2.IPAddress.Equals(d1.IPAddress) && (d2.Port == d1.Port)))
+                    .ToList();
+                networkDevicesConfiguration.Devices.AddRange(newDevices);                
+            }
 
             networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
@@ -1881,9 +1889,9 @@ namespace MultiMiner.Win.Forms
 
                     newConfiguration.Assign(device);
 
-                    if (device.SupportsAlgorithm(CoinAlgorithm.Scrypt) && hasLtcConfigured)
+                    if (device.SupportsAlgorithm(AlgorithmNames.Scrypt) && hasLtcConfigured)
                         newConfiguration.CoinSymbol = KnownCoins.LitecoinSymbol;
-                    else if (device.SupportsAlgorithm(CoinAlgorithm.SHA256) && hasBtcConfigured)
+                    else if (device.SupportsAlgorithm(AlgorithmNames.SHA256) && hasBtcConfigured)
                         newConfiguration.CoinSymbol = KnownCoins.BitcoinSymbol;
 
                     newConfiguration.Enabled = true;
@@ -1958,7 +1966,7 @@ namespace MultiMiner.Win.Forms
 
                 knownCoin.Symbol = item.Symbol;
                 knownCoin.Name = item.Name;
-                knownCoin.Algorithm = item.Algorithm.ToAlgorithm();
+                knownCoin.Algorithm = item.Algorithm;
             }
             SaveKnownCoinsToFile();
         }
@@ -2618,12 +2626,7 @@ namespace MultiMiner.Win.Forms
         {
             ToggleDynamicIntensity(dynamicIntensityButton.Checked);
         }
-
-        private void aboutButton_Click(object sender, EventArgs e)
-        {
-            ShowAboutDialog();
-        }
-
+        
         private void advancedAreaContainer_SplitterMoved(object sender, SplitterEventArgs e)
         {
             if (settingsLoaded)
@@ -2904,6 +2907,21 @@ namespace MultiMiner.Win.Forms
         {
             ConfigurePerks();
         }
+
+        private void helpToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki");
+        }
+
+        private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki");
+        }
+
+        private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ShowAboutDialog();
+        }
         #endregion
 
         #region Timer setup
@@ -3024,6 +3042,9 @@ namespace MultiMiner.Win.Forms
             //submit queued notifications to MobileMiner
             SubmitMobileMinerNotifications();
 
+            //submit pools to MobileMiner before clearing cache
+            SubmitMobileMinerPools();
+
             //clear cached pool information for Network Devices
             //(so we pick up pool changes)
             networkDevicePools.Clear();
@@ -3123,17 +3144,17 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private double GetLocalInstanceHashrate(CoinAlgorithm algorithm, bool includeNetworkDevices)
+        private double GetLocalInstanceHashrate(string algorithm, bool includeNetworkDevices)
         {
             return GetTotalHashrate(localViewModel, algorithm, includeNetworkDevices);
         }
 
-        private double GetVisibleInstanceHashrate(CoinAlgorithm algorithm, bool includeNetworkDevices)
+        private double GetVisibleInstanceHashrate(string algorithm, bool includeNetworkDevices)
         {
             return GetTotalHashrate(GetViewModelToView(), algorithm, includeNetworkDevices);
         }
 
-        private static double GetTotalHashrate(MinerFormViewModel viewModel, CoinAlgorithm algorithm, bool includeNetworkDevices)
+        private static double GetTotalHashrate(MinerFormViewModel viewModel, string algorithm, bool includeNetworkDevices)
         {
             double result = 0.00;
 
@@ -3142,8 +3163,7 @@ namespace MultiMiner.Win.Forms
             {
                 if ((device.Coin != null) && 
                     
-                    //lump Scrypt-alts in with Scrypt for now
-                    (device.Coin.Algorithm == algorithm) &&
+                    (device.Coin.Algorithm.Equals(algorithm, StringComparison.OrdinalIgnoreCase)) &&
 
                     //optionally filter out Network Devices
                     (includeNetworkDevices || (device.Kind != DeviceKind.NET)))
@@ -3172,13 +3192,13 @@ namespace MultiMiner.Win.Forms
 
         private void PopulateLocalMachineHashrates(Remoting.Data.Transfer.Machine machine, bool includeNetworkDevices)
         {
-            machine.TotalScryptHashrate = GetLocalInstanceHashrate(CoinAlgorithm.Scrypt, includeNetworkDevices);
-            machine.TotalSha256Hashrate = GetLocalInstanceHashrate(CoinAlgorithm.SHA256, includeNetworkDevices);
+            machine.TotalScryptHashrate = GetLocalInstanceHashrate(AlgorithmNames.Scrypt, includeNetworkDevices);
+            machine.TotalSha256Hashrate = GetLocalInstanceHashrate(AlgorithmNames.SHA256, includeNetworkDevices);
 
-            IList<CoinAlgorithm> algorithms = ((CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm))).ToList();
+            IList<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
             foreach (CoinAlgorithm algorithm in algorithms)
             {
-                double hashrate = GetLocalInstanceHashrate(algorithm, includeNetworkDevices);
+                double hashrate = GetLocalInstanceHashrate(algorithm.Name, includeNetworkDevices);
                 if (hashrate > 0.00)
                     machine.TotalHashrates[algorithm.ToString()] = hashrate;
             }
@@ -4340,7 +4360,8 @@ namespace MultiMiner.Win.Forms
 
                         CoinName = KnownCoins.BitcoinName,
                         CoinSymbol = KnownCoins.BitcoinSymbol,
-                        Algorithm = AlgorithmNames.SHA256
+                        Algorithm = AlgorithmFullNames.SHA256,
+                        Appliance = true
                     };
 
                     miningStatistics.PopulateFrom(deviceInformation);
@@ -4361,13 +4382,14 @@ namespace MultiMiner.Win.Forms
                         {
                             miningStatistics.CoinName = coinConfiguration.CryptoCoin.Name;
                             miningStatistics.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
+                            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(coinConfiguration.CryptoCoin.Algorithm);
 
                             //MobileMiner is only SHA & Scrypt for now
-                            if ((coinConfiguration.CryptoCoin.Algorithm == CoinAlgorithm.SHA256) ||
-                                (coinConfiguration.CryptoCoin.Algorithm == CoinAlgorithm.Keccak))
-                                miningStatistics.Algorithm = AlgorithmNames.SHA256;
+                            if ((algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA2) ||
+                                (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3))
+                                miningStatistics.Algorithm = AlgorithmFullNames.SHA256;
                             else
-                                miningStatistics.Algorithm = AlgorithmNames.Scrypt;
+                                miningStatistics.Algorithm = AlgorithmFullNames.Scrypt;
                         }
                     }
 
@@ -4496,16 +4518,17 @@ namespace MultiMiner.Win.Forms
             CryptoCoin coin = coinConfiguration.CryptoCoin;
             miningStatistics.CoinSymbol = coin.Symbol;
 
+            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(coin.Algorithm);
+
             //MobileMiner currently only supports SHA and Scrypt
             //attempt to treat them as "Families" for now
-            if ((coin.Algorithm == CoinAlgorithm.SHA256) ||
-                (coin.Algorithm == CoinAlgorithm.Keccak) ||
-                (coin.Algorithm == CoinAlgorithm.Groestl))
+            if ((algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA2) ||
+                (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3))
                 //SHA family algorithms grouped together
-                miningStatistics.Algorithm = AlgorithmNames.SHA256;
+                miningStatistics.Algorithm = AlgorithmFullNames.SHA256;
             else
                 //assume Scrypt for rest until MobileMiner supports more
-                miningStatistics.Algorithm = AlgorithmNames.Scrypt;
+                miningStatistics.Algorithm = AlgorithmFullNames.Scrypt;
 
             miningStatistics.PopulateFrom(deviceInformation);
         }
@@ -4629,25 +4652,38 @@ namespace MultiMiner.Win.Forms
                 string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
                 return;
 
+            Dictionary<string, List<string>> machinePools = new Dictionary<string, List<string>>();
             List<string> pools = new List<string>();
             foreach (Coin coin in engineConfiguration.CoinConfigurations.Where(cc => cc.Enabled))
                 pools.Add(coin.CryptoCoin.Name);
+            machinePools[Environment.MachineName] = pools;
+
+            foreach (KeyValuePair<string, List<PoolInformation>> networkDevicePool in networkDevicePools)
+            {
+                //ipAddress:port
+                string machinePath = networkDevicePool.Key;
+                string machineName = GetFriendlyDeviceName(machinePath, machinePath);
+                machinePools[machineName] = networkDevicePool.Value
+                    // poolInformationList may be null if an RPC API call timed out
+                    .Where(pi => (pi != null) && !String.IsNullOrEmpty(pi.Url))
+                    .Select(pi => pi.Url.DomainFromHost()).ToList();
+            }
 
             if (submitPoolsDelegate == null)
                 submitPoolsDelegate = SubmitPools;
 
-            submitPoolsDelegate.BeginInvoke(pools, submitPoolsDelegate.EndInvoke, null);
+            submitPoolsDelegate.BeginInvoke(machinePools, submitPoolsDelegate.EndInvoke, null);
         }
 
-        private Action<List<string>> submitPoolsDelegate;
+        private Action<Dictionary<string, List<string>>> submitPoolsDelegate;
 
-        private void SubmitPools(List<string> pools)
+        private void SubmitPools(Dictionary<string, List<string>> machinePools)
         {
             try
             {
                 MobileMiner.ApiContext.SubmitMachinePools(GetMobileMinerUrl(), mobileMinerApiKey,
                         applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                        Environment.MachineName, pools);
+                        machinePools);
             }
             catch (Exception ex)
             {
@@ -4684,11 +4720,21 @@ namespace MultiMiner.Win.Forms
         {
             List<MobileMiner.Data.RemoteCommand> commands = new List<MobileMiner.Data.RemoteCommand>();
 
+            List<string> machineNames = new List<string>();
+            machineNames.Add(Environment.MachineName);
+
+            IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
+            foreach (DeviceViewModel deviceViewModel in networkDevices)
+            {
+                string machineName = GetFriendlyDeviceName(deviceViewModel.Path, deviceViewModel.Path);
+                machineNames.Add(machineName);
+            }
+
             try
             {
                 commands = MobileMiner.ApiContext.GetCommands(GetMobileMinerUrl(), mobileMinerApiKey,
                     applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                    Environment.MachineName);
+                    machineNames);
                 mobileMinerSuccess = true;
             }
             catch (Exception ex)
@@ -4761,34 +4807,84 @@ namespace MultiMiner.Win.Forms
 
                 processedCommandIds.Add(command.Id);
 
-                if (command.CommandText.Equals("START", StringComparison.OrdinalIgnoreCase))
-                {
-                    SaveChangesLocally(); //necessary to ensure device configurations exist for devices
-                    StartMiningLocally();
-                }
-                else if (command.CommandText.Equals("STOP", StringComparison.OrdinalIgnoreCase))
-                    StopMiningLocally();
-                else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
-                {
-                    StopMiningLocally();
-                    SaveChangesLocally(); //necessary to ensure device configurations exist for devices
-                    StartMiningLocally();
-                }
-                else if (command.CommandText.StartsWith("SWITCH", StringComparison.OrdinalIgnoreCase))
-                {
-                    string[] parts = command.CommandText.Split('|');
-                    string verb = parts[0];
-                    string coinName = parts[1];
-                    Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.CryptoCoin.Name.Equals(coinName));
-                    if (coinConfiguration != null)
-                        SetAllDevicesToCoinLocally(coinConfiguration.CryptoCoin.Symbol, true);
-                }
-
                 if (deleteRemoteCommandDelegate == null)
                     deleteRemoteCommandDelegate = DeleteRemoteCommand;
 
-                deleteRemoteCommandDelegate.BeginInvoke(command, deleteRemoteCommandDelegate.EndInvoke, null);
+                if (command.Machine.Name.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (command.CommandText.Equals("START", StringComparison.OrdinalIgnoreCase))
+                    {
+                        SaveChangesLocally(); //necessary to ensure device configurations exist for devices
+                        StartMiningLocally();
+                    }
+                    else if (command.CommandText.Equals("STOP", StringComparison.OrdinalIgnoreCase))
+                        StopMiningLocally();
+                    else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
+                    {
+                        StopMiningLocally();
+                        SaveChangesLocally(); //necessary to ensure device configurations exist for devices
+                        StartMiningLocally();
+                    }
+                    else if (command.CommandText.StartsWith("SWITCH", StringComparison.OrdinalIgnoreCase))
+                    {
+                        string[] parts = command.CommandText.Split('|');
+                        string coinName = parts[1];
+                        Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.CryptoCoin.Name.Equals(coinName));
+                        if (coinConfiguration != null)
+                            SetAllDevicesToCoinLocally(coinConfiguration.CryptoCoin.Symbol, true);
+                    }
+
+                    deleteRemoteCommandDelegate.BeginInvoke(command, deleteRemoteCommandDelegate.EndInvoke, null);
+                }
+                else
+                {
+                    string remoteMachineName = command.Machine.Name;
+                    DeviceViewModel networkDevice = GetNetworkDeviceByFriendlyName(remoteMachineName);
+                    if (networkDevice != null)
+                    {
+                        Uri uri = new Uri("http://" + networkDevice.Path);
+                        Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
+
+                        //setup logging
+                        apiContext.LogEvent -= LogApiEvent;
+                        apiContext.LogEvent += LogApiEvent;
+
+                        if (command.CommandText.StartsWith("SWITCH", StringComparison.OrdinalIgnoreCase))
+                        {
+                            string[] parts = command.CommandText.Split('|');
+                            string poolName = parts[1];
+
+                            List<PoolInformation> pools = networkDevicePools[networkDevice.Path];
+                            int poolIndex = pools.FindIndex(pi => pi.Url.DomainFromHost().Equals(poolName, StringComparison.OrdinalIgnoreCase));
+                            
+                            apiContext.SwitchPool(poolIndex);
+                        }
+                        else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
+                        {
+                            apiContext.RestartMining();
+                        }
+
+                        deleteRemoteCommandDelegate.BeginInvoke(command, deleteRemoteCommandDelegate.EndInvoke, null);
+                    }
+                }
             }
+        }
+
+        private DeviceViewModel GetNetworkDeviceByFriendlyName(string friendlyDeviceName)
+        {
+            DeviceViewModel result = null;
+
+            IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
+            foreach (DeviceViewModel item in networkDevices)
+            {
+                if (GetFriendlyDeviceName(item.Path, item.Path).Equals(friendlyDeviceName, StringComparison.OrdinalIgnoreCase))
+                {
+                    result = item;
+                    break;
+                }
+            }
+
+            return result;
         }
 
         private Action<MobileMiner.Data.RemoteCommand> deleteRemoteCommandDelegate;
@@ -4799,7 +4895,7 @@ namespace MultiMiner.Win.Forms
             {
                 MobileMiner.ApiContext.DeleteCommand(GetMobileMinerUrl(), mobileMinerApiKey,
                                     applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                                    Environment.MachineName, command.Id);
+                                    command.Machine.Name, command.Id);
             }
             catch (Exception ex)
             {
@@ -4861,18 +4957,16 @@ namespace MultiMiner.Win.Forms
 
         #region RPC API
 
-        private static double AdjustWorkUtilityForPoolMultipliers(double workUtility, CoinAlgorithm algorithm)
+        private static double AdjustWorkUtilityForPoolMultipliers(double workUtility, string algorithmName)
         {
-            if ((algorithm == CoinAlgorithm.Scrypt) ||
-                (algorithm == CoinAlgorithm.ScryptN) ||
-                (algorithm == CoinAlgorithm.ScryptJane))
+            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
+            if (algorithm.Family == CoinAlgorithm.AlgorithmFamily.Scrypt)
             {
                 const int DumbScryptMultiplier = 65536;
                 return workUtility / DumbScryptMultiplier;
             }
 
-            if ((algorithm == CoinAlgorithm.Keccak) ||
-                (algorithm == CoinAlgorithm.Groestl))
+            if (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3)
             {
                 const int DumbSHA3Multiplier = 256;
                 return workUtility / DumbSHA3Multiplier;
@@ -5802,8 +5896,10 @@ namespace MultiMiner.Win.Forms
             applicationSetup = true;
         }
 
+        private bool tearingDown = false;
         private void TearDownApplication()
         {
+            tearingDown = true;
             SaveSettings();
             StopMiningLocally();
             DisableRemoting();
@@ -6089,7 +6185,7 @@ namespace MultiMiner.Win.Forms
             }
 
             if (showWarning)
-                MessageBox.Show("No copy of bfgminer was detected. Please go to https://github.com/nwoolls/multiminer for instructions on installing bfgminer.",
+                MessageBox.Show("No copy of " + MinerNames.BFGMiner + " was detected. Please go to https://github.com/nwoolls/multiminer for instructions on installing " + MinerNames.BFGMiner + ".",
                         "Miner Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
@@ -7050,15 +7146,15 @@ namespace MultiMiner.Win.Forms
         private string GetHashRateStatusText(MinerFormViewModel viewModel)
         {
             string hashRateText = String.Empty;
-            IList<CoinAlgorithm> algorithms = ((CoinAlgorithm[])Enum.GetValues(typeof(CoinAlgorithm))).ToList();
+            IList<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
             foreach (CoinAlgorithm algorithm in algorithms)
             {
-                double hashRate = GetVisibleInstanceHashrate(algorithm, viewModel == localViewModel);
+                double hashRate = GetVisibleInstanceHashrate(algorithm.Name, viewModel == localViewModel);
                 if (hashRate > 0.00)
                 {
                     if (!String.IsNullOrEmpty(hashRateText))
                         hashRateText = hashRateText + "   ";
-                    hashRateText = String.Format("{0}{1}: {2}", hashRateText, algorithm, hashRate.ToHashrateString());
+                    hashRateText = String.Format("{0}{1}: {2}", hashRateText, algorithm.Name, hashRate.ToHashrateString());
                 }
             }
             return hashRateText;
@@ -7141,14 +7237,14 @@ namespace MultiMiner.Win.Forms
         //download miners required for configured coins / algorithms
         private void DownloadRequiredMiners()
         {
-            IEnumerable<CoinAlgorithm> configuredAlgorithms = engineConfiguration.CoinConfigurations
+            IEnumerable<string> configuredAlgorithms = engineConfiguration.CoinConfigurations
                 .Where(config => config.Enabled)
                 .Select(config => config.CryptoCoin.Algorithm)
                 .Distinct();
 
-            foreach (CoinAlgorithm configuredAlgorithm in configuredAlgorithms)
+            foreach (string algorithmName in configuredAlgorithms)
                 //safe to assume we are downloading GPU miners here
-                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(DeviceKind.GPU, configuredAlgorithm,
+                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(DeviceKind.GPU, algorithmName,
                     engineConfiguration.XgminerConfiguration.AlgorithmMiners));
         }
 
@@ -7344,7 +7440,5 @@ namespace MultiMiner.Win.Forms
             }
         }
         #endregion
-
-
     }
 }
