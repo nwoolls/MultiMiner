@@ -32,8 +32,23 @@ namespace MultiMiner.Discovery
                 byte[] bytes = Encoding.ASCII.GetBytes(jsonData);
 
                 IPEndPoint ip = new IPEndPoint(destination, Config.Port);
-                client.Send(bytes, bytes.Length, ip);
-                client.Close();
+                try
+                {
+                    client.Send(bytes, bytes.Length, ip);
+                }
+                catch (SocketException ex)
+                {
+                    if (ex.SocketErrorCode == SocketError.HostUnreachable)
+                        //reasoning: we broadcast on all interfaces
+                        //on OS X this may result in No route to host
+                        Console.WriteLine(String.Format("{0}: {1}", source, ex.Message));
+                    else
+                        throw;
+                }
+                finally
+                {
+                    client.Close();
+                }
             }
         }
     }
