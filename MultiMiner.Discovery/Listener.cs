@@ -100,12 +100,13 @@ namespace MultiMiner.Discovery
 
             if (packet.Verb.Equals(Verbs.Online))
             {
-                string ipAddress = source.Address.ToString();
-                if (!instances.Any(i => i.IpAddress.Equals(ipAddress)))
+                //search by MachineName and Fingerprint - these are unique while IP address may not be
+                //reasoning - the same machine may have multiple IP addresses as discovery supports multiple interfaces
+                if (!instances.Any(i => i.MachineName.Equals(packet.MachineName) && (i.Fingerprint == packet.Fingerprint)))
                 {
                     Data.Instance instance = new Data.Instance 
                     { 
-                        IpAddress = ipAddress, 
+                        IpAddress = source.Address.ToString(), 
                         MachineName = packet.MachineName, 
                         Fingerprint = packet.Fingerprint 
                     };
