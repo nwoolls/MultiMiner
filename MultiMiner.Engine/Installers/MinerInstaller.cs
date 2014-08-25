@@ -101,9 +101,21 @@ namespace MultiMiner.Engine.Installers
             int dashIndex = semanticVersion.IndexOf(Dash);
             if (dashIndex >= 0)
             {
+                //examples of versions built from Git
+                //OS X : bfgminer 4.7.0-unknown
+                //Linux: bfgminer 4.5.0-1-g989677a
                 string primaryInfo = semanticVersion.Substring(0, dashIndex);
-                string preReleaseInfo = semanticVersion.Substring(dashIndex + 1, semanticVersion.IndexOf(Dash, dashIndex + 1) - dashIndex - 1);
-                result = String.Format("{0}.{1}", primaryInfo, preReleaseInfo);
+                int secondDashPos = semanticVersion.IndexOf(Dash, dashIndex + 1);
+                if (secondDashPos > 0)
+                {
+                    string preReleaseInfo = semanticVersion.Substring(dashIndex + 1, secondDashPos - dashIndex - 1);
+                    result = String.Format("{0}.{1}", primaryInfo, preReleaseInfo);
+                }
+                else
+                {
+                    //can't detect pre-release info on OS X (yet)
+                    result = primaryInfo;
+                }
             }
 
             return result;
