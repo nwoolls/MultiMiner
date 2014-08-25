@@ -18,7 +18,7 @@ namespace MultiMiner.Utility.Net
             List<IPAddress> ipAddresses = new IPRange(ipRange).GetIPAddresses().ToList();
 
             //optimize until we need otherwise
-            ipAddresses.RemoveAll(ip => ip.ToString().Equals(LocalNetwork.GetLocalIPAddress()));
+            ipAddresses.RemoveAll(ip => LocalNetwork.GetLocalIPAddresses().Contains(ip.Address.ToString()));
             ipAddresses.RemoveAll(ip => ip.ToString().EndsWith(".0"));
 
             foreach (IPAddress ipAddress in ipAddresses)

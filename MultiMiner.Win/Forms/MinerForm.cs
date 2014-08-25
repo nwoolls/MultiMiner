@@ -1729,7 +1729,7 @@ namespace MultiMiner.Win.Forms
                 List<IPEndPoint> miners = MinerFinder.Find(localIpRange, startingPort, endingPort);
 
                 //remove own miners
-                miners.RemoveAll(m => m.Address.ToString().Equals(Utility.Net.LocalNetwork.GetLocalIPAddress()));
+                miners.RemoveAll(m => Utility.Net.LocalNetwork.GetLocalIPAddresses().Contains(m.Address.ToString()));
 
                 List<NetworkDevices.NetworkDevice> newDevices = miners.ToNetworkDevices();
 
@@ -1751,7 +1751,7 @@ namespace MultiMiner.Win.Forms
             List<IPEndPoint> endpoints = networkDevicesConfiguration.Devices.ToIPEndPoints();
 
             //remove own miners
-            endpoints.RemoveAll(m => m.Address.ToString().Equals(Utility.Net.LocalNetwork.GetLocalIPAddress()));
+            endpoints.RemoveAll(m => Utility.Net.LocalNetwork.GetLocalIPAddresses().Contains(m.Address.ToString()));
 
             endpoints = MinerFinder.Check(endpoints);
 
@@ -5144,11 +5144,11 @@ namespace MultiMiner.Win.Forms
 
         private void RemoveSelfReferencingNetworkDevices()
         {
-            string localIpAddress = Utility.Net.LocalNetwork.GetLocalIPAddress();
+            List<string> localIpAddresses = Utility.Net.LocalNetwork.GetLocalIPAddresses();
             IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET).ToList();
             foreach (DeviceViewModel networkDevice in networkDevices)
             {
-                if (networkDevice.Pool.DomainFromHost().Equals(localIpAddress))
+                if (localIpAddresses.Contains(networkDevice.Pool.DomainFromHost()))
                     //actually remove rather than setting Visible = false
                     //Visible = false items still get fetched with RefreshNetworkDeviceStats()
                     localViewModel.Devices.Remove(networkDevice);
