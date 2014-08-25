@@ -6029,11 +6029,12 @@ namespace MultiMiner.Win.Forms
                         logProcessCloseArgsBindingSource.Add(logProcessCloseArgs);
                     logProcessCloseArgsBindingSource.ResumeBinding();
                 }
-                catch (ArgumentException)
+                catch (SystemException)
                 {
                     //old MiningLog.json file - wrong format serialized
                     //MiningLog.json rolls over so we will eventually be able to
                     //load the previous log file
+                    //seen as both ArgumentException and InvalidCastException - catching SystemException
                     return;
                 }
             }
