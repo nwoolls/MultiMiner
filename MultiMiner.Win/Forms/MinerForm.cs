@@ -3200,7 +3200,7 @@ namespace MultiMiner.Win.Forms
             {
                 double hashrate = GetLocalInstanceHashrate(algorithm.Name, includeNetworkDevices);
                 if (hashrate > 0.00)
-                    machine.TotalHashrates[algorithm.ToString()] = hashrate;
+                    machine.TotalHashrates[algorithm.Name] = hashrate;
             }
         }
 
