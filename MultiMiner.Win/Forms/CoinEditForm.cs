@@ -52,7 +52,7 @@ namespace MultiMiner.Win.Forms
 
         private void LoadSettings()
         {
-            algorithmCombo.Text = cryptoCoin.Algorithm;
+            algorithmCombo.Text = cryptoCoin.Algorithm.ToSpaceDelimitedWords();
 
             cryptoCoinBindingSource.DataSource = cryptoCoin;
 
