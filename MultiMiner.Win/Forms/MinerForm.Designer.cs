@@ -433,10 +433,10 @@
             // 
             // coinsToolStripMenuItem
             // 
-            this.coinsToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_gear;
+            this.coinsToolStripMenuItem.Image = global::MultiMiner.Win.Properties.Resources.application_internet;
             this.coinsToolStripMenuItem.Name = "coinsToolStripMenuItem";
             this.coinsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.coinsToolStripMenuItem.Text = "Coins";
+            this.coinsToolStripMenuItem.Text = "Pools";
             this.coinsToolStripMenuItem.Click += new System.EventHandler(this.coinsToolStripMenuItem_Click);
             // 
             // strategiesToolStripMenuItem
