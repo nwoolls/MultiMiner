@@ -158,6 +158,7 @@ namespace MultiMiner.Win.Forms.Configuration
             MinerFactory.Instance.RegisterAlgorithm(algorithmName, algorithmName, CoinAlgorithm.AlgorithmFamily.Unknown);
 
             ListViewItem item = algoListView.Items.Add(algorithmName);
+            item.ImageIndex = 0;
 
             // Place the newly-added item into edit mode immediately
             item.Selected = true;
