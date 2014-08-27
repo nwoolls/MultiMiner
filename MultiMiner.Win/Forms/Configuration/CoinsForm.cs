@@ -479,7 +479,11 @@ namespace MultiMiner.Win.Forms.Configuration
 
                 if (dialogResult == System.Windows.Forms.DialogResult.OK)
                 {
-                    if (configurations.SingleOrDefault(c => c.CryptoCoin.Symbol.Equals(workingCoin.Symbol, StringComparison.OrdinalIgnoreCase)) == null)
+                    MultiMiner.Engine.Data.Configuration.Coin existingConfiguration = 
+                        configurations.SingleOrDefault(c => (c != currentConfiguration) 
+                            && c.CryptoCoin.Symbol.Equals(workingCoin.Symbol, StringComparison.OrdinalIgnoreCase));
+
+                    if (existingConfiguration == null)
                     {
                         ObjectCopier.CopyObject(workingCoin, currentConfiguration.CryptoCoin);
                         coinListBox.Items[coinListBox.SelectedIndex] = workingCoin.Name;
