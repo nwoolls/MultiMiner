@@ -1,6 +1,6 @@
 ﻿using MultiMiner.Utility.Forms;
 using MultiMiner.Xgminer.Data;
-using MultiMiner.Win.Extensions;
+using MultiMiner.Engine.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

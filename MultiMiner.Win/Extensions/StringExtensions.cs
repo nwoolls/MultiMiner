@@ -58,12 +58,7 @@ namespace MultiMiner.Win.Extensions
         {
             return host.Replace("http://", "").Replace("stratum+tcp://", "");
         }
-
-        public static string ToSpaceDelimitedWords(this string text)
-        {
-            return Regex.Replace(Regex.Replace(text, @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"), @"(\p{Ll})(\P{Ll})", "$1 $2");
-        }
-        
+                
         public static bool ParseHostAndPort(this string hostAndPort, out string host, out int port)
         {
             const char Separator = ':';

@@ -4,7 +4,7 @@ using MultiMiner.Utility.Serialization;
 using MultiMiner.Win.Data.Configuration;
 using MultiMiner.Xgminer.Data;
 using System;
-using MultiMiner.Win.Extensions;
+using MultiMiner.Engine.Extensions;
 using System.Linq;
 using MultiMiner.Engine;
 using System.Diagnostics;

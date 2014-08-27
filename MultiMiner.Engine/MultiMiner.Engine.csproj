@@ -57,6 +57,7 @@
     <Compile Include="Data\Configuration\Xgminer.cs" />
     <Compile Include="Data\KnownCoins.cs" />
     <Compile Include="Data\MinerNames.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\DonationPools.cs" />
     <Compile Include="Installers\MultiMinerInstaller.cs" />
     <Compile Include="Data\AvailableMiner.cs" />

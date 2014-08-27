@@ -1,7 +1,7 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Forms;
-using MultiMiner.Win.Extensions;
+using MultiMiner.Engine.Extensions;
 using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
@@ -39,10 +39,16 @@ namespace MultiMiner.Win.Forms
                 algoCombo.Items.Add(algorithm.Name.ToSpaceDelimitedWords());           
         }
 
-        private void PopulateCoinCombo()
+        private CoinAlgorithm GetSelectedAlgorithm()
         {
             string algorithmName = algoCombo.Text.Replace(" ", String.Empty);
             CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
+            return algorithm;
+        }
+
+        private void PopulateCoinCombo()
+        {
+            CoinAlgorithm algorithm = GetSelectedAlgorithm();
             filteredCoins = sortedCoins.Where(sc => sc.Algorithm.Equals(algorithm.FullName, StringComparison.OrdinalIgnoreCase)).ToList();
 
             coinCombo.Text = String.Empty;
@@ -64,7 +70,7 @@ namespace MultiMiner.Win.Forms
             {
                 CryptoCoin newCoin = new CryptoCoin();
                 newCoin.Name = coinCombo.Text;
-                newCoin.Algorithm = algoCombo.Text;
+                newCoin.Algorithm = GetSelectedAlgorithm().Name;
 
                 using (CoinEditForm coinEditForm = new CoinEditForm(newCoin))
                 {

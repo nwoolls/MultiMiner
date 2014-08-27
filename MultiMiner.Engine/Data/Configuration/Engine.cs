@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer.Data;
+using MultiMiner.Engine.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -115,8 +116,23 @@ namespace MultiMiner.Engine.Data.Configuration
 
             CoinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<Coin>>(CoinConfigurationsFileName());
             FixCoinConfigurationSymbolDiscrepencies();
+            FixWrongAlgorithmsFromCoinChoose();
             RemoveIvalidCoinsFromDeviceConfigurations();
             RemoveBlankPoolConfigurations();
+        }
+
+        private void FixWrongAlgorithmsFromCoinChoose()
+        {
+            IEnumerable<Coin> potentialIssues = CoinConfigurations.Where(cc => !cc.CryptoCoin.Algorithm.Replace(" ", String.Empty).Equals(cc.CryptoCoin.Algorithm));
+            foreach (Coin potentialIssue in potentialIssues)
+            {
+                string algorithmName = potentialIssue.CryptoCoin.Algorithm.Replace(" ", String.Empty);
+                CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
+                if (algorithm != null)
+                    //only make the change if there is an algorithm found
+                    //a user may add an algorithm with a space in the name - we don't want to change that
+                    potentialIssue.CryptoCoin.Algorithm = algorithm.Name;
+            }
         }
 
         private void RemoveDisabledCoinsFromDeviceConfigurations()

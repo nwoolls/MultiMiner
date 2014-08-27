@@ -1,7 +1,7 @@
 ﻿using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Xgminer.Data;
-using MultiMiner.Win.Extensions;
+using MultiMiner.Engine.Extensions;
 using System;
 using MultiMiner.Engine;
 
@@ -60,7 +60,7 @@ namespace MultiMiner.Win.Forms
 
         private void SaveSettings()
         {
-            cryptoCoin.Algorithm = algorithmCombo.Text;
+            cryptoCoin.Algorithm = algorithmCombo.Text.Replace(" ", String.Empty);
         }
     }
 }
