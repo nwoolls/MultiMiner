@@ -115,12 +115,30 @@ namespace MultiMiner.Engine.Data.Configuration
             InitializeConfigDirectory(configDirectory);
 
             CoinConfigurations = ConfigurationReaderWriter.ReadConfiguration<List<Coin>>(CoinConfigurationsFileName());
+           
             FixCoinConfigurationSymbolDiscrepencies();
             FixWrongAlgorithmsFromCoinChoose();
+            FixWrongAlgorithmsFromCoinWarz();
             RemoveIvalidCoinsFromDeviceConfigurations();
             RemoveBlankPoolConfigurations();
         }
 
+        //configurations save with algorithm FullName instead of Name
+        private void FixWrongAlgorithmsFromCoinWarz()
+        {
+            List<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
+            IEnumerable<Coin> issues = CoinConfigurations.Where(
+                cc => algorithms.Any(a => a.FullName.Equals(cc.CryptoCoin.Algorithm, StringComparison.OrdinalIgnoreCase) 
+                    && !a.Name.Equals(cc.CryptoCoin.Algorithm, StringComparison.OrdinalIgnoreCase)));
+
+            foreach (Coin issue in issues)
+            {
+                CoinAlgorithm algorithm = algorithms.Single(a => a.FullName.Equals(issue.CryptoCoin.Algorithm, StringComparison.OrdinalIgnoreCase));
+                issue.CryptoCoin.Algorithm = algorithm.Name;
+            }
+        }
+
+        //configurations saved with algorithm Name with spaces
         private void FixWrongAlgorithmsFromCoinChoose()
         {
             IEnumerable<Coin> potentialIssues = CoinConfigurations.Where(cc => !cc.CryptoCoin.Algorithm.Replace(" ", String.Empty).Equals(cc.CryptoCoin.Algorithm));

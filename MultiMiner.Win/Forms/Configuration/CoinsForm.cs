@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
+using MultiMiner.Engine;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -100,6 +101,13 @@ namespace MultiMiner.Win.Forms.Configuration
                     configuration.CryptoCoin.Symbol = cryptoCoin.Symbol;
                     configuration.CryptoCoin.Algorithm = cryptoCoin.Algorithm;
                 }
+
+                //at this point, configuration.CryptoCoin.Algorithm is the CoinAlgorithm.FullName
+                //that is how data from Coin API is stored
+                //but coin configurations are based on CoinAlgorithm.Name
+                string algorithmFullName = configuration.CryptoCoin.Algorithm;
+                CoinAlgorithm algorithm = MinerFactory.Instance.Algorithms.SingleOrDefault(a => a.FullName.Equals(algorithmFullName, StringComparison.OrdinalIgnoreCase));
+                configuration.CryptoCoin.Algorithm = algorithm.Name;
 
                 MiningPool miningPool = new MiningPool()
                 {
