@@ -41,7 +41,9 @@ namespace MultiMiner.Win.Forms
 
         private void PopulateCoinCombo()
         {
-            filteredCoins = sortedCoins.Where(sc => sc.Algorithm.ToString().ToSpaceDelimitedWords().Equals(algoCombo.Text)).ToList();
+            string algorithmName = algoCombo.Text.Replace(" ", String.Empty);
+            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
+            filteredCoins = sortedCoins.Where(sc => sc.Algorithm.Equals(algorithm.FullName, StringComparison.OrdinalIgnoreCase)).ToList();
 
             coinCombo.Text = String.Empty;
             coinCombo.Items.Clear();
