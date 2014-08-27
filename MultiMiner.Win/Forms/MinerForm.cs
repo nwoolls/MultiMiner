@@ -550,7 +550,8 @@ namespace MultiMiner.Win.Forms
                 }
 
                 foreach (int selectedIndex in selectedIndexes)
-                    if (selectedIndex < deviceListView.Items.Count)
+                    //selectedIndex may be -1, check for that
+                    if ((selectedIndex >= 0) && (selectedIndex < deviceListView.Items.Count))
                         deviceListView.Items[selectedIndex].Selected = true;
             }
             finally
