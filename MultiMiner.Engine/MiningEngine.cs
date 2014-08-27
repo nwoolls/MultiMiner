@@ -852,6 +852,12 @@ namespace MultiMiner.Engine
             
             MinerDescriptor miner = MinerFactory.Instance.GetMiner(deviceKind, coinConfiguration.CryptoCoin.Algorithm, engineConfiguration.XgminerConfiguration.AlgorithmMiners);
 
+            if (miner == null)
+            {
+                //no miner configured for the algorithm / custom algorithm
+                throw new Xgminer.MinerLaunchException(String.Format("No miner defined for algorithm {0}.", coinConfiguration.CryptoCoin.Algorithm));
+            }
+
             Xgminer.Data.Configuration.Miner minerConfiguration = CreateBasicConfiguration(miner, coinConfiguration, apiPort);
 
             IList<Engine.Data.Configuration.Device> enabledConfigurations = 

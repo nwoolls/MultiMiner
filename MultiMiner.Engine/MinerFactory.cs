@@ -45,13 +45,19 @@ namespace MultiMiner.Engine
 
             if (miners.ContainsKey(algorithmName))
                 return Miners.Single(m => m.Name.Equals(miners[algorithmName], StringComparison.OrdinalIgnoreCase));
-            else
+            else if (algorithm.DefaultMiner != null)
                 return Miners.Single(m => m.Name.Equals(algorithm.DefaultMiner, StringComparison.OrdinalIgnoreCase));
+            else
+                return null;
         }
 
         public MinerDescriptor GetMiner(DeviceKind deviceKind, string algorithmName, SerializableDictionary<string, string> miners)
         {
             CoinAlgorithm algorithm = GetAlgorithm(algorithmName);
+
+            if (algorithm == null)
+                //algorithm for name not found
+                return null;
 
             return GetMiner(deviceKind, algorithm, miners);
         }

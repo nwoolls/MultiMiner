@@ -7243,10 +7243,17 @@ namespace MultiMiner.Win.Forms
                 .Select(config => config.CryptoCoin.Algorithm)
                 .Distinct();
 
+            SerializableDictionary<string, string> algorithmMiners = engineConfiguration.XgminerConfiguration.AlgorithmMiners;
+
             foreach (string algorithmName in configuredAlgorithms)
+            {
                 //safe to assume we are downloading GPU miners here
-                CheckAndDownloadMiner(MinerFactory.Instance.GetMiner(DeviceKind.GPU, algorithmName,
-                    engineConfiguration.XgminerConfiguration.AlgorithmMiners));
+                MinerDescriptor miner = MinerFactory.Instance.GetMiner(DeviceKind.GPU, algorithmName, algorithmMiners);
+
+                //is miner configured for algorithm
+                if (miner != null)
+                    CheckAndDownloadMiner(miner);
+            }
         }
 
         private void CheckAndDownloadMiner(MinerDescriptor miner)
