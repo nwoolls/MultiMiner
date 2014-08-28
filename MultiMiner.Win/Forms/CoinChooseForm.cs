@@ -6,6 +6,7 @@ using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 namespace MultiMiner.Win.Forms
 {
@@ -89,6 +90,11 @@ namespace MultiMiner.Win.Forms
         private void algoCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateCoinCombo();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Crypto-Coins");
         }
     }
 }
