@@ -82,6 +82,8 @@ namespace MultiMiner.Engine.Installers
             if (match.Success)
                 version = match.Groups[1].Value;
 
+            version = SemanticVersionToStandardVersion(version);
+
 #if DEBUG
             if (!String.IsNullOrEmpty(version))
             {
@@ -90,7 +92,7 @@ namespace MultiMiner.Engine.Installers
             }
 #endif
 
-            return SemanticVersionToStandardVersion(version);
+            return version;
         }
 
         private static string SemanticVersionToStandardVersion(string semanticVersion)
