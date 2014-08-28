@@ -196,7 +196,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/GPU-Algorithms");
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Settings#advanced-gpu-miner-settings");
         }
     }
 }

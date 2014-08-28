@@ -81,7 +81,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Settings");
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Settings#advanced-service-settings");
         }
     }
 }
