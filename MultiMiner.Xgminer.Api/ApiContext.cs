@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Xgminer.Api.Parsers;
 using MultiMiner.Xgminer.Api.Data;
+using MultiMiner.Xgminer.Api.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -90,7 +91,10 @@ namespace MultiMiner.Xgminer.Api
 
         public string GetResponse(string apiVerb, int timeoutMs = 500)
         {
-            TcpClient tcpClient = new TcpClient(this.IpAddress, Port);
+            const int ConnectTimeoutMS = 1000;
+            TcpClient tcpClient = new TcpClient();
+            tcpClient.Connect(this.IpAddress, Port, ConnectTimeoutMS);
+
             NetworkStream tcpStream = tcpClient.GetStream();
 
             // set a read timeout, otherwise it is infinite and could lock the app
