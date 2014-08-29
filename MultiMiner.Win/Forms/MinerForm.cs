@@ -1798,7 +1798,7 @@ namespace MultiMiner.Win.Forms
                     RefreshDeviceStats();
 
                 if (localViewModel.Devices.Count(d => d.Kind == DeviceKind.NET) > 0)
-                    RefreshNetworkDeviceStats();
+                    RefreshNetworkDeviceStatsAsync();
             }
             finally
             {
@@ -3108,7 +3108,7 @@ namespace MultiMiner.Win.Forms
         private void tenSecondTimer_Tick(object sender, EventArgs e)
         {
             if (applicationConfiguration.NetworkDeviceDetection)
-                RefreshNetworkDeviceStats();
+                RefreshNetworkDeviceStatsAsync();
 
             CheckIdleTimeForDynamicIntensity(((System.Windows.Forms.Timer)sender).Interval);
         }
@@ -5172,15 +5172,15 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshNetworkDeviceStats()
         {
-            //first clear stats for each row
-            //this is because the NET row stats get summed 
-            localViewModel.ClearNetworkDeviceInformationFromViewModel();
-
             foreach (DeviceViewModel deviceViewModel in localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET))
             {
                 string[] portions = deviceViewModel.Path.Split(':');
                 string ipAddress = portions[0];
                 int port = int.Parse(portions[1]);
+
+                //first clear stats for each row
+                //this is because the NET row stats get summed 
+                MinerFormViewModel.ClearDeviceInformation(deviceViewModel);
 
                 List<DeviceInformation> deviceInformationList = GetDeviceInfoFromAddress(ipAddress, port);
 
@@ -5222,12 +5222,26 @@ namespace MultiMiner.Win.Forms
 
                 CheckAndSetNetworkDifficulty(ipAddress, port, KnownCoins.BitcoinSymbol);
             }
+        }
 
-            ApplyCoinInformationToViewModel();
+        private void RefreshNetworkDeviceStatsAsync()
+        {
+            Action asyncAction = RefreshNetworkDeviceStats;
+            asyncAction.BeginInvoke(
+                ar =>
+                {
+                    asyncAction.EndInvoke(ar);
+                    BeginInvoke((Action)(() =>
+                    {
+                        //code to update UI
+                        ApplyCoinInformationToViewModel();
 
-            RemoveSelfReferencingNetworkDevices();
+                        RemoveSelfReferencingNetworkDevices();
 
-            RefreshViewFromDeviceStats();
+                        RefreshViewFromDeviceStats();
+                    }));
+
+                }, null);            
         }
 
         private Coin CoinConfigurationForPoolUrl(string poolUrl)

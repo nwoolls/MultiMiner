@@ -125,14 +125,8 @@ namespace MultiMiner.Win.ViewModels
             foreach (DeviceViewModel deviceViewModel in Devices.Where(d => d.Kind != DeviceKind.NET))
                 ClearDeviceInformation(deviceViewModel);
         }
-
-        public void ClearNetworkDeviceInformationFromViewModel()
-        {
-            foreach (DeviceViewModel deviceViewModel in Devices.Where(d => d.Kind == DeviceKind.NET))
-                ClearDeviceInformation(deviceViewModel);
-        }
-
-        private static void ClearDeviceInformation(DeviceViewModel deviceViewModel)
+        
+        public static void ClearDeviceInformation(DeviceViewModel deviceViewModel)
         {
             deviceViewModel.AverageHashrate = 0;
             deviceViewModel.CurrentHashrate = 0;
