@@ -4664,10 +4664,12 @@ namespace MultiMiner.Win.Forms
                 //ipAddress:port
                 string machinePath = networkDevicePool.Key;
                 string machineName = GetFriendlyDeviceName(machinePath, machinePath);
-                machinePools[machineName] = networkDevicePool.Value
-                    // poolInformationList may be null if an RPC API call timed out
-                    .Where(pi => (pi != null) && !String.IsNullOrEmpty(pi.Url))
-                    .Select(pi => pi.Url.DomainFromHost()).ToList();
+                // poolInformationList may be null if an RPC API call timed out
+                if (networkDevicePool.Value != null)
+                {
+                    machinePools[machineName] = networkDevicePool.Value
+                        .Select(pi => pi.Url.DomainFromHost()).ToList();
+                }
             }
 
             if (submitPoolsDelegate == null)
