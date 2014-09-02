@@ -4990,11 +4990,14 @@ namespace MultiMiner.Win.Forms
             //this is because the PXY row stats get summed 
             localViewModel.ClearDeviceInformationFromViewModel();
 
-            foreach (MinerProcess minerProcess in miningEngine.MinerProcesses)
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<MinerProcess> minerProcesses = miningEngine.MinerProcesses.ToList();
+            foreach (MinerProcess minerProcess in minerProcesses)
             {
                 ClearSuspectProcessFlags(minerProcess);
 
-                List<DeviceInformation> deviceInformationList = GetDeviceInfoFromProcessAsync(minerProcess);
+                List<DeviceInformation> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
                 if (deviceInformationList == null) //handled failure getting API info
                 {
                     minerProcess.MinerIsFrozen = true;
@@ -5060,7 +5063,7 @@ namespace MultiMiner.Win.Forms
                 }
 
                 FlagSuspiciousProxy(minerProcess, deviceInformationList);
-                
+                                
                 if (!String.IsNullOrEmpty(coinSymbol))
                     CheckAndSetNetworkDifficulty(minerProcess.ApiContext.IpAddress, minerProcess.ApiContext.Port, coinSymbol);
 
@@ -5176,20 +5179,6 @@ namespace MultiMiner.Win.Forms
             return poolInformationList;
         }
 
-        private List<DeviceInformation> GetDeviceInfoFromAddressAsync(string ipAddress, int port)
-        {
-            Func<string, int, List<DeviceInformation>> asyncFunc = GetDeviceInfoFromAddress;
-
-            IAsyncResult asyncResult = asyncFunc.BeginInvoke(ipAddress, port, null, null);
-            while (!asyncResult.IsCompleted)
-            {
-                System.Windows.Forms.Application.DoEvents();
-                asyncResult.AsyncWaitHandle.WaitOne(200);
-            }
-
-            return asyncFunc.EndInvoke(asyncResult);
-        }
-
         private void RefreshNetworkDeviceStats()
         {
             foreach (DeviceViewModel deviceViewModel in localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET))
@@ -5198,7 +5187,7 @@ namespace MultiMiner.Win.Forms
                 string ipAddress = portions[0];
                 int port = int.Parse(portions[1]);
 
-                List<DeviceInformation> deviceInformationList = GetDeviceInfoFromAddressAsync(ipAddress, port);
+                List<DeviceInformation> deviceInformationList = GetDeviceInfoFromAddress(ipAddress, port);
 
                 //first clear stats for each row
                 //this is because the NET row stats get summed 
@@ -5534,20 +5523,6 @@ namespace MultiMiner.Win.Forms
             }
 
             return deviceInformationList;
-        }
-
-        private List<DeviceInformation> GetDeviceInfoFromProcessAsync(MinerProcess minerProcess)
-        {
-            Func<MinerProcess, List<DeviceInformation>> asyncFunc = GetDeviceInfoFromProcess;
-
-            IAsyncResult asyncResult = asyncFunc.BeginInvoke(minerProcess, null, null);
-            while (!asyncResult.IsCompleted)
-            {
-                System.Windows.Forms.Application.DoEvents();
-                asyncResult.AsyncWaitHandle.WaitOne(200);
-            }
-
-            return asyncFunc.EndInvoke(asyncResult);
         }
 
         private List<DeviceInformation> GetDeviceInfoFromProcess(MinerProcess minerProcess)
