@@ -2855,6 +2855,10 @@ namespace MultiMiner.Win.Forms
 
         private void deviceListView_AfterLabelEdit(object sender, LabelEditEventArgs e)
         {
+            if (e.Label == null)
+                //edit was canceled
+                return;
+
             editingDeviceListView = false;
 
             MinerFormViewModel viewModelToView = GetViewModelToView();
