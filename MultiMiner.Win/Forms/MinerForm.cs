@@ -1798,7 +1798,7 @@ namespace MultiMiner.Win.Forms
                     RefreshDeviceStats();
 
                 if (localViewModel.Devices.Count(d => d.Kind == DeviceKind.NET) > 0)
-                    RefreshNetworkDeviceStatsAsync();
+                    RefreshNetworkDeviceStats();
             }
             finally
             {
@@ -3108,7 +3108,7 @@ namespace MultiMiner.Win.Forms
         private void tenSecondTimer_Tick(object sender, EventArgs e)
         {
             if (applicationConfiguration.NetworkDeviceDetection)
-                RefreshNetworkDeviceStatsAsync();
+                RefreshNetworkDeviceStats();
 
             CheckIdleTimeForDynamicIntensity(((System.Windows.Forms.Timer)sender).Interval);
         }
@@ -5172,6 +5172,20 @@ namespace MultiMiner.Win.Forms
             return poolInformationList;
         }
 
+        private List<DeviceInformation> GetDeviceInfoFromAddressAsync(string ipAddress, int port)
+        {
+            Func<string, int, List<DeviceInformation>> asyncFunc = GetDeviceInfoFromAddress;
+
+            IAsyncResult asyncResult = asyncFunc.BeginInvoke(ipAddress, port, null, null);
+            while (!asyncResult.IsCompleted)
+            {
+                System.Windows.Forms.Application.DoEvents();
+                asyncResult.AsyncWaitHandle.WaitOne(200);
+            }
+
+            return asyncFunc.EndInvoke(asyncResult);
+        }
+
         private void RefreshNetworkDeviceStats()
         {
             foreach (DeviceViewModel deviceViewModel in localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET))
@@ -5180,12 +5194,12 @@ namespace MultiMiner.Win.Forms
                 string ipAddress = portions[0];
                 int port = int.Parse(portions[1]);
 
+                List<DeviceInformation> deviceInformationList = GetDeviceInfoFromAddressAsync(ipAddress, port);
+
                 //first clear stats for each row
                 //this is because the NET row stats get summed 
                 MinerFormViewModel.ClearDeviceInformation(deviceViewModel);
-
-                List<DeviceInformation> deviceInformationList = GetDeviceInfoFromAddress(ipAddress, port);
-
+                
                 //deviceInformationList or poolInformationList may be down if the API was unreachable
                 //at the time
                 if (deviceInformationList != null)
@@ -5224,26 +5238,12 @@ namespace MultiMiner.Win.Forms
 
                 CheckAndSetNetworkDifficulty(ipAddress, port, KnownCoins.BitcoinSymbol);
             }
-        }
 
-        private void RefreshNetworkDeviceStatsAsync()
-        {
-            Action asyncAction = RefreshNetworkDeviceStats;
-            asyncAction.BeginInvoke(
-                ar =>
-                {
-                    asyncAction.EndInvoke(ar);
-                    BeginInvoke((Action)(() =>
-                    {
-                        //code to update UI
-                        ApplyCoinInformationToViewModel();
+            ApplyCoinInformationToViewModel();
 
-                        RemoveSelfReferencingNetworkDevices();
+            RemoveSelfReferencingNetworkDevices();
 
-                        RefreshViewFromDeviceStats();
-                    }));
-
-                }, null);            
+            RefreshViewFromDeviceStats();         
         }
 
         private Coin CoinConfigurationForPoolUrl(string poolUrl)
