@@ -48,7 +48,24 @@ namespace MultiMiner.Win.ViewModels
         public double HardwareErrorsPercent { get; set; }
 
         //pool info
-        public double LastShareDifficulty { get; set; }
+        private double lastShareDifficulty;
+        public double LastShareDifficulty
+        {
+            get
+            {
+                return lastShareDifficulty;
+            }
+            set
+            {
+                int rootValue = Convert.ToInt32(Math.Truncate(value));
+
+                if (value > (rootValue + 0.99))
+                    lastShareDifficulty = rootValue + 1;
+                else
+                    lastShareDifficulty = value;
+            }
+        }
+
         public DateTime? LastShareTime { get; set; }
         public string Url { get; set; }
         public double BestShare { get; set; }
