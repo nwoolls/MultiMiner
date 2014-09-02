@@ -1798,7 +1798,7 @@ namespace MultiMiner.Win.Forms
                     RefreshDeviceStats();
 
                 if (localViewModel.Devices.Count(d => d.Kind == DeviceKind.NET) > 0)
-                    RefreshNetworkDeviceStats();
+                    RefreshNetworkDeviceStatsAsync();
             }
             finally
             {
@@ -3112,7 +3112,7 @@ namespace MultiMiner.Win.Forms
         private void tenSecondTimer_Tick(object sender, EventArgs e)
         {
             if (applicationConfiguration.NetworkDeviceDetection)
-                RefreshNetworkDeviceStats();
+                RefreshNetworkDeviceStatsAsync();
 
             CheckIdleTimeForDynamicIntensity(((System.Windows.Forms.Timer)sender).Interval);
         }
@@ -4981,7 +4981,7 @@ namespace MultiMiner.Win.Forms
 
             return workUtility;
         }
-        
+
         private void RefreshDeviceStats()
         {
             allDeviceInformation.Clear();
@@ -5179,6 +5179,26 @@ namespace MultiMiner.Win.Forms
             return poolInformationList;
         }
 
+        private void RefreshNetworkDeviceStatsAsync()
+        {
+            Action asyncAction = RefreshNetworkDeviceStats;
+            asyncAction.BeginInvoke(
+                ar =>
+                {
+                    asyncAction.EndInvoke(ar);
+                    BeginInvoke((Action)(() =>
+                    {
+                        //code to update UI
+                        ApplyCoinInformationToViewModel();
+
+                        RemoveSelfReferencingNetworkDevices();
+
+                        RefreshViewFromDeviceStats();
+                    }));
+
+                }, null);
+        }
+
         private void RefreshNetworkDeviceStats()
         {
             foreach (DeviceViewModel deviceViewModel in localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET))
@@ -5191,52 +5211,50 @@ namespace MultiMiner.Win.Forms
 
                 //first clear stats for each row
                 //this is because the NET row stats get summed 
-                MinerFormViewModel.ClearDeviceInformation(deviceViewModel);
-                
-                //deviceInformationList or poolInformationList may be down if the API was unreachable
-                //at the time
-                if (deviceInformationList != null)
+                this.BeginInvoke((Action)(() =>
                 {
-                    int poolIndex = -1;
-                    foreach (DeviceInformation deviceInformation in deviceInformationList)
+                    //code to update UI
+                    MinerFormViewModel.ClearDeviceInformation(deviceViewModel);                
+                
+                    //deviceInformationList or poolInformationList may be down if the API was unreachable
+                    //at the time
+                    if (deviceInformationList != null)
                     {
-                        localViewModel.ApplyDeviceInformationResponseModel(deviceViewModel, deviceInformation);
-                        poolIndex = deviceInformation.PoolIndex >= 0 ? deviceInformation.PoolIndex : poolIndex;
+                        int poolIndex = -1;
+                        foreach (DeviceInformation deviceInformation in deviceInformationList)
+                        {
+                            localViewModel.ApplyDeviceInformationResponseModel(deviceViewModel, deviceInformation);
+                            poolIndex = deviceInformation.PoolIndex >= 0 ? deviceInformation.PoolIndex : poolIndex;
+                        }
+
+                        List<PoolInformation> poolInformationList = GetCachedPoolInfoFromAddress(ipAddress, port);
+                        if ((poolInformationList != null) &&
+                            //ensure poolIndex is valid for poolInformationList
+                            //user(s) reported index errors so we can't count on the RPC API here
+                            //https://github.com/nwoolls/MultiMiner/issues/64
+                            ((poolIndex >= 0) && (poolIndex < poolInformationList.Count)))
+                        {
+                            PoolInformation poolInformation = poolInformationList[poolIndex];
+
+                            deviceViewModel.Pool = poolInformation.Url;
+
+                            deviceViewModel.LastShareDifficulty = poolInformation.LastShareDifficulty;
+                            deviceViewModel.LastShareTime = poolInformation.LastShareTime;
+                            deviceViewModel.Url = poolInformation.Url;
+                            deviceViewModel.BestShare = poolInformation.BestShare;
+                            deviceViewModel.PoolStalePercent = poolInformation.PoolStalePercent;
+
+                            deviceViewModel.Visible = true;
+
+                            Coin coinConfiguration = CoinConfigurationForPoolUrl(poolInformation.Url);
+                            if (coinConfiguration != null)
+                                deviceViewModel.Coin = coinConfiguration.CryptoCoin;
+                        }
                     }
 
-                    List<PoolInformation> poolInformationList = GetCachedPoolInfoFromAddress(ipAddress, port);
-                    if ((poolInformationList != null) &&
-                        //ensure poolIndex is valid for poolInformationList
-                        //user(s) reported index errors so we can't count on the RPC API here
-                        //https://github.com/nwoolls/MultiMiner/issues/64
-                        ((poolIndex >= 0) && (poolIndex < poolInformationList.Count)))
-                    {
-                        PoolInformation poolInformation = poolInformationList[poolIndex];
-
-                        deviceViewModel.Pool = poolInformation.Url;
-
-                        deviceViewModel.LastShareDifficulty = poolInformation.LastShareDifficulty;
-                        deviceViewModel.LastShareTime = poolInformation.LastShareTime;
-                        deviceViewModel.Url = poolInformation.Url;
-                        deviceViewModel.BestShare = poolInformation.BestShare;
-                        deviceViewModel.PoolStalePercent = poolInformation.PoolStalePercent;
-
-                        deviceViewModel.Visible = true;
-
-                        Coin coinConfiguration = CoinConfigurationForPoolUrl(poolInformation.Url);
-                        if (coinConfiguration != null)
-                            deviceViewModel.Coin = coinConfiguration.CryptoCoin;
-                    }
-                }
-
-                CheckAndSetNetworkDifficulty(ipAddress, port, KnownCoins.BitcoinSymbol);
-            }
-
-            ApplyCoinInformationToViewModel();
-
-            RemoveSelfReferencingNetworkDevices();
-
-            RefreshViewFromDeviceStats();         
+                    CheckAndSetNetworkDifficulty(ipAddress, port, KnownCoins.BitcoinSymbol);
+                }));
+            }         
         }
 
         private Coin CoinConfigurationForPoolUrl(string poolUrl)
