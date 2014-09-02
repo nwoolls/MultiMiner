@@ -85,10 +85,10 @@
             this.currentRateLabel = new System.Windows.Forms.Label();
             this.label29 = new System.Windows.Forms.Label();
             this.proxyInfoPanel = new System.Windows.Forms.Panel();
-            this.proxyGetworkLabel = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
             this.proxyStratumLabel = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
+            this.proxyGetworkLabel = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
             this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.workerNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -525,7 +525,7 @@
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "BestShare", true));
+            this.label24.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "BestShare", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "#,#.###############"));
             this.label24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
             this.label24.Location = new System.Drawing.Point(92, 230);
             this.label24.Name = "label24";
@@ -546,7 +546,7 @@
             // label27
             // 
             this.label27.AutoSize = true;
-            this.label27.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "PoolStalePercent", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "P4"));
+            this.label27.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "PoolStalePercent", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "P1"));
             this.label27.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
             this.label27.Location = new System.Drawing.Point(92, 245);
             this.label27.Name = "label27";
@@ -663,29 +663,6 @@
             this.proxyInfoPanel.TabIndex = 45;
             this.proxyInfoPanel.Visible = false;
             // 
-            // proxyGetworkLabel
-            // 
-            this.proxyGetworkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.proxyGetworkLabel.AutoEllipsis = true;
-            this.proxyGetworkLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
-            this.proxyGetworkLabel.Location = new System.Drawing.Point(88, 1);
-            this.proxyGetworkLabel.Name = "proxyGetworkLabel";
-            this.proxyGetworkLabel.Size = new System.Drawing.Size(498, 15);
-            this.proxyGetworkLabel.TabIndex = 34;
-            this.proxyGetworkLabel.Text = "label14";
-            this.proxyGetworkLabel.UseMnemonic = false;
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
-            this.label20.Location = new System.Drawing.Point(3, 1);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(54, 15);
-            this.label20.TabIndex = 33;
-            this.label20.Text = "Getwork:";
-            // 
             // proxyStratumLabel
             // 
             this.proxyStratumLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -708,6 +685,29 @@
             this.label25.Size = new System.Drawing.Size(52, 15);
             this.label25.TabIndex = 35;
             this.label25.Text = "Stratum:";
+            // 
+            // proxyGetworkLabel
+            // 
+            this.proxyGetworkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.proxyGetworkLabel.AutoEllipsis = true;
+            this.proxyGetworkLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.proxyGetworkLabel.Location = new System.Drawing.Point(88, 1);
+            this.proxyGetworkLabel.Name = "proxyGetworkLabel";
+            this.proxyGetworkLabel.Size = new System.Drawing.Size(498, 15);
+            this.proxyGetworkLabel.TabIndex = 34;
+            this.proxyGetworkLabel.Text = "label14";
+            this.proxyGetworkLabel.UseMnemonic = false;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(103)))), ((int)(((byte)(121)))));
+            this.label20.Location = new System.Drawing.Point(3, 1);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(54, 15);
+            this.label20.TabIndex = 33;
+            this.label20.Text = "Getwork:";
             // 
             // deviceBindingSource
             // 

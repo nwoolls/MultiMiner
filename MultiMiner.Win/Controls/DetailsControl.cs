@@ -101,9 +101,9 @@ namespace MultiMiner.Win.Controls
 
             nameLabel.Width = this.Width - nameLabel.Left - closeDetailsButton.Width;
 
-            acceptedLabel.Text = deviceViewModel.AcceptedShares.ToString();
-            rejectedLabel.Text = deviceViewModel.RejectedShares.ToString();
-            errorsLabel.Text = deviceViewModel.HardwareErrors.ToString();
+            acceptedLabel.Text = deviceViewModel.AcceptedShares.ToString("#,#.###############");
+            rejectedLabel.Text = deviceViewModel.RejectedShares.ToString("#,#.###############");
+            errorsLabel.Text = deviceViewModel.HardwareErrors.ToString("#,#.###############");
 
             if (showWorkUtility)
             {
