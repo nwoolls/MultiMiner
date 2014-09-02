@@ -527,6 +527,11 @@ namespace MultiMiner.Win.Forms
                     listViewItem.SubItems["Average"].Text = deviceViewModel.AverageHashrate == 0 ? String.Empty : deviceViewModel.AverageHashrate.ToHashrateString();
                     listViewItem.SubItems["Current"].Text = deviceViewModel.CurrentHashrate == 0 ? String.Empty : deviceViewModel.CurrentHashrate.ToHashrateString();
 
+                    //ensure column is visible in Tiles view
+                    if (String.IsNullOrEmpty(listViewItem.SubItems["Current"].Text) &&
+                        (deviceListView.View == View.Tile))
+                        listViewItem.SubItems["Current"].Text = "Idle";
+
                     double hashrate = WorkUtilityToHashrate(deviceViewModel.WorkUtility);
                     listViewItem.SubItems["Effective"].Text = hashrate == 0 ? String.Empty : hashrate.ToHashrateString();
 
@@ -6391,6 +6396,8 @@ namespace MultiMiner.Win.Forms
                 }
 
                 applicationConfiguration.ListViewStyle = view;
+
+                RefreshListViewFromViewModel();
 
                 if (view == View.Details)
                     AutoSizeListViewColumns();
