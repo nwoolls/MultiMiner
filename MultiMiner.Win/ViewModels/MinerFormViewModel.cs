@@ -248,7 +248,8 @@ namespace MultiMiner.Win.ViewModels
                 {
                     if (deviceDetailsResponse.Name.Equals("PXY"))
                     {
-                        DeviceViewModel worker = proxyDevice.Workers.SingleOrDefault(w => w.ID == deviceDetailsResponse.ID);
+                        //SingleOrDefault not a safe assumption here - rare
+                        DeviceViewModel worker = proxyDevice.Workers.FirstOrDefault(w => w.ID == deviceDetailsResponse.ID);
                         if (worker != null)
                             worker.WorkerName = deviceDetailsResponse.DevicePath;
                     }
