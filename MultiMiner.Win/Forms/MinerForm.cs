@@ -4994,7 +4994,7 @@ namespace MultiMiner.Win.Forms
             {
                 ClearSuspectProcessFlags(minerProcess);
 
-                List<DeviceInformation> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
+                List<DeviceInformation> deviceInformationList = GetDeviceInfoFromProcessAsync(minerProcess);
                 if (deviceInformationList == null) //handled failure getting API info
                 {
                     minerProcess.MinerIsFrozen = true;
@@ -5534,6 +5534,20 @@ namespace MultiMiner.Win.Forms
             }
 
             return deviceInformationList;
+        }
+
+        private List<DeviceInformation> GetDeviceInfoFromProcessAsync(MinerProcess minerProcess)
+        {
+            Func<MinerProcess, List<DeviceInformation>> asyncFunc = GetDeviceInfoFromProcess;
+
+            IAsyncResult asyncResult = asyncFunc.BeginInvoke(minerProcess, null, null);
+            while (!asyncResult.IsCompleted)
+            {
+                System.Windows.Forms.Application.DoEvents();
+                asyncResult.AsyncWaitHandle.WaitOne(200);
+            }
+
+            return asyncFunc.EndInvoke(asyncResult);
         }
 
         private List<DeviceInformation> GetDeviceInfoFromProcess(MinerProcess minerProcess)
