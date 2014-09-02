@@ -5789,19 +5789,36 @@ namespace MultiMiner.Win.Forms
             logEntry.CoinName = GetCoinNameForApiContext(apiContext);
             logEntry.Machine = apiContext.IpAddress + ":" + apiContext.Port;
 
-            this.BeginInvoke((Action)(() =>
+            //make sure BeginInvoke is allowed
+            if (formHandleValid)
             {
-                //code to update UI
-                apiLogEntryBindingSource.Position = apiLogEntryBindingSource.Add(logEntry);
-                while (apiLogEntryBindingSource.Count > 1000)
-                    apiLogEntryBindingSource.RemoveAt(0);
-            }));
+                this.BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    apiLogEntryBindingSource.Position = apiLogEntryBindingSource.Add(logEntry);
+                    while (apiLogEntryBindingSource.Count > 1000)
+                        apiLogEntryBindingSource.RemoveAt(0);
+                }));
+            }
 
             LogApiEventToFile(logEntry);
         }
         #endregion
 
         #region Application startup / setup
+        private bool formHandleValid = false;
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            formHandleValid = true;
+            base.OnHandleCreated(e);
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            formHandleValid = false;
+            base.OnHandleDestroyed(e);
+        }
+
         private void SetupApplication()
         {
             HandleStartupMinimizedToNotificationArea();
