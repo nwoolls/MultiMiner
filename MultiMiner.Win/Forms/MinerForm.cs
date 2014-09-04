@@ -5209,7 +5209,11 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshNetworkDeviceStats()
         {
-            foreach (DeviceViewModel deviceViewModel in localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET))
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET).ToList();
+
+            foreach (DeviceViewModel deviceViewModel in networkDevices)
             {
                 string[] portions = deviceViewModel.Path.Split(':');
                 string ipAddress = portions[0];
