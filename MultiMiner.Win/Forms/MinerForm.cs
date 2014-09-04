@@ -5896,7 +5896,9 @@ namespace MultiMiner.Win.Forms
             SetHasChangesLocally(false);
 
             //kill known owned processes to release inherited socket handles
-            KillOwnedProcesses();
+            if (KillOwnedProcesses())
+                //otherwise may still be prompted below by check for disowned miners
+                Thread.Sleep(500);
 
             //check for disowned miners before refreshing devices
             if (applicationConfiguration.DetectDisownedMiners)
@@ -6901,14 +6903,19 @@ namespace MultiMiner.Win.Forms
             OwnedProcesses.SaveOwnedProcesses(miningEngine.MinerProcesses.Select(mp => mp.Process), GetOwnedProcessFilePath());
         }
 
-        private void KillOwnedProcesses()
+        private static bool KillOwnedProcesses()
         {
+            bool processesKilled = false;
             string filePath = GetOwnedProcessFilePath();
             IEnumerable<Process> ownedProcesses = OwnedProcesses.GetOwnedProcesses(filePath);
             foreach (Process ownedProcess in ownedProcesses)
+            {
                 MinerProcess.KillProcess(ownedProcess);
+                processesKilled = true;
+            }
             if (File.Exists(filePath))
                 File.Delete(filePath);
+            return processesKilled;
         }
         #endregion
 
