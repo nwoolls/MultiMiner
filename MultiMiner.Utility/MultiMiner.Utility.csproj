@@ -74,6 +74,7 @@
     <Compile Include="Net\ApiWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="OS\OwnedProcesses.cs" />
     <Compile Include="OS\StartupShortcut.cs" />
     <Compile Include="Serialization\ConfigurationReaderWriter.cs" />
     <Compile Include="IO\FileCopier.cs" />

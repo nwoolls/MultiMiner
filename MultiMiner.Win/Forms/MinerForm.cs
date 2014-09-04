@@ -3093,8 +3093,11 @@ namespace MultiMiner.Win.Forms
             UpdateLocalViewFromRemoteInstance();
 
             if (applicationConfiguration.RestartCrashedMiners && miningEngine.RelaunchCrashedMiners())
+            {
                 //clear any details stored correlated to processes - they could all be invalid after this
                 processDeviceDetails.Clear();
+                SaveOwnedProcesses();
+            }
 
             if (miningEngine.Mining)
             {
@@ -5882,6 +5885,9 @@ namespace MultiMiner.Win.Forms
 
             SetHasChangesLocally(false);
 
+            //kill known owned processes to release inherited socket handles
+            KillOwnedProcesses();
+
             //check for disowned miners before refreshing devices
             if (applicationConfiguration.DetectDisownedMiners)
                 CheckForDisownedMiners();
@@ -6870,6 +6876,29 @@ namespace MultiMiner.Win.Forms
 
             //rename the device ViewModel itself
             deviceViewModel.FriendlyName = name;
+        }               
+
+        private static string GetOwnedProcessFilePath()
+        {
+            return Path.Combine(Path.GetTempPath(), "MultiMiner.Processes.xml");
+        }
+
+        //https://github.com/nwoolls/MultiMiner/issues/152
+        //http://social.msdn.microsoft.com/Forums/vstudio/en-US/94ba760c-7080-4614-8a56-15582c48f900/child-process-keeps-parents-socket-open-diagnosticsprocess-and-nettcplistener?forum=netfxbcl
+        //keep track of processes we've launched so we can kill them later
+        private void SaveOwnedProcesses()
+        {
+            OwnedProcesses.SaveOwnedProcesses(miningEngine.MinerProcesses.Select(mp => mp.Process), GetOwnedProcessFilePath());
+        }
+
+        private void KillOwnedProcesses()
+        {
+            string filePath = GetOwnedProcessFilePath();
+            IEnumerable<Process> ownedProcesses = OwnedProcesses.GetOwnedProcesses(filePath);
+            foreach (Process ownedProcess in ownedProcesses)
+                MinerProcess.KillProcess(ownedProcess);
+            if (File.Exists(filePath))
+                File.Delete(filePath);
         }
         #endregion
 
@@ -6918,6 +6947,7 @@ namespace MultiMiner.Win.Forms
             AutoSizeListViewColumns();
             RefreshDetailsAreaIfVisible();
             ClearPoolsFlaggedDown();
+            SaveOwnedProcesses();
         }
 
         private void RestartMining()
@@ -6977,7 +7007,10 @@ namespace MultiMiner.Win.Forms
                 RefreshListViewFromViewModel();
 
                 if (changed)
+                {
                     ShowCoinChangeNotification();
+                    SaveOwnedProcesses();
+                }
             }
         }
 
@@ -7278,8 +7311,9 @@ namespace MultiMiner.Win.Forms
             RefreshListViewFromViewModel();
 
             AutoSizeListViewColumns();
-
             UpdateMiningButtons();
+
+            SaveOwnedProcesses();
 
             if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
                 // if no Internet / network connection, we did not Auto-Mine
