@@ -1,4 +1,5 @@
 ﻿using MultiMiner.Utility.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -25,9 +26,10 @@ namespace MultiMiner.Utility.OS
             foreach (Process process in processes)
             {
                 OwnedProcess child = new OwnedProcess() 
-                { 
-                    Id = process.Id, 
-                    SessionId = process.SessionId,
+                {
+                    Id = process.Id,
+                    //no SessionId on Unix
+                    SessionId = OSVersionPlatform.GetGenericPlatform() == System.PlatformID.Unix ? 0 : process.SessionId,
                     Name = process.ProcessName 
                 };
                 children.Add(child);        	
@@ -46,7 +48,9 @@ namespace MultiMiner.Utility.OS
             IEnumerable<Process> ownedProcesses = allProcesses.Where(
                 ap => children.Any(
                     cp => (cp.Id == ap.Id)
-                        && (cp.SessionId == ap.SessionId)
+                        && ((OSVersionPlatform.GetGenericPlatform() == System.PlatformID.Unix)
+                            //no SessionId on Unix
+                            || (cp.SessionId == ap.SessionId))
                         && (cp.Name.Equals(ap.ProcessName))                        
                 )
             );
