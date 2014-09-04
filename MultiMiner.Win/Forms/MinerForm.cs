@@ -5215,6 +5215,12 @@ namespace MultiMiner.Win.Forms
 
             foreach (DeviceViewModel deviceViewModel in networkDevices)
             {
+                //is the app closing?
+                //otherwise a check for formHandleValid is needed before the call to this.BeginInvoke below
+                //this makes more sense though and has other benefits
+                if (tearingDown)
+                    return;
+
                 string[] portions = deviceViewModel.Path.Split(':');
                 string ipAddress = portions[0];
                 int port = int.Parse(portions[1]);
