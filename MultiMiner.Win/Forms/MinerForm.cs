@@ -2876,6 +2876,12 @@ namespace MultiMiner.Win.Forms
             RestartNetworkDevice();
         }
 
+        private void adminPageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DeviceViewModel networkDevice = (DeviceViewModel)deviceListView.FocusedItem.Tag;
+            Process.Start("http://" + networkDevice.Name);
+        }
+
         private void notifyIcon1_BalloonTipClicked(object sender, EventArgs e)
         {
             notificationClickHandler();

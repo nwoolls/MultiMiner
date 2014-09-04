@@ -7,6 +7,7 @@ using MultiMiner.Utility.Forms;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Net;
+using System.Diagnostics;
 
 namespace MultiMiner.Win.Controls
 {
@@ -32,8 +33,6 @@ namespace MultiMiner.Win.Controls
 
         private void DetailsControl_Load(object sender, EventArgs e)
         {
-            SetupFonts();
-
             PositionControls();
         }
 
@@ -60,6 +59,8 @@ namespace MultiMiner.Win.Controls
 
         public void ClearDetails(int deviceCount)
         {
+            SetupFonts();
+
             deviceCountLabel.Text = deviceCount + " item";
             if (deviceCount > 1)
                 deviceCountLabel.Text = deviceCountLabel.Text + "s";
@@ -72,6 +73,8 @@ namespace MultiMiner.Win.Controls
 
         public void InspectDetails(DeviceViewModel deviceViewModel, bool showWorkUtility)
         {            
+            SetupFonts();
+
             noDetailsPanel.Visible = false;
             
             hashrateLabel.Text = deviceViewModel.AverageHashrate.ToHashrateString();
@@ -180,10 +183,18 @@ namespace MultiMiner.Win.Controls
             if (deviceViewModel.Kind == DeviceKind.NET)
             {
                 pathValueLabel.Width = Width - pathValueLabel.Left - 6;
+
+                nameLabel.Cursor = Cursors.Hand;
+                nameLabel.Font = new Font(nameLabel.Font, FontStyle.Underline);
+                nameLabel.ForeColor = Color.Blue;
             }
             else
             {
                 pathValueLabel.Width = serialTitleLabel.Left - pathValueLabel.Left - 6;                
+
+                nameLabel.Cursor = Cursors.Default;
+                nameLabel.Font = new Font(nameLabel.Font, FontStyle.Regular);
+                nameLabel.ForeColor = Color.FromArgb(30, 57, 91);
             }
         }
 
@@ -219,6 +230,16 @@ namespace MultiMiner.Win.Controls
             else if (e.ColumnIndex == temperatureDataGridViewTextBoxColumn.Index)
             {
                 e.Value = (double)e.Value > 0 ? ((double)e.Value).ToString() + "°" : String.Empty;
+            }
+        }
+
+        private void nameLabel_Click(object sender, EventArgs e)
+        {
+            DeviceViewModel deviceViewModel = (DeviceViewModel)deviceBindingSource.DataSource;
+
+            if (deviceViewModel.Kind == DeviceKind.NET)
+            {
+                Process.Start("http://" + deviceViewModel.Name);
             }
         }
 
