@@ -100,27 +100,27 @@ namespace MultiMiner.Discovery
 
             if (packet.Verb.Equals(Verbs.Online))
             {
-                //search by MachineName and Fingerprint - these are unique while IP address may not be
-                //reasoning - the same machine may have multiple IP addresses as discovery supports multiple interfaces
-                if (!instances.Any(i => i.MachineName.Equals(packet.MachineName) && (i.Fingerprint == packet.Fingerprint)))
+                //lock for thread-safety, otherwise the dupe check below may not be sound
+                lock (instances)
                 {
-                    Data.Instance instance = new Data.Instance 
-                    { 
-                        IpAddress = source.Address.ToString(), 
-                        MachineName = packet.MachineName, 
-                        Fingerprint = packet.Fingerprint 
-                    };
-
-                    //lock for thread-safety - collection may be modified
-                    lock (instances)
+                    //search by MachineName and Fingerprint - these are unique while IP address may not be
+                    //reasoning - the same machine may have multiple IP addresses as discovery supports multiple interfaces
+                    if (!instances.Any(i => i.MachineName.Equals(packet.MachineName) && (i.Fingerprint == packet.Fingerprint)))
                     {
+                        Data.Instance instance = new Data.Instance 
+                        { 
+                            IpAddress = source.Address.ToString(), 
+                            MachineName = packet.MachineName, 
+                            Fingerprint = packet.Fingerprint 
+                        };
+
                         instances.Add(instance);
+
+                        Sender.Send(source.Address, Verbs.Online, fingerprint);
+
+                        if (InstanceOnline != null)
+                            InstanceOnline(this, new InstanceChangedArgs { Instance = instance });
                     }
-
-                    Sender.Send(source.Address, Verbs.Online, fingerprint);
-
-                    if (InstanceOnline != null)
-                        InstanceOnline(this, new InstanceChangedArgs { Instance = instance });
                 }
             }
             else if (packet.Verb.Equals(Verbs.Offline))
