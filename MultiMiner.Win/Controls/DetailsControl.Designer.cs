@@ -78,7 +78,7 @@
             this.label18 = new System.Windows.Forms.Label();
             this.poolLabel = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
+            this.bestShareLabel = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
             this.label28 = new System.Windows.Forms.Label();
@@ -568,16 +568,16 @@
             this.label22.TabIndex = 31;
             this.label22.Text = "Pool:";
             // 
-            // label24
+            // bestShareLabel
             // 
-            this.label24.AutoSize = true;
-            this.label24.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "BestShare", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "#,#.###############"));
-            this.label24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
-            this.label24.Location = new System.Drawing.Point(92, 230);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(44, 15);
-            this.label24.TabIndex = 38;
-            this.label24.Text = "label18";
+            this.bestShareLabel.AutoSize = true;
+            this.bestShareLabel.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.deviceBindingSource, "BestShare", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, null, "#,#.###############"));
+            this.bestShareLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.bestShareLabel.Location = new System.Drawing.Point(92, 230);
+            this.bestShareLabel.Name = "bestShareLabel";
+            this.bestShareLabel.Size = new System.Drawing.Size(44, 15);
+            this.bestShareLabel.TabIndex = 38;
+            this.bestShareLabel.Text = "label18";
             // 
             // label26
             // 
@@ -766,7 +766,7 @@
             this.Controls.Add(this.noDetailsPanel);
             this.Controls.Add(this.label27);
             this.Controls.Add(this.label28);
-            this.Controls.Add(this.label24);
+            this.Controls.Add(this.bestShareLabel);
             this.Controls.Add(this.label26);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label14);
@@ -863,7 +863,7 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label poolLabel;
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label bestShareLabel;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label28;

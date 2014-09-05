@@ -108,6 +108,14 @@ namespace MultiMiner.Win.Controls
             rejectedLabel.Text = deviceViewModel.RejectedShares.ToString("#,#.###############");
             errorsLabel.Text = deviceViewModel.HardwareErrors.ToString("#,#.###############");
 
+            Binding bestShareBinding = bestShareLabel.DataBindings[0];
+            if (deviceViewModel.BestShare > 32)
+                bestShareBinding.FormatString = "#,#";
+            else if (deviceViewModel.BestShare > 1)
+                bestShareBinding.FormatString = "#,#.##";
+            else
+                bestShareBinding.FormatString = "#,#.######";
+
             if (showWorkUtility)
             {
                 utilityLabel.Text = deviceViewModel.WorkUtility.ToString();
