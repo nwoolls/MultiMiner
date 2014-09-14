@@ -118,12 +118,12 @@ namespace MultiMiner.Win.Controls
 
             if (showWorkUtility)
             {
-                utilityLabel.Text = deviceViewModel.WorkUtility.ToString();
+                utilityLabel.Text = deviceViewModel.WorkUtility.ToString("#,#.###");
                 utilityDataGridViewTextBoxColumn.DataPropertyName = "WorkUtility";
             }
             else
             {
-                utilityLabel.Text = deviceViewModel.Utility.ToString();
+                utilityLabel.Text = deviceViewModel.Utility.ToString("#,#.###");
                 utilityDataGridViewTextBoxColumn.DataPropertyName = "Utility";
             }
             utilityPrefixLabel.Text = showWorkUtility ? "Work utility:" : "Utility:";
