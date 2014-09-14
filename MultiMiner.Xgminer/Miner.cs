@@ -55,21 +55,21 @@ namespace MultiMiner.Xgminer
         }
 
         //uses -d?, returns driver information
-        public List<Device> ListDevices(bool prettyNames = false, Version minerVersion = null)
+        public List<Device> ListDevices(bool prettyNames = false, Version minerVersion = null, bool logging = false)
         {
             //include Scrypt ASICs
             if ((minerVersion != null) && (((minerVersion.Major == 3) && (minerVersion.Minor >= 99)) || (minerVersion.Major >= 4)))
             {
                 //order is important here - scan SHA then Scrypt, scanning Scrypt bricks bigpic until reset
                 //at least with this order it will be detected, but needs a reset before starting mining again
-                List<Device> sha256Devices = ListDevices(prettyNames, AlgorithmNames.SHA256);
-                List<Device> scryptDevices = ListDevices(prettyNames, AlgorithmNames.Scrypt);
+                List<Device> sha256Devices = ListDevices(prettyNames, AlgorithmNames.SHA256, logging);
+                List<Device> scryptDevices = ListDevices(prettyNames, AlgorithmNames.Scrypt, logging);
 
                 return MergeDeviceLists(sha256Devices, scryptDevices);
             }
             else
             {
-                return ListDevices(prettyNames, AlgorithmNames.SHA256);
+                return ListDevices(prettyNames, AlgorithmNames.SHA256, logging);
             }
         }
 
@@ -80,7 +80,7 @@ namespace MultiMiner.Xgminer
             return result;
         }        
 
-        private List<Device> ListDevices(bool prettyNames, string algorithm)
+        private List<Device> ListDevices(bool prettyNames, string algorithm, bool logging)
         {
             string arguments = MinerParameter.DeviceList;
             bool redirectOutput = true;
@@ -123,6 +123,9 @@ namespace MultiMiner.Xgminer
             //wait 5 minutes - scans may take a long time
             minerProcess.WaitForExit(5 * 60 * 1000);
 
+            if (logging)
+                LogListDevices(algorithm, arguments, output);
+
             List<Device> result = new List<Device>();
             
             DeviceListParser.ParseTextForDevices(output, result);
@@ -131,6 +134,24 @@ namespace MultiMiner.Xgminer
                 MakeNamesPretty(result);
 
             return result;
+        }
+
+        private static void LogListDevices(string algorithm, string arguments, List<string> output)
+        {
+            string assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+            const string MethodName = "ListDevices";
+            string logFilePath = Path.Combine(Path.GetTempPath(), String.Format("{0}-{1}-{2}-{3}.log",
+                assemblyName,
+                MethodName,
+                algorithm,
+                Stopwatch.GetTimestamp().ToString()));
+
+            List<string> content = new List<string>();
+            content.Add(arguments);
+            content.Add("-------------------------------------");
+            content.AddRange(output);
+
+            File.WriteAllLines(logFilePath, content.ToArray(), System.Text.Encoding.UTF8);
         }
 
         private readonly string[] genericNames = 
