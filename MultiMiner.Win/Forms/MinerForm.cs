@@ -2973,9 +2973,21 @@ namespace MultiMiner.Win.Forms
 
             coinStatsTimer.Enabled = true;
         }
+
+#if DEBUG
+        private void debugOneSecondTimer_Tick(object sender, EventArgs e)
+        {
+            //updates in order to try to reproduce threading issues
+            RefreshDetailsAreaIfVisible();
+            RefreshListViewFromViewModel();
+        }
+#endif
         
         private void SetupCoalescedTimers()
         {
+#if DEBUG
+            timers.CreateTimer(Timers.OneSecondInterval, debugOneSecondTimer_Tick);
+#endif
             timers.CreateTimer(Timers.OneHourInterval, oneHourTimer_Tick);
             timers.CreateTimer(Timers.OneMinuteInterval, oneMinuteTimer_Tick);
             timers.CreateTimer(Timers.ThirtySecondInterval, thirtySecondTimer_Tick);
