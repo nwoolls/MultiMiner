@@ -67,6 +67,12 @@
     <Compile Include="Forms\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ApiConsoleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ApiConsoleForm.Designer.cs">
+      <DependentUpon>ApiConsoleForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Configuration\AdvancedSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -194,6 +200,9 @@
     </Compile>
     <EmbeddedResource Include="Forms\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ApiConsoleForm.resx">
+      <DependentUpon>ApiConsoleForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Configuration\AdvancedSettingsForm.resx">
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
@@ -359,6 +368,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="MultiMiner.ico" />
+    <None Include="Resources\computer_network-user.png" />
     <None Include="Resources\help1.png" />
     <None Include="Resources\application-help.png" />
     <None Include="Resources\mail-key.png" />

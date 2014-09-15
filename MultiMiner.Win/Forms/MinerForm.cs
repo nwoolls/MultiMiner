@@ -101,6 +101,7 @@ namespace MultiMiner.Win.Forms
         //controls
         private NotificationsControl notificationsControl;
         private InstancesControl instancesControl;
+        private ApiConsoleForm apiConsoleForm;
 
         //remoting
         private RemotingServer remotingServer;
@@ -3115,6 +3116,9 @@ namespace MultiMiner.Win.Forms
                 //clear any details stored correlated to processes - they could all be invalid after this
                 processDeviceDetails.Clear();
                 SaveOwnedProcesses();
+
+                if (apiConsoleForm != null)
+                    apiConsoleForm.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
             }
 
             if (miningEngine.Mining)
@@ -4427,17 +4431,6 @@ namespace MultiMiner.Win.Forms
                     statisticsList.Add(miningStatistics);
                 }
             }
-        }
-
-        private string GetFriendlyDeviceName(string deviceName, string devicePath)
-        {
-            string result = deviceName;
-
-            DeviceViewModel deviceViewModel = localViewModel.Devices.SingleOrDefault(d => d.Path.Equals(devicePath));
-            if ((deviceViewModel != null) && !String.IsNullOrEmpty(deviceViewModel.FriendlyName))
-                result = deviceViewModel.FriendlyName;
-
-            return result;
         }
 
         private string GetFriendlyDeviceName(MultiMiner.Xgminer.Data.Device device)
@@ -6983,6 +6976,9 @@ namespace MultiMiner.Win.Forms
             RefreshDetailsAreaIfVisible();
             ClearPoolsFlaggedDown();
             SaveOwnedProcesses();
+
+            if (apiConsoleForm != null)
+                apiConsoleForm.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
         }
 
         private void RestartMining()
@@ -7045,6 +7041,9 @@ namespace MultiMiner.Win.Forms
                 {
                     ShowCoinChangeNotification();
                     SaveOwnedProcesses();
+
+                    if (apiConsoleForm != null)
+                        apiConsoleForm.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
                 }
             }
         }
@@ -7354,6 +7353,9 @@ namespace MultiMiner.Win.Forms
                 // if no Internet / network connection, we did not Auto-Mine
                 (this.coinApiInformation != null))
                 ShowCoinChangeNotification();
+
+            if (apiConsoleForm != null)
+                apiConsoleForm.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
         }
 
         //download miners required for configured coins / algorithms
@@ -7569,5 +7571,12 @@ namespace MultiMiner.Win.Forms
             }
         }
         #endregion
+
+        private void aPIConsoleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            apiConsoleForm = new ApiConsoleForm(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
+            apiConsoleForm.Show();
+
+        }
     }
 }
