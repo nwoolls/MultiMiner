@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer", "MultiMiner.Xgminer\MultiMiner.Xgminer.csproj", "{0DBEF993-1B34-4D80-AB6A-F662604325DC}"
 EndProject
@@ -40,6 +40,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Discovery", "MultiMiner.Discovery\MultiMiner.Discovery.csproj", "{CCB532CD-4922-42A9-BAF9-0E651A592467}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Discovery", "MultiMiner.Xgminer.Discovery\MultiMiner.Xgminer.Discovery.csproj", "{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.ExchangeApi", "MultiMiner.ExchangeApi\MultiMiner.ExchangeApi.csproj", "{DCE499F9-0751-4088-B45B-67AE0E612362}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Blockchain", "MultiMiner.Blockchain\MultiMiner.Blockchain.csproj", "{73C7F5AA-1BD3-49D2-90AB-96E3903C05CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,6 +123,14 @@ Global
 		{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCE499F9-0751-4088-B45B-67AE0E612362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCE499F9-0751-4088-B45B-67AE0E612362}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCE499F9-0751-4088-B45B-67AE0E612362}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCE499F9-0751-4088-B45B-67AE0E612362}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73C7F5AA-1BD3-49D2-90AB-96E3903C05CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73C7F5AA-1BD3-49D2-90AB-96E3903C05CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73C7F5AA-1BD3-49D2-90AB-96E3903C05CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73C7F5AA-1BD3-49D2-90AB-96E3903C05CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

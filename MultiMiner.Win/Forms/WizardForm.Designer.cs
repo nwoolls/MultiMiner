@@ -70,7 +70,7 @@
             this.remotingCheckBox = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.incomeCheckBox = new System.Windows.Forms.CheckBox();
-            this.coinbaseCheckBox = new System.Windows.Forms.CheckBox();
+            this.exchangeApiCheckbox = new System.Windows.Forms.CheckBox();
             this.perksCheckBox = new System.Windows.Forms.CheckBox();
             this.smileyPicture = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
@@ -485,7 +485,7 @@
             this.configurePerksPage.Controls.Add(this.remotingCheckBox);
             this.configurePerksPage.Controls.Add(this.label2);
             this.configurePerksPage.Controls.Add(this.incomeCheckBox);
-            this.configurePerksPage.Controls.Add(this.coinbaseCheckBox);
+            this.configurePerksPage.Controls.Add(this.exchangeApiCheckbox);
             this.configurePerksPage.Controls.Add(this.perksCheckBox);
             this.configurePerksPage.Controls.Add(this.smileyPicture);
             this.configurePerksPage.Controls.Add(this.pictureBox3);
@@ -545,15 +545,15 @@
             this.incomeCheckBox.Text = "Show estimated income from devices";
             this.incomeCheckBox.UseVisualStyleBackColor = true;
             // 
-            // coinbaseCheckBox
+            // exchangeApiCheckbox
             // 
-            this.coinbaseCheckBox.AutoSize = true;
-            this.coinbaseCheckBox.Location = new System.Drawing.Point(117, 110);
-            this.coinbaseCheckBox.Name = "coinbaseCheckBox";
-            this.coinbaseCheckBox.Size = new System.Drawing.Size(244, 19);
-            this.coinbaseCheckBox.TabIndex = 11;
-            this.coinbaseCheckBox.Text = "Show exchange rates from Coinbase.com";
-            this.coinbaseCheckBox.UseVisualStyleBackColor = true;
+            this.exchangeApiCheckbox.AutoSize = true;
+            this.exchangeApiCheckbox.Location = new System.Drawing.Point(117, 110);
+            this.exchangeApiCheckbox.Name = "exchangeApiCheckbox";
+            this.exchangeApiCheckbox.Size = new System.Drawing.Size(244, 19);
+            this.exchangeApiCheckbox.TabIndex = 11;
+            this.exchangeApiCheckbox.Text = "Show exchange rates from Blockchain.info";
+            this.exchangeApiCheckbox.UseVisualStyleBackColor = true;
             // 
             // perksCheckBox
             // 
@@ -724,7 +724,7 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox incomeCheckBox;
-        private System.Windows.Forms.CheckBox coinbaseCheckBox;
+        private System.Windows.Forms.CheckBox exchangeApiCheckbox;
         private System.Windows.Forms.CheckBox perksCheckBox;
         private System.Windows.Forms.PictureBox smileyPicture;
         private System.Windows.Forms.Label label3;

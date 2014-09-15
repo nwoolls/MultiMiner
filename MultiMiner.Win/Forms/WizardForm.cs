@@ -286,7 +286,7 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
             Perks result = new Perks();
 
             result.PerksEnabled = perksCheckBox.Checked;
-            result.ShowExchangeRates = coinbaseCheckBox.Checked;
+            result.ShowExchangeRates = exchangeApiCheckbox.Checked;
             result.ShowIncomeRates = incomeCheckBox.Checked;
             result.EnableRemoting = remotingCheckBox.Checked;
             result.RemotingPassword = remotingPasswordEdit.Text;
@@ -375,7 +375,7 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
 
         private void UpdateCheckStates()
         {
-            this.coinbaseCheckBox.Enabled = perksCheckBox.Checked;
+            this.exchangeApiCheckbox.Enabled = perksCheckBox.Checked;
             this.incomeCheckBox.Enabled = perksCheckBox.Checked;
             this.remotingCheckBox.Enabled = perksCheckBox.Checked;
             this.remotingPasswordEdit.Enabled = perksCheckBox.Checked;

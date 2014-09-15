@@ -297,6 +297,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MultiMiner.Blockchain\MultiMiner.Blockchain.csproj">
+      <Project>{73c7f5aa-1bd3-49d2-90ab-96e3903c05cd}</Project>
+      <Name>MultiMiner.Blockchain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.CoinApi\MultiMiner.CoinApi.csproj">
       <Project>{9E86F77A-68B9-4D72-82D2-855878BA8CB1}</Project>
       <Name>MultiMiner.CoinApi</Name>
@@ -320,6 +324,10 @@
     <ProjectReference Include="..\MultiMiner.Engine\MultiMiner.Engine.csproj">
       <Project>{845687BB-EC47-46D3-AC9D-6FCFB63DE8F5}</Project>
       <Name>MultiMiner.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.ExchangeApi\MultiMiner.ExchangeApi.csproj">
+      <Project>{dce499f9-0751-4088-b45b-67ae0e612362}</Project>
+      <Name>MultiMiner.ExchangeApi</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.MobileMiner\MultiMiner.MobileMiner.csproj">
       <Project>{70622816-5853-4470-9432-9ACDA2E96089}</Project>

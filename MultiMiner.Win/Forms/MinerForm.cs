@@ -37,6 +37,8 @@ using MultiMiner.Win.Forms.Configuration;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Installers;
+using MultiMiner.ExchangeApi.Data;
+using System.Globalization;
 
 namespace MultiMiner.Win.Forms
 {
@@ -53,7 +55,7 @@ namespace MultiMiner.Win.Forms
 
         //Coin API information
         private List<CoinInformation> coinApiInformation;
-        private MultiMiner.Coinbase.Data.SellPrices sellPrices;
+        private IEnumerable<ExchangeInformation> sellPrices;
 
         //RPC API information
         private Dictionary<string, double> minerNetworkDifficulty = new Dictionary<string, double>();
@@ -393,6 +395,19 @@ namespace MultiMiner.Win.Forms
             return hashrate;
         }
 
+        private string currentCultureCurrency = null;
+        private string GetCurrentCultureCurrency()
+        {
+            if (String.IsNullOrEmpty(currentCultureCurrency))
+            {
+                string currencySymbol = RegionInfo.CurrentRegion.ISOCurrencySymbol;
+                if ((sellPrices != null) && (sellPrices.SingleOrDefault(sp => sp.TargetCurrency.Equals(currencySymbol)) == null))
+                    currencySymbol = "USD";
+                currentCultureCurrency = currencySymbol;
+            }
+            return currentCultureCurrency;
+        }
+
         private void RefreshListViewFromViewModel()
         {
             if (editingDeviceListView)
@@ -496,16 +511,17 @@ namespace MultiMiner.Win.Forms
 
                         //check .Mining to allow perks for Remoting when local PC is not mining
                         if ((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowExchangeRates
-                            //ensure Coinbase is available:
+                            //ensure Exchange prices are available:
                             && (sellPrices != null))
                         {
-                            double btcExchangeRate = sellPrices.Subtotal.Amount;
+                            ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                            double btcExchangeRate = exchangeInformation.ExchangeRate;
                             double coinExchangeRate = 0.00;
 
                             coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
 
                             listViewItem.SubItems["Exchange"].Tag = coinExchangeRate;
-                            listViewItem.SubItems["Exchange"].Text = String.Format("${0}", coinExchangeRate.ToFriendlyString(true));
+                            listViewItem.SubItems["Exchange"].Text = String.Format("{0}{1}", exchangeInformation.TargetSymbol, coinExchangeRate.ToFriendlyString(true));
                         }
 
                         switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
@@ -1196,13 +1212,17 @@ namespace MultiMiner.Win.Forms
             {
                 const string addition = " + ";
                 double usdTotal = 0.00;
+                string usdSymbol = "$";
                 foreach (string coinSymbol in incomeForCoins.Keys)
                 {
                     double coinIncome = incomeForCoins[coinSymbol];
                     CoinInformation coinInfo = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
                     if (coinInfo != null)
                     {
-                        double coinUsd = sellPrices.Subtotal.Amount * coinInfo.Price;
+                        ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                        usdSymbol = exchangeInformation.TargetSymbol;
+                        double btcExchangeRate = exchangeInformation.ExchangeRate;
+                        double coinUsd = btcExchangeRate * coinInfo.Price;
 
                         double coinDailyUsd = coinIncome * coinUsd;
                         usdTotal += coinDailyUsd;
@@ -1217,7 +1237,7 @@ namespace MultiMiner.Win.Forms
                     summary = summary.Remove(summary.Length - addition.Length, addition.Length); //remove trailing " + "
 
                     if (perksConfiguration.ShowExchangeRates)
-                        summary = String.Format("{0} = ${1} / day", summary, usdTotal.ToFriendlyString(true));
+                        summary = String.Format("{0} = {1}{2} / day", summary, usdSymbol, usdTotal.ToFriendlyString(true));
 
                     incomeSummaryLabel.Text = summary;
 
@@ -4251,7 +4271,7 @@ namespace MultiMiner.Win.Forms
             {
                 try
                 {
-                    sellPrices = Coinbase.ApiContext.GetSellPrices();
+                    sellPrices = new Blockchain.ApiContext().GetExchangeInformation();
                 }
                 catch (Exception ex)
                 {
@@ -4259,7 +4279,7 @@ namespace MultiMiner.Win.Forms
                     if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException))
                     {
                         if (applicationConfiguration.ShowApiErrors)
-                            ShowCoinbaseApiErrorNotification(ex);
+                            ShowExchangeApiErrorNotification(ex);
                         return;
                     }
                     throw;
@@ -4267,11 +4287,13 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private void ShowCoinbaseApiErrorNotification(Exception ex)
+        private void ShowExchangeApiErrorNotification(Exception ex)
         {
-            string siteUrl = Coinbase.ApiContext.GetInfoUrl();
-            string apiUrl = Coinbase.ApiContext.GetApiUrl();
-            string apiName = Coinbase.ApiContext.GetApiName();
+            ExchangeApi.IApiContext apiContext = new Blockchain.ApiContext();
+
+            string siteUrl = apiContext.GetInfoUrl();
+            string apiUrl = apiContext.GetApiUrl();
+            string apiName = apiContext.GetApiName();
 
             PostNotification(ex.Message,
                 String.Format("Error parsing the {0} JSON API", apiName), () =>
