@@ -39,6 +39,7 @@ using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Installers;
 using MultiMiner.ExchangeApi.Data;
 using System.Globalization;
+using Microsoft.Win32;
 
 namespace MultiMiner.Win.Forms
 {
@@ -396,17 +397,13 @@ namespace MultiMiner.Win.Forms
             return hashrate;
         }
 
-        private string currentCultureCurrency = null;
         private string GetCurrentCultureCurrency()
         {
-            if (String.IsNullOrEmpty(currentCultureCurrency))
-            {
-                string currencySymbol = RegionInfo.CurrentRegion.ISOCurrencySymbol;
-                if ((sellPrices != null) && (sellPrices.SingleOrDefault(sp => sp.TargetCurrency.Equals(currencySymbol)) == null))
-                    currencySymbol = "USD";
-                currentCultureCurrency = currencySymbol;
-            }
-            return currentCultureCurrency;
+            string currencySymbol = RegionInfo.CurrentRegion.ISOCurrencySymbol;
+            if ((sellPrices != null) && (sellPrices.SingleOrDefault(sp => sp.TargetCurrency.Equals(currencySymbol)) == null))
+                currencySymbol = "USD";
+
+            return currencySymbol;
         }
 
         private void RefreshListViewFromViewModel()
@@ -5994,7 +5991,18 @@ namespace MultiMiner.Win.Forms
             
             SubmitMobileMinerPools();
 
+            //so we know when culture changes
+            SystemEvents.UserPreferenceChanged += SystemEventsUserPreferenceChanged;
+
             applicationSetup = true;
+        }
+
+        private void SystemEventsUserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
+        {
+            //culture settings changed
+            if (e.Category == UserPreferenceCategory.Locale)
+                //clear cached currency
+                CultureInfo.CurrentCulture.ClearCachedData();
         }
 
         private bool tearingDown = false;
