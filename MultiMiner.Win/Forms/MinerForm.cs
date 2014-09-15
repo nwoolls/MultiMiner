@@ -269,6 +269,8 @@ namespace MultiMiner.Win.Forms
             
             deviceTotalLabel.AutoSize = true;
             deviceTotalLabel.Padding = new Padding(12, 0, 0, 0);
+
+            strategyCountdownLabel.Visible = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
         }
         #endregion
 
@@ -1468,6 +1470,7 @@ namespace MultiMiner.Win.Forms
             UpdateMiningButtons();
             RemoveInvalidCoinValuesFromListView();
             RefreshCoinPopupMenu();
+            SetupStatusBarLabelLayouts();
 
             SetupCoinApi();
             RefreshCoinApiLabel();
