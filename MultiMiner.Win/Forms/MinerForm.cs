@@ -1151,6 +1151,7 @@ namespace MultiMiner.Win.Forms
                 const double secondsPerDay = 86400;
                 double sharesPerDay = secondsPerDay / secondsToCalcShare;
                 double rewardPerDay = sharesPerDay * info.Reward;
+                ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
 
                 deviceViewModel.Daily = rewardPerDay;
 
@@ -1160,12 +1161,12 @@ namespace MultiMiner.Win.Forms
                     double exchangeRate = item.SubItems["Exchange"].Tag == null ? 0 : (double)item.SubItems["Exchange"].Tag;
                     double fiatPerDay = rewardPerDay * exchangeRate;
                     if (fiatPerDay > 0.00)
-                        item.SubItems["Daily"].Text = String.Format("${0}", fiatPerDay.ToFriendlyString(true));
+                        item.SubItems["Daily"].Text = String.Format("{0}{1}", exchangeInformation.TargetSymbol, fiatPerDay.ToFriendlyString(true));
                 }
                 else
                 {
                     if (rewardPerDay > 0.00)
-                        item.SubItems["Daily"].Text = String.Format("{0} {1}", rewardPerDay.ToFriendlyString(), info.Symbol);
+                        item.SubItems["Daily"].Text = String.Format("{0}{1} {2}", exchangeInformation.TargetSymbol, rewardPerDay.ToFriendlyString(), info.Symbol);
                 }
             }
         }
