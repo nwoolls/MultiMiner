@@ -11,7 +11,7 @@ using MultiMiner.Engine.Data;
 
 namespace MultiMiner.Win.ViewModels
 {
-    class MinerFormViewModel
+    public class MinerFormViewModel
     {
         public List<DeviceViewModel> Devices { get; set; }
         public List<CryptoCoin> ConfiguredCoins { get; set; }
@@ -292,6 +292,17 @@ namespace MultiMiner.Win.ViewModels
                         deviceViewModel.Coin = btcConfiguration.CryptoCoin;
                 }
             }
+        }
+
+        public string GetFriendlyDeviceName(string deviceName, string devicePath)
+        {
+            string result = deviceName;
+
+            DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Path.Equals(devicePath));
+            if ((deviceViewModel != null) && !String.IsNullOrEmpty(deviceViewModel.FriendlyName))
+                result = deviceViewModel.FriendlyName;
+
+            return result;
         }
     }
 }

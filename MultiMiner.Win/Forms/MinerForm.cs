@@ -4384,7 +4384,7 @@ namespace MultiMiner.Win.Forms
                     MobileMiner.Data.MiningStatistics miningStatistics = new MobileMiner.Data.MiningStatistics()
                     {
                         // submit the Friendly device / machine name
-                        MachineName = GetFriendlyDeviceName(devicePath, devicePath),
+                        MachineName = localViewModel.GetFriendlyDeviceName(devicePath, devicePath),
 
                         // versionInformation may be null if the read timed out
                         MinerName = versionInformation == null ? String.Empty : versionInformation.Name,
@@ -4693,7 +4693,7 @@ namespace MultiMiner.Win.Forms
             {
                 //ipAddress:port
                 string machinePath = networkDevicePool.Key;
-                string machineName = GetFriendlyDeviceName(machinePath, machinePath);
+                string machineName = localViewModel.GetFriendlyDeviceName(machinePath, machinePath);
                 // poolInformationList may be null if an RPC API call timed out
                 if (networkDevicePool.Value != null)
                 {
@@ -4759,7 +4759,7 @@ namespace MultiMiner.Win.Forms
             IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
             foreach (DeviceViewModel deviceViewModel in networkDevices)
             {
-                string machineName = GetFriendlyDeviceName(deviceViewModel.Path, deviceViewModel.Path);
+                string machineName = localViewModel.GetFriendlyDeviceName(deviceViewModel.Path, deviceViewModel.Path);
                 machineNames.Add(machineName);
             }
 
@@ -4910,7 +4910,7 @@ namespace MultiMiner.Win.Forms
             IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
             foreach (DeviceViewModel item in networkDevices)
             {
-                if (GetFriendlyDeviceName(item.Path, item.Path).Equals(friendlyDeviceName, StringComparison.OrdinalIgnoreCase))
+                if (localViewModel.GetFriendlyDeviceName(item.Path, item.Path).Equals(friendlyDeviceName, StringComparison.OrdinalIgnoreCase))
                 {
                     result = item;
                     break;
