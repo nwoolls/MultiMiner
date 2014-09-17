@@ -102,12 +102,13 @@ namespace MultiMiner.Win.Forms.Configuration
                     configuration.CryptoCoin.Algorithm = cryptoCoin.Algorithm;
                 }
 
-                //at this point, configuration.CryptoCoin.Algorithm is the CoinAlgorithm.FullName
+                //at this point, configuration.CryptoCoin.Algorithm MAY be the CoinAlgorithm.FullName
                 //that is how data from Coin API is stored
                 //but coin configurations are based on CoinAlgorithm.Name
-                string algorithmFullName = configuration.CryptoCoin.Algorithm;
-                CoinAlgorithm algorithm = MinerFactory.Instance.Algorithms.SingleOrDefault(a => a.FullName.Equals(algorithmFullName, StringComparison.OrdinalIgnoreCase));
-                configuration.CryptoCoin.Algorithm = algorithm.Name;
+                CoinAlgorithm algorithm = MinerFactory.Instance.Algorithms.SingleOrDefault(a => 
+                    a.FullName.Equals(configuration.CryptoCoin.Algorithm, StringComparison.OrdinalIgnoreCase));
+                if (algorithm != null)
+                    configuration.CryptoCoin.Algorithm = algorithm.Name;
 
                 MiningPool miningPool = new MiningPool()
                 {
