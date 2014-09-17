@@ -7595,6 +7595,10 @@ namespace MultiMiner.Win.Forms
             // networkDevicePools is keyed by IP:port, use .Path
             List<PoolInformation> poolInformation = networkDevicePools[viewModel.Path];
 
+            if (poolInformation == null)
+                //RPC API call timed out
+                return;
+
             for (int i = 0; i < poolInformation.Count; i++)
             {
                 PoolInformation pool = poolInformation[i];
