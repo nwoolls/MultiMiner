@@ -70,6 +70,9 @@
     <Compile Include="Forms\NoFlickerListView.Designer.cs">
       <DependentUpon>NoFlickerListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ReadOnlyTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\Timers.cs" />
     <Compile Include="Net\ApiWebClient.cs">
       <SubType>Component</SubType>

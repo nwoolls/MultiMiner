@@ -104,6 +104,7 @@ namespace MultiMiner.Win.Forms
         //controls
         private NotificationsControl notificationsControl;
         private InstancesControl instancesControl;
+        private ApiConsoleForm apiConsoleForm;
 
         //remoting
         private RemotingServer remotingServer;
@@ -3140,6 +3141,9 @@ namespace MultiMiner.Win.Forms
                 //clear any details stored correlated to processes - they could all be invalid after this
                 processDeviceDetails.Clear();
                 SaveOwnedProcesses();
+
+                if (apiConsoleForm != null)
+                    apiConsoleForm.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
             }
 
             if (miningEngine.Mining)
@@ -4411,7 +4415,7 @@ namespace MultiMiner.Win.Forms
                     MobileMiner.Data.MiningStatistics miningStatistics = new MobileMiner.Data.MiningStatistics()
                     {
                         // submit the Friendly device / machine name
-                        MachineName = GetFriendlyDeviceName(devicePath, devicePath),
+                        MachineName = localViewModel.GetFriendlyDeviceName(devicePath, devicePath),
 
                         // versionInformation may be null if the read timed out
                         MinerName = versionInformation == null ? String.Empty : versionInformation.Name,
@@ -4454,17 +4458,6 @@ namespace MultiMiner.Win.Forms
                     statisticsList.Add(miningStatistics);
                 }
             }
-        }
-
-        private string GetFriendlyDeviceName(string deviceName, string devicePath)
-        {
-            string result = deviceName;
-
-            DeviceViewModel deviceViewModel = localViewModel.Devices.SingleOrDefault(d => d.Path.Equals(devicePath));
-            if ((deviceViewModel != null) && !String.IsNullOrEmpty(deviceViewModel.FriendlyName))
-                result = deviceViewModel.FriendlyName;
-
-            return result;
         }
 
         private string GetFriendlyDeviceName(MultiMiner.Xgminer.Data.Device device)
@@ -4720,7 +4713,7 @@ namespace MultiMiner.Win.Forms
             {
                 //ipAddress:port
                 string machinePath = networkDevicePool.Key;
-                string machineName = GetFriendlyDeviceName(machinePath, machinePath);
+                string machineName = localViewModel.GetFriendlyDeviceName(machinePath, machinePath);
                 // poolInformationList may be null if an RPC API call timed out
                 if (networkDevicePool.Value != null)
                 {
@@ -4786,7 +4779,7 @@ namespace MultiMiner.Win.Forms
             IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
             foreach (DeviceViewModel deviceViewModel in networkDevices)
             {
-                string machineName = GetFriendlyDeviceName(deviceViewModel.Path, deviceViewModel.Path);
+                string machineName = localViewModel.GetFriendlyDeviceName(deviceViewModel.Path, deviceViewModel.Path);
                 machineNames.Add(machineName);
             }
 
@@ -4937,7 +4930,7 @@ namespace MultiMiner.Win.Forms
             IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
             foreach (DeviceViewModel item in networkDevices)
             {
-                if (GetFriendlyDeviceName(item.Path, item.Path).Equals(friendlyDeviceName, StringComparison.OrdinalIgnoreCase))
+                if (localViewModel.GetFriendlyDeviceName(item.Path, item.Path).Equals(friendlyDeviceName, StringComparison.OrdinalIgnoreCase))
                 {
                     result = item;
                     break;
@@ -7021,6 +7014,9 @@ namespace MultiMiner.Win.Forms
             RefreshDetailsAreaIfVisible();
             ClearPoolsFlaggedDown();
             SaveOwnedProcesses();
+
+            if (apiConsoleForm != null)
+                apiConsoleForm.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
         }
 
         private void RestartMining()
@@ -7083,6 +7079,9 @@ namespace MultiMiner.Win.Forms
                 {
                     ShowCoinChangeNotification();
                     SaveOwnedProcesses();
+
+                    if (apiConsoleForm != null)
+                        apiConsoleForm.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
                 }
             }
         }
@@ -7392,6 +7391,9 @@ namespace MultiMiner.Win.Forms
                 // if no Internet / network connection, we did not Auto-Mine
                 (this.coinApiInformation != null))
                 ShowCoinChangeNotification();
+
+            if (apiConsoleForm != null)
+                apiConsoleForm.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
         }
 
         //download miners required for configured coins / algorithms
@@ -7611,5 +7613,12 @@ namespace MultiMiner.Win.Forms
             }
         }
         #endregion
+
+        private void aPIConsoleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            apiConsoleForm = new ApiConsoleForm(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
+            apiConsoleForm.Show();
+
+        }
     }
 }
