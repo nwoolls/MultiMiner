@@ -5282,8 +5282,8 @@ namespace MultiMiner.Win.Forms
                 this.BeginInvoke((Action)(() =>
                 {
                     //code to update UI
-                    MinerFormViewModel.ClearDeviceInformation(deviceViewModel);                
-                
+                    MinerFormViewModel.ClearDeviceInformation(deviceViewModel);
+
                     //deviceInformationList or poolInformationList may be down if the API was unreachable
                     //at the time
                     if (deviceInformationList != null)
@@ -5292,8 +5292,9 @@ namespace MultiMiner.Win.Forms
                         //null if API call fails
                         if (minerStatistics != null)
                         {
-                            deviceViewModel.Frequency = minerStatistics[deviceViewModel.ID].Frequency;
-                            deviceViewModel.ChainStatus = minerStatistics[deviceViewModel.ID].ChainStatus;
+                            MinerStatistics firstStatistics = minerStatistics.First();
+                            deviceViewModel.Frequency = firstStatistics.Frequency;
+                            deviceViewModel.ChainStatus = firstStatistics.ChainStatus;
                         }
 
                         int poolIndex = -1;
