@@ -77,6 +77,11 @@ namespace MultiMiner.Win.ViewModels
         public List<DeviceViewModel> Workers { get; set; }
         public int ID { get; set; }
 
+        //miner stats
+        //AntMiner-specific
+        public string[] ChainStatus = new string[16];
+        public double Frequency { get; set; }
+
         //ViewModel specific
         public bool Visible { get; set; }
         public string FriendlyName { get; set; }

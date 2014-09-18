@@ -76,6 +76,7 @@ namespace MultiMiner.Win.Forms
         private readonly Dictionary<DeviceViewModel, DeviceDetails> deviceDetailsMapping = new Dictionary<DeviceViewModel, DeviceDetails>();
         private readonly Dictionary<DeviceViewModel, string> lastDevicePoolMapping = new Dictionary<DeviceViewModel, string>();
         private readonly Dictionary<string, List<PoolInformation>> networkDevicePools = new Dictionary<string, List<PoolInformation>>();
+        private readonly Dictionary<string, List<MinerStatistics>> networkDeviceStatistics = new Dictionary<string, List<MinerStatistics>>();
 
         //currently mining information
         private List<Engine.Data.Configuration.Device> miningDeviceConfigurations;
@@ -3096,8 +3097,9 @@ namespace MultiMiner.Win.Forms
             SubmitMobileMinerPools();
 
             //clear cached pool information for Network Devices
-            //(so we pick up pool changes)
+            //(so we pick up changes)
             networkDevicePools.Clear();
+            networkDeviceStatistics.Clear();
         }
 
         private void oneMinuteTimer_Tick(object sender, EventArgs e)
@@ -5210,7 +5212,7 @@ namespace MultiMiner.Win.Forms
         private List<PoolInformation> GetCachedPoolInfoFromAddress(string ipAddress, int port)
         {
             List<PoolInformation> poolInformationList = null;
-            string key = ipAddress + ":" + port;
+            string key = String.Format("{0}:{1}", ipAddress, port);
             if (this.networkDevicePools.ContainsKey(key))
                 poolInformationList = this.networkDevicePools[key];
             else
@@ -5219,6 +5221,20 @@ namespace MultiMiner.Win.Forms
                 networkDevicePools[key] = poolInformationList;
             }
             return poolInformationList;
+        }
+
+        private List<MinerStatistics> GetCacheMinerStatisticsFromAddress(string ipAddress, int port)
+        {
+            List<MinerStatistics> minerStatisticsList = null;
+            string key = String.Format("{0}:{1}", ipAddress, port);
+            if (this.networkDeviceStatistics.ContainsKey(key))
+                minerStatisticsList = this.networkDeviceStatistics[key];
+            else
+            {
+                minerStatisticsList = GetMinerStatisticsFromAddress(ipAddress, port);
+                networkDeviceStatistics[key] = minerStatisticsList;
+            }
+            return minerStatisticsList;
         }
 
         private void RefreshNetworkDeviceStatsAsync()
@@ -5272,6 +5288,14 @@ namespace MultiMiner.Win.Forms
                     //at the time
                     if (deviceInformationList != null)
                     {
+                        List<MinerStatistics> minerStatistics = GetCacheMinerStatisticsFromAddress(ipAddress, port);
+                        //null if API call fails
+                        if (minerStatistics != null)
+                        {
+                            deviceViewModel.Frequency = minerStatistics[deviceViewModel.ID].Frequency;
+                            deviceViewModel.ChainStatus = minerStatistics[deviceViewModel.ID].ChainStatus;
+                        }
+
                         int poolIndex = -1;
                         foreach (DeviceInformation deviceInformation in deviceInformationList)
                         {
@@ -5511,6 +5535,36 @@ namespace MultiMiner.Win.Forms
             }
 
             return poolInformation;
+        }
+
+        private List<MinerStatistics> GetMinerStatisticsFromAddress(string ipAddress, int port)
+        {
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<MinerStatistics> minerStatistics = null;
+            try
+            {
+                try
+                {
+                    minerStatistics = apiContext.GetMinerStatistics();
+                }
+                catch (IOException)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    minerStatistics = null;
+                }
+            }
+            catch (SocketException)
+            {
+                //won't be able to connect for the first 5s or so
+                minerStatistics = null;
+            }
+
+            return minerStatistics;
         }
 
         private void PopulateSummaryInfoFromProcesses()
