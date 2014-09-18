@@ -1124,6 +1124,10 @@ namespace MultiMiner.Win.Forms
                 //no internet or error parsing API
                 return;
 
+            if (sellPrices == null)
+                //no internet or error parsing API
+                return;
+
             CoinInformation info = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(deviceViewModel.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
 
             if (info != null)
