@@ -20,6 +20,7 @@ namespace MultiMiner.Win.Forms
         public ApiConsoleForm(List<MinerProcess> localMiners, List<NetworkDevices.NetworkDevice> networkMiners, MinerFormViewModel viewModel)
         {
             InitializeComponent();
+            inputTextBox.Enabled = false;
             PopulateMiners(localMiners, networkMiners, viewModel);
         }
 
@@ -59,7 +60,7 @@ namespace MultiMiner.Win.Forms
                 apiContexts.Add(new Xgminer.Api.ApiContext(networkMiner.Port, networkMiner.IPAddress));
             }
 
-            if (minerComboBox.SelectedItem == null)
+            if ((minerComboBox.SelectedItem == null) && (minerComboBox.Items.Count > 0))
                 minerComboBox.SelectedIndex = 0;
 
             if (!String.IsNullOrEmpty(previousSelection))
@@ -153,7 +154,13 @@ namespace MultiMiner.Win.Forms
         }
         private void minerComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FocusInput();
+            if (minerComboBox.SelectedItem == null)
+                inputTextBox.Enabled = false;
+            else
+            {
+                inputTextBox.Enabled = true;
+                FocusInput();
+            }
         }
 
         private void FocusInput()
