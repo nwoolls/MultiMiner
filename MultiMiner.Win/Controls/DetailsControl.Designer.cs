@@ -30,13 +30,14 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DetailsControl));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.closeDetailsButton = new System.Windows.Forms.Button();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.nameLabel = new System.Windows.Forms.Label();
+            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label2 = new System.Windows.Forms.Label();
             this.cryptoCoinBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label3 = new System.Windows.Forms.Label();
@@ -52,7 +53,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.hashrateLabel = new System.Windows.Forms.Label();
             this.workersGridView = new System.Windows.Forms.DataGridView();
-            this.temperatureDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.workerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.workersTitleLabel = new System.Windows.Forms.Label();
             this.tempLabel = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
@@ -90,22 +91,21 @@
             this.proxyGetworkLabel = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
-            this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.workerNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.temperatureDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.hardwareErrorsPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.utilityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.workerBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.workersGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.workerBindingSource)).BeginInit();
             this.noDetailsPanel.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.proxyInfoPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.workerBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // closeDetailsButton
@@ -144,6 +144,10 @@
             this.nameLabel.TabIndex = 3;
             this.nameLabel.Text = "label1";
             this.nameLabel.Click += new System.EventHandler(this.nameLabel_Click);
+            // 
+            // deviceBindingSource
+            // 
+            this.deviceBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
             // 
             // label2
             // 
@@ -318,15 +322,9 @@
             this.workersGridView.TabIndex = 17;
             this.workersGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.workersGridView_CellFormatting);
             // 
-            // temperatureDataGridViewTextBoxColumn
+            // workerBindingSource
             // 
-            this.temperatureDataGridViewTextBoxColumn.DataPropertyName = "Temperature";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.temperatureDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
-            this.temperatureDataGridViewTextBoxColumn.FillWeight = 60F;
-            this.temperatureDataGridViewTextBoxColumn.HeaderText = "Temp";
-            this.temperatureDataGridViewTextBoxColumn.Name = "temperatureDataGridViewTextBoxColumn";
-            this.temperatureDataGridViewTextBoxColumn.ReadOnly = true;
+            this.workerBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
             // 
             // workersTitleLabel
             // 
@@ -722,10 +720,6 @@
             this.statusLabel.TabIndex = 46;
             this.statusLabel.Text = "label1";
             // 
-            // deviceBindingSource
-            // 
-            this.deviceBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
-            // 
             // workerNameDataGridViewTextBoxColumn
             // 
             this.workerNameDataGridViewTextBoxColumn.DataPropertyName = "WorkerName";
@@ -743,6 +737,16 @@
             this.currentHashrateDataGridViewTextBoxColumn.Name = "currentHashrateDataGridViewTextBoxColumn";
             this.currentHashrateDataGridViewTextBoxColumn.ReadOnly = true;
             // 
+            // temperatureDataGridViewTextBoxColumn
+            // 
+            this.temperatureDataGridViewTextBoxColumn.DataPropertyName = "Temperature";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.temperatureDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            this.temperatureDataGridViewTextBoxColumn.FillWeight = 60F;
+            this.temperatureDataGridViewTextBoxColumn.HeaderText = "Temp";
+            this.temperatureDataGridViewTextBoxColumn.Name = "temperatureDataGridViewTextBoxColumn";
+            this.temperatureDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
             // hardwareErrorsPercentDataGridViewTextBoxColumn
             // 
             this.hardwareErrorsPercentDataGridViewTextBoxColumn.DataPropertyName = "HardwareErrorsPercent";
@@ -757,15 +761,12 @@
             // 
             this.utilityDataGridViewTextBoxColumn.DataPropertyName = "Utility";
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle4.Format = "#,#.###";
             this.utilityDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
             this.utilityDataGridViewTextBoxColumn.FillWeight = 75F;
             this.utilityDataGridViewTextBoxColumn.HeaderText = "Utility";
             this.utilityDataGridViewTextBoxColumn.Name = "utilityDataGridViewTextBoxColumn";
             this.utilityDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // workerBindingSource
-            // 
-            this.workerBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
             // 
             // DetailsControl
             // 
@@ -821,8 +822,10 @@
             this.Name = "DetailsControl";
             this.Size = new System.Drawing.Size(601, 517);
             this.Load += new System.EventHandler(this.DetailsControl_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.workersGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.workerBindingSource)).EndInit();
             this.noDetailsPanel.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
@@ -830,8 +833,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.proxyInfoPanel.ResumeLayout(false);
             this.proxyInfoPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.workerBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -890,16 +891,16 @@
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.BindingSource cryptoCoinBindingSource;
         private System.Windows.Forms.BindingSource workerBindingSource;
-        private System.Windows.Forms.DataGridViewTextBoxColumn workerNameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn currentHashrateDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn temperatureDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn hardwareErrorsPercentDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn utilityDataGridViewTextBoxColumn;
         private System.Windows.Forms.Panel proxyInfoPanel;
         private System.Windows.Forms.Label proxyStratumLabel;
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.Label proxyGetworkLabel;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label statusLabel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn workerNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn currentHashrateDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn temperatureDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn hardwareErrorsPercentDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn utilityDataGridViewTextBoxColumn;
     }
 }
