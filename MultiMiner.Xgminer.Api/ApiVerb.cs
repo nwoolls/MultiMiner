@@ -11,5 +11,6 @@
         public const string Restart = "restart";
         public const string SwitchPool = "switchpool";
         public const string Coin = "coin";
+        public const string Stats = "stats";
     }
 }
