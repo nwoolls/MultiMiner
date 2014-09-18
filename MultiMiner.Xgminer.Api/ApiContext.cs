@@ -74,6 +74,14 @@ namespace MultiMiner.Xgminer.Api
             return result;
         }
 
+        public List<MinerStatistics> GetMinerStatistics()
+        {
+            string textResponse = GetResponse(ApiVerb.Stats);
+            List<MinerStatistics> result = new List<MinerStatistics>();
+            MinerStatisticsParser.ParseTextForMinerStatistics(textResponse, result);
+            return result;
+        }
+
         public string QuitMining()
         {
             return GetResponse(ApiVerb.Quit);

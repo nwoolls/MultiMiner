@@ -9,25 +9,15 @@ namespace MultiMiner.Xgminer.Api.Parsers
     {
         public static void ParseTextForDeviceInformation(string text, List<DeviceInformation> deviceInformation, int logInterval)
         {
-            List<string> deviceBlob = text.Split('|').ToList();
-            deviceBlob.RemoveAt(0);
+            List<string> responseParts = ParseResponseText(text);
+            if (responseParts.Count == 0)
+                return;
 
-            foreach (string deviceText in deviceBlob)
+            foreach (string responsePart in responseParts)
             {
-                if (deviceText == "\0")
-                    continue;
+                Dictionary<string, string> keyValuePairs = ParseResponsePart(responsePart);
 
-                //bfgminer may have multiple entries for the same key, e.g. Hardware Errors
-                //seen with customer data/hardware
-                //remove dupes using Distinct()
-                var deviceAttributes = deviceText.Split(',').ToList().Distinct();
-
-                Dictionary<string, string> keyValuePairs = deviceAttributes
-                  .Where(value => value.Contains('='))
-                  .Select(value => value.Split('='))
-                  .ToDictionary(pair => pair[0], pair => pair[1]);
-
-                //seen Count == 0 with user API logs
+                //check for key-value pairs, seen Count == 0 with user API logs
                 if (keyValuePairs.Count > 0)
                 {
                     DeviceInformation newDevice = new DeviceInformation();

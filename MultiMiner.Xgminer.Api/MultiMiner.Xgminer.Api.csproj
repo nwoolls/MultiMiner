@@ -42,10 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiContext.cs" />
+    <Compile Include="Data\MinerStatistics.cs" />
     <Compile Include="Data\NetworkCoinInformation.cs" />
     <Compile Include="Data\VersionInformation.cs" />
     <Compile Include="Extensions\IntegerExtensions.cs" />
     <Compile Include="Extensions\TcpClientExtensions.cs" />
+    <Compile Include="Parsers\MinerStatisticsParser.cs" />
     <Compile Include="Parsers\NetworkCoinInformationParser.cs" />
     <Compile Include="Parsers\DeviceDetailsParser.cs" />
     <Compile Include="Parsers\PoolInformationParser.cs" />
