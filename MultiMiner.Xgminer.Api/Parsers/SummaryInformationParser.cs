@@ -8,28 +8,15 @@ namespace MultiMiner.Xgminer.Api.Parsers
     {
         public static void ParseTextForSummaryInformation(string text, SummaryInformation summaryInformation)
         {
-            List<string> summaryBlob = text.Split('|').ToList();
-            summaryBlob.RemoveAt(0);
-
-            if (summaryBlob.Count == 0)
+            List<string> responseParts = ParseResponseText(text);
+            if (responseParts.Count == 0)
                 return;
 
-            string summaryText = summaryBlob.First();
+            string responsePart = responseParts.First();
 
-            if (summaryText == "\0")
-                return;
+            Dictionary<string, string> keyValuePairs = ParseResponsePart(responsePart);
 
-            //bfgminer may have multiple entries for the same key, e.g. Hardware Errors
-            //seen with customer data/hardware
-            //remove dupes using Distinct()
-            var summaryAttributes = summaryText.Split(',').ToList().Distinct();
-
-            Dictionary<string, string> keyValuePairs = summaryAttributes
-                .Where(value => value.Contains('='))
-                .Select(value => value.Split('='))
-                .ToDictionary(pair => pair[0], pair => pair[1]);
-
-            //seen Count == 0 with user API logs
+            //check for key-value pairs, seen Count == 0 with user API logs
             if (keyValuePairs.Count > 0)
             {
                 summaryInformation.Elapsed = TryToParseInt(keyValuePairs, "Elapsed", 0);

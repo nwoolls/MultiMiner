@@ -6,7 +6,6 @@ namespace MultiMiner.Xgminer.Api.Parsers
 {
     public class ResponseTextParser
     {
-
         //the RPC API returns numbers formatted en-US, e.g. 1,000.00
         //specify CultureInfo.InvariantCulture for parsing or unhandled exceptions will
         //occur on other locales
@@ -51,6 +50,29 @@ namespace MultiMiner.Xgminer.Api.Parsers
               .Select(value => value.Split('='))
               .ToDictionary(pair => pair[0], pair => pair[1]);
             return keyValuePairs;
+        }
+
+        protected static Dictionary<string, string> ParseResponsePart(string responsePart)
+        {
+            if (responsePart == "\0")
+                return new Dictionary<string,string>();
+
+            //remove dupes using Distinct(), seen dupes with user API logs
+            IEnumerable<string> partAttributes = responsePart.Split(',').ToList().Distinct();
+
+            Dictionary<string, string> keyValuePairs = partAttributes
+              .Where(value => value.Contains('='))
+              .Select(value => value.Split('='))
+              .ToDictionary(pair => pair[0], pair => pair[1]);
+
+            return keyValuePairs;
+        }
+
+        protected static List<string> ParseResponseText(string text)
+        {
+            List<string> responseParts = text.Split('|').ToList();
+            responseParts.RemoveAt(0);
+            return responseParts;
         }
     }
 }
