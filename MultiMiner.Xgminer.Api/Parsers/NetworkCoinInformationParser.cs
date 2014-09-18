@@ -9,10 +9,11 @@ namespace MultiMiner.Xgminer.Api.Parsers
     {
         public static void ParseTextForCoinNetworkInformation(string text, NetworkCoinInformation coinInformation)
         {
-            List<string> deviceBlob = text.Split('|').ToList();
-            deviceBlob.RemoveAt(0);
+            List<string> responseParts = ParseResponseText(text);
+            if (responseParts.Count == 0)
+                return;
 
-            foreach (string deviceText in deviceBlob)
+            foreach (string responsePart in responseParts)
             {
                 List<string> textChunks = text.Split('|').ToList();
 

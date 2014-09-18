@@ -42,6 +42,7 @@ namespace MultiMiner.Win.Controls
             hashrateLabel.Font = new Font(hashrateLabel.Font, FontStyle.Bold);
             tempLabel.Font = new Font(tempLabel.Font, FontStyle.Bold);
             poolLabel.Font = new Font(poolLabel.Font, FontStyle.Bold);
+            statusLabel.Font = new Font(statusLabel.Font, FontStyle.Bold);
             nameLabel.Font = new Font(nameLabel.Font.Name, 12.0f);
             deviceCountLabel.Font = new Font(nameLabel.Font.Name, 12.0f);
 
@@ -195,6 +196,8 @@ namespace MultiMiner.Win.Controls
                 nameLabel.Cursor = Cursors.Hand;
                 nameLabel.Font = new Font(nameLabel.Font, FontStyle.Underline);
                 nameLabel.ForeColor = Color.Blue;
+
+                statusLabel.Text = String.Format("{0}{1}{2}", deviceViewModel.ChainStatus[0], Environment.NewLine, deviceViewModel.ChainStatus[1]);
             }
             else
             {
@@ -203,6 +206,8 @@ namespace MultiMiner.Win.Controls
                 nameLabel.Cursor = Cursors.Default;
                 nameLabel.Font = new Font(nameLabel.Font, FontStyle.Regular);
                 nameLabel.ForeColor = Color.FromArgb(30, 57, 91);
+
+                statusLabel.Text = String.Empty;
             }
         }
 
