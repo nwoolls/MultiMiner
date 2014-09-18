@@ -1,33 +1,47 @@
-﻿using MultiMiner.Utility.Net;
+﻿using MultiMiner.ExchangeApi;
+using MultiMiner.ExchangeApi.Data;
+using MultiMiner.Utility.Net;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace MultiMiner.Coinbase
 {
-    public static class ApiContext
+    public class ApiContext : IApiContext
     {
-        public static Data.SellPrices GetSellPrices()
+        public IEnumerable<ExchangeInformation> GetExchangeInformation()
         {
             WebClient webClient = new ApiWebClient();
 
             string response = webClient.DownloadString(new Uri(GetApiUrl()));
 
             Data.SellPrices sellPrices = JsonConvert.DeserializeObject<Data.SellPrices>(response);
-            return sellPrices;
+
+            List<ExchangeInformation> results = new List<ExchangeInformation>();
+
+            results.Add(new ExchangeInformation()
+            {
+                SourceCurrency = "BTC",
+                TargetCurrency = "USD",
+                TargetSymbol = "$",
+                ExchangeRate = sellPrices.Subtotal.Amount
+            });
+
+            return results;
         }
 
-        public static string GetInfoUrl()
+        public string GetInfoUrl()
         {
             return "https://coinbase.com";
         }
 
-        public static string GetApiUrl()
+        public string GetApiUrl()
         {
             return "https://coinbase.com/api/v1/prices/sell";
         }
 
-        public static string GetApiName()
+        public string GetApiName()
         {
             return "Coinbase";
         }

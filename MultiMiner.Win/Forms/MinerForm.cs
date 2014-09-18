@@ -37,6 +37,9 @@ using MultiMiner.Win.Forms.Configuration;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Installers;
+using MultiMiner.ExchangeApi.Data;
+using System.Globalization;
+using Microsoft.Win32;
 
 namespace MultiMiner.Win.Forms
 {
@@ -53,7 +56,7 @@ namespace MultiMiner.Win.Forms
 
         //Coin API information
         private List<CoinInformation> coinApiInformation;
-        private MultiMiner.Coinbase.Data.SellPrices sellPrices;
+        private IEnumerable<ExchangeInformation> sellPrices;
 
         //RPC API information
         private Dictionary<string, double> minerNetworkDifficulty = new Dictionary<string, double>();
@@ -395,6 +398,15 @@ namespace MultiMiner.Win.Forms
             return hashrate;
         }
 
+        private string GetCurrentCultureCurrency()
+        {
+            string currencySymbol = RegionInfo.CurrentRegion.ISOCurrencySymbol;
+            if ((sellPrices != null) && (sellPrices.SingleOrDefault(sp => sp.TargetCurrency.Equals(currencySymbol)) == null))
+                currencySymbol = "USD";
+
+            return currencySymbol;
+        }
+
         private void RefreshListViewFromViewModel()
         {
             if (editingDeviceListView)
@@ -498,16 +510,17 @@ namespace MultiMiner.Win.Forms
 
                         //check .Mining to allow perks for Remoting when local PC is not mining
                         if ((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowExchangeRates
-                            //ensure Coinbase is available:
+                            //ensure Exchange prices are available:
                             && (sellPrices != null))
                         {
-                            double btcExchangeRate = sellPrices.Subtotal.Amount;
+                            ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                            double btcExchangeRate = exchangeInformation.ExchangeRate;
                             double coinExchangeRate = 0.00;
 
                             coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
 
                             listViewItem.SubItems["Exchange"].Tag = coinExchangeRate;
-                            listViewItem.SubItems["Exchange"].Text = String.Format("${0}", coinExchangeRate.ToFriendlyString(true));
+                            listViewItem.SubItems["Exchange"].Text = String.Format("{0}{1}", exchangeInformation.TargetSymbol, coinExchangeRate.ToFriendlyString(true));
                         }
 
                         switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
@@ -1141,6 +1154,7 @@ namespace MultiMiner.Win.Forms
                 const double secondsPerDay = 86400;
                 double sharesPerDay = secondsPerDay / secondsToCalcShare;
                 double rewardPerDay = sharesPerDay * info.Reward;
+                ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
 
                 deviceViewModel.Daily = rewardPerDay;
 
@@ -1150,12 +1164,12 @@ namespace MultiMiner.Win.Forms
                     double exchangeRate = item.SubItems["Exchange"].Tag == null ? 0 : (double)item.SubItems["Exchange"].Tag;
                     double fiatPerDay = rewardPerDay * exchangeRate;
                     if (fiatPerDay > 0.00)
-                        item.SubItems["Daily"].Text = String.Format("${0}", fiatPerDay.ToFriendlyString(true));
+                        item.SubItems["Daily"].Text = String.Format("{0}{1}", exchangeInformation.TargetSymbol, fiatPerDay.ToFriendlyString(true));
                 }
                 else
                 {
                     if (rewardPerDay > 0.00)
-                        item.SubItems["Daily"].Text = String.Format("{0} {1}", rewardPerDay.ToFriendlyString(), info.Symbol);
+                        item.SubItems["Daily"].Text = String.Format("{0}{1} {2}", exchangeInformation.TargetSymbol, rewardPerDay.ToFriendlyString(), info.Symbol);
                 }
             }
         }
@@ -1202,13 +1216,17 @@ namespace MultiMiner.Win.Forms
             {
                 const string addition = " + ";
                 double usdTotal = 0.00;
+                string usdSymbol = "$";
                 foreach (string coinSymbol in incomeForCoins.Keys)
                 {
                     double coinIncome = incomeForCoins[coinSymbol];
                     CoinInformation coinInfo = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
                     if (coinInfo != null)
                     {
-                        double coinUsd = sellPrices.Subtotal.Amount * coinInfo.Price;
+                        ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                        usdSymbol = exchangeInformation.TargetSymbol;
+                        double btcExchangeRate = exchangeInformation.ExchangeRate;
+                        double coinUsd = btcExchangeRate * coinInfo.Price;
 
                         double coinDailyUsd = coinIncome * coinUsd;
                         usdTotal += coinDailyUsd;
@@ -1223,7 +1241,7 @@ namespace MultiMiner.Win.Forms
                     summary = summary.Remove(summary.Length - addition.Length, addition.Length); //remove trailing " + "
 
                     if (perksConfiguration.ShowExchangeRates)
-                        summary = String.Format("{0} = ${1} / day", summary, usdTotal.ToFriendlyString(true));
+                        summary = String.Format("{0} = {1}{2} / day", summary, usdSymbol, usdTotal.ToFriendlyString(true));
 
                     incomeSummaryLabel.Text = summary;
 
@@ -4258,7 +4276,7 @@ namespace MultiMiner.Win.Forms
             {
                 try
                 {
-                    sellPrices = Coinbase.ApiContext.GetSellPrices();
+                    sellPrices = new Blockchain.ApiContext().GetExchangeInformation();
                 }
                 catch (Exception ex)
                 {
@@ -4266,7 +4284,7 @@ namespace MultiMiner.Win.Forms
                     if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException))
                     {
                         if (applicationConfiguration.ShowApiErrors)
-                            ShowCoinbaseApiErrorNotification(ex);
+                            ShowExchangeApiErrorNotification(ex);
                         return;
                     }
                     throw;
@@ -4274,11 +4292,13 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private void ShowCoinbaseApiErrorNotification(Exception ex)
+        private void ShowExchangeApiErrorNotification(Exception ex)
         {
-            string siteUrl = Coinbase.ApiContext.GetInfoUrl();
-            string apiUrl = Coinbase.ApiContext.GetApiUrl();
-            string apiName = Coinbase.ApiContext.GetApiName();
+            ExchangeApi.IApiContext apiContext = new Blockchain.ApiContext();
+
+            string siteUrl = apiContext.GetInfoUrl();
+            string apiUrl = apiContext.GetApiUrl();
+            string apiName = apiContext.GetApiName();
 
             PostNotification(ex.Message,
                 String.Format("Error parsing the {0} JSON API", apiName), () =>
@@ -5986,7 +6006,18 @@ namespace MultiMiner.Win.Forms
             
             SubmitMobileMinerPools();
 
+            //so we know when culture changes
+            SystemEvents.UserPreferenceChanged += SystemEventsUserPreferenceChanged;
+
             applicationSetup = true;
+        }
+
+        private void SystemEventsUserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
+        {
+            //culture settings changed
+            if (e.Category == UserPreferenceCategory.Locale)
+                //clear cached currency
+                CultureInfo.CurrentCulture.ClearCachedData();
         }
 
         private bool tearingDown = false;

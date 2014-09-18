@@ -32,7 +32,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void UpdateControlStates()
         {
-            this.coinbaseCheckBox.Enabled = perksCheckBox.Checked;
+            this.exchangeApiCheckbox.Enabled = perksCheckBox.Checked;
             this.incomeCheckBox.Enabled = perksCheckBox.Checked;
             this.percentEdit.Enabled = perksCheckBox.Checked;
             this.percentLabel1.Enabled = perksCheckBox.Checked;

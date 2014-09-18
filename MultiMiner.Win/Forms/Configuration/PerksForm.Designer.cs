@@ -47,7 +47,7 @@
             this.remotingPasswordEdit = new System.Windows.Forms.TextBox();
             this.remotingCheckBox = new System.Windows.Forms.CheckBox();
             this.incomeCheckBox = new System.Windows.Forms.CheckBox();
-            this.coinbaseCheckBox = new System.Windows.Forms.CheckBox();
+            this.exchangeApiCheckbox = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -171,7 +171,7 @@
             this.groupBox1.Controls.Add(this.remotingPasswordEdit);
             this.groupBox1.Controls.Add(this.remotingCheckBox);
             this.groupBox1.Controls.Add(this.incomeCheckBox);
-            this.groupBox1.Controls.Add(this.coinbaseCheckBox);
+            this.groupBox1.Controls.Add(this.exchangeApiCheckbox);
             this.groupBox1.Location = new System.Drawing.Point(56, 100);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(291, 181);
@@ -231,16 +231,16 @@
             this.incomeCheckBox.Text = "Show estimated income from devices";
             this.incomeCheckBox.UseVisualStyleBackColor = true;
             // 
-            // coinbaseCheckBox
+            // exchangeApiCheckbox
             // 
-            this.coinbaseCheckBox.AutoSize = true;
-            this.coinbaseCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.perksConfigurationBindingSource, "ShowExchangeRates", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.coinbaseCheckBox.Location = new System.Drawing.Point(16, 26);
-            this.coinbaseCheckBox.Name = "coinbaseCheckBox";
-            this.coinbaseCheckBox.Size = new System.Drawing.Size(244, 19);
-            this.coinbaseCheckBox.TabIndex = 16;
-            this.coinbaseCheckBox.Text = "Show exchange rates from Coinbase.com";
-            this.coinbaseCheckBox.UseVisualStyleBackColor = true;
+            this.exchangeApiCheckbox.AutoSize = true;
+            this.exchangeApiCheckbox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.perksConfigurationBindingSource, "ShowExchangeRates", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.exchangeApiCheckbox.Location = new System.Drawing.Point(16, 26);
+            this.exchangeApiCheckbox.Name = "exchangeApiCheckbox";
+            this.exchangeApiCheckbox.Size = new System.Drawing.Size(244, 19);
+            this.exchangeApiCheckbox.TabIndex = 16;
+            this.exchangeApiCheckbox.Text = "Show exchange rates from Blockchain.info";
+            this.exchangeApiCheckbox.UseVisualStyleBackColor = true;
             // 
             // button1
             // 
@@ -305,7 +305,7 @@
         private System.Windows.Forms.TextBox remotingPasswordEdit;
         private System.Windows.Forms.CheckBox remotingCheckBox;
         private System.Windows.Forms.CheckBox incomeCheckBox;
-        private System.Windows.Forms.CheckBox coinbaseCheckBox;
+        private System.Windows.Forms.CheckBox exchangeApiCheckbox;
         private System.Windows.Forms.CheckBox advancedProxyCheckBox;
         private System.Windows.Forms.Button button1;
     }
