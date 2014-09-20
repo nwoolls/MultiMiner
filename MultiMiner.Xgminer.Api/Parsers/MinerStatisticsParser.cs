@@ -21,7 +21,12 @@ namespace MultiMiner.Xgminer.Api.Parsers
                 //check for key-value pairs, seen Count == 0 with user API logs
                 if (keyValuePairs.Count > 0)
                 {
-                    string id = keyValuePairs["ID"];
+                    string id = String.Empty;
+
+                    //user bug reports indicate this key may not exist
+                    if (keyValuePairs.ContainsKey("ID"))
+                        id = keyValuePairs["ID"];
+
                     if (id.StartsWith("pool", StringComparison.OrdinalIgnoreCase))
                         //not concerned with pool information (for now)
                         continue;
