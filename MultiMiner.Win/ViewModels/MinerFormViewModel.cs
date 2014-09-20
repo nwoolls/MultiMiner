@@ -219,7 +219,7 @@ namespace MultiMiner.Win.ViewModels
             if (workersWithData.Count() == 0)
                 return;
 
-            deviceViewModel.Temperature = workersWithData.Average(w => w.Temperature);
+            deviceViewModel.Temperature = Math.Round(workersWithData.Average(w => w.Temperature), 1);
         }
 
         public void ApplyPoolInformationResponseModels(string coinSymbol, List<PoolInformation> poolInformationResonseModels)
