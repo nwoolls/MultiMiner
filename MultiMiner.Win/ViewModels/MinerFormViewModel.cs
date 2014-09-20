@@ -180,6 +180,7 @@ namespace MultiMiner.Win.ViewModels
                     workerViewModel.WorkerName = deviceInformationResponseModel.Name; //set a default until (if) we get details
                     deviceViewModel.Workers.Add(workerViewModel);
 
+                    UpdateTemperaturesBasedOnWorkers(deviceViewModel);
                     //recalculate hardware and rejected share percentages - need to be weighted with worker hashrates
                     UpdatePercentagesBasedOnWorkers(deviceViewModel);
                 }
@@ -208,6 +209,17 @@ namespace MultiMiner.Win.ViewModels
 
             deviceViewModel.HardwareErrorsPercent = errorPercent;
             deviceViewModel.RejectedSharesPercent = rejectedPercent;
+        }
+
+        //update temperatures by averaging worker temps
+        private static void UpdateTemperaturesBasedOnWorkers(DeviceViewModel deviceViewModel)
+        {
+            IEnumerable<DeviceViewModel> workersWithData = deviceViewModel.Workers.Where(w => w.Temperature > 0);
+
+            if (workersWithData.Count() == 0)
+                return;
+
+            deviceViewModel.Temperature = workersWithData.Average(w => w.Temperature);
         }
 
         public void ApplyPoolInformationResponseModels(string coinSymbol, List<PoolInformation> poolInformationResonseModels)
