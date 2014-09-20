@@ -181,7 +181,7 @@ namespace MultiMiner.Win.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/API-Monitor");
+            Process.Start("https://github.com/nwoolls/MultiMiner/wiki/API-Console");
         }
     }
 }
