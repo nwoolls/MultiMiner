@@ -1795,9 +1795,15 @@ namespace MultiMiner.Win.Forms
             prunedDevices.AddRange(
                 existingDevices
                     .Where(d1 => d1.Sticky && !prunedDevices.Any(d2 => d2.IPAddress.Equals(d1.IPAddress) && (d2.Port == d1.Port)))
-            );                
+            );
 
-            networkDevicesConfiguration.Devices = prunedDevices;
+            //filter the devices by prunedDevices - do not assign directly as we need to
+            //preserve properties on the existing configurations - e.g. Sticky
+            networkDevicesConfiguration.Devices =
+                networkDevicesConfiguration.Devices
+                .Where(ed => prunedDevices.Any(pd => pd.IPAddress.Equals(ed.IPAddress) && (pd.Port == ed.Port)))
+                .ToList();
+
             networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
 
