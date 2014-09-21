@@ -321,6 +321,7 @@
             this.workersGridView.Size = new System.Drawing.Size(587, 226);
             this.workersGridView.TabIndex = 17;
             this.workersGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.workersGridView_CellFormatting);
+            this.workersGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.workersGridView_DataError);
             // 
             // workerBindingSource
             // 

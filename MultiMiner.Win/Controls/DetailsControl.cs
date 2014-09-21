@@ -256,5 +256,12 @@ namespace MultiMiner.Win.Controls
             }
         }
 
+        private void workersGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            //don't allow data validation / formatting errors trigger the DataGridView error dialog
+            e.ThrowException = false;
+            e.Cancel = true;
+        }
+
     }
 }
