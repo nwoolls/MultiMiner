@@ -231,6 +231,9 @@ namespace MultiMiner.Win.Controls
 
         private void workersGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
+            if (e.Value == null)
+                return;
+
             if (e.ColumnIndex == currentHashrateDataGridViewTextBoxColumn.Index)
             {
                 e.Value = ((double)e.Value).ToHashrateString();
@@ -254,6 +257,13 @@ namespace MultiMiner.Win.Controls
             {
                 Process.Start("http://" + deviceViewModel.Name);
             }
+        }
+
+        private void workersGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            //don't allow data validation / formatting errors trigger the DataGridView error dialog
+            e.ThrowException = false;
+            e.Cancel = true;
         }
 
     }
