@@ -231,6 +231,9 @@ namespace MultiMiner.Win.Controls
 
         private void workersGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
+            if (e.Value == null)
+                return;
+
             if (e.ColumnIndex == currentHashrateDataGridViewTextBoxColumn.Index)
             {
                 e.Value = ((double)e.Value).ToHashrateString();
