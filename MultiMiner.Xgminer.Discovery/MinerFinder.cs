@@ -43,7 +43,11 @@ namespace MultiMiner.Xgminer.Discovery
             string response = null;
             try
             {
-                response = context.GetResponse(ApiVerb.Version);
+                //give the call more time than default (500 ms)
+                //we want to minimize removing valid endpoints due to
+                //device resource limitations
+                const int TimeoutMs = 1500;
+                response = context.GetResponse(ApiVerb.Version, TimeoutMs);
             }
             catch (Exception)
             {
