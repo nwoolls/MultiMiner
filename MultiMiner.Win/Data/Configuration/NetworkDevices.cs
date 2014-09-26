@@ -9,6 +9,12 @@ namespace MultiMiner.Win.Data.Configuration
     {
         public class NetworkDevice
         {
+            public NetworkDevice()
+            {
+                //sticky by default - require user intervention to remove devices
+                Sticky = true;
+            }
+
             public string IPAddress { get; set; }
             public int Port { get; set; }
             public bool Sticky { get; set; }
