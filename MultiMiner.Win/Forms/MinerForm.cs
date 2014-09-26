@@ -2599,7 +2599,7 @@ namespace MultiMiner.Win.Forms
             {
                 if (deviceListView.FocusedItem.Group.Name.Equals("networkListViewGroup"))
                 {
-                    PopulateNetworkDevicePoolMenu();
+                    UpdateNetworkDeviceMenu();
 
                     networkDeviceContextMenu.Show(Cursor.Position);
                 }
@@ -7651,12 +7651,30 @@ namespace MultiMiner.Win.Forms
             SetNetworkDevicePool((int)menuItem.Tag);
         }
 
-        private void PopulateNetworkDevicePoolMenu()
+        private void UpdateNetworkDeviceMenu()
+        {
+            DeviceViewModel deviceViewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
+            NetworkDevices.NetworkDevice deviceConfiguration = networkDevicesConfiguration.Devices.Single(
+                cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
+
+            PopulateNetworkDevicePoolMenu(deviceViewModel);
+            stickyToolStripMenuItem.Checked = deviceConfiguration.Sticky;
+        }
+
+        private void ToggleNetworkDeviceSticky()
+        {
+            DeviceViewModel deviceViewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
+            NetworkDevices.NetworkDevice deviceConfiguration = networkDevicesConfiguration.Devices.Single(
+                cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
+
+            deviceConfiguration.Sticky = !deviceConfiguration.Sticky;
+            networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+        }
+
+        private void PopulateNetworkDevicePoolMenu(DeviceViewModel viewModel)
         {
             networkDevicePoolMenu.DropDownItems.Clear();
-
-            DeviceViewModel viewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
-
+            
             // networkDevicePools is keyed by IP:port, use .Path
             List<PoolInformation> poolInformation = networkDevicePools[viewModel.Path];
 
@@ -7680,6 +7698,11 @@ namespace MultiMiner.Win.Forms
             apiConsoleForm = new ApiConsoleForm(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
             apiConsoleForm.Show();
 
+        }
+
+        private void stickyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToggleNetworkDeviceSticky();
         }
     }
 }
