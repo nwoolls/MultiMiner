@@ -1741,6 +1741,8 @@ namespace MultiMiner.Win.Forms
             //network devices
             this.networkDevicesConfiguration.LoadNetworkDevicesConfiguration();
 
+            networkDevicesConfiguration.Sort();
+
             if (applicationConfiguration.NetworkDeviceDetection)
             {
                 CheckNetworkDevicesAsync();
@@ -1803,6 +1805,8 @@ namespace MultiMiner.Win.Forms
                 networkDevicesConfiguration.Devices
                 .Where(ed => prunedDevices.Any(pd => pd.IPAddress.Equals(ed.IPAddress) && (pd.Port == ed.Port)))
                 .ToList();
+
+            networkDevicesConfiguration.Sort();
 
             networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
