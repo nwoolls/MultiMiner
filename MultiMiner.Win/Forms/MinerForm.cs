@@ -3027,6 +3027,7 @@ namespace MultiMiner.Win.Forms
             timers.CreateTimer(Timers.FiveSecondInterval, fiveSecondTimer_Tick);
             timers.CreateTimer(Timers.FiveMinuteInterval, fiveMinuteTimer_Tick);
             timers.CreateTimer(Timers.TenSecondInterval, tenSecondTimer_Tick);
+            timers.CreateTimer(Timers.FifteenSecondInterval, fifteenSecondTimer_Tick);
             timers.CreateTimer(Timers.FifteenMinuteInterval, fifteenMinuteTimer_Tick);
             timers.CreateTimer(Timers.ThirtyMinuteInterval, thirtyMinuteTimer_Tick);
             timers.CreateTimer(Timers.OneSecondInterval, oneSecondTimer_Tick);
@@ -3172,11 +3173,14 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private void tenSecondTimer_Tick(object sender, EventArgs e)
+        private void fifteenSecondTimer_Tick(object sender, EventArgs e)
         {
             if (applicationConfiguration.NetworkDeviceDetection)
                 RefreshNetworkDeviceStatsAsync();
+        }
 
+        private void tenSecondTimer_Tick(object sender, EventArgs e)
+        {
             CheckIdleTimeForDynamicIntensity(((System.Windows.Forms.Timer)sender).Interval);
         }
 
