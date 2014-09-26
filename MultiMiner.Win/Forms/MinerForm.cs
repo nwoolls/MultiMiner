@@ -5642,8 +5642,10 @@ namespace MultiMiner.Win.Forms
                 try
                 {
                     //assume Network Devices, for now, run cgminer or older bfgminer with default --log of 5s
-                    const int networkDeviceLogInterval = 5;
-                    deviceInformationList = apiContext.GetDeviceInformation(networkDeviceLogInterval).Where(d => d.Enabled).ToList();
+                    const int NetworkDeviceLogInterval = 5;
+                    //some Network Devices don't have the horsepower to return API results immediately
+                    const int CommandTimeoutMs = 3000;
+                    deviceInformationList = apiContext.GetDeviceInformation(NetworkDeviceLogInterval, CommandTimeoutMs).Where(d => d.Enabled).ToList();
                 }
                 catch (IOException)
                 {
