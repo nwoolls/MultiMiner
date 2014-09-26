@@ -46,7 +46,7 @@ namespace MultiMiner.Xgminer.Discovery
                 //give the call more time than default (500 ms)
                 //we want to minimize removing valid endpoints due to
                 //device resource limitations
-                const int TimeoutMs = 1500;
+                const int TimeoutMs = 3000;
                 response = context.GetResponse(ApiVerb.Version, TimeoutMs);
             }
             catch (Exception)
