@@ -5339,7 +5339,8 @@ namespace MultiMiner.Win.Forms
                         }
                     }
 
-                    CheckAndSetNetworkDifficulty(ipAddress, port, KnownCoins.BitcoinSymbol);
+                    if (deviceViewModel.Coin != null)
+                        CheckAndSetNetworkDifficulty(ipAddress, port, deviceViewModel.Coin.Symbol);
                 }));
             }         
         }
