@@ -12,6 +12,7 @@ namespace MultiMiner.Utility.Forms
         public const int OneSecondInterval = msPerSecond;
         public const int FiveSecondInterval = msPerSecond * 5;
         public const int TenSecondInterval = FiveSecondInterval * 2;
+        public const int FifteenSecondInterval = FiveSecondInterval * 3;
         public const int ThirtySecondInterval = TenSecondInterval * 3;
         public const int OneMinuteInterval = msPerSecond * secondsPerMinute;
         public const int FifteenMinuteInterval = OneMinuteInterval * 15;
