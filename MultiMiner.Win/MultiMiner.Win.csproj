@@ -60,6 +60,7 @@
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\DeviceConfigurationExtensions.cs" />
     <Compile Include="Extensions\EngineConfigurationExtensions.cs" />
+    <Compile Include="Extensions\IPAddressExtensions.cs" />
     <Compile Include="Extensions\XgminerConfigurationExtensions.cs" />
     <Compile Include="Forms\AboutForm.cs">
       <SubType>Form</SubType>

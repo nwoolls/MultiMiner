@@ -1,7 +1,9 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Utility.Serialization;
+using MultiMiner.Win.Extensions;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 
 namespace MultiMiner.Win.Data.Configuration
 {
@@ -41,6 +43,24 @@ namespace MultiMiner.Win.Data.Configuration
         public void LoadNetworkDevicesConfiguration()
         {
             Devices = ConfigurationReaderWriter.ReadConfiguration<List<NetworkDevice>>(NetworkDevicesConfigurationFileName());
+        }
+
+        public void Sort()
+        {
+            Devices.Sort((d1, d2) =>
+            {
+                int result = 0;
+
+                IPAddress ip1 = IPAddress.Parse(d1.IPAddress);
+                IPAddress ip2 = IPAddress.Parse(d2.IPAddress);
+
+                if (ip1.Equals(ip2))
+                    result = d1.Port.CompareTo(d2.Port);
+                else
+                    result = ip1.CompareTo(ip2);
+
+                return result;
+            });
         }
     }
 }
