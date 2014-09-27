@@ -20,15 +20,18 @@ namespace MultiMiner.Xgminer.Api
         public int Port { get; set; }
         public string IpAddress { get; set; }
 
+        private const int DefaultCommandTimeoutMs = 500;
+        private const int ConnectTimeoutMS = 1000;
+
         public ApiContext(int port, string ipAddress = "127.0.0.1")
         {
             this.Port = port;
             this.IpAddress = ipAddress;
         }
 
-        public List<DeviceInformation> GetDeviceInformation(int logInterval)
+        public List<DeviceInformation> GetDeviceInformation(int logInterval, int timeoutMs = DefaultCommandTimeoutMs)
         {
-            string textResponse = GetResponse(ApiVerb.Devs);
+            string textResponse = GetResponse(ApiVerb.Devs, timeoutMs);
             List<DeviceInformation> result = new List<DeviceInformation>();
             DeviceInformationParser.ParseTextForDeviceInformation(textResponse, result, logInterval);
             return result;
@@ -97,9 +100,8 @@ namespace MultiMiner.Xgminer.Api
             return GetResponse(String.Format("{0}|{1}", ApiVerb.SwitchPool, poolIndex));
         }
 
-        public string GetResponse(string apiVerb, int timeoutMs = 500)
+        public string GetResponse(string apiVerb, int timeoutMs = DefaultCommandTimeoutMs)
         {
-            const int ConnectTimeoutMS = 1000;
             TcpClient tcpClient = new TcpClient();
             tcpClient.Connect(this.IpAddress, Port, ConnectTimeoutMS);
 
