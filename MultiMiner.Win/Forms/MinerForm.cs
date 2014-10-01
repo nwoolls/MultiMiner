@@ -3139,6 +3139,10 @@ namespace MultiMiner.Win.Forms
 #if DEBUG
             SubmitMobileMinerNotifications();
 #endif
+
+            //restart suspect network devices
+            if (applicationConfiguration.RestartCrashedMiners)
+                RestartSuspectNetworkDevices();
         }
 
         private void thirtySecondTimer_Tick(object sender, EventArgs e)
@@ -7630,9 +7634,36 @@ namespace MultiMiner.Win.Forms
 
         #region Network Devices
         
+        private void RestartSuspectNetworkDevices()
+        {
+            IEnumerable<DeviceViewModel> suspectNetworkDevices =
+                localViewModel
+                .Devices.Where(
+                    d => (d.Kind == DeviceKind.NET)
+                        && (d.ChainStatus.Any(cs => !String.IsNullOrEmpty(cs) && cs.Count(c => c == 'x') > 2))
+                ).ToList();
+
+            foreach (DeviceViewModel networkDevice in suspectNetworkDevices)
+            {
+                RestartNetworkDevice(networkDevice);
+
+                //code to update UI
+                string message = String.Format("Restarting {0} (chain status)", networkDevice.FriendlyName);
+                PostNotification(message,
+                    message, () =>
+                    {
+                    }, ToolTipIcon.Error);
+            }
+        }
+
         private void RestartNetworkDevice()
         {
             DeviceViewModel networkDevice = (DeviceViewModel)deviceListView.FocusedItem.Tag;
+            RestartNetworkDevice(networkDevice);
+        }
+
+        private void RestartNetworkDevice(DeviceViewModel networkDevice)
+        {
             Uri uri = new Uri("http://" + networkDevice.Path);
             Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
 
