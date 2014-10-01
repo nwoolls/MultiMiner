@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WizardForm));
             this.nextButton = new System.Windows.Forms.Button();
             this.closeButton = new System.Windows.Forms.Button();
@@ -77,8 +78,12 @@
             this.whatNextPage = new System.Windows.Forms.TabPage();
             this.label13 = new System.Windows.Forms.Label();
             this.buttonPanel = new System.Windows.Forms.Panel();
-            this.backButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.backButton = new System.Windows.Forms.Button();
+            this.featuresButton = new System.Windows.Forms.Button();
+            this.poolFeaturesMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.disableCoinbaseCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.extraNonceSubscriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wizardTabControl.SuspendLayout();
             this.chooseMinerPage.SuspendLayout();
             this.downloadingMinerPage.SuspendLayout();
@@ -93,6 +98,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.whatNextPage.SuspendLayout();
             this.buttonPanel.SuspendLayout();
+            this.poolFeaturesMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // nextButton
@@ -225,6 +231,7 @@
             // 
             // configurePoolPage
             // 
+            this.configurePoolPage.Controls.Add(this.featuresButton);
             this.configurePoolPage.Controls.Add(this.pictureBox2);
             this.configurePoolPage.Controls.Add(this.poolsLink);
             this.configurePoolPage.Controls.Add(this.label6);
@@ -259,7 +266,7 @@
             this.poolsLink.Location = new System.Drawing.Point(63, 193);
             this.poolsLink.Name = "poolsLink";
             this.poolsLink.Size = new System.Drawing.Size(117, 15);
-            this.poolsLink.TabIndex = 33;
+            this.poolsLink.TabIndex = 5;
             this.poolsLink.TabStop = true;
             this.poolsLink.Text = "Bitcoin mining pools";
             this.poolsLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.bitcoinPoolsLink_LinkClicked);
@@ -306,7 +313,7 @@
             this.usernameEdit.Location = new System.Drawing.Point(135, 114);
             this.usernameEdit.Name = "usernameEdit";
             this.usernameEdit.Size = new System.Drawing.Size(182, 23);
-            this.usernameEdit.TabIndex = 26;
+            this.usernameEdit.TabIndex = 3;
             this.usernameEdit.TextChanged += new System.EventHandler(this.hostEdit_TextChanged);
             // 
             // hostEdit
@@ -315,7 +322,7 @@
             this.hostEdit.Location = new System.Drawing.Point(135, 84);
             this.hostEdit.Name = "hostEdit";
             this.hostEdit.Size = new System.Drawing.Size(182, 23);
-            this.hostEdit.TabIndex = 24;
+            this.hostEdit.TabIndex = 0;
             this.hostEdit.TextChanged += new System.EventHandler(this.hostEdit_TextChanged);
             // 
             // portEdit
@@ -324,7 +331,7 @@
             this.portEdit.Location = new System.Drawing.Point(366, 84);
             this.portEdit.Name = "portEdit";
             this.portEdit.Size = new System.Drawing.Size(81, 23);
-            this.portEdit.TabIndex = 25;
+            this.portEdit.TabIndex = 1;
             this.portEdit.TextChanged += new System.EventHandler(this.hostEdit_TextChanged);
             // 
             // passwordEdit
@@ -333,7 +340,7 @@
             this.passwordEdit.Location = new System.Drawing.Point(135, 144);
             this.passwordEdit.Name = "passwordEdit";
             this.passwordEdit.Size = new System.Drawing.Size(182, 23);
-            this.passwordEdit.TabIndex = 27;
+            this.passwordEdit.TabIndex = 4;
             // 
             // label10
             // 
@@ -550,7 +557,7 @@
             this.exchangeApiCheckbox.AutoSize = true;
             this.exchangeApiCheckbox.Location = new System.Drawing.Point(117, 110);
             this.exchangeApiCheckbox.Name = "exchangeApiCheckbox";
-            this.exchangeApiCheckbox.Size = new System.Drawing.Size(244, 19);
+            this.exchangeApiCheckbox.Size = new System.Drawing.Size(250, 19);
             this.exchangeApiCheckbox.TabIndex = 11;
             this.exchangeApiCheckbox.Text = "Show exchange rates from Blockchain.info";
             this.exchangeApiCheckbox.UseVisualStyleBackColor = true;
@@ -619,6 +626,17 @@
             this.buttonPanel.Size = new System.Drawing.Size(484, 42);
             this.buttonPanel.TabIndex = 1;
             // 
+            // button1
+            // 
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(10, 7);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 11;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // backButton
             // 
             this.backButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -630,16 +648,41 @@
             this.backButton.UseVisualStyleBackColor = true;
             this.backButton.Click += new System.EventHandler(this.backButton_Click);
             // 
-            // button1
+            // featuresButton
             // 
-            this.button1.AccessibleName = "Help";
-            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
-            this.button1.Location = new System.Drawing.Point(10, 7);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(27, 27);
-            this.button1.TabIndex = 11;
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.featuresButton.Location = new System.Drawing.Point(366, 114);
+            this.featuresButton.Name = "featuresButton";
+            this.featuresButton.Size = new System.Drawing.Size(81, 24);
+            this.featuresButton.TabIndex = 2;
+            this.featuresButton.Text = "Features";
+            this.featuresButton.UseVisualStyleBackColor = true;
+            this.featuresButton.Click += new System.EventHandler(this.featuresButton_Click);
+            // 
+            // poolFeaturesMenu
+            // 
+            this.poolFeaturesMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.extraNonceSubscriptToolStripMenuItem,
+            this.disableCoinbaseCheckToolStripMenuItem});
+            this.poolFeaturesMenu.Name = "poolFeaturesMenu";
+            this.poolFeaturesMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.poolFeaturesMenu.Size = new System.Drawing.Size(192, 48);
+            this.poolFeaturesMenu.Opening += new System.ComponentModel.CancelEventHandler(this.poolFeaturesMenu_Opening);
+            // 
+            // disableCoinbaseCheckToolStripMenuItem
+            // 
+            this.disableCoinbaseCheckToolStripMenuItem.CheckOnClick = true;
+            this.disableCoinbaseCheckToolStripMenuItem.Name = "disableCoinbaseCheckToolStripMenuItem";
+            this.disableCoinbaseCheckToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.disableCoinbaseCheckToolStripMenuItem.Text = "Skip Coinbase Check";
+            this.disableCoinbaseCheckToolStripMenuItem.Click += new System.EventHandler(this.disableCoinbaseCheckToolStripMenuItem_Click);
+            // 
+            // extraNonceSubscriptToolStripMenuItem
+            // 
+            this.extraNonceSubscriptToolStripMenuItem.CheckOnClick = true;
+            this.extraNonceSubscriptToolStripMenuItem.Name = "extraNonceSubscriptToolStripMenuItem";
+            this.extraNonceSubscriptToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.extraNonceSubscriptToolStripMenuItem.Text = "Extra-nonce Subscribe";
+            this.extraNonceSubscriptToolStripMenuItem.Click += new System.EventHandler(this.extraNonceSubscriptToolStripMenuItem_Click);
             // 
             // WizardForm
             // 
@@ -677,6 +720,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.whatNextPage.ResumeLayout(false);
             this.buttonPanel.ResumeLayout(false);
+            this.poolFeaturesMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -733,5 +777,9 @@
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button featuresButton;
+        private System.Windows.Forms.ContextMenuStrip poolFeaturesMenu;
+        private System.Windows.Forms.ToolStripMenuItem disableCoinbaseCheckToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem extraNonceSubscriptToolStripMenuItem;
     }
 }

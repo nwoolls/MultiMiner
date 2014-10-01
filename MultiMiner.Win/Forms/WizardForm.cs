@@ -390,5 +390,39 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
         {
             Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Getting-Started");
         }
+
+        private void featuresButton_Click(object sender, EventArgs e)
+        {
+            Point screenPoint = featuresButton.PointToScreen(new Point(featuresButton.Left, featuresButton.Bottom));
+            if (screenPoint.Y + poolFeaturesMenu.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
+                poolFeaturesMenu.Show(featuresButton, new Point(0, -poolFeaturesMenu.Size.Height));
+            else
+                poolFeaturesMenu.Show(featuresButton, new Point(0, featuresButton.Height));    
+        }
+
+        private void poolFeaturesMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            extraNonceSubscriptToolStripMenuItem.Checked = hostEdit.Text.Contains(PoolFeatureAnchors.ExtraNonceSubscribe);
+            disableCoinbaseCheckToolStripMenuItem.Checked = hostEdit.Text.Contains(PoolFeatureAnchors.SkipCoinbaseCheck);
+        }
+
+        private void UpdatePoolFeature(string anchor, bool enabled)
+        {
+            string uriSegment = "/" + anchor;
+            if (enabled)
+                hostEdit.Text = hostEdit.Text + uriSegment;
+            else
+                hostEdit.Text = hostEdit.Text.Replace(uriSegment, String.Empty);
+        }
+
+        private void extraNonceSubscriptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePoolFeature(PoolFeatureAnchors.ExtraNonceSubscribe, extraNonceSubscriptToolStripMenuItem.Checked);
+        }
+
+        private void disableCoinbaseCheckToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePoolFeature(PoolFeatureAnchors.SkipCoinbaseCheck, disableCoinbaseCheckToolStripMenuItem.Checked);
+        }
     }
 }

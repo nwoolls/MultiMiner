@@ -12,6 +12,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
 using MultiMiner.Engine;
+using MultiMiner.Win.Data;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -507,6 +508,40 @@ namespace MultiMiner.Win.Forms.Configuration
         private void button1_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Pools");
+        }
+
+        private void poolFeaturesMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            extraNonceSubscriptToolStripMenuItem.Checked = hostEdit.Text.Contains(PoolFeatureAnchors.ExtraNonceSubscribe);
+            disableCoinbaseCheckToolStripMenuItem.Checked = hostEdit.Text.Contains(PoolFeatureAnchors.SkipCoinbaseCheck);
+        }
+
+        private void extraNonceSubscriptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePoolFeature(PoolFeatureAnchors.ExtraNonceSubscribe, extraNonceSubscriptToolStripMenuItem.Checked);
+        }
+
+        private void featuresButton_Click(object sender, EventArgs e)
+        {
+            Point screenPoint = featuresButton.PointToScreen(new Point(featuresButton.Left, featuresButton.Bottom));
+            if (screenPoint.Y + poolFeaturesMenu.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
+                poolFeaturesMenu.Show(featuresButton, new Point(0, -poolFeaturesMenu.Size.Height));
+            else
+                poolFeaturesMenu.Show(featuresButton, new Point(0, featuresButton.Height));    
+        }
+
+        private void disableCoinbaseCheckToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdatePoolFeature(PoolFeatureAnchors.SkipCoinbaseCheck, disableCoinbaseCheckToolStripMenuItem.Checked);
+        }
+
+        private void UpdatePoolFeature(string anchor, bool enabled)
+        {
+            string uriSegment = "/" + anchor;
+            if (enabled)
+                hostEdit.Text = hostEdit.Text + uriSegment;
+            else
+                hostEdit.Text = hostEdit.Text.Replace(uriSegment, String.Empty);
         }
     }
 }
