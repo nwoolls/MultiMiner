@@ -7685,6 +7685,10 @@ namespace MultiMiner.Win.Forms
         private void PopulateNetworkDevicePoolMenu(DeviceViewModel viewModel)
         {
             networkDevicePoolMenu.DropDownItems.Clear();
+
+            if (!networkDevicePools.ContainsKey(viewModel.Path))
+                //Network Device is offline but pinned
+                return;
             
             // networkDevicePools is keyed by IP:port, use .Path
             List<PoolInformation> poolInformation = networkDevicePools[viewModel.Path];
