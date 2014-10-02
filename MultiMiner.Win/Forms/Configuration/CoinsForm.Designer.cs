@@ -42,6 +42,7 @@
             this.exportButton = new System.Windows.Forms.ToolStripMenuItem();
             this.coinListBox = new System.Windows.Forms.ListBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.saveToRemotingCheckBox = new System.Windows.Forms.CheckBox();
             this.applicationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.saveButton = new System.Windows.Forms.Button();
@@ -49,6 +50,10 @@
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.featuresButton = new System.Windows.Forms.Button();
+            this.poolFeaturesMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.extraNonceSubscriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.disableCoinbaseCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.userNameCombo = new System.Windows.Forms.ComboBox();
             this.miningPoolBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label10 = new System.Windows.Forms.Label();
@@ -81,12 +86,12 @@
             this.checkBox8 = new System.Windows.Forms.CheckBox();
             this.checkBox7 = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.applicationBindingSource)).BeginInit();
             this.contextMenuStrip2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.poolFeaturesMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.miningPoolBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.coinConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -225,6 +230,17 @@
             this.panel1.Size = new System.Drawing.Size(651, 54);
             this.panel1.TabIndex = 9;
             // 
+            // button1
+            // 
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(12, 14);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 4;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // saveToRemotingCheckBox
             // 
             this.saveToRemotingCheckBox.AutoSize = true;
@@ -278,6 +294,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.featuresButton);
             this.groupBox1.Controls.Add(this.userNameCombo);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.label9);
@@ -300,6 +317,43 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pools";
+            // 
+            // featuresButton
+            // 
+            this.featuresButton.ContextMenuStrip = this.poolFeaturesMenu;
+            this.featuresButton.Location = new System.Drawing.Point(346, 127);
+            this.featuresButton.Name = "featuresButton";
+            this.featuresButton.Size = new System.Drawing.Size(81, 24);
+            this.featuresButton.TabIndex = 7;
+            this.featuresButton.Text = "Features";
+            this.featuresButton.UseVisualStyleBackColor = true;
+            this.featuresButton.Click += new System.EventHandler(this.featuresButton_Click);
+            // 
+            // poolFeaturesMenu
+            // 
+            this.poolFeaturesMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.extraNonceSubscriptToolStripMenuItem,
+            this.disableCoinbaseCheckToolStripMenuItem});
+            this.poolFeaturesMenu.Name = "poolFeaturesMenu";
+            this.poolFeaturesMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.poolFeaturesMenu.Size = new System.Drawing.Size(192, 48);
+            this.poolFeaturesMenu.Opening += new System.ComponentModel.CancelEventHandler(this.poolFeaturesMenu_Opening);
+            // 
+            // extraNonceSubscriptToolStripMenuItem
+            // 
+            this.extraNonceSubscriptToolStripMenuItem.CheckOnClick = true;
+            this.extraNonceSubscriptToolStripMenuItem.Name = "extraNonceSubscriptToolStripMenuItem";
+            this.extraNonceSubscriptToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.extraNonceSubscriptToolStripMenuItem.Text = "Extra-nonce Subscribe";
+            this.extraNonceSubscriptToolStripMenuItem.Click += new System.EventHandler(this.extraNonceSubscriptToolStripMenuItem_Click);
+            // 
+            // disableCoinbaseCheckToolStripMenuItem
+            // 
+            this.disableCoinbaseCheckToolStripMenuItem.CheckOnClick = true;
+            this.disableCoinbaseCheckToolStripMenuItem.Name = "disableCoinbaseCheckToolStripMenuItem";
+            this.disableCoinbaseCheckToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.disableCoinbaseCheckToolStripMenuItem.Text = "Skip Coinbase Check";
+            this.disableCoinbaseCheckToolStripMenuItem.Click += new System.EventHandler(this.disableCoinbaseCheckToolStripMenuItem_Click);
             // 
             // userNameCombo
             // 
@@ -600,17 +654,6 @@
             this.label11.TabIndex = 27;
             this.label11.Text = "optional";
             // 
-            // button1
-            // 
-            this.button1.AccessibleName = "Help";
-            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
-            this.button1.Location = new System.Drawing.Point(12, 14);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(27, 27);
-            this.button1.TabIndex = 4;
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // CoinsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -648,6 +691,7 @@
             this.contextMenuStrip2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.poolFeaturesMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.miningPoolBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.coinConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
@@ -709,5 +753,9 @@
         private System.Windows.Forms.ComboBox userNameCombo;
         private System.Windows.Forms.ToolStripButton editCoinButton;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button featuresButton;
+        private System.Windows.Forms.ContextMenuStrip poolFeaturesMenu;
+        private System.Windows.Forms.ToolStripMenuItem extraNonceSubscriptToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem disableCoinbaseCheckToolStripMenuItem;
     }
 }
