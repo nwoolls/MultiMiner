@@ -7647,6 +7647,9 @@ namespace MultiMiner.Win.Forms
 
             foreach (DeviceViewModel networkDevice in suspectNetworkDevices)
             {
+                //we don't want to keep trying to restart it over and over - clear suspect status
+                ClearChainStatus(networkDevice);
+
                 string message = String.Format("Restarting {0} (chain status)", networkDevice.FriendlyName);
                 try
                 {
@@ -7663,6 +7666,12 @@ namespace MultiMiner.Win.Forms
                     {
                     }, ToolTipIcon.Error);
             }
+        }
+
+        private static void ClearChainStatus(DeviceViewModel networkDevice)
+        {
+            for (int i = 0; i < networkDevice.ChainStatus.Length; i++)
+                networkDevice.ChainStatus[i] = String.Empty;
         }
 
         private void RestartNetworkDevice()
