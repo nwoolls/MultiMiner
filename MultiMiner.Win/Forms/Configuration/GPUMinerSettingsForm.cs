@@ -13,8 +13,6 @@ namespace MultiMiner.Win.Forms.Configuration
 {
     public partial class GPUMinerSettingsForm : MessageBoxFontForm
     {
-        private IList<CoinAlgorithm> algorithms;
-
         private readonly Engine.Data.Configuration.Xgminer minerConfiguration;
         private readonly Engine.Data.Configuration.Xgminer workingMinerConfiguration;
 

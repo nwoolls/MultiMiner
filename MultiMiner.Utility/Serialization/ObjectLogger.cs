@@ -68,7 +68,7 @@ namespace MultiMiner.Utility.Serialization
                         {
                             File.Delete(backupFilePath);
                         }
-                        catch (UnauthorizedAccessException err)
+                        catch (UnauthorizedAccessException)
                         {
                             //users report occasionally receiving access denied rolling log files
                             //rename/move the file instead
