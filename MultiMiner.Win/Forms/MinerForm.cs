@@ -7645,10 +7645,17 @@ namespace MultiMiner.Win.Forms
 
             foreach (DeviceViewModel networkDevice in suspectNetworkDevices)
             {
-                RestartNetworkDevice(networkDevice);
+                string message = String.Format("Restarting {0} (chain status)", networkDevice.FriendlyName);
+                try
+                {
+                    RestartNetworkDevice(networkDevice);
+                }
+                catch (SocketException)
+                {
+                    message = String.Format("Timeout restarting {0} (chain status)", networkDevice.FriendlyName);
+                }
 
                 //code to update UI
-                string message = String.Format("Restarting {0} (chain status)", networkDevice.FriendlyName);
                 PostNotification(message,
                     message, () =>
                     {
