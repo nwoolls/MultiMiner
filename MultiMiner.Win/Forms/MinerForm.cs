@@ -1775,8 +1775,10 @@ namespace MultiMiner.Win.Forms
                 newDevices = newDevices
                     .Where(d1 => !existingDevices.Any(d2 => d2.IPAddress.Equals(d1.IPAddress) && (d2.Port == d1.Port)))
                     .ToList();
-                networkDevicesConfiguration.Devices.AddRange(newDevices);                
+                networkDevicesConfiguration.Devices.AddRange(newDevices);
             }
+
+            networkDevicesConfiguration.Sort();
 
             networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
