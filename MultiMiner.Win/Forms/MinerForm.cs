@@ -5312,7 +5312,8 @@ namespace MultiMiner.Win.Forms
                     {
                         List<MinerStatistics> minerStatistics = GetCacheMinerStatisticsFromAddress(ipAddress, port);
                         //null if API call fails
-                        if (minerStatistics != null)
+                        //check for minerStatistics.Count > 0 needed (error reported with callstack)
+                        if ((minerStatistics != null) && (minerStatistics.Count > 0))
                         {
                             MinerStatistics firstStatistics = minerStatistics.First();
                             deviceViewModel.Frequency = firstStatistics.Frequency;
