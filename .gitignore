@@ -34,3 +34,4 @@ Installer/Output/
 *.vspx
 *.psess
 *.userprefs
+*.sln.ide/
