@@ -233,7 +233,11 @@ namespace MultiMiner.Xgminer
                 }
             }
 
-            foreach (MiningPool pool in minerConfiguration.Pools)
+            IEnumerable<MiningPool> validPools = minerConfiguration.Pools
+                .Where(p => !String.IsNullOrEmpty(p.Host) 
+                            && !String.IsNullOrEmpty(p.Username));
+
+            foreach (MiningPool pool in validPools)
             {
                 string argument;
 

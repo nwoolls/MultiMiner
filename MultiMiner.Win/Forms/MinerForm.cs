@@ -1948,7 +1948,7 @@ namespace MultiMiner.Win.Forms
             if (result)
             {
                 Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.CryptoCoin.Symbol.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
-                result = coinConfiguration == null ? false : coinConfiguration.Pools.Count > 0;
+                result = coinConfiguration == null ? false : coinConfiguration.Pools.Where(p => !String.IsNullOrEmpty(p.Host) && !String.IsNullOrEmpty(p.Username)).Count() > 0;
             }
             return result;
         }
