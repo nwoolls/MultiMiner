@@ -1,7 +1,9 @@
-﻿using MultiMiner.Engine.Data;
+﻿using MultiMiner.Win.Extensions;
+using MultiMiner.Engine.Data;
 using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace MultiMiner.Win.ViewModels
 {
@@ -85,5 +87,47 @@ namespace MultiMiner.Win.ViewModels
         //ViewModel specific
         public bool Visible { get; set; }
         public string FriendlyName { get; set; }
+
+        public Int32 CompareTo(DeviceViewModel value)
+        {
+            if (this.Equals(value))
+                return 0;
+
+            DeviceViewModel d1 = this;
+            DeviceViewModel d2 = value;
+
+            int result = 0;
+
+            result = d1.Kind.CompareTo(d2.Kind);
+
+            if ((d1.Kind == DeviceKind.NET) && (d2.Kind == DeviceKind.NET))
+            {
+                string[] parts1 = d1.Path.Split(':');
+                string[] parts2 = d2.Path.Split(':');
+
+                IPAddress ip1 = IPAddress.Parse(parts1[0]);
+                IPAddress ip2 = IPAddress.Parse(parts2[0]);
+
+                if (ip1.Equals(ip2))
+                    result = int.Parse(parts1[1]).CompareTo(int.Parse(parts2[1]));
+                else
+                    result = ip1.CompareTo(ip2);
+            }
+
+            if (result == 0)
+                result = d1.Driver.CompareTo(d2.Driver);
+
+            if (result == 0)
+                result = d1.Name.CompareTo(d2.Name);
+
+            if (result == 0)
+                result = d1.Path.CompareTo(d2.Path);
+
+            if (result == 0)
+                result = d1.RelativeIndex.CompareTo(d2.RelativeIndex);
+
+            return result;
+
+        }
     }
 }
