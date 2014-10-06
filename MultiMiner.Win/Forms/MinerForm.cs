@@ -2901,8 +2901,9 @@ namespace MultiMiner.Win.Forms
 
             editingDeviceListView = false;
 
-            MinerFormViewModel viewModelToView = GetViewModelToView();
-            DeviceViewModel deviceViewModel = viewModelToView.Devices[e.Item];
+            ListViewItem editItem = deviceListView.Items[e.Item];
+            DeviceViewModel deviceViewModel = (DeviceViewModel)editItem.Tag;
+
             RenameDevice(deviceViewModel, e.Label);
         }
 
