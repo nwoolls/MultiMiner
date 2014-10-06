@@ -1693,8 +1693,7 @@ namespace MultiMiner.Win.Forms
             SetBriefMode(applicationConfiguration.BriefUserInterface);
 
             //now location so we pick up the customizations
-            if ((applicationConfiguration.AppPosition != null) &&
-                (applicationConfiguration.AppPosition.Height > 0) &&
+            if ((applicationConfiguration.AppPosition.Height > 0) &&
                 (applicationConfiguration.AppPosition.Width > 9))
             {
                 this.Location = new Point(applicationConfiguration.AppPosition.Left, applicationConfiguration.AppPosition.Top);

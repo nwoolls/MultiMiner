@@ -42,8 +42,7 @@ namespace MultiMiner.Utility.Forms
 
         private static void CheckAndShowCursor(Form activeForm)
         {
-            if (activeForm.Handle != null
-                                    && (OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix))
+            if (OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix)
                 // Send WM_SETCURSOR
                 SendMessage(activeForm.Handle, 0x20, activeForm.Handle, (IntPtr)1);
         }
