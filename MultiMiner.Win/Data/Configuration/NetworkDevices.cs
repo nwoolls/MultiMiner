@@ -44,23 +44,5 @@ namespace MultiMiner.Win.Data.Configuration
         {
             Devices = ConfigurationReaderWriter.ReadConfiguration<List<NetworkDevice>>(NetworkDevicesConfigurationFileName());
         }
-
-        public void Sort()
-        {
-            Devices.Sort((d1, d2) =>
-            {
-                int result = 0;
-
-                IPAddress ip1 = IPAddress.Parse(d1.IPAddress);
-                IPAddress ip2 = IPAddress.Parse(d2.IPAddress);
-
-                if (ip1.Equals(ip2))
-                    result = d1.Port.CompareTo(d2.Port);
-                else
-                    result = ip1.CompareTo(ip2);
-
-                return result;
-            });
-        }
     }
 }
