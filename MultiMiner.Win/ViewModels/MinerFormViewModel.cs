@@ -48,9 +48,6 @@ namespace MultiMiner.Win.ViewModels
             //add/update Devices from networkDeviceModels
             if (networkDeviceModels != null)
             {
-                //remove existing Network Devices so we pick up the correct sorting
-                Devices.RemoveAll(d => d.Kind == DeviceKind.NET);
-
                 foreach (NetworkDevices.NetworkDevice networkDeviceModel in networkDeviceModels)
                 {
                     DeviceViewModel deviceViewModel = networkDeviceModel.ToViewModel();

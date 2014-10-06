@@ -54,6 +54,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\DeviceListView.cs">
+      <SubType>component</SubType>
+    </Compile>
+    <Compile Include="Controls\DeviceListView.Designer.cs">
+      <DependentUpon>DeviceListView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Data\Configuration\Metadata.cs" />
     <Compile Include="Data\Configuration\PoolDefaults.cs" />
     <Compile Include="Data\PoolFeatureAnchors.cs" />

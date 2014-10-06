@@ -385,9 +385,10 @@ namespace MultiMiner.Win.Forms
 
             listViewItem.SubItems["Driver"].Text = deviceViewModel.Driver;
 
-            deviceListView.Items.Add(listViewItem);
-
+            //Tag must be set before adding as it is used for sorting
             listViewItem.Tag = deviceViewModel;
+
+            deviceListView.Items.Add(listViewItem);
 
             return listViewItem;
         }
@@ -460,6 +461,7 @@ namespace MultiMiner.Win.Forms
                         break;
 
                     ListViewItem listViewItem = FindOrAddListViewItemForViewModel(deviceViewModel);
+                    
 
                     if (!String.IsNullOrEmpty(deviceViewModel.FriendlyName))
                         listViewItem.Text = deviceViewModel.FriendlyName;
@@ -1739,9 +1741,7 @@ namespace MultiMiner.Win.Forms
         {
             //network devices
             this.networkDevicesConfiguration.LoadNetworkDevicesConfiguration();
-
-            networkDevicesConfiguration.Sort();
-
+            
             if (applicationConfiguration.NetworkDeviceDetection)
             {
                 CheckNetworkDevicesAsync();
@@ -1776,9 +1776,7 @@ namespace MultiMiner.Win.Forms
                     .ToList();
                 networkDevicesConfiguration.Devices.AddRange(newDevices);
             }
-
-            networkDevicesConfiguration.Sort();
-
+            
             networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
 
@@ -1806,8 +1804,6 @@ namespace MultiMiner.Win.Forms
                 networkDevicesConfiguration.Devices
                 .Where(ed => prunedDevices.Any(pd => pd.IPAddress.Equals(ed.IPAddress) && (pd.Port == ed.Port)))
                 .ToList();
-
-            networkDevicesConfiguration.Sort();
 
             networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
