@@ -6266,7 +6266,9 @@ namespace MultiMiner.Win.Forms
                 return; //can't auto download binaries on Linux
 
             MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
-            if (!MinerIsInstalled(miner))
+            if (!MinerIsInstalled(miner) && 
+                //may not have a Url for the miner if call to server failed
+                !String.IsNullOrEmpty(miner.Url))
                 InstallBackendMinerLocally(miner);
         }
 
