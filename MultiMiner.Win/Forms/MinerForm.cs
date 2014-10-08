@@ -6696,7 +6696,7 @@ namespace MultiMiner.Win.Forms
             PostNotification(ex.Message,
                 notificationText, () =>
                 {
-                    Process.Start("http://www.multiminerapp.com");
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 },
                 ToolTipIcon.Warning, "");
         }
