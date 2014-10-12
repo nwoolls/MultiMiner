@@ -134,9 +134,10 @@
             this.toolStripButton2.Image = global::MultiMiner.Win.Properties.Resources.add_button;
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(107, 22);
-            this.toolStripButton2.Text = "Add Multi Pool";
-            this.toolStripButton2.ToolTipText = "Add a multi pool configuration";
+            this.toolStripButton2.Size = new System.Drawing.Size(104, 22);
+            this.toolStripButton2.Text = "Add Multipool";
+            this.toolStripButton2.ToolTipText = "Add a Multipool configuration";
+            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
             // removeCoinButton
             // 
