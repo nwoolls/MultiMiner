@@ -12,12 +12,12 @@ namespace MultiMiner.Win.Forms
 {
     public partial class CoinChooseForm : MessageBoxFontForm
     {
-        public CryptoCoin SelectedCoin { get; set; }
+        public PoolGroup SelectedCoin { get; set; }
 
-        private List<CryptoCoin> filteredCoins;
-        private readonly List<CryptoCoin> sortedCoins;
+        private List<PoolGroup> filteredCoins;
+        private readonly List<PoolGroup> sortedCoins;
 
-        public CoinChooseForm(List<CryptoCoin> knownCoins)
+        public CoinChooseForm(List<PoolGroup> knownCoins)
         {
             InitializeComponent();
             sortedCoins = knownCoins.OrderBy(c => c.Name).ToList();
@@ -54,8 +54,8 @@ namespace MultiMiner.Win.Forms
 
             coinCombo.Text = String.Empty;
             coinCombo.Items.Clear();
-            foreach (CryptoCoin sortedCoin in filteredCoins)
-                coinCombo.Items.Add(String.Format("{0} ({1})", sortedCoin.Name, sortedCoin.Symbol));
+            foreach (PoolGroup sortedCoin in filteredCoins)
+                coinCombo.Items.Add(String.Format("{0} ({1})", sortedCoin.Name, sortedCoin.Id));
 
             if (coinCombo.Items.Count > 0)
                 coinCombo.SelectedIndex = 0;
@@ -63,13 +63,13 @@ namespace MultiMiner.Win.Forms
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            CryptoCoin knownCoin = null;
+            PoolGroup knownCoin = null;
             if (coinCombo.SelectedIndex >= 0)
                 knownCoin = filteredCoins[coinCombo.SelectedIndex];
             
             if (knownCoin == null)
             {
-                CryptoCoin newCoin = new CryptoCoin();
+                PoolGroup newCoin = new PoolGroup();
                 newCoin.Name = coinCombo.Text;
                 newCoin.Algorithm = GetSelectedAlgorithm().Name;
 

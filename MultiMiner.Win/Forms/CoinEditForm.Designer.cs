@@ -105,7 +105,7 @@
             // 
             // cryptoCoinBindingSource
             // 
-            this.cryptoCoinBindingSource.DataSource = typeof(MultiMiner.Engine.Data.CryptoCoin);
+            this.cryptoCoinBindingSource.DataSource = typeof(MultiMiner.Engine.Data.PoolGroup);
             // 
             // symbolEdit
             // 
