@@ -32,10 +32,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PoolsForm));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.addCoinButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.removeCoinButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.copyCoinButton = new System.Windows.Forms.ToolStripButton();
             this.editCoinButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.importButton = new System.Windows.Forms.ToolStripSplitButton();
@@ -102,10 +103,11 @@
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addCoinButton,
+            this.toolStripButton2,
             this.removeCoinButton,
+            this.toolStripSeparator2,
             this.copyCoinButton,
             this.editCoinButton,
-            this.toolStripSeparator2,
             this.toolStripButton1,
             this.toolStripSeparator1,
             this.importButton});
@@ -119,25 +121,38 @@
             // 
             // addCoinButton
             // 
-            this.addCoinButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.addCoinButton.Image = ((System.Drawing.Image)(resources.GetObject("addCoinButton.Image")));
+            this.addCoinButton.Image = global::MultiMiner.Win.Properties.Resources.add_button;
             this.addCoinButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addCoinButton.Name = "addCoinButton";
-            this.addCoinButton.Size = new System.Drawing.Size(61, 22);
+            this.addCoinButton.Size = new System.Drawing.Size(77, 22);
             this.addCoinButton.Text = "Add Coin";
             this.addCoinButton.ToolTipText = "Add a coin configuration";
             this.addCoinButton.Click += new System.EventHandler(this.addCoinButton_Click);
             // 
+            // toolStripButton2
+            // 
+            this.toolStripButton2.Image = global::MultiMiner.Win.Properties.Resources.add_button;
+            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton2.Name = "toolStripButton2";
+            this.toolStripButton2.Size = new System.Drawing.Size(107, 22);
+            this.toolStripButton2.Text = "Add Multi Pool";
+            this.toolStripButton2.ToolTipText = "Add a multi pool configuration";
+            // 
             // removeCoinButton
             // 
-            this.removeCoinButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.removeCoinButton.Image = ((System.Drawing.Image)(resources.GetObject("removeCoinButton.Image")));
+            this.removeCoinButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.removeCoinButton.Image = global::MultiMiner.Win.Properties.Resources.delete_button_error;
             this.removeCoinButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.removeCoinButton.Name = "removeCoinButton";
-            this.removeCoinButton.Size = new System.Drawing.Size(54, 22);
+            this.removeCoinButton.Size = new System.Drawing.Size(23, 22);
             this.removeCoinButton.Text = "Remove";
             this.removeCoinButton.ToolTipText = "Remove a configuration";
             this.removeCoinButton.Click += new System.EventHandler(this.removeCoinButton_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // copyCoinButton
             // 
@@ -158,11 +173,6 @@
             this.editCoinButton.Size = new System.Drawing.Size(23, 22);
             this.editCoinButton.Text = "Edit Configuration";
             this.editCoinButton.Click += new System.EventHandler(this.editCoinButton_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // toolStripButton1
             // 
@@ -654,7 +664,7 @@
             this.label11.TabIndex = 27;
             this.label11.Text = "optional";
             // 
-            // CoinsForm
+            // PoolsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -679,7 +689,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "CoinsForm";
+            this.Name = "PoolsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Configure Pools";
             this.Load += new System.EventHandler(this.CoinsForm_Load);
@@ -757,5 +767,6 @@
         private System.Windows.Forms.ContextMenuStrip poolFeaturesMenu;
         private System.Windows.Forms.ToolStripMenuItem extraNonceSubscriptToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem disableCoinbaseCheckToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton toolStripButton2;
     }
 }
