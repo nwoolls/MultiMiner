@@ -21,7 +21,7 @@ namespace MultiMiner.Win.ViewModels
         public int ProcessorCount { get; set; }
 
         //coin info
-        public CryptoCoin Coin { get; set; }
+        public PoolGroup Coin { get; set; }
         public double Difficulty { get; set; }
         public double Price { get; set; }
         public double Profitability { get; set; }

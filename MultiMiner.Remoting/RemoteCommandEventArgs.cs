@@ -15,11 +15,11 @@ namespace MultiMiner.Remoting
         public ModelEventArgs()
         {
             Devices = new List<Data.Transfer.Device>();
-            ConfiguredCoins = new List<CryptoCoin>();
+            ConfiguredCoins = new List<PoolGroup>();
         }
 
         public List<Data.Transfer.Device> Devices { get; set; }
-        public List<CryptoCoin> ConfiguredCoins { get; set; }
+        public List<PoolGroup> ConfiguredCoins { get; set; }
         public bool Mining { get; set; }
         public bool HasChanges { get; set; }
         public bool DynamicIntensity { get; set; }

@@ -92,7 +92,7 @@ namespace MultiMiner.Win.Controls
             if (deviceViewModel.Coin != null)
                 cryptoCoinBindingSource.DataSource = deviceViewModel.Coin;
             else
-                cryptoCoinBindingSource.DataSource = new CryptoCoin();
+                cryptoCoinBindingSource.DataSource = new PoolGroup();
             cryptoCoinBindingSource.ResetBindings(false);
 
             deviceBindingSource.DataSource = deviceViewModel;

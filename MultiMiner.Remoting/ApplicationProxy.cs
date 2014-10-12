@@ -123,7 +123,7 @@ namespace MultiMiner.Remoting
             string clientAddress,
             string signature,
             out Data.Transfer.Device[] devices,
-            out CryptoCoin[] configurations,
+            out PoolGroup[] configurations,
             out bool mining,
             out bool hasChanges,
             out bool dynamicIntensity)

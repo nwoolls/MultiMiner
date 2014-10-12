@@ -45,7 +45,7 @@ namespace MultiMiner.Engine
             IEnumerable<CoinInformation> unconfiguredCoins = coins.Where((coin) =>
                 {
                     return !String.IsNullOrEmpty(coin.Symbol) &&
-                        !existingConfigurations.Any(config => config.CryptoCoin.Symbol.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase));
+                        !existingConfigurations.Any(config => config.PoolGroup.Id.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase));
                 });
             return unconfiguredCoins;
         }

@@ -14,14 +14,14 @@ namespace MultiMiner.Win.ViewModels
     public class MinerFormViewModel
     {
         public List<DeviceViewModel> Devices { get; set; }
-        public List<CryptoCoin> ConfiguredCoins { get; set; }
+        public List<PoolGroup> ConfiguredCoins { get; set; }
         public bool HasChanges { get; set; }
         public bool DynamicIntensity { get; set; }
 
         public MinerFormViewModel()
         {
             Devices = new List<DeviceViewModel>();
-            ConfiguredCoins = new List<CryptoCoin>();
+            ConfiguredCoins = new List<PoolGroup>();
         }
 
         public void ApplyDeviceModels(List<Xgminer.Data.Device> deviceModels, List<NetworkDevices.NetworkDevice> networkDeviceModels,
@@ -61,10 +61,10 @@ namespace MultiMiner.Win.ViewModels
                         deviceViewModel.Enabled = true;
 
                         //assume BTC until we have pool info
-                        deviceViewModel.Coin = new CryptoCoin()
+                        deviceViewModel.Coin = new PoolGroup()
                         {
                             Name = KnownCoins.BitcoinName,
-                            Symbol = KnownCoins.BitcoinSymbol,
+                            Id = KnownCoins.BitcoinSymbol,
                             Algorithm = AlgorithmNames.SHA256
                         };
 
@@ -100,7 +100,7 @@ namespace MultiMiner.Win.ViewModels
         {
             ConfiguredCoins.Clear();
             foreach (Engine.Data.Configuration.Coin configurationModel in configurationModels.Where(c => c.Enabled))
-                ConfiguredCoins.Add(configurationModel.CryptoCoin);
+                ConfiguredCoins.Add(configurationModel.PoolGroup);
         }
 
         public void ApplyCoinInformationModels(List<CoinInformation> coinInformationModels)
@@ -108,7 +108,7 @@ namespace MultiMiner.Win.ViewModels
             //check for Coin != null, device may not have a coin configured
             foreach (DeviceViewModel deviceViewModel in Devices.Where(d => d.Coin != null))
             {
-                string coinSymbol = deviceViewModel.Coin.Symbol;
+                string coinSymbol = deviceViewModel.Coin.Id;
                 ApplyCoinInformationToViewModel(coinInformationModels, coinSymbol, deviceViewModel);
             }
         }
@@ -225,7 +225,7 @@ namespace MultiMiner.Win.ViewModels
         public void ApplyPoolInformationResponseModels(string coinSymbol, List<PoolInformation> poolInformationResonseModels)
         {
             //apply to non-Network Devices, those are populated separately
-            IEnumerable<DeviceViewModel> relevantDevices = Devices.Where(d => (d.Kind != DeviceKind.NET) && (d.Coin != null) && d.Coin.Symbol.Equals(coinSymbol));
+            IEnumerable<DeviceViewModel> relevantDevices = Devices.Where(d => (d.Kind != DeviceKind.NET) && (d.Coin != null) && d.Coin.Id.Equals(coinSymbol));
             foreach (DeviceViewModel relevantDevice in relevantDevices)
             {
             	PoolInformation poolInformation = poolInformationResonseModels.SingleOrDefault(p => p.Index == relevantDevice.PoolIndex);
@@ -284,9 +284,9 @@ namespace MultiMiner.Win.ViewModels
                     else
                     {
                         Engine.Data.Configuration.Coin coinConfiguration = coinConfigurations.SingleOrDefault(
-                            cc => cc.CryptoCoin.Symbol.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+                            cc => cc.PoolGroup.Id.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
                         if (coinConfiguration != null)
-                            deviceViewModel.Coin = coinConfiguration.CryptoCoin;
+                            deviceViewModel.Coin = coinConfiguration.PoolGroup;
                     }
                 }
                 else
@@ -294,14 +294,14 @@ namespace MultiMiner.Win.ViewModels
                     deviceViewModel.Enabled = true;
 
                     Engine.Data.Configuration.Coin btcConfiguration = coinConfigurations.SingleOrDefault(
-                        cc => cc.CryptoCoin.Symbol.Equals(KnownCoins.BitcoinSymbol, StringComparison.OrdinalIgnoreCase));
+                        cc => cc.PoolGroup.Id.Equals(KnownCoins.BitcoinSymbol, StringComparison.OrdinalIgnoreCase));
                     Engine.Data.Configuration.Coin ltcConfiguration = coinConfigurations.SingleOrDefault(
-                        cc => cc.CryptoCoin.Symbol.Equals(KnownCoins.LitecoinSymbol, StringComparison.OrdinalIgnoreCase));
+                        cc => cc.PoolGroup.Id.Equals(KnownCoins.LitecoinSymbol, StringComparison.OrdinalIgnoreCase));
 
                     if (deviceViewModel.SupportsAlgorithm(AlgorithmNames.Scrypt) && (ltcConfiguration != null))
-                        deviceViewModel.Coin = ltcConfiguration.CryptoCoin;
+                        deviceViewModel.Coin = ltcConfiguration.PoolGroup;
                     else if (deviceViewModel.SupportsAlgorithm(AlgorithmNames.SHA256) && (btcConfiguration != null))
-                        deviceViewModel.Coin = btcConfiguration.CryptoCoin;
+                        deviceViewModel.Coin = btcConfiguration.PoolGroup;
                 }
             }
         }

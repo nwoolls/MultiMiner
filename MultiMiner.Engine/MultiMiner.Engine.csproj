@@ -51,7 +51,7 @@
     <Compile Include="Data\CoinSuggestionsAlgorithm.cs" />
     <Compile Include="Data\Configuration\Coin.cs" />
     <Compile Include="Data\Configuration\Strategy.cs" />
-    <Compile Include="Data\CryptoCoin.cs" />
+    <Compile Include="Data\PoolGroup.cs" />
     <Compile Include="Data\Configuration\Device.cs" />
     <Compile Include="Data\Configuration\Engine.cs" />
     <Compile Include="Data\Configuration\Xgminer.cs" />

@@ -301,7 +301,7 @@ namespace MultiMiner.Engine.Helpers
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
         {
             Data.Configuration.Coin donationConfiguration = new Data.Configuration.Coin();
-            donationConfiguration.CryptoCoin.Symbol = coinSymbol;
+            donationConfiguration.PoolGroup.Id = coinSymbol;
 
             MiningPool donationPool = new MiningPool()
             {

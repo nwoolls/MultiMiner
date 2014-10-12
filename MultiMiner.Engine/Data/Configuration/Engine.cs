@@ -128,28 +128,28 @@ namespace MultiMiner.Engine.Data.Configuration
         {
             List<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
             IEnumerable<Coin> issues = CoinConfigurations.Where(
-                cc => algorithms.Any(a => a.FullName.Equals(cc.CryptoCoin.Algorithm, StringComparison.OrdinalIgnoreCase) 
-                    && !a.Name.Equals(cc.CryptoCoin.Algorithm, StringComparison.OrdinalIgnoreCase)));
+                cc => algorithms.Any(a => a.FullName.Equals(cc.PoolGroup.Algorithm, StringComparison.OrdinalIgnoreCase) 
+                    && !a.Name.Equals(cc.PoolGroup.Algorithm, StringComparison.OrdinalIgnoreCase)));
 
             foreach (Coin issue in issues)
             {
-                CoinAlgorithm algorithm = algorithms.Single(a => a.FullName.Equals(issue.CryptoCoin.Algorithm, StringComparison.OrdinalIgnoreCase));
-                issue.CryptoCoin.Algorithm = algorithm.Name;
+                CoinAlgorithm algorithm = algorithms.Single(a => a.FullName.Equals(issue.PoolGroup.Algorithm, StringComparison.OrdinalIgnoreCase));
+                issue.PoolGroup.Algorithm = algorithm.Name;
             }
         }
 
         //configurations saved with algorithm Name with spaces
         private void FixWrongAlgorithmsFromCoinChoose()
         {
-            IEnumerable<Coin> potentialIssues = CoinConfigurations.Where(cc => !cc.CryptoCoin.Algorithm.Replace(" ", String.Empty).Equals(cc.CryptoCoin.Algorithm));
+            IEnumerable<Coin> potentialIssues = CoinConfigurations.Where(cc => !cc.PoolGroup.Algorithm.Replace(" ", String.Empty).Equals(cc.PoolGroup.Algorithm));
             foreach (Coin potentialIssue in potentialIssues)
             {
-                string algorithmName = potentialIssue.CryptoCoin.Algorithm.Replace(" ", String.Empty);
+                string algorithmName = potentialIssue.PoolGroup.Algorithm.Replace(" ", String.Empty);
                 CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
                 if (algorithm != null)
                     //only make the change if there is an algorithm found
                     //a user may add an algorithm with a space in the name - we don't want to change that
-                    potentialIssue.CryptoCoin.Algorithm = algorithm.Name;
+                    potentialIssue.PoolGroup.Algorithm = algorithm.Name;
             }
         }
 
@@ -157,7 +157,7 @@ namespace MultiMiner.Engine.Data.Configuration
         {
             foreach (Coin coinConfiguration in CoinConfigurations.Where(c => !c.Enabled))
             {
-                IEnumerable<Device> coinDeviceConfigurations = DeviceConfigurations.Where(c => !String.IsNullOrEmpty(c.CoinSymbol) && c.CoinSymbol.Equals(coinConfiguration.CryptoCoin.Symbol));
+                IEnumerable<Device> coinDeviceConfigurations = DeviceConfigurations.Where(c => !String.IsNullOrEmpty(c.CoinSymbol) && c.CoinSymbol.Equals(coinConfiguration.PoolGroup.Id));
                 foreach (Device coinDeviceConfiguration in coinDeviceConfigurations)
                     coinDeviceConfiguration.CoinSymbol = string.Empty;
             }
@@ -166,7 +166,7 @@ namespace MultiMiner.Engine.Data.Configuration
         private void RemoveDeletedCoinsFromDeviceConfigurations()
         {
             foreach (Device deviceConfiguration in DeviceConfigurations)
-                if (CoinConfigurations.Count(c => c.CryptoCoin.Symbol.Equals(deviceConfiguration.CoinSymbol)) == 0)
+                if (CoinConfigurations.Count(c => c.PoolGroup.Id.Equals(deviceConfiguration.CoinSymbol)) == 0)
                     deviceConfiguration.CoinSymbol = string.Empty;
         }
 
@@ -215,13 +215,13 @@ namespace MultiMiner.Engine.Data.Configuration
 
         private void FixCoinConfigurationSymbolDiscrepencies()
         {
-            Coin badConfiguration = CoinConfigurations.SingleOrDefault(c => c.CryptoCoin.Symbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+            Coin badConfiguration = CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
             if (badConfiguration != null)
             {
-                Coin goodConfiguration = CoinConfigurations.SingleOrDefault(c => c.CryptoCoin.Symbol.Equals(KnownCoins.DogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+                Coin goodConfiguration = CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(KnownCoins.DogecoinSymbol, StringComparison.OrdinalIgnoreCase));
 
                 if (goodConfiguration == null)
-                    badConfiguration.CryptoCoin.Symbol = KnownCoins.DogecoinSymbol;
+                    badConfiguration.PoolGroup.Id = KnownCoins.DogecoinSymbol;
                 else
                     CoinConfigurations.Remove(badConfiguration);
 

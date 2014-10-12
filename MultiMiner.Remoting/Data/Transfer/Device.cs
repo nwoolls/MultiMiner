@@ -13,7 +13,7 @@ namespace MultiMiner.Remoting.Data.Transfer
         public Device()
         {
             Workers = new List<Device>();
-            Coin = new CryptoCoin();
+            Coin = new PoolGroup();
         }
 
         //device descriptor
@@ -47,7 +47,7 @@ namespace MultiMiner.Remoting.Data.Transfer
 
         //coin info
         [DataMember]
-        public CryptoCoin Coin { get; set; }
+        public PoolGroup Coin { get; set; }
 
         [DataMember]
         public double Difficulty { get; set; }

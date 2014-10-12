@@ -291,7 +291,7 @@ namespace MultiMiner.Engine
         private void setupProcessStartInfo(MinerProcess minerProcess)
         {
             string coinName = minerProcess.MinerConfiguration.CoinName;
-            string coinSymbol = engineConfiguration.CoinConfigurations.Single(c => c.CryptoCoin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase)).CryptoCoin.Symbol;
+            string coinSymbol = engineConfiguration.CoinConfigurations.Single(c => c.PoolGroup.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase)).PoolGroup.Id;
 
             CoinInformation processCoinInfo = null;
             if (coinInformation != null) //null if no network connection
@@ -371,7 +371,7 @@ namespace MultiMiner.Engine
                     c => c.Enabled && 
                         !c.PoolsDown && 
                         (c.Pools.Count > 0)
-                    ).Select(c => c.CryptoCoin.Symbol);
+                    ).Select(c => c.PoolGroup.Id);
 
                 //filter the coin info by that list
                 //use the copy here
@@ -453,7 +453,7 @@ namespace MultiMiner.Engine
         {
             foreach (CoinInformation configuredProfitableCoin in coinInformation)
             {
-                Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.CryptoCoin.Symbol.Equals(configuredProfitableCoin.Symbol));
+                Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.PoolGroup.Id.Equals(configuredProfitableCoin.Symbol));
 
                 if (coinConfiguration.ProfitabilityAdjustmentType == Data.Configuration.Coin.AdjustmentType.Addition)
                 {
@@ -525,10 +525,10 @@ namespace MultiMiner.Engine
 
                     if (device.Kind == DeviceKind.PXY)
                     {
-                        Data.Configuration.Coin existingCoinConfig = engineConfiguration.CoinConfigurations.Single(cc => cc.CryptoCoin.Symbol.Equals(existingConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+                        Data.Configuration.Coin existingCoinConfig = engineConfiguration.CoinConfigurations.Single(cc => cc.PoolGroup.Id.Equals(existingConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
 
                         //keep Proxies on the same algo - don't know what is pointed at them
-                        if (existingCoinConfig.CryptoCoin.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase))
+                        if (existingCoinConfig.PoolGroup.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase))
                         {
                             profitableCoin = ChooseCoinFromList(scryptProfitableCoins, scryptIterator);
 
@@ -845,17 +845,17 @@ namespace MultiMiner.Engine
 
         private Xgminer.Data.Configuration.Miner CreateMinerConfiguration(int apiPort, string coinSymbol, DeviceKind deviceKind)
         {
-            Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.CryptoCoin.Symbol.Equals(coinSymbol));
+            Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.PoolGroup.Id.Equals(coinSymbol));
             if (coinConfiguration.Pools.Count == 0)
                 // no pools configured
                 return null;
             
-            MinerDescriptor miner = MinerFactory.Instance.GetMiner(deviceKind, coinConfiguration.CryptoCoin.Algorithm, engineConfiguration.XgminerConfiguration.AlgorithmMiners);
+            MinerDescriptor miner = MinerFactory.Instance.GetMiner(deviceKind, coinConfiguration.PoolGroup.Algorithm, engineConfiguration.XgminerConfiguration.AlgorithmMiners);
 
             if (miner == null)
             {
                 //no miner configured for the algorithm / custom algorithm
-                throw new Xgminer.MinerLaunchException(String.Format("No miner defined for algorithm {0}.", coinConfiguration.CryptoCoin.Algorithm));
+                throw new Xgminer.MinerLaunchException(String.Format("No miner defined for algorithm {0}.", coinConfiguration.PoolGroup.Algorithm));
             }
 
             Xgminer.Data.Configuration.Miner minerConfiguration = CreateBasicConfiguration(miner, coinConfiguration, apiPort);
@@ -873,7 +873,7 @@ namespace MultiMiner.Engine
 
         private Xgminer.Data.Configuration.Miner CreateProxyConfiguration(int apiPort, string coinSymbol)
         {
-            Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.CryptoCoin.Symbol.Equals(coinSymbol));
+            Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.PoolGroup.Id.Equals(coinSymbol));
             if (coinConfiguration.Pools.Count == 0)
                 // no pools configured
                 return null;
@@ -892,11 +892,11 @@ namespace MultiMiner.Engine
             Xgminer.Data.Configuration.Miner minerConfiguration = new Xgminer.Data.Configuration.Miner()
             {
                 ExecutablePath = MinerPath.GetPathToInstalledMiner(miner),
-                Algorithm = MinerFactory.Instance.GetAlgorithm(coinConfiguration.CryptoCoin.Algorithm),
+                Algorithm = MinerFactory.Instance.GetAlgorithm(coinConfiguration.PoolGroup.Algorithm),
                 ApiPort = apiPort,
                 ApiListen = true,
                 AllowedApiIps = engineConfiguration.XgminerConfiguration.AllowedApiIps,
-                CoinName = coinConfiguration.CryptoCoin.Name,
+                CoinName = coinConfiguration.PoolGroup.Name,
                 DisableGpu = engineConfiguration.XgminerConfiguration.DisableGpu
             };
 
@@ -912,9 +912,9 @@ namespace MultiMiner.Engine
             string arguments = string.Empty;
 
             //apply algorithm-specific parameters
-            if (engineConfiguration.XgminerConfiguration.AlgorithmFlags.ContainsKey(coinConfiguration.CryptoCoin.Algorithm))
+            if (engineConfiguration.XgminerConfiguration.AlgorithmFlags.ContainsKey(coinConfiguration.PoolGroup.Algorithm))
                 arguments = String.Format("{0} {1}", arguments,
-                    engineConfiguration.XgminerConfiguration.AlgorithmFlags[coinConfiguration.CryptoCoin.Algorithm]);
+                    engineConfiguration.XgminerConfiguration.AlgorithmFlags[coinConfiguration.PoolGroup.Algorithm]);
 
             //apply coin-specific parameters
             if (!string.IsNullOrEmpty(coinConfiguration.MinerFlags))
@@ -960,7 +960,7 @@ namespace MultiMiner.Engine
             //using bfgminer quotas for failover, that way we can augment for donations
             minerConfiguration.Pools.First().Quota = 100 - donationPercent;
             if (donationPercent > 0)
-                AddDonationPool(coinConfiguration.CryptoCoin.Symbol, minerConfiguration);
+                AddDonationPool(coinConfiguration.PoolGroup.Id, minerConfiguration);
 
             foreach (MiningPool pool in minerConfiguration.Pools)
                 pool.QuotaEnabled = donationPercent > 0;
@@ -980,7 +980,7 @@ namespace MultiMiner.Engine
         {
             MiningPool donationPool = null;
 
-            Data.Configuration.Coin donationConfiguration = this.donationConfigurations.SingleOrDefault(dc => dc.CryptoCoin.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+            Data.Configuration.Coin donationConfiguration = this.donationConfigurations.SingleOrDefault(dc => dc.PoolGroup.Id.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             if (donationConfiguration != null)
             {
                 //inclusive lower, exclusive upper
