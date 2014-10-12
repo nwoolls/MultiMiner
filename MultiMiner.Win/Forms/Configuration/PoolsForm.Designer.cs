@@ -1,6 +1,6 @@
 ﻿namespace MultiMiner.Win.Forms.Configuration
 {
-    partial class CoinsForm
+    partial class PoolsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CoinsForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PoolsForm));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.addCoinButton = new System.Windows.Forms.ToolStripButton();
             this.removeCoinButton = new System.Windows.Forms.ToolStripButton();
@@ -134,8 +134,8 @@
             this.removeCoinButton.Image = ((System.Drawing.Image)(resources.GetObject("removeCoinButton.Image")));
             this.removeCoinButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.removeCoinButton.Name = "removeCoinButton";
-            this.removeCoinButton.Size = new System.Drawing.Size(82, 22);
-            this.removeCoinButton.Text = "Remove Coin";
+            this.removeCoinButton.Size = new System.Drawing.Size(54, 22);
+            this.removeCoinButton.Text = "Remove";
             this.removeCoinButton.ToolTipText = "Remove a configuration";
             this.removeCoinButton.Click += new System.EventHandler(this.removeCoinButton_Click);
             // 
@@ -146,7 +146,7 @@
             this.copyCoinButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.copyCoinButton.Name = "copyCoinButton";
             this.copyCoinButton.Size = new System.Drawing.Size(23, 22);
-            this.copyCoinButton.Text = "Copy Coin";
+            this.copyCoinButton.Text = "Copy Configuration";
             this.copyCoinButton.Click += new System.EventHandler(this.copyCoinButton_Click);
             // 
             // editCoinButton
@@ -156,7 +156,7 @@
             this.editCoinButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.editCoinButton.Name = "editCoinButton";
             this.editCoinButton.Size = new System.Drawing.Size(23, 22);
-            this.editCoinButton.Text = "Edit Coin";
+            this.editCoinButton.Text = "Edit Configuration";
             this.editCoinButton.Click += new System.EventHandler(this.editCoinButton_Click);
             // 
             // toolStripSeparator2
@@ -171,7 +171,7 @@
             this.toolStripButton1.Name = "toolStripButton1";
             this.toolStripButton1.Size = new System.Drawing.Size(48, 22);
             this.toolStripButton1.Text = "Sort";
-            this.toolStripButton1.ToolTipText = "Alphabetize coin configurations";
+            this.toolStripButton1.ToolTipText = "Alphabetize configurations";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // toolStripSeparator1
