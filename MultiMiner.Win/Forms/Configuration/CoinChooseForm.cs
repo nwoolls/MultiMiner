@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 
-namespace MultiMiner.Win.Forms
+namespace MultiMiner.Win.Forms.Configuration
 {
     public partial class CoinChooseForm : MessageBoxFontForm
     {
