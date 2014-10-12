@@ -35,10 +35,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.cryptoCoinBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.symbolEdit = new System.Windows.Forms.TextBox();
             this.algorithmCombo = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.cryptoCoinBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -103,15 +103,11 @@
             this.textBox1.Size = new System.Drawing.Size(125, 23);
             this.textBox1.TabIndex = 0;
             // 
-            // cryptoCoinBindingSource
-            // 
-            this.cryptoCoinBindingSource.DataSource = typeof(MultiMiner.Engine.Data.PoolGroup);
-            // 
             // symbolEdit
             // 
             this.symbolEdit.AccessibleName = "Exchange symbol";
             this.symbolEdit.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.symbolEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Symbol", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.symbolEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Id", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.symbolEdit.Location = new System.Drawing.Point(129, 46);
             this.symbolEdit.MaxLength = 5;
             this.symbolEdit.Name = "symbolEdit";
@@ -135,6 +131,10 @@
             this.label3.Size = new System.Drawing.Size(64, 15);
             this.label3.TabIndex = 9;
             this.label3.Text = "Algorithm:";
+            // 
+            // cryptoCoinBindingSource
+            // 
+            this.cryptoCoinBindingSource.DataSource = typeof(MultiMiner.Engine.Data.PoolGroup);
             // 
             // CoinEditForm
             // 
