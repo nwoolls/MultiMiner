@@ -16,12 +16,12 @@ using MultiMiner.Win.Data;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
-    public partial class CoinsForm : MessageBoxFontForm
+    public partial class PoolsForm : MessageBoxFontForm
     {
         private readonly List<Engine.Data.Configuration.Coin> configurations = new List<Engine.Data.Configuration.Coin>();
         private readonly List<PoolGroup> knownCoins;
 
-        public CoinsForm(List<Engine.Data.Configuration.Coin> coinConfigurations, List<PoolGroup> knownCoins,
+        public PoolsForm(List<Engine.Data.Configuration.Coin> coinConfigurations, List<PoolGroup> knownCoins,
             Data.Configuration.Application applicationConfiguration, Data.Configuration.Perks perksConfiguration)
         {
             this.configurations = coinConfigurations;
@@ -48,7 +48,7 @@ namespace MultiMiner.Win.Forms.Configuration
         
         private void removeCoinButton_Click(object sender, EventArgs e)
         {
-            DialogResult promptResult = MessageBox.Show("Remove the selected coin configuration?", "Confirm", MessageBoxButtons.YesNo);
+            DialogResult promptResult = MessageBox.Show("Remove the selected configuration?", "Confirm", MessageBoxButtons.YesNo);
             if (promptResult == System.Windows.Forms.DialogResult.Yes)
             {
                 //required to clear bindings if this was the last coin in the list
