@@ -384,6 +384,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="MultiMiner.ico" />
+    <None Include="Resources\delete_button_error.png" />
+    <None Include="Resources\add_button.png" />
+    <None Include="Resources\delete.png" />
     <None Include="Resources\computer_network-user.png" />
     <None Include="Resources\help1.png" />
     <None Include="Resources\application-help.png" />
