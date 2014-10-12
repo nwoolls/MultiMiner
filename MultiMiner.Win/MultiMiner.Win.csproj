@@ -116,16 +116,16 @@
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\Configuration\Application.cs" />
-    <Compile Include="Forms\CoinChooseForm.cs">
+    <Compile Include="Forms\Configuration\CoinChooseForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CoinChooseForm.Designer.cs">
+    <Compile Include="Forms\Configuration\CoinChooseForm.Designer.cs">
       <DependentUpon>CoinChooseForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CoinEditForm.cs">
+    <Compile Include="Forms\Configuration\CoinEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CoinEditForm.Designer.cs">
+    <Compile Include="Forms\Configuration\CoinEditForm.Designer.cs">
       <DependentUpon>CoinEditForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Configuration\PoolsForm.cs">
@@ -227,10 +227,10 @@
     <EmbeddedResource Include="Forms\Configuration\MinerSettingsForm.resx">
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CoinChooseForm.resx">
+    <EmbeddedResource Include="Forms\Configuration\CoinChooseForm.resx">
       <DependentUpon>CoinChooseForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CoinEditForm.resx">
+    <EmbeddedResource Include="Forms\Configuration\CoinEditForm.resx">
       <DependentUpon>CoinEditForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Configuration\PoolsForm.resx">

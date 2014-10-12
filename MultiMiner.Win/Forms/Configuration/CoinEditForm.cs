@@ -5,7 +5,7 @@ using MultiMiner.Engine.Extensions;
 using System;
 using MultiMiner.Engine;
 
-namespace MultiMiner.Win.Forms
+namespace MultiMiner.Win.Forms.Configuration
 {
     public partial class CoinEditForm : MessageBoxFontForm
     {

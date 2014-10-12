@@ -1,4 +1,4 @@
-﻿namespace MultiMiner.Win.Forms
+﻿namespace MultiMiner.Win.Forms.Configuration
 {
     partial class CoinEditForm
     {
