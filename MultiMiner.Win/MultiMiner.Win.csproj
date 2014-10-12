@@ -128,6 +128,12 @@
     <Compile Include="Forms\Configuration\CoinEditForm.Designer.cs">
       <DependentUpon>CoinEditForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Configuration\MultipoolChooseForm.cs">
+      <SubType>form</SubType>
+    </Compile>
+    <Compile Include="Forms\Configuration\MultipoolChooseForm.Designer.cs">
+      <DependentUpon>MultipoolChooseForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Configuration\PoolsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -232,6 +238,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Configuration\CoinEditForm.resx">
       <DependentUpon>CoinEditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Configuration\MultipoolChooseForm.resx">
+      <DependentUpon>MultipoolChooseForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Configuration\PoolsForm.resx">
       <DependentUpon>PoolsForm.cs</DependentUpon>
