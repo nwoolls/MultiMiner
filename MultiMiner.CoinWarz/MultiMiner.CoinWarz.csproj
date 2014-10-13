@@ -57,6 +57,10 @@
       <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
       <Name>MultiMiner.Utility</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Xgminer\MultiMiner.Xgminer.csproj">
+      <Project>{0dbef993-1b34-4d80-ab6a-f662604325dc}</Project>
+      <Name>MultiMiner.Xgminer</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

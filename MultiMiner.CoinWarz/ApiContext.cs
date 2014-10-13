@@ -2,6 +2,7 @@
 using MultiMiner.CoinApi.Data;
 using MultiMiner.CoinWarz.Extensions;
 using MultiMiner.Utility.Net;
+using MultiMiner.Xgminer.Data;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -53,7 +54,59 @@ namespace MultiMiner.CoinWarz
 
         public string GetApiUrl()
         {
-            return String.Format(@"http://www.coinwarz.com/v1/api/profitability/?apikey={0}&algo=all", apiKey);
+            string apiUrl = String.Format(@"http://www.coinwarz.com/v1/api/profitability/?apikey={0}&algo=all", apiKey);
+
+            //for some reason, the defaults for CoinWarz are not normalized for a consistent set of
+            //hardware - we need to do that all via arguments
+            const int Hashrate = 1000000;
+
+            apiUrl = String.Format("{0}&{1}Power=0&{1}HashRate={2}", 
+                apiUrl,
+                AlgorithmNames.SHA256.ToLower(),
+                AlgorithmMultipliers.SHA256 * Hashrate
+                //API wants Gh/s
+                / 1000 / 1000);
+
+            apiUrl = String.Format("{0}&{1}Power=0&{1}HashRate={2}",
+                apiUrl,
+                AlgorithmNames.Scrypt.ToLower(),
+                AlgorithmMultipliers.Scrypt * Hashrate);
+
+            apiUrl = String.Format("{0}&{1}Power=0&{1}HashRate={2}",
+                apiUrl,
+                AlgorithmNames.ScryptN.ToLower(),
+                AlgorithmMultipliers.ScryptN * Hashrate);
+
+            apiUrl = String.Format("{0}&{1}Power=0&{1}HashRate={2}",
+                apiUrl,
+                AlgorithmNames.X11.ToLower(),
+                AlgorithmMultipliers.X11 * Hashrate);
+
+            apiUrl = String.Format("{0}&{1}Power=0&{1}HashRate={2}",
+                apiUrl,
+                AlgorithmNames.X13.ToLower(),
+                AlgorithmMultipliers.X13 * Hashrate);
+
+            apiUrl = String.Format("{0}&{1}Power=0&{1}HashRate={2}",
+                apiUrl,
+                AlgorithmNames.Keccak.ToLower(),
+                AlgorithmMultipliers.Keccak * Hashrate
+                //API wants Mh/s
+                / 1000);
+
+            apiUrl = String.Format("{0}&{1}Power=0&{1}HashRate={2}",
+                apiUrl,
+                AlgorithmNames.Quark.ToLower(),
+                AlgorithmMultipliers.Quark * Hashrate);
+
+            apiUrl = String.Format("{0}&{1}Power=0&{1}HashRate={2}",
+                apiUrl,
+                AlgorithmNames.Groestl.ToLower(),
+                AlgorithmMultipliers.Groestl * Hashrate
+                //API wants Mh/s
+                / 1000);
+
+            return apiUrl;
         }
 
         public string GetInfoUrl()
