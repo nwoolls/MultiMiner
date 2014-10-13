@@ -4585,7 +4585,10 @@ namespace MultiMiner.Win.Forms
             miningStatistics.CoinName = coinName;
             Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.PoolGroup.Name.Equals(coinName));
             PoolGroup coin = coinConfiguration.PoolGroup;
-            miningStatistics.CoinSymbol = coin.Id;
+
+            //don't send non-coin Ids to MobileMiner
+            if (coin.Kind != PoolGroup.PoolGroupKind.MultiCoin)
+                miningStatistics.CoinSymbol = coin.Id;
 
             CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(coin.Algorithm);
 
