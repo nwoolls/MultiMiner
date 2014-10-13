@@ -359,6 +359,14 @@
       <Project>{70622816-5853-4470-9432-9ACDA2E96089}</Project>
       <Name>MultiMiner.MobileMiner</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.MultipoolApi\MultiMiner.MultipoolApi.csproj">
+      <Project>{4af4b34a-07db-456b-9c58-b0863435fe54}</Project>
+      <Name>MultiMiner.MultipoolApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.NiceHash\MultiMiner.NiceHash.csproj">
+      <Project>{5a05d03d-7006-406c-84b0-a2717a07ceb7}</Project>
+      <Name>MultiMiner.NiceHash</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Remoting\MultiMiner.Remoting.csproj">
       <Project>{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}</Project>
       <Name>MultiMiner.Remoting</Name>

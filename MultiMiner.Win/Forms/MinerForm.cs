@@ -40,6 +40,7 @@ using MultiMiner.Engine.Installers;
 using MultiMiner.ExchangeApi.Data;
 using System.Globalization;
 using Microsoft.Win32;
+using MultiMiner.MultipoolApi.Data;
 
 namespace MultiMiner.Win.Forms
 {
@@ -4213,6 +4214,35 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshCoinStats()
         {
+            RefreshSingleCoinStats();
+            RefreshMultiCoinStats();
+
+            RefreshListViewFromViewModel();
+            RefreshCoinStatsLabel();
+            AutoSizeListViewColumns();
+            SuggestCoinsToMine();
+            RefreshDetailsAreaIfVisible();
+        }
+
+        private void RefreshMultiCoinStats()
+        {
+            NiceHash.ApiContext apiContext = new NiceHash.ApiContext();
+            IEnumerable<MultipoolInformation> multipoolInformation = apiContext.GetMultipoolInformation();
+            double btcPrice = multipoolInformation.Single(mpi => mpi.Algorithm.Equals(AlgorithmNames.SHA256)).Price;
+
+            coinApiInformation.AddRange(multipoolInformation
+                .Select(mpi => new CoinInformation
+                {
+                    Symbol = "NiceHash:" + mpi.Algorithm,
+                    Name = "NiceHash - " + mpi.Algorithm,
+                    Profitability = mpi.Profitability,
+                    AverageProfitability = mpi.Profitability,
+                    AdjustedProfitability = mpi.Profitability
+                }));
+        }
+
+        private void RefreshSingleCoinStats()
+        {
             //always load known coins from file
             //CoinChoose may not show coins it once did if there are no orders
             LoadKnownCoinsFromFile();
@@ -4239,12 +4269,6 @@ namespace MultiMiner.Win.Forms
                 LoadKnownCoinsFromCoinStats();
 
             FixCoinSymbolDiscrepencies();
-
-            RefreshListViewFromViewModel();
-            RefreshCoinStatsLabel();
-            AutoSizeListViewColumns();
-            SuggestCoinsToMine();
-            RefreshDetailsAreaIfVisible();
         }
 
         private void FixCoinSymbolDiscrepencies()

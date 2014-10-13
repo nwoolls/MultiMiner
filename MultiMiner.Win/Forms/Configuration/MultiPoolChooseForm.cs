@@ -43,9 +43,7 @@ namespace MultiMiner.Win.Forms.Configuration
         private void PopulateMultipoolCombo()
         {
             multipoolCombo.Items.Clear();
-
-            //
-
+            multipoolCombo.Items.Add("NiceHash");
             multipoolCombo.Items.Add("Other");
         }
 
