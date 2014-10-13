@@ -83,7 +83,7 @@ namespace MultiMiner.Win.Controls
 
             workersGridView.Visible = (deviceViewModel.Workers.Count > 0);
             workersTitleLabel.Visible = workersGridView.Visible;
-            symbolLabel.Visible = deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin;
+            symbolLabel.Visible = (deviceViewModel.Coin != null) && (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin);
 
             SetupProxyDetails(deviceViewModel);
 
