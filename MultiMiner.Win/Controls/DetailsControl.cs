@@ -77,12 +77,13 @@ namespace MultiMiner.Win.Controls
             SetupFonts();
 
             noDetailsPanel.Visible = false;
-            
+                        
             hashrateLabel.Text = deviceViewModel.AverageHashrate.ToHashrateString();
             currentRateLabel.Text = deviceViewModel.CurrentHashrate.ToHashrateString();
 
             workersGridView.Visible = (deviceViewModel.Workers.Count > 0);
             workersTitleLabel.Visible = workersGridView.Visible;
+            symbolLabel.Visible = deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin;
 
             SetupProxyDetails(deviceViewModel);
 
