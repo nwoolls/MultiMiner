@@ -40,7 +40,7 @@
             this.deviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label2 = new System.Windows.Forms.Label();
             this.cryptoCoinBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.label3 = new System.Windows.Forms.Label();
+            this.symbolLabel = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.processorsTitleLabel = new System.Windows.Forms.Label();
             this.processorsValueLabel = new System.Windows.Forms.Label();
@@ -53,6 +53,11 @@
             this.label12 = new System.Windows.Forms.Label();
             this.hashrateLabel = new System.Windows.Forms.Label();
             this.workersGridView = new System.Windows.Forms.DataGridView();
+            this.workerNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.temperatureDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.utilityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.workerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.workersTitleLabel = new System.Windows.Forms.Label();
             this.tempLabel = new System.Windows.Forms.Label();
@@ -91,11 +96,6 @@
             this.proxyGetworkLabel = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
-            this.workerNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.currentHashrateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.temperatureDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.utilityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.deviceBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cryptoCoinBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.workersGridView)).BeginInit();
@@ -164,16 +164,16 @@
             // 
             this.cryptoCoinBindingSource.DataSource = typeof(MultiMiner.Engine.Data.PoolGroup);
             // 
-            // label3
+            // symbolLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Id", true));
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
-            this.label3.Location = new System.Drawing.Point(92, 45);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(38, 15);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "label3";
+            this.symbolLabel.AutoSize = true;
+            this.symbolLabel.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cryptoCoinBindingSource, "Id", true));
+            this.symbolLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(57)))), ((int)(((byte)(91)))));
+            this.symbolLabel.Location = new System.Drawing.Point(92, 45);
+            this.symbolLabel.Name = "symbolLabel";
+            this.symbolLabel.Size = new System.Drawing.Size(38, 15);
+            this.symbolLabel.TabIndex = 5;
+            this.symbolLabel.Text = "label3";
             // 
             // label4
             // 
@@ -322,6 +322,54 @@
             this.workersGridView.TabIndex = 17;
             this.workersGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.workersGridView_CellFormatting);
             this.workersGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.workersGridView_DataError);
+            // 
+            // workerNameDataGridViewTextBoxColumn
+            // 
+            this.workerNameDataGridViewTextBoxColumn.DataPropertyName = "WorkerName";
+            this.workerNameDataGridViewTextBoxColumn.FillWeight = 75F;
+            this.workerNameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.workerNameDataGridViewTextBoxColumn.Name = "workerNameDataGridViewTextBoxColumn";
+            this.workerNameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // currentHashrateDataGridViewTextBoxColumn
+            // 
+            this.currentHashrateDataGridViewTextBoxColumn.DataPropertyName = "CurrentHashrate";
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.currentHashrateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            this.currentHashrateDataGridViewTextBoxColumn.HeaderText = "Current";
+            this.currentHashrateDataGridViewTextBoxColumn.Name = "currentHashrateDataGridViewTextBoxColumn";
+            this.currentHashrateDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // temperatureDataGridViewTextBoxColumn
+            // 
+            this.temperatureDataGridViewTextBoxColumn.DataPropertyName = "Temperature";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.temperatureDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            this.temperatureDataGridViewTextBoxColumn.FillWeight = 60F;
+            this.temperatureDataGridViewTextBoxColumn.HeaderText = "Temp";
+            this.temperatureDataGridViewTextBoxColumn.Name = "temperatureDataGridViewTextBoxColumn";
+            this.temperatureDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // hardwareErrorsPercentDataGridViewTextBoxColumn
+            // 
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DataPropertyName = "HardwareErrorsPercent";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.FillWeight = 75F;
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.HeaderText = "Errors";
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.Name = "hardwareErrorsPercentDataGridViewTextBoxColumn";
+            this.hardwareErrorsPercentDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // utilityDataGridViewTextBoxColumn
+            // 
+            this.utilityDataGridViewTextBoxColumn.DataPropertyName = "Utility";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle4.Format = "#,#.###";
+            this.utilityDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
+            this.utilityDataGridViewTextBoxColumn.FillWeight = 75F;
+            this.utilityDataGridViewTextBoxColumn.HeaderText = "Utility";
+            this.utilityDataGridViewTextBoxColumn.Name = "utilityDataGridViewTextBoxColumn";
+            this.utilityDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // workerBindingSource
             // 
@@ -721,54 +769,6 @@
             this.statusLabel.TabIndex = 46;
             this.statusLabel.Text = "label1";
             // 
-            // workerNameDataGridViewTextBoxColumn
-            // 
-            this.workerNameDataGridViewTextBoxColumn.DataPropertyName = "WorkerName";
-            this.workerNameDataGridViewTextBoxColumn.FillWeight = 75F;
-            this.workerNameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.workerNameDataGridViewTextBoxColumn.Name = "workerNameDataGridViewTextBoxColumn";
-            this.workerNameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // currentHashrateDataGridViewTextBoxColumn
-            // 
-            this.currentHashrateDataGridViewTextBoxColumn.DataPropertyName = "CurrentHashrate";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.currentHashrateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
-            this.currentHashrateDataGridViewTextBoxColumn.HeaderText = "Current";
-            this.currentHashrateDataGridViewTextBoxColumn.Name = "currentHashrateDataGridViewTextBoxColumn";
-            this.currentHashrateDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // temperatureDataGridViewTextBoxColumn
-            // 
-            this.temperatureDataGridViewTextBoxColumn.DataPropertyName = "Temperature";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.temperatureDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
-            this.temperatureDataGridViewTextBoxColumn.FillWeight = 60F;
-            this.temperatureDataGridViewTextBoxColumn.HeaderText = "Temp";
-            this.temperatureDataGridViewTextBoxColumn.Name = "temperatureDataGridViewTextBoxColumn";
-            this.temperatureDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // hardwareErrorsPercentDataGridViewTextBoxColumn
-            // 
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DataPropertyName = "HardwareErrorsPercent";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.FillWeight = 75F;
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.HeaderText = "Errors";
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.Name = "hardwareErrorsPercentDataGridViewTextBoxColumn";
-            this.hardwareErrorsPercentDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // utilityDataGridViewTextBoxColumn
-            // 
-            this.utilityDataGridViewTextBoxColumn.DataPropertyName = "Utility";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle4.Format = "#,#.###";
-            this.utilityDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
-            this.utilityDataGridViewTextBoxColumn.FillWeight = 75F;
-            this.utilityDataGridViewTextBoxColumn.HeaderText = "Utility";
-            this.utilityDataGridViewTextBoxColumn.Name = "utilityDataGridViewTextBoxColumn";
-            this.utilityDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
             // DetailsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -814,7 +814,7 @@
             this.Controls.Add(this.processorsValueLabel);
             this.Controls.Add(this.processorsTitleLabel);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.symbolLabel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.nameLabel);
             this.Controls.Add(this.closeDetailsButton);
@@ -846,7 +846,7 @@
         private System.Windows.Forms.Label nameLabel;
         private System.Windows.Forms.BindingSource deviceBindingSource;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label symbolLabel;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label processorsTitleLabel;
         private System.Windows.Forms.Label processorsValueLabel;
