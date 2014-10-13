@@ -497,19 +497,14 @@ namespace MultiMiner.Win.Forms
                     {
                         listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
 
-                        // null for a Network Device if this machine never setup BTC
-                        if (deviceViewModel.Coin != null)
-                        {
-                            double difficulty = GetMinerNetworkDifficulty(deviceViewModel.Coin.Id);
-                            if (difficulty == 0.0)
-                                difficulty = deviceViewModel.Difficulty;
+                        double difficulty = GetMinerNetworkDifficulty(deviceViewModel.Coin.Id);
+                        if (difficulty == 0.0)
+                            difficulty = deviceViewModel.Difficulty;
 
-                            listViewItem.SubItems["Difficulty"].Tag = difficulty;
-                            listViewItem.SubItems["Difficulty"].Text = difficulty.ToDifficultyString();
-                        }
+                        listViewItem.SubItems["Difficulty"].Tag = difficulty;
+                        listViewItem.SubItems["Difficulty"].Text = difficulty.ToDifficultyString();
 
                         string unit = KnownCoins.BitcoinSymbol;
-
                         listViewItem.SubItems["Price"].Text = String.Format("{0} {1}", deviceViewModel.Price.ToFriendlyString(), unit);
 
                         //check .Mining to allow perks for Remoting when local PC is not mining
