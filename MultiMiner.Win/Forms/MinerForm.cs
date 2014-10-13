@@ -1173,7 +1173,7 @@ namespace MultiMiner.Win.Forms
                 else
                 {
                     if (rewardPerDay > 0.00)
-                        item.SubItems["Daily"].Text = String.Format("{0}{1} {2}", exchangeInformation.TargetSymbol, rewardPerDay.ToFriendlyString(), info.Symbol);
+                        item.SubItems["Daily"].Text = String.Format("{0} {1}", rewardPerDay.ToFriendlyString(), info.Symbol);
                 }
             }
         }
