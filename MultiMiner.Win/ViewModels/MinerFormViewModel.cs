@@ -118,6 +118,19 @@ namespace MultiMiner.Win.ViewModels
             CoinInformation coinInformationModel = coinInformationModels.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             if (coinInformationModel != null)
                 ObjectCopier.CopyObject(coinInformationModel, deviceViewModel, "Name", "Exchange");
+            else
+            {
+                ClearCoinInformation(deviceViewModel);
+            }
+        }
+
+        private static void ClearCoinInformation(DeviceViewModel deviceViewModel)
+        {
+            deviceViewModel.Price = 0;
+            deviceViewModel.Profitability = 100;
+            deviceViewModel.AdjustedProfitability = 100;
+            deviceViewModel.AverageHashrate = 100;
+            deviceViewModel.Exchange = 0;
         }
 
         public void ClearDeviceInformationFromViewModel()
