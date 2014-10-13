@@ -505,22 +505,25 @@ namespace MultiMiner.Win.Forms
                         listViewItem.SubItems["Difficulty"].Tag = difficulty;
                         listViewItem.SubItems["Difficulty"].Text = difficulty.ToDifficultyString();
 
-                        string unit = KnownCoins.BitcoinSymbol;
-                        listViewItem.SubItems["Price"].Text = String.Format("{0} {1}", deviceViewModel.Price.ToFriendlyString(), unit);
+                        if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                        {
+                            string unit = KnownCoins.BitcoinSymbol;
+                            listViewItem.SubItems["Price"].Text = String.Format("{0} {1}", deviceViewModel.Price.ToFriendlyString(), unit);
 
-                        //check .Mining to allow perks for Remoting when local PC is not mining
-                        if ((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowExchangeRates
+                            //check .Mining to allow perks for Remoting when local PC is not mining
+                            if ((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowExchangeRates
                             //ensure Exchange prices are available:
                             && (sellPrices != null))
-                        {
-                            ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
-                            double btcExchangeRate = exchangeInformation.ExchangeRate;
-                            double coinExchangeRate = 0.00;
+                            {
+                                ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                                double btcExchangeRate = exchangeInformation.ExchangeRate;
+                                double coinExchangeRate = 0.00;
 
-                            coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
+                                coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
 
-                            listViewItem.SubItems["Exchange"].Tag = coinExchangeRate;
-                            listViewItem.SubItems["Exchange"].Text = String.Format("{0}{1}", exchangeInformation.TargetSymbol, coinExchangeRate.ToFriendlyString(true));
+                                listViewItem.SubItems["Exchange"].Tag = coinExchangeRate;
+                                listViewItem.SubItems["Exchange"].Text = String.Format("{0}{1}", exchangeInformation.TargetSymbol, coinExchangeRate.ToFriendlyString(true));
+                            }
                         }
 
                         switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
@@ -1147,29 +1150,46 @@ namespace MultiMiner.Win.Forms
 
             if (info != null)
             {
-                double difficulty = (double)item.SubItems["Difficulty"].Tag;
-                double hashrate = deviceViewModel.CurrentHashrate * 1000;
-                double fullDifficulty = difficulty * difficultyMuliplier;
-                double secondsToCalcShare = fullDifficulty / hashrate;
-                const double secondsPerDay = 86400;
-                double sharesPerDay = secondsPerDay / secondsToCalcShare;
-                double rewardPerDay = sharesPerDay * info.Reward;
                 ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
 
-                deviceViewModel.Daily = rewardPerDay;
+                if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                {
+                    double difficulty = (double)item.SubItems["Difficulty"].Tag;
+                    double hashrate = deviceViewModel.CurrentHashrate * 1000;
+                    double fullDifficulty = difficulty * difficultyMuliplier;
+                    double secondsToCalcShare = fullDifficulty / hashrate;
+                    const double secondsPerDay = 86400;
+                    double sharesPerDay = secondsPerDay / secondsToCalcShare;
+                    double btcPerDay = sharesPerDay * info.Reward;
+
+                    deviceViewModel.Daily = btcPerDay;
+                }
+                else
+                {
+                    //info.Price is in BTC/Ghs/Day
+                    deviceViewModel.Daily = info.Price * deviceViewModel.CurrentHashrate / 1000 / 1000;
+                }
 
                 if (perksConfiguration.ShowExchangeRates && perksConfiguration.ShowIncomeInUsd)
                 {
-                    //item.SubItems["Exchange"].Tag may be null
-                    double exchangeRate = item.SubItems["Exchange"].Tag == null ? 0 : (double)item.SubItems["Exchange"].Tag;
-                    double fiatPerDay = rewardPerDay * exchangeRate;
+                    double exchangeRate = exchangeInformation.ExchangeRate;
+                    if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                        //item.SubItems["Exchange"].Tag may be null
+                        exchangeRate = item.SubItems["Exchange"].Tag == null ? 0 : (double)item.SubItems["Exchange"].Tag;
+
+                    double fiatPerDay = deviceViewModel.Daily * exchangeRate;
                     if (fiatPerDay > 0.00)
                         item.SubItems["Daily"].Text = String.Format("{0}{1}", exchangeInformation.TargetSymbol, fiatPerDay.ToFriendlyString(true));
                 }
                 else
                 {
-                    if (rewardPerDay > 0.00)
-                        item.SubItems["Daily"].Text = String.Format("{0}{1} {2}", exchangeInformation.TargetSymbol, rewardPerDay.ToFriendlyString(), info.Symbol);
+                    if (deviceViewModel.Daily > 0.00)
+                    {
+                        string coinSymbol = KnownCoins.BitcoinSymbol;
+                        if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                            coinSymbol = info.Symbol;
+                        item.SubItems["Daily"].Text = String.Format("{0} {1}", deviceViewModel.Daily.ToFriendlyString(), coinSymbol);
+                    }
                 }
             }
         }
@@ -1262,7 +1282,10 @@ namespace MultiMiner.Win.Forms
                 //check for Coin != null, device may not have a coin configured
                 if (deviceViewModel.Coin != null)
                 {
-                    string coinSymbol = deviceViewModel.Coin.Id;
+                    string coinSymbol = KnownCoins.BitcoinSymbol;
+                    if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                        coinSymbol = deviceViewModel.Coin.Id;
+
                     double coinIncome = deviceViewModel.Daily;
 
                     if (coinsIncome.ContainsKey(coinSymbol))
@@ -4237,7 +4260,9 @@ namespace MultiMiner.Win.Forms
                     Name = "NiceHash - " + mpi.Algorithm,
                     Profitability = mpi.Profitability,
                     AverageProfitability = mpi.Profitability,
-                    AdjustedProfitability = mpi.Profitability
+                    AdjustedProfitability = mpi.Profitability,
+                    Price = mpi.Price,
+                    Algorithm = KnownAlgorithms.Algorithms.Single(ka => ka.Name.Equals(mpi.Algorithm)).FullName
                 }));
         }
 
