@@ -77,12 +77,13 @@ namespace MultiMiner.Win.Controls
             SetupFonts();
 
             noDetailsPanel.Visible = false;
-            
+                        
             hashrateLabel.Text = deviceViewModel.AverageHashrate.ToHashrateString();
             currentRateLabel.Text = deviceViewModel.CurrentHashrate.ToHashrateString();
 
             workersGridView.Visible = (deviceViewModel.Workers.Count > 0);
             workersTitleLabel.Visible = workersGridView.Visible;
+            symbolLabel.Visible = (deviceViewModel.Coin != null) && (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin);
 
             SetupProxyDetails(deviceViewModel);
 
@@ -92,7 +93,7 @@ namespace MultiMiner.Win.Controls
             if (deviceViewModel.Coin != null)
                 cryptoCoinBindingSource.DataSource = deviceViewModel.Coin;
             else
-                cryptoCoinBindingSource.DataSource = new CryptoCoin();
+                cryptoCoinBindingSource.DataSource = new PoolGroup();
             cryptoCoinBindingSource.ResetBindings(false);
 
             deviceBindingSource.DataSource = deviceViewModel;

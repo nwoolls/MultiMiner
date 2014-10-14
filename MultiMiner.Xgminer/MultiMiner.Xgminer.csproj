@@ -49,6 +49,8 @@
     <Compile Include="Data\Device\DeviceDescriptor.cs" />
     <Compile Include="Data\Device\DeviceKind.cs" />
     <Compile Include="Data\Device\DevicePlatform.cs" />
+    <Compile Include="Data\KnownAlgorithm.cs" />
+    <Compile Include="Data\KnownAlgorithms.cs" />
     <Compile Include="LaunchFailedArgs.cs" />
     <Compile Include="LogLaunchArgs.cs" />
     <Compile Include="MinerLaunchException.cs" />

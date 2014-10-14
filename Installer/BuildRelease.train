@@ -22,6 +22,8 @@ msbuild.updateAssemblyVersion("../MultiMiner.Remoting/Properties/AssemblyInfo.cs
 msbuild.updateAssemblyVersion("../MultiMiner.Services/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Discovery/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Utility/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.MultipoolApi/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.NiceHash/Properties/AssemblyInfo.cs", appVersion);
 
 //rebuild each .NET project - Release configurations
 msbuild.rebuild("../MultiMiner.CoinApi/MultiMiner.CoinApi.csproj", { configuration: "Release" });
@@ -42,6 +44,8 @@ msbuild.rebuild("../MultiMiner.Stats/MultiMiner.Stats.csproj", { configuration: 
 msbuild.rebuild("../MultiMiner.Remoting/MultiMiner.Remoting.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Services/MultiMiner.Services.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Discovery/MultiMiner.Discovery.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.MultipoolApi/MultiMiner.MultipoolApi.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.NiceHash/MultiMiner.NiceHash.csproj", { configuration: "Release" });
 
 //export environment variable for InnoSetup to use for app version
 export("MM_AppVersion", shortAppVersion);
@@ -91,6 +95,10 @@ file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Services.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Services.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Discovery.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Discovery.pdb", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MultipoolApi.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MultipoolApi.pdb", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.NiceHash.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/MultiMiner.NiceHash.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Miners/bfgminer/Extract bfgminer here.txt", "PF/Miners/bfgminer");
 zip.compress("Output/MultiMiner-" + shortAppVersion + ".zip", "PF/", "*.*", true);
@@ -141,6 +149,10 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.Services.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Discovery.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Discovery.pdb,\
+../MultiMiner.Win/bin/Release/MultiMiner.MultipoolApi.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.MultipoolApi.pdb,\
+../MultiMiner.Win/bin/Release/MultiMiner.NiceHash.dll,\
+../MultiMiner.Win/bin/Release/MultiMiner.NiceHash.pdb,\
 ../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll,\
 Miners \
 -i ../MultiMiner.Win/MultiMiner.icns \

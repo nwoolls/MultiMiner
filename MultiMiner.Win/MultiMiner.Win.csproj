@@ -116,23 +116,29 @@
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\Configuration\Application.cs" />
-    <Compile Include="Forms\CoinChooseForm.cs">
+    <Compile Include="Forms\Configuration\CoinChooseForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CoinChooseForm.Designer.cs">
+    <Compile Include="Forms\Configuration\CoinChooseForm.Designer.cs">
       <DependentUpon>CoinChooseForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CoinEditForm.cs">
+    <Compile Include="Forms\Configuration\CoinEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CoinEditForm.Designer.cs">
+    <Compile Include="Forms\Configuration\CoinEditForm.Designer.cs">
       <DependentUpon>CoinEditForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Configuration\CoinsForm.cs">
+    <Compile Include="Forms\Configuration\MultipoolChooseForm.cs">
+      <SubType>form</SubType>
+    </Compile>
+    <Compile Include="Forms\Configuration\MultipoolChooseForm.Designer.cs">
+      <DependentUpon>MultipoolChooseForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Configuration\PoolsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Configuration\CoinsForm.Designer.cs">
-      <DependentUpon>CoinsForm.cs</DependentUpon>
+    <Compile Include="Forms\Configuration\PoolsForm.Designer.cs">
+      <DependentUpon>PoolsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\ApiLogEntry.cs" />
     <Compile Include="Data\Configuration\Perks.cs" />
@@ -227,14 +233,17 @@
     <EmbeddedResource Include="Forms\Configuration\MinerSettingsForm.resx">
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CoinChooseForm.resx">
+    <EmbeddedResource Include="Forms\Configuration\CoinChooseForm.resx">
       <DependentUpon>CoinChooseForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CoinEditForm.resx">
+    <EmbeddedResource Include="Forms\Configuration\CoinEditForm.resx">
       <DependentUpon>CoinEditForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Configuration\CoinsForm.resx">
-      <DependentUpon>CoinsForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Configuration\MultipoolChooseForm.resx">
+      <DependentUpon>MultipoolChooseForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Configuration\PoolsForm.resx">
+      <DependentUpon>PoolsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Configuration\ProxySettingsForm.resx">
       <DependentUpon>ProxySettingsForm.cs</DependentUpon>
@@ -350,6 +359,14 @@
       <Project>{70622816-5853-4470-9432-9ACDA2E96089}</Project>
       <Name>MultiMiner.MobileMiner</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.MultipoolApi\MultiMiner.MultipoolApi.csproj">
+      <Project>{4af4b34a-07db-456b-9c58-b0863435fe54}</Project>
+      <Name>MultiMiner.MultipoolApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.NiceHash\MultiMiner.NiceHash.csproj">
+      <Project>{5a05d03d-7006-406c-84b0-a2717a07ceb7}</Project>
+      <Name>MultiMiner.NiceHash</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Remoting\MultiMiner.Remoting.csproj">
       <Project>{DB1B318B-B57F-4BF4-8E05-BEFE7970F64C}</Project>
       <Name>MultiMiner.Remoting</Name>
@@ -384,6 +401,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="MultiMiner.ico" />
+    <None Include="Resources\delete_button_error.png" />
+    <None Include="Resources\add_button.png" />
+    <None Include="Resources\delete.png" />
     <None Include="Resources\computer_network-user.png" />
     <None Include="Resources\help1.png" />
     <None Include="Resources\application-help.png" />

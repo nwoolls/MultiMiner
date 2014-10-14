@@ -11,11 +11,11 @@ namespace MultiMiner.Win.Forms.Configuration
 {
     public partial class StrategiesForm : MessageBoxFontForm
     {
-        private readonly List<CryptoCoin> knownCoins;
+        private readonly List<PoolGroup> knownCoins;
         private readonly Strategy strategyConfiguration;
         private readonly Application applicationConfiguration;
 
-        public StrategiesForm(Strategy strategyConfiguration, List<CryptoCoin> knownCoins, 
+        public StrategiesForm(Strategy strategyConfiguration, List<PoolGroup> knownCoins, 
             Application applicationConfiguration)
         {
             InitializeComponent();
@@ -34,7 +34,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void PopulateKnownCoins()
         {
-            foreach (CryptoCoin coin in knownCoins)
+            foreach (PoolGroup coin in knownCoins)
             {
                 thresholdSymbolCombo.Items.Add(coin.Name);
             }
@@ -48,7 +48,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void LoadSettings()
         {
-            CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(this.strategyConfiguration.MinimumThresholdSymbol));
+            PoolGroup coin = knownCoins.SingleOrDefault(c => c.Id.Equals(this.strategyConfiguration.MinimumThresholdSymbol));
             if (coin != null)
                 thresholdSymbolCombo.Text = coin.Name;
             
@@ -71,9 +71,9 @@ namespace MultiMiner.Win.Forms.Configuration
                 this.strategyConfiguration.MinimumThresholdSymbol = string.Empty;
             else
             {
-                CryptoCoin coin = knownCoins.SingleOrDefault(c => c.Name.Equals(thresholdSymbolCombo.Text));
+                PoolGroup coin = knownCoins.SingleOrDefault(c => c.Name.Equals(thresholdSymbolCombo.Text));
                 if (coin != null)
-                    this.strategyConfiguration.MinimumThresholdSymbol = coin.Symbol;
+                    this.strategyConfiguration.MinimumThresholdSymbol = coin.Id;
             }
 
             if (singleCoinRadio.Checked)

@@ -5,12 +5,12 @@ using MultiMiner.Engine.Extensions;
 using System;
 using MultiMiner.Engine;
 
-namespace MultiMiner.Win.Forms
+namespace MultiMiner.Win.Forms.Configuration
 {
     public partial class CoinEditForm : MessageBoxFontForm
     {
-        private readonly CryptoCoin cryptoCoin;
-        public CoinEditForm(CryptoCoin cryptoCoin)
+        private readonly PoolGroup cryptoCoin;
+        public CoinEditForm(PoolGroup cryptoCoin)
         {
             InitializeComponent();
             this.cryptoCoin = cryptoCoin;
@@ -42,7 +42,7 @@ namespace MultiMiner.Win.Forms
         private bool ValidateInput()
         {
             //require a symbol be specified, symbol is used throughout the app
-            if (String.IsNullOrEmpty(cryptoCoin.Symbol))
+            if (String.IsNullOrEmpty(cryptoCoin.Id))
             {
                 symbolEdit.Focus();
                 return false;

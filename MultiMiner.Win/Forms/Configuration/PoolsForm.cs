@@ -13,15 +13,16 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using MultiMiner.Engine;
 using MultiMiner.Win.Data;
+using MultiMiner.Engine.Data.Configuration;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
-    public partial class CoinsForm : MessageBoxFontForm
+    public partial class PoolsForm : MessageBoxFontForm
     {
         private readonly List<Engine.Data.Configuration.Coin> configurations = new List<Engine.Data.Configuration.Coin>();
-        private readonly List<CryptoCoin> knownCoins;
+        private readonly List<PoolGroup> knownCoins;
 
-        public CoinsForm(List<Engine.Data.Configuration.Coin> coinConfigurations, List<CryptoCoin> knownCoins,
+        public PoolsForm(List<Engine.Data.Configuration.Coin> coinConfigurations, List<PoolGroup> knownCoins,
             Data.Configuration.Application applicationConfiguration, Data.Configuration.Perks perksConfiguration)
         {
             this.configurations = coinConfigurations;
@@ -48,7 +49,7 @@ namespace MultiMiner.Win.Forms.Configuration
         
         private void removeCoinButton_Click(object sender, EventArgs e)
         {
-            DialogResult promptResult = MessageBox.Show("Remove the selected coin configuration?", "Confirm", MessageBoxButtons.YesNo);
+            DialogResult promptResult = MessageBox.Show("Remove the selected configuration?", "Confirm", MessageBoxButtons.YesNo);
             if (promptResult == System.Windows.Forms.DialogResult.Yes)
             {
                 //required to clear bindings if this was the last coin in the list
@@ -70,19 +71,19 @@ namespace MultiMiner.Win.Forms.Configuration
             coinListBox.Items.Clear();
 
             foreach (Engine.Data.Configuration.Coin configuration in configurations)
-                coinListBox.Items.Add(configuration.CryptoCoin.Name);
+                coinListBox.Items.Add(configuration.PoolGroup.Name);
 
             if (configurations.Count > 0)
                 coinListBox.SelectedIndex = 0;
         }
 
-        private Engine.Data.Configuration.Coin AddCoinConfiguration(CryptoCoin cryptoCoin)
+        private Engine.Data.Configuration.Coin AddCoinConfiguration(PoolGroup poolGroup)
         {
             //don't allow two configurations for the same coin symbol
-            Engine.Data.Configuration.Coin configuration = configurations.SingleOrDefault(c => c.CryptoCoin.Symbol.Equals(cryptoCoin.Symbol, StringComparison.OrdinalIgnoreCase));
+            Engine.Data.Configuration.Coin configuration = configurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(poolGroup.Id, StringComparison.OrdinalIgnoreCase));
             if (configuration == null)
                 //don't allow two configurations for the same coin name
-                configuration = configurations.SingleOrDefault(c => c.CryptoCoin.Name.Equals(cryptoCoin.Name, StringComparison.OrdinalIgnoreCase));
+                configuration = configurations.SingleOrDefault(c => c.PoolGroup.Name.Equals(poolGroup.Name, StringComparison.OrdinalIgnoreCase));
 
             if (configuration != null)
             {
@@ -92,24 +93,22 @@ namespace MultiMiner.Win.Forms.Configuration
             {
                 configuration = new Engine.Data.Configuration.Coin();
 
-                configuration.CryptoCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(cryptoCoin.Symbol, StringComparison.OrdinalIgnoreCase));
+                configuration.PoolGroup = knownCoins.SingleOrDefault(c => c.Id.Equals(poolGroup.Id, StringComparison.OrdinalIgnoreCase));
 
-                //user may have manually entered a coin
-                if (configuration.CryptoCoin == null)
+                //user may have manually entered a coin or may be using a Multipool
+                if (configuration.PoolGroup == null)
                 {
-                    configuration.CryptoCoin = new CryptoCoin();
-                    configuration.CryptoCoin.Name = cryptoCoin.Name;
-                    configuration.CryptoCoin.Symbol = cryptoCoin.Symbol;
-                    configuration.CryptoCoin.Algorithm = cryptoCoin.Algorithm;
+                    configuration.PoolGroup = new PoolGroup();
+                    ObjectCopier.CopyObject(poolGroup, configuration.PoolGroup);
                 }
 
                 //at this point, configuration.CryptoCoin.Algorithm MAY be the CoinAlgorithm.FullName
                 //that is how data from Coin API is stored
                 //but coin configurations are based on CoinAlgorithm.Name
                 CoinAlgorithm algorithm = MinerFactory.Instance.Algorithms.SingleOrDefault(a => 
-                    a.FullName.Equals(configuration.CryptoCoin.Algorithm, StringComparison.OrdinalIgnoreCase));
+                    a.FullName.Equals(configuration.PoolGroup.Algorithm, StringComparison.OrdinalIgnoreCase));
                 if (algorithm != null)
-                    configuration.CryptoCoin.Algorithm = algorithm.Name;
+                    configuration.PoolGroup.Algorithm = algorithm.Name;
 
                 MiningPool miningPool = new MiningPool()
                 {
@@ -120,7 +119,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
                 configurations.Add(configuration);
 
-                coinListBox.Items.Add(configuration.CryptoCoin.Name);
+                coinListBox.Items.Add(configuration.PoolGroup.Name);
                 coinListBox.SelectedIndex = configurations.IndexOf(configuration);
             }
 
@@ -274,7 +273,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
             foreach (Engine.Data.Configuration.Coin sourceConfiguration in sourceConfigurations)
             {
-                int existingIndex = destinationConfigurations.FindIndex(c => c.CryptoCoin.Symbol.Equals(sourceConfiguration.CryptoCoin.Symbol));
+                int existingIndex = destinationConfigurations.FindIndex(c => c.PoolGroup.Id.Equals(sourceConfiguration.PoolGroup.Id));
                 if (existingIndex == -1)
                     destinationConfigurations.Add(sourceConfiguration);
                 else
@@ -307,7 +306,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void SortConfigurations()
         {
-            configurations.Sort((config1, config2) => config1.CryptoCoin.Name.CompareTo(config2.CryptoCoin.Name));
+            configurations.Sort((config1, config2) => config1.PoolGroup.Name.CompareTo(config2.PoolGroup.Name));
             PopulateConfigurations();
         }
 
@@ -343,7 +342,7 @@ namespace MultiMiner.Win.Forms.Configuration
         private void MoveCoinToIndex(string coinName, int index)
         {
             Engine.Data.Configuration.Coin configuration = configurations.Single(
-                config => config.CryptoCoin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+                config => config.PoolGroup.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
 
             configurations.Remove(configuration);
             configurations.Insert(index, configuration);
@@ -360,7 +359,7 @@ namespace MultiMiner.Win.Forms.Configuration
             DialogResult dialogResult = coinChooseForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                CryptoCoin destinationCoin = coinChooseForm.SelectedCoin;
+                PoolGroup destinationCoin = coinChooseForm.SelectedCoin;
 
                 Engine.Data.Configuration.Coin sourceConfiguration = configurations[coinListBox.SelectedIndex];
 
@@ -465,35 +464,76 @@ namespace MultiMiner.Win.Forms.Configuration
             }
         }
 
-        private void EditCurrentCoin()
+        private void EditCurrentConfiguration()
         {
             if (coinListBox.SelectedIndex == -1)
                 return;
 
-            Engine.Data.Configuration.Coin currentConfiguration = configurations[coinListBox.SelectedIndex];
+            Coin currentConfiguration = configurations[coinListBox.SelectedIndex];
 
-            CryptoCoin workingCoin = new CryptoCoin();
-            ObjectCopier.CopyObject(currentConfiguration.CryptoCoin, workingCoin);
+            if (currentConfiguration.PoolGroup.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+            {
+                EditCurrentCoin(currentConfiguration);
+            }
+            else
+            {
+                EditCurrentMultipool(currentConfiguration);
+            }
+        }
+
+        private void EditCurrentMultipool(Coin currentConfiguration)
+        {
+            using (MultipoolChooseForm multipoolChooseForm = new MultipoolChooseForm(currentConfiguration.PoolGroup))
+            {
+                DialogResult dialogResult = multipoolChooseForm.ShowDialog();
+
+                if (dialogResult == DialogResult.OK)
+                {
+                    PoolGroup workingMultipool = multipoolChooseForm.SelectedMultipool;
+
+                    Coin existingConfiguration =
+                        configurations.SingleOrDefault(c => (c != currentConfiguration)
+                            && c.PoolGroup.Id.Equals(workingMultipool.Id, StringComparison.OrdinalIgnoreCase));
+
+                    if (existingConfiguration == null)
+                    {
+                        ObjectCopier.CopyObject(workingMultipool, currentConfiguration.PoolGroup);
+                        coinListBox.Items[coinListBox.SelectedIndex] = workingMultipool.Name;
+                    }
+                    else
+                    {
+                        //don't create a dupe
+                        MessageBox.Show(String.Format("A configuration for {0} already exists.", workingMultipool.Name),
+                            "Duplicate Configuration", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+        }
+
+        private void EditCurrentCoin(Coin currentConfiguration)
+        {
+            PoolGroup workingCoin = new PoolGroup();
+            ObjectCopier.CopyObject(currentConfiguration.PoolGroup, workingCoin);
 
             using (CoinEditForm coinEditForm = new CoinEditForm(workingCoin))
             {
                 DialogResult dialogResult = coinEditForm.ShowDialog();
 
-                if (dialogResult == System.Windows.Forms.DialogResult.OK)
+                if (dialogResult == DialogResult.OK)
                 {
-                    MultiMiner.Engine.Data.Configuration.Coin existingConfiguration = 
-                        configurations.SingleOrDefault(c => (c != currentConfiguration) 
-                            && c.CryptoCoin.Symbol.Equals(workingCoin.Symbol, StringComparison.OrdinalIgnoreCase));
+                    Coin existingConfiguration =
+                        configurations.SingleOrDefault(c => (c != currentConfiguration)
+                            && c.PoolGroup.Id.Equals(workingCoin.Id, StringComparison.OrdinalIgnoreCase));
 
                     if (existingConfiguration == null)
                     {
-                        ObjectCopier.CopyObject(workingCoin, currentConfiguration.CryptoCoin);
+                        ObjectCopier.CopyObject(workingCoin, currentConfiguration.PoolGroup);
                         coinListBox.Items[coinListBox.SelectedIndex] = workingCoin.Name;
                     }
                     else
                     {
                         //don't create a dupe
-                        MessageBox.Show(String.Format("A configuration for {0} already exists.", workingCoin.Symbol), 
+                        MessageBox.Show(String.Format("A configuration for {0} already exists.", workingCoin.Id),
                             "Duplicate Configuration", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
@@ -502,7 +542,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void editCoinButton_Click(object sender, EventArgs e)
         {
-            EditCurrentCoin();
+            EditCurrentConfiguration();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -542,6 +582,14 @@ namespace MultiMiner.Win.Forms.Configuration
                 hostEdit.Text = hostEdit.Text + uriSegment;
             else
                 hostEdit.Text = hostEdit.Text.Replace(uriSegment, String.Empty);
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            MultipoolChooseForm multipoolChooseForm = new MultipoolChooseForm();
+            DialogResult dialogResult = multipoolChooseForm.ShowDialog();
+            if (dialogResult == DialogResult.OK)
+                AddCoinConfiguration(multipoolChooseForm.SelectedMultipool);
         }
     }
 }
