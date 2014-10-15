@@ -297,6 +297,10 @@ namespace MultiMiner.Engine.Helpers
             donationConfiguration = CreateCoinConfiguration("YAC", "stratum+tcp://yac.coinmine.pl", 9088);
             configurations.Add(donationConfiguration);
 
+            //GRS
+            donationConfiguration = CreateCoinConfiguration("GRS", "stratum+tcp://grs.suprnova.cc", 5544);
+            configurations.Add(donationConfiguration);
+
             //NiceHash / WestHash
             //Scrypt
             donationConfiguration = CreateCoinConfiguration("NiceHash:Scrypt", "stratum+tcp://stratum.westhash.com/#xnsub", 3333, "1LRtJBNQm9ALYt9gQjVK1TdRyQ6UPGUNCw");
@@ -325,7 +329,6 @@ namespace MultiMiner.Engine.Helpers
             //X15
             donationConfiguration = CreateCoinConfiguration("NiceHash:X15", "stratum+tcp://stratum.westhash.com/#xnsub", 3339, "1LRtJBNQm9ALYt9gQjVK1TdRyQ6UPGUNCw");
             configurations.Add(donationConfiguration);
-
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
