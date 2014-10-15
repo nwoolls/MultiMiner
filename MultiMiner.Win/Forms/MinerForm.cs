@@ -497,16 +497,12 @@ namespace MultiMiner.Win.Forms
                     {
                         listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
 
-                        // null for a Network Device if this machine never setup BTC
-                        if (deviceViewModel.Coin != null)
-                        {
-                            double difficulty = GetMinerNetworkDifficulty(deviceViewModel.Coin.Symbol);
-                            if (difficulty == 0.0)
-                                difficulty = deviceViewModel.Difficulty;
+                        double difficulty = GetCachedNetworkDifficulty(deviceViewModel.Pool ?? String.Empty);
+                        if (difficulty == 0.0)
+                            difficulty = deviceViewModel.Difficulty;
 
-                            listViewItem.SubItems["Difficulty"].Tag = difficulty;
-                            listViewItem.SubItems["Difficulty"].Text = difficulty.ToDifficultyString();
-                        }
+                        listViewItem.SubItems["Difficulty"].Tag = difficulty;
+                        listViewItem.SubItems["Difficulty"].Text = difficulty.ToDifficultyString();
 
                         string unit = KnownCoins.BitcoinSymbol;
 
@@ -3170,7 +3166,7 @@ namespace MultiMiner.Win.Forms
 
         private void fifteenMinuteTimer_Tick(object sender, EventArgs e)
         {
-            ClearCachedNetworkCoinInformation();
+            ClearCachedNetworkDifficulties();
 
             if (applicationConfiguration.NetworkDeviceDetection)
             {
@@ -5122,14 +5118,14 @@ namespace MultiMiner.Win.Forms
                                 if (lastDevicePoolMapping.ContainsKey(deviceViewModel))
                                     deviceViewModel.Pool = lastDevicePoolMapping[deviceViewModel];
                             }
+
+                            if (!String.IsNullOrEmpty(deviceViewModel.Pool))
+                                CheckAndSetNetworkDifficulty(minerProcess.ApiContext.IpAddress, minerProcess.ApiContext.Port, deviceViewModel.Pool);
                         }
                     }
                 }
 
                 FlagSuspiciousProxy(minerProcess, deviceInformationList);
-                                
-                if (!String.IsNullOrEmpty(coinSymbol))
-                    CheckAndSetNetworkDifficulty(minerProcess.ApiContext.IpAddress, minerProcess.ApiContext.Port, coinSymbol);
 
                 localViewModel.ApplyDeviceDetailsResponseModels(minerProcess.MinerConfiguration.DeviceDescriptors, processDevices);
             }
@@ -5137,32 +5133,35 @@ namespace MultiMiner.Win.Forms
             RefreshViewFromDeviceStats();
         }
 
-        private double GetMinerNetworkDifficulty(string coinSymbol)
+        //cache based on pool URI rather than coin symbol
+        //the coin symbol may be guessed wrong for Network Devices
+        //this can (and has) resulting in wildly inaccurate income estimates
+        private double GetCachedNetworkDifficulty(string poolUri)
         {
             double result = 0.0;
-            if (minerNetworkDifficulty.ContainsKey(coinSymbol))
-                result = minerNetworkDifficulty[coinSymbol];
+            if (minerNetworkDifficulty.ContainsKey(poolUri))
+                result = minerNetworkDifficulty[poolUri];
             return result;
         }
 
-        private void ClearCachedNetworkCoinInformation()
+        private void ClearCachedNetworkDifficulties()
         {
             minerNetworkDifficulty.Clear();
         }
 
-        private void SetMinerNetworkDifficulty(string coinSymbol, double difficulty)
+        private void SetCachedNetworkDifficulty(string poolUri, double difficulty)
         {
-            minerNetworkDifficulty[coinSymbol] = difficulty;
+            minerNetworkDifficulty[poolUri] = difficulty;
         }
 
-        private void CheckAndSetNetworkDifficulty(string ipAddress, int port, string coinSymbol)
+        private void CheckAndSetNetworkDifficulty(string ipAddress, int port, string poolUri)
         {
-            double difficulty = GetMinerNetworkDifficulty(coinSymbol);
+            double difficulty = GetCachedNetworkDifficulty(poolUri);
             if (difficulty == 0.0)
             {
                 MultiMiner.Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
                 difficulty = GetNetworkDifficultyFromMiner(apiContext);
-                SetMinerNetworkDifficulty(coinSymbol, difficulty);
+                SetCachedNetworkDifficulty(poolUri, difficulty);
             }
         }
 
@@ -5350,8 +5349,8 @@ namespace MultiMiner.Win.Forms
                         }
                     }
 
-                    if (deviceViewModel.Coin != null)
-                        CheckAndSetNetworkDifficulty(ipAddress, port, deviceViewModel.Coin.Symbol);
+                    if (deviceViewModel.Pool != null)
+                        CheckAndSetNetworkDifficulty(ipAddress, port, deviceViewModel.Pool);
                 }));
             }         
         }
@@ -7079,7 +7078,7 @@ namespace MultiMiner.Win.Forms
 
             localViewModel.ClearDeviceInformationFromViewModel();
 
-            ClearCachedNetworkCoinInformation();
+            ClearCachedNetworkDifficulties();
             processDeviceDetails.Clear();
             lastDevicePoolMapping.Clear();
             RefreshStrategiesCountdown();
