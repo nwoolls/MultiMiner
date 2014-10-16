@@ -4194,6 +4194,20 @@ namespace MultiMiner.Win.Forms
             this.coinChooseApiContext = new CoinChoose.ApiContext();
         }
 
+        private void ShowMultipoolApiErrorNotification(MultipoolApi.IApiContext apiContext, Exception ex)
+        {
+            string siteUrl = apiContext.GetInfoUrl();
+            string apiUrl = apiContext.GetApiUrl();
+            string apiName = apiContext.GetApiName();
+
+            PostNotification(ex.Message,
+                String.Format("Error parsing the {0} JSON API", apiName), () =>
+                {
+                    Process.Start(apiUrl);
+                },
+                ToolTipIcon.Warning, siteUrl);
+        }
+
         private void ShowCoinApiErrorNotification(IApiContext apiContext, Exception ex)
         {
             string siteUrl = apiContext.GetInfoUrl();
@@ -4247,10 +4261,36 @@ namespace MultiMiner.Win.Forms
             RefreshDetailsAreaIfVisible();
         }
 
+        private IEnumerable<MultipoolInformation> GetMultipoolInformation()
+        {
+            IEnumerable<MultipoolInformation> multipoolInformation = null;
+            NiceHash.ApiContext apiContext = new NiceHash.ApiContext();
+            try
+            {
+                multipoolInformation = apiContext.GetMultipoolInformation();
+            }
+            catch (Exception ex)
+            {
+                //don't crash if website cannot be resolved or JSON cannot be parsed
+                if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is CoinApiException) ||
+                    (ex is JsonReaderException))
+                {
+                    if (applicationConfiguration.ShowApiErrors)
+                        ShowMultipoolApiErrorNotification(apiContext, ex);
+                }
+                throw;
+            }
+            return multipoolInformation;
+        }
+
         private void RefreshMultiCoinStats()
         {
-            NiceHash.ApiContext apiContext = new NiceHash.ApiContext();
-            IEnumerable<MultipoolInformation> multipoolInformation = apiContext.GetMultipoolInformation();
+            IEnumerable<MultipoolInformation> multipoolInformation = GetMultipoolInformation();
+
+            //we're offline or the API is offline
+            if (multipoolInformation == null)
+                return;
+
             double btcPrice = multipoolInformation.Single(mpi => mpi.Algorithm.Equals(AlgorithmNames.SHA256)).Price;
 
             coinApiInformation.AddRange(multipoolInformation
