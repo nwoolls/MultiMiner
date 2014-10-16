@@ -31,12 +31,14 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OnlineSettingsForm));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.checkBox5 = new System.Windows.Forms.CheckBox();
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.httpsMobileMinerCheck = new System.Windows.Forms.CheckBox();
+            this.networkOnlyCheck = new System.Windows.Forms.CheckBox();
             this.pushNotificationsCheck = new System.Windows.Forms.CheckBox();
             this.remoteCommandsCheck = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -44,7 +46,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.intervalCombo = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -62,6 +63,17 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(377, 54);
             this.panel1.TabIndex = 3;
+            // 
+            // button1
+            // 
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(12, 13);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 10;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // saveButton
             // 
@@ -105,6 +117,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.httpsMobileMinerCheck);
+            this.groupBox1.Controls.Add(this.networkOnlyCheck);
             this.groupBox1.Controls.Add(this.pushNotificationsCheck);
             this.groupBox1.Controls.Add(this.remoteCommandsCheck);
             this.groupBox1.Location = new System.Drawing.Point(12, 91);
@@ -118,12 +131,23 @@
             // 
             this.httpsMobileMinerCheck.AutoSize = true;
             this.httpsMobileMinerCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerUsesHttps", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.httpsMobileMinerCheck.Location = new System.Drawing.Point(239, 22);
+            this.httpsMobileMinerCheck.Location = new System.Drawing.Point(220, 49);
             this.httpsMobileMinerCheck.Name = "httpsMobileMinerCheck";
             this.httpsMobileMinerCheck.Size = new System.Drawing.Size(84, 19);
-            this.httpsMobileMinerCheck.TabIndex = 2;
+            this.httpsMobileMinerCheck.TabIndex = 3;
             this.httpsMobileMinerCheck.Text = "Use HTTPS";
             this.httpsMobileMinerCheck.UseVisualStyleBackColor = true;
+            // 
+            // networkOnlyCheck
+            // 
+            this.networkOnlyCheck.AutoSize = true;
+            this.networkOnlyCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerNetworkMonitorOnly", true));
+            this.networkOnlyCheck.Location = new System.Drawing.Point(220, 22);
+            this.networkOnlyCheck.Name = "networkOnlyCheck";
+            this.networkOnlyCheck.Size = new System.Drawing.Size(97, 19);
+            this.networkOnlyCheck.TabIndex = 2;
+            this.networkOnlyCheck.Text = "Network only";
+            this.networkOnlyCheck.UseVisualStyleBackColor = true;
             // 
             // pushNotificationsCheck
             // 
@@ -216,17 +240,6 @@
             this.label5.TabIndex = 27;
             this.label5.Text = "Check every:";
             // 
-            // button1
-            // 
-            this.button1.AccessibleName = "Help";
-            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
-            this.button1.Location = new System.Drawing.Point(12, 13);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(27, 27);
-            this.button1.TabIndex = 10;
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // OnlineSettingsForm
             // 
             this.AcceptButton = this.saveButton;
@@ -265,7 +278,7 @@
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.CheckBox checkBox5;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.CheckBox httpsMobileMinerCheck;
+        private System.Windows.Forms.CheckBox networkOnlyCheck;
         private System.Windows.Forms.CheckBox pushNotificationsCheck;
         private System.Windows.Forms.CheckBox remoteCommandsCheck;
         private System.Windows.Forms.BindingSource applicationConfigurationBindingSource;
@@ -275,5 +288,6 @@
         private System.Windows.Forms.ComboBox intervalCombo;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox httpsMobileMinerCheck;
     }
 }

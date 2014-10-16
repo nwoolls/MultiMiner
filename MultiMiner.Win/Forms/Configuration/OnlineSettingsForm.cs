@@ -26,6 +26,7 @@ namespace MultiMiner.Win.Forms.Configuration
             remoteCommandsCheck.Enabled = workingApplicationConfiguration.MobileMinerMonitoring;
             pushNotificationsCheck.Enabled = workingApplicationConfiguration.MobileMinerMonitoring;
             httpsMobileMinerCheck.Enabled = workingApplicationConfiguration.MobileMinerMonitoring;
+            networkOnlyCheck.Enabled = workingApplicationConfiguration.MobileMinerMonitoring;
 
             LoadSettings();
         }
