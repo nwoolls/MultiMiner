@@ -19,9 +19,9 @@ namespace MultiMiner.Win.Forms
 {
     public partial class WizardForm : MessageBoxFontForm
     {
-        private List<CryptoCoin> coins;
+        private List<PoolGroup> coins;
 
-        public WizardForm(List<CryptoCoin> knownCoins)
+        public WizardForm(List<PoolGroup> knownCoins)
         {
             InitializeComponent();
             this.coins = knownCoins;
@@ -55,7 +55,7 @@ namespace MultiMiner.Win.Forms
             coinComboBox.Items.Add(KnownCoins.LitecoinName);
             coinComboBox.Items.Add("-");
 
-            foreach (CryptoCoin coin in coins)
+            foreach (PoolGroup coin in coins)
             {
                 if (coinComboBox.Items.IndexOf(coin.Name) == -1)
                     coinComboBox.Items.Add(coin.Name);
@@ -301,23 +301,23 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
 
             Engine.Data.Configuration.Coin coinConfiguration = new Engine.Data.Configuration.Coin();
 
-            CryptoCoin coin = null;
+            PoolGroup coin = null;
 
             //no Internet connection - only BTC and LTC were available
             if (coins.Count == 0)
             {
-                coin = new CryptoCoin();
+                coin = new PoolGroup();
                 coin.Name = coinComboBox.Text;
 
                 if (coin.Name.Equals(KnownCoins.LitecoinName, StringComparison.OrdinalIgnoreCase))
                 {
                     coin.Algorithm = AlgorithmNames.Scrypt;
-                    coin.Symbol = KnownCoins.LitecoinSymbol;
+                    coin.Id = KnownCoins.LitecoinSymbol;
                 }
                 else
                 {
                     coin.Algorithm = AlgorithmNames.SHA256;
-                    coin.Symbol = KnownCoins.BitcoinSymbol;
+                    coin.Id = KnownCoins.BitcoinSymbol;
                 }
             }
             else
@@ -325,7 +325,7 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
                 coin = coins.Single(c => c.Name.Equals(coinComboBox.Text));
             }
 
-            coinConfiguration.CryptoCoin = coin;
+            coinConfiguration.PoolGroup = coin;
             coinConfiguration.Enabled = true;
 
             MiningPool miningPool = new MiningPool();

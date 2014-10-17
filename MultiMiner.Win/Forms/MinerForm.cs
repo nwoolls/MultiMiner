@@ -40,6 +40,7 @@ using MultiMiner.Engine.Installers;
 using MultiMiner.ExchangeApi.Data;
 using System.Globalization;
 using Microsoft.Win32;
+using MultiMiner.MultipoolApi.Data;
 
 namespace MultiMiner.Win.Forms
 {
@@ -97,7 +98,7 @@ namespace MultiMiner.Win.Forms
         private Action notificationClickHandler;
 
         //logic
-        private List<CryptoCoin> knownCoins = new List<CryptoCoin>();
+        private List<PoolGroup> knownCoins = new List<PoolGroup>();
         private readonly MiningEngine miningEngine = new MiningEngine();
         private readonly List<int> processedCommandIds = new List<int>();
         private readonly List<MobileMiner.Data.Notification> queuedNotifications = new List<MobileMiner.Data.Notification>();
@@ -504,23 +505,25 @@ namespace MultiMiner.Win.Forms
                         listViewItem.SubItems["Difficulty"].Tag = difficulty;
                         listViewItem.SubItems["Difficulty"].Text = difficulty.ToDifficultyString();
 
-                        string unit = KnownCoins.BitcoinSymbol;
+                        if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                        {
+                            string unit = KnownCoins.BitcoinSymbol;
+                            listViewItem.SubItems["Price"].Text = String.Format("{0} {1}", deviceViewModel.Price.ToFriendlyString(), unit);
 
-                        listViewItem.SubItems["Price"].Text = String.Format("{0} {1}", deviceViewModel.Price.ToFriendlyString(), unit);
-
-                        //check .Mining to allow perks for Remoting when local PC is not mining
-                        if ((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowExchangeRates
+                            //check .Mining to allow perks for Remoting when local PC is not mining
+                            if ((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowExchangeRates
                             //ensure Exchange prices are available:
                             && (sellPrices != null))
-                        {
-                            ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
-                            double btcExchangeRate = exchangeInformation.ExchangeRate;
-                            double coinExchangeRate = 0.00;
+                            {
+                                ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                                double btcExchangeRate = exchangeInformation.ExchangeRate;
+                                double coinExchangeRate = 0.00;
 
-                            coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
+                                coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
 
-                            listViewItem.SubItems["Exchange"].Tag = coinExchangeRate;
-                            listViewItem.SubItems["Exchange"].Text = String.Format("{0}{1}", exchangeInformation.TargetSymbol, coinExchangeRate.ToFriendlyString(true));
+                                listViewItem.SubItems["Exchange"].Tag = coinExchangeRate;
+                                listViewItem.SubItems["Exchange"].Text = String.Format("{0}{1}", exchangeInformation.TargetSymbol, coinExchangeRate.ToFriendlyString(true));
+                            }
                         }
 
                         switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
@@ -719,12 +722,12 @@ namespace MultiMiner.Win.Forms
             coinPopupMenu.Items.Clear();
 
             MinerFormViewModel viewModelToView = GetViewModelToView();
-            foreach (CryptoCoin configuredCoin in viewModelToView.ConfiguredCoins)
+            foreach (PoolGroup configuredCoin in viewModelToView.ConfiguredCoins)
             {
                 ToolStripMenuItem menuItem = new ToolStripMenuItem()
                 {
                     Text = configuredCoin.Name,
-                    Tag = configuredCoin.Symbol
+                    Tag = configuredCoin.Id
                 };
                 menuItem.Click += CoinMenuItemClick;
 
@@ -1001,14 +1004,14 @@ namespace MultiMiner.Win.Forms
             quickCoinMenu.Items.Clear();
 
             MinerFormViewModel viewModelToView = GetViewModelToView();
-            List<CryptoCoin> coinConfigurations = viewModelToView.ConfiguredCoins;
+            List<PoolGroup> coinConfigurations = viewModelToView.ConfiguredCoins;
             
-            foreach (CryptoCoin coinConfiguration in coinConfigurations)
+            foreach (PoolGroup coinConfiguration in coinConfigurations)
             {
                 ToolStripMenuItem coinSwitchItem = new ToolStripMenuItem()
                 {
                     Text = coinConfiguration.Name,
-                    Tag = coinConfiguration.Symbol
+                    Tag = coinConfiguration.Id
                 };
                 coinSwitchItem.Click += HandleQuickSwitchClick;
 
@@ -1083,7 +1086,7 @@ namespace MultiMiner.Win.Forms
         private void RemoveInvalidCoinValuesFromListView()
         {
             foreach (ListViewItem item in deviceListView.Items)
-                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.CryptoCoin.Name.Equals(item.SubItems["Coin"].Text)) == null)
+                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.PoolGroup.Name.Equals(item.SubItems["Coin"].Text)) == null)
                     item.SubItems["Coin"].Text = String.Empty;
 
             ClearCoinStatsForDisabledCoins();
@@ -1143,33 +1146,50 @@ namespace MultiMiner.Win.Forms
                 //no internet or error parsing API
                 return;
 
-            CoinInformation info = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(deviceViewModel.Coin.Symbol, StringComparison.OrdinalIgnoreCase));
+            CoinInformation info = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(deviceViewModel.Coin.Id, StringComparison.OrdinalIgnoreCase));
 
             if (info != null)
             {
-                double difficulty = (double)item.SubItems["Difficulty"].Tag;
-                double hashrate = deviceViewModel.CurrentHashrate * 1000;
-                double fullDifficulty = difficulty * difficultyMuliplier;
-                double secondsToCalcShare = fullDifficulty / hashrate;
-                const double secondsPerDay = 86400;
-                double sharesPerDay = secondsPerDay / secondsToCalcShare;
-                double rewardPerDay = sharesPerDay * info.Reward;
                 ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
 
-                deviceViewModel.Daily = rewardPerDay;
+                if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                {
+                    double difficulty = (double)item.SubItems["Difficulty"].Tag;
+                    double hashrate = deviceViewModel.CurrentHashrate * 1000;
+                    double fullDifficulty = difficulty * difficultyMuliplier;
+                    double secondsToCalcShare = fullDifficulty / hashrate;
+                    const double secondsPerDay = 86400;
+                    double sharesPerDay = secondsPerDay / secondsToCalcShare;
+                    double btcPerDay = sharesPerDay * info.Reward;
+
+                    deviceViewModel.Daily = btcPerDay;
+                }
+                else
+                {
+                    //info.Price is in BTC/Ghs/Day
+                    deviceViewModel.Daily = info.Price * deviceViewModel.CurrentHashrate / 1000 / 1000;
+                }
 
                 if (perksConfiguration.ShowExchangeRates && perksConfiguration.ShowIncomeInUsd)
                 {
-                    //item.SubItems["Exchange"].Tag may be null
-                    double exchangeRate = item.SubItems["Exchange"].Tag == null ? 0 : (double)item.SubItems["Exchange"].Tag;
-                    double fiatPerDay = rewardPerDay * exchangeRate;
+                    double exchangeRate = exchangeInformation.ExchangeRate;
+                    if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                        //item.SubItems["Exchange"].Tag may be null
+                        exchangeRate = item.SubItems["Exchange"].Tag == null ? 0 : (double)item.SubItems["Exchange"].Tag;
+
+                    double fiatPerDay = deviceViewModel.Daily * exchangeRate;
                     if (fiatPerDay > 0.00)
                         item.SubItems["Daily"].Text = String.Format("{0}{1}", exchangeInformation.TargetSymbol, fiatPerDay.ToFriendlyString(true));
                 }
                 else
                 {
-                    if (rewardPerDay > 0.00)
-                        item.SubItems["Daily"].Text = String.Format("{0} {1}", rewardPerDay.ToFriendlyString(), info.Symbol);
+                    if (deviceViewModel.Daily > 0.00)
+                    {
+                        string coinSymbol = KnownCoins.BitcoinSymbol;
+                        if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                            coinSymbol = info.Symbol;
+                        item.SubItems["Daily"].Text = String.Format("{0} {1}", deviceViewModel.Daily.ToFriendlyString(), coinSymbol);
+                    }
                 }
             }
         }
@@ -1262,7 +1282,10 @@ namespace MultiMiner.Win.Forms
                 //check for Coin != null, device may not have a coin configured
                 if (deviceViewModel.Coin != null)
                 {
-                    string coinSymbol = deviceViewModel.Coin.Symbol;
+                    string coinSymbol = KnownCoins.BitcoinSymbol;
+                    if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                        coinSymbol = deviceViewModel.Coin.Id;
+
                     double coinIncome = deviceViewModel.Daily;
 
                     if (coinsIncome.ContainsKey(coinSymbol))
@@ -1431,18 +1454,18 @@ namespace MultiMiner.Win.Forms
             {
                 bool configured = !String.IsNullOrEmpty(deviceConfiguration.CoinSymbol);
                 bool misConfigured = configured &&
-                    !engineConfiguration.CoinConfigurations.Any(cc => cc.CryptoCoin.Symbol.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+                    !engineConfiguration.CoinConfigurations.Any(cc => cc.PoolGroup.Id.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
 
                 if (!configured || misConfigured)
                 {
                     Engine.Data.Configuration.Coin coinConfiguration = null;
                     if (deviceConfiguration.Kind == DeviceKind.GPU)
-                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.CryptoCoin.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase));
+                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.PoolGroup.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase));
                     if (coinConfiguration == null)
-                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.CryptoCoin.Algorithm.Equals(AlgorithmNames.SHA256, StringComparison.OrdinalIgnoreCase));
+                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.PoolGroup.Algorithm.Equals(AlgorithmNames.SHA256, StringComparison.OrdinalIgnoreCase));
 
                     if (coinConfiguration != null)
-                        deviceConfiguration.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
+                        deviceConfiguration.CoinSymbol = coinConfiguration.PoolGroup.Id;
                 }
             }
         }
@@ -1452,7 +1475,7 @@ namespace MultiMiner.Win.Forms
             foreach (Engine.Data.Configuration.Device deviceConfiguration in engineConfiguration.DeviceConfigurations)
             {
                 bool misconfigured = !String.IsNullOrEmpty(deviceConfiguration.CoinSymbol) &&
-                    !engineConfiguration.CoinConfigurations.Any(cc => cc.CryptoCoin.Symbol.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+                    !engineConfiguration.CoinConfigurations.Any(cc => cc.PoolGroup.Id.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
 
                 if (misconfigured)
                     deviceConfiguration.CoinSymbol = String.Empty;
@@ -1514,7 +1537,7 @@ namespace MultiMiner.Win.Forms
             ObjectCopier.CopyObject(this.remoteApplicationConfig.ToModelObject(), workingApplicationConfiguration);
             ObjectCopier.CopyObject(this.remoteEngineConfig.ToModelObject(), workingEngineConfiguration);
 
-            CoinsForm coinsForm = new CoinsForm(workingEngineConfiguration.CoinConfigurations, knownCoins, workingApplicationConfiguration, perksConfiguration);
+            PoolsForm coinsForm = new PoolsForm(workingEngineConfiguration.CoinConfigurations, knownCoins, workingApplicationConfiguration, perksConfiguration);
             coinsForm.Text = String.Format("{0}: {1}", coinsForm.Text, this.selectedRemoteInstance.MachineName);
             DialogResult dialogResult = coinsForm.ShowDialog();
 
@@ -1531,7 +1554,7 @@ namespace MultiMiner.Win.Forms
 
         private void ConfigureCoinsLocally()
         {
-            CoinsForm coinsForm = new CoinsForm(engineConfiguration.CoinConfigurations, knownCoins, applicationConfiguration, perksConfiguration);
+            PoolsForm coinsForm = new PoolsForm(engineConfiguration.CoinConfigurations, knownCoins, applicationConfiguration, perksConfiguration);
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
@@ -1912,8 +1935,8 @@ namespace MultiMiner.Win.Forms
         //for instance if the user starts up the app with a new device
         private void AddMissingDeviceConfigurations()
         {
-            bool hasBtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.CryptoCoin.Symbol.Equals(KnownCoins.BitcoinSymbol, StringComparison.OrdinalIgnoreCase));
-            bool hasLtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.CryptoCoin.Symbol.Equals(KnownCoins.LitecoinSymbol, StringComparison.OrdinalIgnoreCase));
+            bool hasBtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.PoolGroup.Id.Equals(KnownCoins.BitcoinSymbol, StringComparison.OrdinalIgnoreCase));
+            bool hasLtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.PoolGroup.Id.Equals(KnownCoins.LitecoinSymbol, StringComparison.OrdinalIgnoreCase));
 
             foreach (Xgminer.Data.Device device in devices)
             {
@@ -1941,7 +1964,7 @@ namespace MultiMiner.Win.Forms
             bool result = deviceConfiguration.Enabled && !string.IsNullOrEmpty(deviceConfiguration.CoinSymbol);
             if (result)
             {
-                Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.CryptoCoin.Symbol.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+                Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.PoolGroup.Id.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
                 result = coinConfiguration == null ? false : coinConfiguration.Pools.Where(p => !String.IsNullOrEmpty(p.Host) && !String.IsNullOrEmpty(p.Username)).Count() > 0;
             }
             return result;
@@ -1984,7 +2007,7 @@ namespace MultiMiner.Win.Forms
             else
                 configurations = engineConfiguration.CoinConfigurations;
 
-            Engine.Data.Configuration.Coin coinConfiguration = configurations.SingleOrDefault(c => c.CryptoCoin.Symbol.Equals(itemCoinSymbol, StringComparison.OrdinalIgnoreCase));
+            Engine.Data.Configuration.Coin coinConfiguration = configurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(itemCoinSymbol, StringComparison.OrdinalIgnoreCase));
             return coinConfiguration;
         }
 
@@ -1993,14 +2016,14 @@ namespace MultiMiner.Win.Forms
             foreach (CoinInformation item in coinApiInformation)
             {
                 //find existing known coin or create a knew one
-                CryptoCoin knownCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(item.Symbol));
+                PoolGroup knownCoin = knownCoins.SingleOrDefault(c => c.Id.Equals(item.Symbol));
                 if (knownCoin == null)
                 {
-                    knownCoin = new CryptoCoin();
+                    knownCoin = new PoolGroup();
                     this.knownCoins.Add(knownCoin);
                 }
 
-                knownCoin.Symbol = item.Symbol;
+                knownCoin.Id = item.Symbol;
                 knownCoin.Name = item.Name;
                 knownCoin.Algorithm = item.Algorithm;
             }
@@ -2044,15 +2067,15 @@ namespace MultiMiner.Win.Forms
             string knownCoinsFileName = KnownCoinsFileName();
             if (File.Exists(knownCoinsFileName))
             {
-                knownCoins = ConfigurationReaderWriter.ReadConfiguration<List<CryptoCoin>>(knownCoinsFileName);
+                knownCoins = ConfigurationReaderWriter.ReadConfiguration<List<PoolGroup>>(knownCoinsFileName);
                 RemoveBunkCoins(knownCoins);
             }
         }
 
-        private static void RemoveBunkCoins(List<CryptoCoin> knownCoins)
+        private static void RemoveBunkCoins(List<PoolGroup> knownCoins)
         {
             //CoinChoose.com served up ButterFlyCoin as BOC, and then later as BFC
-            CryptoCoin badCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals("BOC", StringComparison.OrdinalIgnoreCase));
+            PoolGroup badCoin = knownCoins.SingleOrDefault(c => c.Id.Equals("BOC", StringComparison.OrdinalIgnoreCase));
             if (badCoin != null)
                 knownCoins.Remove(badCoin);
         }
@@ -2073,11 +2096,11 @@ namespace MultiMiner.Win.Forms
                 DeviceViewModel viewModel = localViewModel.Devices.Single(vm => vm.Equals(device));
 
                 //pull this from coin configurations, not known coins, may not be in CoinChoose
-                CryptoCoin coin = viewModel.Coin;
+                PoolGroup coin = viewModel.Coin;
                 Engine.Data.Configuration.Device deviceConfiguration = new Engine.Data.Configuration.Device();
                 deviceConfiguration.Assign(viewModel);
                 deviceConfiguration.Enabled = viewModel.Enabled;
-                deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Symbol;
+                deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Id;
                 engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
         }
@@ -2106,7 +2129,7 @@ namespace MultiMiner.Win.Forms
             {
                 DeviceViewModel deviceViewModel = localViewModel.Devices.SingleOrDefault(dvm => dvm.Equals(device));
                 if ((deviceViewModel != null) && (deviceViewModel.Kind != DeviceKind.NET))
-                    deviceViewModel.Coin = engineConfiguration.CoinConfigurations.Single(cc => cc.CryptoCoin.Name.Equals(coinName)).CryptoCoin;
+                    deviceViewModel.Coin = engineConfiguration.CoinConfigurations.Single(cc => cc.PoolGroup.Name.Equals(coinName)).PoolGroup;
             }
 
             RefreshListViewFromViewModel();
@@ -3858,7 +3881,7 @@ namespace MultiMiner.Win.Forms
             PerformRemoteCommand(instance, (service) =>
             {
                 Remoting.Data.Transfer.Device[] devices;
-                CryptoCoin[] configurations;
+                PoolGroup[] configurations;
                 bool mining, hasChanges, dynamicIntensity;
 
                 //set some safe defaults in case the call fails
@@ -3887,7 +3910,7 @@ namespace MultiMiner.Win.Forms
             });
         }
 
-        private void SaveCoinTransferObjects(IEnumerable<CryptoCoin> configurations)
+        private void SaveCoinTransferObjects(IEnumerable<PoolGroup> configurations)
         {
             this.remoteViewModel.ConfiguredCoins = configurations.ToList();
         }
@@ -4171,6 +4194,20 @@ namespace MultiMiner.Win.Forms
             this.coinChooseApiContext = new CoinChoose.ApiContext();
         }
 
+        private void ShowMultipoolApiErrorNotification(MultipoolApi.IApiContext apiContext, Exception ex)
+        {
+            string siteUrl = apiContext.GetInfoUrl();
+            string apiUrl = apiContext.GetApiUrl();
+            string apiName = apiContext.GetApiName();
+
+            PostNotification(ex.Message,
+                String.Format("Error parsing the {0} JSON API", apiName), () =>
+                {
+                    Process.Start(apiUrl);
+                },
+                ToolTipIcon.Warning, siteUrl);
+        }
+
         private void ShowCoinApiErrorNotification(IApiContext apiContext, Exception ex)
         {
             string siteUrl = apiContext.GetInfoUrl();
@@ -4214,6 +4251,63 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshCoinStats()
         {
+            RefreshSingleCoinStats();
+            RefreshMultiCoinStats();
+
+            RefreshListViewFromViewModel();
+            RefreshCoinStatsLabel();
+            AutoSizeListViewColumns();
+            SuggestCoinsToMine();
+            RefreshDetailsAreaIfVisible();
+        }
+
+        private IEnumerable<MultipoolInformation> GetMultipoolInformation()
+        {
+            IEnumerable<MultipoolInformation> multipoolInformation = null;
+            NiceHash.ApiContext apiContext = new NiceHash.ApiContext();
+            try
+            {
+                multipoolInformation = apiContext.GetMultipoolInformation();
+            }
+            catch (Exception ex)
+            {
+                //don't crash if website cannot be resolved or JSON cannot be parsed
+                if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is CoinApiException) ||
+                    (ex is JsonReaderException))
+                {
+                    if (applicationConfiguration.ShowApiErrors)
+                        ShowMultipoolApiErrorNotification(apiContext, ex);
+                }
+                throw;
+            }
+            return multipoolInformation;
+        }
+
+        private void RefreshMultiCoinStats()
+        {
+            IEnumerable<MultipoolInformation> multipoolInformation = GetMultipoolInformation();
+
+            //we're offline or the API is offline
+            if (multipoolInformation == null)
+                return;
+
+            double btcPrice = multipoolInformation.Single(mpi => mpi.Algorithm.Equals(AlgorithmNames.SHA256)).Price;
+
+            coinApiInformation.AddRange(multipoolInformation
+                .Select(mpi => new CoinInformation
+                {
+                    Symbol = "NiceHash:" + mpi.Algorithm,
+                    Name = "NiceHash - " + mpi.Algorithm,
+                    Profitability = mpi.Profitability,
+                    AverageProfitability = mpi.Profitability,
+                    AdjustedProfitability = mpi.Profitability,
+                    Price = mpi.Price,
+                    Algorithm = KnownAlgorithms.Algorithms.Single(ka => ka.Name.Equals(mpi.Algorithm)).FullName
+                }));
+        }
+
+        private void RefreshSingleCoinStats()
+        {
             //always load known coins from file
             //CoinChoose may not show coins it once did if there are no orders
             LoadKnownCoinsFromFile();
@@ -4240,12 +4334,6 @@ namespace MultiMiner.Win.Forms
                 LoadKnownCoinsFromCoinStats();
 
             FixCoinSymbolDiscrepencies();
-
-            RefreshListViewFromViewModel();
-            RefreshCoinStatsLabel();
-            AutoSizeListViewColumns();
-            SuggestCoinsToMine();
-            RefreshDetailsAreaIfVisible();
         }
 
         private void FixCoinSymbolDiscrepencies()
@@ -4275,12 +4363,12 @@ namespace MultiMiner.Win.Forms
 
         private void FixKnownCoinSymbolDiscrepencies()
         {
-            CryptoCoin badCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+            PoolGroup badCoin = knownCoins.SingleOrDefault(c => c.Id.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
             if (badCoin != null)
             {
-                CryptoCoin goodCoin = knownCoins.SingleOrDefault(c => c.Symbol.Equals(KnownCoins.DogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+                PoolGroup goodCoin = knownCoins.SingleOrDefault(c => c.Id.Equals(KnownCoins.DogecoinSymbol, StringComparison.OrdinalIgnoreCase));
                 if (goodCoin == null)
-                    badCoin.Symbol = KnownCoins.DogecoinSymbol;
+                    badCoin.Id = KnownCoins.DogecoinSymbol;
                 else
                     knownCoins.Remove(badCoin);
             }
@@ -4456,9 +4544,9 @@ namespace MultiMiner.Win.Forms
                         Coin coinConfiguration = CoinConfigurationForPoolUrl(poolUrl);
                         if (coinConfiguration != null)
                         {
-                            miningStatistics.CoinName = coinConfiguration.CryptoCoin.Name;
-                            miningStatistics.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
-                            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(coinConfiguration.CryptoCoin.Algorithm);
+                            miningStatistics.CoinName = coinConfiguration.PoolGroup.Name;
+                            miningStatistics.CoinSymbol = coinConfiguration.PoolGroup.Id;
+                            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(coinConfiguration.PoolGroup.Algorithm);
 
                             //MobileMiner is only SHA & Scrypt for now
                             if ((algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA2) ||
@@ -4579,9 +4667,12 @@ namespace MultiMiner.Win.Forms
         {
             miningStatistics.MinerName = "MultiMiner";
             miningStatistics.CoinName = coinName;
-            Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.CryptoCoin.Name.Equals(coinName));
-            CryptoCoin coin = coinConfiguration.CryptoCoin;
-            miningStatistics.CoinSymbol = coin.Symbol;
+            Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.PoolGroup.Name.Equals(coinName));
+            PoolGroup coin = coinConfiguration.PoolGroup;
+
+            //don't send non-coin Ids to MobileMiner
+            if (coin.Kind != PoolGroup.PoolGroupKind.MultiCoin)
+                miningStatistics.CoinSymbol = coin.Id;
 
             CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(coin.Algorithm);
 
@@ -4720,7 +4811,7 @@ namespace MultiMiner.Win.Forms
             Dictionary<string, List<string>> machinePools = new Dictionary<string, List<string>>();
             List<string> pools = new List<string>();
             foreach (Coin coin in engineConfiguration.CoinConfigurations.Where(cc => cc.Enabled))
-                pools.Add(coin.CryptoCoin.Name);
+                pools.Add(coin.PoolGroup.Name);
             machinePools[Environment.MachineName] = pools;
 
             foreach (KeyValuePair<string, List<PoolInformation>> networkDevicePool in networkDevicePools)
@@ -4896,9 +4987,9 @@ namespace MultiMiner.Win.Forms
                     {
                         string[] parts = command.CommandText.Split('|');
                         string coinName = parts[1];
-                        Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.CryptoCoin.Name.Equals(coinName));
+                        Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.PoolGroup.Name.Equals(coinName));
                         if (coinConfiguration != null)
-                            SetAllDevicesToCoinLocally(coinConfiguration.CryptoCoin.Symbol, true);
+                            SetAllDevicesToCoinLocally(coinConfiguration.PoolGroup.Id, true);
                     }
 
                     deleteRemoteCommandDelegate.BeginInvoke(command, deleteRemoteCommandDelegate.EndInvoke, null);
@@ -5097,14 +5188,14 @@ namespace MultiMiner.Win.Forms
                         Engine.Data.Configuration.Coin coinConfiguration = CoinConfigurationForDevice(device);
 
                         if (minerProcess.Miner.LegacyApi && (coinConfiguration != null))
-                            deviceInformation.WorkUtility = AdjustWorkUtilityForPoolMultipliers(deviceInformation.WorkUtility, coinConfiguration.CryptoCoin.Algorithm);
+                            deviceInformation.WorkUtility = AdjustWorkUtilityForPoolMultipliers(deviceInformation.WorkUtility, coinConfiguration.PoolGroup.Algorithm);
 
                         DeviceViewModel deviceViewModel = localViewModel.ApplyDeviceInformationResponseModel(device, deviceInformation);
                         deviceDetailsMapping[deviceViewModel] = deviceDetails;
 
                         if (coinConfiguration != null)
                         {
-                            coinSymbol = coinConfiguration.CryptoCoin.Symbol;
+                            coinSymbol = coinConfiguration.PoolGroup.Id;
 
                             string poolName = GetPoolNameByIndex(coinConfiguration, deviceViewModel.PoolIndex);
                             //may be blank if donating
@@ -5345,7 +5436,7 @@ namespace MultiMiner.Win.Forms
 
                             Coin coinConfiguration = CoinConfigurationForPoolUrl(poolInformation.Url);
                             if (coinConfiguration != null)
-                                deviceViewModel.Coin = coinConfiguration.CryptoCoin;
+                                deviceViewModel.Coin = coinConfiguration.PoolGroup;
                         }
                     }
 
@@ -5862,7 +5953,7 @@ namespace MultiMiner.Win.Forms
                     {
 
                         //if auto mining is enabled, flag pools down in the coin configuration and display a notification
-                        Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(config => config.CryptoCoin.Name.Equals(ea.CoinName, StringComparison.OrdinalIgnoreCase));
+                        Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(config => config.PoolGroup.Name.Equals(ea.CoinName, StringComparison.OrdinalIgnoreCase));
                         coinConfiguration.PoolsDown = true;
                         engineConfiguration.SaveCoinConfigurations();
 
@@ -6391,7 +6482,7 @@ namespace MultiMiner.Win.Forms
             {
                 Engine.Data.Configuration.Device deviceConfiguration = new Engine.Data.Configuration.Device()
                 {
-                    CoinSymbol = coinConfiguration.CryptoCoin.Symbol,
+                    CoinSymbol = coinConfiguration.PoolGroup.Id,
                     Enabled = true
                 };
 
@@ -6804,7 +6895,7 @@ namespace MultiMiner.Win.Forms
             bool wasMining = miningEngine.Mining;
             StopMiningLocally();
 
-            Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.CryptoCoin.Symbol.Equals(coinSymbol));
+            Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coinSymbol));
 
             engineConfiguration.DeviceConfigurations.Clear();
 
@@ -6824,10 +6915,10 @@ namespace MultiMiner.Win.Forms
                 }
                 else if (viewModel.Kind == DeviceKind.PXY)
                 {
-                    if (viewModel.SupportsAlgorithm(coinConfiguration.CryptoCoin.Algorithm) &&
+                    if (viewModel.SupportsAlgorithm(coinConfiguration.PoolGroup.Algorithm) &&
                         //don't change the Algo a Proxy is mining - don't know what is pointed at it
-                        (viewModel.Coin.Algorithm == coinConfiguration.CryptoCoin.Algorithm))
-                        deviceConfiguration.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
+                        (viewModel.Coin.Algorithm == coinConfiguration.PoolGroup.Algorithm))
+                        deviceConfiguration.CoinSymbol = coinConfiguration.PoolGroup.Id;
                     else
                         deviceConfiguration.CoinSymbol = viewModel.Coin == null ? String.Empty : viewModel.Coin.Name;
 
@@ -6835,8 +6926,8 @@ namespace MultiMiner.Win.Forms
                 }
                 else
                 {
-                    if (viewModel.SupportsAlgorithm(coinConfiguration.CryptoCoin.Algorithm))
-                        deviceConfiguration.CoinSymbol = coinConfiguration.CryptoCoin.Symbol;
+                    if (viewModel.SupportsAlgorithm(coinConfiguration.PoolGroup.Algorithm))
+                        deviceConfiguration.CoinSymbol = coinConfiguration.PoolGroup.Id;
                     else
                         deviceConfiguration.CoinSymbol = viewModel.Coin == null ? String.Empty : viewModel.Coin.Name;
 
@@ -7229,7 +7320,7 @@ namespace MultiMiner.Win.Forms
 
             string coinName = minerProcess.MinerConfiguration.CoinName;
             //reference miningCoinConfigurations so that we get access to the mining coins
-            Engine.Data.Configuration.Coin configuration = miningCoinConfigurations.SingleOrDefault(c => c.CryptoCoin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            Engine.Data.Configuration.Coin configuration = miningCoinConfigurations.SingleOrDefault(c => c.PoolGroup.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
             if (configuration == null)
                 return;
 
@@ -7254,7 +7345,7 @@ namespace MultiMiner.Win.Forms
 
             string coinName = minerProcess.MinerConfiguration.CoinName;
             //reference miningCoinConfigurations so that we get access to the mining coins
-            Engine.Data.Configuration.Coin configuration = miningCoinConfigurations.SingleOrDefault(c => c.CryptoCoin.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            Engine.Data.Configuration.Coin configuration = miningCoinConfigurations.SingleOrDefault(c => c.PoolGroup.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
             if (configuration == null)
                 return;
 
@@ -7477,7 +7568,7 @@ namespace MultiMiner.Win.Forms
         {
             IEnumerable<string> configuredAlgorithms = engineConfiguration.CoinConfigurations
                 .Where(config => config.Enabled)
-                .Select(config => config.CryptoCoin.Algorithm)
+                .Select(config => config.PoolGroup.Algorithm)
                 .Distinct();
 
             SerializableDictionary<string, string> algorithmMiners = engineConfiguration.XgminerConfiguration.AlgorithmMiners;

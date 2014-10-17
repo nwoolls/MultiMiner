@@ -68,7 +68,11 @@ Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Remoting.pdb"; DestDir: "{app}
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Services.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Services.pdb"; DestDir: "{app}"; Flags: ignoreversion       
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Discovery.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Discovery.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Discovery.pdb"; DestDir: "{app}"; Flags: ignoreversion       
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MultipoolApi.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MultipoolApi.pdb"; DestDir: "{app}"; Flags: ignoreversion     
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.NiceHash.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.NiceHash.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\Miners\bfgminer\Extract bfgminer here.txt"; DestDir: "{app}\Miners\bfgminer\"; Flags: ignoreversion
 

@@ -1,19 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0DBEF993-1B34-4D80-AB6A-F662604325DC}</ProjectGuid>
+    <ProjectGuid>{4AF4B34A-07DB-456B-9C58-B0863435FE54}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MultiMiner.Xgminer</RootNamespace>
-    <AssemblyName>MultiMiner.Xgminer</AssemblyName>
+    <RootNamespace>MultiMiner.MultipoolApi</RootNamespace>
+    <AssemblyName>MultiMiner.MultipoolApi</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <ProductVersion>12.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,38 +33,16 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthenticationFailedArgs.cs" />
-    <Compile Include="Data\AlgorithmNames.cs" />
-    <Compile Include="Data\CoinAlgorithm.cs" />
-    <Compile Include="Data\Device\Device.cs" />
-    <Compile Include="Data\Device\DeviceDescriptor.cs" />
-    <Compile Include="Data\Device\DeviceKind.cs" />
-    <Compile Include="Data\Device\DevicePlatform.cs" />
-    <Compile Include="Data\KnownAlgorithm.cs" />
-    <Compile Include="Data\KnownAlgorithms.cs" />
-    <Compile Include="LaunchFailedArgs.cs" />
-    <Compile Include="LogLaunchArgs.cs" />
-    <Compile Include="MinerLaunchException.cs" />
-    <Compile Include="Data\MiningPool.cs" />
-    <Compile Include="Parsers\DeviceListParser.cs" />
-    <Compile Include="Parsers\EnumerateDevicesParser.cs" />
-    <Compile Include="Miner.cs" />
-    <Compile Include="Data\Configuration\Miner.cs" />
-    <Compile Include="MinerParameter.cs" />
+    <Compile Include="Data\MultipoolInformation.cs" />
+    <Compile Include="MultipoolApiException.cs" />
+    <Compile Include="IApiContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
-      <Project>{99B0F266-EFF7-4416-8C36-8356396A11CA}</Project>
-      <Name>MultiMiner.Utility</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

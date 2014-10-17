@@ -20,11 +20,11 @@ namespace MultiMiner.Engine.Data.Configuration
         {
             this.Pools = new List<MiningPool>();
             this.Enabled = true;
-            this.CryptoCoin = new CryptoCoin();
+            this.PoolGroup = new PoolGroup();
         }
 
         [XmlElement(ElementName = "Coin")]
-        public CryptoCoin CryptoCoin { get; set; }
+        public PoolGroup PoolGroup { get; set; }
         public List<MiningPool> Pools { get; set; }
         public string MinerFlags { get; set; }
         public double ProfitabilityAdjustment { get; set; }

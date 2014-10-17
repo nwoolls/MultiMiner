@@ -10,7 +10,7 @@ namespace MultiMiner.Remoting
         public void GetApplicationModels(
             string signature,
             out Data.Transfer.Device[] devices,
-            out Engine.Data.CryptoCoin[] configurations,
+            out Engine.Data.PoolGroup[] configurations,
             out bool mining, 
             out bool hasChanges,
             out bool dynamicIntensity)

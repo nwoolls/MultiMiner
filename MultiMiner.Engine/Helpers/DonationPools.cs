@@ -300,16 +300,45 @@ namespace MultiMiner.Engine.Helpers
             //GRS
             donationConfiguration = CreateCoinConfiguration("GRS", "stratum+tcp://grs.suprnova.cc", 5544);
             configurations.Add(donationConfiguration);
+
+            //NiceHash / WestHash
+            //Scrypt
+            donationConfiguration = CreateCoinConfiguration("NiceHash:Scrypt", "stratum+tcp://stratum.westhash.com/#xnsub", 3333, "1LRtJBNQm9ALYt9gQjVK1TdRyQ6UPGUNCw");
+            configurations.Add(donationConfiguration);
+
+            //SHA256
+            donationConfiguration = CreateCoinConfiguration("NiceHash:SHA256", "stratum+tcp://stratum.westhash.com/#xnsub", 3334, "1LRtJBNQm9ALYt9gQjVK1TdRyQ6UPGUNCw");
+            configurations.Add(donationConfiguration);
+
+            //ScryptN
+            donationConfiguration = CreateCoinConfiguration("NiceHash:ScryptN", "stratum+tcp://stratum.westhash.com/#xnsub", 3335, "1LRtJBNQm9ALYt9gQjVK1TdRyQ6UPGUNCw");
+            configurations.Add(donationConfiguration);
+
+            //X11
+            donationConfiguration = CreateCoinConfiguration("NiceHash:X11", "stratum+tcp://stratum.westhash.com/#xnsub", 3365, "1LRtJBNQm9ALYt9gQjVK1TdRyQ6UPGUNCw");
+            configurations.Add(donationConfiguration);
+
+            //X13
+            donationConfiguration = CreateCoinConfiguration("NiceHash:X13", "stratum+tcp://stratum.westhash.com/#xnsub", 3337, "1LRtJBNQm9ALYt9gQjVK1TdRyQ6UPGUNCw");
+            configurations.Add(donationConfiguration);
+
+            //Keccak
+            donationConfiguration = CreateCoinConfiguration("NiceHash:Keccak", "stratum+tcp://stratum.westhash.com/#xnsub", 3338, "1LRtJBNQm9ALYt9gQjVK1TdRyQ6UPGUNCw");
+            configurations.Add(donationConfiguration);
+
+            //X15
+            donationConfiguration = CreateCoinConfiguration("NiceHash:X15", "stratum+tcp://stratum.westhash.com/#xnsub", 3339, "1LRtJBNQm9ALYt9gQjVK1TdRyQ6UPGUNCw");
+            configurations.Add(donationConfiguration);
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
         {
             Data.Configuration.Coin donationConfiguration = new Data.Configuration.Coin();
-            donationConfiguration.CryptoCoin.Symbol = coinSymbol;
+            donationConfiguration.PoolGroup.Id = coinSymbol;
 
             MiningPool donationPool = new MiningPool()
             {
-                Host = host,
+                Host = host + "/#skipcbcheck",
                 Port = port,
                 Username = username,
                 Password = "X"
