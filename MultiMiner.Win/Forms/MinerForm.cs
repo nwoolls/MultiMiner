@@ -4476,7 +4476,9 @@ namespace MultiMiner.Win.Forms
 
         private void AddAllMinerStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
         {
-            AddLocalMinerStatistics(statisticsList);
+            if (!applicationConfiguration.MobileMinerNetworkMonitorOnly)
+                AddLocalMinerStatistics(statisticsList);
+
             AddNetworkMinerStatistics(statisticsList);
         }
 
@@ -4879,7 +4881,9 @@ namespace MultiMiner.Win.Forms
             List<MobileMiner.Data.RemoteCommand> commands = new List<MobileMiner.Data.RemoteCommand>();
 
             List<string> machineNames = new List<string>();
-            machineNames.Add(Environment.MachineName);
+
+            if (!applicationConfiguration.MobileMinerNetworkMonitorOnly)
+                machineNames.Add(Environment.MachineName);
 
             IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
             foreach (DeviceViewModel deviceViewModel in networkDevices)
@@ -4887,6 +4891,9 @@ namespace MultiMiner.Win.Forms
                 string machineName = localViewModel.GetFriendlyDeviceName(deviceViewModel.Path, deviceViewModel.Path);
                 machineNames.Add(machineName);
             }
+
+            if (machineNames.Count == 0)
+                return;
 
             try
             {
