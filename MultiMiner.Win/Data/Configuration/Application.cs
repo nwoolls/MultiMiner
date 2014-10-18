@@ -73,6 +73,7 @@ namespace MultiMiner.Win.Data.Configuration
         public string MobileMinerApplicationKey { get; set; }
         public bool MobileMinerUsesHttps { get; set; }
         public bool MobileMinerPushNotifications { get; set; }
+        public bool MobileMinerNetworkMonitorOnly { get; set; }
 
         public bool UseCoinWarzApi { get; set; }
         public string CoinWarzApiKey { get; set; }
