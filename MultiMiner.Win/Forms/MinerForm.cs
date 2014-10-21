@@ -4277,6 +4277,7 @@ namespace MultiMiner.Win.Forms
                 {
                     if (applicationConfiguration.ShowApiErrors)
                         ShowMultipoolApiErrorNotification(apiContext, ex);
+                    return null;
                 }
                 throw;
             }
