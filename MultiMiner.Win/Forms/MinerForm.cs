@@ -78,6 +78,7 @@ namespace MultiMiner.Win.Forms
         private readonly Dictionary<DeviceViewModel, string> lastDevicePoolMapping = new Dictionary<DeviceViewModel, string>();
         private readonly Dictionary<string, List<PoolInformation>> networkDevicePools = new Dictionary<string, List<PoolInformation>>();
         private readonly Dictionary<string, List<MinerStatistics>> networkDeviceStatistics = new Dictionary<string, List<MinerStatistics>>();
+        private readonly Dictionary<string, VersionInformation> networkDeviceVersions = new Dictionary<string, VersionInformation>();
 
         //currently mining information
         private List<Engine.Data.Configuration.Device> miningDeviceConfigurations;
@@ -3128,10 +3129,11 @@ namespace MultiMiner.Win.Forms
             //submit pools to MobileMiner before clearing cache
             SubmitMobileMinerPools();
 
-            //clear cached pool information for Network Devices
+            //clear cached information for Network Devices
             //(so we pick up changes)
             networkDevicePools.Clear();
             networkDeviceStatistics.Clear();
+            networkDeviceVersions.Clear();
         }
 
         private void oneMinuteTimer_Tick(object sender, EventArgs e)
@@ -5341,7 +5343,21 @@ namespace MultiMiner.Win.Forms
             return poolInformationList;
         }
 
-        private List<MinerStatistics> GetCacheMinerStatisticsFromAddress(string ipAddress, int port)
+        private VersionInformation GetCachedMinerVersionFromAddress(string ipAddress, int port)
+        {
+            VersionInformation versionInfo = null;
+            string key = String.Format("{0}:{1}", ipAddress, port);
+            if (this.networkDeviceVersions.ContainsKey(key))
+                versionInfo = this.networkDeviceVersions[key];
+            else
+            {
+                versionInfo = GetVersionInfoFromAddress(ipAddress, port);
+                networkDeviceVersions[key] = versionInfo;
+            }
+            return versionInfo;
+        }
+
+        private List<MinerStatistics> GetCachedMinerStatisticsFromAddress(string ipAddress, int port)
         {
             List<MinerStatistics> minerStatisticsList = null;
             string key = String.Format("{0}:{1}", ipAddress, port);
@@ -5406,7 +5422,7 @@ namespace MultiMiner.Win.Forms
                     //at the time
                     if (deviceInformationList != null)
                     {
-                        List<MinerStatistics> minerStatistics = GetCacheMinerStatisticsFromAddress(ipAddress, port);
+                        List<MinerStatistics> minerStatistics = GetCachedMinerStatisticsFromAddress(ipAddress, port);
                         //null if API call fails
                         //check for minerStatistics.Count > 0 needed (error reported with callstack)
                         if ((minerStatistics != null) && (minerStatistics.Count > 0))
@@ -5445,6 +5461,15 @@ namespace MultiMiner.Win.Forms
                             Coin coinConfiguration = CoinConfigurationForPoolUrl(poolInformation.Url);
                             if (coinConfiguration != null)
                                 deviceViewModel.Coin = coinConfiguration.PoolGroup;
+                        }
+                        
+                        VersionInformation versionInfo = GetCachedMinerVersionFromAddress(ipAddress, port);
+                        //null if API call fails
+                        if (versionInfo != null)
+                        {
+                            //fix work utility for Network Devices using CGMiner-forks that mine alt coins
+                            if (!versionInfo.Name.Equals(MinerNames.BFGMiner, StringComparison.OrdinalIgnoreCase))
+                                deviceViewModel.WorkUtility = AdjustWorkUtilityForPoolMultipliers(deviceViewModel.WorkUtility, deviceViewModel.Coin.Algorithm);
                         }
                     }
 
