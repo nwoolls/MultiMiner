@@ -7735,6 +7735,26 @@ namespace MultiMiner.Win.Forms
         
         private void RestartSuspectNetworkDevices()
         {
+            RestartNetworkDevicesForChainStatus();
+            RestartNetworkDevicesForSubparHashrate();
+        }
+
+        private void RestartNetworkDevicesForSubparHashrate()
+        {
+            IEnumerable<DeviceViewModel> suspectNetworkDevices =
+                localViewModel
+                .Devices.Where(
+                    d => (d.Kind == DeviceKind.NET)
+                        && (d.AverageHashrate > 0)
+                        && ((d.CurrentHashrate / d.AverageHashrate) < 0.5)
+                ).ToList();
+
+            foreach (DeviceViewModel networkDevice in suspectNetworkDevices)
+                RestartSuspectNetworkDevice(networkDevice, "subpar hashrate");
+        }
+
+        private void RestartNetworkDevicesForChainStatus()
+        {
             IEnumerable<DeviceViewModel> suspectNetworkDevices =
                 localViewModel
                 .Devices.Where(
@@ -7747,22 +7767,27 @@ namespace MultiMiner.Win.Forms
                 //we don't want to keep trying to restart it over and over - clear suspect status
                 ClearChainStatus(networkDevice);
 
-                string message = String.Format("Restarting {0} (chain status)", networkDevice.FriendlyName);
-                try
-                {
-                    RestartNetworkDevice(networkDevice);
-                }
-                catch (SocketException)
-                {
-                    message = String.Format("Timeout restarting {0} (chain status)", networkDevice.FriendlyName);
-                }
-
-                //code to update UI
-                PostNotification(message,
-                    message, () =>
-                    {
-                    }, ToolTipIcon.Error);
+                RestartSuspectNetworkDevice(networkDevice, "chain status");
             }
+        }
+
+        private void RestartSuspectNetworkDevice(DeviceViewModel networkDevice, string reason)
+        {
+            string message = String.Format("Restarting {0} ({1})", networkDevice.FriendlyName, reason);
+            try
+            {
+                RestartNetworkDevice(networkDevice);
+            }
+            catch (SocketException)
+            {
+                message = String.Format("Timeout restarting {0} ({1})", networkDevice.FriendlyName, reason);
+            }
+
+            //code to update UI
+            PostNotification(message,
+                message, () =>
+                {
+                }, ToolTipIcon.Error);
         }
 
         private static void ClearChainStatus(DeviceViewModel networkDevice)
