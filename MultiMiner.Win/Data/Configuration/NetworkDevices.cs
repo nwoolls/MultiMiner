@@ -20,6 +20,7 @@ namespace MultiMiner.Win.Data.Configuration
             public string IPAddress { get; set; }
             public int Port { get; set; }
             public bool Sticky { get; set; }
+            public bool Hidden { get; set; }
         }
 
         public List<NetworkDevice> Devices { get; set; }

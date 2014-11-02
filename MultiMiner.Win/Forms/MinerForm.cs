@@ -7828,6 +7828,19 @@ namespace MultiMiner.Win.Forms
             networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
 
+        private void ToggleNetworkDeviceHidden()
+        {
+            DeviceViewModel deviceViewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
+            NetworkDevices.NetworkDevice deviceConfiguration = networkDevicesConfiguration.Devices.Single(
+                cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
+
+            deviceConfiguration.Hidden = !deviceConfiguration.Hidden;
+            networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+
+            ApplyDevicesToViewModel();
+            RefreshListViewFromViewModel();
+        }
+
         private void PopulateNetworkDevicePoolMenu(DeviceViewModel viewModel)
         {
             networkDevicePoolMenu.DropDownItems.Clear();
@@ -7864,6 +7877,11 @@ namespace MultiMiner.Win.Forms
         private void stickyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToggleNetworkDeviceSticky();
+        }
+
+        private void hiddenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToggleNetworkDeviceHidden();
         }
     }
 }

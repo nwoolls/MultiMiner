@@ -48,7 +48,7 @@ namespace MultiMiner.Win.ViewModels
             //add/update Devices from networkDeviceModels
             if (networkDeviceModels != null)
             {
-                foreach (NetworkDevices.NetworkDevice networkDeviceModel in networkDeviceModels)
+                foreach (NetworkDevices.NetworkDevice networkDeviceModel in networkDeviceModels.Where(nd => !nd.Hidden))
                 {
                     DeviceViewModel deviceViewModel = networkDeviceModel.ToViewModel();
 
@@ -87,7 +87,7 @@ namespace MultiMiner.Win.ViewModels
                 bool found = true;
 
                 if (deviceViewModel.Kind == DeviceKind.NET)
-                    found = networkDeviceModels.Any(d => d.ToViewModel().Equals(deviceViewModel));
+                    found = networkDeviceModels.Any(d => d.ToViewModel().Equals(deviceViewModel) && !d.Hidden);
                 else
                     found = deviceModels.Any(d => d.Equals(deviceViewModel));
 
