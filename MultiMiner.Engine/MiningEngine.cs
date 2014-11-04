@@ -218,6 +218,8 @@ namespace MultiMiner.Engine
                 stoppingMining = false;
             }
         }
+
+        public const int SecondsToWarmUpMiner = 60 * 5;
         
         public bool RelaunchCrashedMiners()
         {
@@ -257,8 +259,8 @@ namespace MultiMiner.Engine
                     TimeSpan processAge = DateTime.Now - minerProcess.Process.StartTime;
                     //this needs to give the devices long enough to spin up
                     //making this longer (than 120) on 12/10 to account for proxy devices that take longer
-                    //to spin up, such as Raspberry Pi
-                    if (processAge.TotalSeconds > 240)
+                    //to warm up, such as Raspberry Pi
+                    if (processAge.TotalSeconds > SecondsToWarmUpMiner)
                     {
                         logProcessClose(minerProcess);
                         minerProcess.StopMining();

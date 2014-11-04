@@ -1,8 +1,6 @@
 ﻿using MultiMiner.Xgminer.Api.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MultiMiner.Xgminer.Api.Parsers
 {
@@ -52,6 +50,10 @@ namespace MultiMiner.Xgminer.Api.Parsers
                 key = "frequency";
                 if (keyValuePairs.ContainsKey(key))
                     newStatistics.Frequency = TryToParseDouble(keyValuePairs, key, 0.0);
+
+                key = "Elapsed";
+                if (keyValuePairs.ContainsKey(key))
+                    newStatistics.Elapsed = TryToParseInt(keyValuePairs, key, 0);
 
                 minerStatistics.Add(newStatistics);
             }
