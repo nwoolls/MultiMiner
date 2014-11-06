@@ -7801,7 +7801,8 @@ namespace MultiMiner.Win.Forms
             string message = String.Format("Restarting {0} ({1})", networkDevice.FriendlyName, reason);
             try
             {
-                RestartNetworkDevice(networkDevice);
+                if (!RestartNetworkDevice(networkDevice))
+                    message = String.Format("Access denied restarting {0} ({1})", networkDevice.FriendlyName, reason);
             }
             catch (SocketException)
             {
@@ -7827,7 +7828,7 @@ namespace MultiMiner.Win.Forms
             RestartNetworkDevice(networkDevice);
         }
 
-        private void RestartNetworkDevice(DeviceViewModel networkDevice)
+        private bool RestartNetworkDevice(DeviceViewModel networkDevice)
         {
             Uri uri = new Uri("http://" + networkDevice.Path);
             Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
@@ -7836,7 +7837,9 @@ namespace MultiMiner.Win.Forms
             apiContext.LogEvent -= LogApiEvent;
             apiContext.LogEvent += LogApiEvent;
 
-            apiContext.RestartMining();
+            string response = apiContext.RestartMining();
+
+            return response.Trim().Equals("restart", StringComparison.OrdinalIgnoreCase);
         }
 
         private void SetNetworkDevicePool(int poolIndex)
