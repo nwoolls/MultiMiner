@@ -4202,12 +4202,15 @@ namespace MultiMiner.Win.Forms
             string apiUrl = apiContext.GetApiUrl();
             string apiName = apiContext.GetApiName();
 
+            string summary = String.Format("Error parsing the {0} JSON API", apiName);
+            string details = ex.Message;
+
             PostNotification(ex.Message,
-                String.Format("Error parsing the {0} JSON API", apiName), () =>
+                summary, () =>
                 {
-                    Process.Start(apiUrl);
+                    MessageBox.Show(String.Format("{0}: {1}", summary, details), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 },
-                ToolTipIcon.Warning, siteUrl);
+                ToolTipIcon.Warning, apiUrl);
         }
 
         private void ShowCoinApiErrorNotification(IApiContext apiContext, Exception ex)
@@ -4216,12 +4219,15 @@ namespace MultiMiner.Win.Forms
             string apiUrl = apiContext.GetApiUrl();
             string apiName = apiContext.GetApiName();
 
+            string summary = String.Format("Error parsing the {0} JSON API", apiName);
+            string details = ex.Message;
+
             PostNotification(ex.Message,
-                String.Format("Error parsing the {0} JSON API", apiName), () =>
+                summary, () =>
                 {
-                    Process.Start(apiUrl);
+                    MessageBox.Show(String.Format("{0}: {1}", summary, details), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 },
-                ToolTipIcon.Warning, siteUrl);
+                ToolTipIcon.Warning, apiUrl);
         }
 
         private bool ApplyCoinInformationToViewModel(IApiContext apiContext)
