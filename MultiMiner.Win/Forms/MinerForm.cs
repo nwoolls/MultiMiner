@@ -7839,7 +7839,7 @@ namespace MultiMiner.Win.Forms
 
             string response = apiContext.RestartMining();
 
-            return response.Trim().Equals("restart", StringComparison.OrdinalIgnoreCase);
+            return !response.ToLower().Contains("STATUS=E");
         }
 
         private void SetNetworkDevicePool(int poolIndex)
