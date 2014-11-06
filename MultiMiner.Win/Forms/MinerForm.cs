@@ -7859,6 +7859,9 @@ namespace MultiMiner.Win.Forms
             apiContext.LogEvent += LogApiEvent;
 
             apiContext.RestartMining();
+
+            //clear cached stats so we do not restart newly restarted instances
+            networkDeviceStatistics.Remove(networkDevice.Path);
         }
 
         private void SetNetworkDevicePool(int poolIndex)
