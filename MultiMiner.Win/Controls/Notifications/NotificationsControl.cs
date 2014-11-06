@@ -1,6 +1,7 @@
 ﻿using MultiMiner.Utility.Forms;
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace MultiMiner.Win.Controls.Notifications
 {
@@ -74,6 +75,25 @@ namespace MultiMiner.Win.Controls.Notifications
         public int NotificationCount()
         {
             return containerPanel.Controls.Count;
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            ClearNotifications();
+        }
+
+        private void ClearNotifications()
+        {
+            List<Control> controls = new List<Control>();
+
+            foreach (Control control in containerPanel.Controls)
+                controls.Add(control);
+
+            foreach (Control control in controls)
+                control.Parent = null;
+
+            if (NotificationsChanged != null)
+                NotificationsChanged(this);
         }
     }
 }
