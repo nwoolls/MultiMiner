@@ -4205,9 +4205,9 @@ namespace MultiMiner.Win.Forms
             PostNotification(ex.Message,
                 String.Format("Error parsing the {0} JSON API", apiName), () =>
                 {
-                    Process.Start(apiUrl);
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 },
-                ToolTipIcon.Warning, siteUrl);
+                ToolTipIcon.Warning, apiUrl);
         }
 
         private void ShowCoinApiErrorNotification(IApiContext apiContext, Exception ex)
