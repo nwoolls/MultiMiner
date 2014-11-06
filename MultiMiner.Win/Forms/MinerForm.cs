@@ -5363,6 +5363,14 @@ namespace MultiMiner.Win.Forms
             return versionInfo;
         }
 
+        private List<MinerStatistics> GetCachedMinerStatisticsFromViewModel(DeviceViewModel deviceViewModel)
+        {
+            string[] portions = deviceViewModel.Path.Split(':');
+            string ipAddress = portions[0];
+            int port = int.Parse(portions[1]);
+            return GetCachedMinerStatisticsFromAddress(ipAddress, port);
+        }
+
         private List<MinerStatistics> GetCachedMinerStatisticsFromAddress(string ipAddress, int port)
         {
             List<MinerStatistics> minerStatisticsList = null;
@@ -7770,6 +7778,18 @@ namespace MultiMiner.Win.Forms
             RestartNetworkDevicesForSubparHashrate();
         }
 
+        private bool DeviceIsWarmedUp(DeviceViewModel deviceViewModel)
+        {
+            bool warm = false;
+
+            List<MinerStatistics> statistics = GetCachedMinerStatisticsFromViewModel(deviceViewModel);
+            //null in case of API failure
+            if ((statistics != null) && (statistics.Count > 0))
+                warm = statistics.First().Elapsed > MiningEngine.SecondsToWarmUpMiner;
+
+            return warm;
+        }
+
         private void RestartNetworkDevicesForSubparHashrate()
         {
             IEnumerable<DeviceViewModel> suspectNetworkDevices =
@@ -7778,6 +7798,7 @@ namespace MultiMiner.Win.Forms
                     d => (d.Kind == DeviceKind.NET)
                         && (d.AverageHashrate > 0)
                         && ((d.CurrentHashrate / d.AverageHashrate) < 0.5)
+                        && DeviceIsWarmedUp(d)
                 ).ToList();
 
             foreach (DeviceViewModel networkDevice in suspectNetworkDevices)
@@ -7791,6 +7812,7 @@ namespace MultiMiner.Win.Forms
                 .Devices.Where(
                     d => (d.Kind == DeviceKind.NET)
                         && (d.ChainStatus.Any(cs => !String.IsNullOrEmpty(cs) && cs.Count(c => c == 'x') > 2))
+                        && DeviceIsWarmedUp(d)
                 ).ToList();
 
             foreach (DeviceViewModel networkDevice in suspectNetworkDevices)
@@ -7844,8 +7866,15 @@ namespace MultiMiner.Win.Forms
             apiContext.LogEvent += LogApiEvent;
 
             string response = apiContext.RestartMining();
+            bool result = !response.ToLower().Contains("STATUS=E".ToLower());
 
-            return !response.ToLower().Contains("STATUS=E".ToLower());
+            if (result)
+            {
+                //clear cached stats so we do not restart newly restarted instances
+                networkDeviceStatistics.Remove(networkDevice.Path);
+            }
+
+            return result;
         }
 
         private void SetNetworkDevicePool(int poolIndex)
