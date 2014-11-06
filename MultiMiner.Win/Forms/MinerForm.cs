@@ -7867,7 +7867,7 @@ namespace MultiMiner.Win.Forms
 
             string response = apiContext.RestartMining();
 
-            return !response.ToLower().Contains("STATUS=E");
+            return !response.ToLower().Contains("STATUS=E".ToLower());
         }
 
         private void SetNetworkDevicePool(int poolIndex)
