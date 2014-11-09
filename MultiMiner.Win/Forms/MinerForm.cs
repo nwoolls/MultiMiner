@@ -7866,13 +7866,15 @@ namespace MultiMiner.Win.Forms
             apiContext.LogEvent += LogApiEvent;
 
             string response = apiContext.RestartMining();
-            bool success = !response.ToLower().Contains("STATUS=E".ToLower());
+            bool result = !response.ToLower().Contains("STATUS=E".ToLower());
 
-            if (success)
+            if (result)
+            {
                 //clear cached stats so we do not restart newly restarted instances
                 networkDeviceStatistics.Remove(networkDevice.Path);
+            }
 
-            return success;
+            return result;
         }
 
         private void SetNetworkDevicePool(int poolIndex)
