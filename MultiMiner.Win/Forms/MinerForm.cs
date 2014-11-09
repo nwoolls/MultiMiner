@@ -2012,7 +2012,7 @@ namespace MultiMiner.Win.Forms
             return coinConfiguration;
         }
 
-        private void LoadKnownCoinsFromCoinStats()
+        private void SaveCoinStatsToKnownCoins()
         {
             foreach (CoinInformation item in coinApiInformation)
             {
@@ -4261,6 +4261,7 @@ namespace MultiMiner.Win.Forms
         {
             RefreshSingleCoinStats();
             RefreshMultiCoinStats();
+            SaveCoinStatsToKnownCoins();
 
             RefreshListViewFromViewModel();
             RefreshCoinStatsLabel();
@@ -4269,7 +4270,7 @@ namespace MultiMiner.Win.Forms
             RefreshDetailsAreaIfVisible();
         }
 
-        private IEnumerable<MultipoolInformation> GetMultipoolInformation()
+        private IEnumerable<MultipoolInformation> GetNiceHashInformation()
         {
             IEnumerable<MultipoolInformation> multipoolInformation = null;
             NiceHash.ApiContext apiContext = new NiceHash.ApiContext();
@@ -4294,7 +4295,25 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshMultiCoinStats()
         {
-            IEnumerable<MultipoolInformation> multipoolInformation = GetMultipoolInformation();
+            RefreshNiceHashStats();
+        }
+
+        private void RefreshNiceHashStats()
+        {
+            const string Prefix = "NiceHash";
+
+            //the NiceHash API is slow
+            //only fetch from them if:
+            //1. We have no NiceHash coins in KnownCoins
+            //2. Or we have a Multipool setup for NiceHash
+            bool initialLoad = !knownCoins.Any(kc => kc.Id.Contains(Prefix));
+            bool miningNiceHash = engineConfiguration.CoinConfigurations.Any(cc => cc.PoolGroup.Id.Contains(Prefix));
+            if (!initialLoad && !miningNiceHash)
+            {
+                return;
+            }
+
+            IEnumerable<MultipoolInformation> multipoolInformation = GetNiceHashInformation();
 
             //we're offline or the API is offline
             if (multipoolInformation == null)
@@ -4305,8 +4324,8 @@ namespace MultiMiner.Win.Forms
             coinApiInformation.AddRange(multipoolInformation
                 .Select(mpi => new CoinInformation
                 {
-                    Symbol = "NiceHash:" + mpi.Algorithm,
-                    Name = "NiceHash - " + mpi.Algorithm,
+                    Symbol = Prefix + ":" + mpi.Algorithm,
+                    Name = Prefix + " - " + mpi.Algorithm,
                     Profitability = mpi.Profitability,
                     AverageProfitability = mpi.Profitability,
                     AdjustedProfitability = mpi.Profitability,
@@ -4339,9 +4358,6 @@ namespace MultiMiner.Win.Forms
                 ((backupApiContext == this.coinChooseApiContext) || !String.IsNullOrEmpty(this.applicationConfiguration.CoinWarzApiKey)))
                 success = ApplyCoinInformationToViewModel(backupApiContext);
             
-            if (success)
-                LoadKnownCoinsFromCoinStats();
-
             FixCoinSymbolDiscrepencies();
         }
 
