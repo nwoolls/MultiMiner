@@ -1426,7 +1426,7 @@ namespace MultiMiner.Win.Forms
                 //don't refresh coin stats excessively
                 if ((oldCoinWarzValue != applicationConfiguration.UseCoinWarzApi) ||
                     !oldCoinWarzKey.Equals(applicationConfiguration.CoinWarzApiKey))
-                    RefreshCoinStats();
+                    RefreshCoinStatsAsync();
 
                 //if we are not detecting Network Devices, start the async checks
                 if (applicationConfiguration.NetworkDeviceDetection &&
@@ -3062,10 +3062,8 @@ namespace MultiMiner.Win.Forms
 
         private void coinStatsTimer_Tick(object sender, EventArgs e)
         {
-            RefreshCoinStats();
-
-            CheckAndApplyMiningStrategy();
-
+            RefreshCoinStatsAsync();
+            
             coinStatsCountdownMinutes = coinStatsTimer.Interval / 1000 / 60;
         }
 
@@ -4257,16 +4255,43 @@ namespace MultiMiner.Win.Forms
             return true;
         }
 
+        private void RefreshCoinStatsAsync()
+        {
+
+            Action asyncAction = RefreshAllCoinStats;
+            asyncAction.BeginInvoke(
+                ar =>
+                {
+                    asyncAction.EndInvoke(ar);
+                    BeginInvoke((Action)(() =>
+                    {
+                        //code to update UI
+                        UpdateApplicationFromCoinStats();
+                    }));
+
+                }, null);
+        }
+
         private void RefreshCoinStats()
         {
-            RefreshSingleCoinStats();
-            RefreshMultiCoinStats();
+            RefreshAllCoinStats();
+            UpdateApplicationFromCoinStats();
+        }
 
+        private void UpdateApplicationFromCoinStats()
+        {
             RefreshListViewFromViewModel();
             RefreshCoinStatsLabel();
             AutoSizeListViewColumns();
             SuggestCoinsToMine();
             RefreshDetailsAreaIfVisible();
+            CheckAndApplyMiningStrategy();
+        }
+
+        private void RefreshAllCoinStats()
+        {
+            RefreshSingleCoinStats();
+            RefreshMultiCoinStats();
         }
 
         private IEnumerable<MultipoolInformation> GetMultipoolInformation()
