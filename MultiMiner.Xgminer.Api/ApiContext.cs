@@ -20,7 +20,8 @@ namespace MultiMiner.Xgminer.Api
         public int Port { get; set; }
         public string IpAddress { get; set; }
 
-        private const int DefaultCommandTimeoutMs = 500;
+        public const int ShortCommandTimeoutMs = 500;
+        public const int LongCommandTimeoutMs = 5000;
         private const int ConnectTimeoutMS = 1000;
 
         public ApiContext(int port, string ipAddress = "127.0.0.1")
@@ -29,7 +30,7 @@ namespace MultiMiner.Xgminer.Api
             this.IpAddress = ipAddress;
         }
 
-        public List<DeviceInformation> GetDeviceInformation(int logInterval, int timeoutMs = DefaultCommandTimeoutMs)
+        public List<DeviceInformation> GetDeviceInformation(int logInterval, int timeoutMs = ShortCommandTimeoutMs)
         {
             string textResponse = GetResponse(ApiVerb.Devs, timeoutMs);
             List<DeviceInformation> result = new List<DeviceInformation>();
@@ -79,7 +80,8 @@ namespace MultiMiner.Xgminer.Api
 
         public List<MinerStatistics> GetMinerStatistics()
         {
-            string textResponse = GetResponse(ApiVerb.Stats);
+            //KnC titan returns OVER 9,000 results - give it more time
+            string textResponse = GetResponse(ApiVerb.Stats, LongCommandTimeoutMs);
             List<MinerStatistics> result = new List<MinerStatistics>();
             MinerStatisticsParser.ParseTextForMinerStatistics(textResponse, result);
             return result;
@@ -100,7 +102,7 @@ namespace MultiMiner.Xgminer.Api
             return GetResponse(String.Format("{0}|{1}", ApiVerb.SwitchPool, poolIndex));
         }
 
-        public string GetResponse(string apiVerb, int timeoutMs = DefaultCommandTimeoutMs)
+        public string GetResponse(string apiVerb, int timeoutMs = ShortCommandTimeoutMs)
         {
             TcpClient tcpClient = new TcpClient();
             tcpClient.Connect(this.IpAddress, Port, ConnectTimeoutMS);
