@@ -21,9 +21,7 @@ namespace MultiMiner.Xgminer.Api.Client
             Console.WriteLine(String.Empty);
             Console.WriteLine("Ensure BFGMiner is running and try DEVS or POOLS to get started.");
             Console.WriteLine(String.Empty);
-
-            MultiMiner.Xgminer.Api.ApiContext apiContext = new ApiContext(port, ipAddress);
-
+            
             while (true)
             {
                 string apiVerb = Console.ReadLine();
@@ -31,7 +29,7 @@ namespace MultiMiner.Xgminer.Api.Client
                 if (apiVerb.Equals("exit", StringComparison.OrdinalIgnoreCase))
                     break;
 
-                string response = apiContext.GetResponse(apiVerb.ToLower());
+                string response = new ApiContext(port, ipAddress).GetResponse(apiVerb.ToLower(), ApiContext.LongCommandTimeoutMs);
                 Console.WriteLine(String.Empty);
                 Console.WriteLine(String.Format("{0} => {1}", apiVerb, response));
                 Console.WriteLine(String.Empty);
