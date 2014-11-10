@@ -138,7 +138,7 @@ namespace MultiMiner.Win.Forms
                 Xgminer.Api.ApiContext apiContext = apiContexts[minerComboBox.SelectedIndex];
                 if (apiContext != null)
                 {
-                    string response = apiContext.GetResponse(request);
+                    string response = apiContext.GetResponse(request, Xgminer.Api.ApiContext.LongCommandTimeoutMs);
                     string requestResponse = String.Format("{0} => {1}{2}", request, Environment.NewLine, response);
                     outputTextBox.AppendText(Environment.NewLine + Environment.NewLine + requestResponse);
                 }
