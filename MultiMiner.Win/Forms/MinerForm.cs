@@ -3046,7 +3046,6 @@ namespace MultiMiner.Win.Forms
             timers.CreateTimer(Timers.OneHourInterval, oneHourTimer_Tick);
             timers.CreateTimer(Timers.OneMinuteInterval, oneMinuteTimer_Tick);
             timers.CreateTimer(Timers.ThirtySecondInterval, thirtySecondTimer_Tick);
-            timers.CreateTimer(Timers.FiveSecondInterval, fiveSecondTimer_Tick);
             timers.CreateTimer(Timers.FiveMinuteInterval, fiveMinuteTimer_Tick);
             timers.CreateTimer(Timers.TenSecondInterval, tenSecondTimer_Tick);
             timers.CreateTimer(Timers.FifteenSecondInterval, fifteenSecondTimer_Tick);
@@ -3206,13 +3205,10 @@ namespace MultiMiner.Win.Forms
 
         private void tenSecondTimer_Tick(object sender, EventArgs e)
         {
-            CheckIdleTimeForDynamicIntensity(((System.Windows.Forms.Timer)sender).Interval);
-        }
-
-        private void fiveSecondTimer_Tick(object sender, EventArgs e)
-        {
             if (miningEngine.Mining)
             {
+                long timerInterval = ((System.Windows.Forms.Timer)sender).Interval;
+                CheckIdleTimeForDynamicIntensity(timerInterval);
                 ClearMinerStatsForDisabledCoins();
                 RefreshDeviceStats();
             }
@@ -7752,7 +7748,7 @@ namespace MultiMiner.Win.Forms
             if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
                 return; //idle detection code uses User32.dll
 
-            if (applicationConfiguration.AutoSetDesktopMode && miningEngine.Mining)
+            if (applicationConfiguration.AutoSetDesktopMode)
             {
                 TimeSpan idleTimeSpan = TimeSpan.FromMilliseconds(Environment.TickCount - IdleTimeFinder.GetLastInputTime());
 
