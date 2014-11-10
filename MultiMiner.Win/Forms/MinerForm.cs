@@ -7866,7 +7866,15 @@ namespace MultiMiner.Win.Forms
             try
             {
                 if (!RestartNetworkDevice(networkDevice))
+                {
+                    if (!applicationConfiguration.ShowApiErrors)
+                    {
+                        //early exit - we aren't notifying for API errors
+                        return;
+                    }
+
                     message = String.Format("Access denied restarting {0} ({1})", networkDevice.FriendlyName, reason);
+                }
             }
             catch (SocketException)
             {
