@@ -5512,7 +5512,7 @@ namespace MultiMiner.Win.Forms
                         }
                     }
 
-                    if (deviceViewModel.Pool != null)
+                    if (!String.IsNullOrEmpty(deviceViewModel.Pool))
                         CheckAndSetNetworkDifficulty(ipAddress, port, deviceViewModel.Pool);
                 }));
             }         
