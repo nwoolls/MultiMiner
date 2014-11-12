@@ -4339,8 +4339,6 @@ namespace MultiMiner.Win.Forms
             if (multipoolInformation == null)
                 return;
 
-            double btcPrice = multipoolInformation.Single(mpi => mpi.Algorithm.Equals(AlgorithmNames.SHA256)).Price;
-
             coinApiInformation.AddRange(multipoolInformation
                 .Select(mpi => new CoinInformation
                 {
