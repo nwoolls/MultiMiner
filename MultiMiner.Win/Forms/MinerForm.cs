@@ -4338,6 +4338,10 @@ namespace MultiMiner.Win.Forms
             //we're offline or the API is offline
             if (multipoolInformation == null)
                 return;
+            
+            //coinApiInformation may be Null if Single-Coin APIs are offline
+            if (coinApiInformation == null)
+                coinApiInformation = new List<CoinInformation>();
 
             coinApiInformation.AddRange(multipoolInformation
                 .Select(mpi => new CoinInformation
