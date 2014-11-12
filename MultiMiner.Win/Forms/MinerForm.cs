@@ -4338,8 +4338,10 @@ namespace MultiMiner.Win.Forms
             //we're offline or the API is offline
             if (multipoolInformation == null)
                 return;
-
-            double btcPrice = multipoolInformation.Single(mpi => mpi.Algorithm.Equals(AlgorithmNames.SHA256)).Price;
+            
+            //coinApiInformation may be Null if Single-Coin APIs are offline
+            if (coinApiInformation == null)
+                coinApiInformation = new List<CoinInformation>();
 
             coinApiInformation.AddRange(multipoolInformation
                 .Select(mpi => new CoinInformation
