@@ -55,9 +55,15 @@ namespace MultiMiner.Win.Forms
             foreach (NetworkDevices.NetworkDevice networkMiner in networkMiners)
             {
                 string devicePath = String.Format("{0}:{1}", networkMiner.IPAddress, networkMiner.Port);
-                string minerName = viewModel.GetFriendlyDeviceName(devicePath, devicePath);
-                minerComboBox.Items.Add(String.Format("{0} ({1})", minerName, devicePath));
-                apiContexts.Add(new Xgminer.Api.ApiContext(networkMiner.Port, networkMiner.IPAddress));
+                DeviceViewModel deviceModel = viewModel.Devices.SingleOrDefault(d => d.Path.Equals(devicePath));
+                //the Network Device may be offline
+                //null check as view models may not yet be populated
+                if ((deviceModel != null) && deviceModel.Visible)
+                {
+                    string minerName = viewModel.GetFriendlyDeviceName(devicePath, devicePath);
+                    minerComboBox.Items.Add(String.Format("{0} ({1})", minerName, devicePath));
+                    apiContexts.Add(new Xgminer.Api.ApiContext(networkMiner.Port, networkMiner.IPAddress));
+                }
             }
 
             if ((minerComboBox.SelectedItem == null) && (minerComboBox.Items.Count > 0))
