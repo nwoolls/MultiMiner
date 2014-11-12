@@ -4253,7 +4253,6 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshCoinStatsAsync()
         {
-
             Action asyncAction = RefreshAllCoinStats;
             asyncAction.BeginInvoke(
                 ar =>
@@ -4276,6 +4275,7 @@ namespace MultiMiner.Win.Forms
 
         private void UpdateApplicationFromCoinStats()
         {
+            SaveCoinStatsToKnownCoins();
             RefreshListViewFromViewModel();
             RefreshCoinStatsLabel();
             AutoSizeListViewColumns();
