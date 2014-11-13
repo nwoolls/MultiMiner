@@ -38,7 +38,6 @@ namespace MultiMiner.NiceHash
             }
 
             MultipoolInformation btcInformation = result.Single(mpi => mpi.Algorithm.Equals(AlgorithmNames.SHA256));
-            //btcInformation.Profitability = 105;
 
             foreach (MultipoolInformation otherInformation in result)
             {
