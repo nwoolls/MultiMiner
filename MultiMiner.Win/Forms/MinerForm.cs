@@ -5066,10 +5066,14 @@ namespace MultiMiner.Win.Forms
                             string[] parts = command.CommandText.Split('|');
                             string poolName = parts[1];
 
-                            List<PoolInformation> pools = networkDevicePools[networkDevice.Path];
-                            int poolIndex = pools.FindIndex(pi => pi.Url.DomainFromHost().Equals(poolName, StringComparison.OrdinalIgnoreCase));
-                            
-                            apiContext.SwitchPool(poolIndex);
+                            //we may not have the pool info cached yet / anymore
+                            if (networkDevicePools.ContainsKey(networkDevice.Path))
+                            {
+                                List<PoolInformation> pools = networkDevicePools[networkDevice.Path];
+                                int poolIndex = pools.FindIndex(pi => pi.Url.DomainFromHost().Equals(poolName, StringComparison.OrdinalIgnoreCase));
+
+                                apiContext.SwitchPool(poolIndex);
+                            }
                         }
                         else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
                         {
