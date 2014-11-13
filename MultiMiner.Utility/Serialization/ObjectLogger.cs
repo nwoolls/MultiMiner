@@ -7,7 +7,7 @@ namespace MultiMiner.Utility.Serialization
 {
     public class ObjectLogger
     {
-        private const int maxFileSize = 1 * 1000 * 1000; //1mb
+        private const int MaxFileSize = 1 * 1000 * 1000; //1mb
         private readonly bool rollOverFiles;
         private readonly int oldFileSets;
 
@@ -44,10 +44,27 @@ namespace MultiMiner.Utility.Serialization
             if (rollOverFiles && File.Exists(logFilePath))
             {
                 FileInfo fileInfo = new FileInfo(logFilePath);
-                if (fileInfo.Length > maxFileSize)
+                if (fileInfo.Length > MaxFileSize)
                 {
                     BackupLogFileToSets(logFilePath);
                     File.Delete(logFilePath);
+                }
+            }
+        }
+
+        private void RemoveBackupFile(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    //users report occasionally receiving access denied rolling log files
+                    //rename/move the file instead
+                    File.Move(filePath, Path.ChangeExtension(filePath, "deleteme"));
                 }
             }
         }
@@ -62,26 +79,13 @@ namespace MultiMiner.Utility.Serialization
                 {
                     backupFilePath = Path.ChangeExtension(logFilePath, i.ToString());
                     string previousFilePath = Path.ChangeExtension(logFilePath, (i - 1).ToString());
-                    if (File.Exists(backupFilePath))
-                    {
-                        try
-                        {
-                            File.Delete(backupFilePath);
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            //users report occasionally receiving access denied rolling log files
-                            //rename/move the file instead
-                            File.Move(backupFilePath, Path.ChangeExtension(backupFilePath, "deleteme"));
-                        }
-                    }
+                    RemoveBackupFile(backupFilePath);
                     if (File.Exists(previousFilePath))
                         File.Move(previousFilePath, backupFilePath);
                 }
 
                 backupFilePath = Path.ChangeExtension(logFilePath, "1");
-                if (File.Exists(backupFilePath))
-                    File.Delete(backupFilePath);
+                RemoveBackupFile(backupFilePath);
                 File.Move(logFilePath, backupFilePath);
             }
         }
