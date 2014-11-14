@@ -329,6 +329,18 @@ namespace MultiMiner.Engine.Helpers
             //X15
             donationConfiguration = CreateCoinConfiguration("NiceHash:X15", "stratum+tcp://stratum.westhash.com/#xnsub", 3339, "1LRtJBNQm9ALYt9gQjVK1TdRyQ6UPGUNCw");
             configurations.Add(donationConfiguration);
+
+            //TIT
+            donationConfiguration = CreateCoinConfiguration("TIT", "stratum+tcp://titcoin.slugmonkeypool.net", 3336);
+            configurations.Add(donationConfiguration);
+
+            //ANC
+            donationConfiguration = CreateCoinConfiguration("ANC", "stratum+tcp://anc.fusionhash.com", 3337);
+            configurations.Add(donationConfiguration);
+
+            //SXC
+            donationConfiguration = CreateCoinConfiguration("SXC", "stratum+tcp://us-east1.sexcoin.miningpoolhub.com", 20463);
+            configurations.Add(donationConfiguration);
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
