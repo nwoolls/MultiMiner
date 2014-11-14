@@ -1835,6 +1835,10 @@ namespace MultiMiner.Win.Forms
                 ar =>
                 {
                     asyncAction.EndInvoke(ar);
+
+                    //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
+                    if (tearingDown) return;
+
                     BeginInvoke((Action)(() =>
                     {
                         //code to update UI
@@ -1874,6 +1878,10 @@ namespace MultiMiner.Win.Forms
                 ar =>
                 {
                     asyncAction.EndInvoke(ar);
+
+                    //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
+                    if (tearingDown) return;
+
                     BeginInvoke((Action)(() =>
                     {
                         //code to update UI
@@ -3721,6 +3729,9 @@ namespace MultiMiner.Win.Forms
                     //so don't want to process the packet
                     return;
 
+                //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
+                if (tearingDown) return;
+
                 BeginInvoke((Action)(() =>
                 {
                     //code to update UI
@@ -3772,6 +3783,9 @@ namespace MultiMiner.Win.Forms
 
         private void HandleInstanceOnline(object sender, InstanceChangedArgs ea)
         {
+            //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
+            if (tearingDown) return;
+
             BeginInvoke((Action)(() =>
             {
                 //code to update UI
@@ -3793,6 +3807,9 @@ namespace MultiMiner.Win.Forms
 
         private void HandleInstanceOffline(object sender, InstanceChangedArgs ea)
         {
+            //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
+            if (tearingDown) return;
+
             BeginInvoke((Action)(() =>
             {
                 //code to update UI
