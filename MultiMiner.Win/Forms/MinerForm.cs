@@ -296,7 +296,8 @@ namespace MultiMiner.Win.Forms
         private void ApplyCoinInformationToViewModel()
         {
             if (coinApiInformation != null)
-                localViewModel.ApplyCoinInformationModels(coinApiInformation);
+                localViewModel.ApplyCoinInformationModels(coinApiInformation
+                    .ToList()); //get a copy - populated async & collection may be modified)
         }
         #endregion
 
@@ -1147,7 +1148,9 @@ namespace MultiMiner.Win.Forms
                 //no internet or error parsing API
                 return;
 
-            CoinInformation info = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(deviceViewModel.Coin.Id, StringComparison.OrdinalIgnoreCase));
+            CoinInformation info = coinApiInformation
+                .ToList() //get a copy - populated async & collection may be modified
+                .SingleOrDefault(c => c.Symbol.Equals(deviceViewModel.Coin.Id, StringComparison.OrdinalIgnoreCase));
 
             if (info != null)
             {
@@ -1241,7 +1244,9 @@ namespace MultiMiner.Win.Forms
                 foreach (string coinSymbol in incomeForCoins.Keys)
                 {
                     double coinIncome = incomeForCoins[coinSymbol];
-                    CoinInformation coinInfo = coinApiInformation.SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+                    CoinInformation coinInfo = coinApiInformation
+                        .ToList() //get a copy - populated async & collection may be modified
+                        .SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
                     if (coinInfo != null)
                     {
                         ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
@@ -4397,10 +4402,14 @@ namespace MultiMiner.Win.Forms
             if (coinApiInformation == null)
                 return;
 
-            CoinInformation badCoin = coinApiInformation.SingleOrDefault(c => !String.IsNullOrEmpty(c.Symbol) && c.Symbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+            CoinInformation badCoin = coinApiInformation
+                .ToList() //get a copy - populated async & collection may be modified
+                .SingleOrDefault(c => !String.IsNullOrEmpty(c.Symbol) && c.Symbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
             if (badCoin != null)
             {
-                CoinInformation goodCoin = coinApiInformation.SingleOrDefault(c => !String.IsNullOrEmpty(c.Symbol) && c.Symbol.Equals(KnownCoins.DogecoinSymbol, StringComparison.OrdinalIgnoreCase));
+                CoinInformation goodCoin = coinApiInformation
+                    .ToList() //get a copy - populated async & collection may be modified
+                    .SingleOrDefault(c => !String.IsNullOrEmpty(c.Symbol) && c.Symbol.Equals(KnownCoins.DogecoinSymbol, StringComparison.OrdinalIgnoreCase));
                 if (goodCoin == null)
                     badCoin.Symbol = KnownCoins.DogecoinSymbol;
                 else
@@ -7313,7 +7322,8 @@ namespace MultiMiner.Win.Forms
                 //ensure the user isn't editing settings
                 !ShowingModalDialog())
             {
-                bool changed = miningEngine.ApplyMiningStrategy(coinApiInformation);
+                bool changed = miningEngine.ApplyMiningStrategy(coinApiInformation
+                    .ToList()); //get a copy - populated async & collection may be modified)
 
                 //save any changes made by the engine
                 engineConfiguration.SaveDeviceConfigurations();
@@ -7604,7 +7614,12 @@ namespace MultiMiner.Win.Forms
                     int donationPercent = 0;
                     if (perksConfiguration.PerksEnabled)
                         donationPercent = perksConfiguration.DonationPercent;
-                    miningEngine.StartMining(engineConfiguration, devices, coinApiInformation, donationPercent);
+                    miningEngine.StartMining(
+                        engineConfiguration,
+                        devices, 
+                        coinApiInformation
+                            .ToList(), //get a copy - populated async & collection may be modified
+                        donationPercent);
                 }
             }
             catch (MinerLaunchException ex)
@@ -7718,7 +7733,8 @@ namespace MultiMiner.Win.Forms
                 return;
 
             IEnumerable<CoinInformation> coinsToMine = CoinSuggestions.GetCoinsToMine(
-                coinApiInformation, 
+                coinApiInformation
+                    .ToList(), //get a copy - populated async & collection may be modified) 
                 applicationConfiguration.SuggestionsAlgorithm, 
                 engineConfiguration.StrategyConfiguration, 
                 engineConfiguration.CoinConfigurations);
