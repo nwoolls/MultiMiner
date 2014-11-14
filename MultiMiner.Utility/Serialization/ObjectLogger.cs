@@ -51,42 +51,36 @@ namespace MultiMiner.Utility.Serialization
                 }
             }
         }
-
-        private void RemoveBackupFile(string filePath)
-        {
-            if (File.Exists(filePath))
-            {
-                try
-                {
-                    File.Delete(filePath);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    //users report occasionally receiving access denied rolling log files
-                    //rename/move the file instead
-                    File.Move(filePath, Path.ChangeExtension(filePath, "deleteme"));
-                }
-            }
-        }
-
+        
         private void BackupLogFileToSets(string logFilePath)
         {
             if (oldFileSets > 0)
             {
                 string backupFilePath;
-
-                for (int i = oldFileSets; i > 0; i--)
+                try
                 {
-                    backupFilePath = Path.ChangeExtension(logFilePath, i.ToString());
-                    string previousFilePath = Path.ChangeExtension(logFilePath, (i - 1).ToString());
-                    RemoveBackupFile(backupFilePath);
-                    if (File.Exists(previousFilePath))
-                        File.Move(previousFilePath, backupFilePath);
-                }
+                    for (int i = oldFileSets; i > 0; i--)
+                    {
+                        backupFilePath = Path.ChangeExtension(logFilePath, i.ToString());
+                        string previousFilePath = Path.ChangeExtension(logFilePath, (i - 1).ToString());
+                        if (File.Exists(backupFilePath))
+                            File.Delete(backupFilePath);
+                        if (File.Exists(previousFilePath))
+                            File.Move(previousFilePath, backupFilePath);
+                    }
 
-                backupFilePath = Path.ChangeExtension(logFilePath, "1");
-                RemoveBackupFile(backupFilePath);
-                File.Move(logFilePath, backupFilePath);
+                    backupFilePath = Path.ChangeExtension(logFilePath, "1");
+                    if (File.Exists(backupFilePath))
+                        File.Delete(backupFilePath);
+                    File.Move(logFilePath, backupFilePath);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    //users report occasionally receiving access denied rolling log files
+                    //have received this myself as well - may be in-use by an async log op
+                    //no way to recover, cannot move file either (same exception)
+                    //we'll try again on next call to the method
+                }
             }
         }
     }
