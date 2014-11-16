@@ -241,10 +241,6 @@ namespace MultiMiner.Engine.Helpers
             donationConfiguration = CreateCoinConfiguration("DRK", "stratum+tcp://us-east1.darkcoin.miningpoolhub.com", 20465);
             configurations.Add(donationConfiguration);
 
-            //MYR1
-            donationConfiguration = CreateCoinConfiguration("MYR1", "stratum+tcp://de1.miningpool.co", 19653);
-            configurations.Add(donationConfiguration);
-
             //GPUC
             donationConfiguration = CreateCoinConfiguration("GPUC", "stratum+tcp://gpu-stratum.hashfever.com", 3262);
             configurations.Add(donationConfiguration);
@@ -340,6 +336,26 @@ namespace MultiMiner.Engine.Helpers
 
             //SXC
             donationConfiguration = CreateCoinConfiguration("SXC", "stratum+tcp://us-east1.sexcoin.miningpoolhub.com", 20463);
+            configurations.Add(donationConfiguration);
+
+            //EMD
+            donationConfiguration = CreateCoinConfiguration("EMD", "stratum+tcp://us.lifeforce.info", 9090);
+            configurations.Add(donationConfiguration);
+
+            //42
+            donationConfiguration = CreateCoinConfiguration("42", "stratum+tcp://42.mastermining.net", 4242);
+            configurations.Add(donationConfiguration);
+
+            //ACOIN
+            donationConfiguration = CreateCoinConfiguration("ACOIN", "stratum+tcp://stratum.coin-miners.info", 3522);
+            configurations.Add(donationConfiguration);
+
+            //BCX
+            donationConfiguration = CreateCoinConfiguration("BCX", "stratum+tcp://bcx.coin-pool.org", 3332);
+            configurations.Add(donationConfiguration);
+
+            //MYR
+            donationConfiguration = CreateCoinConfiguration("MYR", "stratum+tcp://mine1.myr.nonce-pool.com", 3360);
             configurations.Add(donationConfiguration);
         }
 
