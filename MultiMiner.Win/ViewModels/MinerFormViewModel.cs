@@ -129,7 +129,7 @@ namespace MultiMiner.Win.ViewModels
             deviceViewModel.Price = 0;
             deviceViewModel.Profitability = 100;
             deviceViewModel.AdjustedProfitability = 100;
-            deviceViewModel.AverageHashrate = 100;
+            deviceViewModel.AverageProfitability = 100;
             deviceViewModel.Exchange = 0;
         }
 
