@@ -206,7 +206,7 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //EAC
-            donationConfiguration = CreateCoinConfiguration("EAC", "stratum+tcp://eac.poolerino.com", 3334);
+            donationConfiguration = CreateCoinConfiguration("EAC", "stratum+tcp://us.lifeforce.info", 9090);
             configurations.Add(donationConfiguration);
 
             //CARB
