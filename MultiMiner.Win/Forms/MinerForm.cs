@@ -2027,6 +2027,10 @@ namespace MultiMiner.Win.Forms
 
         private void SaveCoinStatsToKnownCoins()
         {
+            //coinApiInformation may be Null if Coin APIs are offline
+            if (coinApiInformation == null)
+                coinApiInformation = new List<CoinInformation>();
+
             foreach (CoinInformation item in coinApiInformation)
             {
                 //find existing known coin or create a knew one
