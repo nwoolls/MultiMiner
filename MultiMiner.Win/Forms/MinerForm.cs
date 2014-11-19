@@ -4264,7 +4264,13 @@ namespace MultiMiner.Win.Forms
                     (ex is JsonReaderException))
                 {
                     if (applicationConfiguration.ShowApiErrors)
-                        ShowCoinApiErrorNotification(apiContext, ex);
+                    {
+                        BeginInvoke((Action)(() =>
+                        {
+                            //code to update UI
+                            ShowCoinApiErrorNotification(apiContext, ex);
+                        }));
+                    }
                     return false;
                 }
                 throw;
