@@ -25,14 +25,22 @@ namespace MultiMiner.Utility.OS
             List<OwnedProcess> children = new List<OwnedProcess>();
             foreach (Process process in processes)
             {
-                OwnedProcess child = new OwnedProcess() 
+                try
                 {
-                    Id = process.Id,
-                    //no SessionId on Unix
-                    SessionId = OSVersionPlatform.GetGenericPlatform() == System.PlatformID.Unix ? 0 : process.SessionId,
-                    Name = process.ProcessName 
-                };
-                children.Add(child);        	
+                    OwnedProcess child = new OwnedProcess()
+                    {
+                        Id = process.Id,
+                        //no SessionId on Unix
+                        SessionId = OSVersionPlatform.GetGenericPlatform() == System.PlatformID.Unix ? 0 : process.SessionId,
+                        Name = process.ProcessName
+                    };
+                    children.Add(child);
+                }
+                catch (InvalidOperationException)
+                {
+                    //System.InvalidOperationException: Process has exited, so the requested information is not available.
+                    //e.g. closing the application while SaveOwnedProcesses() is running
+                }
             }
             ConfigurationReaderWriter.WriteConfiguration(children, fileName);
         }
