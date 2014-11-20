@@ -415,6 +415,9 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshListViewFromViewModel()
         {
+            if (tearingDown)
+                return;
+
             if (editingDeviceListView)
                 return;
 
@@ -824,6 +827,9 @@ namespace MultiMiner.Win.Forms
 
         private void AutoSizeListViewColumns()
         {
+            if (tearingDown)
+                return;
+
             if (editingDeviceListView)
                 return;
 
