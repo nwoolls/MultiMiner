@@ -1438,7 +1438,10 @@ namespace MultiMiner.Win.Forms
                     !oldCoinWarzKey.Equals(applicationConfiguration.CoinWarzApiKey) || 
                     (oldWhatMineValue != applicationConfiguration.UseWhatMineApi) ||
                     !oldWhatMineKey.Equals(applicationConfiguration.WhatMineApiKey))
+                {
+                    SetupCoinApi(); //pickup API key changes
                     RefreshCoinStatsAsync();
+                }
 
                 //if we are not detecting Network Devices, start the async checks
                 if (applicationConfiguration.NetworkDeviceDetection &&
