@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Newtonsoft.Json\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -39,12 +43,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiContext.cs" />
+    <Compile Include="Extensions\CoinInformationExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiMiner.CoinApi\MultiMiner.CoinApi.csproj">
       <Project>{9e86f77a-68b9-4d72-82d2-855878ba8cb1}</Project>
       <Name>MultiMiner.CoinApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
+      <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
+      <Name>MultiMiner.Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Xgminer\MultiMiner.Xgminer.csproj">
+      <Project>{0dbef993-1b34-4d80-ab6a-f662604325dc}</Project>
+      <Name>MultiMiner.Xgminer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

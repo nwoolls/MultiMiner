@@ -36,7 +36,6 @@ namespace MultiMiner.Win.Forms.Configuration
             this.serviceSettingsLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.apiKeyEdit = new System.Windows.Forms.TextBox();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.apiKeyLabel = new System.Windows.Forms.LinkLabel();
             this.label11 = new System.Windows.Forms.Label();
             this.coinApiCombo = new System.Windows.Forms.ComboBox();
@@ -65,18 +64,19 @@ namespace MultiMiner.Win.Forms.Configuration
             this.priorityCombo = new System.Windows.Forms.ComboBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox3
@@ -136,15 +136,11 @@ namespace MultiMiner.Win.Forms.Configuration
             // apiKeyEdit
             // 
             this.apiKeyEdit.AccessibleName = "API key";
-            this.apiKeyEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "CoinWarzApiKey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.apiKeyEdit.Location = new System.Drawing.Point(345, 25);
             this.apiKeyEdit.Name = "apiKeyEdit";
             this.apiKeyEdit.Size = new System.Drawing.Size(124, 23);
             this.apiKeyEdit.TabIndex = 2;
-            // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
+            this.apiKeyEdit.Validated += new System.EventHandler(this.apiKeyEdit_Validated);
             // 
             // apiKeyLabel
             // 
@@ -172,11 +168,13 @@ namespace MultiMiner.Win.Forms.Configuration
             this.coinApiCombo.FormattingEnabled = true;
             this.coinApiCombo.Items.AddRange(new object[] {
             "CoinChoose.com",
-            "CoinWarz.com"});
+            "CoinWarz.com",
+            "WhatMine.com"});
             this.coinApiCombo.Location = new System.Drawing.Point(121, 25);
             this.coinApiCombo.Name = "coinApiCombo";
             this.coinApiCombo.Size = new System.Drawing.Size(124, 23);
             this.coinApiCombo.TabIndex = 0;
+            this.coinApiCombo.SelectedIndexChanged += new System.EventHandler(this.coinApiCombo_SelectedIndexChanged);
             // 
             // mobileMinerInfoLink
             // 
@@ -460,6 +458,17 @@ namespace MultiMiner.Win.Forms.Configuration
             this.panel1.Size = new System.Drawing.Size(518, 54);
             this.panel1.TabIndex = 3;
             // 
+            // button1
+            // 
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(14, 15);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 6;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -482,16 +491,9 @@ namespace MultiMiner.Win.Forms.Configuration
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // applicationConfigurationBindingSource
             // 
-            this.button1.AccessibleName = "Help";
-            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
-            this.button1.Location = new System.Drawing.Point(14, 15);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(27, 27);
-            this.button1.TabIndex = 6;
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
             // 
             // SettingsForm
             // 
@@ -514,7 +516,6 @@ namespace MultiMiner.Win.Forms.Configuration
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -523,6 +524,7 @@ namespace MultiMiner.Win.Forms.Configuration
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }

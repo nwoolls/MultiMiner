@@ -50,6 +50,7 @@ namespace MultiMiner.Win.Forms
         //API contexts
         private IApiContext coinChooseApiContext;
         private IApiContext coinWarzApiContext;
+        private IApiContext whatMineApiContext;
         private IApiContext successfulApiContext;
         
         //coalesced timers
@@ -915,6 +916,8 @@ namespace MultiMiner.Win.Forms
                 return this.successfulApiContext;
             else if (this.applicationConfiguration.UseCoinWarzApi)
                 return this.coinWarzApiContext;
+            else if (this.applicationConfiguration.UseWhatMineApi)
+                return this.whatMineApiContext;
             else
                 return this.coinChooseApiContext;
         }
@@ -1396,7 +1399,9 @@ namespace MultiMiner.Win.Forms
         {
             bool oldNetworkDeviceDetection = applicationConfiguration.NetworkDeviceDetection;
             bool oldCoinWarzValue = applicationConfiguration.UseCoinWarzApi;
+            bool oldWhatMineValue = applicationConfiguration.UseWhatMineApi;
             string oldCoinWarzKey = applicationConfiguration.CoinWarzApiKey;
+            string oldWhatMineKey = applicationConfiguration.WhatMineApiKey;
 
             string oldConfigPath = pathConfiguration.SharedConfigPath;
 
@@ -1430,7 +1435,9 @@ namespace MultiMiner.Win.Forms
 
                 //don't refresh coin stats excessively
                 if ((oldCoinWarzValue != applicationConfiguration.UseCoinWarzApi) ||
-                    !oldCoinWarzKey.Equals(applicationConfiguration.CoinWarzApiKey))
+                    !oldCoinWarzKey.Equals(applicationConfiguration.CoinWarzApiKey) || 
+                    (oldWhatMineValue != applicationConfiguration.UseWhatMineApi) ||
+                    !oldWhatMineKey.Equals(applicationConfiguration.WhatMineApiKey))
                     RefreshCoinStatsAsync();
 
                 //if we are not detecting Network Devices, start the async checks
@@ -4214,6 +4221,7 @@ namespace MultiMiner.Win.Forms
         {
             this.coinWarzApiContext = new CoinWarz.ApiContext(applicationConfiguration.CoinWarzApiKey);
             this.coinChooseApiContext = new CoinChoose.ApiContext();
+            this.whatMineApiContext = new WhatMine.ApiContext(applicationConfiguration.WhatMineApiKey);
         }
 
         private void ShowMultipoolApiErrorNotification(MultipoolApi.IApiContext apiContext, Exception ex)
@@ -4398,6 +4406,11 @@ namespace MultiMiner.Win.Forms
             if (applicationConfiguration.UseCoinWarzApi)
             {
                 preferredApiContext = this.coinWarzApiContext;
+                backupApiContext = this.coinChooseApiContext;
+            }
+            else if (applicationConfiguration.UseWhatMineApi)
+            {
+                preferredApiContext = this.whatMineApiContext;
                 backupApiContext = this.coinChooseApiContext;
             }
             else
