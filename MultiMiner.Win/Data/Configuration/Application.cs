@@ -77,6 +77,8 @@ namespace MultiMiner.Win.Data.Configuration
 
         public bool UseCoinWarzApi { get; set; }
         public string CoinWarzApiKey { get; set; }
+        public bool UseWhatMineApi { get; set; }
+        public string WhatMineApiKey { get; set; }
 
         public TimerInterval StrategyCheckInterval { get; set; }
         
