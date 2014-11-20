@@ -416,6 +416,9 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshListViewFromViewModel()
         {
+            if (tearingDown)
+                return;
+
             if (editingDeviceListView)
                 return;
 
@@ -825,6 +828,9 @@ namespace MultiMiner.Win.Forms
 
         private void AutoSizeListViewColumns()
         {
+            if (tearingDown)
+                return;
+
             if (editingDeviceListView)
                 return;
 
@@ -898,17 +904,6 @@ namespace MultiMiner.Win.Forms
                     return true;
             return false;
         }
-
-        private void AutoSizeListViewColumnsEvery(int count)
-        {
-            autoSizeColumnsFlag++;
-            if (autoSizeColumnsFlag == count)
-            {
-                autoSizeColumnsFlag = 0;
-                AutoSizeListViewColumns();
-            }
-        }
-        private ushort autoSizeColumnsFlag = 0;
 
         private IApiContext GetEffectiveApiContext()
         {
@@ -5407,11 +5402,8 @@ namespace MultiMiner.Win.Forms
                 bubbleText = bubbleText.Substring(0, 60) + "...";
             notifyIcon1.Text = bubbleText;
 
-            //auto sizing the columns is moderately CPU intensive, so only do it every /count/ times
-            AutoSizeListViewColumnsEvery(2);
-
+            AutoSizeListViewColumns();
             UpdateInstancesStatsFromLocal();
-
             RefreshIncomeSummary();
             RefreshDetailsAreaIfVisible();
         }
@@ -7626,6 +7618,7 @@ namespace MultiMiner.Win.Forms
             }
             return hashRateText;
         }
+
         private void StartMiningLocally()
         {
             //do not set Dynamic Intensity here - may have already been set by idleTimer_Tick
@@ -7683,8 +7676,6 @@ namespace MultiMiner.Win.Forms
 
             //update ViewModel with potential changes 
             ApplyModelsToViewModel();
-
-            autoSizeColumnsFlag = 0;
 
             RefreshStrategiesCountdown();
 
