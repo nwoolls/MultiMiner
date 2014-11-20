@@ -13,6 +13,7 @@ namespace MultiMiner.CoinApi.Data
         public double MinimumBlockTime { get; set; }
         public Int64 NetworkHashRate { get; set; }
         public double Price { get; set; }
+        public double Income { get; set; }
         public string Exchange { get; set; }
         public double Profitability { get; set; }
         public double AdjustedProfitability { get; set; }

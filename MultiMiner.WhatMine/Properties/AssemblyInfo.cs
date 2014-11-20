@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MultiMiner.Engine")]
+[assembly: AssemblyTitle("MultiMiner.WhatMine")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MultiMiner.Engine")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyProduct("MultiMiner.WhatMine")]
+[assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2831574c-e0bd-45e8-9fed-2d590475bd53")]
+[assembly: Guid("4b0c2edd-9a3e-41af-b8ef-9a7a541d2e80")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -31,6 +31,6 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("3.6.10.316")]
-[assembly: AssemblyVersion("3.6.10.316")]
-[assembly: AssemblyFileVersion("3.6.10.316")]
+// [assembly: AssemblyVersion("3.6.3.307")]
+[assembly: AssemblyVersion("3.6.3.307")]
+[assembly: AssemblyFileVersion("3.6.3.307")]
