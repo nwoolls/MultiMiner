@@ -187,7 +187,7 @@ namespace MultiMiner.Win.Forms.Configuration
             if (coinApiCombo.SelectedIndex == CoinWarzIndex)
                 apiKeyLabel.Text = "CoinWarz key:";
             else if (coinApiCombo.SelectedIndex == WhatMineIndex)
-                apiKeyLabel.Text = "AnyMine key:";
+                apiKeyLabel.Text = "WhatMine key:";
             PopulateApiKey();
         }
     }
