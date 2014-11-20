@@ -28,20 +28,16 @@ namespace MultiMiner.WhatMine
                 client.Headers.Add("user-agent", userAgent);
 
             string apiUrl = GetApiUrl();
-
             string jsonString = client.DownloadString(apiUrl);
-
             JObject jsonObject = JObject.Parse(jsonString);
-            
-            if (!jsonObject.Value<string>("status").Equals("success", StringComparison.OrdinalIgnoreCase))
-            {
-                throw new CoinApiException(jsonObject.Value<string>("Message"));
-            }
 
-            JArray jsonArray = jsonObject.Value<JArray>("Data");
+            string resultStatus = jsonObject.Value<string>("status");
+            if (!resultStatus.Equals("success", StringComparison.OrdinalIgnoreCase))
+                throw new CoinApiException(resultStatus);
 
             List<CoinInformation> result = new List<CoinInformation>();
 
+            JArray jsonArray = jsonObject.Value<JArray>("Data");
             foreach (JToken jToken in jsonArray)
             {
                 CoinInformation coinInformation = new CoinInformation();

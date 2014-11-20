@@ -40,6 +40,7 @@ namespace MultiMiner.Win.Data.Configuration
             this.HiddenColumns = new List<string>();
             this.SetGpuEnvironmentVariables = true;
             this.CoinWarzApiKey = String.Empty; //simplify handling NULL
+            this.WhatMineApiKey = String.Empty;
             this.NetworkDeviceDetection = true;
         }
 
