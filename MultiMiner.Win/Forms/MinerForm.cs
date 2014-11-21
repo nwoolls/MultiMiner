@@ -4332,7 +4332,13 @@ namespace MultiMiner.Win.Forms
                     (ex is JsonReaderException))
                 {
                     if (applicationConfiguration.ShowApiErrors)
-                        ShowMultipoolApiErrorNotification(apiContext, ex);
+                    {
+                        BeginInvoke((Action)(() =>
+                        {
+                            //code to update UI
+                            ShowMultipoolApiErrorNotification(apiContext, ex);
+                        }));
+                    }
                     return null;
                 }
                 throw;
