@@ -14,28 +14,18 @@ namespace MultiMiner.Engine.Tests
         const string UserAgent = "MultiMiner/V3-Example";
 
         [TestMethod]
-        public void InstallMiner_Bfgminer_InstallsBfgminer()
+        public void GetAvailableMiners_ReturnsBfgminerUrl()
         {
-            //arrange
-            string tempPath = Path.GetTempPath();
-            string minerPath = Path.Combine(tempPath, Guid.NewGuid().ToString());
-            Directory.CreateDirectory(minerPath);
-            string executablePath = Path.Combine(minerPath, "bfgminer.exe");
-
             //act
             List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners(UserAgent);
             AvailableMiner bfgminer = availableMiners.Single(am => am.Name.Equals(MinerNames.BFGMiner, StringComparison.OrdinalIgnoreCase));
-            MinerInstaller.InstallMiner(UserAgent, bfgminer, minerPath);
 
             //assert
-            Assert.IsTrue(File.Exists(executablePath));
-
-            //cleanup
-            Directory.Delete(minerPath, true);
+            Assert.IsTrue(!String.IsNullOrEmpty(bfgminer.Url));
         }
 
         [TestMethod]
-        public void GetAvailableMinerVersion_Succeeds()
+        public void GetAvailableMiners_Succeeds()
         {                
             //act
             Version version = null;
