@@ -1,12 +1,18 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using System.Collections.Generic;
+using MultiMiner.Engine.Data;
+using MultiMiner.Engine.Installers;
+using System.Linq;
 
-namespace MultiMiner.Xgminer.Tests
+namespace MultiMiner.Engine.Tests
 {
     [TestClass]
     public class InstallerTests
     {
+        const string UserAgent = "MultiMiner/V3-Example";
+
         [TestMethod]
         public void InstallMiner_Bfgminer_InstallsBfgminer()
         {
@@ -17,7 +23,9 @@ namespace MultiMiner.Xgminer.Tests
             string executablePath = Path.Combine(minerPath, "bfgminer.exe");
 
             //act
-            Xgminer.Installer.InstallMiner(minerPath);
+            List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners(UserAgent);
+            AvailableMiner bfgminer = availableMiners.Single(am => am.Name.Equals(MinerNames.BFGMiner, StringComparison.OrdinalIgnoreCase));
+            MinerInstaller.InstallMiner(UserAgent, bfgminer, minerPath);
 
             //assert
             Assert.IsTrue(File.Exists(executablePath));
@@ -28,14 +36,12 @@ namespace MultiMiner.Xgminer.Tests
 
         [TestMethod]
         public void GetAvailableMinerVersion_Succeeds()
-        {
-            //arrange
-            string availableMinerVersion;
-                
+        {                
             //act
             Version version = null;
-            availableMinerVersion = Xgminer.Installer.GetAvailableMinerVersion();
-            bool success = Version.TryParse(availableMinerVersion, out version);
+            List<AvailableMiner> availableMiners = AvailableMiners.GetAvailableMiners(UserAgent);
+            AvailableMiner bfgminer = availableMiners.Single(am => am.Name.Equals(MinerNames.BFGMiner, StringComparison.OrdinalIgnoreCase));
+            bool success = Version.TryParse(bfgminer.Version, out version);
 
             //assert
             Assert.IsTrue(success);

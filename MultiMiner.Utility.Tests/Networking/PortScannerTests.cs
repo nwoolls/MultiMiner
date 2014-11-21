@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
 using System.Collections.Generic;
+using MultiMiner.Utility.Net;
 
 namespace MultiMiner.Utility.Networking.Tests
 {

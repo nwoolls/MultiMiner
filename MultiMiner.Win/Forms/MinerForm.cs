@@ -7520,7 +7520,7 @@ namespace MultiMiner.Win.Forms
                     {
                         DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
                         MinerDescriptor defaultMiner = MinerFactory.Instance.GetDefaultMiner();
-                        devices = devicesService.GetDevices(defaultMiner, MinerPath.GetPathToInstalledMiner(defaultMiner));
+                        devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner(defaultMiner));
 
                         //safe to do here as we are Scanning Hardware - we are not mining
                         //no data to lose in the ViewModel

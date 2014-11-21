@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.22310.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer", "MultiMiner.Xgminer\MultiMiner.Xgminer.csproj", "{0DBEF993-1B34-4D80-AB6A-F662604325DC}"
 EndProject
@@ -70,6 +70,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Discovery", "MultiMiner.Xgminer.Discovery\MultiMiner.Xgminer.Discovery.csproj", "{ED66CAA1-4826-46E9-BB23-C56D0CFF5C7A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Xgminer.Discovery.Tests", "MultiMiner.Xgminer.Discovery.Tests\MultiMiner.Xgminer.Discovery.Tests.csproj", "{432C7680-B8C3-453B-AA55-850D0254EE87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.ExchangeApi", "MultiMiner.ExchangeApi\MultiMiner.ExchangeApi.csproj", "{DCE499F9-0751-4088-B45B-67AE0E612362}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.Blockchain", "MultiMiner.Blockchain\MultiMiner.Blockchain.csproj", "{73C7F5AA-1BD3-49D2-90AB-96E3903C05CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.MultipoolApi", "MultiMiner.MultipoolApi\MultiMiner.MultipoolApi.csproj", "{4AF4B34A-07DB-456B-9C58-B0863435FE54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.NiceHash", "MultiMiner.NiceHash\MultiMiner.NiceHash.csproj", "{5A05D03D-7006-406C-84B0-A2717A07CEB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -209,6 +217,22 @@ Global
 		{432C7680-B8C3-453B-AA55-850D0254EE87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{432C7680-B8C3-453B-AA55-850D0254EE87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{432C7680-B8C3-453B-AA55-850D0254EE87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCE499F9-0751-4088-B45B-67AE0E612362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCE499F9-0751-4088-B45B-67AE0E612362}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCE499F9-0751-4088-B45B-67AE0E612362}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCE499F9-0751-4088-B45B-67AE0E612362}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73C7F5AA-1BD3-49D2-90AB-96E3903C05CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73C7F5AA-1BD3-49D2-90AB-96E3903C05CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73C7F5AA-1BD3-49D2-90AB-96E3903C05CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73C7F5AA-1BD3-49D2-90AB-96E3903C05CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AF4B34A-07DB-456B-9C58-B0863435FE54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AF4B34A-07DB-456B-9C58-B0863435FE54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AF4B34A-07DB-456B-9C58-B0863435FE54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AF4B34A-07DB-456B-9C58-B0863435FE54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A05D03D-7006-406C-84B0-A2717A07CEB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A05D03D-7006-406C-84B0-A2717A07CEB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A05D03D-7006-406C-84B0-A2717A07CEB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A05D03D-7006-406C-84B0-A2717A07CEB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

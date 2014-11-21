@@ -20,7 +20,7 @@ namespace MultiMiner.Services
             this.xgminerConfiguration.LoadMinerConfiguration();
         }
 
-        public List<Device> GetDevices(MinerDescriptor minerDescriptor, string executablePath)
+        public List<Device> GetDevices(string executablePath)
         {
             Xgminer.Data.Configuration.Miner minerConfiguration = new Xgminer.Data.Configuration.Miner()
             {

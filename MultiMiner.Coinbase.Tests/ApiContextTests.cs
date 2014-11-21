@@ -1,6 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MultiMiner.Coinbase.Data;
+using System.Collections.Generic;
+using MultiMiner.ExchangeApi.Data;
+using System.Linq;
 
 namespace MultiMiner.Coinbase.Tests
 {
@@ -11,26 +14,13 @@ namespace MultiMiner.Coinbase.Tests
         public void GetSellPrices_ReturnsSellPrices()
         {
             //arrange
-            SellPrices sellPrices;
+            IEnumerable<ExchangeInformation> exchangeInformation;
             
             //act
-            sellPrices = ApiContext.GetSellPrices();
+            exchangeInformation = (new ApiContext()).GetExchangeInformation();
 
             //assert
-            Assert.IsTrue(sellPrices.Subtotal.Amount > 0);
-        }
-
-        [TestMethod]
-        public void GetSellPrices_SubtotalGreaterThanTotal()
-        {
-            //arrange
-            SellPrices sellPrices;
-
-            //act
-            sellPrices = ApiContext.GetSellPrices();
-
-            //assert
-            Assert.IsTrue(sellPrices.Subtotal.Amount > sellPrices.Total.Amount);
+            Assert.IsTrue(exchangeInformation.Sum(sp => sp.ExchangeRate) > 0);
         }
 
         [TestMethod]
@@ -40,7 +30,7 @@ namespace MultiMiner.Coinbase.Tests
             string url;
 
             //act
-            url = ApiContext.GetInfoUrl();
+            url = (new ApiContext()).GetInfoUrl();
 
             //assert
             Assert.IsTrue(url.StartsWith("http"));
@@ -53,7 +43,7 @@ namespace MultiMiner.Coinbase.Tests
             string name;
 
             //act
-            name = ApiContext.GetApiName();
+            name = (new ApiContext()).GetApiName();
 
             //assert
             Assert.IsFalse(String.IsNullOrEmpty(name));
