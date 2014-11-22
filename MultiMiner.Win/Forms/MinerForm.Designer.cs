@@ -588,7 +588,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(883, 226);
-            this.detailsAreaContainer.SplitterDistance = 648;
+            this.detailsAreaContainer.SplitterDistance = 650;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -639,7 +639,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(648, 226);
+            this.deviceListView.Size = new System.Drawing.Size(650, 226);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.deviceListView.TabIndex = 2;
@@ -765,7 +765,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(232, 226);
+            this.detailsControl1.Size = new System.Drawing.Size(230, 226);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -2003,9 +2003,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(907, 332);
+            this.Controls.Add(this.startupMiningPanel);
             this.Controls.Add(this.advancedAreaContainer);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.startupMiningPanel);
             this.Controls.Add(this.footerPanel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.standardToolBar);
