@@ -4374,7 +4374,7 @@ namespace MultiMiner.Win.Forms
             //1. We have no NiceHash coins in KnownCoins
             //2. Or we have a Multipool setup for NiceHash
             bool initialLoad = !knownCoins.Any(kc => kc.Id.Contains(Prefix));
-            bool miningNiceHash = engineConfiguration.CoinConfigurations.Any(cc => cc.PoolGroup.Id.Contains(Prefix));
+            bool miningNiceHash = engineConfiguration.CoinConfigurations.Any(cc => cc.PoolGroup.Id.Contains(Prefix) && cc.Enabled);
             if (!initialLoad && !miningNiceHash)
             {
                 return;
