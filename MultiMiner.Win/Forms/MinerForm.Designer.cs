@@ -38,14 +38,14 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MinerForm));
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Network", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Network", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
@@ -224,9 +224,13 @@
             this.restartMiningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.stickyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hiddenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.adminPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hiddenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.homeButton = new System.Windows.Forms.ToolStripButton();
+            this.dashboardButton = new System.Windows.Forms.ToolStripButton();
+            this.metricsButton = new System.Windows.Forms.ToolStripButton();
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -257,6 +261,7 @@
             this.standardToolBar.SuspendLayout();
             this.accessibleMenu.SuspendLayout();
             this.networkDeviceContextMenu.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // coinStatsTimer
@@ -535,7 +540,7 @@
             // advancedAreaContainer
             // 
             this.advancedAreaContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.advancedAreaContainer.Location = new System.Drawing.Point(0, 49);
+            this.advancedAreaContainer.Location = new System.Drawing.Point(24, 49);
             this.advancedAreaContainer.Name = "advancedAreaContainer";
             this.advancedAreaContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -548,7 +553,7 @@
             this.advancedAreaContainer.Panel2.Controls.Add(this.advancedTabControl);
             this.advancedAreaContainer.Panel2.Controls.Add(this.panel2);
             this.advancedAreaContainer.Panel2Collapsed = true;
-            this.advancedAreaContainer.Size = new System.Drawing.Size(907, 226);
+            this.advancedAreaContainer.Size = new System.Drawing.Size(883, 226);
             this.advancedAreaContainer.SplitterDistance = 201;
             this.advancedAreaContainer.SplitterWidth = 5;
             this.advancedAreaContainer.TabIndex = 10;
@@ -564,7 +569,7 @@
             // instancesContainer.Panel2
             // 
             this.instancesContainer.Panel2.Controls.Add(this.detailsAreaContainer);
-            this.instancesContainer.Size = new System.Drawing.Size(907, 226);
+            this.instancesContainer.Size = new System.Drawing.Size(883, 226);
             this.instancesContainer.SplitterDistance = 186;
             this.instancesContainer.TabIndex = 4;
             // 
@@ -582,8 +587,8 @@
             // detailsAreaContainer.Panel2
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
-            this.detailsAreaContainer.Size = new System.Drawing.Size(907, 226);
-            this.detailsAreaContainer.SplitterDistance = 668;
+            this.detailsAreaContainer.Size = new System.Drawing.Size(883, 226);
+            this.detailsAreaContainer.SplitterDistance = 648;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -614,27 +619,27 @@
             this.intensityColumnHeader});
             this.deviceListView.ContextMenuStrip = this.columnHeaderMenu;
             this.deviceListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            listViewGroup6.Header = "CPU";
-            listViewGroup6.Name = "cpuListViewGroup";
-            listViewGroup7.Header = "GPU";
-            listViewGroup7.Name = "gpuListViewGroup";
-            listViewGroup8.Header = "USB";
-            listViewGroup8.Name = "usbListViewGroup";
-            listViewGroup9.Header = "Proxy";
-            listViewGroup9.Name = "proxyListViewGroup";
-            listViewGroup10.Header = "Network";
-            listViewGroup10.Name = "networkListViewGroup";
+            listViewGroup1.Header = "CPU";
+            listViewGroup1.Name = "cpuListViewGroup";
+            listViewGroup2.Header = "GPU";
+            listViewGroup2.Name = "gpuListViewGroup";
+            listViewGroup3.Header = "USB";
+            listViewGroup3.Name = "usbListViewGroup";
+            listViewGroup4.Header = "Proxy";
+            listViewGroup4.Name = "proxyListViewGroup";
+            listViewGroup5.Header = "Network";
+            listViewGroup5.Name = "networkListViewGroup";
             this.deviceListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup6,
-            listViewGroup7,
-            listViewGroup8,
-            listViewGroup9,
-            listViewGroup10});
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4,
+            listViewGroup5});
             this.deviceListView.LabelEdit = true;
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(668, 226);
+            this.deviceListView.Size = new System.Drawing.Size(648, 226);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.deviceListView.TabIndex = 2;
@@ -760,7 +765,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(236, 226);
+            this.detailsControl1.Size = new System.Drawing.Size(232, 226);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -795,8 +800,8 @@
             this.historyGridView.AllowUserToAddRows = false;
             this.historyGridView.AllowUserToDeleteRows = false;
             this.historyGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.historyGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.historyGridView.AutoGenerateColumns = false;
             this.historyGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.historyGridView.BackgroundColor = System.Drawing.SystemColors.Window;
@@ -926,8 +931,8 @@
             this.processLogGridView.AllowUserToDeleteRows = false;
             this.processLogGridView.AllowUserToOrderColumns = true;
             this.processLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.processLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.processLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.processLogGridView.AutoGenerateColumns = false;
             this.processLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.processLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -1010,8 +1015,8 @@
             this.apiLogGridView.AllowUserToDeleteRows = false;
             this.apiLogGridView.AllowUserToOrderColumns = true;
             this.apiLogGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.apiLogGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.apiLogGridView.AutoGenerateColumns = false;
             this.apiLogGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.apiLogGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -1884,7 +1889,7 @@
             this.adminPageToolStripMenuItem});
             this.networkDeviceContextMenu.Name = "remoteDeviceContextMenu";
             this.networkDeviceContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.networkDeviceContextMenu.Size = new System.Drawing.Size(153, 148);
+            this.networkDeviceContextMenu.Size = new System.Drawing.Size(152, 126);
             // 
             // networkDevicePoolMenu
             // 
@@ -1892,7 +1897,7 @@
             this.aToolStripMenuItem,
             this.bToolStripMenuItem});
             this.networkDevicePoolMenu.Name = "networkDevicePoolMenu";
-            this.networkDevicePoolMenu.Size = new System.Drawing.Size(152, 22);
+            this.networkDevicePoolMenu.Size = new System.Drawing.Size(151, 22);
             this.networkDevicePoolMenu.Text = "Switch Pool";
             // 
             // aToolStripMenuItem
@@ -1910,48 +1915,97 @@
             // restartMiningToolStripMenuItem
             // 
             this.restartMiningToolStripMenuItem.Name = "restartMiningToolStripMenuItem";
-            this.restartMiningToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.restartMiningToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.restartMiningToolStripMenuItem.Text = "Restart Mining";
             this.restartMiningToolStripMenuItem.Click += new System.EventHandler(this.restartMiningToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(148, 6);
             // 
             // stickyToolStripMenuItem
             // 
             this.stickyToolStripMenuItem.Name = "stickyToolStripMenuItem";
-            this.stickyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stickyToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.stickyToolStripMenuItem.Text = "Pinned";
             this.stickyToolStripMenuItem.Click += new System.EventHandler(this.stickyToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
-            // 
-            // adminPageToolStripMenuItem
-            // 
-            this.adminPageToolStripMenuItem.Name = "adminPageToolStripMenuItem";
-            this.adminPageToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.adminPageToolStripMenuItem.Text = "Admin Page";
-            this.adminPageToolStripMenuItem.Click += new System.EventHandler(this.adminPageToolStripMenuItem_Click);
             // 
             // hiddenToolStripMenuItem
             // 
             this.hiddenToolStripMenuItem.Name = "hiddenToolStripMenuItem";
-            this.hiddenToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.hiddenToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.hiddenToolStripMenuItem.Text = "Hidden";
             this.hiddenToolStripMenuItem.Click += new System.EventHandler(this.hiddenToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(148, 6);
+            // 
+            // adminPageToolStripMenuItem
+            // 
+            this.adminPageToolStripMenuItem.Name = "adminPageToolStripMenuItem";
+            this.adminPageToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.adminPageToolStripMenuItem.Text = "Admin Page";
+            this.adminPageToolStripMenuItem.Click += new System.EventHandler(this.adminPageToolStripMenuItem_Click);
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.homeButton,
+            this.dashboardButton,
+            this.metricsButton});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 49);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.toolStrip1.Size = new System.Drawing.Size(24, 226);
+            this.toolStrip1.TabIndex = 12;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // homeButton
+            // 
+            this.homeButton.Checked = true;
+            this.homeButton.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.homeButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.homeButton.Image = global::MultiMiner.Win.Properties.Resources.home;
+            this.homeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.homeButton.Name = "homeButton";
+            this.homeButton.Size = new System.Drawing.Size(21, 20);
+            this.homeButton.Text = "Home";
+            this.homeButton.Click += new System.EventHandler(this.homeButton_Click);
+            // 
+            // dashboardButton
+            // 
+            this.dashboardButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.dashboardButton.Image = global::MultiMiner.Win.Properties.Resources.activity_monitor;
+            this.dashboardButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.dashboardButton.Name = "dashboardButton";
+            this.dashboardButton.Size = new System.Drawing.Size(21, 20);
+            this.dashboardButton.Text = "Dashboard";
+            this.dashboardButton.Click += new System.EventHandler(this.dashboardButton_Click);
+            // 
+            // metricsButton
+            // 
+            this.metricsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.metricsButton.Image = global::MultiMiner.Win.Properties.Resources.insert_chart;
+            this.metricsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.metricsButton.Name = "metricsButton";
+            this.metricsButton.Size = new System.Drawing.Size(21, 20);
+            this.metricsButton.Text = "Metrics";
+            this.metricsButton.Click += new System.EventHandler(this.metricsButton_Click);
             // 
             // MinerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(907, 332);
-            this.Controls.Add(this.startupMiningPanel);
             this.Controls.Add(this.advancedAreaContainer);
+            this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.startupMiningPanel);
             this.Controls.Add(this.footerPanel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.standardToolBar);
@@ -2001,6 +2055,8 @@
             this.accessibleMenu.ResumeLayout(false);
             this.accessibleMenu.PerformLayout();
             this.networkDeviceContextMenu.ResumeLayout(false);
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2189,6 +2245,10 @@
         private System.Windows.Forms.ToolStripMenuItem stickyToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem hiddenToolStripMenuItem;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton homeButton;
+        private System.Windows.Forms.ToolStripButton dashboardButton;
+        private System.Windows.Forms.ToolStripButton metricsButton;
     }
 }
 
