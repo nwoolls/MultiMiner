@@ -4544,6 +4544,10 @@ namespace MultiMiner.Win.Forms
                 ar =>
                 {
                     asyncAction.EndInvoke(ar);
+
+                    //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
+                    if (tearingDown) return;
+
                     BeginInvoke((Action)(() =>
                     {
                         //code to update UI
