@@ -11,7 +11,7 @@ namespace MultiMiner.Utility.Networking.Tests
         {
             string localIPAddress = String.Empty;
             
-            localIPAddress = Utility.Networking.LocalNetwork.GetLocalIPAddress();
+            localIPAddress = Utility.Net.LocalNetwork.GetLocalIPAddress();
 
             Assert.IsTrue(!String.IsNullOrEmpty(localIPAddress));
         }
@@ -21,7 +21,7 @@ namespace MultiMiner.Utility.Networking.Tests
         {
             string localIPAddressRange = String.Empty;
 
-            localIPAddressRange = Utility.Networking.LocalNetwork.GetLocalIPAddressRange();
+            localIPAddressRange = Utility.Net.LocalNetwork.GetLocalIPAddressRange();
 
             Assert.IsTrue(!String.IsNullOrEmpty(localIPAddressRange));
         }
@@ -31,7 +31,7 @@ namespace MultiMiner.Utility.Networking.Tests
         {
             string workGroupName = String.Empty;
 
-            workGroupName = Utility.Networking.LocalNetwork.GetWorkGroupName();
+            workGroupName = Utility.Net.LocalNetwork.GetWorkGroupName();
 
             Assert.IsTrue(!String.IsNullOrEmpty(workGroupName));
         }

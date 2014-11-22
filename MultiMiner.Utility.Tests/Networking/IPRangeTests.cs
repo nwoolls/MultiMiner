@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Linq;
+using MultiMiner.Utility.Net;
 
 namespace MultiMiner.Utility.Networking.Tests
 {

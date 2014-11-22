@@ -389,10 +389,9 @@ namespace MultiMiner.Xgminer
             startInfo.CreateNoWindow = true;
 
             startInfo.Arguments = arguments.Trim();
+
             if (minerConfiguration.DisableGpu)
-            {
                 startInfo.Arguments = String.Format("{0} {1}", startInfo.Arguments, MinerParameter.ScanSerialOpenCLNoAuto);
-            }
 
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = redirectOutput;

@@ -57,8 +57,13 @@ namespace MultiMiner.MobileMiner.Api.Tests
         [TestMethod]
         public void SubmitNotifications_Succeeds()
         {
-            List<string> notifications = new List<string>();
-            notifications.Add(String.Empty);
+            List<Notification> notifications = new List<Notification>();
+            notifications.Add(new Notification()
+            {
+                MachineName = Environment.MachineName,
+                NotificationKind = NotificationKind.Information,
+                NotificationText = String.Empty
+            });
 
             DateTime start = DateTime.Now;
             ApiContext.SubmitNotifications(apiUrl, devApiKey, userEmail, userAppKey, notifications);
@@ -69,7 +74,7 @@ namespace MultiMiner.MobileMiner.Api.Tests
         public void GetCommands_ReturnsCommands()
         {
             DateTime start = DateTime.Now;
-            List<RemoteCommand> commands = ApiContext.GetCommands(apiUrl, devApiKey, userEmail, userAppKey, Environment.MachineName);
+            List<RemoteCommand> commands = ApiContext.GetCommands(apiUrl, devApiKey, userEmail, userAppKey, new List<string>() { Environment.MachineName });
             Assert.IsTrue((DateTime.Now - start).TotalSeconds < apiSecondsError);
         }
 

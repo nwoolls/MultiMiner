@@ -41,6 +41,9 @@ using MultiMiner.ExchangeApi.Data;
 using System.Globalization;
 using Microsoft.Win32;
 using MultiMiner.MultipoolApi.Data;
+using System.Collections.Specialized;
+using System.Text;
+using System.Web;
 
 namespace MultiMiner.Win.Forms
 {
@@ -7533,7 +7536,7 @@ namespace MultiMiner.Win.Forms
                     {
                         DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
                         MinerDescriptor defaultMiner = MinerFactory.Instance.GetDefaultMiner();
-                        devices = devicesService.GetDevices(defaultMiner, MinerPath.GetPathToInstalledMiner(defaultMiner));
+                        devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner(defaultMiner));
 
                         //safe to do here as we are Scanning Hardware - we are not mining
                         //no data to lose in the ViewModel
@@ -8076,6 +8079,79 @@ namespace MultiMiner.Win.Forms
         private void hiddenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToggleNetworkDeviceHidden();
+        }
+
+        private void homeButton_Click(object sender, EventArgs e)
+        {
+            homeButton.Checked = true;
+            metricsButton.Checked = false;
+            dashboardButton.Checked = false;
+            HideWebBrowser();
+        }
+
+        private void HideWebBrowser()
+        {
+            advancedAreaContainer.Visible = true;
+            advancedAreaContainer.BringToFront();
+            embeddedBrowser.Visible = false;
+        }
+
+        private void dashboardButton_Click(object sender, EventArgs e)
+        {
+            dashboardButton.Checked = true;
+            homeButton.Checked = false;
+            metricsButton.Checked = false;
+            ShowWebBrowser("http://web.mobileminerapp.com/dashboard/embed");
+        }
+
+        private WebBrowser embeddedBrowser = null;
+        private bool embeddedBrowserAthenticated = false;
+        const string FormUrlEncodedHeader = "Content-Type: application/x-www-form-urlencoded\r\n";
+
+        private void ShowWebBrowser(string url)
+        {
+            if (embeddedBrowser == null)
+            {
+                embeddedBrowser = new WebBrowser();
+                embeddedBrowser.Parent = this;
+                embeddedBrowser.Dock = DockStyle.Fill;
+                embeddedBrowser.IsWebBrowserContextMenuEnabled = false;
+                embeddedBrowser.Navigated += HandleBrowserNavigated;
+            }
+
+            bool postCredentials = !embeddedBrowserAthenticated && !String.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress);
+            if (postCredentials)
+            {
+                NameValueCollection values = HttpUtility.ParseQueryString(String.Empty);
+                values["email"] = applicationConfiguration.MobileMinerEmailAddress;
+                values["key"] = applicationConfiguration.MobileMinerApplicationKey;
+                string val = values.ToString();
+                byte[] data = Encoding.UTF8.GetBytes(val);
+                
+                embeddedBrowser.Navigate(url, null, data, FormUrlEncodedHeader);
+            }
+            else
+            {
+                embeddedBrowser.Navigate(url);
+            }
+
+            embeddedBrowser.Visible = true;
+            embeddedBrowser.BringToFront();
+            advancedAreaContainer.Visible = false;
+        }
+
+        private void HandleBrowserNavigated(object sender, WebBrowserNavigatedEventArgs e)
+        {
+            if (e.Url.Segments.Last().Equals("embed", StringComparison.OrdinalIgnoreCase))
+                embeddedBrowserAthenticated = true;
+        }
+
+        private void metricsButton_Click(object sender, EventArgs e)
+        {
+            metricsButton.Checked = true;
+            homeButton.Checked = false;
+            dashboardButton.Checked = false;
+            ShowWebBrowser("http://web.mobileminerapp.com/history/embed");
         }
     }
 }

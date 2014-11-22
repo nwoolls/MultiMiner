@@ -51,7 +51,7 @@ namespace MultiMiner.Discovery.Tests
                 listener.InstanceOffline += (sender, ea) => flaggedOffline = true;
 
                 Broadcaster.Broadcast(verb, 0);
-                Thread.Sleep(500);
+                Thread.Sleep(100);
             }
             finally
             {

@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MultiMiner.Coinbase.Api.Tests</RootNamespace>
     <AssemblyName>MultiMiner.Coinbase.Api.Tests</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -60,6 +60,10 @@
     <ProjectReference Include="..\MultiMiner.Coinbase\MultiMiner.Coinbase.csproj">
       <Project>{95f6c880-7ab3-441b-8d41-28c0ad507b62}</Project>
       <Name>MultiMiner.Coinbase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.ExchangeApi\MultiMiner.ExchangeApi.csproj">
+      <Project>{dce499f9-0751-4088-b45b-67ae0e612362}</Project>
+      <Name>MultiMiner.ExchangeApi</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
