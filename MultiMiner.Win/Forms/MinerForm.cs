@@ -5520,6 +5520,9 @@ namespace MultiMiner.Win.Forms
 
                 List<DeviceInformation> deviceInformationList = GetDeviceInfoFromAddress(ipAddress, port);
 
+                //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
+                if (tearingDown) return;
+
                 //first clear stats for each row
                 //this is because the NET row stats get summed 
                 this.BeginInvoke((Action)(() =>
