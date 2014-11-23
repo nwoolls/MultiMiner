@@ -8109,9 +8109,8 @@ namespace MultiMiner.Win.Forms
 
         private void homeButton_Click(object sender, EventArgs e)
         {
-            homeButton.Checked = true;
-            metricsButton.Checked = false;
-            dashboardButton.Checked = false;
+            ToggleSideBarButtons(sender);
+
             HideWebBrowser();
         }
 
@@ -8119,65 +8118,47 @@ namespace MultiMiner.Win.Forms
         {
             advancedAreaContainer.Visible = true;
             advancedAreaContainer.BringToFront();
-            embeddedBrowser.Visible = false;
         }
 
         private void dashboardButton_Click(object sender, EventArgs e)
         {
-            dashboardButton.Checked = true;
-            homeButton.Checked = false;
-            metricsButton.Checked = false;
-            ShowWebBrowser("http://web.mobileminerapp.com/dashboard/embed");
+            ToggleSideBarButtons(sender);
+
+            ShowWebBrowser(MobileMiner.WebBrowserProvider.DashboardController);
         }
 
-        private WebBrowser embeddedBrowser = null;
-        private bool embeddedBrowserAthenticated = false;
-        const string FormUrlEncodedHeader = "Content-Type: application/x-www-form-urlencoded\r\n";
-
-        private void ShowWebBrowser(string url)
+        private void ShowWebBrowser(string controller)
         {
-            if (embeddedBrowser == null)
-            {
-                embeddedBrowser = new WebBrowser();
-                embeddedBrowser.Parent = this;
-                embeddedBrowser.Dock = DockStyle.Fill;
-                embeddedBrowser.IsWebBrowserContextMenuEnabled = false;
-                embeddedBrowser.Navigated += HandleBrowserNavigated;
-            }
+            WebBrowser embeddedBrowser = MobileMiner.WebBrowserProvider.GetWebBrowser(
+                controller,
+                applicationConfiguration.MobileMinerEmailAddress,
+                applicationConfiguration.MobileMinerApplicationKey);
 
-            bool postCredentials = !embeddedBrowserAthenticated && !String.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress);
-            if (postCredentials)
-            {
-                NameValueCollection values = HttpUtility.ParseQueryString(String.Empty);
-                values["email"] = applicationConfiguration.MobileMinerEmailAddress;
-                values["key"] = applicationConfiguration.MobileMinerApplicationKey;
-                string val = values.ToString();
-                byte[] data = Encoding.UTF8.GetBytes(val);
-                
-                embeddedBrowser.Navigate(url, null, data, FormUrlEncodedHeader);
-            }
-            else
-            {
-                embeddedBrowser.Navigate(url);
-            }
+            ShowEmbeddedBrowser(embeddedBrowser);
+        }
 
+        private void ShowEmbeddedBrowser(WebBrowser embeddedBrowser)
+        {
+            embeddedBrowser.Dock = DockStyle.Fill;
+            embeddedBrowser.IsWebBrowserContextMenuEnabled = false;
+            embeddedBrowser.Parent = this;
             embeddedBrowser.Visible = true;
             embeddedBrowser.BringToFront();
             advancedAreaContainer.Visible = false;
         }
 
-        private void HandleBrowserNavigated(object sender, WebBrowserNavigatedEventArgs e)
-        {
-            if (e.Url.Segments.Last().Equals("embed", StringComparison.OrdinalIgnoreCase))
-                embeddedBrowserAthenticated = true;
-        }
-
         private void metricsButton_Click(object sender, EventArgs e)
         {
-            metricsButton.Checked = true;
-            homeButton.Checked = false;
-            dashboardButton.Checked = false;
-            ShowWebBrowser("http://web.mobileminerapp.com/history/embed");
+            ToggleSideBarButtons(sender);
+
+            ShowWebBrowser(MobileMiner.WebBrowserProvider.HistoryController);
+        }
+
+        private void ToggleSideBarButtons(object sender)
+        {
+            foreach (ToolStripButton item in sideToolStrip.Items)
+                item.Checked = false;
+            ((ToolStripButton)sender).Checked = true;
         }
     }
 }

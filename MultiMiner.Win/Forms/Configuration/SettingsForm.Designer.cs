@@ -206,13 +206,11 @@ namespace MultiMiner.Win.Forms.Configuration
             this.remoteMonitoringCheck.TabIndex = 5;
             this.remoteMonitoringCheck.Text = "Enable MobileMiner monitoring";
             this.remoteMonitoringCheck.UseVisualStyleBackColor = true;
-            this.remoteMonitoringCheck.CheckedChanged += new System.EventHandler(this.remoteMonitoringCheck_CheckedChanged);
             // 
             // appKeyEdit
             // 
             this.appKeyEdit.AccessibleName = "App key";
             this.appKeyEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "MobileMinerApplicationKey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.appKeyEdit.Enabled = false;
             this.appKeyEdit.Location = new System.Drawing.Point(345, 91);
             this.appKeyEdit.Name = "appKeyEdit";
             this.appKeyEdit.Size = new System.Drawing.Size(124, 23);
@@ -231,7 +229,6 @@ namespace MultiMiner.Win.Forms.Configuration
             // 
             this.emailAddressEdit.AccessibleName = "Email address";
             this.emailAddressEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "MobileMinerEmailAddress", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.emailAddressEdit.Enabled = false;
             this.emailAddressEdit.Location = new System.Drawing.Point(120, 91);
             this.emailAddressEdit.Name = "emailAddressEdit";
             this.emailAddressEdit.Size = new System.Drawing.Size(121, 23);
