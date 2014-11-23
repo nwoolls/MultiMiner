@@ -89,8 +89,6 @@ namespace MultiMiner.Win.Forms.Configuration
 
             coinApiCombo.SelectedIndex = applicationConfiguration.UseCoinWarzApi ? CoinWarzIndex : (applicationConfiguration.UseWhatMineApi ? WhatMineIndex : CoinChooseIndex);
             PopulateApiKey();
-
-            UpdateMobileMinerControls();
         }
 
         private void PopulateApiKey()
@@ -113,18 +111,6 @@ namespace MultiMiner.Win.Forms.Configuration
             applicationConfigurationBindingSource.DataSource = this.applicationConfiguration;
 
             priorityCombo.SelectedItem = minerConfiguration.Priority;
-        }
-
-        private void remoteMonitoringCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateMobileMinerControls();
-        }
-
-        private void UpdateMobileMinerControls()
-        {
-            emailAddressEdit.Enabled = remoteMonitoringCheck.Checked;
-            emailAddressEdit.Enabled = remoteMonitoringCheck.Checked;
-            appKeyEdit.Enabled = remoteMonitoringCheck.Checked;            
         }
 
         private void mobileMinerInfoLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

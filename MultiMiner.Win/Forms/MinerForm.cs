@@ -41,6 +41,9 @@ using MultiMiner.ExchangeApi.Data;
 using System.Globalization;
 using Microsoft.Win32;
 using MultiMiner.MultipoolApi.Data;
+using System.Collections.Specialized;
+using System.Text;
+using System.Web;
 
 namespace MultiMiner.Win.Forms
 {
@@ -8104,6 +8107,60 @@ namespace MultiMiner.Win.Forms
         private void hiddenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToggleNetworkDeviceHidden();
+        }
+
+        private void homeButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            HideWebBrowser();
+        }
+
+        private void HideWebBrowser()
+        {
+            advancedAreaContainer.Visible = true;
+            advancedAreaContainer.BringToFront();
+        }
+
+        private void dashboardButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            ShowWebBrowser(MobileMiner.WebBrowserProvider.DashboardController);
+        }
+
+        private void ShowWebBrowser(string controller)
+        {
+            WebBrowser embeddedBrowser = MobileMiner.WebBrowserProvider.GetWebBrowser(
+                controller,
+                applicationConfiguration.MobileMinerEmailAddress,
+                applicationConfiguration.MobileMinerApplicationKey);
+
+            ShowEmbeddedBrowser(embeddedBrowser);
+        }
+
+        private void ShowEmbeddedBrowser(WebBrowser embeddedBrowser)
+        {
+            embeddedBrowser.Dock = DockStyle.Fill;
+            embeddedBrowser.IsWebBrowserContextMenuEnabled = false;
+            embeddedBrowser.Parent = this;
+            embeddedBrowser.Visible = true;
+            embeddedBrowser.BringToFront();
+            advancedAreaContainer.Visible = false;
+        }
+
+        private void metricsButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            ShowWebBrowser(MobileMiner.WebBrowserProvider.HistoryController);
+        }
+
+        private void ToggleSideBarButtons(object sender)
+        {
+            foreach (ToolStripButton item in sideToolStrip.Items)
+                item.Checked = false;
+            ((ToolStripButton)sender).Checked = true;
         }
     }
 }
