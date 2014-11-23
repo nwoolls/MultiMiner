@@ -227,7 +227,7 @@
             this.hiddenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.adminPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.sideToolStrip = new System.Windows.Forms.ToolStrip();
             this.homeButton = new System.Windows.Forms.ToolStripButton();
             this.dashboardButton = new System.Windows.Forms.ToolStripButton();
             this.metricsButton = new System.Windows.Forms.ToolStripButton();
@@ -261,7 +261,7 @@
             this.standardToolBar.SuspendLayout();
             this.accessibleMenu.SuspendLayout();
             this.networkDeviceContextMenu.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
+            this.sideToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // coinStatsTimer
@@ -588,7 +588,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(883, 226);
-            this.detailsAreaContainer.SplitterDistance = 650;
+            this.detailsAreaContainer.SplitterDistance = 652;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -639,7 +639,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(650, 226);
+            this.deviceListView.Size = new System.Drawing.Size(652, 226);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.deviceListView.TabIndex = 2;
@@ -765,7 +765,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(230, 226);
+            this.detailsControl1.Size = new System.Drawing.Size(228, 226);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -1950,21 +1950,21 @@
             this.adminPageToolStripMenuItem.Text = "Admin Page";
             this.adminPageToolStripMenuItem.Click += new System.EventHandler(this.adminPageToolStripMenuItem_Click);
             // 
-            // toolStrip1
+            // sideToolStrip
             // 
-            this.toolStrip1.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sideToolStrip.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.sideToolStrip.Dock = System.Windows.Forms.DockStyle.Left;
+            this.sideToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.sideToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.homeButton,
             this.dashboardButton,
             this.metricsButton});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 49);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip1.Size = new System.Drawing.Size(24, 226);
-            this.toolStrip1.TabIndex = 12;
-            this.toolStrip1.Text = "toolStrip1";
+            this.sideToolStrip.Location = new System.Drawing.Point(0, 49);
+            this.sideToolStrip.Name = "sideToolStrip";
+            this.sideToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.sideToolStrip.Size = new System.Drawing.Size(24, 226);
+            this.sideToolStrip.TabIndex = 12;
+            this.sideToolStrip.Text = "toolStrip1";
             // 
             // homeButton
             // 
@@ -2005,7 +2005,7 @@
             this.ClientSize = new System.Drawing.Size(907, 332);
             this.Controls.Add(this.startupMiningPanel);
             this.Controls.Add(this.advancedAreaContainer);
-            this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.sideToolStrip);
             this.Controls.Add(this.footerPanel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.standardToolBar);
@@ -2055,8 +2055,8 @@
             this.accessibleMenu.ResumeLayout(false);
             this.accessibleMenu.PerformLayout();
             this.networkDeviceContextMenu.ResumeLayout(false);
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
+            this.sideToolStrip.ResumeLayout(false);
+            this.sideToolStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2245,7 +2245,7 @@
         private System.Windows.Forms.ToolStripMenuItem stickyToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem hiddenToolStripMenuItem;
-        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStrip sideToolStrip;
         private System.Windows.Forms.ToolStripButton homeButton;
         private System.Windows.Forms.ToolStripButton dashboardButton;
         private System.Windows.Forms.ToolStripButton metricsButton;
