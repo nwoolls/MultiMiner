@@ -84,8 +84,6 @@ namespace MultiMiner.Win.Forms.Configuration
             sysTrayCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
 
             coinApiCombo.SelectedIndex = applicationConfiguration.UseCoinWarzApi ? 1 : 0;
-
-            UpdateMobileMinerControls();
         }
 
         private void PopulatePriorities()
@@ -100,18 +98,6 @@ namespace MultiMiner.Win.Forms.Configuration
             applicationConfigurationBindingSource.DataSource = this.applicationConfiguration;
 
             priorityCombo.SelectedItem = minerConfiguration.Priority;
-        }
-
-        private void remoteMonitoringCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateMobileMinerControls();
-        }
-
-        private void UpdateMobileMinerControls()
-        {
-            emailAddressEdit.Enabled = remoteMonitoringCheck.Checked;
-            emailAddressEdit.Enabled = remoteMonitoringCheck.Checked;
-            appKeyEdit.Enabled = remoteMonitoringCheck.Checked;            
         }
 
         private void mobileMinerInfoLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
