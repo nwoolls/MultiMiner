@@ -111,7 +111,7 @@ namespace MultiMiner.Win.Forms
         //controls
         private NotificationsControl notificationsControl;
         private InstancesControl instancesControl;
-        private ApiConsoleForm apiConsoleForm;
+        private ApiConsoleControl apiConsoleControl;
 
         //remoting
         private RemotingServer remotingServer;
@@ -1736,15 +1736,7 @@ namespace MultiMiner.Win.Forms
             if (applicationConfiguration.Maximized)
                 this.WindowState = FormWindowState.Maximized;
 
-            if (applicationConfiguration.LogAreaVisible)
-            {
-                ShowApiMonitor();
-                if ((applicationConfiguration.LogAreaTabIndex >= 0) &&
-                    (applicationConfiguration.LogAreaTabIndex < advancedTabControl.TabCount))
-                    advancedTabControl.SelectedIndex = applicationConfiguration.LogAreaTabIndex;
-            }
-            else
-                HideAdvancedPanel();
+            HideAdvancedPanel();
 
             //can't set details container width until it is shown
             if (applicationConfiguration.InstancesAreaWidth > 0)
@@ -1902,7 +1894,6 @@ namespace MultiMiner.Win.Forms
 
         private void SaveSettings()
         {
-            applicationConfiguration.LogAreaTabIndex = advancedTabControl.SelectedIndex;
             SavePosition();
 
             applicationConfiguration.DetailsAreaWidth = detailsAreaContainer.Width - detailsAreaContainer.SplitterDistance;
@@ -2204,11 +2195,6 @@ namespace MultiMiner.Win.Forms
             Process.Start(GetEffectiveApiContext().GetInfoUrl());
         }
 
-        private void apiMonitorButton_Click(object sender, EventArgs e)
-        {
-            ShowApiMonitor();
-        }
-
         private void advancedToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             MinerFormViewModel viewModel = GetViewModelToView();
@@ -2230,22 +2216,7 @@ namespace MultiMiner.Win.Forms
         {
             ScanHardware();
         }
-
-        private void historyToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            ShowHistory();
-        }
-
-        private void processLogToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            ShowProcessLog();
-        }
-
-        private void aPIMonitorToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            ShowApiMonitor();
-        }
-
+        
         private void dynamicIntensityToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToggleDynamicIntensity(dynamicIntensityToolStripMenuItem.Checked);
@@ -2384,11 +2355,11 @@ namespace MultiMiner.Win.Forms
         private void openLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string fileName = String.Empty;
-            if (advancedTabControl.SelectedTab == apiMonitorPage)
+            if (apiMonitorSideButton.Checked)
                 fileName = "ApiLog.json";
-            else if (advancedTabControl.SelectedTab == processLogPage)
+            else if (processLogSideButton.Checked)
                 fileName = "ProcessLog.json";
-            else if (advancedTabControl.SelectedTab == historyPage)
+            else if (historySideButton.Checked)
                 fileName = "MiningLog.json";
 
             if (!String.IsNullOrEmpty(fileName))
@@ -2578,17 +2549,14 @@ namespace MultiMiner.Win.Forms
 
         private void historyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowHistory();
         }
 
         private void processLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowProcessLog();
         }
 
         private void aPIMonitorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ShowApiMonitor();
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2706,12 +2674,6 @@ namespace MultiMiner.Win.Forms
         private void dynamicIntensityButton_Click(object sender, EventArgs e)
         {
             ToggleDynamicIntensity(dynamicIntensityButton.Checked);
-        }
-        
-        private void advancedAreaContainer_SplitterMoved(object sender, SplitterEventArgs e)
-        {
-            if (settingsLoaded && !expandingAdvancedPanel)
-                applicationConfiguration.LogAreaDistance = e.SplitY;
         }
 
         private void settingsButton_ButtonClick(object sender, EventArgs e)
@@ -3196,8 +3158,8 @@ namespace MultiMiner.Win.Forms
                 processDeviceDetails.Clear();
                 SaveOwnedProcesses();
 
-                if (apiConsoleForm != null)
-                    apiConsoleForm.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
+                if (apiConsoleControl != null)
+                    apiConsoleControl.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
             }
 
             if (miningEngine.Mining)
@@ -5519,6 +5481,9 @@ namespace MultiMiner.Win.Forms
                 int port = int.Parse(portions[1]);
 
                 List<DeviceInformation> deviceInformationList = GetDeviceInfoFromAddress(ipAddress, port);
+                
+                //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
+                if (tearingDown) return;
 
                 //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
                 if (tearingDown) return;
@@ -6698,6 +6663,8 @@ namespace MultiMiner.Win.Forms
 
             if (briefMode)
             {
+                ShowDeviceListView();
+
                 CloseDetailsArea();
                 HideAdvancedPanel();
                 WindowState = FormWindowState.Normal;
@@ -6731,6 +6698,7 @@ namespace MultiMiner.Win.Forms
             perksPlainButton.Visible = !briefMode;
             settingsButton.Visible = briefMode;
 
+            sideToolStrip.Visible = !briefMode;
             strategiesLabel.Visible = !briefMode;
             strategyCountdownLabel.Visible = !briefMode;
             deviceTotalLabel.Visible = !briefMode;
@@ -7180,36 +7148,6 @@ namespace MultiMiner.Win.Forms
             //hide all controls or they will show/flicker under OS X/mono
             closeApiButton.Visible = false;
             apiLogGridView.Visible = false;
-
-            applicationConfiguration.LogAreaVisible = false;
-            applicationConfiguration.SaveApplicationConfiguration();
-        }
-
-        private void ShowAdvancedPanel()
-        {
-            if (briefMode)
-                SetBriefMode(false);
-
-            closeApiButton.Top = 0;
-            closeApiButton.Left = closeApiButton.Parent.Width - closeApiButton.Width - 1;
-            closeApiButton.Visible = true;
-            apiLogGridView.Visible = true;
-
-            ExpandAdvancedPanel();
-            EnsureRecentLogDataVisibility();
-            SetAdvancedPanelHeight();
-        }
-
-        private void SetAdvancedPanelHeight()
-        {
-            //can't set splitter distance with the app minimized: InvalidOperationException
-            if (this.WindowState != FormWindowState.Minimized)
-            {
-                if (applicationConfiguration.LogAreaDistance > 0)
-                    advancedAreaContainer.SplitterDistance = applicationConfiguration.LogAreaDistance;
-                else
-                    advancedAreaContainer.SplitterDistance = this.Height / 2;
-            }
         }
 
         private bool expandingAdvancedPanel = false;
@@ -7229,29 +7167,29 @@ namespace MultiMiner.Win.Forms
 
         private void ShowApiMonitor()
         {
-            advancedTabControl.SelectedTab = apiMonitorPage;
-            ShowAdvancedPanel();
-
-            applicationConfiguration.LogAreaVisible = true;
-            applicationConfiguration.SaveApplicationConfiguration();
+            apiLogGridView.BorderStyle = BorderStyle.None;
+            apiLogGridView.Dock = DockStyle.Fill;
+            apiLogGridView.Parent = this;
+            apiLogGridView.BringToFront();
+            apiLogGridView.Show();
         }
 
         private void ShowProcessLog()
         {
-            advancedTabControl.SelectedTab = processLogPage;
-            ShowAdvancedPanel();
-
-            applicationConfiguration.LogAreaVisible = true;
-            applicationConfiguration.SaveApplicationConfiguration();
+            processLogGridView.BorderStyle = BorderStyle.None;
+            processLogGridView.Dock = DockStyle.Fill;
+            processLogGridView.Parent = this;
+            processLogGridView.BringToFront();
+            processLogGridView.Show();
         }
 
         private void ShowHistory()
         {
-            advancedTabControl.SelectedTab = historyPage;
-            ShowAdvancedPanel();
-
-            applicationConfiguration.LogAreaVisible = true;
-            applicationConfiguration.SaveApplicationConfiguration();
+            historyGridView.BorderStyle = BorderStyle.None;
+            historyGridView.Dock = DockStyle.Fill;
+            historyGridView.Parent = this;
+            historyGridView.BringToFront();
+            historyGridView.Show();
         }
 
         private static void ShowAboutDialog()
@@ -7353,8 +7291,8 @@ namespace MultiMiner.Win.Forms
             ClearPoolsFlaggedDown();
             SaveOwnedProcesses();
 
-            if (apiConsoleForm != null)
-                apiConsoleForm.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
+            if (apiConsoleControl != null)
+                apiConsoleControl.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
         }
 
         private void RestartMining()
@@ -7419,8 +7357,8 @@ namespace MultiMiner.Win.Forms
                     ShowCoinChangeNotification();
                     SaveOwnedProcesses();
 
-                    if (apiConsoleForm != null)
-                        apiConsoleForm.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
+                    if (apiConsoleControl != null)
+                        apiConsoleControl.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
                 }
             }
         }
@@ -7735,8 +7673,8 @@ namespace MultiMiner.Win.Forms
                 (this.coinApiInformation != null))
                 ShowCoinChangeNotification();
 
-            if (apiConsoleForm != null)
-                apiConsoleForm.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
+            if (apiConsoleControl != null)
+                apiConsoleControl.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
         }
 
         //download miners required for configured coins / algorithms
@@ -8095,9 +8033,17 @@ namespace MultiMiner.Win.Forms
 
         private void aPIConsoleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            apiConsoleForm = new ApiConsoleForm(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
-            apiConsoleForm.Show();
+        }
 
+        private void ShowAPIConsole()
+        {
+            if (apiConsoleControl == null)
+                apiConsoleControl = new ApiConsoleControl(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
+
+            apiConsoleControl.Dock = DockStyle.Fill;
+            apiConsoleControl.Parent = this;
+            apiConsoleControl.BringToFront();
+            apiConsoleControl.Show();
         }
 
         private void stickyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -8114,10 +8060,10 @@ namespace MultiMiner.Win.Forms
         {
             ToggleSideBarButtons(sender);
 
-            HideWebBrowser();
+            ShowDeviceListView();
         }
 
-        private void HideWebBrowser()
+        private void ShowDeviceListView()
         {
             advancedAreaContainer.Visible = true;
             advancedAreaContainer.BringToFront();
@@ -8162,6 +8108,34 @@ namespace MultiMiner.Win.Forms
             foreach (ToolStripButton item in sideToolStrip.Items)
                 item.Checked = false;
             ((ToolStripButton)sender).Checked = true;
+        }
+
+        private void apiConsoleSideButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            ShowAPIConsole();
+        }
+
+        private void historySideButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            ShowHistory();
+        }
+
+        private void apiMonitorSideButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            ShowApiMonitor();
+        }
+
+        private void processLogSideButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            ShowProcessLog();
         }
     }
 }

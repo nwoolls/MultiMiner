@@ -1,6 +1,6 @@
 ﻿namespace MultiMiner.Win.Forms
 {
-    partial class ApiConsoleForm
+    partial class ApiConsoleControl
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApiConsoleForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApiConsoleControl));
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.helpTextBox = new MultiMiner.Utility.Forms.ReadOnlyTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -155,9 +155,7 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.helpTextBox);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "ApiConsoleForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
+            this.Name = "ApiConsoleControl";
             this.Text = "API Console";
             this.Load += new System.EventHandler(this.ApiConsoleForm_Load);
             this.panel1.ResumeLayout(false);

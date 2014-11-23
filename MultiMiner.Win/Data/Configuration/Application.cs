@@ -86,9 +86,6 @@ namespace MultiMiner.Win.Data.Configuration
         public bool SuggestCoinsToMine { get; set; }
         public CoinSuggestionsAlgorithm SuggestionsAlgorithm { get; set; }
 
-        public bool LogAreaVisible { get; set; }
-        public int LogAreaTabIndex { get; set; }
-        public int LogAreaDistance { get; set; }
         public bool RollOverLogFiles { get; set; }
         public int OldLogFileSets { get; set; }
         public string LogFilePath { get; set; }
