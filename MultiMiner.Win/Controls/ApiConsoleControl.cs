@@ -11,13 +11,13 @@ using System.Windows.Forms;
 
 namespace MultiMiner.Win.Forms
 {
-    public partial class ApiConsoleForm : MessageBoxFontForm
+    public partial class ApiConsoleControl : MessageBoxFontUserControl
     {
         readonly List<Xgminer.Api.ApiContext> apiContexts = new List<Xgminer.Api.ApiContext>();
         List<string> requests = new List<string>();
         int requestIndex = -1;
 
-        public ApiConsoleForm(List<MinerProcess> localMiners, List<NetworkDevices.NetworkDevice> networkMiners, MinerFormViewModel viewModel)
+        public ApiConsoleControl(List<MinerProcess> localMiners, List<NetworkDevices.NetworkDevice> networkMiners, MinerFormViewModel viewModel)
         {
             InitializeComponent();
             inputTextBox.Enabled = false;
