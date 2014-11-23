@@ -1742,10 +1742,6 @@ namespace MultiMiner.Win.Forms
                 if ((applicationConfiguration.LogAreaTabIndex >= 0) &&
                     (applicationConfiguration.LogAreaTabIndex < advancedTabControl.TabCount))
                     advancedTabControl.SelectedIndex = applicationConfiguration.LogAreaTabIndex;
-                if ((applicationConfiguration.LogAreaDistance > 0) &&
-                    //can't set splitter distance with the app minimized :( InvalidOperationException
-                    !applicationConfiguration.StartupMinimized)
-                    advancedAreaContainer.SplitterDistance = applicationConfiguration.LogAreaDistance;
             }
             else
                 HideAdvancedPanel();
@@ -2714,7 +2710,7 @@ namespace MultiMiner.Win.Forms
         
         private void advancedAreaContainer_SplitterMoved(object sender, SplitterEventArgs e)
         {
-            if (settingsLoaded)
+            if (settingsLoaded && !expandingAdvancedPanel)
                 applicationConfiguration.LogAreaDistance = e.SplitY;
         }
 
@@ -7193,13 +7189,39 @@ namespace MultiMiner.Win.Forms
 
             closeApiButton.Top = 0;
             closeApiButton.Left = closeApiButton.Parent.Width - closeApiButton.Width - 1;
-
             closeApiButton.Visible = true;
             apiLogGridView.Visible = true;
-            advancedAreaContainer.Panel2Collapsed = false;
-            advancedAreaContainer.Panel2.Show();
 
+            ExpandAdvancedPanel();
             EnsureRecentLogDataVisibility();
+            SetAdvancedPanelHeight();
+        }
+
+        private void SetAdvancedPanelHeight()
+        {
+            //can't set splitter distance with the app minimized: InvalidOperationException
+            if (this.WindowState != FormWindowState.Minimized)
+            {
+                if (applicationConfiguration.LogAreaDistance > 0)
+                    advancedAreaContainer.SplitterDistance = applicationConfiguration.LogAreaDistance;
+                else
+                    advancedAreaContainer.SplitterDistance = this.Height / 2;
+            }
+        }
+
+        private bool expandingAdvancedPanel = false;
+        private void ExpandAdvancedPanel()
+        {
+            expandingAdvancedPanel = true;
+            try
+            {
+                advancedAreaContainer.Panel2Collapsed = false;
+                advancedAreaContainer.Panel2.Show();
+            }
+            finally
+            {
+                expandingAdvancedPanel = false;
+            }
         }
 
         private void ShowApiMonitor()
