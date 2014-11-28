@@ -93,7 +93,6 @@ namespace MultiMiner.Win.Forms
         //fields
         private int startupMiningCountdownSeconds = 0;
         private int coinStatsCountdownMinutes = 0;
-        private bool settingsLoaded = false;
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
         private bool applicationSetup = false;
         private bool editingDeviceListView = false;
@@ -1751,8 +1750,6 @@ namespace MultiMiner.Win.Forms
 
             //allow resize/maximize/etc to render
             System.Windows.Forms.Application.DoEvents();
-
-            this.settingsLoaded = true;
         }
 
         private void SetupNetworkDeviceDetection()
@@ -7188,22 +7185,7 @@ namespace MultiMiner.Win.Forms
             closeApiButton.Visible = false;
             apiLogGridView.Visible = false;
         }
-
-        private bool expandingAdvancedPanel = false;
-        private void ExpandAdvancedPanel()
-        {
-            expandingAdvancedPanel = true;
-            try
-            {
-                advancedAreaContainer.Panel2Collapsed = false;
-                advancedAreaContainer.Panel2.Show();
-            }
-            finally
-            {
-                expandingAdvancedPanel = false;
-            }
-        }
-
+        
         private void ShowApiMonitor()
         {
             apiLogGridView.BorderStyle = BorderStyle.None;
