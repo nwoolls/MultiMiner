@@ -41,9 +41,6 @@ using MultiMiner.ExchangeApi.Data;
 using System.Globalization;
 using Microsoft.Win32;
 using MultiMiner.MultipoolApi.Data;
-using System.Collections.Specialized;
-using System.Text;
-using System.Web;
 
 namespace MultiMiner.Win.Forms
 {
