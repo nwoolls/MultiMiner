@@ -329,5 +329,22 @@ namespace MultiMiner.Win.ViewModels
 
             return result;
         }
+
+        public DeviceViewModel GetNetworkDeviceByFriendlyName(string friendlyDeviceName)
+        {
+            DeviceViewModel result = null;
+
+            IEnumerable<DeviceViewModel> networkDevices = Devices.Where(d => d.Kind == DeviceKind.NET);
+            foreach (DeviceViewModel item in networkDevices)
+            {
+                if (GetFriendlyDeviceName(item.Path, item.Path).Equals(friendlyDeviceName, StringComparison.OrdinalIgnoreCase))
+                {
+                    result = item;
+                    break;
+                }
+            }
+
+            return result;
+        }
     }
 }

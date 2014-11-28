@@ -5069,7 +5069,7 @@ namespace MultiMiner.Win.Forms
                 else
                 {
                     string remoteMachineName = command.Machine.Name;
-                    DeviceViewModel networkDevice = GetNetworkDeviceByFriendlyName(remoteMachineName);
+                    DeviceViewModel networkDevice = localViewModel.GetNetworkDeviceByFriendlyName(remoteMachineName);
                     if (networkDevice != null)
                     {
                         Uri uri = new Uri("http://" + networkDevice.Path);
@@ -5102,23 +5102,6 @@ namespace MultiMiner.Win.Forms
                     }
                 }
             }
-        }
-
-        private DeviceViewModel GetNetworkDeviceByFriendlyName(string friendlyDeviceName)
-        {
-            DeviceViewModel result = null;
-
-            IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
-            foreach (DeviceViewModel item in networkDevices)
-            {
-                if (localViewModel.GetFriendlyDeviceName(item.Path, item.Path).Equals(friendlyDeviceName, StringComparison.OrdinalIgnoreCase))
-                {
-                    result = item;
-                    break;
-                }
-            }
-
-            return result;
         }
 
         private Action<MobileMiner.Data.RemoteCommand> deleteRemoteCommandDelegate;
