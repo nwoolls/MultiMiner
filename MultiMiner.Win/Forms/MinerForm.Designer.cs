@@ -502,7 +502,7 @@
             // advancedAreaContainer
             // 
             this.advancedAreaContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.advancedAreaContainer.Location = new System.Drawing.Point(32, 49);
+            this.advancedAreaContainer.Location = new System.Drawing.Point(24, 49);
             this.advancedAreaContainer.Name = "advancedAreaContainer";
             this.advancedAreaContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -514,7 +514,7 @@
             // 
             this.advancedAreaContainer.Panel2.Controls.Add(this.advancedTabControl);
             this.advancedAreaContainer.Panel2.Controls.Add(this.panel2);
-            this.advancedAreaContainer.Size = new System.Drawing.Size(875, 226);
+            this.advancedAreaContainer.Size = new System.Drawing.Size(883, 226);
             this.advancedAreaContainer.SplitterDistance = 111;
             this.advancedAreaContainer.SplitterWidth = 5;
             this.advancedAreaContainer.TabIndex = 10;
@@ -529,7 +529,7 @@
             // instancesContainer.Panel2
             // 
             this.instancesContainer.Panel2.Controls.Add(this.detailsAreaContainer);
-            this.instancesContainer.Size = new System.Drawing.Size(875, 111);
+            this.instancesContainer.Size = new System.Drawing.Size(883, 111);
             this.instancesContainer.SplitterDistance = 186;
             this.instancesContainer.TabIndex = 4;
             // 
@@ -547,8 +547,8 @@
             // detailsAreaContainer.Panel2
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
-            this.detailsAreaContainer.Size = new System.Drawing.Size(875, 111);
-            this.detailsAreaContainer.SplitterDistance = 650;
+            this.detailsAreaContainer.Size = new System.Drawing.Size(883, 111);
+            this.detailsAreaContainer.SplitterDistance = 659;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -599,7 +599,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(650, 111);
+            this.deviceListView.Size = new System.Drawing.Size(659, 111);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.deviceListView.TabIndex = 2;
@@ -725,7 +725,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(222, 111);
+            this.detailsControl1.Size = new System.Drawing.Size(221, 111);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -739,7 +739,7 @@
             this.advancedTabControl.Location = new System.Drawing.Point(0, 26);
             this.advancedTabControl.Name = "advancedTabControl";
             this.advancedTabControl.SelectedIndex = 0;
-            this.advancedTabControl.Size = new System.Drawing.Size(875, 84);
+            this.advancedTabControl.Size = new System.Drawing.Size(883, 84);
             this.advancedTabControl.TabIndex = 15;
             this.advancedTabControl.SelectedIndexChanged += new System.EventHandler(this.advancedTabControl_SelectedIndexChanged);
             // 
@@ -750,7 +750,7 @@
             this.historyPage.Location = new System.Drawing.Point(4, 24);
             this.historyPage.Name = "historyPage";
             this.historyPage.Padding = new System.Windows.Forms.Padding(3);
-            this.historyPage.Size = new System.Drawing.Size(867, 56);
+            this.historyPage.Size = new System.Drawing.Size(875, 56);
             this.historyPage.TabIndex = 2;
             this.historyPage.Text = "History";
             this.historyPage.UseVisualStyleBackColor = true;
@@ -784,7 +784,7 @@
             this.historyGridView.Name = "historyGridView";
             this.historyGridView.ReadOnly = true;
             this.historyGridView.RowHeadersVisible = false;
-            this.historyGridView.Size = new System.Drawing.Size(861, 50);
+            this.historyGridView.Size = new System.Drawing.Size(869, 50);
             this.historyGridView.TabIndex = 0;
             this.historyGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.historyGridView_CellFormatting);
             this.historyGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.historyGridView_RowsAdded);
@@ -1044,7 +1044,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(875, 26);
+            this.panel2.Size = new System.Drawing.Size(883, 26);
             this.panel2.TabIndex = 14;
             // 
             // closeApiButton
@@ -1052,7 +1052,7 @@
             this.closeApiButton.AccessibleName = "Close";
             this.closeApiButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.closeApiButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.closeApiButton.Location = new System.Drawing.Point(852, 0);
+            this.closeApiButton.Location = new System.Drawing.Point(860, 0);
             this.closeApiButton.Name = "closeApiButton";
             this.closeApiButton.Size = new System.Drawing.Size(22, 22);
             this.closeApiButton.TabIndex = 0;
@@ -1084,9 +1084,9 @@
             this.footerPanel.Controls.Add(this.coinApiLinkLabel);
             this.footerPanel.Controls.Add(this.coinChoosePrefixLabel);
             this.footerPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.footerPanel.Location = new System.Drawing.Point(0, 275);
+            this.footerPanel.Location = new System.Drawing.Point(24, 275);
             this.footerPanel.Name = "footerPanel";
-            this.footerPanel.Size = new System.Drawing.Size(907, 35);
+            this.footerPanel.Size = new System.Drawing.Size(883, 35);
             this.footerPanel.TabIndex = 9;
             // 
             // incomeSummaryLabel
@@ -1095,7 +1095,7 @@
             this.incomeSummaryLabel.Dock = System.Windows.Forms.DockStyle.Right;
             this.incomeSummaryLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.incomeSummaryLabel.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.incomeSummaryLabel.Location = new System.Drawing.Point(763, 0);
+            this.incomeSummaryLabel.Location = new System.Drawing.Point(739, 0);
             this.incomeSummaryLabel.MinimumSize = new System.Drawing.Size(35, 0);
             this.incomeSummaryLabel.Name = "incomeSummaryLabel";
             this.incomeSummaryLabel.Padding = new System.Windows.Forms.Padding(0, 10, 8, 0);
@@ -1144,10 +1144,10 @@
             this.strategyCountdownLabel,
             this.hashRateStatusLabel,
             this.deviceTotalLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 310);
+            this.statusStrip1.Location = new System.Drawing.Point(24, 310);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(907, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(883, 22);
             this.statusStrip1.TabIndex = 8;
             this.statusStrip1.TabStop = true;
             this.statusStrip1.Text = "statusStrip1";
@@ -1182,7 +1182,7 @@
             // 
             this.hashRateStatusLabel.AutoSize = false;
             this.hashRateStatusLabel.Name = "hashRateStatusLabel";
-            this.hashRateStatusLabel.Size = new System.Drawing.Size(413, 17);
+            this.hashRateStatusLabel.Size = new System.Drawing.Size(389, 17);
             this.hashRateStatusLabel.Spring = true;
             this.hashRateStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -1215,10 +1215,10 @@
             this.listViewStyleButton,
             this.advancedMenuItem});
             this.standardToolBar.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.standardToolBar.Location = new System.Drawing.Point(0, 24);
+            this.standardToolBar.Location = new System.Drawing.Point(24, 24);
             this.standardToolBar.Name = "standardToolBar";
             this.standardToolBar.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.standardToolBar.Size = new System.Drawing.Size(907, 25);
+            this.standardToolBar.Size = new System.Drawing.Size(883, 25);
             this.standardToolBar.TabIndex = 7;
             this.standardToolBar.TabStop = true;
             this.standardToolBar.Text = "toolStrip1";
@@ -1544,10 +1544,10 @@
             this.viewToolStripMenuItem,
             this.advancedToolStripMenuItem,
             this.helpToolStripMenuItem});
-            this.accessibleMenu.Location = new System.Drawing.Point(0, 0);
+            this.accessibleMenu.Location = new System.Drawing.Point(24, 0);
             this.accessibleMenu.Name = "accessibleMenu";
             this.accessibleMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.accessibleMenu.Size = new System.Drawing.Size(907, 24);
+            this.accessibleMenu.Size = new System.Drawing.Size(883, 24);
             this.accessibleMenu.TabIndex = 11;
             this.accessibleMenu.Text = "menuStrip1";
             // 
@@ -1873,10 +1873,10 @@
             this.historySideButton,
             this.apiMonitorSideButton,
             this.processLogSideButton});
-            this.sideToolStrip.Location = new System.Drawing.Point(0, 49);
+            this.sideToolStrip.Location = new System.Drawing.Point(0, 0);
             this.sideToolStrip.Name = "sideToolStrip";
             this.sideToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.sideToolStrip.Size = new System.Drawing.Size(32, 226);
+            this.sideToolStrip.Size = new System.Drawing.Size(24, 332);
             this.sideToolStrip.TabIndex = 12;
             this.sideToolStrip.Text = "toolStrip1";
             // 
@@ -1889,7 +1889,7 @@
             this.homeSideButton.Image = global::MultiMiner.Win.Properties.Resources.home;
             this.homeSideButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.homeSideButton.Name = "homeSideButton";
-            this.homeSideButton.Size = new System.Drawing.Size(29, 20);
+            this.homeSideButton.Size = new System.Drawing.Size(21, 20);
             this.homeSideButton.Text = "Home";
             this.homeSideButton.Click += new System.EventHandler(this.homeButton_Click);
             // 
@@ -1900,7 +1900,7 @@
             this.dashboardSideButton.Image = global::MultiMiner.Win.Properties.Resources.activity_monitor;
             this.dashboardSideButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.dashboardSideButton.Name = "dashboardSideButton";
-            this.dashboardSideButton.Size = new System.Drawing.Size(29, 20);
+            this.dashboardSideButton.Size = new System.Drawing.Size(21, 20);
             this.dashboardSideButton.Text = "Dashboard";
             this.dashboardSideButton.Click += new System.EventHandler(this.dashboardButton_Click);
             // 
@@ -1911,7 +1911,7 @@
             this.metricsSideButton.Image = global::MultiMiner.Win.Properties.Resources.insert_chart;
             this.metricsSideButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.metricsSideButton.Name = "metricsSideButton";
-            this.metricsSideButton.Size = new System.Drawing.Size(29, 20);
+            this.metricsSideButton.Size = new System.Drawing.Size(21, 20);
             this.metricsSideButton.Text = "Metrics";
             this.metricsSideButton.Click += new System.EventHandler(this.metricsButton_Click);
             // 
@@ -1922,7 +1922,7 @@
             this.apiConsoleSideButton.Image = global::MultiMiner.Win.Properties.Resources.computer_network_user;
             this.apiConsoleSideButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.apiConsoleSideButton.Name = "apiConsoleSideButton";
-            this.apiConsoleSideButton.Size = new System.Drawing.Size(29, 20);
+            this.apiConsoleSideButton.Size = new System.Drawing.Size(21, 20);
             this.apiConsoleSideButton.Text = "API Console";
             this.apiConsoleSideButton.Click += new System.EventHandler(this.apiConsoleSideButton_Click);
             // 
@@ -1933,7 +1933,7 @@
             this.historySideButton.Image = global::MultiMiner.Win.Properties.Resources.history;
             this.historySideButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.historySideButton.Name = "historySideButton";
-            this.historySideButton.Size = new System.Drawing.Size(29, 20);
+            this.historySideButton.Size = new System.Drawing.Size(21, 20);
             this.historySideButton.Text = "History";
             this.historySideButton.Click += new System.EventHandler(this.historySideButton_Click);
             // 
@@ -1944,7 +1944,7 @@
             this.apiMonitorSideButton.Image = global::MultiMiner.Win.Properties.Resources.network_application;
             this.apiMonitorSideButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.apiMonitorSideButton.Name = "apiMonitorSideButton";
-            this.apiMonitorSideButton.Size = new System.Drawing.Size(29, 20);
+            this.apiMonitorSideButton.Size = new System.Drawing.Size(21, 20);
             this.apiMonitorSideButton.Text = "API Monitor";
             this.apiMonitorSideButton.Click += new System.EventHandler(this.apiMonitorSideButton_Click);
             // 
@@ -1955,7 +1955,7 @@
             this.processLogSideButton.Image = global::MultiMiner.Win.Properties.Resources.window_text;
             this.processLogSideButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.processLogSideButton.Name = "processLogSideButton";
-            this.processLogSideButton.Size = new System.Drawing.Size(29, 20);
+            this.processLogSideButton.Size = new System.Drawing.Size(21, 20);
             this.processLogSideButton.Text = "Process Log";
             this.processLogSideButton.Click += new System.EventHandler(this.processLogSideButton_Click);
             // 
@@ -1966,11 +1966,11 @@
             this.ClientSize = new System.Drawing.Size(907, 332);
             this.Controls.Add(this.startupMiningPanel);
             this.Controls.Add(this.advancedAreaContainer);
-            this.Controls.Add(this.sideToolStrip);
             this.Controls.Add(this.footerPanel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.standardToolBar);
             this.Controls.Add(this.accessibleMenu);
+            this.Controls.Add(this.sideToolStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.accessibleMenu;
             this.Name = "MinerForm";
