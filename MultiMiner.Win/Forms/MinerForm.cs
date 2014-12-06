@@ -41,9 +41,6 @@ using MultiMiner.ExchangeApi.Data;
 using System.Globalization;
 using Microsoft.Win32;
 using MultiMiner.MultipoolApi.Data;
-using System.Collections.Specialized;
-using System.Text;
-using System.Web;
 
 namespace MultiMiner.Win.Forms
 {
@@ -96,7 +93,6 @@ namespace MultiMiner.Win.Forms
         //fields
         private int startupMiningCountdownSeconds = 0;
         private int coinStatsCountdownMinutes = 0;
-        private bool settingsLoaded = false;
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
         private bool applicationSetup = false;
         private bool editingDeviceListView = false;
@@ -1754,8 +1750,6 @@ namespace MultiMiner.Win.Forms
 
             //allow resize/maximize/etc to render
             System.Windows.Forms.Application.DoEvents();
-
-            this.settingsLoaded = true;
         }
 
         private void SetupNetworkDeviceDetection()
@@ -2975,6 +2969,65 @@ namespace MultiMiner.Win.Forms
         private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             ShowAboutDialog();
+        }
+
+        private void homeButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            ShowDeviceListView();
+        }
+
+        private void dashboardButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            ShowWebBrowser(MobileMiner.WebBrowserProvider.DashboardController);
+        }
+
+        private void metricsButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            ShowWebBrowser(MobileMiner.WebBrowserProvider.HistoryController);
+        }
+
+        private void apiConsoleSideButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            ShowAPIConsole();
+        }
+
+        private void historySideButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            ShowHistory();
+        }
+
+        private void apiMonitorSideButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            ShowApiMonitor();
+        }
+
+        private void processLogSideButton_Click(object sender, EventArgs e)
+        {
+            ToggleSideBarButtons(sender);
+
+            ShowProcessLog();
+        }
+
+        private void stickyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToggleNetworkDeviceSticky();
+        }
+
+        private void hiddenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToggleNetworkDeviceHidden();
         }
         #endregion
 
@@ -5068,7 +5121,7 @@ namespace MultiMiner.Win.Forms
                 else
                 {
                     string remoteMachineName = command.Machine.Name;
-                    DeviceViewModel networkDevice = GetNetworkDeviceByFriendlyName(remoteMachineName);
+                    DeviceViewModel networkDevice = localViewModel.GetNetworkDeviceByFriendlyName(remoteMachineName);
                     if (networkDevice != null)
                     {
                         Uri uri = new Uri("http://" + networkDevice.Path);
@@ -5101,23 +5154,6 @@ namespace MultiMiner.Win.Forms
                     }
                 }
             }
-        }
-
-        private DeviceViewModel GetNetworkDeviceByFriendlyName(string friendlyDeviceName)
-        {
-            DeviceViewModel result = null;
-
-            IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
-            foreach (DeviceViewModel item in networkDevices)
-            {
-                if (localViewModel.GetFriendlyDeviceName(item.Path, item.Path).Equals(friendlyDeviceName, StringComparison.OrdinalIgnoreCase))
-                {
-                    result = item;
-                    break;
-                }
-            }
-
-            return result;
         }
 
         private Action<MobileMiner.Data.RemoteCommand> deleteRemoteCommandDelegate;
@@ -7148,22 +7184,7 @@ namespace MultiMiner.Win.Forms
             closeApiButton.Visible = false;
             apiLogGridView.Visible = false;
         }
-
-        private bool expandingAdvancedPanel = false;
-        private void ExpandAdvancedPanel()
-        {
-            expandingAdvancedPanel = true;
-            try
-            {
-                advancedAreaContainer.Panel2Collapsed = false;
-                advancedAreaContainer.Panel2.Show();
-            }
-            finally
-            {
-                expandingAdvancedPanel = false;
-            }
-        }
-
+        
         private void ShowApiMonitor()
         {
             apiLogGridView.BorderStyle = BorderStyle.None;
@@ -7240,6 +7261,49 @@ namespace MultiMiner.Win.Forms
             if (File.Exists(filePath))
                 File.Delete(filePath);
             return processesKilled;
+        }
+        private void ShowAPIConsole()
+        {
+            if (apiConsoleControl == null)
+                apiConsoleControl = new ApiConsoleControl(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
+
+            apiConsoleControl.Dock = DockStyle.Fill;
+            apiConsoleControl.Parent = this;
+            apiConsoleControl.BringToFront();
+            apiConsoleControl.Show();
+        }
+
+        private void ShowDeviceListView()
+        {
+            advancedAreaContainer.Visible = true;
+            advancedAreaContainer.BringToFront();
+        }
+
+        private void ShowWebBrowser(string controller)
+        {
+            WebBrowser embeddedBrowser = MobileMiner.WebBrowserProvider.GetWebBrowser(
+                controller,
+                applicationConfiguration.MobileMinerEmailAddress,
+                applicationConfiguration.MobileMinerApplicationKey);
+
+            ShowEmbeddedBrowser(embeddedBrowser);
+        }
+
+        private void ShowEmbeddedBrowser(WebBrowser embeddedBrowser)
+        {
+            embeddedBrowser.Dock = DockStyle.Fill;
+            embeddedBrowser.IsWebBrowserContextMenuEnabled = false;
+            embeddedBrowser.Parent = this;
+            embeddedBrowser.Visible = true;
+            embeddedBrowser.BringToFront();
+            advancedAreaContainer.Visible = false;
+        }
+
+        private void ToggleSideBarButtons(object sender)
+        {
+            foreach (ToolStripButton item in sideToolStrip.Items)
+                item.Checked = false;
+            ((ToolStripButton)sender).Checked = true;
         }
         #endregion
 
@@ -8030,111 +8094,5 @@ namespace MultiMiner.Win.Forms
         }
         #endregion
 
-        private void aPIConsoleToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void ShowAPIConsole()
-        {
-            if (apiConsoleControl == null)
-                apiConsoleControl = new ApiConsoleControl(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
-
-            apiConsoleControl.Dock = DockStyle.Fill;
-            apiConsoleControl.Parent = this;
-            apiConsoleControl.BringToFront();
-            apiConsoleControl.Show();
-        }
-
-        private void stickyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToggleNetworkDeviceSticky();
-        }
-
-        private void hiddenToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToggleNetworkDeviceHidden();
-        }
-
-        private void homeButton_Click(object sender, EventArgs e)
-        {
-            ToggleSideBarButtons(sender);
-
-            ShowDeviceListView();
-        }
-
-        private void ShowDeviceListView()
-        {
-            advancedAreaContainer.Visible = true;
-            advancedAreaContainer.BringToFront();
-        }
-
-        private void dashboardButton_Click(object sender, EventArgs e)
-        {
-            ToggleSideBarButtons(sender);
-
-            ShowWebBrowser(MobileMiner.WebBrowserProvider.DashboardController);
-        }
-
-        private void ShowWebBrowser(string controller)
-        {
-            WebBrowser embeddedBrowser = MobileMiner.WebBrowserProvider.GetWebBrowser(
-                controller,
-                applicationConfiguration.MobileMinerEmailAddress,
-                applicationConfiguration.MobileMinerApplicationKey);
-
-            ShowEmbeddedBrowser(embeddedBrowser);
-        }
-
-        private void ShowEmbeddedBrowser(WebBrowser embeddedBrowser)
-        {
-            embeddedBrowser.Dock = DockStyle.Fill;
-            embeddedBrowser.IsWebBrowserContextMenuEnabled = false;
-            embeddedBrowser.Parent = this;
-            embeddedBrowser.Visible = true;
-            embeddedBrowser.BringToFront();
-            advancedAreaContainer.Visible = false;
-        }
-
-        private void metricsButton_Click(object sender, EventArgs e)
-        {
-            ToggleSideBarButtons(sender);
-
-            ShowWebBrowser(MobileMiner.WebBrowserProvider.HistoryController);
-        }
-
-        private void ToggleSideBarButtons(object sender)
-        {
-            foreach (ToolStripButton item in sideToolStrip.Items)
-                item.Checked = false;
-            ((ToolStripButton)sender).Checked = true;
-        }
-
-        private void apiConsoleSideButton_Click(object sender, EventArgs e)
-        {
-            ToggleSideBarButtons(sender);
-
-            ShowAPIConsole();
-        }
-
-        private void historySideButton_Click(object sender, EventArgs e)
-        {
-            ToggleSideBarButtons(sender);
-
-            ShowHistory();
-        }
-
-        private void apiMonitorSideButton_Click(object sender, EventArgs e)
-        {
-            ToggleSideBarButtons(sender);
-
-            ShowApiMonitor();
-        }
-
-        private void processLogSideButton_Click(object sender, EventArgs e)
-        {
-            ToggleSideBarButtons(sender);
-
-            ShowProcessLog();
-        }
     }
 }
