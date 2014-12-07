@@ -41,6 +41,7 @@ using MultiMiner.ExchangeApi.Data;
 using System.Globalization;
 using Microsoft.Win32;
 using MultiMiner.MultipoolApi.Data;
+using MultiMiner.MobileMiner.Data;
 
 namespace MultiMiner.Win.Forms
 {
@@ -133,11 +134,10 @@ namespace MultiMiner.Win.Forms
         {
             InitializeComponent();
 
-            pathConfiguration.LoadPathConfiguration();
-
             instancesContainer.Panel1Collapsed = true;
             detailsAreaContainer.Panel2Collapsed = true;
 
+            pathConfiguration.LoadPathConfiguration();
             applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
 
             if (applicationConfiguration.StartupMinimized)
@@ -448,133 +448,12 @@ namespace MultiMiner.Win.Forms
 
                 for (int i = 0; i < viewModelToView.Devices.Count; i++)
                 {
-                    DeviceViewModel deviceViewModel = viewModelToView.Devices[i];
-                    if (!deviceViewModel.Visible)
-                        continue;
-
-                    //Network Devices should only show from the Local ViewModel
-                    if ((viewModelToView == remoteViewModel) &&
-                        (deviceViewModel.Kind == DeviceKind.NET))
-                        continue;
-
-                    //Network Devices disabled
-                    if (!applicationConfiguration.NetworkDeviceDetection &&
-                        (deviceViewModel.Kind == DeviceKind.NET))
-                        continue;
-
                     //app is closing
                     if (tearingDown)
-                        break;
+                        return;
 
-                    ListViewItem listViewItem = FindOrAddListViewItemForViewModel(deviceViewModel);
-                    
-
-                    if (!String.IsNullOrEmpty(deviceViewModel.FriendlyName))
-                        listViewItem.Text = deviceViewModel.FriendlyName;
-
-                    /* configuration info
-                     * */
-                    listViewItem.Checked = deviceViewModel.Enabled;
-
-                    if (listViewItem.Checked)
-                    {
-                        listViewItem.ForeColor = SystemColors.WindowText;
-                        listViewItem.UseItemStyleForSubItems = false;
-                    }
-                    else
-                    {
-                        listViewItem.ForeColor = SystemColors.GrayText;
-                        listViewItem.UseItemStyleForSubItems = true;
-                    }
-
-                    /* Coin info
-                     * */
-                    //check for Coin != null, device may not have a coin configured
-                    //Network Devices assume BTC (for now)
-                    if (deviceViewModel.Coin == null)
-                    {
-                        listViewItem.SubItems["Coin"].Text = String.Empty;
-                        listViewItem.SubItems["Difficulty"].Text = String.Empty;
-                        listViewItem.SubItems["Price"].Text = String.Empty;
-                        listViewItem.SubItems["Exchange"].Text = String.Empty;
-                        listViewItem.SubItems["Profitability"].Text = String.Empty;
-                    }
-                    else
-                    {
-                        listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
-
-                        double difficulty = GetCachedNetworkDifficulty(deviceViewModel.Pool ?? String.Empty);
-                        if (difficulty == 0.0)
-                            difficulty = deviceViewModel.Difficulty;
-
-                        listViewItem.SubItems["Difficulty"].Tag = difficulty;
-                        listViewItem.SubItems["Difficulty"].Text = difficulty.ToDifficultyString();
-
-                        if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
-                        {
-                            string unit = KnownCoins.BitcoinSymbol;
-                            listViewItem.SubItems["Price"].Text = String.Format("{0} {1}", deviceViewModel.Price.ToFriendlyString(), unit);
-
-                            //check .Mining to allow perks for Remoting when local PC is not mining
-                            if ((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowExchangeRates
-                            //ensure Exchange prices are available:
-                            && (sellPrices != null))
-                            {
-                                ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
-                                double btcExchangeRate = exchangeInformation.ExchangeRate;
-                                double coinExchangeRate = 0.00;
-
-                                coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
-
-                                listViewItem.SubItems["Exchange"].Tag = coinExchangeRate;
-                                listViewItem.SubItems["Exchange"].Text = String.Format("{0}{1}", exchangeInformation.TargetSymbol, coinExchangeRate.ToFriendlyString(true));
-                            }
-                        }
-
-                        switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
-                        {
-                            case Strategy.CoinProfitabilityKind.AdjustedProfitability:
-                                listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AdjustedProfitability, 2) + "%";
-                                break;
-                            case Strategy.CoinProfitabilityKind.AverageProfitability:
-                                listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AverageProfitability, 2) + "%";
-                                break;
-                            case Strategy.CoinProfitabilityKind.StraightProfitability:
-                                listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.Profitability, 2) + "%";
-                                break;
-                        }
-                    }
-
-                    /* device info
-                     * */
-                    listViewItem.SubItems["Average"].Text = deviceViewModel.AverageHashrate == 0 ? String.Empty : deviceViewModel.AverageHashrate.ToHashrateString();
-                    listViewItem.SubItems["Current"].Text = deviceViewModel.CurrentHashrate == 0 ? String.Empty : deviceViewModel.CurrentHashrate.ToHashrateString();
-
-                    //ensure column is visible in Tiles view
-                    if (String.IsNullOrEmpty(listViewItem.SubItems["Current"].Text) &&
-                        (deviceListView.View == View.Tile))
-                        listViewItem.SubItems["Current"].Text = "Idle";
-
-                    double hashrate = WorkUtilityToHashrate(deviceViewModel.WorkUtility);
-                    listViewItem.SubItems["Effective"].Text = hashrate == 0 ? String.Empty : hashrate.ToHashrateString();
-
-                    //check for >= 0.05 so we don't show 0% (due to the format string)
-                    listViewItem.SubItems["Rejected"].Text = deviceViewModel.RejectedSharesPercent >= 0.05 ? deviceViewModel.RejectedSharesPercent.ToString("0.#") + "%" : String.Empty;
-                    listViewItem.SubItems["Errors"].Text = deviceViewModel.HardwareErrorsPercent >= 0.05 ? deviceViewModel.HardwareErrorsPercent.ToString("0.#") + "%" : String.Empty;
-                    listViewItem.SubItems["Accepted"].Text = deviceViewModel.AcceptedShares > 0 ? deviceViewModel.AcceptedShares.ToString() : String.Empty;
-
-                    if (applicationConfiguration.ShowWorkUtility)
-                        listViewItem.SubItems[utilityColumnHeader.Text].Text = deviceViewModel.WorkUtility > 0.00 ? deviceViewModel.WorkUtility.ToString("0.###") : String.Empty;
-                    else
-                        listViewItem.SubItems[utilityColumnHeader.Text].Text = deviceViewModel.Utility > 0.00 ? deviceViewModel.Utility.ToString("0.###") : String.Empty;
-
-                    listViewItem.SubItems["Temp"].Text = deviceViewModel.Temperature > 0 ? deviceViewModel.Temperature + "°" : String.Empty;
-                    listViewItem.SubItems["Fan"].Text = deviceViewModel.FanPercent > 0 ? deviceViewModel.FanPercent + "%" : String.Empty;
-                    listViewItem.SubItems["Intensity"].Text = deviceViewModel.Intensity;
-
-                    listViewItem.SubItems["Pool"].Text = deviceViewModel.Pool.DomainFromHost();
-
-                    PopulateIncomeForListViewItem(listViewItem, deviceViewModel);
+                    DeviceViewModel deviceViewModel = viewModelToView.Devices[i];
+                    RefreshListViewForDeviceViewModel(deviceViewModel);
                 }
 
                 foreach (int selectedIndex in selectedIndexes)
@@ -588,19 +467,145 @@ namespace MultiMiner.Win.Forms
                 this.updatingListView = false;
             }
         }
+
+        private void RefreshListViewForDeviceViewModel(DeviceViewModel deviceViewModel)
+        {
+            if (!deviceViewModel.Visible)
+                return;
+
+            //Network Devices should only show from the Local ViewModel
+            if ((GetViewModelToView() == remoteViewModel) &&
+                (deviceViewModel.Kind == DeviceKind.NET))
+                return;
+
+            //Network Devices disabled
+            if (!applicationConfiguration.NetworkDeviceDetection &&
+                (deviceViewModel.Kind == DeviceKind.NET))
+                return;
+
+            ListViewItem listViewItem = FindOrAddListViewItemForViewModel(deviceViewModel);
+
+            RefreshListViewItemForDeviceViewModel(listViewItem, deviceViewModel);
+        }
+
+        private void RefreshListViewItemForDeviceViewModel(ListViewItem listViewItem, DeviceViewModel deviceViewModel)
+        {
+            if (!String.IsNullOrEmpty(deviceViewModel.FriendlyName))
+                listViewItem.Text = deviceViewModel.FriendlyName;
+
+            /* configuration info
+             * */
+            listViewItem.Checked = deviceViewModel.Enabled;
+
+            if (listViewItem.Checked)
+            {
+                listViewItem.ForeColor = SystemColors.WindowText;
+                listViewItem.UseItemStyleForSubItems = false;
+            }
+            else
+            {
+                listViewItem.ForeColor = SystemColors.GrayText;
+                listViewItem.UseItemStyleForSubItems = true;
+            }
+
+            /* Coin info
+             * */
+            //check for Coin != null, device may not have a coin configured
+            //Network Devices assume BTC (for now)
+            if (deviceViewModel.Coin == null)
+            {
+                listViewItem.SubItems["Coin"].Text = String.Empty;
+                listViewItem.SubItems["Difficulty"].Text = String.Empty;
+                listViewItem.SubItems["Price"].Text = String.Empty;
+                listViewItem.SubItems["Exchange"].Text = String.Empty;
+                listViewItem.SubItems["Profitability"].Text = String.Empty;
+            }
+            else
+            {
+                listViewItem.SubItems["Coin"].Text = deviceViewModel.Coin.Name;
+
+                double difficulty = GetCachedNetworkDifficulty(deviceViewModel.Pool ?? String.Empty);
+                if (difficulty == 0.0)
+                    difficulty = deviceViewModel.Difficulty;
+
+                listViewItem.SubItems["Difficulty"].Tag = difficulty;
+                listViewItem.SubItems["Difficulty"].Text = difficulty.ToDifficultyString();
+
+                if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                {
+                    string unit = KnownCoins.BitcoinSymbol;
+                    listViewItem.SubItems["Price"].Text = String.Format("{0} {1}", deviceViewModel.Price.ToFriendlyString(), unit);
+
+                    //check .Mining to allow perks for Remoting when local PC is not mining
+                    if ((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowExchangeRates
+                    //ensure Exchange prices are available:
+                    && (sellPrices != null))
+                    {
+                        ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                        double btcExchangeRate = exchangeInformation.ExchangeRate;
+                        double coinExchangeRate = 0.00;
+
+                        coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
+
+                        listViewItem.SubItems["Exchange"].Tag = coinExchangeRate;
+                        listViewItem.SubItems["Exchange"].Text = String.Format("{0}{1}", exchangeInformation.TargetSymbol, coinExchangeRate.ToFriendlyString(true));
+                    }
+                }
+
+                switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+                {
+                    case Strategy.CoinProfitabilityKind.AdjustedProfitability:
+                        listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AdjustedProfitability, 2) + "%";
+                        break;
+                    case Strategy.CoinProfitabilityKind.AverageProfitability:
+                        listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AverageProfitability, 2) + "%";
+                        break;
+                    case Strategy.CoinProfitabilityKind.StraightProfitability:
+                        listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.Profitability, 2) + "%";
+                        break;
+                }
+            }
+
+            /* device info
+             * */
+            listViewItem.SubItems["Average"].Text = deviceViewModel.AverageHashrate == 0 ? String.Empty : deviceViewModel.AverageHashrate.ToHashrateString();
+            listViewItem.SubItems["Current"].Text = deviceViewModel.CurrentHashrate == 0 ? String.Empty : deviceViewModel.CurrentHashrate.ToHashrateString();
+
+            //ensure column is visible in Tiles view
+            if (String.IsNullOrEmpty(listViewItem.SubItems["Current"].Text) &&
+                (deviceListView.View == View.Tile))
+                listViewItem.SubItems["Current"].Text = "Idle";
+
+            double hashrate = WorkUtilityToHashrate(deviceViewModel.WorkUtility);
+            listViewItem.SubItems["Effective"].Text = hashrate == 0 ? String.Empty : hashrate.ToHashrateString();
+
+            //check for >= 0.05 so we don't show 0% (due to the format string)
+            listViewItem.SubItems["Rejected"].Text = deviceViewModel.RejectedSharesPercent >= 0.05 ? deviceViewModel.RejectedSharesPercent.ToString("0.#") + "%" : String.Empty;
+            listViewItem.SubItems["Errors"].Text = deviceViewModel.HardwareErrorsPercent >= 0.05 ? deviceViewModel.HardwareErrorsPercent.ToString("0.#") + "%" : String.Empty;
+            listViewItem.SubItems["Accepted"].Text = deviceViewModel.AcceptedShares > 0 ? deviceViewModel.AcceptedShares.ToString() : String.Empty;
+
+            if (applicationConfiguration.ShowWorkUtility)
+                listViewItem.SubItems[utilityColumnHeader.Text].Text = deviceViewModel.WorkUtility > 0.00 ? deviceViewModel.WorkUtility.ToString("0.###") : String.Empty;
+            else
+                listViewItem.SubItems[utilityColumnHeader.Text].Text = deviceViewModel.Utility > 0.00 ? deviceViewModel.Utility.ToString("0.###") : String.Empty;
+
+            listViewItem.SubItems["Temp"].Text = deviceViewModel.Temperature > 0 ? deviceViewModel.Temperature + "°" : String.Empty;
+            listViewItem.SubItems["Fan"].Text = deviceViewModel.FanPercent > 0 ? deviceViewModel.FanPercent + "%" : String.Empty;
+            listViewItem.SubItems["Intensity"].Text = deviceViewModel.Intensity;
+
+            listViewItem.SubItems["Pool"].Text = deviceViewModel.Pool.DomainFromHost();
+
+            PopulateIncomeForListViewItem(listViewItem, deviceViewModel);
+        }
         #endregion
 
         #region View / Model behavior
         private void SaveChanges()
         {
             if (this.selectedRemoteInstance == null)
-            {
                 SaveChangesLocally();
-            }
             else
-            {
                 SaveChangesRemotely(this.selectedRemoteInstance);
-            }
         }
 
         private void SaveChangesLocally()
@@ -628,13 +633,9 @@ namespace MultiMiner.Win.Forms
         private void CancelChanges()
         {
             if (this.selectedRemoteInstance == null)
-            {
                 CancelChangesLocally();
-            }
             else
-            {
                 CancelChangesRemotely(this.selectedRemoteInstance);
-            }
         }
         private void CancelChangesLocally()
         {
@@ -654,13 +655,9 @@ namespace MultiMiner.Win.Forms
         private void SetHasChanges(bool hasChanges)
         {
             if (this.selectedRemoteInstance == null)
-            {
                 SetHasChangesLocally(hasChanges);
-            }
             else
-            {
                 SetHasChangesRemotely(hasChanges);
-            }
         }
 
         private void SetHasChangesLocally(bool hasChanges)
@@ -926,13 +923,9 @@ namespace MultiMiner.Win.Forms
         private void UpdateMiningButtons()
         {
             if (this.selectedRemoteInstance == null)
-            {
                 UpdateMiningButtonsForLocal();
-            }
             else
-            {
                 UpdateMiningButtonsForRemote();
-            }
         }
 
         private void UpdateMiningButtonsForRemote()
@@ -1346,13 +1339,9 @@ namespace MultiMiner.Win.Forms
         private void ConfigureSettings()
         {
             if (this.selectedRemoteInstance == null)
-            {
                 ConfigureSettingsLocally();
-            }
             else
-            {
                 ConfigureSettingsRemotely();
-            }
         }
 
         private void ConfigureSettingsRemotely()
@@ -1528,13 +1517,9 @@ namespace MultiMiner.Win.Forms
         private void ConfigureCoins()
         {
             if (this.selectedRemoteInstance == null)
-            {
                 ConfigureCoinsLocally();
-            }
             else
-            {
                 ConfigureCoinsRemotely();
-            }
         }
 
         private void ConfigureCoinsRemotely()
@@ -1639,25 +1624,17 @@ namespace MultiMiner.Win.Forms
         private void ConfigureStrategies()
         {
             if (this.selectedRemoteInstance == null)
-            {
                 ConfigureStrategiesLocally();
-            }
             else
-            {
                 ConfigureStrategiesRemotely();
-            }
         }
 
         private void ConfigurePerks()
         {
             if (this.selectedRemoteInstance == null)
-            {
                 ConfigurePerksLocally();
-            }
             else
-            {
                 ConfigurePerksRemotely();
-            }
         }
 
         private void ConfigurePerksRemotely()
@@ -1688,9 +1665,7 @@ namespace MultiMiner.Win.Forms
             {
                 bool miningWithMultipleProxies = miningEngine.Mining && (devices.Count(d => d.Kind == DeviceKind.PXY) > 1);
                 if (!perksConfiguration.PerksEnabled && miningWithMultipleProxies)
-                {
                     throw new Exception(MiningEngine.AdvancedProxiesRequirePerksMessage);
-                }
 
                 perksConfiguration.SavePerksConfiguration();
 
@@ -2295,6 +2270,11 @@ namespace MultiMiner.Win.Forms
         {
             LogLaunchArgs args = (LogLaunchArgs)logLaunchArgsBindingSource.Current;
 
+            LaunchLoggedMiner(args);
+        }
+
+        private static void LaunchLoggedMiner(LogLaunchArgs args)
+        {
             string arguments = args.Arguments;
             arguments = arguments.Replace("-T -q", String.Empty).Trim();
 
@@ -2356,6 +2336,11 @@ namespace MultiMiner.Win.Forms
             else if (historySideButton.Checked)
                 fileName = "MiningLog.json";
 
+            OpenLogFile(fileName);
+        }
+
+        private void OpenLogFile(string fileName)
+        {
             if (!String.IsNullOrEmpty(fileName))
             {
                 string logDirectory = GetLogDirectory();
@@ -2371,6 +2356,11 @@ namespace MultiMiner.Win.Forms
         }
 
         private void listViewStyleButton_ButtonClick(object sender, EventArgs e)
+        {
+            RotateListViewStyle();
+        }
+
+        private void RotateListViewStyle()
         {
             switch (deviceListView.View)
             {
@@ -2531,26 +2521,12 @@ namespace MultiMiner.Win.Forms
             //display the devices context menu when no item is selected
             if (e.Button == MouseButtons.Right)
                 if ((deviceListView.FocusedItem == null) || !deviceListView.FocusedItem.Bounds.Contains(e.Location))
-                {
                     deviceListContextMenu.Show(Cursor.Position);
-                }
         }
 
         private void detectDevicesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ScanHardware();
-        }
-
-        private void historyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void processLogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void aPIMonitorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2604,15 +2580,12 @@ namespace MultiMiner.Win.Forms
                 if (deviceListView.FocusedItem.Group.Name.Equals("networkListViewGroup"))
                 {
                     UpdateNetworkDeviceMenu();
-
                     networkDeviceContextMenu.Show(Cursor.Position);
                 }
                 else
                 {
                     string currentCoin = GetCurrentlySelectedCoinName();
-
                     CheckCoinInPopupMenu(currentCoin);
-
                     coinPopupMenu.Show(Cursor.Position);
                 }
             }
@@ -2656,13 +2629,9 @@ namespace MultiMiner.Win.Forms
         private void ToggleDevices(IEnumerable<DeviceDescriptor> devices, bool enabled)
         {
             if (this.selectedRemoteInstance == null)
-            {
                 ToggleDevicesLocally(devices, enabled);
-            }
             else
-            {
                 ToggleDevicesRemotely(this.selectedRemoteInstance, devices, enabled);
-            }
         }
 
         private void dynamicIntensityButton_Click(object sender, EventArgs e)
@@ -2689,11 +2658,9 @@ namespace MultiMiner.Win.Forms
         {
             //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
             quickSwitchItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
-            //
+
             dynamicIntensityButton.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
-
             dynamicIntensityButton.Checked = GetViewModelToView().DynamicIntensity;
-
             dynamicIntensitySeparator.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
         }
 
@@ -3513,7 +3480,7 @@ namespace MultiMiner.Win.Forms
             List<Remoting.Data.Transfer.Device> newList = new List<Remoting.Data.Transfer.Device>();
             foreach (DeviceViewModel viewModel in localViewModel.Devices)
             {
-                MultiMiner.Remoting.Data.Transfer.Device dto = new Remoting.Data.Transfer.Device();
+                Remoting.Data.Transfer.Device dto = new Remoting.Data.Transfer.Device();
                 ObjectCopier.CopyObject(viewModel, dto, "Workers");
                 foreach (DeviceViewModel source in viewModel.Workers)
                 {
@@ -4173,13 +4140,9 @@ namespace MultiMiner.Win.Forms
         private void SetDevicesToCoin(List<DeviceDescriptor> devices, string coinName)
         {
             if (this.selectedRemoteInstance == null)
-            {
                 SetDevicesToCoinLocally(devices, coinName);
-            }
             else
-            {
                 SetDevicesToCoinRemotely(this.selectedRemoteInstance, devices, coinName);
-            }
         }
 
         private void SaveDeviceTransferObjects(IEnumerable<Remoting.Data.Transfer.Device> devices)
@@ -4560,8 +4523,7 @@ namespace MultiMiner.Win.Forms
                 return;
 
             //is MobileMiner configured?
-            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
-                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
+            if (!applicationConfiguration.IsMobileMinerConfigured())
                 return;
 
             List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList = new List<MobileMiner.Data.MiningStatistics>();
@@ -4880,8 +4842,7 @@ namespace MultiMiner.Win.Forms
                 return;
 
             //is MobileMiner configured?
-            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
-                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
+            if (!applicationConfiguration.IsMobileMinerConfigured())
                 return;
 
             //do we have notifications to push?
@@ -4924,8 +4885,7 @@ namespace MultiMiner.Win.Forms
                 return;
 
             //is MobileMiner configured?
-            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
-                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
+            if (!applicationConfiguration.IsMobileMinerConfigured())
                 return;
 
             Dictionary<string, List<string>> machinePools = new Dictionary<string, List<string>>();
@@ -4982,8 +4942,7 @@ namespace MultiMiner.Win.Forms
                 return;
 
             //is MobileMiner configured?
-            if (string.IsNullOrEmpty(applicationConfiguration.MobileMinerApplicationKey) ||
-                string.IsNullOrEmpty(applicationConfiguration.MobileMinerEmailAddress))
+            if (!applicationConfiguration.IsMobileMinerConfigured())
                 return;
 
             if (checkForRemoteCommandsDelegate == null)
@@ -4998,18 +4957,7 @@ namespace MultiMiner.Win.Forms
         {
             List<MobileMiner.Data.RemoteCommand> commands = new List<MobileMiner.Data.RemoteCommand>();
 
-            List<string> machineNames = new List<string>();
-
-            if (!applicationConfiguration.MobileMinerNetworkMonitorOnly)
-                machineNames.Add(Environment.MachineName);
-
-            IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
-            foreach (DeviceViewModel deviceViewModel in networkDevices)
-            {
-                string machineName = localViewModel.GetFriendlyDeviceName(deviceViewModel.Path, deviceViewModel.Path);
-                machineNames.Add(machineName);
-            }
-
+            List<string> machineNames = GetMobileMinerMachineNames();
             if (machineNames.Count == 0)
                 return;
 
@@ -5076,83 +5024,104 @@ namespace MultiMiner.Win.Forms
                 ProcessRemoteCommands(commands);
         }
 
+        private List<string> GetMobileMinerMachineNames()
+        {
+            List<string> machineNames = new List<string>();
+
+            if (!applicationConfiguration.MobileMinerNetworkMonitorOnly)
+                machineNames.Add(Environment.MachineName);
+
+            IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
+            foreach (DeviceViewModel deviceViewModel in networkDevices)
+            {
+                string machineName = localViewModel.GetFriendlyDeviceName(deviceViewModel.Path, deviceViewModel.Path);
+                machineNames.Add(machineName);
+            }
+
+            return machineNames;
+        }
+
         private void ProcessRemoteCommands(List<MobileMiner.Data.RemoteCommand> commands)
         {
             if (commands.Count > 0)
             {
                 MobileMiner.Data.RemoteCommand command = commands.First();
+                ProcessRemoteCommand(command);
+            }
+        }
 
-                //check this before actually executing the command
-                //point being, say for some reason it takes 2 minutes to restart mining
-                //if we check for commands again in that time, we don't want to process it again
-                if (processedCommandIds.Contains(command.Id))
-                    return;
+        private void ProcessRemoteCommand(RemoteCommand command)
+        {
+            //check this before actually executing the command
+            //point being, say for some reason it takes 2 minutes to restart mining
+            //if we check for commands again in that time, we don't want to process it again
+            if (processedCommandIds.Contains(command.Id))
+                return;
 
-                processedCommandIds.Add(command.Id);
+            processedCommandIds.Add(command.Id);
 
-                if (deleteRemoteCommandDelegate == null)
-                    deleteRemoteCommandDelegate = DeleteRemoteCommand;
+            if (deleteRemoteCommandDelegate == null)
+                deleteRemoteCommandDelegate = DeleteRemoteCommand;
 
-                if (command.Machine.Name.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase))
+            if (command.Machine.Name.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase))
+            {
+                if (command.CommandText.Equals("START", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (command.CommandText.Equals("START", StringComparison.OrdinalIgnoreCase))
-                    {
-                        SaveChangesLocally(); //necessary to ensure device configurations exist for devices
-                        StartMiningLocally();
-                    }
-                    else if (command.CommandText.Equals("STOP", StringComparison.OrdinalIgnoreCase))
-                        StopMiningLocally();
-                    else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
-                    {
-                        StopMiningLocally();
-                        SaveChangesLocally(); //necessary to ensure device configurations exist for devices
-                        StartMiningLocally();
-                    }
-                    else if (command.CommandText.StartsWith("SWITCH", StringComparison.OrdinalIgnoreCase))
+                    SaveChangesLocally(); //necessary to ensure device configurations exist for devices
+                    StartMiningLocally();
+                }
+                else if (command.CommandText.Equals("STOP", StringComparison.OrdinalIgnoreCase))
+                    StopMiningLocally();
+                else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
+                {
+                    StopMiningLocally();
+                    SaveChangesLocally(); //necessary to ensure device configurations exist for devices
+                    StartMiningLocally();
+                }
+                else if (command.CommandText.StartsWith("SWITCH", StringComparison.OrdinalIgnoreCase))
+                {
+                    string[] parts = command.CommandText.Split('|');
+                    string coinName = parts[1];
+                    Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.PoolGroup.Name.Equals(coinName));
+                    if (coinConfiguration != null)
+                        SetAllDevicesToCoinLocally(coinConfiguration.PoolGroup.Id, true);
+                }
+
+                deleteRemoteCommandDelegate.BeginInvoke(command, deleteRemoteCommandDelegate.EndInvoke, null);
+            }
+            else
+            {
+                string remoteMachineName = command.Machine.Name;
+                DeviceViewModel networkDevice = localViewModel.GetNetworkDeviceByFriendlyName(remoteMachineName);
+                if (networkDevice != null)
+                {
+                    Uri uri = new Uri("http://" + networkDevice.Path);
+                    Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
+
+                    //setup logging
+                    apiContext.LogEvent -= LogApiEvent;
+                    apiContext.LogEvent += LogApiEvent;
+
+                    if (command.CommandText.StartsWith("SWITCH", StringComparison.OrdinalIgnoreCase))
                     {
                         string[] parts = command.CommandText.Split('|');
-                        string coinName = parts[1];
-                        Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.PoolGroup.Name.Equals(coinName));
-                        if (coinConfiguration != null)
-                            SetAllDevicesToCoinLocally(coinConfiguration.PoolGroup.Id, true);
+                        string poolName = parts[1];
+
+                        //we may not have the pool info cached yet / anymore
+                        if (networkDevicePools.ContainsKey(networkDevice.Path))
+                        {
+                            List<PoolInformation> pools = networkDevicePools[networkDevice.Path];
+                            int poolIndex = pools.FindIndex(pi => pi.Url.DomainFromHost().Equals(poolName, StringComparison.OrdinalIgnoreCase));
+
+                            apiContext.SwitchPool(poolIndex);
+                        }
+                    }
+                    else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
+                    {
+                        apiContext.RestartMining();
                     }
 
                     deleteRemoteCommandDelegate.BeginInvoke(command, deleteRemoteCommandDelegate.EndInvoke, null);
-                }
-                else
-                {
-                    string remoteMachineName = command.Machine.Name;
-                    DeviceViewModel networkDevice = localViewModel.GetNetworkDeviceByFriendlyName(remoteMachineName);
-                    if (networkDevice != null)
-                    {
-                        Uri uri = new Uri("http://" + networkDevice.Path);
-                        Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
-
-                        //setup logging
-                        apiContext.LogEvent -= LogApiEvent;
-                        apiContext.LogEvent += LogApiEvent;
-
-                        if (command.CommandText.StartsWith("SWITCH", StringComparison.OrdinalIgnoreCase))
-                        {
-                            string[] parts = command.CommandText.Split('|');
-                            string poolName = parts[1];
-
-                            //we may not have the pool info cached yet / anymore
-                            if (networkDevicePools.ContainsKey(networkDevice.Path))
-                            {
-                                List<PoolInformation> pools = networkDevicePools[networkDevice.Path];
-                                int poolIndex = pools.FindIndex(pi => pi.Url.DomainFromHost().Equals(poolName, StringComparison.OrdinalIgnoreCase));
-
-                                apiContext.SwitchPool(poolIndex);
-                            }
-                        }
-                        else if (command.CommandText.Equals("RESTART", StringComparison.OrdinalIgnoreCase))
-                        {
-                            apiContext.RestartMining();
-                        }
-
-                        deleteRemoteCommandDelegate.BeginInvoke(command, deleteRemoteCommandDelegate.EndInvoke, null);
-                    }
                 }
             }
         }
@@ -8094,6 +8063,5 @@ namespace MultiMiner.Win.Forms
             }
         }
         #endregion
-
     }
 }
