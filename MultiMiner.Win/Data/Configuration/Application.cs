@@ -138,5 +138,11 @@ namespace MultiMiner.Win.Data.Configuration
 
             ObjectCopier.CopyObject(tmp, this);
         }
+
+        public bool IsMobileMinerConfigured()
+        {
+            return !string.IsNullOrEmpty(MobileMinerApplicationKey) &&
+                !string.IsNullOrEmpty(MobileMinerEmailAddress);
+        }
     }
 }
