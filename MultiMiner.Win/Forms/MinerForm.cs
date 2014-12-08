@@ -3120,7 +3120,10 @@ namespace MultiMiner.Win.Forms
         {
             //if we do this with the Settings dialog open the user may have partially entered credentials
             if (!ShowingModalDialog())
+            {
+                CheckForMobileMinerCommands();
                 SubmitMobileMinerStatistics();
+            }
             
             //only broadcast if there are other instances (not just us)
             if (remotingEnabled && perksConfiguration.EnableRemoting && (instancesControl.Instances.Count > 1))
@@ -3146,10 +3149,6 @@ namespace MultiMiner.Win.Forms
 
         private void thirtySecondTimer_Tick(object sender, EventArgs e)
         {
-            //if we do this with the Settings dialog open the user may have partially entered credentials
-            if (!ShowingModalDialog())
-                CheckForMobileMinerCommands();
-
             UpdateLocalViewFromRemoteInstance();
 
             if (applicationConfiguration.RestartCrashedMiners && miningEngine.RelaunchCrashedMiners())
