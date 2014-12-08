@@ -1436,6 +1436,8 @@ namespace MultiMiner.Win.Forms
 
                 SubmitMobileMinerPools();
 
+                UpdateDevicesForProxySettings();
+                ApplyModelsToViewModel();
                 RefreshViewForConfigurationChanges();
                 RefreshListViewFromViewModel();
             }
@@ -1445,6 +1447,13 @@ namespace MultiMiner.Win.Forms
                 pathConfiguration.LoadPathConfiguration();
                 applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
             }
+        }
+
+        private void UpdateDevicesForProxySettings()
+        {
+            DevicesService service = new DevicesService(engineConfiguration.XgminerConfiguration);
+            service.UpdateDevicesForProxySettings(devices, miningEngine.Mining);
+            AddMissingDeviceConfigurations();
         }
 
         private void ConfigureUnconfiguredDevices()
@@ -1926,12 +1935,15 @@ namespace MultiMiner.Win.Forms
 
                     newConfiguration.Assign(device);
 
-                    if (device.SupportsAlgorithm(AlgorithmNames.Scrypt) && hasLtcConfigured)
+                    if (device.SupportsAlgorithm(AlgorithmNames.Scrypt) && hasLtcConfigured &&
+                        (device.Kind != DeviceKind.PXY)) //don't default Proxies to Litecoin
                         newConfiguration.CoinSymbol = KnownCoins.LitecoinSymbol;
                     else if (device.SupportsAlgorithm(AlgorithmNames.SHA256) && hasBtcConfigured)
                         newConfiguration.CoinSymbol = KnownCoins.BitcoinSymbol;
 
-                    newConfiguration.Enabled = true;
+                    //don't enable newly added Proxies if we're mining
+                    newConfiguration.Enabled = (device.Kind != DeviceKind.PXY) || (!miningEngine.Mining);
+
                     engineConfiguration.DeviceConfigurations.Add(newConfiguration);
                 }
             }
@@ -2024,6 +2036,7 @@ namespace MultiMiner.Win.Forms
             if (File.Exists(knownDevicesFileName))
             {
                 devices = ConfigurationReaderWriter.ReadConfiguration<List<Xgminer.Data.Device>>(knownDevicesFileName);
+                UpdateDevicesForProxySettings();
                 ApplyModelsToViewModel();
                 RefreshListViewFromViewModel();
             }
@@ -2846,8 +2859,8 @@ namespace MultiMiner.Win.Forms
                 return;
 
             //disallow toggling check-state for Network Devices
-            MinerFormViewModel viewModelToView = GetViewModelToView();
-            if (viewModelToView.Devices[e.Index].Kind == DeviceKind.NET)
+            DeviceViewModel selectedDevice = (DeviceViewModel)deviceListView.Items[e.Index].Tag;
+            if (selectedDevice.Kind == DeviceKind.NET)
                 e.NewValue = CheckState.Checked;
         }
 
@@ -7276,6 +7289,8 @@ namespace MultiMiner.Win.Forms
 
             localViewModel.ClearDeviceInformationFromViewModel();
 
+            UpdateDevicesForProxySettings();
+            ApplyModelsToViewModel();
             ClearCachedNetworkDifficulties();
             processDeviceDetails.Clear();
             lastDevicePoolMapping.Clear();
