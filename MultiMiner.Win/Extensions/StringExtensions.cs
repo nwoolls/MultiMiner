@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Linq;
 
 namespace MultiMiner.Win.Extensions
 {
     static class StringExtensions
     {
+        public static bool VersionIsGreater(this string thisVersion, string thatVersion)
+        {
+            Version thisVersionObj = new Version(thisVersion);
+            Version thatVersionObj = new Version(thatVersion);
+
+            return thisVersionObj > thatVersionObj;
+        }
+
         private readonly static Dictionary<string, string> hostDomainNames = new Dictionary<string, string>();
 
         public static string DomainFromHost(this string host)
