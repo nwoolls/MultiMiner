@@ -1,7 +1,7 @@
-﻿using MultiMiner.Engine.Data;
-using MultiMiner.Engine.Installers;
+﻿using MultiMiner.Engine.Installers;
 using MultiMiner.Xgminer.Data;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace MultiMiner.Services
@@ -35,27 +35,46 @@ namespace MultiMiner.Services
             Version minerVersion = new Version(MinerInstaller.GetInstalledMinerVersion(executablePath, false));
             List<Device> detectedDevices = miner.ListDevices(true, minerVersion, logging: true);
 
+            SortDevices(detectedDevices);
+
+            return detectedDevices;
+        }
+
+        public void UpdateDevicesForProxySettings(List<Device> devices, bool mining)
+        {
             if (xgminerConfiguration.StratumProxy)
             {
                 for (int i = 0; i < xgminerConfiguration.StratumProxies.Count; i++)
                 {
-                    MultiMiner.Engine.Data.Configuration.Xgminer.ProxyDescriptor proxy = xgminerConfiguration.StratumProxies[i];
-                    detectedDevices.Add(new Device() 
-                    { 
+                    Engine.Data.Configuration.Xgminer.ProxyDescriptor proxyDescriptor = xgminerConfiguration.StratumProxies[i];
+                    Xgminer.Data.Device proxyDevice = new Xgminer.Data.Device()
+                    {
                         Kind = DeviceKind.PXY,
                         Driver = "proxy",
                         Name = String.Format("Stratum Proxy #{0}", (i + 1)),
                         //we want the path in the ViewModel for Remoting
                         //can't rely on having the Stratum Proxy settings
-                        Path = String.Format("{0}:{1}", proxy.GetworkPort, proxy.StratumPort),
+                        Path = String.Format("{0}:{1}", proxyDescriptor.GetworkPort, proxyDescriptor.StratumPort),
                         RelativeIndex = i
-                    });
+                    };
+
+                    if (!devices.Any(d => d.Equals(proxyDevice)))
+                        devices.Add(proxyDevice);
                 }
             }
 
-            SortDevices(detectedDevices);
+            if (!mining)
+            {
+                devices.RemoveAll(d =>
+                    (d.Kind == DeviceKind.PXY) &&
+                    (
+                        (!xgminerConfiguration.StratumProxy) ||
+                        (!xgminerConfiguration.StratumProxies.Any(sp => String.Format("{0}:{1}", sp.GetworkPort, sp.StratumPort).Equals(d.Path)))
+                    )
+                );
+            }
 
-            return detectedDevices;
+            SortDevices(devices);
         }
 
         private static void SortDevices(List<Device> detectedDevices)
