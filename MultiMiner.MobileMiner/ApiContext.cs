@@ -10,12 +10,13 @@ namespace MultiMiner.MobileMiner
 {
     public class ApiContext
     {
-        public static void SubmitMiningStatistics(string url, string apiKey, string emailAddress, string applicationKey, List<Data.MiningStatistics> miningStatistics)
+        public static List<Data.RemoteCommand> SubmitMiningStatistics(string url, string apiKey, string emailAddress, string applicationKey, 
+            List<Data.MiningStatistics> miningStatistics, bool fetchCommands)
         {
             if (!url.EndsWith("/"))
                 url = url + "/";
-            string fullUrl = String.Format("{0}MiningStatisticsInput?emailAddress={1}&applicationKey={2}&apiKey={3}", 
-                url, emailAddress, applicationKey, apiKey);
+            string fullUrl = String.Format("{0}MiningStatisticsInput?emailAddress={1}&applicationKey={2}&apiKey={3}&fetchCommands={4}", 
+                url, emailAddress, applicationKey, apiKey, fetchCommands);
             using (WebClient client = new ApiWebClient())
             {
                 //specify UTF8 so devices with Unicode characters are posted up properly
@@ -25,12 +26,12 @@ namespace MultiMiner.MobileMiner
                 string jsonData = serializer.Serialize(miningStatistics);
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
 
-
-                ExecuteWebAction(() =>
+                string response = ExecuteWebAction(() =>
                 {
                     return client.UploadString(fullUrl, jsonData);
                 });
 
+                return serializer.Deserialize<List<Data.RemoteCommand>>(response);
             }
         }
 
