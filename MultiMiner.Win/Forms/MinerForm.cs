@@ -3153,10 +3153,7 @@ namespace MultiMiner.Win.Forms
         {
             //if we do this with the Settings dialog open the user may have partially entered credentials
             if (!ShowingModalDialog())
-            {
-                CheckForMobileMinerCommands();
                 SubmitMobileMinerStatistics();
-            }
             
             //only broadcast if there are other instances (not just us)
             if (remotingEnabled && perksConfiguration.EnableRemoting && (instancesControl.Instances.Count > 1))
@@ -4792,9 +4789,15 @@ namespace MultiMiner.Win.Forms
         {
             try
             {
-                MobileMiner.ApiContext.SubmitMiningStatistics(GetMobileMinerUrl(), mobileMinerApiKey,
+                //submit statistics
+                List<MobileMiner.Data.RemoteCommand> commands = MobileMiner.ApiContext.SubmitMiningStatistics(GetMobileMinerUrl(), mobileMinerApiKey,
                     applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                    statisticsList);
+                    statisticsList, applicationConfiguration.MobileMinerRemoteCommands);
+
+                //process commands
+                if (applicationConfiguration.MobileMinerRemoteCommands)
+                    BeginInvoke((Action<List<MobileMiner.Data.RemoteCommand>>)((c) => ProcessRemoteCommands(c)), commands);
+
                 mobileMinerSuccess = true;
             }
             catch (WebException ex)
@@ -4914,63 +4917,7 @@ namespace MultiMiner.Win.Forms
                 throw;
             }
         }
-
-        private void CheckForMobileMinerCommands()
-        {
-            //are remote commands enabled?
-            if (!applicationConfiguration.MobileMinerRemoteCommands)
-                return;
-
-            //is MobileMiner configured?
-            if (!applicationConfiguration.IsMobileMinerConfigured())
-                return;
-
-            if (checkForRemoteCommandsDelegate == null)
-                checkForRemoteCommandsDelegate = GetRemoteCommands;
-
-            checkForRemoteCommandsDelegate.BeginInvoke(checkForRemoteCommandsDelegate.EndInvoke, null);
-        }
-
-        private Action checkForRemoteCommandsDelegate;
-
-        private void GetRemoteCommands()
-        {
-            List<MobileMiner.Data.RemoteCommand> commands = new List<MobileMiner.Data.RemoteCommand>();
-
-            List<string> machineNames = GetMobileMinerMachineNames();
-            if (machineNames.Count == 0)
-                return;
-
-            try
-            {
-                commands = MobileMiner.ApiContext.GetCommands(GetMobileMinerUrl(), mobileMinerApiKey,
-                    applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                    machineNames);
-                mobileMinerSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                if ((ex is WebException) || (ex is ArgumentException))
-                {
-                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
-                    //could also be a json parsing error
-                    if (ex is WebException)
-                    {
-                        WebException webException = (WebException)ex;
-                        HandleMobileMinerWebException(webException);
-                    }
-
-                    return;
-                }
-                throw;
-            }
-
-            if (InvokeRequired)
-                BeginInvoke((Action<List<MobileMiner.Data.RemoteCommand>>)((c) => ProcessRemoteCommands(c)), commands);
-            else
-                ProcessRemoteCommands(commands);
-        }
-
+        
         private void HandleMobileMinerWebException(WebException webException)
         {
             HttpWebResponse response = webException.Response as HttpWebResponse;
