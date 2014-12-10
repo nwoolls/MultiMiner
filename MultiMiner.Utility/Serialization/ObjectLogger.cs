@@ -29,14 +29,24 @@ namespace MultiMiner.Utility.Serialization
             return result;
         }
 
-        public void LogObjectToFile(Object objectToLog, string logFilePath)
+        public bool LogObjectToFile(Object objectToLog, string logFilePath)
         {
             RollOverLogFile(logFilePath);
 
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             string jsonData = serializer.Serialize(objectToLog);
 
-            File.AppendAllText(logFilePath, jsonData + Environment.NewLine);
+            try
+            {
+                File.AppendAllText(logFilePath, jsonData + Environment.NewLine);
+            }
+            //System.IO.IOException: The process cannot access the file 'ABC' because it is being used by another process.
+            catch (IOException)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void RollOverLogFile(string logFilePath)
