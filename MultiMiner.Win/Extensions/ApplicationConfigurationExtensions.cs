@@ -10,7 +10,8 @@ namespace MultiMiner.Win.Extensions
             Remoting.Data.Transfer.Configuration.Application transferObject = new Remoting.Data.Transfer.Configuration.Application();
             
             ObjectCopier.CopyObject(modelObject, transferObject, "HiddenColumns");
-            transferObject.HiddenColumns = modelObject.HiddenColumns.ToArray();
+            if (modelObject.HiddenColumns != null)
+                transferObject.HiddenColumns = modelObject.HiddenColumns.ToArray();
 
             return transferObject;
         }
@@ -20,7 +21,8 @@ namespace MultiMiner.Win.Extensions
             Data.Configuration.Application modelObject = new Data.Configuration.Application();
 
             ObjectCopier.CopyObject(transferObject, modelObject, "HiddenColumns");
-            modelObject.HiddenColumns = transferObject.HiddenColumns.ToList();
+            if (transferObject.HiddenColumns != null)
+                modelObject.HiddenColumns = transferObject.HiddenColumns.ToList();
 
             return modelObject;
         }
