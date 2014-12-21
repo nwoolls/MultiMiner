@@ -7553,7 +7553,7 @@ namespace MultiMiner.Win.Forms
         {
             MinerFormViewModel viewModel = GetViewModelToView();
             //don't include Network Devices in the count for Remote ViewModels
-            deviceTotalLabel.Text = String.Format("{0} device(s)", viewModel.Devices.Count(d => (viewModel == localViewModel) || (d.Kind != DeviceKind.NET)));
+            deviceTotalLabel.Text = String.Format("{0} device(s)", viewModel.Devices.Count(d => d.Visible && ((viewModel == localViewModel) || (d.Kind != DeviceKind.NET))));
             
             hashRateStatusLabel.Text = GetHashRateStatusText(viewModel);
 
