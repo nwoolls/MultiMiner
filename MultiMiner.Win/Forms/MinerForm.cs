@@ -5030,23 +5030,40 @@ namespace MultiMiner.Win.Forms
             apiContext.LogEvent -= LogApiEvent;
             apiContext.LogEvent += LogApiEvent;
 
-            if (commandText.StartsWith(RemoteCommandText.Switch, StringComparison.OrdinalIgnoreCase))
+            string action = "accessing " + networkDevice.FriendlyName;
+
+            try
             {
-                string[] parts = commandText.Split('|');
-                string poolName = parts[1];
-
-                //we may not have the pool info cached yet / anymore
-                if (networkDevicePools.ContainsKey(networkDevice.Path))
+                if (commandText.StartsWith(RemoteCommandText.Switch, StringComparison.OrdinalIgnoreCase))
                 {
-                    List<PoolInformation> pools = networkDevicePools[networkDevice.Path];
-                    int poolIndex = pools.FindIndex(pi => pi.Url.DomainFromHost().Equals(poolName, StringComparison.OrdinalIgnoreCase));
+                    action = "switching pools on " + networkDevice.FriendlyName;
+                    string[] parts = commandText.Split('|');
+                    string poolName = parts[1];
 
-                    apiContext.SwitchPool(poolIndex);
+                    //we may not have the pool info cached yet / anymore
+                    if (networkDevicePools.ContainsKey(networkDevice.Path))
+                    {
+                        List<PoolInformation> pools = networkDevicePools[networkDevice.Path];
+                        int poolIndex = pools.FindIndex(pi => pi.Url.DomainFromHost().Equals(poolName, StringComparison.OrdinalIgnoreCase));
+
+                        apiContext.SwitchPool(poolIndex);
+                    }
+                }
+                else if (commandText.Equals(RemoteCommandText.Restart, StringComparison.OrdinalIgnoreCase))
+                {
+                    action = "restarting " + networkDevice.FriendlyName;
+                    apiContext.RestartMining();
                 }
             }
-            else if (commandText.Equals(RemoteCommandText.Restart, StringComparison.OrdinalIgnoreCase))
+            catch (SocketException ex)
             {
-                apiContext.RestartMining();
+                string errorMessage = String.Format("Error {0}: {1}", action, ex.Message);
+
+                PostNotification(errorMessage,
+                    errorMessage, () =>
+                    {
+                    },
+                    ToolTipIcon.Error, "");
             }
         }
 
