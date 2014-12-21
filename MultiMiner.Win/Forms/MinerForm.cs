@@ -4978,10 +4978,15 @@ namespace MultiMiner.Win.Forms
 
         private void ProcessRemoteCommands(List<MobileMiner.Data.RemoteCommand> commands)
         {
-            if (commands.Count > 0)
+            List<MobileMiner.Data.RemoteCommand> machineCommands = commands
+                .GroupBy(c => c.Machine.Name)
+                .Select(c => c.First())
+                .ToList();
+
+            if (machineCommands.Count > 0)
             {
-                MobileMiner.Data.RemoteCommand command = commands.First();
-                ProcessRemoteCommand(command);
+                foreach (MobileMiner.Data.RemoteCommand command in machineCommands)
+                    ProcessRemoteCommand(command);
             }
         }
 
