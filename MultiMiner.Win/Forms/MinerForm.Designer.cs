@@ -213,6 +213,7 @@
             this.aToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restartMiningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rebootDeviceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.stickyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hiddenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1792,6 +1793,7 @@
             this.networkDeviceContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.networkDevicePoolMenu,
             this.restartMiningToolStripMenuItem,
+            this.rebootDeviceToolStripMenuItem,
             this.toolStripSeparator5,
             this.stickyToolStripMenuItem,
             this.hiddenToolStripMenuItem,
@@ -1828,6 +1830,13 @@
             this.restartMiningToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.restartMiningToolStripMenuItem.Text = "Restart Mining";
             this.restartMiningToolStripMenuItem.Click += new System.EventHandler(this.restartMiningToolStripMenuItem_Click);
+            // 
+            // rebootDeviceToolStripMenuItem
+            // 
+            this.rebootDeviceToolStripMenuItem.Name = "rebootDeviceToolStripMenuItem";
+            this.rebootDeviceToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.rebootDeviceToolStripMenuItem.Text = "Reboot Device";
+            this.rebootDeviceToolStripMenuItem.Click += new System.EventHandler(this.rebootDeviceToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
@@ -2205,6 +2214,7 @@
         private System.Windows.Forms.ToolStripButton historySideButton;
         private System.Windows.Forms.ToolStripButton apiMonitorSideButton;
         private System.Windows.Forms.ToolStripButton processLogSideButton;
+        private System.Windows.Forms.ToolStripMenuItem rebootDeviceToolStripMenuItem;
     }
 }
 

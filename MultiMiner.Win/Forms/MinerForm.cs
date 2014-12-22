@@ -42,6 +42,7 @@ using System.Globalization;
 using Microsoft.Win32;
 using MultiMiner.MultipoolApi.Data;
 using MultiMiner.MobileMiner.Data;
+using Renci.SshNet;
 
 namespace MultiMiner.Win.Forms
 {
@@ -7914,6 +7915,98 @@ namespace MultiMiner.Win.Forms
             RestartNetworkDevice(networkDevice);
         }
 
+        private void RebootNetworkDevice()
+        {
+            DeviceViewModel networkDevice = (DeviceViewModel)deviceListView.FocusedItem.Tag;
+            RebootNetworkDevice(networkDevice);
+        }
+
+        private NetworkDevices.NetworkDevice GetNetworkDeviceByPath(string path)
+        {
+            Uri uri = new Uri("http://" + path);
+            return networkDevicesConfiguration.Devices.SingleOrDefault(nd => (nd.Port == uri.Port) && (nd.IPAddress == uri.Host));
+        }
+
+        private bool RebootNetworkDevice(DeviceViewModel deviceViewModel)
+        {
+            string commandText = "reboot";
+            return ExecuteNetworkDeviceCommand(deviceViewModel, commandText);
+        }
+
+        private bool ExecuteNetworkDeviceCommand(DeviceViewModel deviceViewModel, string commandText)
+        {
+            NetworkDevices.NetworkDevice networkDevice = GetNetworkDeviceByPath(deviceViewModel.Path);
+
+            string username = networkDevice.Username;
+            string password = networkDevice.Password;
+            string devicePath = deviceViewModel.Path;
+            string deviceName = devicePath;
+            if (!String.IsNullOrEmpty(deviceViewModel.FriendlyName))
+                deviceName = deviceViewModel.FriendlyName;
+
+            bool success = false;
+            bool stop = false;
+            bool prompt = String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password);
+
+            while (!success && !stop)
+            {
+                if (prompt)
+                {
+                    CredentialsForm form = new CredentialsForm(deviceName, username, password);
+                    if (form.ShowDialog() == DialogResult.OK)
+                    {
+                        username = form.Username;
+                        password = form.Password;
+                    }
+                    else
+                    {
+                        stop = true;
+                    }
+                }
+
+                if (!stop)
+                {
+                    Uri uri = new Uri("http://" + devicePath);
+                    using (SshClient client = new SshClient(uri.Host, username, password))
+                    {
+                        try
+                        {
+                            client.Connect();
+                        }
+                        catch (Renci.SshNet.Common.SshAuthenticationException)
+                        {
+                            prompt = true;
+                        }
+                        if (client.IsConnected)
+                        {
+                            stop = true;
+                            SshCommand command = client.RunCommand(commandText);
+                            client.Disconnect();
+                            success = command.ExitStatus == 0;
+
+                            if (!success)
+                            {
+                                string message = String.Format("{0}: {1}", deviceName, command.Error);
+                                PostNotification(message,
+                                    message, () =>
+                                    {
+                                    }, ToolTipIcon.Error);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (success)
+            {
+                networkDevice.Username = username;
+                networkDevice.Password = password;
+                networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+            }
+
+            return success;
+        }
+
         private bool RestartNetworkDevice(DeviceViewModel networkDevice)
         {
             Uri uri = new Uri("http://" + networkDevice.Path);
@@ -8012,5 +8105,10 @@ namespace MultiMiner.Win.Forms
             }
         }
         #endregion
+
+        private void rebootDeviceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RebootNetworkDevice();
+        }
     }
 }

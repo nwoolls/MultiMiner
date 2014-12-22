@@ -21,6 +21,8 @@ namespace MultiMiner.Win.Data.Configuration
             public int Port { get; set; }
             public bool Sticky { get; set; }
             public bool Hidden { get; set; }
+            public string Username { get; set; }
+            public string Password { get; set; }
         }
 
         public List<NetworkDevice> Devices { get; set; }
