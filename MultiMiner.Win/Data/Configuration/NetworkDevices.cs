@@ -15,6 +15,7 @@ namespace MultiMiner.Win.Data.Configuration
             {
                 //sticky by default - require user intervention to remove devices
                 Sticky = true;
+                RecentCommands = new List<string>();
             }
 
             public string IPAddress { get; set; }
@@ -23,6 +24,7 @@ namespace MultiMiner.Win.Data.Configuration
             public bool Hidden { get; set; }
             public string Username { get; set; }
             public string Password { get; set; }
+            public List<string> RecentCommands { get; set; }
         }
 
         public List<NetworkDevice> Devices { get; set; }

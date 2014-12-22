@@ -227,6 +227,7 @@
             this.historySideButton = new System.Windows.Forms.ToolStripButton();
             this.apiMonitorSideButton = new System.Windows.Forms.ToolStripButton();
             this.processLogSideButton = new System.Windows.Forms.ToolStripButton();
+            this.executeCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -1794,6 +1795,7 @@
             this.networkDevicePoolMenu,
             this.restartMiningToolStripMenuItem,
             this.rebootDeviceToolStripMenuItem,
+            this.executeCommandToolStripMenuItem,
             this.toolStripSeparator5,
             this.stickyToolStripMenuItem,
             this.hiddenToolStripMenuItem,
@@ -1967,6 +1969,13 @@
             this.processLogSideButton.Size = new System.Drawing.Size(21, 20);
             this.processLogSideButton.Text = "Process Log";
             this.processLogSideButton.Click += new System.EventHandler(this.processLogSideButton_Click);
+            // 
+            // executeCommandToolStripMenuItem
+            // 
+            this.executeCommandToolStripMenuItem.Name = "executeCommandToolStripMenuItem";
+            this.executeCommandToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.executeCommandToolStripMenuItem.Text = "Execute Command";
+            this.executeCommandToolStripMenuItem.Click += new System.EventHandler(this.executeCommandToolStripMenuItem_Click);
             // 
             // MinerForm
             // 
@@ -2215,6 +2224,7 @@
         private System.Windows.Forms.ToolStripButton apiMonitorSideButton;
         private System.Windows.Forms.ToolStripButton processLogSideButton;
         private System.Windows.Forms.ToolStripMenuItem rebootDeviceToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem executeCommandToolStripMenuItem;
     }
 }
 

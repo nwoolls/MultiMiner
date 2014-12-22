@@ -7933,6 +7933,23 @@ namespace MultiMiner.Win.Forms
             return ExecuteNetworkDeviceCommand(deviceViewModel, commandText);
         }
 
+        private void ExecuteNetworkDeviceCommand()
+        {
+            DeviceViewModel deviceViewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
+            NetworkDevices.NetworkDevice networkDevice = GetNetworkDeviceByPath(deviceViewModel.Path);
+            ShellCommandForm form = new ShellCommandForm(networkDevice.RecentCommands);
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                bool success = ExecuteNetworkDeviceCommand(deviceViewModel, form.ShellCommand);
+                if (success)
+                {
+                    networkDevice.RecentCommands.Remove(form.ShellCommand);
+                    networkDevice.RecentCommands.Insert(0, form.ShellCommand);
+                    networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+                }
+            }
+        }
+
         private bool ExecuteNetworkDeviceCommand(DeviceViewModel deviceViewModel, string commandText)
         {
             NetworkDevices.NetworkDevice networkDevice = GetNetworkDeviceByPath(deviceViewModel.Path);
@@ -8109,6 +8126,11 @@ namespace MultiMiner.Win.Forms
         private void rebootDeviceToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RebootNetworkDevice();
+        }
+
+        private void executeCommandToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExecuteNetworkDeviceCommand();
         }
     }
 }
