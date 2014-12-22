@@ -78,7 +78,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 83);
+            this.panel1.Location = new System.Drawing.Point(0, 93);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(286, 45);
             this.panel1.TabIndex = 29;
@@ -117,7 +117,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(286, 128);
+            this.ClientSize = new System.Drawing.Size(286, 138);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.commandEdit);
             this.Controls.Add(this.label2);

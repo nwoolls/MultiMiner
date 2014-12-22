@@ -47,7 +47,7 @@
             this.label2.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.label2.Location = new System.Drawing.Point(42, 73);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(229, 42);
+            this.label2.Size = new System.Drawing.Size(229, 39);
             this.label2.TabIndex = 25;
             this.label2.Text = "Common default credentials are root / root and pi / admin.";
             // 
@@ -89,7 +89,7 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 124);
+            this.panel1.Location = new System.Drawing.Point(0, 118);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(286, 45);
             this.panel1.TabIndex = 2;
@@ -134,7 +134,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(286, 169);
+            this.ClientSize = new System.Drawing.Size(286, 163);
             this.Controls.Add(this.usernameEdit);
             this.Controls.Add(this.passwordEdit);
             this.Controls.Add(this.label2);
