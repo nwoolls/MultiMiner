@@ -38,6 +38,9 @@
     <ApplicationIcon>MultiMiner.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Renci.SshNet">
+      <HintPath>..\packages\SSH.NET.2013.4.7\lib\net35\Renci.SshNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
@@ -154,6 +157,12 @@
     <Compile Include="Forms\Configuration\ProxySettingsForm.Designer.cs">
       <DependentUpon>ProxySettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\CredentialsForm.cs">
+      <SubType>form</SubType>
+    </Compile>
+    <Compile Include="Forms\CredentialsForm.Designer.cs">
+      <DependentUpon>CredentialsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MinerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -248,6 +257,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Configuration\ProxySettingsForm.resx">
       <DependentUpon>ProxySettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CredentialsForm.resx">
+      <DependentUpon>CredentialsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MinerForm.resx">
       <DependentUpon>MinerForm.cs</DependentUpon>
