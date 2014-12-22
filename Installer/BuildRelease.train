@@ -104,6 +104,7 @@ file.copy("../MultiMiner.Win/bin/Release/MultiMiner.NiceHash.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll", "PF/");
+file.copy("../MultiMiner.Win/bin/Release/Renci.SshNet.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Miners/bfgminer/Extract bfgminer here.txt", "PF/Miners/bfgminer");
 zip.compress("Output/MultiMiner-" + shortAppVersion + ".zip", "PF/", "*.*", true);
 folder.remove("PF", true);
@@ -160,6 +161,7 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.pdb,\
 ../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll,\
+../MultiMiner.Win/bin/Release/Renci.SshNet.dll,\
 Miners \
 -i ../MultiMiner.Win/MultiMiner.icns \
 ../MultiMiner.Win/bin/Release/MultiMiner.Win.exe");
