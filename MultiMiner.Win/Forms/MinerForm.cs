@@ -8008,10 +8008,22 @@ namespace MultiMiner.Win.Forms
                         {
                             client.Connect();
                         }
-                        catch (Renci.SshNet.Common.SshAuthenticationException)
+                        catch (Exception ex)
                         {
-                            prompt = true;
+                            if (ex is Renci.SshNet.Common.SshAuthenticationException)
+                                prompt = true;
+                            else if ((ex is SocketException) || (ex is Renci.SshNet.Common.SshOperationTimeoutException))
+                            {
+                                stop = true;
+                                string message = String.Format("{0}: {1}", deviceName, ex.Message);
+                                PostNotification(message,
+                                    message, () =>
+                                    {
+                                    }, ToolTipIcon.Error);
+                            }
+                            else throw;
                         }
+
                         if (client.IsConnected)
                         {
                             stop = true;
