@@ -2886,7 +2886,7 @@ namespace MultiMiner.Win.Forms
 
         private void restartMiningToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RestartNetworkDevice();
+            RestartSelectedNetworkDevices();
         }
 
         private void adminPageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -7909,16 +7909,24 @@ namespace MultiMiner.Win.Forms
                 networkDevice.ChainStatus[i] = String.Empty;
         }
 
-        private void RestartNetworkDevice()
+        private void RestartSelectedNetworkDevices()
         {
-            DeviceViewModel networkDevice = (DeviceViewModel)deviceListView.FocusedItem.Tag;
-            RestartNetworkDevice(networkDevice);
+            foreach (ListViewItem item in deviceListView.SelectedItems)
+            {
+                DeviceViewModel deviceViewModel = (DeviceViewModel)item.Tag;
+                if (deviceViewModel.Kind == DeviceKind.NET)
+                    RestartNetworkDevice(deviceViewModel);
+            }
         }
 
-        private void RebootNetworkDevice()
+        private void RebootSelectedNetworkDevices()
         {
-            DeviceViewModel networkDevice = (DeviceViewModel)deviceListView.FocusedItem.Tag;
-            RebootNetworkDevice(networkDevice);
+            foreach (ListViewItem item in deviceListView.SelectedItems)
+            {
+                DeviceViewModel deviceViewModel = (DeviceViewModel)item.Tag;
+                if (deviceViewModel.Kind == DeviceKind.NET)
+                    RebootNetworkDevice(deviceViewModel);
+            }
         }
 
         private NetworkDevices.NetworkDevice GetNetworkDeviceByPath(string path)
@@ -7933,19 +7941,29 @@ namespace MultiMiner.Win.Forms
             return ExecuteNetworkDeviceCommand(deviceViewModel, commandText);
         }
 
-        private void ExecuteNetworkDeviceCommand()
+        private void ExecuteCommandOnSelectedNetworkDevices()
         {
+            //use Focused device for RecentCommands
             DeviceViewModel deviceViewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
             NetworkDevices.NetworkDevice networkDevice = GetNetworkDeviceByPath(deviceViewModel.Path);
             ShellCommandForm form = new ShellCommandForm(networkDevice.RecentCommands);
             if (form.ShowDialog() == DialogResult.OK)
             {
-                bool success = ExecuteNetworkDeviceCommand(deviceViewModel, form.ShellCommand);
-                if (success)
+                foreach (ListViewItem item in deviceListView.SelectedItems)
                 {
-                    networkDevice.RecentCommands.Remove(form.ShellCommand);
-                    networkDevice.RecentCommands.Insert(0, form.ShellCommand);
-                    networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+                    deviceViewModel = (DeviceViewModel)item.Tag;
+
+                    if (deviceViewModel.Kind == DeviceKind.NET)
+                    {
+                        bool success = ExecuteNetworkDeviceCommand(deviceViewModel, form.ShellCommand);
+                        if (success)
+                        {
+                            networkDevice = GetNetworkDeviceByPath(deviceViewModel.Path);
+                            networkDevice.RecentCommands.Remove(form.ShellCommand);
+                            networkDevice.RecentCommands.Insert(0, form.ShellCommand);
+                            networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+                        }
+                    }
                 }
             }
         }
@@ -8125,12 +8143,12 @@ namespace MultiMiner.Win.Forms
 
         private void rebootDeviceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RebootNetworkDevice();
+            RebootSelectedNetworkDevices();
         }
 
         private void executeCommandToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ExecuteNetworkDeviceCommand();
+            ExecuteCommandOnSelectedNetworkDevices();
         }
     }
 }

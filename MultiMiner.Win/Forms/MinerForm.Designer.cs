@@ -214,6 +214,7 @@
             this.bToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restartMiningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rebootDeviceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.executeCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.stickyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hiddenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -227,7 +228,6 @@
             this.historySideButton = new System.Windows.Forms.ToolStripButton();
             this.apiMonitorSideButton = new System.Windows.Forms.ToolStripButton();
             this.processLogSideButton = new System.Windows.Forms.ToolStripButton();
-            this.executeCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -550,7 +550,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(883, 111);
-            this.detailsAreaContainer.SplitterDistance = 659;
+            this.detailsAreaContainer.SplitterDistance = 660;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -601,7 +601,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(659, 111);
+            this.deviceListView.Size = new System.Drawing.Size(660, 111);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.deviceListView.TabIndex = 2;
@@ -727,7 +727,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(221, 111);
+            this.detailsControl1.Size = new System.Drawing.Size(220, 111);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -882,7 +882,7 @@
             this.processLogPage.Location = new System.Drawing.Point(4, 24);
             this.processLogPage.Name = "processLogPage";
             this.processLogPage.Padding = new System.Windows.Forms.Padding(3);
-            this.processLogPage.Size = new System.Drawing.Size(867, 56);
+            this.processLogPage.Size = new System.Drawing.Size(875, 56);
             this.processLogPage.TabIndex = 1;
             this.processLogPage.Text = "Process Log";
             this.processLogPage.UseVisualStyleBackColor = true;
@@ -911,7 +911,7 @@
             this.processLogGridView.Name = "processLogGridView";
             this.processLogGridView.ReadOnly = true;
             this.processLogGridView.RowHeadersVisible = false;
-            this.processLogGridView.Size = new System.Drawing.Size(861, 50);
+            this.processLogGridView.Size = new System.Drawing.Size(869, 50);
             this.processLogGridView.TabIndex = 14;
             this.processLogGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.processLogGridView_CellFormatting);
             this.processLogGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.processLogGridView_CellMouseDown);
@@ -966,7 +966,7 @@
             this.apiMonitorPage.Location = new System.Drawing.Point(4, 24);
             this.apiMonitorPage.Name = "apiMonitorPage";
             this.apiMonitorPage.Padding = new System.Windows.Forms.Padding(3);
-            this.apiMonitorPage.Size = new System.Drawing.Size(867, 56);
+            this.apiMonitorPage.Size = new System.Drawing.Size(875, 56);
             this.apiMonitorPage.TabIndex = 0;
             this.apiMonitorPage.Text = "API Monitor";
             this.apiMonitorPage.UseVisualStyleBackColor = true;
@@ -995,7 +995,7 @@
             this.apiLogGridView.Location = new System.Drawing.Point(3, 3);
             this.apiLogGridView.Name = "apiLogGridView";
             this.apiLogGridView.RowHeadersVisible = false;
-            this.apiLogGridView.Size = new System.Drawing.Size(861, 50);
+            this.apiLogGridView.Size = new System.Drawing.Size(869, 50);
             this.apiLogGridView.TabIndex = 13;
             this.apiLogGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.apiLogGridView_CellFormatting);
             // 
@@ -1803,7 +1803,7 @@
             this.adminPageToolStripMenuItem});
             this.networkDeviceContextMenu.Name = "remoteDeviceContextMenu";
             this.networkDeviceContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.networkDeviceContextMenu.Size = new System.Drawing.Size(152, 126);
+            this.networkDeviceContextMenu.Size = new System.Drawing.Size(175, 192);
             // 
             // networkDevicePoolMenu
             // 
@@ -1811,63 +1811,70 @@
             this.aToolStripMenuItem,
             this.bToolStripMenuItem});
             this.networkDevicePoolMenu.Name = "networkDevicePoolMenu";
-            this.networkDevicePoolMenu.Size = new System.Drawing.Size(151, 22);
+            this.networkDevicePoolMenu.Size = new System.Drawing.Size(174, 22);
             this.networkDevicePoolMenu.Text = "Switch Pool";
             // 
             // aToolStripMenuItem
             // 
             this.aToolStripMenuItem.Name = "aToolStripMenuItem";
-            this.aToolStripMenuItem.Size = new System.Drawing.Size(82, 22);
+            this.aToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aToolStripMenuItem.Text = "A";
             // 
             // bToolStripMenuItem
             // 
             this.bToolStripMenuItem.Name = "bToolStripMenuItem";
-            this.bToolStripMenuItem.Size = new System.Drawing.Size(82, 22);
+            this.bToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.bToolStripMenuItem.Text = "B";
             // 
             // restartMiningToolStripMenuItem
             // 
             this.restartMiningToolStripMenuItem.Name = "restartMiningToolStripMenuItem";
-            this.restartMiningToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.restartMiningToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.restartMiningToolStripMenuItem.Text = "Restart Mining";
             this.restartMiningToolStripMenuItem.Click += new System.EventHandler(this.restartMiningToolStripMenuItem_Click);
             // 
             // rebootDeviceToolStripMenuItem
             // 
             this.rebootDeviceToolStripMenuItem.Name = "rebootDeviceToolStripMenuItem";
-            this.rebootDeviceToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
-            this.rebootDeviceToolStripMenuItem.Text = "Reboot Device";
+            this.rebootDeviceToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.rebootDeviceToolStripMenuItem.Text = "Reboot Device(s)";
             this.rebootDeviceToolStripMenuItem.Click += new System.EventHandler(this.rebootDeviceToolStripMenuItem_Click);
+            // 
+            // executeCommandToolStripMenuItem
+            // 
+            this.executeCommandToolStripMenuItem.Name = "executeCommandToolStripMenuItem";
+            this.executeCommandToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.executeCommandToolStripMenuItem.Text = "Execute Command";
+            this.executeCommandToolStripMenuItem.Click += new System.EventHandler(this.executeCommandToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(148, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(171, 6);
             // 
             // stickyToolStripMenuItem
             // 
             this.stickyToolStripMenuItem.Name = "stickyToolStripMenuItem";
-            this.stickyToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.stickyToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.stickyToolStripMenuItem.Text = "Pinned";
             this.stickyToolStripMenuItem.Click += new System.EventHandler(this.stickyToolStripMenuItem_Click);
             // 
             // hiddenToolStripMenuItem
             // 
             this.hiddenToolStripMenuItem.Name = "hiddenToolStripMenuItem";
-            this.hiddenToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.hiddenToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.hiddenToolStripMenuItem.Text = "Hidden";
             this.hiddenToolStripMenuItem.Click += new System.EventHandler(this.hiddenToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(148, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(171, 6);
             // 
             // adminPageToolStripMenuItem
             // 
             this.adminPageToolStripMenuItem.Name = "adminPageToolStripMenuItem";
-            this.adminPageToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.adminPageToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.adminPageToolStripMenuItem.Text = "Admin Page";
             this.adminPageToolStripMenuItem.Click += new System.EventHandler(this.adminPageToolStripMenuItem_Click);
             // 
@@ -1969,13 +1976,6 @@
             this.processLogSideButton.Size = new System.Drawing.Size(21, 20);
             this.processLogSideButton.Text = "Process Log";
             this.processLogSideButton.Click += new System.EventHandler(this.processLogSideButton_Click);
-            // 
-            // executeCommandToolStripMenuItem
-            // 
-            this.executeCommandToolStripMenuItem.Name = "executeCommandToolStripMenuItem";
-            this.executeCommandToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.executeCommandToolStripMenuItem.Text = "Execute Command";
-            this.executeCommandToolStripMenuItem.Click += new System.EventHandler(this.executeCommandToolStripMenuItem_Click);
             // 
             // MinerForm
             // 
