@@ -8011,18 +8011,14 @@ namespace MultiMiner.Win.Forms
 
                         if (client.IsConnected)
                         {
-                            stop = true;
-                            SshCommand command = client.RunCommand(commandText);
-                            client.Disconnect();
-                            success = command.ExitStatus == 0;
-
-                            if (!success)
+                            try
                             {
-                                string message = String.Format("{0}: {1}", deviceName, command.Error);
-                                PostNotification(message,
-                                    message, () =>
-                                    {
-                                    }, ToolTipIcon.Error);
+                                stop = true;
+                                success = ExecuteSshCommand(deviceName, client, commandText);
+                            }
+                            finally
+                            {
+                                client.Disconnect();
                             }
                         }
                     }
@@ -8035,6 +8031,18 @@ namespace MultiMiner.Win.Forms
                 networkDevice.Password = password;
                 networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
             }
+
+            return success;
+        }
+
+        private bool ExecuteSshCommand(string deviceName, SshClient client, string commandText)
+        {
+            bool success;
+            SshCommand command = client.RunCommand(commandText);
+            success = command.ExitStatus == 0;
+
+            if (!success)
+                PostNotification(string.Format("{0}: {1}", deviceName, command.Error), ToolTipIcon.Error);
 
             return success;
         }
