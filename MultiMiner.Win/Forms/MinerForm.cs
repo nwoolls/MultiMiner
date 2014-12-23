@@ -8063,9 +8063,23 @@ namespace MultiMiner.Win.Forms
             return result;
         }
 
-        private void SetNetworkDevicePool(int poolIndex)
+        private void SetNetworkDevicePool(DeviceViewModel networkDevice, string poolUrl)
         {
-            DeviceViewModel networkDevice = (DeviceViewModel)deviceListView.FocusedItem.Tag;
+            // networkDevicePools is keyed by IP:port, use .Path
+            List<PoolInformation> poolInformation = networkDevicePools[networkDevice.Path];
+
+            if (poolInformation == null)
+                //RPC API call timed out
+                return;
+
+            int poolIndex = poolInformation.FindIndex(pi => pi.Url.Equals(poolUrl));
+
+            if (poolIndex == -1)
+            {
+                //device doesn't have pool
+                return;
+            }
+
             Uri uri = new Uri("http://" + networkDevice.Path);
             Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
 
@@ -8079,7 +8093,14 @@ namespace MultiMiner.Win.Forms
         private void NetworkDevicePoolClicked(object sender, EventArgs e)
         {
             ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-            SetNetworkDevicePool((int)menuItem.Tag);
+            string poolUrl = ((PoolInformation)menuItem.Tag).Url;
+
+            foreach (ListViewItem item in deviceListView.SelectedItems)
+            {
+                DeviceViewModel deviceViewModel = (DeviceViewModel)item.Tag;
+                if (deviceViewModel.Kind == DeviceKind.NET)
+                    SetNetworkDevicePool(deviceViewModel, poolUrl);
+            }
         }
 
         private void UpdateNetworkDeviceMenu()
@@ -8134,7 +8155,7 @@ namespace MultiMiner.Win.Forms
             {
                 PoolInformation pool = poolInformation[i];
                 ToolStripMenuItem menuItem = new ToolStripMenuItem(pool.Url.DomainFromHost());
-                menuItem.Tag = i;
+                menuItem.Tag = pool;
                 menuItem.Click += NetworkDevicePoolClicked;
                 networkDevicePoolMenu.DropDownItems.Add(menuItem);
             }
