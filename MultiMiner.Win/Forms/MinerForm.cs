@@ -3340,11 +3340,7 @@ namespace MultiMiner.Win.Forms
                 BeginInvoke((Action)(() =>
                 {
                     //code to update UI
-                    string message = "MultiMiner Remoting signature verification failed";
-                    PostNotification(message,
-                        message, () =>
-                        {
-                        }, ToolTipIcon.Error);
+                    PostNotification("MultiMiner Remoting signature verification failed", ToolTipIcon.Error);
                 }));
 
                 return;
@@ -3939,8 +3935,7 @@ namespace MultiMiner.Win.Forms
             {
                 //code to update UI
                 string message = "MultiMiner Remoting communication failed";
-                PostNotification(message,
-                    message, () =>
+                PostNotification(message, () =>
                     {
                         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }, ToolTipIcon.Error);
@@ -5058,13 +5053,7 @@ namespace MultiMiner.Win.Forms
             }
             catch (SocketException ex)
             {
-                string errorMessage = String.Format("Error {0}: {1}", action, ex.Message);
-
-                PostNotification(errorMessage,
-                    errorMessage, () =>
-                    {
-                    },
-                    ToolTipIcon.Error, "");
+                PostNotification(String.Format("Error {0}: {1}", action, ex.Message), ToolTipIcon.Error);
             }
         }
 
@@ -6068,7 +6057,7 @@ namespace MultiMiner.Win.Forms
                         notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
                     }
 
-                    PostNotification(notificationReason, notificationReason, () =>
+                    PostNotification(notificationReason, () =>
                     {
                         ConfigureCoinsLocally();
                     }, ToolTipIcon.Error, "");
@@ -6083,8 +6072,7 @@ namespace MultiMiner.Win.Forms
                     else
                     {
                         //just notify - relaunching option will take care of the rest
-                        string notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
-                        PostNotification(notificationReason, notificationReason, () =>
+                        PostNotification(String.Format("All pools for {0} configuration are down", ea.CoinName), () =>
                         {
                             ConfigureCoinsLocally();
                         }, ToolTipIcon.Error, "");
@@ -6098,7 +6086,7 @@ namespace MultiMiner.Win.Forms
             this.BeginInvoke((Action)(() =>
             {
                 //code to update UI
-                PostNotification(ea.Reason, ea.Reason, () =>
+                PostNotification(ea.Reason, () =>
                 {
                     ConfigureCoinsLocally();
                 }, ToolTipIcon.Error, "");
@@ -6299,7 +6287,7 @@ namespace MultiMiner.Win.Forms
             {
                 case 0:
                     tip = "Tip: right-click device names to change coins";
-                    PostNotification(tip, tip, () =>
+                    PostNotification(tip, () =>
                     {
                         //only if we have non-network devices
                         if (localViewModel.Devices.Count(d => d.Kind != DeviceKind.NET) > 0)
@@ -6317,7 +6305,7 @@ namespace MultiMiner.Win.Forms
                     break;
                 case 1:
                     tip = "Tip: right-click the main screen for common tasks";
-                    PostNotification(tip, tip, () =>
+                    PostNotification(tip, () =>
                     {
                         deviceListContextMenu.Show(deviceListView, 150, 100);
                     }, ToolTipIcon.Info, "");
@@ -6325,14 +6313,14 @@ namespace MultiMiner.Win.Forms
                     break;
                 case 2:
                     tip = "Tip: restart mining after changing any settings";
-                    PostNotification(tip, tip, () =>
+                    PostNotification(tip, () =>
                     {
                     }, ToolTipIcon.Info, "");
                     applicationConfiguration.TipsShown++;
                     break;
                 case 3:
                     tip = "Tip: enabling perks gives back to the author";
-                    PostNotification(tip, tip, () =>
+                    PostNotification(tip, () =>
                     {
                         ConfigurePerksLocally();
                     }, ToolTipIcon.Info, "");
@@ -7077,11 +7065,8 @@ namespace MultiMiner.Win.Forms
             }
             catch (ArgumentException)
             {
-                string error = String.Format("Error checking for {0} updates", 
-                    MinerFactory.Instance.GetDefaultMiner().Name);
-                PostNotification(error, error, () =>
-                {
-                }, ToolTipIcon.Warning, "");
+                PostNotification(String.Format("Error checking for {0} updates",
+                    MinerFactory.Instance.GetDefaultMiner().Name), ToolTipIcon.Warning);
             }
         }
 
@@ -7350,6 +7335,21 @@ namespace MultiMiner.Win.Forms
             }
         }
 
+        public void PostNotification(string text, ToolTipIcon icon, string informationUrl = "")
+        {
+            PostNotification(text, text, () => { }, icon, informationUrl);
+        }
+
+        public void PostNotification(string id, string text, ToolTipIcon icon, string informationUrl = "")
+        {
+            PostNotification(id, text, () => { }, icon, informationUrl);
+        }
+
+        public void PostNotification(string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
+        {
+            PostNotification(text, text, clickHandler, icon, informationUrl);
+        }
+
         public void PostNotification(string id, string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
         {
             MobileMiner.Data.NotificationKind kind = MobileMiner.Data.NotificationKind.Information;
@@ -7425,12 +7425,8 @@ namespace MultiMiner.Win.Forms
             {
                 minerProcess.FoundBlocks = foundBlocks;
 
-                string notificationReason = String.Format("Block(s) found for {0} (block {1})",
-                    coinName, minerProcess.FoundBlocks);
-
-                PostNotification(notificationReason, notificationReason, () =>
-                {
-                }, ToolTipIcon.Info, "");
+                PostNotification(String.Format("Block(s) found for {0} (block {1})",
+                    coinName, minerProcess.FoundBlocks), ToolTipIcon.Info);
             }
         }
 
@@ -7450,12 +7446,8 @@ namespace MultiMiner.Win.Forms
             {
                 minerProcess.AcceptedShares = acceptedShares;
 
-                string notificationReason = String.Format("Share(s) accepted for {0} (share {1})",
-                    coinName, minerProcess.AcceptedShares);
-
-                PostNotification(notificationReason, notificationReason, () =>
-                {
-                }, ToolTipIcon.Info, "");
+                PostNotification(String.Format("Share(s) accepted for {0} (share {1})",
+                    coinName, minerProcess.AcceptedShares), ToolTipIcon.Info);
             }
         }
 
@@ -7897,10 +7889,7 @@ namespace MultiMiner.Win.Forms
             }
 
             //code to update UI
-            PostNotification(message,
-                message, () =>
-                {
-                }, ToolTipIcon.Error);
+            PostNotification(message, ToolTipIcon.Error);
         }
 
         private static void ClearChainStatus(DeviceViewModel networkDevice)
@@ -8015,11 +8004,7 @@ namespace MultiMiner.Win.Forms
                             else if ((ex is SocketException) || (ex is Renci.SshNet.Common.SshOperationTimeoutException))
                             {
                                 stop = true;
-                                string message = String.Format("{0}: {1}", deviceName, ex.Message);
-                                PostNotification(message,
-                                    message, () =>
-                                    {
-                                    }, ToolTipIcon.Error);
+                                PostNotification(String.Format("{0}: {1}", deviceName, ex.Message), ToolTipIcon.Error);
                             }
                             else throw;
                         }
