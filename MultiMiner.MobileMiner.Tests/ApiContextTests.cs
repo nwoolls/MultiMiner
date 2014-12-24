@@ -32,7 +32,7 @@ namespace MultiMiner.MobileMiner.Api.Tests
             });
 
             DateTime start = DateTime.Now;
-            ApiContext.SubmitMiningStatistics(apiUrl, devApiKey, userEmail, userAppKey, miningStatistics);
+            ApiContext.SubmitMiningStatistics(apiUrl, devApiKey, userEmail, userAppKey, miningStatistics, false);
             Assert.IsTrue((DateTime.Now - start).TotalSeconds < apiSecondsError);
         }
 
