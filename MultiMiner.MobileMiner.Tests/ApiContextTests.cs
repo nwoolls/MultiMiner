@@ -32,26 +32,8 @@ namespace MultiMiner.MobileMiner.Api.Tests
             });
 
             DateTime start = DateTime.Now;
-            ApiContext.SubmitMiningStatistics(apiUrl, devApiKey, userEmail, userAppKey, miningStatistics);
+            ApiContext.SubmitMiningStatistics(apiUrl, devApiKey, userEmail, userAppKey, miningStatistics, false);
             Assert.IsTrue((DateTime.Now - start).TotalSeconds < apiSecondsError);
-        }
-
-        [TestMethod]
-        public void SubmitMiningStatistics_ZeroLength_ReturnsBadRequest()
-        {
-            List<MiningStatistics> miningStatistics = new List<MiningStatistics>();
-            try
-            {
-                DateTime start = DateTime.Now;
-                ApiContext.SubmitMiningStatistics(apiUrl, devApiKey, userEmail, userAppKey, miningStatistics);
-                Assert.IsTrue((DateTime.Now - start).TotalSeconds < apiSecondsError);
-                Assert.Fail("No Exception thrown");
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(ex is WebException);
-                Assert.IsTrue(((WebException)ex).Status == WebExceptionStatus.ProtocolError);
-            }
         }
 
         [TestMethod]
