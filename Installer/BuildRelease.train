@@ -58,7 +58,6 @@ inno.build("Installer.iss", { });
 //create a regular Zip release
 //only this contains the Update.exe as this is the only update package
 folder.remove("PF", true);
-folder.create("PF/Miners/bfgminer");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Win.exe", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Win.pdb", "PF/");
 file.copy("../MultiMiner.Update/bin/Release/MultiMiner.Update.exe", "PF/");
@@ -105,7 +104,6 @@ file.copy("../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Renci.SshNet.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/Miners/bfgminer/Extract bfgminer here.txt", "PF/Miners/bfgminer");
 zip.compress("Output/MultiMiner-" + shortAppVersion + ".zip", "PF/", "*.*", true);
 folder.remove("PF", true);
 
@@ -161,8 +159,7 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.pdb,\
 ../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll,\
-../MultiMiner.Win/bin/Release/Renci.SshNet.dll,\
-Miners \
+../MultiMiner.Win/bin/Release/Renci.SshNet.dll \
 -i ../MultiMiner.Win/MultiMiner.icns \
 ../MultiMiner.Win/bin/Release/MultiMiner.Win.exe");
 

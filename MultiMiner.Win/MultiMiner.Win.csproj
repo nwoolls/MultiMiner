@@ -423,9 +423,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Miners\BFGMiner\Extract BFGMiner here.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="MultiMiner.ico" />
     <None Include="Resources\insert_chart.png" />
     <None Include="Resources\home.png" />

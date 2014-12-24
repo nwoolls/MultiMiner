@@ -77,7 +77,6 @@ Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatMine.dll"; DestDir: "{app}
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatMine.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion       
 Source: "..\MultiMiner.Win\bin\Release\Renci.SshNet.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\Miners\bfgminer\Extract bfgminer here.txt"; DestDir: "{app}\Miners\bfgminer\"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
