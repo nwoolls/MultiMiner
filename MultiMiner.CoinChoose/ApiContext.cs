@@ -14,30 +14,13 @@ namespace MultiMiner.CoinChoose
     {
         public IEnumerable<CoinInformation> GetCoinInformation(string userAgent = "")
         {
-            WebClient client = new ApiWebClient();
+            ApiWebClient client = new ApiWebClient();
             if (!string.IsNullOrEmpty(userAgent))
                 client.Headers.Add("user-agent", userAgent);
 
             string apiUrl = GetApiUrl();
 
-            string jsonString = String.Empty;
-            
-            try
-            {
-                jsonString = client.DownloadString(apiUrl);
-            }
-            catch (WebException ex)
-            {
-                if ((ex.Status == WebExceptionStatus.ProtocolError) &&
-                    (((HttpWebResponse)ex.Response).StatusCode == HttpStatusCode.BadGateway))
-                {
-                    //try again 1 more time if error 502
-                    Thread.Sleep(750);
-                    jsonString = client.DownloadString(apiUrl);
-                }
-                else
-                    throw;
-            }
+            string jsonString = client.DownloadFlakyString(apiUrl);
 
             JArray jsonArray = JArray.Parse(jsonString);
 
