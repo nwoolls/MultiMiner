@@ -2618,7 +2618,7 @@ namespace MultiMiner.Win.Forms
             bool enabled = e.Item.Checked;
             List<DeviceDescriptor> descriptors = new List<DeviceDescriptor>();
             MinerFormViewModel viewModel = GetViewModelToView();
-            DeviceViewModel device = viewModel.Devices[e.Item.Index];
+            DeviceViewModel device = (DeviceViewModel)e.Item.Tag;
             DeviceDescriptor descriptor = new DeviceDescriptor();
             ObjectCopier.CopyObject(device, descriptor);
             descriptors.Add(descriptor);
