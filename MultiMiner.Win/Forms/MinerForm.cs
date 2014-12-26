@@ -7482,6 +7482,9 @@ namespace MultiMiner.Win.Forms
                         MinerDescriptor defaultMiner = MinerFactory.Instance.GetDefaultMiner();
                         devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner(defaultMiner));
 
+                        //pull in virtual Proxy Devices
+                        UpdateDevicesForProxySettings();
+
                         //safe to do here as we are Scanning Hardware - we are not mining
                         //no data to lose in the ViewModel
                         //clearing means our sort order within the ListView is preserved
