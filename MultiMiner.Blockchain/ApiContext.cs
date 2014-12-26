@@ -44,7 +44,9 @@ namespace MultiMiner.Blockchain
 
         public string GetApiUrl()
         {
-            return "https://blockchain.info/ticker";
+            //use HTTP as HTTPS is down at times and returns:
+            //The request was aborted: Could not create SSL/TLS secure channel.
+            return "http://blockchain.info/ticker";
         }
 
         public string GetApiName()
