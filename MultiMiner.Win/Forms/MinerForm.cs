@@ -509,6 +509,22 @@ namespace MultiMiner.Win.Forms
                 listViewItem.UseItemStyleForSubItems = true;
             }
 
+            if (deviceViewModel.Kind == DeviceKind.NET)
+            {
+                if (NetworkDeviceWasStopped(deviceViewModel))
+                {
+                    listViewItem.ForeColor = SystemColors.GrayText;
+                    listViewItem.UseItemStyleForSubItems = true;
+                    listViewItem.Checked = false;
+                }
+                else
+                {
+                    listViewItem.ForeColor = SystemColors.WindowText;
+                    listViewItem.UseItemStyleForSubItems = false;
+                    listViewItem.Checked = true;
+                }
+            }
+
             /* Coin info
              * */
             //check for Coin != null, device may not have a coin configured
@@ -5049,8 +5065,15 @@ namespace MultiMiner.Win.Forms
                 }
                 else if (commandText.Equals(RemoteCommandText.Restart, StringComparison.OrdinalIgnoreCase))
                 {
-                    action = "restarting " + networkDevice.FriendlyName;
-                    apiContext.RestartMining();
+                    RestartNetworkDevice(networkDevice);
+                }
+                else if (commandText.Equals(RemoteCommandText.Stop, StringComparison.OrdinalIgnoreCase))
+                {
+                    StopNetworkDevice(networkDevice);
+                }
+                else if (commandText.Equals(RemoteCommandText.Start, StringComparison.OrdinalIgnoreCase))
+                {
+                    StartNetworkDevice(networkDevice);
                 }
             }
             catch (SocketException ex)
@@ -5357,6 +5380,12 @@ namespace MultiMiner.Win.Forms
                     //Visible = false items still get fetched with RefreshNetworkDeviceStats()
                     localViewModel.Devices.Remove(networkDevice);
             }
+        }
+
+        private List<PoolInformation> GetCachedPoolInfoFromAddress(string address)
+        {
+            string[] parts = address.Split(':');
+            return GetCachedPoolInfoFromAddress(parts[0], int.Parse(parts[1]));
         }
 
         private List<PoolInformation> GetCachedPoolInfoFromAddress(string ipAddress, int port)
@@ -7872,8 +7901,30 @@ namespace MultiMiner.Win.Forms
             }
         }
 
+        private bool NetworkDeviceWasStopped(DeviceViewModel networkDevice)
+        {
+            // networkDevicePools is keyed by IP:port, use .Path
+            List<PoolInformation> poolInformation = GetCachedPoolInfoFromAddress(networkDevice.Path);
+
+            if (poolInformation == null)
+                //RPC API call timed out
+                return false;
+
+            const string Disabled = "Disabled";
+
+            foreach (var pool in poolInformation)
+                if (!pool.Status.Equals(Disabled))
+                    return false;
+
+            return true;
+        }
+
         private void RestartSuspectNetworkDevice(DeviceViewModel networkDevice, string reason)
         {
+            //don't restart a Network Device we've stopped
+            if (NetworkDeviceWasStopped(networkDevice))
+                return;
+
             string message = String.Format("Restarting {0} ({1})", networkDevice.FriendlyName, reason);
             try
             {
@@ -7901,6 +7952,24 @@ namespace MultiMiner.Win.Forms
         {
             for (int i = 0; i < networkDevice.ChainStatus.Length; i++)
                 networkDevice.ChainStatus[i] = String.Empty;
+        }
+        private void StartSelectedNetworkDevices()
+        {
+            foreach (ListViewItem item in deviceListView.SelectedItems)
+            {
+                DeviceViewModel deviceViewModel = (DeviceViewModel)item.Tag;
+                if (deviceViewModel.Kind == DeviceKind.NET)
+                    StartNetworkDevice(deviceViewModel);
+            }
+        }
+        private void StopSelectedNetworkDevices()
+        {
+            foreach (ListViewItem item in deviceListView.SelectedItems)
+            {
+                DeviceViewModel deviceViewModel = (DeviceViewModel)item.Tag;
+                if (deviceViewModel.Kind == DeviceKind.NET)
+                    StopNetworkDevice(deviceViewModel);
+            }
         }
 
         private void RestartSelectedNetworkDevices()
@@ -8052,6 +8121,47 @@ namespace MultiMiner.Win.Forms
             return success;
         }
 
+        private bool StartNetworkDevice(DeviceViewModel networkDevice)
+        {
+            return ToggleNetworkDevicePools(networkDevice, true);
+        }
+
+        private bool StopNetworkDevice(DeviceViewModel networkDevice)
+        {
+            return ToggleNetworkDevicePools(networkDevice, false);
+        }
+
+        private bool ToggleNetworkDevicePools(DeviceViewModel networkDevice, bool enabled)
+        {
+            // networkDevicePools is keyed by IP:port, use .Path
+            List<PoolInformation> poolInformation = GetCachedPoolInfoFromAddress(networkDevice.Path);
+
+            if (poolInformation == null)
+                //RPC API call timed out
+                return false;
+
+            Uri uri = new Uri("http://" + networkDevice.Path);
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            string verb = enabled ? "enablepool" : "disablepool";
+
+            for (int i = 0; i < poolInformation.Count; i++)
+            {
+                string response = apiContext.GetResponse(String.Format("{0}|{1}", verb, i));
+                if (!response.ToLower().Contains("STATUS=S".ToLower()))
+                    return false;
+            }
+
+            //remove cached data for pools
+            networkDevicePools.Remove(networkDevice.Path);
+
+            return true;
+        }
+
         private bool RestartNetworkDevice(DeviceViewModel networkDevice)
         {
             Uri uri = new Uri("http://" + networkDevice.Path);
@@ -8180,6 +8290,21 @@ namespace MultiMiner.Win.Forms
         private void executeCommandToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ExecuteCommandOnSelectedNetworkDevices();
+        }
+
+        private void restartMiningToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            RestartSelectedNetworkDevices();
+        }
+
+        private void startMiningToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StartSelectedNetworkDevices();
+        }
+
+        private void stopMiningToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StopSelectedNetworkDevices();
         }
     }
 }
