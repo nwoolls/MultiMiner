@@ -212,7 +212,10 @@
             this.networkDevicePoolMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.aToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.restartMiningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.miningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.restartMiningToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.startMiningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopMiningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rebootDeviceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.executeCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -550,7 +553,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(883, 111);
-            this.detailsAreaContainer.SplitterDistance = 660;
+            this.detailsAreaContainer.SplitterDistance = 662;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -601,7 +604,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(660, 111);
+            this.deviceListView.Size = new System.Drawing.Size(662, 111);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.deviceListView.TabIndex = 2;
@@ -727,7 +730,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(220, 111);
+            this.detailsControl1.Size = new System.Drawing.Size(218, 111);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -1793,7 +1796,7 @@
             // 
             this.networkDeviceContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.networkDevicePoolMenu,
-            this.restartMiningToolStripMenuItem,
+            this.miningToolStripMenuItem,
             this.rebootDeviceToolStripMenuItem,
             this.executeCommandToolStripMenuItem,
             this.toolStripSeparator5,
@@ -1803,7 +1806,7 @@
             this.adminPageToolStripMenuItem});
             this.networkDeviceContextMenu.Name = "remoteDeviceContextMenu";
             this.networkDeviceContextMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.networkDeviceContextMenu.Size = new System.Drawing.Size(175, 192);
+            this.networkDeviceContextMenu.Size = new System.Drawing.Size(175, 170);
             // 
             // networkDevicePoolMenu
             // 
@@ -1826,12 +1829,36 @@
             this.bToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.bToolStripMenuItem.Text = "B";
             // 
-            // restartMiningToolStripMenuItem
+            // miningToolStripMenuItem
             // 
-            this.restartMiningToolStripMenuItem.Name = "restartMiningToolStripMenuItem";
-            this.restartMiningToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.restartMiningToolStripMenuItem.Text = "Restart Mining";
-            this.restartMiningToolStripMenuItem.Click += new System.EventHandler(this.restartMiningToolStripMenuItem_Click);
+            this.miningToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startMiningToolStripMenuItem,
+            this.stopMiningToolStripMenuItem,
+            this.restartMiningToolStripMenuItem1});
+            this.miningToolStripMenuItem.Name = "miningToolStripMenuItem";
+            this.miningToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.miningToolStripMenuItem.Text = "Mining";
+            // 
+            // restartMiningToolStripMenuItem1
+            // 
+            this.restartMiningToolStripMenuItem1.Name = "restartMiningToolStripMenuItem1";
+            this.restartMiningToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.restartMiningToolStripMenuItem1.Text = "Restart";
+            this.restartMiningToolStripMenuItem1.Click += new System.EventHandler(this.restartMiningToolStripMenuItem1_Click);
+            // 
+            // startMiningToolStripMenuItem
+            // 
+            this.startMiningToolStripMenuItem.Name = "startMiningToolStripMenuItem";
+            this.startMiningToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.startMiningToolStripMenuItem.Text = "Start";
+            this.startMiningToolStripMenuItem.Click += new System.EventHandler(this.startMiningToolStripMenuItem_Click);
+            // 
+            // stopMiningToolStripMenuItem
+            // 
+            this.stopMiningToolStripMenuItem.Name = "stopMiningToolStripMenuItem";
+            this.stopMiningToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stopMiningToolStripMenuItem.Text = "Stop";
+            this.stopMiningToolStripMenuItem.Click += new System.EventHandler(this.stopMiningToolStripMenuItem_Click);
             // 
             // rebootDeviceToolStripMenuItem
             // 
@@ -2194,7 +2221,6 @@
         private System.Windows.Forms.ToolStripMenuItem networkDevicePoolMenu;
         private System.Windows.Forms.ToolStripMenuItem aToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem restartMiningToolStripMenuItem;
         private System.Windows.Forms.DataGridViewTextBoxColumn dateTimeDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn Machine;
         private System.Windows.Forms.DataGridViewTextBoxColumn CoinName;
@@ -2225,6 +2251,10 @@
         private System.Windows.Forms.ToolStripButton processLogSideButton;
         private System.Windows.Forms.ToolStripMenuItem rebootDeviceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem executeCommandToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem miningToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem restartMiningToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem startMiningToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stopMiningToolStripMenuItem;
     }
 }
 
