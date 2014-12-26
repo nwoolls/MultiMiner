@@ -40,10 +40,15 @@ namespace MultiMiner.Utility.Serialization
             {
                 File.AppendAllText(logFilePath, jsonData + Environment.NewLine);
             }
-            //System.IO.IOException: The process cannot access the file 'ABC' because it is being used by another process.
-            catch (IOException)
+            catch (Exception ex)
             {
-                return false;
+                if ((ex is IOException) || (ex is UnauthorizedAccessException))
+                {
+                    //System.IO.IOException: The process cannot access the file 'ABC' because it is being used by another process.
+                    //System.UnauthorizedAccessException: Access to the path 'ABC' is denied.
+                    return false;
+                }
+                throw;
             }
 
             return true;
