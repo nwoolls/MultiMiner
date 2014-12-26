@@ -5,7 +5,6 @@ using MultiMiner.Utility.Net;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Text;
 
 namespace MultiMiner.Blockchain
@@ -14,10 +13,10 @@ namespace MultiMiner.Blockchain
     {
         public IEnumerable<ExchangeInformation> GetExchangeInformation()
         {
-            WebClient webClient = new ApiWebClient();
+            ApiWebClient webClient = new ApiWebClient();
             webClient.Encoding = Encoding.UTF8;
 
-            string response = webClient.DownloadString(new Uri(GetApiUrl()));
+            string response = webClient.DownloadFlakyString(new Uri(GetApiUrl()));
 
             Dictionary<string, TickerEntry> tickerEntries = JsonConvert.DeserializeObject<Dictionary<string, TickerEntry>>(response);
 
@@ -46,7 +45,7 @@ namespace MultiMiner.Blockchain
         {
             //use HTTP as HTTPS is down at times and returns:
             //The request was aborted: Could not create SSL/TLS secure channel.
-            return "http://blockchain.info/ticker";
+            return "https://blockchain.info/ticker";
         }
 
         public string GetApiName()
