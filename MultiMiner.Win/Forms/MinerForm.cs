@@ -2872,11 +2872,11 @@ namespace MultiMiner.Win.Forms
 
         private void deviceListView_AfterLabelEdit(object sender, LabelEditEventArgs e)
         {
+            editingDeviceListView = false; //no returns before this
+
             if (e.Label == null)
                 //edit was canceled
                 return;
-
-            editingDeviceListView = false;
 
             ListViewItem editItem = deviceListView.Items[e.Item];
             DeviceViewModel deviceViewModel = (DeviceViewModel)editItem.Tag;
