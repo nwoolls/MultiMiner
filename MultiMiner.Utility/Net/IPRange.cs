@@ -18,6 +18,12 @@ namespace MultiMiner.Utility.Net
                 throw new ArgumentException();
         }
 
+        public IPRange(IPAddress startingIp, IPAddress endingIp)
+        {
+            beginIp = startingIp.GetAddressBytes();
+            endIp = endingIp.GetAddressBytes();
+        }
+
         public IEnumerable<IPAddress> GetIPAddresses()
         {
             int capacity = 1;

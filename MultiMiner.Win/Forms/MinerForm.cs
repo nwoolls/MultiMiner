@@ -1767,16 +1767,16 @@ namespace MultiMiner.Win.Forms
 
         private void FindNetworkDevices()
         {
-            List<string> localIpRanges = Utility.Net.LocalNetwork.GetLocalIPAddressRanges();
+            List<Utility.Net.LocalNetwork.NetworkInterfaceInfo> localIpRanges = Utility.Net.LocalNetwork.GetLocalNetworkInterfaces();
             if (localIpRanges.Count == 0)
                 return; //no network connection
 
             const int startingPort = 4028;
             const int endingPort = 4030;
 
-            foreach (string localIpRange in localIpRanges)
+            foreach (Utility.Net.LocalNetwork.NetworkInterfaceInfo interfaceInfo in localIpRanges)
             {
-                List<IPEndPoint> miners = MinerFinder.Find(localIpRange, startingPort, endingPort);
+                List<IPEndPoint> miners = MinerFinder.Find(interfaceInfo.RangeStart, interfaceInfo.RangeEnd, startingPort, endingPort);
 
                 //remove own miners
                 miners.RemoveAll(m => Utility.Net.LocalNetwork.GetLocalIPAddresses().Contains(m.Address.ToString()));
