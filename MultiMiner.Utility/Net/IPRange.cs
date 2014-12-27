@@ -6,8 +6,8 @@ namespace MultiMiner.Utility.Net
 {
     public class IPRange
     {
-        private byte[] beginIP;
-        private byte[] endIP;
+        private byte[] beginIp;
+        private byte[] endIp;
 
         public IPRange(string ipRange)
         {
@@ -22,14 +22,14 @@ namespace MultiMiner.Utility.Net
         {
             int capacity = 1;
             for (int i = 0; i < 4; i++)
-                capacity *= endIP[i] - beginIP[i] + 1;
+                capacity *= endIp[i] - beginIp[i] + 1;
 
             List<IPAddress> ips = new List<IPAddress>(capacity);
-            for (int i0 = beginIP[0]; i0 <= endIP[0]; i0++)
-                for (int i1 = beginIP[1]; i1 <= endIP[1]; i1++)
-                    for (int i2 = beginIP[2]; i2 <= endIP[2]; i2++)
-                        for (int i3 = beginIP[3]; i3 <= endIP[3]; i3++)
-                            ips.Add(new IPAddress(new byte[] { (byte)i0, (byte)i1, (byte)i2, (byte)i3 }));
+            for (int i = beginIp[0]; i <= endIp[0]; i++)
+                for (int j = beginIp[1]; j <= endIp[1]; j++)
+                    for (int k = beginIp[2]; k <= endIp[2]; k++)
+                        for (int l = beginIp[3]; l <= endIp[3]; l++)
+                            ips.Add(new IPAddress(new byte[] { (byte)i, (byte)j, (byte)k, (byte)l }));
 
             return ips;
         }
@@ -68,13 +68,13 @@ namespace MultiMiner.Utility.Net
                 ip2 = (ip2 << 1) + 1;
             }
 
-            beginIP = new byte[4];
-            endIP = new byte[4];
+            beginIp = new byte[4];
+            endIp = new byte[4];
 
             for (int i = 0; i < 4; i++)
             {
-                beginIP[i] = (byte)((ip1 >> (3 - i) * 8) & 255);
-                endIP[i] = (byte)((ip2 >> (3 - i) * 8) & 255);
+                beginIp[i] = (byte)((ip1 >> (3 - i) * 8) & 255);
+                endIp[i] = (byte)((ip2 >> (3 - i) * 8) & 255);
             }
 
             return true;
@@ -89,8 +89,8 @@ namespace MultiMiner.Utility.Net
         {
             String[] ipParts = ipRange.Split('.');
 
-            beginIP = new byte[4];
-            endIP = new byte[4];
+            beginIp = new byte[4];
+            endIp = new byte[4];
             for (int i = 0; i < 4; i++)
             {
                 string[] rangeParts = ipParts[i].Split('-');
@@ -98,8 +98,8 @@ namespace MultiMiner.Utility.Net
                 if (rangeParts.Length < 1 || rangeParts.Length > 2)
                     return false;
 
-                beginIP[i] = byte.Parse(rangeParts[0]);
-                endIP[i] = (rangeParts.Length == 1) ? beginIP[i] : byte.Parse(rangeParts[1]);
+                beginIp[i] = byte.Parse(rangeParts[0]);
+                endIp[i] = (rangeParts.Length == 1) ? beginIp[i] : byte.Parse(rangeParts[1]);
             }
 
             return true;
