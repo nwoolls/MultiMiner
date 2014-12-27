@@ -8,17 +8,17 @@ namespace MultiMiner.Utility.Net
 {
     public class PortScanner
     {
-        public static List<IPEndPoint> Find(string ipRange, int startingPort, int endingPort, int connectTimeout = 100)
+        public static List<IPEndPoint> Find(IPAddress startingIp, IPAddress endingIp, int startingPort, int endingPort, int connectTimeout = 100)
         {
             if (startingPort > endingPort)
                 throw new ArgumentException();
 
             List<IPEndPoint> endpoints = new List<IPEndPoint>();
 
-            List<IPAddress> ipAddresses = new IPRange(ipRange).GetIPAddresses().ToList();
+            List<IPAddress> ipAddresses = new IPRange(startingIp, endingIp).GetIPAddresses().ToList();
 
             //optimize until we need otherwise
-            ipAddresses.RemoveAll(ip => LocalNetwork.GetLocalIPAddresses().Contains(ip.Address.ToString()));
+            ipAddresses.RemoveAll(ip => LocalNetwork.GetLocalIPAddresses().Contains(ip.ToString()));
             ipAddresses.RemoveAll(ip => ip.ToString().EndsWith(".0"));
 
             foreach (IPAddress ipAddress in ipAddresses)

@@ -8,12 +8,12 @@ namespace MultiMiner.Xgminer.Discovery
 {
     public class MinerFinder
     {
-        public static List<IPEndPoint> Find(string ipRange, int startingPort, int endingPort)
+        public static List<IPEndPoint> Find(IPAddress startingIp, IPAddress endingIp, int startingPort, int endingPort)
         {
             if (startingPort > endingPort)
                 throw new ArgumentException();
 
-            List<IPEndPoint> endpoints = PortScanner.Find(ipRange, startingPort, endingPort);
+            List<IPEndPoint> endpoints = PortScanner.Find(startingIp, endingIp, startingPort, endingPort);
             List<IPEndPoint> miners = new List<IPEndPoint>();
 
             foreach (IPEndPoint ipEndpoint in endpoints)
