@@ -67,15 +67,7 @@ namespace MultiMiner.Win.Forms
         private Dictionary<string, double> minerNetworkDifficulty = new Dictionary<string, double>();
         private readonly Dictionary<MinerProcess, List<DeviceDetails>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetails>>();
         private readonly List<DeviceInformation> allDeviceInformation = new List<DeviceInformation>();
-
-        //configuration
-        private Engine.Data.Configuration.Engine engineConfiguration = new Engine.Data.Configuration.Engine();
-        private UX.Data.Configuration.Application applicationConfiguration = new UX.Data.Configuration.Application();
-        private readonly Paths pathConfiguration = new Paths();
-        private Perks perksConfiguration = new Perks();
-        private NetworkDevices networkDevicesConfiguration = new NetworkDevices();
-        private Metadata metadataConfiguration = new Metadata();
-
+        
         //hardware information
         private List<Xgminer.Data.Device> devices;
         private readonly Dictionary<DeviceViewModel, DeviceDetails> deviceDetailsMapping = new Dictionary<DeviceViewModel, DeviceDetails>();
@@ -129,6 +121,7 @@ namespace MultiMiner.Win.Forms
         //view models
         private MinerFormViewModel localViewModel = new MinerFormViewModel();
         private MinerFormViewModel remoteViewModel = new MinerFormViewModel();
+        private readonly ApplicationViewModel app = new ApplicationViewModel();
         #endregion
 
         #region Constructor
@@ -139,10 +132,10 @@ namespace MultiMiner.Win.Forms
             instancesContainer.Panel1Collapsed = true;
             detailsAreaContainer.Panel2Collapsed = true;
 
-            pathConfiguration.LoadPathConfiguration();
-            applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
+            app.PathConfiguration.LoadPathConfiguration();
+            app.ApplicationConfiguration.LoadApplicationConfiguration(app.PathConfiguration.SharedConfigPath);
 
-            if (applicationConfiguration.StartupMinimized)
+            if (app.ApplicationConfiguration.StartupMinimized)
                 this.WindowState = FormWindowState.Minimized;
         }
         #endregion
@@ -207,10 +200,10 @@ namespace MultiMiner.Win.Forms
 
         private void SetupAccessibleMenu()
         {
-            if (accessibleMenu.Visible != applicationConfiguration.UseAccessibleMenu)
+            if (accessibleMenu.Visible != app.ApplicationConfiguration.UseAccessibleMenu)
             {
-                accessibleMenu.Visible = applicationConfiguration.UseAccessibleMenu;
-                standardToolBar.Visible = !applicationConfiguration.UseAccessibleMenu;
+                accessibleMenu.Visible = app.ApplicationConfiguration.UseAccessibleMenu;
+                standardToolBar.Visible = !app.ApplicationConfiguration.UseAccessibleMenu;
             }
         }
 
@@ -275,7 +268,7 @@ namespace MultiMiner.Win.Forms
             deviceTotalLabel.AutoSize = true;
             deviceTotalLabel.Padding = new Padding(12, 0, 0, 0);
 
-            strategyCountdownLabel.Visible = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
+            strategyCountdownLabel.Visible = app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
         }
         #endregion
 
@@ -283,16 +276,16 @@ namespace MultiMiner.Win.Forms
         private void ApplyModelsToViewModel()
         {
             ApplyDevicesToViewModel();
-            localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
-                engineConfiguration.CoinConfigurations);
+            localViewModel.ApplyDeviceConfigurationModels(app.EngineConfiguration.DeviceConfigurations,
+                app.EngineConfiguration.CoinConfigurations);
             ApplyCoinInformationToViewModel();
-            localViewModel.ApplyCoinConfigurationModels(engineConfiguration.CoinConfigurations);
+            localViewModel.ApplyCoinConfigurationModels(app.EngineConfiguration.CoinConfigurations);
         }
 
         private void ApplyDevicesToViewModel()
         {
             //ApplyDeviceModels() ensures we have a 1-to-1 with listview items
-            localViewModel.ApplyDeviceModels(devices, networkDevicesConfiguration.Devices, metadataConfiguration.Devices);
+            localViewModel.ApplyDeviceModels(devices, app.NetworkDevicesConfiguration.Devices, app.MetadataConfiguration.Devices);
         }
 
         private void ApplyCoinInformationToViewModel()
@@ -321,7 +314,7 @@ namespace MultiMiner.Win.Forms
                     deviceListView.Items.RemoveAt(i);
 
                 //Network Device detection disabled
-                if (!applicationConfiguration.NetworkDeviceDetection && (listModel.Kind == DeviceKind.NET))
+                if (!app.ApplicationConfiguration.NetworkDeviceDetection && (listModel.Kind == DeviceKind.NET))
                     deviceListView.Items.RemoveAt(i);
             }
         }
@@ -433,7 +426,7 @@ namespace MultiMiner.Win.Forms
             {
                 try
                 {
-                    utilityColumnHeader.Text = applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
+                    utilityColumnHeader.Text = app.ApplicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility";
                 }
                 catch (InvalidOperationException)
                 {
@@ -481,7 +474,7 @@ namespace MultiMiner.Win.Forms
                 return;
 
             //Network Devices disabled
-            if (!applicationConfiguration.NetworkDeviceDetection &&
+            if (!app.ApplicationConfiguration.NetworkDeviceDetection &&
                 (deviceViewModel.Kind == DeviceKind.NET))
                 return;
 
@@ -555,7 +548,7 @@ namespace MultiMiner.Win.Forms
                     listViewItem.SubItems["Price"].Text = String.Format("{0} {1}", deviceViewModel.Price.ToFriendlyString(), unit);
 
                     //check .Mining to allow perks for Remoting when local PC is not mining
-                    if ((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowExchangeRates
+                    if ((miningEngine.Donating || !miningEngine.Mining) && app.PerksConfiguration.ShowExchangeRates
                     //ensure Exchange prices are available:
                     && (sellPrices != null))
                     {
@@ -570,7 +563,7 @@ namespace MultiMiner.Win.Forms
                     }
                 }
 
-                switch (engineConfiguration.StrategyConfiguration.ProfitabilityKind)
+                switch (app.EngineConfiguration.StrategyConfiguration.ProfitabilityKind)
                 {
                     case Strategy.CoinProfitabilityKind.AdjustedProfitability:
                         listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AdjustedProfitability, 2) + "%";
@@ -602,7 +595,7 @@ namespace MultiMiner.Win.Forms
             listViewItem.SubItems["Errors"].Text = deviceViewModel.HardwareErrorsPercent >= 0.05 ? deviceViewModel.HardwareErrorsPercent.ToString("0.#") + "%" : String.Empty;
             listViewItem.SubItems["Accepted"].Text = deviceViewModel.AcceptedShares > 0 ? deviceViewModel.AcceptedShares.ToString() : String.Empty;
 
-            if (applicationConfiguration.ShowWorkUtility)
+            if (app.ApplicationConfiguration.ShowWorkUtility)
                 listViewItem.SubItems[utilityColumnHeader.Text].Text = deviceViewModel.WorkUtility > 0.00 ? deviceViewModel.WorkUtility.ToString("0.###") : String.Empty;
             else
                 listViewItem.SubItems[utilityColumnHeader.Text].Text = deviceViewModel.Utility > 0.00 ? deviceViewModel.Utility.ToString("0.###") : String.Empty;
@@ -629,10 +622,10 @@ namespace MultiMiner.Win.Forms
         private void SaveChangesLocally()
         {
             SaveViewModelValuesToConfiguration();
-            engineConfiguration.SaveDeviceConfigurations();
+            app.EngineConfiguration.SaveDeviceConfigurations();
 
-            localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
-                engineConfiguration.CoinConfigurations);
+            localViewModel.ApplyDeviceConfigurationModels(app.EngineConfiguration.DeviceConfigurations,
+                app.EngineConfiguration.CoinConfigurations);
 
             SetHasChangesLocally(false);
 
@@ -657,10 +650,10 @@ namespace MultiMiner.Win.Forms
         }
         private void CancelChangesLocally()
         {
-            engineConfiguration.LoadDeviceConfigurations();
+            app.EngineConfiguration.LoadDeviceConfigurations();
 
-            localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
-                engineConfiguration.CoinConfigurations);
+            localViewModel.ApplyDeviceConfigurationModels(app.EngineConfiguration.DeviceConfigurations,
+                app.EngineConfiguration.CoinConfigurations);
 
             RefreshListViewFromViewModel();
 
@@ -734,7 +727,7 @@ namespace MultiMiner.Win.Forms
 
             DeviceViewModel selectedDevice = (DeviceViewModel)deviceListView.SelectedItems[0].Tag;
 
-            detailsControl1.InspectDetails(selectedDevice, applicationConfiguration.ShowWorkUtility);
+            detailsControl1.InspectDetails(selectedDevice, app.ApplicationConfiguration.ShowWorkUtility);
         }
 
         private void RefreshCoinPopupMenu()
@@ -800,7 +793,7 @@ namespace MultiMiner.Win.Forms
 
         private void UpdateUtilityColumnHeader()
         {
-            ChangeSubItemText(deviceListView, utilityColumnHeader, applicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility");
+            ChangeSubItemText(deviceListView, utilityColumnHeader, app.ApplicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility");
         }
 
         private void ChangeSubItemText(ListView listView, ColumnHeader columnHeader, string caption)
@@ -824,7 +817,7 @@ namespace MultiMiner.Win.Forms
                 string columnText = column.Text;
 
                 ToolStripMenuItem menuItem = (ToolStripMenuItem)columnHeaderMenu.Items.Add(columnText);
-                menuItem.Checked = !applicationConfiguration.HiddenColumns.Contains(columnText);
+                menuItem.Checked = !app.ApplicationConfiguration.HiddenColumns.Contains(columnText);
 
                 menuItem.Click += ColumnHeaderMenuClick;
             }
@@ -886,7 +879,7 @@ namespace MultiMiner.Win.Forms
                     {
                         ColumnHeader column = deviceListView.Columns[i];
 
-                        if (applicationConfiguration.HiddenColumns.Contains(column.Text))
+                        if (app.ApplicationConfiguration.HiddenColumns.Contains(column.Text))
                         {
                             SetColumWidth(column, 0);
                             continue;
@@ -923,9 +916,9 @@ namespace MultiMiner.Win.Forms
         {
             if (this.successfulApiContext != null)
                 return this.successfulApiContext;
-            else if (this.applicationConfiguration.UseCoinWarzApi)
+            else if (this.app.ApplicationConfiguration.UseCoinWarzApi)
                 return this.coinWarzApiContext;
-            else if (this.applicationConfiguration.UseWhatMineApi)
+            else if (this.app.ApplicationConfiguration.UseWhatMineApi)
                 return this.whatMineApiContext;
             else
                 return this.coinChooseApiContext;
@@ -1078,7 +1071,7 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshStrategiesLabel()
         {
-            if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+            if (app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
                 strategiesLabel.Text = " Strategies: enabled";
             else
                 strategiesLabel.Text = " Strategies: disabled";
@@ -1087,7 +1080,7 @@ namespace MultiMiner.Win.Forms
         private void RefreshStrategiesCountdown()
         {
             //Time until strategy check: 60s
-            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+            if (miningEngine.Mining && app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
                 strategyCountdownLabel.Text = string.Format("Time until strategy check: {0}m", coinStatsCountdownMinutes);
             else
                 strategyCountdownLabel.Text = "";
@@ -1096,7 +1089,7 @@ namespace MultiMiner.Win.Forms
         private void RemoveInvalidCoinValuesFromListView()
         {
             foreach (ListViewItem item in deviceListView.Items)
-                if (engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.PoolGroup.Name.Equals(item.SubItems["Coin"].Text)) == null)
+                if (app.EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.Enabled && c.PoolGroup.Name.Equals(item.SubItems["Coin"].Text)) == null)
                     item.SubItems["Coin"].Text = String.Empty;
 
             ClearCoinStatsForDisabledCoins();
@@ -1145,7 +1138,7 @@ namespace MultiMiner.Win.Forms
                 return;
 
             //check .Mining to allow perks for Remoting when local PC is not mining
-            if (!((miningEngine.Donating || !miningEngine.Mining) && perksConfiguration.ShowIncomeRates))
+            if (!((miningEngine.Donating || !miningEngine.Mining) && app.PerksConfiguration.ShowIncomeRates))
                 return;
 
             if (coinApiInformation == null)
@@ -1182,7 +1175,7 @@ namespace MultiMiner.Win.Forms
                     deviceViewModel.Daily = info.Price * deviceViewModel.CurrentHashrate / 1000 / 1000;
                 }
 
-                if (perksConfiguration.ShowExchangeRates && perksConfiguration.ShowIncomeInUsd)
+                if (app.PerksConfiguration.ShowExchangeRates && app.PerksConfiguration.ShowIncomeInUsd)
                 {
                     double exchangeRate = exchangeInformation.ExchangeRate;
                     if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
@@ -1232,7 +1225,7 @@ namespace MultiMiner.Win.Forms
 
             //check .Mining to allow perks for Remoting when local PC is not mining
             if ((!miningEngine.Donating && miningEngine.Mining)
-                || !perksConfiguration.ShowIncomeRates)
+                || !app.PerksConfiguration.ShowIncomeRates)
             {
                 incomeSummaryLabel.Text = "";
                 return;
@@ -1274,7 +1267,7 @@ namespace MultiMiner.Win.Forms
                 {
                     summary = summary.Remove(summary.Length - addition.Length, addition.Length); //remove trailing " + "
 
-                    if (perksConfiguration.ShowExchangeRates)
+                    if (app.PerksConfiguration.ShowExchangeRates)
                         summary = String.Format("{0} = {1}{2} / day", summary, usdSymbol, usdTotal.ToFriendlyString(true));
 
                     incomeSummaryLabel.Text = summary;
@@ -1398,19 +1391,19 @@ namespace MultiMiner.Win.Forms
 
         private void ConfigureSettingsLocally()
         {
-            bool oldNetworkDeviceDetection = applicationConfiguration.NetworkDeviceDetection;
-            bool oldCoinWarzValue = applicationConfiguration.UseCoinWarzApi;
-            bool oldWhatMineValue = applicationConfiguration.UseWhatMineApi;
-            string oldCoinWarzKey = applicationConfiguration.CoinWarzApiKey;
-            string oldWhatMineKey = applicationConfiguration.WhatMineApiKey;
+            bool oldNetworkDeviceDetection = app.ApplicationConfiguration.NetworkDeviceDetection;
+            bool oldCoinWarzValue = app.ApplicationConfiguration.UseCoinWarzApi;
+            bool oldWhatMineValue = app.ApplicationConfiguration.UseWhatMineApi;
+            string oldCoinWarzKey = app.ApplicationConfiguration.CoinWarzApiKey;
+            string oldWhatMineKey = app.ApplicationConfiguration.WhatMineApiKey;
 
-            string oldConfigPath = pathConfiguration.SharedConfigPath;
+            string oldConfigPath = app.PathConfiguration.SharedConfigPath;
 
             SettingsForm settingsForm = new SettingsForm(
-                applicationConfiguration, 
-                engineConfiguration.XgminerConfiguration, 
-                pathConfiguration,
-                perksConfiguration);
+                app.ApplicationConfiguration, 
+                app.EngineConfiguration.XgminerConfiguration, 
+                app.PathConfiguration,
+                app.PerksConfiguration);
 
             DialogResult dialogResult = settingsForm.ShowDialog();
 
@@ -1418,34 +1411,34 @@ namespace MultiMiner.Win.Forms
             {
                 System.Windows.Forms.Application.DoEvents();
 
-                pathConfiguration.SavePathConfiguration();
+                app.PathConfiguration.SavePathConfiguration();
 
                 //save settings as the "shared" config path may have changed
                 //these are settings not considered machine/device-specific
                 //e.g. no device settings, no miner settings
-                string newConfigPath = pathConfiguration.SharedConfigPath;
+                string newConfigPath = app.PathConfiguration.SharedConfigPath;
                 MigrateSettingsToNewFolder(oldConfigPath, newConfigPath);
 
-                applicationConfiguration.SaveApplicationConfiguration(newConfigPath);
-                perksConfiguration.SavePerksConfiguration(newConfigPath);
-                engineConfiguration.SaveCoinConfigurations(newConfigPath);
-                engineConfiguration.SaveStrategyConfiguration(newConfigPath);
-                engineConfiguration.SaveMinerConfiguration();
+                app.ApplicationConfiguration.SaveApplicationConfiguration(newConfigPath);
+                app.PerksConfiguration.SavePerksConfiguration(newConfigPath);
+                app.EngineConfiguration.SaveCoinConfigurations(newConfigPath);
+                app.EngineConfiguration.SaveStrategyConfiguration(newConfigPath);
+                app.EngineConfiguration.SaveMinerConfiguration();
                 MiningEngine.SaveAlgorithmConfigurations();
                 SaveKnownCoinsToFile();
 
                 //don't refresh coin stats excessively
-                if ((oldCoinWarzValue != applicationConfiguration.UseCoinWarzApi) ||
-                    !oldCoinWarzKey.Equals(applicationConfiguration.CoinWarzApiKey) || 
-                    (oldWhatMineValue != applicationConfiguration.UseWhatMineApi) ||
-                    !oldWhatMineKey.Equals(applicationConfiguration.WhatMineApiKey))
+                if ((oldCoinWarzValue != app.ApplicationConfiguration.UseCoinWarzApi) ||
+                    !oldCoinWarzKey.Equals(app.ApplicationConfiguration.CoinWarzApiKey) || 
+                    (oldWhatMineValue != app.ApplicationConfiguration.UseWhatMineApi) ||
+                    !oldWhatMineKey.Equals(app.ApplicationConfiguration.WhatMineApiKey))
                 {
                     SetupCoinApi(); //pickup API key changes
                     RefreshCoinStatsAsync();
                 }
 
                 //if we are not detecting Network Devices, start the async checks
-                if (applicationConfiguration.NetworkDeviceDetection &&
+                if (app.ApplicationConfiguration.NetworkDeviceDetection &&
                     (!oldNetworkDeviceDetection))
                 {
                     CheckNetworkDevicesAsync();
@@ -1461,34 +1454,34 @@ namespace MultiMiner.Win.Forms
             }
             else
             {
-                engineConfiguration.LoadMinerConfiguration();
-                pathConfiguration.LoadPathConfiguration();
-                applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
+                app.EngineConfiguration.LoadMinerConfiguration();
+                app.PathConfiguration.LoadPathConfiguration();
+                app.ApplicationConfiguration.LoadApplicationConfiguration(app.PathConfiguration.SharedConfigPath);
             }
         }
 
         private void UpdateDevicesForProxySettings()
         {
-            DevicesService service = new DevicesService(engineConfiguration.XgminerConfiguration);
+            DevicesService service = new DevicesService(app.EngineConfiguration.XgminerConfiguration);
             service.UpdateDevicesForProxySettings(devices, miningEngine.Mining);
             AddMissingDeviceConfigurations();
         }
 
         private void ConfigureUnconfiguredDevices()
         {
-            foreach (Engine.Data.Configuration.Device deviceConfiguration in engineConfiguration.DeviceConfigurations)
+            foreach (Engine.Data.Configuration.Device deviceConfiguration in app.EngineConfiguration.DeviceConfigurations)
             {
                 bool configured = !String.IsNullOrEmpty(deviceConfiguration.CoinSymbol);
                 bool misConfigured = configured &&
-                    !engineConfiguration.CoinConfigurations.Any(cc => cc.PoolGroup.Id.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+                    !app.EngineConfiguration.CoinConfigurations.Any(cc => cc.PoolGroup.Id.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
 
                 if (!configured || misConfigured)
                 {
                     Engine.Data.Configuration.Coin coinConfiguration = null;
                     if (deviceConfiguration.Kind == DeviceKind.GPU)
-                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.PoolGroup.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase));
+                        coinConfiguration = app.EngineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.PoolGroup.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase));
                     if (coinConfiguration == null)
-                        coinConfiguration = engineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.PoolGroup.Algorithm.Equals(AlgorithmNames.SHA256, StringComparison.OrdinalIgnoreCase));
+                        coinConfiguration = app.EngineConfiguration.CoinConfigurations.FirstOrDefault(cc => cc.PoolGroup.Algorithm.Equals(AlgorithmNames.SHA256, StringComparison.OrdinalIgnoreCase));
 
                     if (coinConfiguration != null)
                         deviceConfiguration.CoinSymbol = coinConfiguration.PoolGroup.Id;
@@ -1498,10 +1491,10 @@ namespace MultiMiner.Win.Forms
 
         private void FixMisconfiguredDevices()
         {
-            foreach (Engine.Data.Configuration.Device deviceConfiguration in engineConfiguration.DeviceConfigurations)
+            foreach (Engine.Data.Configuration.Device deviceConfiguration in app.EngineConfiguration.DeviceConfigurations)
             {
                 bool misconfigured = !String.IsNullOrEmpty(deviceConfiguration.CoinSymbol) &&
-                    !engineConfiguration.CoinConfigurations.Any(cc => cc.PoolGroup.Id.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+                    !app.EngineConfiguration.CoinConfigurations.Any(cc => cc.PoolGroup.Id.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
 
                 if (misconfigured)
                     deviceConfiguration.CoinSymbol = String.Empty;
@@ -1512,7 +1505,7 @@ namespace MultiMiner.Win.Forms
         {
             System.Windows.Forms.Application.DoEvents();
 
-            if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
+            if (app.PerksConfiguration.PerksEnabled && app.PerksConfiguration.ShowExchangeRates)
                 RefreshExchangeRates();
 
             RefreshListViewFromViewModel();
@@ -1535,7 +1528,7 @@ namespace MultiMiner.Win.Forms
             SetupAccessibleMenu();
             SetGpuEnvironmentVariables();
 
-            localViewModel.DynamicIntensity = engineConfiguration.XgminerConfiguration.DesktopMode;
+            localViewModel.DynamicIntensity = app.EngineConfiguration.XgminerConfiguration.DesktopMode;
             dynamicIntensityButton.Checked = localViewModel.DynamicIntensity;
 
             System.Windows.Forms.Application.DoEvents();
@@ -1559,7 +1552,7 @@ namespace MultiMiner.Win.Forms
             ObjectCopier.CopyObject(this.remoteApplicationConfig.ToModelObject(), workingApplicationConfiguration);
             ObjectCopier.CopyObject(this.remoteEngineConfig.ToModelObject(), workingEngineConfiguration);
 
-            PoolsForm coinsForm = new PoolsForm(workingEngineConfiguration.CoinConfigurations, knownCoins, workingApplicationConfiguration, perksConfiguration);
+            PoolsForm coinsForm = new PoolsForm(workingEngineConfiguration.CoinConfigurations, knownCoins, workingApplicationConfiguration, app.PerksConfiguration);
             coinsForm.Text = String.Format("{0}: {1}", coinsForm.Text, this.selectedRemoteInstance.MachineName);
             DialogResult dialogResult = coinsForm.ShowDialog();
 
@@ -1569,23 +1562,23 @@ namespace MultiMiner.Win.Forms
                 ObjectCopier.CopyObject(workingEngineConfiguration.ToTransferObject(), this.remoteEngineConfig);
                 SetConfigurationRemotely(this.selectedRemoteInstance, this.remoteApplicationConfig, this.remoteEngineConfig, null, null);
 
-                if (applicationConfiguration.SaveCoinsToAllMachines && perksConfiguration.PerksEnabled && perksConfiguration.EnableRemoting)
+                if (app.ApplicationConfiguration.SaveCoinsToAllMachines && app.PerksConfiguration.PerksEnabled && app.PerksConfiguration.EnableRemoting)
                     SetCoinConfigurationOnAllRigs(this.remoteEngineConfig.CoinConfigurations);
             }
         }
 
         private void ConfigureCoinsLocally()
         {
-            PoolsForm coinsForm = new PoolsForm(engineConfiguration.CoinConfigurations, knownCoins, applicationConfiguration, perksConfiguration);
+            PoolsForm coinsForm = new PoolsForm(app.EngineConfiguration.CoinConfigurations, knownCoins, app.ApplicationConfiguration, app.PerksConfiguration);
             DialogResult dialogResult = coinsForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 FixMisconfiguredDevices();
                 ConfigureUnconfiguredDevices();
 
-                engineConfiguration.SaveCoinConfigurations();
-                engineConfiguration.SaveDeviceConfigurations();
-                applicationConfiguration.SaveApplicationConfiguration();
+                app.EngineConfiguration.SaveCoinConfigurations();
+                app.EngineConfiguration.SaveDeviceConfigurations();
+                app.ApplicationConfiguration.SaveApplicationConfiguration();
 
                 //may be able to auto-assign more devices now that coins are setup
                 AddMissingDeviceConfigurations();
@@ -1595,32 +1588,32 @@ namespace MultiMiner.Win.Forms
 
                 SubmitMobileMinerPools();
 
-                if (applicationConfiguration.SaveCoinsToAllMachines && perksConfiguration.PerksEnabled && perksConfiguration.EnableRemoting)
-                    SetCoinConfigurationOnAllRigs(this.engineConfiguration.CoinConfigurations.ToArray());
+                if (app.ApplicationConfiguration.SaveCoinsToAllMachines && app.PerksConfiguration.PerksEnabled && app.PerksConfiguration.EnableRemoting)
+                    SetCoinConfigurationOnAllRigs(this.app.EngineConfiguration.CoinConfigurations.ToArray());
             }
             else
             {
-                engineConfiguration.LoadCoinConfigurations(pathConfiguration.SharedConfigPath);
-                applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
+                app.EngineConfiguration.LoadCoinConfigurations(app.PathConfiguration.SharedConfigPath);
+                app.ApplicationConfiguration.LoadApplicationConfiguration(app.PathConfiguration.SharedConfigPath);
             }
         }
 
         private void ConfigureStrategiesLocally()
         {
-            StrategiesForm strategiesForm = new StrategiesForm(engineConfiguration.StrategyConfiguration, knownCoins,
-                applicationConfiguration);
+            StrategiesForm strategiesForm = new StrategiesForm(app.EngineConfiguration.StrategyConfiguration, knownCoins,
+                app.ApplicationConfiguration);
             DialogResult dialogResult = strategiesForm.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                engineConfiguration.SaveStrategyConfiguration();
-                applicationConfiguration.SaveApplicationConfiguration();
+                app.EngineConfiguration.SaveStrategyConfiguration();
+                app.ApplicationConfiguration.SaveApplicationConfiguration();
 
                 RefreshViewForConfigurationChanges();
             }
             else
             {
-                engineConfiguration.LoadStrategyConfiguration(pathConfiguration.SharedConfigPath);
-                applicationConfiguration.LoadApplicationConfiguration(pathConfiguration.SharedConfigPath);
+                app.EngineConfiguration.LoadStrategyConfiguration(app.PathConfiguration.SharedConfigPath);
+                app.ApplicationConfiguration.LoadApplicationConfiguration(app.PathConfiguration.SharedConfigPath);
             }
         }
 
@@ -1685,70 +1678,70 @@ namespace MultiMiner.Win.Forms
 
         private void ConfigurePerksLocally()
         {
-            PerksForm perksForm = new PerksForm(perksConfiguration);
+            PerksForm perksForm = new PerksForm(app.PerksConfiguration);
             DialogResult dialogResult = perksForm.ShowDialog();
 
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 bool miningWithMultipleProxies = miningEngine.Mining && (devices.Count(d => d.Kind == DeviceKind.PXY) > 1);
-                if (!perksConfiguration.PerksEnabled && miningWithMultipleProxies)
+                if (!app.PerksConfiguration.PerksEnabled && miningWithMultipleProxies)
                     throw new Exception(MiningEngine.AdvancedProxiesRequirePerksMessage);
 
-                perksConfiguration.SavePerksConfiguration();
+                app.PerksConfiguration.SavePerksConfiguration();
 
                 RefreshViewForConfigurationChanges();
             }
             else
-                perksConfiguration.LoadPerksConfiguration(pathConfiguration.SharedConfigPath);
+                app.PerksConfiguration.LoadPerksConfiguration(app.PathConfiguration.SharedConfigPath);
         }
         #endregion
 
         #region Settings logic
         private void LoadSettings()
         {
-            engineConfiguration.LoadAllConfigurations(pathConfiguration.SharedConfigPath);
+            app.EngineConfiguration.LoadAllConfigurations(app.PathConfiguration.SharedConfigPath);
 
             SetupCoinApi();
 
             RefreshStrategiesLabel();
             RefreshStrategiesCountdown();
 
-            //already done in ctor //applicationConfiguration.LoadApplicationConfiguration();
+            //already done in ctor //app.ApplicationConfiguration.LoadApplicationConfiguration();
 
-            perksConfiguration.LoadPerksConfiguration(pathConfiguration.SharedConfigPath);
+            app.PerksConfiguration.LoadPerksConfiguration(app.PathConfiguration.SharedConfigPath);
             RefreshExchangeRates();
 
-            SetListViewStyle(applicationConfiguration.ListViewStyle);
+            SetListViewStyle(app.ApplicationConfiguration.ListViewStyle);
 
             //load brief mode first, then location
-            SetBriefMode(applicationConfiguration.BriefUserInterface);
+            SetBriefMode(app.ApplicationConfiguration.BriefUserInterface);
 
             //now location so we pick up the customizations
-            if ((applicationConfiguration.AppPosition.Height > 0) &&
-                (applicationConfiguration.AppPosition.Width > 9))
+            if ((app.ApplicationConfiguration.AppPosition.Height > 0) &&
+                (app.ApplicationConfiguration.AppPosition.Width > 9))
             {
-                this.Location = new Point(applicationConfiguration.AppPosition.Left, applicationConfiguration.AppPosition.Top);
-                this.Size = new Size(applicationConfiguration.AppPosition.Width, applicationConfiguration.AppPosition.Height);
+                this.Location = new Point(app.ApplicationConfiguration.AppPosition.Left, app.ApplicationConfiguration.AppPosition.Top);
+                this.Size = new Size(app.ApplicationConfiguration.AppPosition.Width, app.ApplicationConfiguration.AppPosition.Height);
             }
 
-            if (applicationConfiguration.Maximized)
+            if (app.ApplicationConfiguration.Maximized)
                 this.WindowState = FormWindowState.Maximized;
 
             HideAdvancedPanel();
 
             //can't set details container width until it is shown
-            if (applicationConfiguration.InstancesAreaWidth > 0)
-                instancesContainer.SplitterDistance = applicationConfiguration.InstancesAreaWidth;
+            if (app.ApplicationConfiguration.InstancesAreaWidth > 0)
+                instancesContainer.SplitterDistance = app.ApplicationConfiguration.InstancesAreaWidth;
             
             SetupCoinStatsTimer();
 
             ClearPoolsFlaggedDown();
 
             ApplyModelsToViewModel();
-            localViewModel.DynamicIntensity = engineConfiguration.XgminerConfiguration.DesktopMode;
+            localViewModel.DynamicIntensity = app.EngineConfiguration.XgminerConfiguration.DesktopMode;
             dynamicIntensityButton.Checked = localViewModel.DynamicIntensity;
 
-            metadataConfiguration.LoadDeviceMetadataConfiguration();
+            app.MetadataConfiguration.LoadDeviceMetadataConfiguration();
 
             //allow resize/maximize/etc to render
             System.Windows.Forms.Application.DoEvents();
@@ -1757,9 +1750,9 @@ namespace MultiMiner.Win.Forms
         private void SetupNetworkDeviceDetection()
         {
             //network devices
-            this.networkDevicesConfiguration.LoadNetworkDevicesConfiguration();
+            this.app.NetworkDevicesConfiguration.LoadNetworkDevicesConfiguration();
             
-            if (applicationConfiguration.NetworkDeviceDetection)
+            if (app.ApplicationConfiguration.NetworkDeviceDetection)
             {
                 CheckNetworkDevicesAsync();
                 FindNetworkDevicesAsync();
@@ -1787,26 +1780,26 @@ namespace MultiMiner.Win.Forms
                 //merge in miners, don't remove miners here
                 //let CheckNetworkDevices() remove miners since it does not depend on port scanning
                 //some users are manually entering devices in the XML
-                List<NetworkDevices.NetworkDevice> existingDevices = networkDevicesConfiguration.Devices;
+                List<NetworkDevices.NetworkDevice> existingDevices = app.NetworkDevicesConfiguration.Devices;
                 newDevices = newDevices
                     .Where(d1 => !existingDevices.Any(d2 => d2.IPAddress.Equals(d1.IPAddress) && (d2.Port == d1.Port)))
                     .ToList();
-                networkDevicesConfiguration.Devices.AddRange(newDevices);
+                app.NetworkDevicesConfiguration.Devices.AddRange(newDevices);
             }
             
-            networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+            app.NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
 
         private void CheckNetworkDevices()
         {
-            List<IPEndPoint> endpoints = networkDevicesConfiguration.Devices.ToIPEndPoints();
+            List<IPEndPoint> endpoints = app.NetworkDevicesConfiguration.Devices.ToIPEndPoints();
 
             //remove own miners
             endpoints.RemoveAll(m => Utility.Net.LocalNetwork.GetLocalIPAddresses().Contains(m.Address.ToString()));
 
             endpoints = MinerFinder.Check(endpoints);
 
-            List<NetworkDevices.NetworkDevice> existingDevices = networkDevicesConfiguration.Devices;
+            List<NetworkDevices.NetworkDevice> existingDevices = app.NetworkDevicesConfiguration.Devices;
             List<NetworkDevices.NetworkDevice> prunedDevices = endpoints.ToNetworkDevices();
             //add in Sticky devices not already in the pruned devices
             //Sticky devices allow users to mark Network Devices that should never be removed
@@ -1817,12 +1810,12 @@ namespace MultiMiner.Win.Forms
 
             //filter the devices by prunedDevices - do not assign directly as we need to
             //preserve properties on the existing configurations - e.g. Sticky
-            networkDevicesConfiguration.Devices =
-                networkDevicesConfiguration.Devices
+            app.NetworkDevicesConfiguration.Devices =
+                app.NetworkDevicesConfiguration.Devices
                 .Where(ed => prunedDevices.Any(pd => pd.IPAddress.Equals(ed.IPAddress) && (pd.Port == ed.Port)))
                 .ToList();
 
-            networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+            app.NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
 
         private void CheckNetworkDevicesAsync()
@@ -1892,16 +1885,16 @@ namespace MultiMiner.Win.Forms
         {
             SavePosition();
 
-            applicationConfiguration.DetailsAreaWidth = detailsAreaContainer.Width - detailsAreaContainer.SplitterDistance;
-            applicationConfiguration.InstancesAreaWidth = instancesContainer.SplitterDistance;
+            app.ApplicationConfiguration.DetailsAreaWidth = detailsAreaContainer.Width - detailsAreaContainer.SplitterDistance;
+            app.ApplicationConfiguration.InstancesAreaWidth = instancesContainer.SplitterDistance;
 
-            this.applicationConfiguration.SaveApplicationConfiguration();
+            this.app.ApplicationConfiguration.SaveApplicationConfiguration();
         }
 
         private void SavePosition()
         {
             if (this.WindowState == FormWindowState.Normal)
-                this.applicationConfiguration.AppPosition = new Rectangle(this.Location, this.Size);
+                this.app.ApplicationConfiguration.AppPosition = new Rectangle(this.Location, this.Size);
         }
 
         //try to match up devices without configurations with configurations without devices
@@ -1910,14 +1903,14 @@ namespace MultiMiner.Win.Forms
         {
             foreach (Xgminer.Data.Device device in devices)
             {
-                Engine.Data.Configuration.Device existingConfiguration = engineConfiguration.DeviceConfigurations.FirstOrDefault(
+                Engine.Data.Configuration.Device existingConfiguration = app.EngineConfiguration.DeviceConfigurations.FirstOrDefault(
                     c => (c.Equals(device)));
 
                 //if there is no configuration specifically for the device
                 if (existingConfiguration == null)
                 {
                     //find a configuration that uses the same driver and that, itself, has no specifically matching device
-                    Engine.Data.Configuration.Device orphanedConfiguration = engineConfiguration.DeviceConfigurations.FirstOrDefault(
+                    Engine.Data.Configuration.Device orphanedConfiguration = app.EngineConfiguration.DeviceConfigurations.FirstOrDefault(
                         c => c.Driver.Equals(device.Driver, StringComparison.OrdinalIgnoreCase) &&
                                 !devices.Exists(d => d.Equals(c)));
 
@@ -1932,7 +1925,7 @@ namespace MultiMiner.Win.Forms
         //for instance if the user starts up the app with missing devices
         private void RemoveExcessDeviceConfigurations()
         {
-            engineConfiguration.DeviceConfigurations.RemoveAll(c => !devices.Exists(d => d.Equals(c)));
+            app.EngineConfiguration.DeviceConfigurations.RemoveAll(c => !devices.Exists(d => d.Equals(c)));
         }
 
         //each device needs to have a DeviceConfiguration
@@ -1940,12 +1933,12 @@ namespace MultiMiner.Win.Forms
         //for instance if the user starts up the app with a new device
         private void AddMissingDeviceConfigurations()
         {
-            bool hasBtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.PoolGroup.Id.Equals(KnownCoins.BitcoinSymbol, StringComparison.OrdinalIgnoreCase));
-            bool hasLtcConfigured = engineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.PoolGroup.Id.Equals(KnownCoins.LitecoinSymbol, StringComparison.OrdinalIgnoreCase));
+            bool hasBtcConfigured = app.EngineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.PoolGroup.Id.Equals(KnownCoins.BitcoinSymbol, StringComparison.OrdinalIgnoreCase));
+            bool hasLtcConfigured = app.EngineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.PoolGroup.Id.Equals(KnownCoins.LitecoinSymbol, StringComparison.OrdinalIgnoreCase));
 
             foreach (Xgminer.Data.Device device in devices)
             {
-                Engine.Data.Configuration.Device existingConfiguration = engineConfiguration.DeviceConfigurations.FirstOrDefault(
+                Engine.Data.Configuration.Device existingConfiguration = app.EngineConfiguration.DeviceConfigurations.FirstOrDefault(
                     c => (c.Equals(device)));
                 if (existingConfiguration == null)
                 {
@@ -1962,7 +1955,7 @@ namespace MultiMiner.Win.Forms
                     //don't enable newly added Proxies if we're mining
                     newConfiguration.Enabled = (device.Kind != DeviceKind.PXY) || (!miningEngine.Mining);
 
-                    engineConfiguration.DeviceConfigurations.Add(newConfiguration);
+                    app.EngineConfiguration.DeviceConfigurations.Add(newConfiguration);
                 }
             }
         }
@@ -1972,7 +1965,7 @@ namespace MultiMiner.Win.Forms
             bool result = deviceConfiguration.Enabled && !string.IsNullOrEmpty(deviceConfiguration.CoinSymbol);
             if (result)
             {
-                Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.PoolGroup.Id.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+                Engine.Data.Configuration.Coin coinConfiguration = app.EngineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.PoolGroup.Id.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
                 result = coinConfiguration == null ? false : coinConfiguration.Pools.Where(p => !String.IsNullOrEmpty(p.Host) && !String.IsNullOrEmpty(p.Username)).Count() > 0;
             }
             return result;
@@ -1980,13 +1973,13 @@ namespace MultiMiner.Win.Forms
 
         private bool MiningConfigurationValid()
         {
-            bool miningConfigurationValid = engineConfiguration.DeviceConfigurations.Count(
+            bool miningConfigurationValid = app.EngineConfiguration.DeviceConfigurations.Count(
                 c => DeviceConfigurationValid(c)) > 0;
             if (!miningConfigurationValid)
             {
-                miningConfigurationValid = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
-                    (engineConfiguration.CoinConfigurations.Count(c => c.Enabled) > 0) &&
-                    (engineConfiguration.DeviceConfigurations.Count(c => c.Enabled) > 0);
+                miningConfigurationValid = app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
+                    (app.EngineConfiguration.CoinConfigurations.Count(c => c.Enabled) > 0) &&
+                    (app.EngineConfiguration.DeviceConfigurations.Count(c => c.Enabled) > 0);
             }
             return miningConfigurationValid;
         }
@@ -2000,7 +1993,7 @@ namespace MultiMiner.Win.Forms
                 (miningDeviceConfigurations != null))
                 deviceConfiguration = miningDeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
             else
-                deviceConfiguration = engineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+                deviceConfiguration = app.EngineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
 
             if (deviceConfiguration == null)
                 return null;
@@ -2013,7 +2006,7 @@ namespace MultiMiner.Win.Forms
                 (miningCoinConfigurations != null))
                 configurations = this.miningCoinConfigurations;
             else
-                configurations = engineConfiguration.CoinConfigurations;
+                configurations = app.EngineConfiguration.CoinConfigurations;
 
             Engine.Data.Configuration.Coin coinConfiguration = configurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(itemCoinSymbol, StringComparison.OrdinalIgnoreCase));
             return coinConfiguration;
@@ -2068,10 +2061,10 @@ namespace MultiMiner.Win.Forms
         private string KnownCoinsFileName()
         {
             string filePath;
-            if (String.IsNullOrEmpty(pathConfiguration.SharedConfigPath))
+            if (String.IsNullOrEmpty(app.PathConfiguration.SharedConfigPath))
                 filePath = ApplicationPaths.AppDataPath();
             else
-                filePath = pathConfiguration.SharedConfigPath;
+                filePath = app.PathConfiguration.SharedConfigPath;
             return Path.Combine(filePath, "KnownCoinsCache.xml");
         }
 
@@ -2100,7 +2093,7 @@ namespace MultiMiner.Win.Forms
 
         private void SaveViewModelValuesToConfiguration()
         {
-            engineConfiguration.DeviceConfigurations.Clear();
+            app.EngineConfiguration.DeviceConfigurations.Clear();
 
             foreach (Xgminer.Data.Device device in devices)
             {
@@ -2114,7 +2107,7 @@ namespace MultiMiner.Win.Forms
                 deviceConfiguration.Assign(viewModel);
                 deviceConfiguration.Enabled = viewModel.Enabled;
                 deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Id;
-                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+                app.EngineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
         }
         #endregion
@@ -2142,7 +2135,7 @@ namespace MultiMiner.Win.Forms
             {
                 DeviceViewModel deviceViewModel = localViewModel.Devices.SingleOrDefault(dvm => dvm.Equals(device));
                 if ((deviceViewModel != null) && (deviceViewModel.Kind != DeviceKind.NET))
-                    deviceViewModel.Coin = engineConfiguration.CoinConfigurations.Single(cc => cc.PoolGroup.Name.Equals(coinName)).PoolGroup;
+                    deviceViewModel.Coin = app.EngineConfiguration.CoinConfigurations.Single(cc => cc.PoolGroup.Name.Equals(coinName)).PoolGroup;
             }
 
             RefreshListViewFromViewModel();
@@ -2174,7 +2167,7 @@ namespace MultiMiner.Win.Forms
 
         private void HandleStartButtonClicked()
         {
-            if ((this.selectedRemoteInstance == null) && applicationConfiguration.AutoSetDesktopMode)
+            if ((this.selectedRemoteInstance == null) && app.ApplicationConfiguration.AutoSetDesktopMode)
                 ToggleDynamicIntensityLocally(true);
 
             StartMining();
@@ -2202,9 +2195,9 @@ namespace MultiMiner.Win.Forms
             //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
             quickSwitchToolStripMenuItem.Enabled = viewModel.ConfiguredCoins.Count() > 0;
             //
-            dynamicIntensityToolStripMenuItem.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
+            dynamicIntensityToolStripMenuItem.Visible = !app.EngineConfiguration.XgminerConfiguration.DisableGpu;
             dynamicIntensityToolStripMenuItem.Checked = viewModel.DynamicIntensity;
-            dynamicIntensityMenuSeperator.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
+            dynamicIntensityMenuSeperator.Visible = !app.EngineConfiguration.XgminerConfiguration.DisableGpu;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2484,16 +2477,16 @@ namespace MultiMiner.Win.Forms
             {
                 using (new HourGlass())
                 {
-                    perksConfiguration.ShowIncomeInUsd = !perksConfiguration.ShowIncomeInUsd;
+                    app.PerksConfiguration.ShowIncomeInUsd = !app.PerksConfiguration.ShowIncomeInUsd;
                     RefreshAllDeviceStats();
-                    perksConfiguration.SavePerksConfiguration();
+                    app.PerksConfiguration.SavePerksConfiguration();
                     AutoSizeListViewColumns();
                 }
             }
             else if (e.Column == utilityColumnHeader.Index)
             {
-                applicationConfiguration.ShowWorkUtility = !applicationConfiguration.ShowWorkUtility;
-                applicationConfiguration.SaveApplicationConfiguration();
+                app.ApplicationConfiguration.ShowWorkUtility = !app.ApplicationConfiguration.ShowWorkUtility;
+                app.ApplicationConfiguration.SaveApplicationConfiguration();
 
                 UpdateUtilityColumnHeader();
 
@@ -2688,11 +2681,11 @@ namespace MultiMiner.Win.Forms
         private void advancedMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
-            quickSwitchItem.Enabled = engineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
+            quickSwitchItem.Enabled = app.EngineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
 
-            dynamicIntensityButton.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
+            dynamicIntensityButton.Visible = !app.EngineConfiguration.XgminerConfiguration.DisableGpu;
             dynamicIntensityButton.Checked = GetViewModelToView().DynamicIntensity;
-            dynamicIntensitySeparator.Visible = !engineConfiguration.XgminerConfiguration.DisableGpu;
+            dynamicIntensitySeparator.Visible = !app.EngineConfiguration.XgminerConfiguration.DisableGpu;
         }
 
         private void notificationsControl1_NotificationsChanged(object sender)
@@ -2761,7 +2754,7 @@ namespace MultiMiner.Win.Forms
             if (applicationSetup)
             {
                 //handling for minimizing to notifcation area
-                if (applicationConfiguration.MinimizeToNotificationArea && (this.WindowState == FormWindowState.Minimized))
+                if (app.ApplicationConfiguration.MinimizeToNotificationArea && (this.WindowState == FormWindowState.Minimized))
                 {
                     notifyIcon1.Visible = true;
                     this.Hide();
@@ -2773,10 +2766,10 @@ namespace MultiMiner.Win.Forms
 
                 //handling for saving Maximized state
                 if (this.WindowState == FormWindowState.Maximized)
-                    applicationConfiguration.Maximized = true;
+                    app.ApplicationConfiguration.Maximized = true;
 
                 if (this.WindowState == FormWindowState.Normal) //don't set to false for minimizing
-                    applicationConfiguration.Maximized = false;
+                    app.ApplicationConfiguration.Maximized = false;
 
                 SavePosition();
             }
@@ -2816,10 +2809,10 @@ namespace MultiMiner.Win.Forms
                 ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
                 menuItem.Checked = !menuItem.Checked;
                 if (menuItem.Checked)
-                    applicationConfiguration.HiddenColumns.Remove(menuItem.Text);
+                    app.ApplicationConfiguration.HiddenColumns.Remove(menuItem.Text);
                 else
-                    applicationConfiguration.HiddenColumns.Add(menuItem.Text);
-                applicationConfiguration.SaveApplicationConfiguration();
+                    app.ApplicationConfiguration.HiddenColumns.Add(menuItem.Text);
+                app.ApplicationConfiguration.SaveApplicationConfiguration();
                 AutoSizeListViewColumns();
             }
         }
@@ -2841,7 +2834,7 @@ namespace MultiMiner.Win.Forms
         private bool ShouldDisableStrategies()
         {
             bool disableStrategies = false;
-            if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+            if (app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
             {
                 DialogResult dialogResult = MessageBox.Show(
                     "Would you like to disable Auto-Mining Strategies after switching coins?",
@@ -3027,15 +3020,40 @@ namespace MultiMiner.Win.Forms
         {
             ToggleNetworkDeviceHidden();
         }
+
+        private void rebootDeviceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RebootSelectedNetworkDevices();
+        }
+
+        private void executeCommandToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExecuteCommandOnSelectedNetworkDevices();
+        }
+
+        private void restartMiningToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            RestartSelectedNetworkDevices();
+        }
+
+        private void startMiningToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StartSelectedNetworkDevices();
+        }
+
+        private void stopMiningToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StopSelectedNetworkDevices();
+        }
         #endregion
 
         #region Timer setup
         private void SetupMiningOnStartup()
         {
-            if (applicationConfiguration.StartMiningOnStartup)
+            if (app.ApplicationConfiguration.StartMiningOnStartup)
             {
                 //minimum 1s delay for mining on startup - 0 not allowed
-                startupMiningCountdownSeconds = Math.Max(1, applicationConfiguration.StartupMiningDelay);
+                startupMiningCountdownSeconds = Math.Max(1, app.ApplicationConfiguration.StartupMiningDelay);
                 RefreshCountdownLabel();
             }
         }
@@ -3044,14 +3062,14 @@ namespace MultiMiner.Win.Forms
         {
             //if enabled, we want to restart it so this can be used when we start mining
             restartTimer.Enabled = false;
-            restartTimer.Interval = applicationConfiguration.ScheduledRestartMiningInterval.ToMinutes() * 60 * 1000; //dynamic
-            restartTimer.Enabled = applicationConfiguration.ScheduledRestartMining;
+            restartTimer.Interval = app.ApplicationConfiguration.ScheduledRestartMiningInterval.ToMinutes() * 60 * 1000; //dynamic
+            restartTimer.Enabled = app.ApplicationConfiguration.ScheduledRestartMining;
         }
 
         private void SetupCoinStatsTimer()
         {
             int coinStatsMinutes = 15;
-            UX.Data.Configuration.Application.TimerInterval timerInterval = applicationConfiguration.StrategyCheckInterval;
+            UX.Data.Configuration.Application.TimerInterval timerInterval = app.ApplicationConfiguration.StrategyCheckInterval;
 
             coinStatsMinutes = timerInterval.ToMinutes();
 
@@ -3174,7 +3192,7 @@ namespace MultiMiner.Win.Forms
                 SubmitMobileMinerStatistics();
             
             //only broadcast if there are other instances (not just us)
-            if (remotingEnabled && perksConfiguration.EnableRemoting && (instancesControl.Instances.Count > 1))
+            if (remotingEnabled && app.PerksConfiguration.EnableRemoting && (instancesControl.Instances.Count > 1))
             {
                 //broadcast 0 (e.g. even if not mining)
                 BroadcastHashrate();
@@ -3191,7 +3209,7 @@ namespace MultiMiner.Win.Forms
 #endif
 
             //restart suspect network devices
-            if (applicationConfiguration.RestartCrashedMiners)
+            if (app.ApplicationConfiguration.RestartCrashedMiners)
                 RestartSuspectNetworkDevices();
         }
 
@@ -3199,14 +3217,14 @@ namespace MultiMiner.Win.Forms
         {
             UpdateLocalViewFromRemoteInstance();
 
-            if (applicationConfiguration.RestartCrashedMiners && miningEngine.RelaunchCrashedMiners())
+            if (app.ApplicationConfiguration.RestartCrashedMiners && miningEngine.RelaunchCrashedMiners())
             {
                 //clear any details stored correlated to processes - they could all be invalid after this
                 processDeviceDetails.Clear();
                 SaveOwnedProcesses();
 
                 if (apiConsoleControl != null)
-                    apiConsoleControl.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
+                    apiConsoleControl.PopulateMiners(miningEngine.MinerProcesses, app.NetworkDevicesConfiguration.Devices, localViewModel);
             }
 
             if (miningEngine.Mining)
@@ -3220,7 +3238,7 @@ namespace MultiMiner.Win.Forms
         {
             ClearCachedNetworkDifficulties();
 
-            if (applicationConfiguration.NetworkDeviceDetection)
+            if (app.ApplicationConfiguration.NetworkDeviceDetection)
             {
                 CheckNetworkDevicesAsync();
                 FindNetworkDevicesAsync();
@@ -3229,7 +3247,7 @@ namespace MultiMiner.Win.Forms
 
         private void fifteenSecondTimer_Tick(object sender, EventArgs e)
         {
-            if (applicationConfiguration.NetworkDeviceDetection)
+            if (app.ApplicationConfiguration.NetworkDeviceDetection)
                 RefreshNetworkDeviceStatsAsync();
         }
 
@@ -3260,9 +3278,9 @@ namespace MultiMiner.Win.Forms
         {
             using (new HourGlass())
             {
-                if (perksConfiguration.EnableRemoting && perksConfiguration.PerksEnabled && !remotingEnabled)
+                if (app.PerksConfiguration.EnableRemoting && app.PerksConfiguration.PerksEnabled && !remotingEnabled)
                     EnableRemoting();
-                else if ((!perksConfiguration.EnableRemoting || !perksConfiguration.PerksEnabled) && remotingEnabled)
+                else if ((!app.PerksConfiguration.EnableRemoting || !app.PerksConfiguration.PerksEnabled) && remotingEnabled)
                     DisableRemoting();
             }
         }
@@ -3520,10 +3538,10 @@ namespace MultiMiner.Win.Forms
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                ObjectCopier.CopyObject(applicationConfiguration.ToTransferObject(), ea.Application);
-                ObjectCopier.CopyObject(engineConfiguration.ToTransferObject(), ea.Engine);
-                ObjectCopier.CopyObject(pathConfiguration, ea.Path);
-                ObjectCopier.CopyObject(perksConfiguration, ea.Perks);
+                ObjectCopier.CopyObject(app.ApplicationConfiguration.ToTransferObject(), ea.Application);
+                ObjectCopier.CopyObject(app.EngineConfiguration.ToTransferObject(), ea.Engine);
+                ObjectCopier.CopyObject(app.PathConfiguration, ea.Path);
+                ObjectCopier.CopyObject(app.PerksConfiguration, ea.Perks);
             });
         }
 
@@ -3531,15 +3549,15 @@ namespace MultiMiner.Win.Forms
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                ObjectCopier.CopyObject(coinConfigurations, this.engineConfiguration.CoinConfigurations);
-                this.engineConfiguration.SaveCoinConfigurations();
+                ObjectCopier.CopyObject(coinConfigurations, this.app.EngineConfiguration.CoinConfigurations);
+                this.app.EngineConfiguration.SaveCoinConfigurations();
 
                 BeginInvoke((Action)(() =>
                 {
                     //code to update UI
-                    localViewModel.ApplyCoinConfigurationModels(engineConfiguration.CoinConfigurations);
-                    localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
-                        engineConfiguration.CoinConfigurations);
+                    localViewModel.ApplyCoinConfigurationModels(app.EngineConfiguration.CoinConfigurations);
+                    localViewModel.ApplyDeviceConfigurationModels(app.EngineConfiguration.DeviceConfigurations,
+                        app.EngineConfiguration.CoinConfigurations);
                     RefreshViewForConfigurationChanges();
                 }));
             });
@@ -3549,47 +3567,47 @@ namespace MultiMiner.Win.Forms
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                string oldConfigPath = this.pathConfiguration.SharedConfigPath;
+                string oldConfigPath = this.app.PathConfiguration.SharedConfigPath;
 
                 if (ea.Application != null)
                 {
-                    ObjectCopier.CopyObject(ea.Application.ToModelObject(), this.applicationConfiguration);
-                    this.applicationConfiguration.SaveApplicationConfiguration();
+                    ObjectCopier.CopyObject(ea.Application.ToModelObject(), this.app.ApplicationConfiguration);
+                    this.app.ApplicationConfiguration.SaveApplicationConfiguration();
                 }
 
                 if (ea.Engine != null)
                 {
-                    ObjectCopier.CopyObject(ea.Engine.ToModelObject(), this.engineConfiguration);
-                    this.engineConfiguration.SaveCoinConfigurations();
-                    this.engineConfiguration.SaveMinerConfiguration();
-                    this.engineConfiguration.SaveStrategyConfiguration();
-                    this.engineConfiguration.SaveDeviceConfigurations();
+                    ObjectCopier.CopyObject(ea.Engine.ToModelObject(), this.app.EngineConfiguration);
+                    this.app.EngineConfiguration.SaveCoinConfigurations();
+                    this.app.EngineConfiguration.SaveMinerConfiguration();
+                    this.app.EngineConfiguration.SaveStrategyConfiguration();
+                    this.app.EngineConfiguration.SaveDeviceConfigurations();
                 }
 
                 if (ea.Path != null)
                 {
-                    ObjectCopier.CopyObject(ea.Path, this.pathConfiguration);
-                    this.pathConfiguration.SavePathConfiguration();
+                    ObjectCopier.CopyObject(ea.Path, this.app.PathConfiguration);
+                    this.app.PathConfiguration.SavePathConfiguration();
                 }
 
                 if (ea.Perks != null)
                 {
-                    ObjectCopier.CopyObject(ea.Perks, this.perksConfiguration);
-                    this.perksConfiguration.SavePerksConfiguration();
+                    ObjectCopier.CopyObject(ea.Perks, this.app.PerksConfiguration);
+                    this.app.PerksConfiguration.SavePerksConfiguration();
                 }
 
                 //save settings as the "shared" config path may have changed
                 //these are settings not considered machine/device-specific
                 //e.g. no device settings, no miner settings
-                string newConfigPath = pathConfiguration.SharedConfigPath;
+                string newConfigPath = app.PathConfiguration.SharedConfigPath;
                 MigrateSettingsToNewFolder(oldConfigPath, newConfigPath);
 
                 BeginInvoke((Action)(() =>
                 {
                     //code to update UI
-                    localViewModel.ApplyCoinConfigurationModels(engineConfiguration.CoinConfigurations);
-                    localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
-                        engineConfiguration.CoinConfigurations);
+                    localViewModel.ApplyCoinConfigurationModels(app.EngineConfiguration.CoinConfigurations);
+                    localViewModel.ApplyDeviceConfigurationModels(app.EngineConfiguration.DeviceConfigurations,
+                        app.EngineConfiguration.CoinConfigurations);
                     RefreshViewForConfigurationChanges();
                 }));
             });
@@ -3602,14 +3620,14 @@ namespace MultiMiner.Win.Forms
             //idea being the user has shared settings already there they want to use
             if (!Path.Equals(oldConfigPath, newConfigPath))
             {
-                if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(applicationConfiguration.ApplicationConfigurationFileName()))))
-                    applicationConfiguration.LoadApplicationConfiguration(newConfigPath);
-                if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(perksConfiguration.PerksConfigurationFileName()))))
-                    perksConfiguration.LoadPerksConfiguration(newConfigPath);
-                if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(engineConfiguration.CoinConfigurationsFileName()))))
-                    engineConfiguration.LoadCoinConfigurations(newConfigPath);
-                if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(engineConfiguration.StrategyConfigurationsFileName()))))
-                    engineConfiguration.LoadStrategyConfiguration(newConfigPath);
+                if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(app.ApplicationConfiguration.ApplicationConfigurationFileName()))))
+                    app.ApplicationConfiguration.LoadApplicationConfiguration(newConfigPath);
+                if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(app.PerksConfiguration.PerksConfigurationFileName()))))
+                    app.PerksConfiguration.LoadPerksConfiguration(newConfigPath);
+                if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(app.EngineConfiguration.CoinConfigurationsFileName()))))
+                    app.EngineConfiguration.LoadCoinConfigurations(newConfigPath);
+                if (File.Exists(Path.Combine(newConfigPath, Path.GetFileName(app.EngineConfiguration.StrategyConfigurationsFileName()))))
+                    app.EngineConfiguration.LoadStrategyConfiguration(newConfigPath);
             }
         }
 
@@ -3838,7 +3856,7 @@ namespace MultiMiner.Win.Forms
 
         private void UpdateInstancesVisibility()
         {
-            instancesContainer.Panel1Collapsed = !perksConfiguration.EnableRemoting || (instancesControl.Instances.Count <= 1);
+            instancesContainer.Panel1Collapsed = !app.PerksConfiguration.EnableRemoting || (instancesControl.Instances.Count <= 1);
             instancesControl.Visible = !instancesContainer.Panel1Collapsed;
         }
 
@@ -3989,7 +4007,7 @@ namespace MultiMiner.Win.Forms
                 destination.Fingerprint,
                 remotingPepper,
                 workGroupName,
-                perksConfiguration.RemotingPassword);
+                app.PerksConfiguration.RemotingPassword);
             return GetStringHash(signature);
         }
 
@@ -4002,7 +4020,7 @@ namespace MultiMiner.Win.Forms
                 this.fingerprint,
                 remotingPepper,
                 workGroupName,
-                perksConfiguration.RemotingPassword);
+                app.PerksConfiguration.RemotingPassword);
             return GetStringHash(signature);
         }
 
@@ -4216,9 +4234,9 @@ namespace MultiMiner.Win.Forms
         #region Coin API
         private void SetupCoinApi()
         {
-            this.coinWarzApiContext = new CoinWarz.ApiContext(applicationConfiguration.CoinWarzApiKey);
+            this.coinWarzApiContext = new CoinWarz.ApiContext(app.ApplicationConfiguration.CoinWarzApiKey);
             this.coinChooseApiContext = new CoinChoose.ApiContext();
-            this.whatMineApiContext = new WhatMine.ApiContext(applicationConfiguration.WhatMineApiKey);
+            this.whatMineApiContext = new WhatMine.ApiContext(app.ApplicationConfiguration.WhatMineApiKey);
         }
 
         private void ShowMultipoolApiErrorNotification(MultipoolApi.IApiContext apiContext, Exception ex)
@@ -4272,7 +4290,7 @@ namespace MultiMiner.Win.Forms
                 if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is CoinApiException) ||
                     (ex is JsonReaderException))
                 {
-                    if (applicationConfiguration.ShowApiErrors)
+                    if (app.ApplicationConfiguration.ShowApiErrors)
                     {
                         BeginInvoke((Action)(() =>
                         {
@@ -4345,7 +4363,7 @@ namespace MultiMiner.Win.Forms
                 if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException) || (ex is CoinApiException) ||
                     (ex is JsonReaderException))
                 {
-                    if (applicationConfiguration.ShowApiErrors)
+                    if (app.ApplicationConfiguration.ShowApiErrors)
                     {
                         BeginInvoke((Action)(() =>
                         {
@@ -4374,7 +4392,7 @@ namespace MultiMiner.Win.Forms
             //1. We have no NiceHash coins in KnownCoins
             //2. Or we have a Multipool setup for NiceHash
             bool initialLoad = !knownCoins.Any(kc => kc.Id.Contains(Prefix));
-            bool miningNiceHash = engineConfiguration.CoinConfigurations.Any(cc => cc.PoolGroup.Id.Contains(Prefix) && cc.Enabled);
+            bool miningNiceHash = app.EngineConfiguration.CoinConfigurations.Any(cc => cc.PoolGroup.Id.Contains(Prefix) && cc.Enabled);
             if (!initialLoad && !miningNiceHash)
             {
                 return;
@@ -4410,12 +4428,12 @@ namespace MultiMiner.Win.Forms
             LoadKnownCoinsFromFile();
 
             IApiContext preferredApiContext, backupApiContext;
-            if (applicationConfiguration.UseCoinWarzApi)
+            if (app.ApplicationConfiguration.UseCoinWarzApi)
             {
                 preferredApiContext = this.coinWarzApiContext;
                 backupApiContext = this.coinChooseApiContext;
             }
-            else if (applicationConfiguration.UseWhatMineApi)
+            else if (app.ApplicationConfiguration.UseWhatMineApi)
             {
                 preferredApiContext = this.whatMineApiContext;
                 backupApiContext = this.coinChooseApiContext;
@@ -4429,7 +4447,7 @@ namespace MultiMiner.Win.Forms
             bool success = ApplyCoinInformationToViewModel(preferredApiContext);
             if (!success &&
                 //don't try to use CoinWarz as a backup unless the user has entered an API key for CoinWarz
-                ((backupApiContext == this.coinChooseApiContext) || !String.IsNullOrEmpty(this.applicationConfiguration.CoinWarzApiKey)))
+                ((backupApiContext == this.coinChooseApiContext) || !String.IsNullOrEmpty(this.app.ApplicationConfiguration.CoinWarzApiKey)))
                 success = ApplyCoinInformationToViewModel(backupApiContext);
             
             FixCoinSymbolDiscrepencies();
@@ -4481,7 +4499,7 @@ namespace MultiMiner.Win.Forms
         #region Exchange API
         private void RefreshExchangeRates()
         {
-            if (perksConfiguration.PerksEnabled && perksConfiguration.ShowExchangeRates)
+            if (app.PerksConfiguration.PerksEnabled && app.PerksConfiguration.ShowExchangeRates)
             {
                 try
                 {
@@ -4492,7 +4510,7 @@ namespace MultiMiner.Win.Forms
                     //don't crash if website cannot be resolved or JSON cannot be parsed
                     if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException))
                     {
-                        if (applicationConfiguration.ShowApiErrors)
+                        if (app.ApplicationConfiguration.ShowApiErrors)
                             ShowExchangeApiErrorNotification(ex);
                         return;
                     }
@@ -4524,7 +4542,7 @@ namespace MultiMiner.Win.Forms
         private string GetMobileMinerUrl()
         {
             string prefix = "https://";
-            if (!applicationConfiguration.MobileMinerUsesHttps)
+            if (!app.ApplicationConfiguration.MobileMinerUsesHttps)
                 prefix = "http://";
 
             //custom domain makes it easier to migrate hosts if needed
@@ -4547,11 +4565,11 @@ namespace MultiMiner.Win.Forms
         private void SubmitMobileMinerStatistics()
         {
             //are remote monitoring enabled?
-            if (!applicationConfiguration.MobileMinerMonitoring)
+            if (!app.ApplicationConfiguration.MobileMinerMonitoring)
                 return;
 
             //is MobileMiner configured?
-            if (!applicationConfiguration.IsMobileMinerConfigured())
+            if (!app.ApplicationConfiguration.IsMobileMinerConfigured())
                 return;
 
             List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList = new List<MobileMiner.Data.MiningStatistics>();
@@ -4584,7 +4602,7 @@ namespace MultiMiner.Win.Forms
 
         private void AddAllMinerStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
         {
-            if (!applicationConfiguration.MobileMinerNetworkMonitorOnly)
+            if (!app.ApplicationConfiguration.MobileMinerNetworkMonitorOnly)
                 AddLocalMinerStatistics(statisticsList);
 
             AddAllNetworkMinerStatistics(statisticsList);
@@ -4593,12 +4611,12 @@ namespace MultiMiner.Win.Forms
         private void AddAllNetworkMinerStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
         {
             //is Network Device detection enabled?
-            if (!applicationConfiguration.NetworkDeviceDetection)
+            if (!app.ApplicationConfiguration.NetworkDeviceDetection)
                 return;
 
             //call ToList() so we can get a copy - otherwise risk:
             //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
-            List<NetworkDevices.NetworkDevice> networkDevices = networkDevicesConfiguration.Devices.ToList();
+            List<NetworkDevices.NetworkDevice> networkDevices = app.NetworkDevicesConfiguration.Devices.ToList();
 
             foreach (UX.Data.Configuration.NetworkDevices.NetworkDevice networkDevice in networkDevices)
                 AddNetworkMinerStatistics(networkDevice, statisticsList);
@@ -4780,7 +4798,7 @@ namespace MultiMiner.Win.Forms
         {
             miningStatistics.MinerName = "MultiMiner";
             miningStatistics.CoinName = coinName;
-            Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single(c => c.PoolGroup.Name.Equals(coinName));
+            Engine.Data.Configuration.Coin coinConfiguration = app.EngineConfiguration.CoinConfigurations.Single(c => c.PoolGroup.Name.Equals(coinName));
             PoolGroup coin = coinConfiguration.PoolGroup;
 
             //don't send non-coin Ids to MobileMiner
@@ -4810,11 +4828,11 @@ namespace MultiMiner.Win.Forms
             {
                 //submit statistics
                 List<MobileMiner.Data.RemoteCommand> commands = MobileMiner.ApiContext.SubmitMiningStatistics(GetMobileMinerUrl(), mobileMinerApiKey,
-                    applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
-                    statisticsList, applicationConfiguration.MobileMinerRemoteCommands);
+                    app.ApplicationConfiguration.MobileMinerEmailAddress, app.ApplicationConfiguration.MobileMinerApplicationKey,
+                    statisticsList, app.ApplicationConfiguration.MobileMinerRemoteCommands);
 
                 //process commands
-                if (applicationConfiguration.MobileMinerRemoteCommands)
+                if (app.ApplicationConfiguration.MobileMinerRemoteCommands)
                     BeginInvoke((Action<List<MobileMiner.Data.RemoteCommand>>)((c) => ProcessRemoteCommands(c)), commands);
 
                 mobileMinerSuccess = true;
@@ -4840,11 +4858,11 @@ namespace MultiMiner.Win.Forms
         private void SubmitMobileMinerNotifications()
         {
             //are remote notifications enabled?
-            if (!applicationConfiguration.MobileMinerPushNotifications)
+            if (!app.ApplicationConfiguration.MobileMinerPushNotifications)
                 return;
 
             //is MobileMiner configured?
-            if (!applicationConfiguration.IsMobileMinerConfigured())
+            if (!app.ApplicationConfiguration.IsMobileMinerConfigured())
                 return;
 
             //do we have notifications to push?
@@ -4864,7 +4882,7 @@ namespace MultiMiner.Win.Forms
             try
             {
                 MobileMiner.ApiContext.SubmitNotifications(GetMobileMinerUrl(), mobileMinerApiKey,
-                        applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                        app.ApplicationConfiguration.MobileMinerEmailAddress, app.ApplicationConfiguration.MobileMinerApplicationKey,
                         queuedNotifications);
                 queuedNotifications.Clear();
             }
@@ -4883,16 +4901,16 @@ namespace MultiMiner.Win.Forms
         private void SubmitMobileMinerPools()
         {
             //are remote commands enabled?
-            if (!applicationConfiguration.MobileMinerRemoteCommands)
+            if (!app.ApplicationConfiguration.MobileMinerRemoteCommands)
                 return;
 
             //is MobileMiner configured?
-            if (!applicationConfiguration.IsMobileMinerConfigured())
+            if (!app.ApplicationConfiguration.IsMobileMinerConfigured())
                 return;
 
             Dictionary<string, List<string>> machinePools = new Dictionary<string, List<string>>();
             List<string> pools = new List<string>();
-            foreach (Coin coin in engineConfiguration.CoinConfigurations.Where(cc => cc.Enabled))
+            foreach (Coin coin in app.EngineConfiguration.CoinConfigurations.Where(cc => cc.Enabled))
                 pools.Add(coin.PoolGroup.Name);
             machinePools[Environment.MachineName] = pools;
 
@@ -4922,7 +4940,7 @@ namespace MultiMiner.Win.Forms
             try
             {
                 MobileMiner.ApiContext.SubmitMachinePools(GetMobileMinerUrl(), mobileMinerApiKey,
-                        applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                        app.ApplicationConfiguration.MobileMinerEmailAddress, app.ApplicationConfiguration.MobileMinerApplicationKey,
                         machinePools);
             }
             catch (Exception ex)
@@ -4946,8 +4964,8 @@ namespace MultiMiner.Win.Forms
                 {
                     if (!mobileMinerSuccess)
                     {
-                        this.applicationConfiguration.MobileMinerRemoteCommands = false;
-                        this.applicationConfiguration.SaveApplicationConfiguration();
+                        this.app.ApplicationConfiguration.MobileMinerRemoteCommands = false;
+                        this.app.ApplicationConfiguration.SaveApplicationConfiguration();
                         MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
                             Environment.NewLine + Environment.NewLine +
                             "MobileMiner remote commands will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -4963,7 +4981,7 @@ namespace MultiMiner.Win.Forms
                         }
                     }
                 }
-                else if (applicationConfiguration.ShowApiErrors)
+                else if (app.ApplicationConfiguration.ShowApiErrors)
                 {
                     BeginInvoke((Action)(() =>
                     {
@@ -4978,7 +4996,7 @@ namespace MultiMiner.Win.Forms
         {
             List<string> machineNames = new List<string>();
 
-            if (!applicationConfiguration.MobileMinerNetworkMonitorOnly)
+            if (!app.ApplicationConfiguration.MobileMinerNetworkMonitorOnly)
                 machineNames.Add(Environment.MachineName);
 
             IEnumerable<DeviceViewModel> networkDevices = localViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
@@ -5102,7 +5120,7 @@ namespace MultiMiner.Win.Forms
             {
                 string[] parts = commandText.Split('|');
                 string coinName = parts[1];
-                Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.PoolGroup.Name.Equals(coinName));
+                Engine.Data.Configuration.Coin coinConfiguration = app.EngineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.PoolGroup.Name.Equals(coinName));
                 if (coinConfiguration != null)
                     SetAllDevicesToCoinLocally(coinConfiguration.PoolGroup.Id, true);
             }
@@ -5115,7 +5133,7 @@ namespace MultiMiner.Win.Forms
             try
             {
                 MobileMiner.ApiContext.DeleteCommand(GetMobileMinerUrl(), mobileMinerApiKey,
-                                    applicationConfiguration.MobileMinerEmailAddress, applicationConfiguration.MobileMinerApplicationKey,
+                                    app.ApplicationConfiguration.MobileMinerEmailAddress, app.ApplicationConfiguration.MobileMinerApplicationKey,
                                     command.Machine.Name, command.Id);
             }
             catch (Exception ex)
@@ -5145,7 +5163,7 @@ namespace MultiMiner.Win.Forms
         private void SubmitMultiMinerStatistics()
         {
             string installedVersion = Engine.Installers.MultiMinerInstaller.GetInstalledMinerVersion();
-            if (installedVersion.Equals(applicationConfiguration.SubmittedStatsVersion))
+            if (installedVersion.Equals(app.ApplicationConfiguration.SubmittedStatsVersion))
                 return;
 
             Stats.Data.Machine machineStat = new Stats.Data.Machine()
@@ -5167,7 +5185,7 @@ namespace MultiMiner.Win.Forms
             {
                 //plain text so users can see what we are posting - transparency
                 Stats.ApiContext.SubmitMinerStatistics("http://multiminerstats.azurewebsites.net/api/", machineStat);
-                applicationConfiguration.SubmittedStatsVersion = machineStat.MinerVersion;
+                app.ApplicationConfiguration.SubmittedStatsVersion = machineStat.MinerVersion;
             }
             catch (WebException)
             {
@@ -5565,7 +5583,7 @@ namespace MultiMiner.Win.Forms
         private Coin CoinConfigurationForPoolUrl(string poolUrl)
         {
             Coin coinConfiguration =
-                engineConfiguration.CoinConfigurations
+                app.EngineConfiguration.CoinConfigurations
                     .FirstOrDefault(cc =>
                         cc.Pools
                             .Any(p => String.Format("{0}:{1}", p.Host.ShortHostFromHost(), p.Port).Equals(poolUrl.ShortHostFromHost(), StringComparison.OrdinalIgnoreCase))
@@ -5632,7 +5650,7 @@ namespace MultiMiner.Win.Forms
             //ASICs spike too much for this to be reliable there
             //don't check average hashrate if using dynamic intensity
             if (deviceInformation.Kind.Equals("GPU", StringComparison.OrdinalIgnoreCase) &&
-                !engineConfiguration.XgminerConfiguration.DesktopMode)
+                !app.EngineConfiguration.XgminerConfiguration.DesktopMode)
             {
                 //avoid div by 0
                 if (deviceInformation.AverageHashrate > 0)
@@ -5992,18 +6010,18 @@ namespace MultiMiner.Win.Forms
         {
             string logDirectory = GetLogDirectory();
             string logFilePath = Path.Combine(logDirectory, logFileName);
-            ObjectLogger logger = new ObjectLogger(applicationConfiguration.RollOverLogFiles, applicationConfiguration.OldLogFileSets);
+            ObjectLogger logger = new ObjectLogger(app.ApplicationConfiguration.RollOverLogFiles, app.ApplicationConfiguration.OldLogFileSets);
             logger.LogObjectToFile(objectToLog, logFilePath);
         }
 
         private string GetLogDirectory()
         {
             string logDirectory = ApplicationPaths.AppDataPath();
-            if (!String.IsNullOrEmpty(applicationConfiguration.LogFilePath))
+            if (!String.IsNullOrEmpty(app.ApplicationConfiguration.LogFilePath))
             {
-                Directory.CreateDirectory(applicationConfiguration.LogFilePath);
-                if (Directory.Exists(applicationConfiguration.LogFilePath))
-                    logDirectory = applicationConfiguration.LogFilePath;
+                Directory.CreateDirectory(app.ApplicationConfiguration.LogFilePath);
+                if (Directory.Exists(app.ApplicationConfiguration.LogFilePath))
+                    logDirectory = app.ApplicationConfiguration.LogFilePath;
             }
             return logDirectory;
         }
@@ -6058,23 +6076,23 @@ namespace MultiMiner.Win.Forms
         {
             this.BeginInvoke((Action)(() =>
             {
-                if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+                if (app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
                 {
                     string notificationReason = String.Empty;
 
-                    int enabledConfigurationCount = engineConfiguration.CoinConfigurations.Count(c => c.Enabled);
+                    int enabledConfigurationCount = app.EngineConfiguration.CoinConfigurations.Count(c => c.Enabled);
 
                     //only disable the configuration if there are others enabled - otherwise left idling
                     if (enabledConfigurationCount > 1)
                     {
 
                         //if auto mining is enabled, flag pools down in the coin configuration and display a notification
-                        Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(config => config.PoolGroup.Name.Equals(ea.CoinName, StringComparison.OrdinalIgnoreCase));
+                        Engine.Data.Configuration.Coin coinConfiguration = app.EngineConfiguration.CoinConfigurations.SingleOrDefault(config => config.PoolGroup.Name.Equals(ea.CoinName, StringComparison.OrdinalIgnoreCase));
                         coinConfiguration.PoolsDown = true;
-                        engineConfiguration.SaveCoinConfigurations();
+                        app.EngineConfiguration.SaveCoinConfigurations();
 
                         //if no enabled configurations, stop mining
-                        int enabledConfigurations = engineConfiguration.CoinConfigurations.Count(config => config.Enabled && !config.PoolsDown);
+                        int enabledConfigurations = app.EngineConfiguration.CoinConfigurations.Count(config => config.Enabled && !config.PoolsDown);
                         if (enabledConfigurations == 0)
                             StopMiningLocally();
                         else
@@ -6096,7 +6114,7 @@ namespace MultiMiner.Win.Forms
                 }
                 else
                 {
-                    if (!applicationConfiguration.RestartCrashedMiners)
+                    if (!app.ApplicationConfiguration.RestartCrashedMiners)
                     {
                         //if we are not restarting miners, display a dialog
                         MessageBox.Show(ea.Reason, "Launching Miner Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -6219,7 +6237,7 @@ namespace MultiMiner.Win.Forms
                 Thread.Sleep(500);
 
             //check for disowned miners before refreshing devices
-            if (applicationConfiguration.DetectDisownedMiners)
+            if (app.ApplicationConfiguration.DetectDisownedMiners)
                 CheckForDisownedMiners();
 
             SetupRemoting();
@@ -6304,7 +6322,7 @@ namespace MultiMiner.Win.Forms
 
         private void HandleStartupMinimizedToNotificationArea()
         {
-            if (applicationConfiguration.StartupMinimized && applicationConfiguration.MinimizeToNotificationArea)
+            if (app.ApplicationConfiguration.StartupMinimized && app.ApplicationConfiguration.MinimizeToNotificationArea)
             {
                 notifyIcon1.Visible = true;
                 this.Hide();
@@ -6315,7 +6333,7 @@ namespace MultiMiner.Win.Forms
         {
             string tip = null;
 
-            switch (applicationConfiguration.TipsShown)
+            switch (app.ApplicationConfiguration.TipsShown)
             {
                 case 0:
                     tip = "Tip: right-click device names to change coins";
@@ -6333,7 +6351,7 @@ namespace MultiMiner.Win.Forms
                             coinPopupMenu.Show(deviceListView, popupPosition);
                         }
                     }, ToolTipIcon.Info, "");
-                    applicationConfiguration.TipsShown++;
+                    app.ApplicationConfiguration.TipsShown++;
                     break;
                 case 1:
                     tip = "Tip: right-click the main screen for common tasks";
@@ -6341,14 +6359,14 @@ namespace MultiMiner.Win.Forms
                     {
                         deviceListContextMenu.Show(deviceListView, 150, 100);
                     }, ToolTipIcon.Info, "");
-                    applicationConfiguration.TipsShown++;
+                    app.ApplicationConfiguration.TipsShown++;
                     break;
                 case 2:
                     tip = "Tip: restart mining after changing any settings";
                     PostNotification(tip, () =>
                     {
                     }, ToolTipIcon.Info, "");
-                    applicationConfiguration.TipsShown++;
+                    app.ApplicationConfiguration.TipsShown++;
                     break;
                 case 3:
                     tip = "Tip: enabling perks gives back to the author";
@@ -6356,17 +6374,17 @@ namespace MultiMiner.Win.Forms
                     {
                         ConfigurePerksLocally();
                     }, ToolTipIcon.Info, "");
-                    applicationConfiguration.TipsShown++;
+                    app.ApplicationConfiguration.TipsShown++;
                     break;
             }
 
-            applicationConfiguration.SaveApplicationConfiguration();
+            app.ApplicationConfiguration.SaveApplicationConfiguration();
         }
 
         //required for GPU mining
         private void SetGpuEnvironmentVariables()
         {
-            if (applicationConfiguration.SetGpuEnvironmentVariables)
+            if (app.ApplicationConfiguration.SetGpuEnvironmentVariables)
             {
                 using (new HourGlass())
                 {
@@ -6388,9 +6406,9 @@ namespace MultiMiner.Win.Forms
 
         private void FetchInitialCoinStats()
         {
-            engineConfiguration.LoadStrategyConfiguration(pathConfiguration.SharedConfigPath); //needed before refreshing coins
-            engineConfiguration.LoadCoinConfigurations(pathConfiguration.SharedConfigPath); //needed before refreshing coins
-            //already done in ctor applicationConfiguration.LoadApplicationConfiguration(); //needed before refreshing coins
+            app.EngineConfiguration.LoadStrategyConfiguration(app.PathConfiguration.SharedConfigPath); //needed before refreshing coins
+            app.EngineConfiguration.LoadCoinConfigurations(app.PathConfiguration.SharedConfigPath); //needed before refreshing coins
+            //already done in ctor app.ApplicationConfiguration.LoadApplicationConfiguration(); //needed before refreshing coins
             SetupNotificationsControl(); //needed before refreshing coins
             SetupCoinApi(); //so we target the correct API
             RefreshCoinStats();
@@ -6409,8 +6427,8 @@ namespace MultiMiner.Win.Forms
         {
             const string logFileName = "MiningLog.json";
             string logDirectory = ApplicationPaths.AppDataPath();
-            if (Directory.Exists(applicationConfiguration.LogFilePath))
-                logDirectory = applicationConfiguration.LogFilePath;
+            if (Directory.Exists(app.ApplicationConfiguration.LogFilePath))
+                logDirectory = app.ApplicationConfiguration.LogFilePath;
             string logFilePath = Path.Combine(logDirectory, logFileName);
             if (File.Exists(logFilePath))
             {
@@ -6440,7 +6458,7 @@ namespace MultiMiner.Win.Forms
         private void CheckAndShowGettingStarted()
         {
             //only show if there's no settings yet
-            if (File.Exists(applicationConfiguration.ApplicationConfigurationFileName()))
+            if (File.Exists(app.ApplicationConfiguration.ApplicationConfigurationFileName()))
                 return;
 
             WizardForm wizardForm = new WizardForm(this.knownCoins);
@@ -6452,16 +6470,16 @@ namespace MultiMiner.Win.Forms
                 Perks newPerksConfiguration;
                 wizardForm.CreateConfigurations(out newEngineConfiguration, out newApplicationConfiguration, out newPerksConfiguration);
 
-                this.engineConfiguration = newEngineConfiguration;
-                this.applicationConfiguration = newApplicationConfiguration;
-                this.perksConfiguration = newPerksConfiguration;
+                ObjectCopier.CopyObject(newEngineConfiguration, this.app.EngineConfiguration);
+                ObjectCopier.CopyObject(newApplicationConfiguration, this.app.ApplicationConfiguration);
+                ObjectCopier.CopyObject(newPerksConfiguration, this.app.PerksConfiguration);
 
-                this.engineConfiguration.SaveCoinConfigurations();
-                this.engineConfiguration.SaveMinerConfiguration();
-                this.applicationConfiguration.SaveApplicationConfiguration();
-                this.perksConfiguration.SavePerksConfiguration();
+                this.app.EngineConfiguration.SaveCoinConfigurations();
+                this.app.EngineConfiguration.SaveMinerConfiguration();
+                this.app.ApplicationConfiguration.SaveApplicationConfiguration();
+                this.app.PerksConfiguration.SavePerksConfiguration();
 
-                SetBriefMode(applicationConfiguration.BriefUserInterface);
+                SetBriefMode(app.ApplicationConfiguration.BriefUserInterface);
             }
         }
 
@@ -6589,7 +6607,7 @@ namespace MultiMiner.Win.Forms
 
         private void ConfigureDevicesForNewUser()
         {
-            Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.Single();
+            Engine.Data.Configuration.Coin coinConfiguration = app.EngineConfiguration.CoinConfigurations.Single();
 
             for (int i = 0; i < devices.Count; i++)
             {
@@ -6600,10 +6618,10 @@ namespace MultiMiner.Win.Forms
                 };
 
                 deviceConfiguration.Assign(devices[i]);
-                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+                app.EngineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
 
-            engineConfiguration.SaveDeviceConfigurations();
+            app.EngineConfiguration.SaveDeviceConfigurations();
             UpdateMiningButtons();
         }
 
@@ -6711,8 +6729,8 @@ namespace MultiMiner.Win.Forms
 
             footerPanel.Visible = !briefMode;
 
-            applicationConfiguration.BriefUserInterface = briefMode;
-            applicationConfiguration.SaveApplicationConfiguration();
+            app.ApplicationConfiguration.BriefUserInterface = briefMode;
+            app.ApplicationConfiguration.SaveApplicationConfiguration();
         }
 
         private void SetListViewStyle(View view)
@@ -6743,7 +6761,7 @@ namespace MultiMiner.Win.Forms
                         break;
                 }
 
-                applicationConfiguration.ListViewStyle = view;
+                app.ApplicationConfiguration.ListViewStyle = view;
 
                 RefreshListViewFromViewModel();
 
@@ -6997,9 +7015,9 @@ namespace MultiMiner.Win.Forms
             bool wasMining = miningEngine.Mining;
             StopMiningLocally();
 
-            Engine.Data.Configuration.Coin coinConfiguration = engineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coinSymbol));
+            Engine.Data.Configuration.Coin coinConfiguration = app.EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coinSymbol));
 
-            engineConfiguration.DeviceConfigurations.Clear();
+            app.EngineConfiguration.DeviceConfigurations.Clear();
 
             foreach (Xgminer.Data.Device device in devices)
             {
@@ -7036,13 +7054,13 @@ namespace MultiMiner.Win.Forms
                     deviceConfiguration.Enabled = viewModel.Enabled;
                 }
 
-                engineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+                app.EngineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
             }
 
-            localViewModel.ApplyDeviceConfigurationModels(engineConfiguration.DeviceConfigurations,
-                engineConfiguration.CoinConfigurations);
+            localViewModel.ApplyDeviceConfigurationModels(app.EngineConfiguration.DeviceConfigurations,
+                app.EngineConfiguration.CoinConfigurations);
 
-            engineConfiguration.SaveDeviceConfigurations();
+            app.EngineConfiguration.SaveDeviceConfigurations();
 
             RefreshListViewFromViewModel();
 
@@ -7050,7 +7068,7 @@ namespace MultiMiner.Win.Forms
 
             if (wasMining)
             {
-                bool wasAutoMining = engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
+                bool wasAutoMining = app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
                 if (wasAutoMining)
                     EnableMiningStrategies(false);
 
@@ -7074,8 +7092,8 @@ namespace MultiMiner.Win.Forms
 
         private void EnableMiningStrategies(bool enabled = true)
         {
-            engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = enabled;
-            engineConfiguration.SaveStrategyConfiguration();
+            app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = enabled;
+            app.EngineConfiguration.SaveStrategyConfiguration();
         }
 
         private void CheckForUpdates()
@@ -7085,7 +7103,7 @@ namespace MultiMiner.Win.Forms
             CheckForMultiMinerUpdates();
 
             //we cannot auto install miners on Unix (yet)
-            if (applicationConfiguration.CheckForMinerUpdates && (concretePlatform != PlatformID.Unix))
+            if (app.ApplicationConfiguration.CheckForMinerUpdates && (concretePlatform != PlatformID.Unix))
                 TryToCheckForMinerUpdates();
         }
 
@@ -7115,9 +7133,9 @@ namespace MultiMiner.Win.Forms
             RefreshDetailsArea();
 
 
-            if (!detailsAreaSetup && (applicationConfiguration.DetailsAreaWidth > 0))
+            if (!detailsAreaSetup && (app.ApplicationConfiguration.DetailsAreaWidth > 0))
             {
-                detailsAreaContainer.SplitterDistance = detailsAreaContainer.Width - applicationConfiguration.DetailsAreaWidth;
+                detailsAreaContainer.SplitterDistance = detailsAreaContainer.Width - app.ApplicationConfiguration.DetailsAreaWidth;
 
                 detailsAreaSetup = true;
             }
@@ -7172,15 +7190,15 @@ namespace MultiMiner.Win.Forms
         private void RenameDevice(DeviceViewModel deviceViewModel, string name)
         {
             //rename the device in the user metadata
-            Metadata.DeviceMetadata deviceData = metadataConfiguration.Devices.SingleOrDefault(d => d.Equals(deviceViewModel));
+            Metadata.DeviceMetadata deviceData = app.MetadataConfiguration.Devices.SingleOrDefault(d => d.Equals(deviceViewModel));
             if (deviceData == null)
             {
                 deviceData = new Metadata.DeviceMetadata();
                 ObjectCopier.CopyObject(deviceViewModel, deviceData);
-                metadataConfiguration.Devices.Add(deviceData);
+                app.MetadataConfiguration.Devices.Add(deviceData);
             }
             deviceData.FriendlyName = name;
-            metadataConfiguration.SaveDeviceMetadataConfiguration();
+            app.MetadataConfiguration.SaveDeviceMetadataConfiguration();
 
             //rename the device ViewModel itself
             deviceViewModel.FriendlyName = name;
@@ -7216,7 +7234,7 @@ namespace MultiMiner.Win.Forms
         private void ShowAPIConsole()
         {
             if (apiConsoleControl == null)
-                apiConsoleControl = new ApiConsoleControl(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
+                apiConsoleControl = new ApiConsoleControl(miningEngine.MinerProcesses, app.NetworkDevicesConfiguration.Devices, localViewModel);
 
             apiConsoleControl.Dock = DockStyle.Fill;
             apiConsoleControl.Parent = this;
@@ -7234,8 +7252,8 @@ namespace MultiMiner.Win.Forms
         {
             WebBrowser embeddedBrowser = MobileMiner.WebBrowserProvider.GetWebBrowser(
                 controller,
-                applicationConfiguration.MobileMinerEmailAddress,
-                applicationConfiguration.MobileMinerApplicationKey);
+                app.ApplicationConfiguration.MobileMinerEmailAddress,
+                app.ApplicationConfiguration.MobileMinerApplicationKey);
 
             ShowEmbeddedBrowser(embeddedBrowser);
         }
@@ -7300,7 +7318,7 @@ namespace MultiMiner.Win.Forms
             SaveOwnedProcesses();
 
             if (apiConsoleControl != null)
-                apiConsoleControl.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
+                apiConsoleControl.PopulateMiners(miningEngine.MinerProcesses, app.NetworkDevicesConfiguration.Devices, localViewModel);
         }
 
         private void RestartMining()
@@ -7333,7 +7351,7 @@ namespace MultiMiner.Win.Forms
 
         private void CheckAndApplyMiningStrategy()
         {
-            if (miningEngine.Mining && engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
+            if (miningEngine.Mining && app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
                 //ensure the user isn't editing settings
                 !ShowingModalDialog())
             {
@@ -7341,13 +7359,13 @@ namespace MultiMiner.Win.Forms
                     .ToList()); //get a copy - populated async & collection may be modified)
 
                 //save any changes made by the engine
-                engineConfiguration.SaveDeviceConfigurations();
+                app.EngineConfiguration.SaveDeviceConfigurations();
 
                 //create a deep clone of the mining & device configurations
                 //this is so we can accurately display e.g. the currently mining pools
                 //even if the user changes pool info without restarting mining
-                this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Coin>, List<Engine.Data.Configuration.Coin>>(engineConfiguration.CoinConfigurations);
-                this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Device>, List<Engine.Data.Configuration.Device>>(engineConfiguration.DeviceConfigurations);
+                this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Coin>, List<Engine.Data.Configuration.Coin>>(app.EngineConfiguration.CoinConfigurations);
+                this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Device>, List<Engine.Data.Configuration.Device>>(app.EngineConfiguration.DeviceConfigurations);
 
                 //update the ViewModel
                 ApplyModelsToViewModel();
@@ -7362,7 +7380,7 @@ namespace MultiMiner.Win.Forms
                     SaveOwnedProcesses();
 
                     if (apiConsoleControl != null)
-                        apiConsoleControl.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
+                        apiConsoleControl.PopulateMiners(miningEngine.MinerProcesses, app.NetworkDevicesConfiguration.Devices, localViewModel);
                 }
             }
         }
@@ -7430,7 +7448,7 @@ namespace MultiMiner.Win.Forms
             string id = Guid.NewGuid().ToString();
             string text = String.Format("Mining switched to {0} based on {1}", 
                 String.Join(", ", coinList.ToArray()), 
-                engineConfiguration.StrategyConfiguration.MiningBasis);
+                app.EngineConfiguration.StrategyConfiguration.MiningBasis);
             string url = successfulApiContext.GetInfoUrl();
 
             PostNotification(id,
@@ -7508,7 +7526,7 @@ namespace MultiMiner.Win.Forms
                 {
                     using (new HourGlass())
                     {
-                        DevicesService devicesService = new DevicesService(engineConfiguration.XgminerConfiguration);
+                        DevicesService devicesService = new DevicesService(app.EngineConfiguration.XgminerConfiguration);
                         MinerDescriptor defaultMiner = MinerFactory.Instance.GetDefaultMiner();
                         devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner(defaultMiner));
 
@@ -7535,8 +7553,8 @@ namespace MultiMiner.Win.Forms
                     ShowNotInstalledMinerWarning();
                 }
 
-                if ((devices.Count > 0) && (engineConfiguration.DeviceConfigurations.Count == 0) &&
-                    (engineConfiguration.CoinConfigurations.Count == 1))
+                if ((devices.Count > 0) && (app.EngineConfiguration.DeviceConfigurations.Count == 0) &&
+                    (app.EngineConfiguration.CoinConfigurations.Count == 1))
                 {
                     //setup devices for a brand new user
                     ConfigureDevicesForNewUser();
@@ -7551,7 +7569,7 @@ namespace MultiMiner.Win.Forms
                 //but no configurations for devices that have gone missing
                 RemoveExcessDeviceConfigurations();
                 //remove any duplicate configurations
-                engineConfiguration.RemoveDuplicateDeviceConfigurations();
+                app.EngineConfiguration.RemoveDuplicateDeviceConfigurations();
 
                 RefreshListViewFromViewModel();
                 RefreshDetailsAreaIfVisible();
@@ -7634,10 +7652,10 @@ namespace MultiMiner.Win.Forms
                 using (new HourGlass())
                 {
                     int donationPercent = 0;
-                    if (perksConfiguration.PerksEnabled)
-                        donationPercent = perksConfiguration.DonationPercent;
+                    if (app.PerksConfiguration.PerksEnabled)
+                        donationPercent = app.PerksConfiguration.DonationPercent;
                     miningEngine.StartMining(
-                        engineConfiguration,
+                        app.EngineConfiguration,
                         devices, 
                         coinApiInformation
                             .ToList(), //get a copy - populated async & collection may be modified
@@ -7655,10 +7673,10 @@ namespace MultiMiner.Win.Forms
             //create a deep clone of the mining & device configurations
             //this is so we can accurately display e.g. the currently mining pools
             //even if the user changes pool info without restartinging mining
-            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Coin>, List<Engine.Data.Configuration.Coin>>(engineConfiguration.CoinConfigurations);
-            this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Device>, List<Engine.Data.Configuration.Device>>(engineConfiguration.DeviceConfigurations);
+            this.miningCoinConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Coin>, List<Engine.Data.Configuration.Coin>>(app.EngineConfiguration.CoinConfigurations);
+            this.miningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Device>, List<Engine.Data.Configuration.Device>>(app.EngineConfiguration.DeviceConfigurations);
 
-            engineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
+            app.EngineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
 
             //update ViewModel with potential changes 
             ApplyModelsToViewModel();
@@ -7678,24 +7696,24 @@ namespace MultiMiner.Win.Forms
 
             SaveOwnedProcesses();
 
-            if (engineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
+            if (app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
                 // if no Internet / network connection, we did not Auto-Mine
                 (this.coinApiInformation != null))
                 ShowCoinChangeNotification();
 
             if (apiConsoleControl != null)
-                apiConsoleControl.PopulateMiners(miningEngine.MinerProcesses, networkDevicesConfiguration.Devices, localViewModel);
+                apiConsoleControl.PopulateMiners(miningEngine.MinerProcesses, app.NetworkDevicesConfiguration.Devices, localViewModel);
         }
 
         //download miners required for configured coins / algorithms
         private void DownloadRequiredMiners()
         {
-            IEnumerable<string> configuredAlgorithms = engineConfiguration.CoinConfigurations
+            IEnumerable<string> configuredAlgorithms = app.EngineConfiguration.CoinConfigurations
                 .Where(config => config.Enabled)
                 .Select(config => config.PoolGroup.Algorithm)
                 .Distinct();
 
-            SerializableDictionary<string, string> algorithmMiners = engineConfiguration.XgminerConfiguration.AlgorithmMiners;
+            SerializableDictionary<string, string> algorithmMiners = app.EngineConfiguration.XgminerConfiguration.AlgorithmMiners;
 
             foreach (string algorithmName in configuredAlgorithms)
             {
@@ -7717,9 +7735,9 @@ namespace MultiMiner.Win.Forms
 
         private void ToggleDynamicIntensityLocally(bool enabled)
         {
-            engineConfiguration.XgminerConfiguration.DesktopMode = enabled;
-            dynamicIntensityButton.Checked = engineConfiguration.XgminerConfiguration.DesktopMode;
-            engineConfiguration.SaveMinerConfiguration();
+            app.EngineConfiguration.XgminerConfiguration.DesktopMode = enabled;
+            dynamicIntensityButton.Checked = app.EngineConfiguration.XgminerConfiguration.DesktopMode;
+            app.EngineConfiguration.SaveMinerConfiguration();
 
             GetViewModelToView().DynamicIntensity = enabled;
         }
@@ -7738,16 +7756,16 @@ namespace MultiMiner.Win.Forms
 
         private void ClearPoolsFlaggedDown()
         {
-            foreach (Engine.Data.Configuration.Coin coinConfiguration in engineConfiguration.CoinConfigurations)
+            foreach (Engine.Data.Configuration.Coin coinConfiguration in app.EngineConfiguration.CoinConfigurations)
                 coinConfiguration.PoolsDown = false;
-            engineConfiguration.SaveCoinConfigurations();
+            app.EngineConfiguration.SaveCoinConfigurations();
         }
 
         private void SuggestCoinsToMine()
         {
-            if (!applicationConfiguration.SuggestCoinsToMine)
+            if (!app.ApplicationConfiguration.SuggestCoinsToMine)
                 return;
-            if (applicationConfiguration.SuggestionsAlgorithm == CoinSuggestionsAlgorithm.None)
+            if (app.ApplicationConfiguration.SuggestionsAlgorithm == CoinSuggestionsAlgorithm.None)
                 return;
             if (coinApiInformation == null) //no network connection
                 return;
@@ -7755,9 +7773,9 @@ namespace MultiMiner.Win.Forms
             IEnumerable<CoinInformation> coinsToMine = CoinSuggestions.GetCoinsToMine(
                 coinApiInformation
                     .ToList(), //get a copy - populated async & collection may be modified) 
-                applicationConfiguration.SuggestionsAlgorithm, 
-                engineConfiguration.StrategyConfiguration, 
-                engineConfiguration.CoinConfigurations);
+                app.ApplicationConfiguration.SuggestionsAlgorithm, 
+                app.EngineConfiguration.StrategyConfiguration, 
+                app.EngineConfiguration.CoinConfigurations);
 
             foreach (CoinInformation coin in coinsToMine)
                 NotifyCoinToMine(this.successfulApiContext, coin);
@@ -7768,7 +7786,7 @@ namespace MultiMiner.Win.Forms
             string value = coin.AverageProfitability.ToString(".#") + "%";
             string noun = "average profitability";
 
-            switch (engineConfiguration.StrategyConfiguration.MiningBasis)
+            switch (app.EngineConfiguration.StrategyConfiguration.MiningBasis)
             {
                 case Strategy.CoinMiningBasis.Difficulty:
                     value = coin.Difficulty.ToString(".####");
@@ -7805,7 +7823,7 @@ namespace MultiMiner.Win.Forms
             if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
                 return; //idle detection code uses User32.dll
 
-            if (applicationConfiguration.AutoSetDesktopMode)
+            if (app.ApplicationConfiguration.AutoSetDesktopMode)
             {
                 TimeSpan idleTimeSpan = TimeSpan.FromMilliseconds(Environment.TickCount - IdleTimeFinder.GetLastInputTime());
 
@@ -7814,7 +7832,7 @@ namespace MultiMiner.Win.Forms
                 //if idle for more than 1 minute, disable Desktop Mode
                 if (idleTimeSpan.TotalMinutes > idleMinutesForDesktopMode)
                 {
-                    if (engineConfiguration.XgminerConfiguration.DesktopMode)
+                    if (app.EngineConfiguration.XgminerConfiguration.DesktopMode)
                     {
                         ToggleDynamicIntensityLocally(false);
                         RestartMiningLocallyIfMining();
@@ -7823,7 +7841,7 @@ namespace MultiMiner.Win.Forms
                 //else if idle for less than the idleTimer interval, enable Desktop Mode
                 else if (idleTimeSpan.TotalMilliseconds <= timerInterval)
                 {
-                    if (!engineConfiguration.XgminerConfiguration.DesktopMode)
+                    if (!app.EngineConfiguration.XgminerConfiguration.DesktopMode)
                     {
                         ToggleDynamicIntensityLocally(true);
                         RestartMiningLocallyIfMining();
@@ -7931,7 +7949,7 @@ namespace MultiMiner.Win.Forms
             {
                 if (!RestartNetworkDevice(networkDevice))
                 {
-                    if (!applicationConfiguration.ShowApiErrors)
+                    if (!app.ApplicationConfiguration.ShowApiErrors)
                     {
                         //early exit - we aren't notifying for API errors
                         return;
@@ -7996,7 +8014,7 @@ namespace MultiMiner.Win.Forms
         private NetworkDevices.NetworkDevice GetNetworkDeviceByPath(string path)
         {
             Uri uri = new Uri("http://" + path);
-            return networkDevicesConfiguration.Devices.SingleOrDefault(nd => (nd.Port == uri.Port) && (nd.IPAddress == uri.Host));
+            return app.NetworkDevicesConfiguration.Devices.SingleOrDefault(nd => (nd.Port == uri.Port) && (nd.IPAddress == uri.Host));
         }
 
         private bool RebootNetworkDevice(DeviceViewModel deviceViewModel)
@@ -8025,7 +8043,7 @@ namespace MultiMiner.Win.Forms
                             networkDevice = GetNetworkDeviceByPath(deviceViewModel.Path);
                             networkDevice.RecentCommands.Remove(form.ShellCommand);
                             networkDevice.RecentCommands.Insert(0, form.ShellCommand);
-                            networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+                            app.NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
                         }
                     }
                 }
@@ -8104,7 +8122,7 @@ namespace MultiMiner.Win.Forms
             {
                 networkDevice.Username = username;
                 networkDevice.Password = password;
-                networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+                app.NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
             }
 
             return success;
@@ -8227,7 +8245,7 @@ namespace MultiMiner.Win.Forms
         private void UpdateNetworkDeviceMenu()
         {
             DeviceViewModel deviceViewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
-            NetworkDevices.NetworkDevice deviceConfiguration = networkDevicesConfiguration.Devices.Single(
+            NetworkDevices.NetworkDevice deviceConfiguration = app.NetworkDevicesConfiguration.Devices.Single(
                 cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
 
             PopulateNetworkDevicePoolMenu(deviceViewModel);
@@ -8237,21 +8255,21 @@ namespace MultiMiner.Win.Forms
         private void ToggleNetworkDeviceSticky()
         {
             DeviceViewModel deviceViewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
-            NetworkDevices.NetworkDevice deviceConfiguration = networkDevicesConfiguration.Devices.Single(
+            NetworkDevices.NetworkDevice deviceConfiguration = app.NetworkDevicesConfiguration.Devices.Single(
                 cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
 
             deviceConfiguration.Sticky = !deviceConfiguration.Sticky;
-            networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+            app.NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
 
         private void ToggleNetworkDeviceHidden()
         {
             DeviceViewModel deviceViewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
-            NetworkDevices.NetworkDevice deviceConfiguration = networkDevicesConfiguration.Devices.Single(
+            NetworkDevices.NetworkDevice deviceConfiguration = app.NetworkDevicesConfiguration.Devices.Single(
                 cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
 
             deviceConfiguration.Hidden = !deviceConfiguration.Hidden;
-            networkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+            app.NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
 
             ApplyDevicesToViewModel();
             RefreshListViewFromViewModel();
@@ -8282,30 +8300,5 @@ namespace MultiMiner.Win.Forms
             }
         }
         #endregion
-
-        private void rebootDeviceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            RebootSelectedNetworkDevices();
-        }
-
-        private void executeCommandToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ExecuteCommandOnSelectedNetworkDevices();
-        }
-
-        private void restartMiningToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            RestartSelectedNetworkDevices();
-        }
-
-        private void startMiningToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            StartSelectedNetworkDevices();
-        }
-
-        private void stopMiningToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            StopSelectedNetworkDevices();
-        }
     }
 }
