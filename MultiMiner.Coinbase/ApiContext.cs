@@ -4,7 +4,6 @@ using MultiMiner.Utility.Net;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Net;
 
 namespace MultiMiner.Coinbase
 {
@@ -12,9 +11,9 @@ namespace MultiMiner.Coinbase
     {
         public IEnumerable<ExchangeInformation> GetExchangeInformation()
         {
-            WebClient webClient = new ApiWebClient();
+            ApiWebClient webClient = new ApiWebClient();
 
-            string response = webClient.DownloadString(new Uri(GetApiUrl()));
+            string response = webClient.DownloadFlakyString(new Uri(GetApiUrl()));
 
             Data.SellPrices sellPrices = JsonConvert.DeserializeObject<Data.SellPrices>(response);
 
