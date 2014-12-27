@@ -9,7 +9,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
-namespace MultiMiner.Win.Data.Configuration
+namespace MultiMiner.UX.Data.Configuration
 {
     [XmlType(TypeName = "ApplicationConfiguration")]
     public class Application

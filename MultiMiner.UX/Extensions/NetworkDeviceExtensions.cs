@@ -1,11 +1,11 @@
-﻿using MultiMiner.Win.Data.Configuration;
-using MultiMiner.Win.ViewModels;
+﻿using MultiMiner.UX.Data.Configuration;
+using MultiMiner.UX.ViewModels;
 using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.Net;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
     public static class NetworkDeviceExtensions
     {

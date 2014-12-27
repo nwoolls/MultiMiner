@@ -58,20 +58,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\DeviceListView.cs">
-      <SubType>component</SubType>
-    </Compile>
+    <Compile Include="Controls\DeviceListView.cs" />
     <Compile Include="Controls\DeviceListView.Designer.cs">
       <DependentUpon>DeviceListView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\Configuration\Metadata.cs" />
-    <Compile Include="Data\Configuration\PoolDefaults.cs" />
-    <Compile Include="Data\PoolFeatureAnchors.cs" />
     <Compile Include="Extensions\ApplicationConfigurationExtensions.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\DeviceConfigurationExtensions.cs" />
     <Compile Include="Extensions\EngineConfigurationExtensions.cs" />
-    <Compile Include="Extensions\IPAddressExtensions.cs" />
     <Compile Include="Extensions\XgminerConfigurationExtensions.cs" />
     <Compile Include="Forms\AboutForm.cs">
       <SubType>Form</SubType>
@@ -91,8 +85,6 @@
     <Compile Include="Forms\Configuration\AdvancedSettingsForm.Designer.cs">
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\Configuration\NetworkDevices.cs" />
-    <Compile Include="Data\Configuration\Paths.cs" />
     <Compile Include="Controls\DetailsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -100,7 +92,6 @@
       <DependentUpon>DetailsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Extensions\IPEndPointExtensions.cs" />
-    <Compile Include="Extensions\NetworkDeviceExtensions.cs" />
     <Compile Include="Controls\InstancesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -119,7 +110,6 @@
     <Compile Include="Forms\Configuration\MinerSettingsForm.Designer.cs">
       <DependentUpon>MinerSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\Configuration\Application.cs" />
     <Compile Include="Forms\Configuration\CoinChooseForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,8 +134,6 @@
     <Compile Include="Forms\Configuration\PoolsForm.Designer.cs">
       <DependentUpon>PoolsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\ApiLogEntry.cs" />
-    <Compile Include="Data\Configuration\Perks.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />
     <Compile Include="Extensions\MiningStatisticsExtensions.cs" />
@@ -219,9 +207,6 @@
     <Compile Include="Forms\Configuration\StrategiesForm.Designer.cs">
       <DependentUpon>StrategiesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\UserAgent.cs" />
-    <Compile Include="ViewModels\DeviceViewModel.cs" />
-    <Compile Include="ViewModels\MinerFormViewModel.cs" />
     <Compile Include="Forms\WizardForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -404,6 +389,10 @@
     <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
       <Project>{99B0F266-EFF7-4416-8C36-8356396A11CA}</Project>
       <Name>MultiMiner.Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.UX\MultiMiner.UX.csproj">
+      <Project>{a23b916f-0e06-43bb-97a4-f61afe3a2f72}</Project>
+      <Name>MultiMiner.UX</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.WhatMine\MultiMiner.WhatMine.csproj">
       <Project>{4b0c2edd-9a3e-41af-b8ef-9a7a541d2e80}</Project>

@@ -12,8 +12,8 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
 using MultiMiner.Engine;
-using MultiMiner.Win.Data;
 using MultiMiner.Engine.Data.Configuration;
+using MultiMiner.UX.Data;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -23,7 +23,7 @@ namespace MultiMiner.Win.Forms.Configuration
         private readonly List<PoolGroup> knownCoins;
 
         public PoolsForm(List<Engine.Data.Configuration.Coin> coinConfigurations, List<PoolGroup> knownCoins,
-            Data.Configuration.Application applicationConfiguration, Data.Configuration.Perks perksConfiguration)
+            UX.Data.Configuration.Application applicationConfiguration, UX.Data.Configuration.Perks perksConfiguration)
         {
             this.configurations = coinConfigurations;
             this.knownCoins = knownCoins;
@@ -112,8 +112,8 @@ namespace MultiMiner.Win.Forms.Configuration
 
                 MiningPool miningPool = new MiningPool()
                 {
-                    Host = Data.Configuration.PoolDefaults.HostPrefix,
-                    Port = Data.Configuration.PoolDefaults.Port
+                    Host = UX.Data.Configuration.PoolDefaults.HostPrefix,
+                    Port = UX.Data.Configuration.PoolDefaults.Port
                 };
                 configuration.Pools.Add(miningPool);
 
@@ -153,8 +153,8 @@ namespace MultiMiner.Win.Forms.Configuration
 
             MiningPool miningPool = new MiningPool()
             {
-                Host = Data.Configuration.PoolDefaults.HostPrefix,
-                Port = Data.Configuration.PoolDefaults.Port
+                Host = UX.Data.Configuration.PoolDefaults.HostPrefix,
+                Port = UX.Data.Configuration.PoolDefaults.Port
             };
             miningPoolBindingSource.Add(miningPool);
 

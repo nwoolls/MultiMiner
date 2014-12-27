@@ -1,6 +1,6 @@
-﻿namespace MultiMiner.Win.Data
+﻿namespace MultiMiner.UX.Data
 {
-    class PoolFeatureAnchors
+    public class PoolFeatureAnchors
     {
         public const string ExtraNonceSubscribe = "#xnsub";
         public const string SkipCoinbaseCheck = "#skipcbcheck";

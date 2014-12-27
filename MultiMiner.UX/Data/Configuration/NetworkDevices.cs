@@ -1,11 +1,11 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Utility.Serialization;
-using MultiMiner.Win.Extensions;
+using MultiMiner.UX.Extensions;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
-namespace MultiMiner.Win.Data.Configuration
+namespace MultiMiner.UX.Data.Configuration
 {
     public class NetworkDevices
     {

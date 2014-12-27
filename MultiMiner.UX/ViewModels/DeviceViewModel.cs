@@ -1,11 +1,11 @@
-﻿using MultiMiner.Win.Extensions;
+﻿using MultiMiner.UX.Extensions;
 using MultiMiner.Engine.Data;
 using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.Net;
 
-namespace MultiMiner.Win.ViewModels
+namespace MultiMiner.UX.ViewModels
 {
     public class DeviceViewModel : DeviceDescriptor
     {

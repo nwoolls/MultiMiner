@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
     static class IPAddressExtensions
     {

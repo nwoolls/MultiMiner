@@ -265,7 +265,7 @@
             // 
             // applicationBindingSource
             // 
-            this.applicationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
+            this.applicationBindingSource.DataSource = typeof(MultiMiner.UX.Data.Configuration.Application);
             // 
             // saveButton
             // 

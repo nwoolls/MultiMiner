@@ -15,14 +15,15 @@ using System.Threading;
 using MultiMiner.Win.Controls.Notifications;
 using MultiMiner.Xgminer.Api.Data;
 using MultiMiner.Win.Extensions;
-using MultiMiner.Win.Data.Configuration;
+using MultiMiner.UX.Data.Configuration;
+using MultiMiner.UX.Extensions;
 using MultiMiner.CoinApi;
 using MultiMiner.CoinApi.Data;
 using MultiMiner.Remoting;
 using MultiMiner.Services;
 using MultiMiner.Discovery;
 using MultiMiner.Discovery.Data;
-using MultiMiner.Win.ViewModels;
+using MultiMiner.UX.ViewModels;
 using System.ServiceModel;
 using Newtonsoft.Json;
 using System.Web.Script.Serialization;
@@ -30,7 +31,7 @@ using System.Security.Cryptography;
 using MultiMiner.Xgminer.Discovery;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
-using MultiMiner.Win.Data;
+using MultiMiner.UX.Data;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Win.Controls;
 using MultiMiner.Win.Forms.Configuration;
@@ -69,7 +70,7 @@ namespace MultiMiner.Win.Forms
 
         //configuration
         private Engine.Data.Configuration.Engine engineConfiguration = new Engine.Data.Configuration.Engine();
-        private Data.Configuration.Application applicationConfiguration = new Data.Configuration.Application();
+        private UX.Data.Configuration.Application applicationConfiguration = new UX.Data.Configuration.Application();
         private readonly Paths pathConfiguration = new Paths();
         private Perks perksConfiguration = new Perks();
         private NetworkDevices networkDevicesConfiguration = new NetworkDevices();
@@ -1363,7 +1364,7 @@ namespace MultiMiner.Win.Forms
 
         private void ConfigureSettingsRemotely()
         {
-            Data.Configuration.Application workingApplicationConfiguration = new Data.Configuration.Application();
+            UX.Data.Configuration.Application workingApplicationConfiguration = new UX.Data.Configuration.Application();
             Engine.Data.Configuration.Engine workingEngineConfiguration = new Engine.Data.Configuration.Engine();
             Paths workingPathConfiguration = new Paths();
             Perks workingPerksConfiguration = new Perks();
@@ -1550,7 +1551,7 @@ namespace MultiMiner.Win.Forms
 
         private void ConfigureCoinsRemotely()
         {
-            Data.Configuration.Application workingApplicationConfiguration = new Data.Configuration.Application();
+            UX.Data.Configuration.Application workingApplicationConfiguration = new UX.Data.Configuration.Application();
             Engine.Data.Configuration.Engine workingEngineConfiguration = new Engine.Data.Configuration.Engine();
 
             GetRemoteApplicationConfiguration(this.selectedRemoteInstance);
@@ -1625,7 +1626,7 @@ namespace MultiMiner.Win.Forms
 
         private void ConfigureStrategiesRemotely()
         {
-            Data.Configuration.Application workingApplicationConfiguration = new Data.Configuration.Application();
+            UX.Data.Configuration.Application workingApplicationConfiguration = new UX.Data.Configuration.Application();
             Engine.Data.Configuration.Engine workingEngineConfiguration = new Engine.Data.Configuration.Engine();
 
             GetRemoteApplicationConfiguration(this.selectedRemoteInstance);
@@ -3050,7 +3051,7 @@ namespace MultiMiner.Win.Forms
         private void SetupCoinStatsTimer()
         {
             int coinStatsMinutes = 15;
-            Data.Configuration.Application.TimerInterval timerInterval = applicationConfiguration.StrategyCheckInterval;
+            UX.Data.Configuration.Application.TimerInterval timerInterval = applicationConfiguration.StrategyCheckInterval;
 
             coinStatsMinutes = timerInterval.ToMinutes();
 
@@ -4599,7 +4600,7 @@ namespace MultiMiner.Win.Forms
             //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
             List<NetworkDevices.NetworkDevice> networkDevices = networkDevicesConfiguration.Devices.ToList();
 
-            foreach (Data.Configuration.NetworkDevices.NetworkDevice networkDevice in networkDevices)
+            foreach (UX.Data.Configuration.NetworkDevices.NetworkDevice networkDevice in networkDevices)
                 AddNetworkMinerStatistics(networkDevice, statisticsList);
         }
 
@@ -6447,7 +6448,7 @@ namespace MultiMiner.Win.Forms
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 Engine.Data.Configuration.Engine newEngineConfiguration;
-                Data.Configuration.Application newApplicationConfiguration;
+                UX.Data.Configuration.Application newApplicationConfiguration;
                 Perks newPerksConfiguration;
                 wizardForm.CreateConfigurations(out newEngineConfiguration, out newApplicationConfiguration, out newPerksConfiguration);
 

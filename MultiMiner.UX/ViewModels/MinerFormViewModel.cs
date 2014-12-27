@@ -3,13 +3,13 @@ using MultiMiner.Xgminer.Api.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MultiMiner.Win.Data.Configuration;
-using MultiMiner.Win.Extensions;
+using MultiMiner.UX.Data.Configuration;
+using MultiMiner.UX.Extensions;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
 
-namespace MultiMiner.Win.ViewModels
+namespace MultiMiner.UX.ViewModels
 {
     public class MinerFormViewModel
     {

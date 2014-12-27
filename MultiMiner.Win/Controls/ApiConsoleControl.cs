@@ -1,7 +1,7 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Utility.Forms;
-using MultiMiner.Win.Data.Configuration;
-using MultiMiner.Win.ViewModels;
+using MultiMiner.UX.Data.Configuration;
+using MultiMiner.UX.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

@@ -147,7 +147,7 @@
             // 
             // deviceBindingSource
             // 
-            this.deviceBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
+            this.deviceBindingSource.DataSource = typeof(MultiMiner.UX.ViewModels.DeviceViewModel);
             // 
             // label2
             // 
@@ -373,7 +373,7 @@
             // 
             // workerBindingSource
             // 
-            this.workerBindingSource.DataSource = typeof(MultiMiner.Win.ViewModels.DeviceViewModel);
+            this.workerBindingSource.DataSource = typeof(MultiMiner.UX.ViewModels.DeviceViewModel);
             // 
             // workersTitleLabel
             // 

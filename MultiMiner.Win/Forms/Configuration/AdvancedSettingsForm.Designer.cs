@@ -93,7 +93,7 @@
             // 
             // applicationConfigurationBindingSource
             // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Application);
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.UX.Data.Configuration.Application);
             // 
             // checkBox3
             // 
@@ -159,7 +159,7 @@
             // 
             // pathConfigurationBindingSource
             // 
-            this.pathConfigurationBindingSource.DataSource = typeof(MultiMiner.Win.Data.Configuration.Paths);
+            this.pathConfigurationBindingSource.DataSource = typeof(MultiMiner.UX.Data.Configuration.Paths);
             // 
             // label2
             // 

@@ -1,5 +1,5 @@
 ﻿using MultiMiner.Utility.Forms;
-using MultiMiner.Win.Data.Configuration;
+using MultiMiner.UX.Data.Configuration;
 using System;
 using System.Diagnostics;
 

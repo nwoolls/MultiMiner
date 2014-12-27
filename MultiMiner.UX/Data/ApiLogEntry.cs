@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MultiMiner.Win.Data
+namespace MultiMiner.UX.Data
 {
     public class ApiLogEntry
     {

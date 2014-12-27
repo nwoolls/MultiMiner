@@ -1,6 +1,6 @@
-﻿namespace MultiMiner.Win.Data.Configuration
+﻿namespace MultiMiner.UX.Data.Configuration
 {
-    static class PoolDefaults
+    public static class PoolDefaults
     {
         public const string HostPrefix = "stratum+tcp://";
         public const int Port = 3333;

@@ -213,9 +213,9 @@
             this.aToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.miningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.restartMiningToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.startMiningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopMiningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.restartMiningToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.rebootDeviceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.executeCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -553,7 +553,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(883, 111);
-            this.detailsAreaContainer.SplitterDistance = 662;
+            this.detailsAreaContainer.SplitterDistance = 663;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -604,7 +604,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(662, 111);
+            this.deviceListView.Size = new System.Drawing.Size(663, 111);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.deviceListView.TabIndex = 2;
@@ -730,7 +730,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(218, 111);
+            this.detailsControl1.Size = new System.Drawing.Size(217, 111);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -1041,7 +1041,7 @@
             // 
             // apiLogEntryBindingSource
             // 
-            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.Win.Data.ApiLogEntry);
+            this.apiLogEntryBindingSource.DataSource = typeof(MultiMiner.UX.Data.ApiLogEntry);
             // 
             // panel2
             // 
@@ -1820,13 +1820,13 @@
             // aToolStripMenuItem
             // 
             this.aToolStripMenuItem.Name = "aToolStripMenuItem";
-            this.aToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aToolStripMenuItem.Size = new System.Drawing.Size(82, 22);
             this.aToolStripMenuItem.Text = "A";
             // 
             // bToolStripMenuItem
             // 
             this.bToolStripMenuItem.Name = "bToolStripMenuItem";
-            this.bToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.bToolStripMenuItem.Size = new System.Drawing.Size(82, 22);
             this.bToolStripMenuItem.Text = "B";
             // 
             // miningToolStripMenuItem
@@ -1839,26 +1839,26 @@
             this.miningToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.miningToolStripMenuItem.Text = "Mining";
             // 
-            // restartMiningToolStripMenuItem1
-            // 
-            this.restartMiningToolStripMenuItem1.Name = "restartMiningToolStripMenuItem1";
-            this.restartMiningToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.restartMiningToolStripMenuItem1.Text = "Restart";
-            this.restartMiningToolStripMenuItem1.Click += new System.EventHandler(this.restartMiningToolStripMenuItem1_Click);
-            // 
             // startMiningToolStripMenuItem
             // 
             this.startMiningToolStripMenuItem.Name = "startMiningToolStripMenuItem";
-            this.startMiningToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.startMiningToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.startMiningToolStripMenuItem.Text = "Start";
             this.startMiningToolStripMenuItem.Click += new System.EventHandler(this.startMiningToolStripMenuItem_Click);
             // 
             // stopMiningToolStripMenuItem
             // 
             this.stopMiningToolStripMenuItem.Name = "stopMiningToolStripMenuItem";
-            this.stopMiningToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stopMiningToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.stopMiningToolStripMenuItem.Text = "Stop";
             this.stopMiningToolStripMenuItem.Click += new System.EventHandler(this.stopMiningToolStripMenuItem_Click);
+            // 
+            // restartMiningToolStripMenuItem1
+            // 
+            this.restartMiningToolStripMenuItem1.Name = "restartMiningToolStripMenuItem1";
+            this.restartMiningToolStripMenuItem1.Size = new System.Drawing.Size(110, 22);
+            this.restartMiningToolStripMenuItem1.Text = "Restart";
+            this.restartMiningToolStripMenuItem1.Click += new System.EventHandler(this.restartMiningToolStripMenuItem1_Click);
             // 
             // rebootDeviceToolStripMenuItem
             // 

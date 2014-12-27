@@ -1,5 +1,5 @@
 ﻿using MultiMiner.Utility.OS;
-using MultiMiner.Win.Data.Configuration;
+using MultiMiner.UX.Data.Configuration;
 using MultiMiner.Win.Forms;
 using System;
 using System.Diagnostics;
@@ -26,7 +26,7 @@ namespace MultiMiner.Win
                 {
                     Paths pathConfig = new Paths();
                     pathConfig.LoadPathConfiguration();
-                    Data.Configuration.Application appConfig = new Data.Configuration.Application();
+                    UX.Data.Configuration.Application appConfig = new UX.Data.Configuration.Application();
                     appConfig.LoadApplicationConfiguration(pathConfig.SharedConfigPath);
                     if (!appConfig.AllowMultipleInstances)
                         return;
