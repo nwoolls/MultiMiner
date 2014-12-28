@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Newtonsoft.Json\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -48,6 +52,7 @@
     <Compile Include="Data\Configuration\Paths.cs" />
     <Compile Include="Data\Configuration\Perks.cs" />
     <Compile Include="Data\Configuration\PoolDefaults.cs" />
+    <Compile Include="Data\Notification.cs" />
     <Compile Include="Data\PoolFeatureAnchors.cs" />
     <Compile Include="Data\UserAgent.cs" />
     <Compile Include="Extensions\IPAddressExtensions.cs" />
@@ -62,13 +67,37 @@
       <Project>{9e86f77a-68b9-4d72-82d2-855878ba8cb1}</Project>
       <Name>MultiMiner.CoinApi</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Coinchoose\MultiMiner.CoinChoose.csproj">
+      <Project>{d9b3f627-cb7a-454c-af8f-70c8fb584553}</Project>
+      <Name>MultiMiner.CoinChoose</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.CoinWarz\MultiMiner.CoinWarz.csproj">
+      <Project>{5b2b2592-689a-4de2-815c-259427a3d101}</Project>
+      <Name>MultiMiner.CoinWarz</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Engine\MultiMiner.Engine.csproj">
       <Project>{845687bb-ec47-46d3-ac9d-6fcfb63de8f5}</Project>
       <Name>MultiMiner.Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.MobileMiner\MultiMiner.MobileMiner.csproj">
+      <Project>{70622816-5853-4470-9432-9acda2e96089}</Project>
+      <Name>MultiMiner.MobileMiner</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.MultipoolApi\MultiMiner.MultipoolApi.csproj">
+      <Project>{4af4b34a-07db-456b-9c58-b0863435fe54}</Project>
+      <Name>MultiMiner.MultipoolApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.NiceHash\MultiMiner.NiceHash.csproj">
+      <Project>{5a05d03d-7006-406c-84b0-a2717a07ceb7}</Project>
+      <Name>MultiMiner.NiceHash</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
       <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
       <Name>MultiMiner.Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.WhatMine\MultiMiner.WhatMine.csproj">
+      <Project>{4b0c2edd-9a3e-41af-b8ef-9a7a541d2e80}</Project>
+      <Name>MultiMiner.WhatMine</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj">
       <Project>{5b43ad9d-8b67-4aa8-b76d-aa83caf9d29f}</Project>
