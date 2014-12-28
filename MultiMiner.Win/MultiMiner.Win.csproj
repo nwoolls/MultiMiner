@@ -131,7 +131,6 @@
     </Compile>
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />
-    <Compile Include="Extensions\TimeIntervalExtensions.cs" />
     <Compile Include="Forms\Configuration\ProxySettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>

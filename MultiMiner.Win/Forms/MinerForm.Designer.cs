@@ -46,7 +46,6 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.coinStatsTimer = new System.Windows.Forms.Timer(this.components);
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.notifyIconMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -55,7 +54,6 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.showAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitAppMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.restartTimer = new System.Windows.Forms.Timer(this.components);
             this.coinPopupMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.largeImageList = new System.Windows.Forms.ImageList(this.components);
             this.smallImageList = new System.Windows.Forms.ImageList(this.components);
@@ -264,12 +262,6 @@
             this.sideToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
-            // coinStatsTimer
-            // 
-            this.coinStatsTimer.Enabled = true;
-            this.coinStatsTimer.Interval = 900000;
-            this.coinStatsTimer.Tick += new System.EventHandler(this.coinStatsTimer_Tick);
-            // 
             // imageList1
             // 
             this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
@@ -334,10 +326,6 @@
             this.quitAppMenuItem.Size = new System.Drawing.Size(103, 22);
             this.quitAppMenuItem.Text = "Quit";
             this.quitAppMenuItem.Click += new System.EventHandler(this.quitAppMenuItem_Click);
-            // 
-            // restartTimer
-            // 
-            this.restartTimer.Tick += new System.EventHandler(this.restartTimer_Tick);
             // 
             // coinPopupMenu
             // 
@@ -553,7 +541,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(883, 111);
-            this.detailsAreaContainer.SplitterDistance = 663;
+            this.detailsAreaContainer.SplitterDistance = 665;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -604,7 +592,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(663, 111);
+            this.deviceListView.Size = new System.Drawing.Size(665, 111);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.deviceListView.TabIndex = 2;
@@ -730,7 +718,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(217, 111);
+            this.detailsControl1.Size = new System.Drawing.Size(215, 111);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
@@ -2069,8 +2057,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Timer coinStatsTimer;
         private System.Windows.Forms.Panel startupMiningPanel;
         private System.Windows.Forms.Button cancelStartupMiningButton;
         private System.Windows.Forms.Label countdownLabel;
@@ -2121,7 +2107,6 @@
         private System.Windows.Forms.ToolStripStatusLabel deviceTotalLabel;
         private System.Windows.Forms.ToolStripSplitButton settingsButton;
         private System.Windows.Forms.ToolStripMenuItem coinsButton;
-        private System.Windows.Forms.Timer restartTimer;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;

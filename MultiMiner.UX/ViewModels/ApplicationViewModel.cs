@@ -11,6 +11,7 @@ using MultiMiner.MobileMiner.Data;
 using MultiMiner.MultipoolApi.Data;
 using MultiMiner.Remoting;
 using MultiMiner.Services;
+using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.UX.Data;
@@ -72,6 +73,11 @@ namespace MultiMiner.UX.ViewModels
         #endregion
 
         #region Fields
+        //coalesced timers
+        private Timers timers = new Timers();
+        private Timer coinStatsTimer = new Timer();
+        private Timer restartTimer = new Timer();
+
         //configuration
         public readonly Engine.Data.Configuration.Engine EngineConfiguration = new Engine.Data.Configuration.Engine();
         public readonly Data.Configuration.Application ApplicationConfiguration = new Data.Configuration.Application();
@@ -112,6 +118,7 @@ namespace MultiMiner.UX.ViewModels
         private readonly MiningEngine miningEngine = new MiningEngine();
         private int startupMiningCountdownSeconds = 0;
         private List<PoolGroup> knownCoins = new List<PoolGroup>();
+        private int coinStatsCountdownMinutes = 0;
 
         //MobileMiner API information
         private readonly List<int> processedCommandIds = new List<int>();
@@ -149,6 +156,7 @@ namespace MultiMiner.UX.ViewModels
         public MiningEngine MiningEngine { get { return miningEngine; } }
         public List<Xgminer.Data.Device> Devices { get { return devices; } }
         public int StartupMiningCountdownSeconds { get { return startupMiningCountdownSeconds; } }
+        public int CoinStatsCountdownMinutes { get { return coinStatsCountdownMinutes; } }
 
         //remoting
         public Instance SelectedRemoteInstance { get { return selectedRemoteInstance; } }
@@ -172,6 +180,9 @@ namespace MultiMiner.UX.ViewModels
             ApiLogEntryBindingSource.DataSource = apiLogEntries;
             LogLaunchArgsBindingSource.DataSource = logLaunchEntries;
             LogProcessCloseArgsBindingSource.DataSource = LogCloseEntries;
+
+            coinStatsTimer.Tick += coinStatsTimer_Tick;
+            restartTimer.Tick += restartTimer_Tick;
         }
         #endregion
 
@@ -477,15 +488,15 @@ namespace MultiMiner.UX.ViewModels
             }
         }
 
-        public void ConfigureCoins()
+        public void ConfigurePools()
         {
             if (SelectedRemoteInstance == null)
-                ConfigureCoinsLocally();
+                ConfigurePoolsLocally();
             else
-                ConfigureCoinsRemotely();
+                ConfigurePoolsRemotely();
         }
 
-        public void ConfigureCoinsLocally()
+        private void ConfigurePoolsLocally()
         {
             Data.ConfigurationEventArgs eventArgs = new Data.ConfigurationEventArgs()
             {
@@ -913,7 +924,7 @@ namespace MultiMiner.UX.ViewModels
             }
         }
 
-        public void CheckNetworkDevicesAsync()
+        private void CheckNetworkDevicesAsync()
         {
             Action asyncAction = CheckNetworkDevices;
             asyncAction.BeginInvoke(
@@ -946,7 +957,7 @@ namespace MultiMiner.UX.ViewModels
                 RefreshNetworkDeviceStatsAsync();
         }
 
-        public void RefreshNetworkDeviceStatsAsync()
+        private void RefreshNetworkDeviceStatsAsync()
         {
             Action asyncAction = RefreshAllNetworkDeviceStats;
             asyncAction.BeginInvoke(
@@ -1128,7 +1139,7 @@ namespace MultiMiner.UX.ViewModels
             DataModified(this, new EventArgs());
         }
 
-        public void FindNetworkDevicesAsync()
+        private void FindNetworkDevicesAsync()
         {
             Action asyncAction = FindNetworkDevices;
             asyncAction.BeginInvoke(
@@ -1528,7 +1539,7 @@ namespace MultiMiner.UX.ViewModels
             return success;
         }
 
-        public void RestartSuspectNetworkDevices()
+        private void RestartSuspectNetworkDevices()
         {
             RestartNetworkDevicesForChainStatus();
             RestartNetworkDevicesForSubparHashrate();
@@ -1682,7 +1693,73 @@ namespace MultiMiner.UX.ViewModels
                 StopMiningRemotely(SelectedRemoteInstance);
         }
 
-        public void RestartMiningLocallyIfMining()
+        public void SetAllDevicesToCoin(string coinSymbol, bool disableStrategies)
+        {
+            if (SelectedRemoteInstance == null)
+                SetAllDevicesToCoinLocally(coinSymbol, disableStrategies);
+            else
+                SetAllDevicesToCoinRemotely(SelectedRemoteInstance, coinSymbol, disableStrategies);
+        }
+
+        public void SetAllDevicesToCoinOnAllRigs(string coinSymbol, bool disableStrategies)
+        {
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<Instance> instancesCopy = InstanceManager.Instances.Where(i => i != InstanceManager.ThisPCInstance).ToList();
+            foreach (Instance instance in instancesCopy)
+                SetAllDevicesToCoinRemotely(instance, coinSymbol, disableStrategies);
+        }
+
+        public void RenameDevice(DeviceViewModel deviceViewModel, string name)
+        {
+            //rename the device in the user metadata
+            Metadata.DeviceMetadata deviceData = MetadataConfiguration.Devices.SingleOrDefault(d => d.Equals(deviceViewModel));
+            if (deviceData == null)
+            {
+                deviceData = new Metadata.DeviceMetadata();
+                ObjectCopier.CopyObject(deviceViewModel, deviceData);
+                MetadataConfiguration.Devices.Add(deviceData);
+            }
+            deviceData.FriendlyName = name;
+            MetadataConfiguration.SaveDeviceMetadataConfiguration();
+
+            //rename the device ViewModel itself
+            deviceViewModel.FriendlyName = name;
+        }
+
+        private void CheckIdleTimeForDynamicIntensity(long timerInterval)
+        {
+            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+                return; //idle detection code uses User32.dll
+
+            if (ApplicationConfiguration.AutoSetDesktopMode)
+            {
+                TimeSpan idleTimeSpan = TimeSpan.FromMilliseconds(Environment.TickCount - IdleTimeFinder.GetLastInputTime());
+
+                const int idleMinutesForDesktopMode = 2;
+
+                //if idle for more than 1 minute, disable Desktop Mode
+                if (idleTimeSpan.TotalMinutes > idleMinutesForDesktopMode)
+                {
+                    if (EngineConfiguration.XgminerConfiguration.DesktopMode)
+                    {
+                        ToggleDynamicIntensityLocally(false);
+                        RestartMiningLocallyIfMining();
+                    }
+                }
+                //else if idle for less than the idleTimer interval, enable Desktop Mode
+                else if (idleTimeSpan.TotalMilliseconds <= timerInterval)
+                {
+                    if (!EngineConfiguration.XgminerConfiguration.DesktopMode)
+                    {
+                        ToggleDynamicIntensityLocally(true);
+                        RestartMiningLocallyIfMining();
+                    }
+                }
+            }
+        }
+
+        private void RestartMiningLocallyIfMining()
         {
             if (MiningEngine.Mining)
             {
@@ -1800,7 +1877,7 @@ namespace MultiMiner.UX.ViewModels
             SaveOwnedProcesses();
         }
 
-        public void SetAllDevicesToCoinLocally(string coinSymbol, bool disableStrategies)
+        private void SetAllDevicesToCoinLocally(string coinSymbol, bool disableStrategies)
         {
             bool wasMining = MiningEngine.Mining;
             StopMiningLocally();
@@ -1982,7 +2059,7 @@ namespace MultiMiner.UX.ViewModels
             DataModified(this, new EventArgs());
         }
 
-        public void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
+        private void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
         {
             //started mining but haven't yet assigned mining members
             if (MiningCoinConfigurations == null)
@@ -2003,7 +2080,7 @@ namespace MultiMiner.UX.ViewModels
             }
         }
 
-        public void CheckAndNotifyAcceptedShares(MinerProcess minerProcess, long acceptedShares)
+        private void CheckAndNotifyAcceptedShares(MinerProcess minerProcess, long acceptedShares)
         {
             //started mining but haven't yet assigned mining members
             if (MiningCoinConfigurations == null)
@@ -2034,7 +2111,7 @@ namespace MultiMiner.UX.ViewModels
         //https://github.com/nwoolls/MultiMiner/issues/152
         //http://social.msdn.microsoft.com/Forums/vstudio/en-US/94ba760c-7080-4614-8a56-15582c48f900/child-process-keeps-parents-socket-open-diagnosticsprocess-and-nettcplistener?forum=netfxbcl
         //keep track of processes we've launched so we can kill them later
-        public void SaveOwnedProcesses()
+        private void SaveOwnedProcesses()
         {
             OwnedProcesses.SaveOwnedProcesses(MiningEngine.MinerProcesses.Select(mp => mp.Process), GetOwnedProcessFilePath());
         }
@@ -2104,7 +2181,7 @@ namespace MultiMiner.UX.ViewModels
             return true;
         }
 
-        public void CheckMiningOnStartupStatus()
+        private void CheckMiningOnStartupStatus()
         {
             if (StartupMiningCountdownSeconds > 0)
             {
@@ -2165,7 +2242,7 @@ namespace MultiMiner.UX.ViewModels
             UpdateApplicationFromCoinStats();
         }
 
-        public void RefreshCoinStatsAsync()
+        private void RefreshCoinStatsAsync()
         {
             Action asyncAction = RefreshAllCoinStats;
             asyncAction.BeginInvoke(
@@ -2194,7 +2271,7 @@ namespace MultiMiner.UX.ViewModels
             DataModified(this, new EventArgs());
         }
 
-        public void CheckAndApplyMiningStrategy()
+        private void CheckAndApplyMiningStrategy()
         {
             if (MiningEngine.Mining && EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
             {
@@ -2410,7 +2487,7 @@ namespace MultiMiner.UX.ViewModels
         #endregion
 
         #region Mining event handlers
-        public void LogApiEvent(object sender, Xgminer.Api.LogEventArgs eventArgs)
+        private void LogApiEvent(object sender, Xgminer.Api.LogEventArgs eventArgs)
         {
             ApiLogEntry logEntry = new ApiLogEntry();
 
@@ -2461,7 +2538,7 @@ namespace MultiMiner.UX.ViewModels
             LogObjectToFile(logEntry, logFileName);
         }
 
-        public void LogObjectToFile(object objectToLog, string logFileName)
+        private void LogObjectToFile(object objectToLog, string logFileName)
         {
             string logDirectory = GetLogDirectory();
             string logFilePath = Path.Combine(logDirectory, logFileName);
@@ -2506,7 +2583,7 @@ namespace MultiMiner.UX.ViewModels
         //being triggered by someone who has valid credentials, and
         //i've seen it myself as well
         private bool mobileMinerSuccess = false;
-        public void SubmitMobileMinerStatistics()
+        private void SubmitMobileMinerStatistics()
         {
             //are remote monitoring enabled?
             if (!ApplicationConfiguration.MobileMinerMonitoring)
@@ -3001,7 +3078,7 @@ namespace MultiMiner.UX.ViewModels
             queuedNotifications.Add(notification);
         }
 
-        public void SubmitMobileMinerNotifications()
+        private void SubmitMobileMinerNotifications()
         {
             //are remote notifications enabled?
             if (!ApplicationConfiguration.MobileMinerPushNotifications)
@@ -3256,7 +3333,7 @@ namespace MultiMiner.UX.ViewModels
             }
         }
 
-        public void ClearCachedNetworkDifficulties()
+        private void ClearCachedNetworkDifficulties()
         {
             minerNetworkDifficulty.Clear();
         }
@@ -3295,7 +3372,7 @@ namespace MultiMiner.UX.ViewModels
         #endregion
 
         #region RPC API
-        public void RefreshPoolInfo()
+        private void RefreshPoolInfo()
         {
             foreach (MinerProcess minerProcess in MiningEngine.MinerProcesses)
             {
@@ -3342,7 +3419,7 @@ namespace MultiMiner.UX.ViewModels
             return poolInformation;
         }
 
-        public void PopulateSummaryInfoFromProcesses()
+        private void PopulateSummaryInfoFromProcesses()
         {
             foreach (MinerProcess minerProcess in MiningEngine.MinerProcesses)
             {
@@ -3640,7 +3717,7 @@ namespace MultiMiner.UX.ViewModels
             return result;
         }
 
-        public void BroadcastHashrate()
+        private void BroadcastHashrate()
         {
             //broadcast 0 (e.g. even if not mining)
             Remoting.Data.Transfer.Machine machine = new Remoting.Data.Transfer.Machine();
@@ -3997,7 +4074,7 @@ namespace MultiMiner.UX.ViewModels
             }));
         }
 
-        public static bool BackendMinerHasUpdates(out string availableVersion, out string installedVersion)
+        private static bool BackendMinerHasUpdates(out string availableVersion, out string installedVersion)
         {
             availableVersion = String.Empty;
             installedVersion = String.Empty;
@@ -4391,7 +4468,7 @@ namespace MultiMiner.UX.ViewModels
                                 , TimeSpan.FromMilliseconds(-1)); // don't repeat
         }
 
-        public void UpdateLocalViewFromRemoteInstance()
+        private void UpdateLocalViewFromRemoteInstance()
         {
             if (!RemotingEnabled)
                 return;
@@ -4432,7 +4509,7 @@ namespace MultiMiner.UX.ViewModels
             });
         }
 
-        public void SetAllDevicesToCoinRemotely(Instance instance, string coinSymbol, bool disableStrategies)
+        private void SetAllDevicesToCoinRemotely(Instance instance, string coinSymbol, bool disableStrategies)
         {
             PerformRemoteCommand(instance, (service) =>
             {
@@ -4539,7 +4616,7 @@ namespace MultiMiner.UX.ViewModels
             }
         }
 
-        public void InstallBackendMinerRemotely()
+        private void InstallBackendMinerRemotely()
         {
             //call ToList() so we can get a copy - otherwise risk:
             //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
@@ -4553,7 +4630,7 @@ namespace MultiMiner.UX.ViewModels
             }
         }
 
-        public void InstallMultiMinerRemotely()
+        private void InstallMultiMinerRemotely()
         {
             //call ToList() so we can get a copy - otherwise risk:
             //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
@@ -4648,7 +4725,7 @@ namespace MultiMiner.UX.ViewModels
             }
         }
 
-        private void ConfigureCoinsRemotely()
+        private void ConfigurePoolsRemotely()
         {
             UX.Data.Configuration.Application workingApplicationConfiguration = new UX.Data.Configuration.Application();
             Engine.Data.Configuration.Engine workingEngineConfiguration = new Engine.Data.Configuration.Engine();
@@ -4697,7 +4774,7 @@ namespace MultiMiner.UX.ViewModels
         #endregion
 
         #region Application logic
-        public static bool MultiMinerHasUpdates(out string availableVersion, out string installedVersion)
+        private static bool MultiMinerHasUpdates(out string availableVersion, out string installedVersion)
         {
             availableVersion = String.Empty;
             installedVersion = String.Empty;
@@ -4723,7 +4800,7 @@ namespace MultiMiner.UX.ViewModels
             return false;
         }
 
-        public void InstallMultiMinerLocally()
+        private void InstallMultiMinerLocally()
         {
             ProgressStarted(this, new ProgressEventArgs()
             {
@@ -4869,7 +4946,7 @@ namespace MultiMiner.UX.ViewModels
 
                     PostNotification(notificationReason, () =>
                     {
-                        ConfigureCoinsLocally();
+                        ConfigurePoolsLocally();
                     }, ToolTipIcon.Error, "");
                 }
                 else
@@ -4884,7 +4961,7 @@ namespace MultiMiner.UX.ViewModels
                         //just notify - relaunching option will take care of the rest
                         PostNotification(String.Format("All pools for {0} configuration are down", ea.CoinName), () =>
                         {
-                            ConfigureCoinsLocally();
+                            ConfigurePoolsLocally();
                         }, ToolTipIcon.Error, "");
                     }
                 }
@@ -4898,10 +4975,352 @@ namespace MultiMiner.UX.ViewModels
                 //code to update UI
                 PostNotification(ea.Reason, () =>
                 {
-                    ConfigureCoinsLocally();
+                    ConfigurePoolsLocally();
                 }, ToolTipIcon.Error, "");
             }));
         }
         #endregion
+
+        #region Application logic
+        public void CheckAndDownloadMiners()
+        {
+            if (OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix)
+                return; //can't auto download binaries on Linux
+
+            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
+            if (!ApplicationViewModel.MinerIsInstalled(miner) &&
+                //may not have a Url for the miner if call to server failed
+                !String.IsNullOrEmpty(miner.Url))
+                InstallBackendMinerLocally(miner);
+        }
+
+        public void CheckForUpdates()
+        {
+            PlatformID concretePlatform = OSVersionPlatform.GetConcretePlatform();
+
+            CheckForMultiMinerUpdates();
+
+            //we cannot auto install miners on Unix (yet)
+            if (ApplicationConfiguration.CheckForMinerUpdates && (concretePlatform != PlatformID.Unix))
+                TryToCheckForMinerUpdates();
+        }
+
+        private void CheckForMultiMinerUpdates()
+        {
+            bool updatesAvailable = false;
+            string availableVersion, installedVersion;
+
+            updatesAvailable = ApplicationViewModel.MultiMinerHasUpdates(out availableVersion, out installedVersion);
+
+            if (updatesAvailable)
+                DisplayMultiMinerUpdateNotification(availableVersion, installedVersion);
+        }
+
+        private void DisplayMultiMinerUpdateNotification(string availableMinerVersion, string installedMinerVersion)
+        {
+            PostNotification(ApplicationViewModel.MultiMinerNotificationId.ToString(),
+                String.Format("MultiMiner version {0} is available ({1} installed)",
+                    availableMinerVersion, installedMinerVersion),
+                () =>
+                {
+                    bool allRigs = ShouldUpdateAllRigs();
+
+                    bool wasMining = MiningEngine.Mining;
+
+                    if (wasMining)
+                        StopMiningLocally();
+
+                    //remote first as we'll be restarting
+                    if (allRigs)
+                        InstallMultiMinerRemotely();
+
+                    //this will restart the app
+                    InstallMultiMinerLocally();
+                }, ToolTipIcon.Info, "http://releases.multiminerapp.com");
+        }
+
+        private bool ShouldUpdateAllRigs()
+        {
+            bool allRigs = false;
+            if (RemotingEnabled && (InstanceManager.Instances.Count > 1))
+            {
+                DialogResult dialogResult = MessageBox.Show("Would you like to apply this update to all of your online rigs?",
+                    "MultiMiner Remoting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                    allRigs = true;
+            }
+            return allRigs;
+        }
+
+        private void TryToCheckForMinerUpdates()
+        {
+            try
+            {
+                CheckForBackendMinerUpdates();
+            }
+            catch (ArgumentException)
+            {
+                PostNotification(String.Format("Error checking for {0} updates",
+                    MinerFactory.Instance.GetDefaultMiner().Name), ToolTipIcon.Warning);
+            }
+        }
+
+        private void CheckForBackendMinerUpdates()
+        {
+            bool updatesAvailable = false;
+            string availableVersion, installedVersion;
+
+            updatesAvailable = ApplicationViewModel.BackendMinerHasUpdates(out availableVersion, out installedVersion);
+
+            if (updatesAvailable)
+                DisplayBackendMinerUpdateNotification(availableVersion, installedVersion);
+        }
+
+        private void DisplayBackendMinerUpdateNotification(string availableMinerVersion, string installedMinerVersion)
+        {
+            int notificationId = ApplicationViewModel.BFGMinerNotificationId;
+
+            string informationUrl = "https://github.com/luke-jr/bfgminer/blob/bfgminer/NEWS";
+
+            MinerDescriptor miner = MinerFactory.Instance.GetDefaultMiner();
+            string minerName = miner.Name;
+
+            PostNotification(notificationId.ToString(),
+                String.Format("{0} version {1} is available ({2} installed)",
+                    minerName, availableMinerVersion, installedMinerVersion),
+                () =>
+                {
+                    bool allRigs = ShouldUpdateAllRigs();
+
+                    bool wasMining = MiningEngine.Mining;
+
+                    if (wasMining)
+                        StopMiningLocally();
+
+                    if (allRigs)
+                        InstallBackendMinerRemotely();
+
+                    InstallBackendMinerLocally(miner);
+
+                    //only start mining if we stopped mining
+                    if (wasMining)
+                        StartMiningLocally();
+                }, ToolTipIcon.Info, informationUrl);
+        }
+
+        public void UpdateBackendMinerAvailability()
+        {
+            List<AvailableMiner> availableMiners = null;
+            try
+            {
+                availableMiners = AvailableMiners.GetAvailableMiners(UserAgent.AgentString);
+            }
+            catch (WebException ex)
+            {
+                //user has reported the following as a transient error and I have seen it as well
+                //for myself it may have potentially been a Fiddler proxy issue
+                //System.Net.WebException: The remote name could not be resolved: 'www.multiminerapp.com'
+                ShowMinerCheckErrorNotification(ex);
+            }
+
+            if (availableMiners != null)
+            {
+                foreach (MinerDescriptor minerDescriptor in MinerFactory.Instance.Miners)
+                {
+                    AvailableMiner availableMiner = availableMiners.SingleOrDefault(am => am.Name.Equals(minerDescriptor.Name, StringComparison.OrdinalIgnoreCase));
+                    //no Scrypt-Jane miner for OS X (yet)
+                    if (availableMiner != null)
+                    {
+                        minerDescriptor.Version = availableMiner.Version;
+                        minerDescriptor.Url = availableMiner.Url;
+                    }
+                }
+            }
+        }
+
+        private void ShowMinerCheckErrorNotification(WebException ex)
+        {
+            string notificationText = "Error checking for backend miner availability";
+            //ensure Response is HttpWebResponse to avoid NullReferenceException
+            if ((ex.Response != null) && (ex.Response is HttpWebResponse))
+                notificationText = String.Format("{1} ({0})", (int)((HttpWebResponse)ex.Response).StatusCode, notificationText);
+
+            PostNotification(ex.Message,
+                notificationText, () =>
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                },
+                ToolTipIcon.Warning, "");
+        }
+        #endregion
+
+        #region Timers
+        public void SetupRestartTimer()
+        {
+            //if enabled, we want to restart it so this can be used when we start mining
+            restartTimer.Enabled = false;
+            restartTimer.Interval = ApplicationConfiguration.ScheduledRestartMiningInterval.ToMinutes() * 60 * 1000; //dynamic
+            restartTimer.Enabled = ApplicationConfiguration.ScheduledRestartMining;
+        }
+
+        private void restartTimer_Tick(object sender, EventArgs e)
+        {
+            RestartMiningLocallyIfMining();
+        }
+
+        public void SetupCoinStatsTimer()
+        {
+            int coinStatsMinutes = 15;
+            UX.Data.Configuration.Application.TimerInterval timerInterval = ApplicationConfiguration.StrategyCheckInterval;
+
+            coinStatsMinutes = timerInterval.ToMinutes();
+
+            coinStatsTimer.Enabled = false;
+
+            coinStatsCountdownMinutes = coinStatsMinutes;
+            coinStatsTimer.Interval = coinStatsMinutes * 60 * 1000; //dynamic
+
+            coinStatsTimer.Enabled = true;
+        }
+
+        private void coinStatsTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshCoinStatsAsync();
+
+            coinStatsCountdownMinutes = coinStatsTimer.Interval / 1000 / 60;
+        }
+
+        public void SetupCoalescedTimers()
+        {
+#if DEBUG
+            timers.CreateTimer(Timers.OneSecondInterval, debugOneSecondTimer_Tick);
+#endif
+            timers.CreateTimer(Timers.OneHourInterval, oneHourTimer_Tick);
+            timers.CreateTimer(Timers.OneMinuteInterval, oneMinuteTimer_Tick);
+            timers.CreateTimer(Timers.ThirtySecondInterval, thirtySecondTimer_Tick);
+            timers.CreateTimer(Timers.FiveMinuteInterval, fiveMinuteTimer_Tick);
+            timers.CreateTimer(Timers.TenSecondInterval, tenSecondTimer_Tick);
+            timers.CreateTimer(Timers.FifteenSecondInterval, fifteenSecondTimer_Tick);
+            timers.CreateTimer(Timers.FifteenMinuteInterval, fifteenMinuteTimer_Tick);
+            timers.CreateTimer(Timers.ThirtyMinuteInterval, thirtyMinuteTimer_Tick);
+            timers.CreateTimer(Timers.OneSecondInterval, oneSecondTimer_Tick);
+            timers.CreateTimer(Timers.TwelveHourInterval, twelveHourTimer_Tick);
+        }
+        #endregion
+
+#if DEBUG
+        private void debugOneSecondTimer_Tick(object sender, EventArgs e)
+        {
+            //updates in order to try to reproduce threading issues
+            DataModified(this, new EventArgs());
+        }
+#endif
+
+        private void oneHourTimer_Tick(object sender, EventArgs e)
+        {
+            ClearPoolsFlaggedDown();
+        }
+
+        private void oneMinuteTimer_Tick(object sender, EventArgs e)
+        {
+            //if we do this with the Settings dialog open the user may have partially entered credentials
+            SubmitMobileMinerStatistics();
+
+            //only broadcast if there are other instances (not just us)
+            if (RemotingEnabled && PerksConfiguration.EnableRemoting && (InstanceManager.Instances.Count > 1))
+            {
+                //broadcast 0 (e.g. even if not mining)
+                BroadcastHashrate();
+            }
+
+            //coin stats countdown
+            coinStatsCountdownMinutes--;
+            DataModified(this, new EventArgs());
+
+            PopulateSummaryInfoFromProcesses();
+
+#if DEBUG
+            SubmitMobileMinerNotifications();
+#endif
+
+            //restart suspect network devices
+            if (ApplicationConfiguration.RestartCrashedMiners)
+                RestartSuspectNetworkDevices();
+        }
+
+        private void twelveHourTimer_Tick(object sender, EventArgs e)
+        {
+            UpdateBackendMinerAvailability();
+            CheckForUpdates();
+        }
+
+        private void fiveMinuteTimer_Tick(object sender, EventArgs e)
+        {
+            //submit queued notifications to MobileMiner
+            SubmitMobileMinerNotifications();
+
+            //submit pools to MobileMiner before clearing cache
+            SubmitMobileMinerPools();
+
+            //clear cached information for Network Devices
+            //(so we pick up changes)
+            NetworkDevicePools.Clear();
+            NetworkDeviceStatistics.Clear();
+            NetworkDeviceVersions.Clear();
+        }
+
+        private void thirtySecondTimer_Tick(object sender, EventArgs e)
+        {
+            UpdateLocalViewFromRemoteInstance();
+
+            if (ApplicationConfiguration.RestartCrashedMiners && MiningEngine.RelaunchCrashedMiners())
+            {
+                //clear any details stored correlated to processes - they could all be invalid after this
+                ProcessDeviceDetails.Clear();
+                SaveOwnedProcesses();
+
+                DataModified(this, new EventArgs());
+            }
+
+            if (MiningEngine.Mining)
+                RefreshPoolInfo();
+        }
+
+        private void fifteenMinuteTimer_Tick(object sender, EventArgs e)
+        {
+            ClearCachedNetworkDifficulties();
+
+            if (ApplicationConfiguration.NetworkDeviceDetection)
+            {
+                CheckNetworkDevicesAsync();
+                FindNetworkDevicesAsync();
+            }
+        }
+
+        private void fifteenSecondTimer_Tick(object sender, EventArgs e)
+        {
+            if (ApplicationConfiguration.NetworkDeviceDetection)
+                RefreshNetworkDeviceStatsAsync();
+        }
+
+        private void tenSecondTimer_Tick(object sender, EventArgs e)
+        {
+            if (MiningEngine.Mining)
+            {
+                long timerInterval = ((System.Windows.Forms.Timer)sender).Interval;
+                CheckIdleTimeForDynamicIntensity(timerInterval);
+                RefreshAllDeviceStats();
+            }
+        }
+
+        private void thirtyMinuteTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshExchangeRates();
+        }
+
+        private void oneSecondTimer_Tick(object sender, EventArgs e)
+        {
+            CheckMiningOnStartupStatus();
+        }
     }
 }
