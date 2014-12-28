@@ -640,5 +640,40 @@ namespace MultiMiner.UX.ViewModels
             AddMissingDeviceConfigurations();
         }
         #endregion
+
+        #region Stats API
+        public void SubmitMultiMinerStatistics()
+        {
+            string installedVersion = Engine.Installers.MultiMinerInstaller.GetInstalledMinerVersion();
+            if (installedVersion.Equals(ApplicationConfiguration.SubmittedStatsVersion))
+                return;
+
+            Stats.Data.Machine machineStat = new Stats.Data.Machine()
+            {
+                Name = Environment.MachineName,
+                MinerVersion = installedVersion
+            };
+
+            if (submitMinerStatisticsDelegate == null)
+                submitMinerStatisticsDelegate = SubmitMinerStatistics;
+
+            submitMinerStatisticsDelegate.BeginInvoke(machineStat, submitMinerStatisticsDelegate.EndInvoke, null);
+        }
+        private Action<Stats.Data.Machine> submitMinerStatisticsDelegate;
+
+        private void SubmitMinerStatistics(Stats.Data.Machine machineStat)
+        {
+            try
+            {
+                //plain text so users can see what we are posting - transparency
+                Stats.ApiContext.SubmitMinerStatistics("http://multiminerstats.azurewebsites.net/api/", machineStat);
+                ApplicationConfiguration.SubmittedStatsVersion = machineStat.MinerVersion;
+            }
+            catch (WebException)
+            {
+                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+            }
+        }
+        #endregion
     }
 }
