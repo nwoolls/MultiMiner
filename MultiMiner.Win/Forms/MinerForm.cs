@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using MultiMiner.CoinApi.Data;
+using MultiMiner.Discovery;
 using MultiMiner.Discovery.Data;
 using MultiMiner.Engine;
 using MultiMiner.Engine.Data;
@@ -29,10 +30,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Sockets;
 using System.Threading;
 using System.Windows.Forms;
-using MultiMiner.Discovery;
 
 namespace MultiMiner.Win.Forms
 {
@@ -42,10 +41,6 @@ namespace MultiMiner.Win.Forms
         //coalesced timers
         private Timers timers = new Timers();
   
-        //data sources
-        private readonly List<LogLaunchArgs> logLaunchEntries = new List<LogLaunchArgs>();
-        private readonly List<LogProcessCloseArgs> logCloseEntries = new List<LogProcessCloseArgs>();
-
         //fields
         private int coinStatsCountdownMinutes = 0;
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
@@ -337,6 +332,17 @@ namespace MultiMiner.Win.Forms
             dynamicIntensityButton.Checked = app.EngineConfiguration.XgminerConfiguration.DesktopMode;
         }
 
+        private void UpdateInstancesStatsFromLocal()
+        {
+            if (instancesControl.Visible)
+            {
+                Remoting.Data.Transfer.Machine machine = new Remoting.Data.Transfer.Machine();
+                app.PopulateLocalMachineHashrates(machine, true);
+
+                instancesControl.ApplyMachineInformation("localhost", machine);
+            }
+        }
+
         private void UpdateSaveButtons()
         {
             bool hasChanges = app.LocalViewModel.HasChanges;
@@ -368,7 +374,7 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshListViewFromViewModel()
         {
-            if (tearingDown)
+            if (app.Context == null)
                 return;
 
             if (editingDeviceListView)
@@ -402,7 +408,7 @@ namespace MultiMiner.Win.Forms
                 for (int i = 0; i < viewModelToView.Devices.Count; i++)
                 {
                     //app is closing
-                    if (tearingDown)
+                    if (app.Context == null)
                         return;
 
                     DeviceViewModel deviceViewModel = viewModelToView.Devices[i];
@@ -571,19 +577,7 @@ namespace MultiMiner.Win.Forms
 
             PopulateIncomeForListViewItem(listViewItem, deviceViewModel);
         }
-        #endregion
 
-        #region View / Model behavior
-        private void SaveChanges()
-        {
-            if (app.SelectedRemoteInstance == null)
-                app.SaveChangesLocally();
-            else
-                app.SaveChangesRemotely(app.SelectedRemoteInstance);
-        }
-        #endregion
-
-        #region View population
         private void RefreshDetailsAreaIfVisible()
         {
             if (!detailsAreaContainer.Panel2Collapsed)
@@ -720,7 +714,7 @@ namespace MultiMiner.Win.Forms
 
         private void AutoSizeListViewColumns()
         {
-            if (tearingDown)
+            if (app.Context == null)
                 return;
 
             if (editingDeviceListView)
@@ -1087,7 +1081,7 @@ namespace MultiMiner.Win.Forms
 
             string summary = String.Empty;
 
-            Dictionary<string, double> incomeForCoins = GetIncomeForCoins();
+            Dictionary<string, double> incomeForCoins = app.GetIncomeForCoins();
 
             if (incomeForCoins.Count == 0)
                 incomeSummaryLabel.Text = "";
@@ -1131,34 +1125,7 @@ namespace MultiMiner.Win.Forms
                 }
             }
         }
-
-        private Dictionary<string, double> GetIncomeForCoins()
-        {
-            Dictionary<string, double> coinsIncome = new Dictionary<string, double>();
-
-            MinerFormViewModel viewModelToView = app.GetViewModelToView();
-
-            foreach (DeviceViewModel deviceViewModel in viewModelToView.Devices)
-            {
-                //check for Coin != null, device may not have a coin configured
-                if (deviceViewModel.Coin != null)
-                {
-                    string coinSymbol = KnownCoins.BitcoinSymbol;
-                    if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
-                        coinSymbol = deviceViewModel.Coin.Id;
-
-                    double coinIncome = deviceViewModel.Daily;
-
-                    if (coinsIncome.ContainsKey(coinSymbol))
-                        coinsIncome[coinSymbol] = coinsIncome[coinSymbol] + coinIncome;
-                    else
-                        coinsIncome[coinSymbol] = coinIncome;
-                }
-            }
-
-            return coinsIncome;
-        }
-
+        
         private static void ClearCoinStatsForGridListViewItem(ListViewItem item)
         {
             item.SubItems["Difficulty"].Tag = 0.0;
@@ -1198,9 +1165,6 @@ namespace MultiMiner.Win.Forms
         {
             coinChooseSuffixLabel.Text = string.Format("at {0}", DateTime.Now.ToShortTimeString());
         }
-        #endregion
-
-        #region Settings dialogs     
 
         private void RefreshViewForConfigurationChanges()
         {
@@ -1226,7 +1190,7 @@ namespace MultiMiner.Win.Forms
             app.SuggestCoinsToMine();
 
             SetupAccessibleMenu();
-            SetGpuEnvironmentVariables();
+            app.SetGpuEnvironmentVariables();
 
             app.LocalViewModel.DynamicIntensity = app.EngineConfiguration.XgminerConfiguration.DesktopMode;
             dynamicIntensityButton.Checked = app.LocalViewModel.DynamicIntensity;
@@ -1322,7 +1286,7 @@ namespace MultiMiner.Win.Forms
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            SaveChanges();
+            app.SaveChanges();
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
@@ -1332,7 +1296,7 @@ namespace MultiMiner.Win.Forms
 
         private void stopButton_Click(object sender, EventArgs e)
         {
-            StopMining();
+            app.StopMining();
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -1345,7 +1309,7 @@ namespace MultiMiner.Win.Forms
             if ((app.SelectedRemoteInstance == null) && app.ApplicationConfiguration.AutoSetDesktopMode)
                 app.ToggleDynamicIntensityLocally(true);
 
-            StartMining();
+            app.StartMining();
         }
 
         private void cancelStartupMiningButton_Click(object sender, EventArgs e)
@@ -1437,12 +1401,12 @@ namespace MultiMiner.Win.Forms
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StartMining();
+            app.StartMining();
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StopMining();
+            app.StopMining();
         }
 
         private void restartToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1452,7 +1416,7 @@ namespace MultiMiner.Win.Forms
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveChanges();
+            app.SaveChanges();
         }
 
         private void cancelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1467,7 +1431,7 @@ namespace MultiMiner.Win.Forms
 
         private void launchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogLaunchArgs args = (LogLaunchArgs)logLaunchArgsBindingSource.Current;
+            LogLaunchArgs args = (LogLaunchArgs)app.LogLaunchArgsBindingSource.Current;
 
             LaunchLoggedMiner(args);
         }
@@ -1865,7 +1829,7 @@ namespace MultiMiner.Win.Forms
             {
                 int index = e.RowIndex + i;
 
-                LogProcessCloseArgs ea = this.logCloseEntries[index];
+                LogProcessCloseArgs ea = app.LogCloseEntries[index];
 
                 string devicesString = "??";
                 //convert device descriptors to homan readable string
@@ -1893,7 +1857,7 @@ namespace MultiMiner.Win.Forms
 
         private void notificationsControl1_NotificationAdded(string text, MobileMiner.Data.NotificationKind kind)
         {
-            LogNotificationToFile(text);
+            app.LogNotificationToFile(text);
             app.QueueMobileMinerNotification(text, kind);
         }
 
@@ -1952,7 +1916,7 @@ namespace MultiMiner.Win.Forms
 
         private void stopMenuItem_Click(object sender, EventArgs e)
         {
-            StopMining();
+            app.StopMining();
         }
 
         private void ColumnHeaderMenuClick(object sender, EventArgs e)
@@ -2073,9 +2037,9 @@ namespace MultiMiner.Win.Forms
         private void EnsureRecentLogDataVisibility()
         {
             if (advancedTabControl.SelectedTab == historyPage)
-                logProcessCloseArgsBindingSource.MoveLast();
+                app.LogProcessCloseArgsBindingSource.MoveLast();
             else if (advancedTabControl.SelectedTab == processLogPage)
-                logLaunchArgsBindingSource.MoveLast();
+                app.LogLaunchArgsBindingSource.MoveLast();
             else if (advancedTabControl.SelectedTab == apiMonitorPage)
                 app.ApiLogEntryBindingSource.MoveLast();
         }
@@ -2277,7 +2241,7 @@ namespace MultiMiner.Win.Forms
 
         private void restartTimer_Tick(object sender, EventArgs e)
         {
-            RestartMiningLocallyIfMining();
+            app.RestartMiningLocallyIfMining();
         }
 
         private void oneHourTimer_Tick(object sender, EventArgs e)
@@ -2323,7 +2287,7 @@ namespace MultiMiner.Win.Forms
             coinStatsCountdownMinutes--;
             RefreshStrategiesCountdown();
 
-            PopulateSummaryInfoFromProcesses();
+            app.PopulateSummaryInfoFromProcesses();
 
 #if DEBUG
             app.SubmitMobileMinerNotifications();
@@ -2350,8 +2314,7 @@ namespace MultiMiner.Win.Forms
 
             if (app.MiningEngine.Mining)
             {
-                RefreshPoolInfo();
-                RefreshDetailsAreaIfVisible();
+                app.RefreshPoolInfo();
             }
         }
 
@@ -2393,243 +2356,6 @@ namespace MultiMiner.Win.Forms
             app.CheckMiningOnStartupStatus();
         }
         #endregion
-        
-        #region RPC API
-        private void UpdateInstancesStatsFromLocal()
-        {
-            if (instancesControl.Visible)
-            {
-                Remoting.Data.Transfer.Machine machine = new Remoting.Data.Transfer.Machine();
-                app.PopulateLocalMachineHashrates(machine, true);
-
-                instancesControl.ApplyMachineInformation("localhost", machine);
-            }
-        }
-        
-        private void RefreshPoolInfo()
-        {
-            foreach (MinerProcess minerProcess in app.MiningEngine.MinerProcesses)
-            {
-                List<PoolInformation> poolInformation = GetPoolInfoFromProcess(minerProcess);
-
-                if (poolInformation == null) //handled failure getting API info
-                {
-                    minerProcess.MinerIsFrozen = true;
-                    continue;
-                }
-
-                app.LocalViewModel.ApplyPoolInformationResponseModels(minerProcess.CoinSymbol, poolInformation);
-            }
-            RefreshDetailsAreaIfVisible();
-        }
-
-        private List<PoolInformation> GetPoolInfoFromProcess(MinerProcess minerProcess)
-        {
-            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
-
-            //setup logging
-            apiContext.LogEvent -= app.LogApiEvent;
-            apiContext.LogEvent += app.LogApiEvent;
-
-            List<PoolInformation> poolInformation = null;
-            try
-            {
-                try
-                {
-                    poolInformation = apiContext.GetPoolInformation();
-                }
-                catch (IOException)
-                {
-                    //don't fail and crash out due to any issues communicating via the API
-                    poolInformation = null;
-                }
-            }
-            catch (SocketException)
-            {
-                //won't be able to connect for the first 5s or so
-                poolInformation = null;
-            }
-
-            return poolInformation;
-        }
-
-        private void PopulateSummaryInfoFromProcesses()
-        {
-            foreach (MinerProcess minerProcess in app.MiningEngine.MinerProcesses)
-            {
-                SummaryInformation summaryInformation = GetSummaryInfoFromProcess(minerProcess);
-
-                if (summaryInformation == null) //handled failure getting API info
-                {
-                    minerProcess.MinerIsFrozen = true;
-                    continue;
-                }
-
-                CheckAndNotifyFoundBlocks(minerProcess, summaryInformation.FoundBlocks);
-
-                CheckAndNotifyAcceptedShares(minerProcess, summaryInformation.AcceptedShares);
-            }
-        }
-
-        private SummaryInformation GetSummaryInfoFromProcess(MinerProcess minerProcess)
-        {
-            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
-
-            //setup logging
-            apiContext.LogEvent -= app.LogApiEvent;
-            apiContext.LogEvent += app.LogApiEvent;
-
-            SummaryInformation summaryInformation = null;
-            try
-            {
-                try
-                {
-                    summaryInformation = apiContext.GetSummaryInformation();
-                }
-                catch (IOException)
-                {
-                    //don't fail and crash out due to any issues communicating via the API
-                    summaryInformation = null;
-                }
-            }
-            catch (SocketException)
-            {
-                //won't be able to connect for the first 5s or so
-                summaryInformation = null;
-            }
-
-            return summaryInformation;
-        }
-        #endregion
-
-        #region Logging logic
-        private void LogProcessLaunch(object sender, LogLaunchArgs ea)
-        {
-            logLaunchArgsBindingSource.Position = logLaunchArgsBindingSource.Add(ea);
-
-            while (logLaunchArgsBindingSource.Count > 1000)
-                logLaunchArgsBindingSource.RemoveAt(0);
-
-            LogProcessLaunchToFile(ea);
-        }
-
-        private void LogProcessLaunchToFile(LogLaunchArgs ea)
-        {
-            const string logFileName = "ProcessLog.json";
-            app.LogObjectToFile(ea, logFileName);
-        }
-
-        private void LogProcessClose(object sender, LogProcessCloseArgs ea)
-        {
-            logProcessCloseArgsBindingSource.Position = logProcessCloseArgsBindingSource.Add(ea);
-
-            while (logProcessCloseArgsBindingSource.Count > MaxHistoryOnScreen)
-                logProcessCloseArgsBindingSource.RemoveAt(0);
-
-            LogProcessCloseToFile(ea);
-        }
-        
-        private void LogProcessCloseToFile(LogProcessCloseArgs ea)
-        {
-            const string logFileName = "MiningLog.json";
-            //log an anonymous type so MinerConfiguration is ommitted
-            app.LogObjectToFile(
-                new
-                {
-                    StartDate = ea.StartDate,
-                    EndDate = ea.EndDate,
-                    CoinName = ea.CoinName,
-                    CoinSymbol = ea.CoinSymbol,
-                    StartPrice = ea.StartPrice,
-                    EndPrice = ea.EndPrice,
-                    AcceptedShares = ea.AcceptedShares,
-                    DeviceDescriptors = ea.DeviceDescriptors
-                }, logFileName);
-        }
-
-        private void LogNotificationToFile(string text)
-        {
-            const string logFileName = "NotificationLog.json";
-            app.LogObjectToFile(new
-            {
-                DateTime = DateTime.Now,
-                Notification = text
-            }, logFileName);
-        }
-        #endregion
-
-        #region Mining event handlers
-        private void ProcessLaunchFailed(object sender, LaunchFailedArgs ea)
-        {
-            this.BeginInvoke((Action)(() =>
-            {
-                if (app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
-                {
-                    string notificationReason = String.Empty;
-
-                    int enabledConfigurationCount = app.EngineConfiguration.CoinConfigurations.Count(c => c.Enabled);
-
-                    //only disable the configuration if there are others enabled - otherwise left idling
-                    if (enabledConfigurationCount > 1)
-                    {
-
-                        //if auto mining is enabled, flag pools down in the coin configuration and display a notification
-                        Engine.Data.Configuration.Coin coinConfiguration = app.EngineConfiguration.CoinConfigurations.SingleOrDefault(config => config.PoolGroup.Name.Equals(ea.CoinName, StringComparison.OrdinalIgnoreCase));
-                        coinConfiguration.PoolsDown = true;
-                        app.EngineConfiguration.SaveCoinConfigurations();
-
-                        //if no enabled configurations, stop mining
-                        int enabledConfigurations = app.EngineConfiguration.CoinConfigurations.Count(config => config.Enabled && !config.PoolsDown);
-                        if (enabledConfigurations == 0)
-                            StopMiningLocally();
-                        else
-                            //if there are enabled configurations, apply mining strategy
-                            app.CheckAndApplyMiningStrategy();
-
-                        notificationReason = String.Format("Configuration for {0} disabled - all pools down", ea.CoinName);
-                    }
-                    else
-                    {
-                        //otherwise just notify - relaunching option will take care of the rest
-                        notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
-                    }
-
-                    PostNotification(notificationReason, () =>
-                    {
-                        app.ConfigureCoinsLocally();
-                    }, ToolTipIcon.Error, "");
-                }
-                else
-                {
-                    if (!app.ApplicationConfiguration.RestartCrashedMiners)
-                    {
-                        //if we are not restarting miners, display a dialog
-                        MessageBox.Show(ea.Reason, "Launching Miner Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    else
-                    {
-                        //just notify - relaunching option will take care of the rest
-                        PostNotification(String.Format("All pools for {0} configuration are down", ea.CoinName), () =>
-                        {
-                            app.ConfigureCoinsLocally();
-                        }, ToolTipIcon.Error, "");
-                    }
-                }
-            }));
-        }
-
-        private void ProcessAuthenticationFailed(object sender, AuthenticationFailedArgs ea)
-        {
-            this.BeginInvoke((Action)(() =>
-            {
-                //code to update UI
-                PostNotification(ea.Reason, () =>
-                {
-                    app.ConfigureCoinsLocally();
-                }, ToolTipIcon.Error, "");
-            }));
-        }
-        #endregion
 
         #region Application startup / setup
         protected override void OnHandleCreated(EventArgs e)
@@ -2646,21 +2372,7 @@ namespace MultiMiner.Win.Forms
 
         private void SetupApplication()
         {
-            app.NotificationReceived += HandleApplicationNotification;
-            app.NotificationDismissed += HandleNotificationDismissed;
-            app.CredentialsRequested += HandleCredentialsRequested;
-            app.MobileMinerAuthFailed += HandleMobileMinerAuthFailed;
-            app.DataModified += HandleAppViewModelModified;
-            app.ProgressStarted += HandleProgressStarted;
-            app.ProgressCompleted += HandleProgressCompleted;
-            app.ConfigurationModified += HandleConfigurationModified;
-            app.OnConfigurePerks += HandleConfigurePerks;
-            app.OnConfigurePools += HandleConfigurePools;
-            app.OnConfigureSettings += HandleConfigureSettings;
-            app.OnConfigureStrategies += HandleConfigureStrategies;
-            app.RemoteInstanceRegistered += HandleRemoteInstanceRegistered;
-            app.RemoteInstanceUnregistered += HandleRemoteInstanceUnregistered;
-            app.RemoteInstanceModified += HandleRemoteInstanceModified;
+            SetupApplicationViewModel();
 
             HandleStartupMinimizedToNotificationArea();
 
@@ -2680,9 +2392,8 @@ namespace MultiMiner.Win.Forms
 
             SetupGridColumns();
 
-            logProcessCloseArgsBindingSource.DataSource = logCloseEntries;
             LoadPreviousHistory();
-            
+
             CloseDetailsArea();
 
             FetchInitialCoinStats();
@@ -2701,9 +2412,10 @@ namespace MultiMiner.Win.Forms
             PositionCoinChooseLabels();
 
             apiLogGridView.DataSource = app.ApiLogEntryBindingSource;
+            processLogGridView.DataSource = app.LogLaunchArgsBindingSource;
+            historyGridView.DataSource = app.LogProcessCloseArgsBindingSource;
 
-            SetupMiningEngineEvents();
-            logLaunchArgsBindingSource.DataSource = logLaunchEntries;
+            app.SetupMiningEngineEvents();
 
             app.SetHasChangesLocally(false);
 
@@ -2741,12 +2453,12 @@ namespace MultiMiner.Win.Forms
             //scan for Network Devices after scanning for local hardware
             //makes more sense visually
             app.SetupNetworkDeviceDetection();
-            
+
             //may need to do this if XML files became corrupt
             app.AddMissingDeviceConfigurations();
 
             UpdateMiningButtons();
-                        
+
             if (deviceListView.Items.Count > 0)
             {
                 deviceListView.Items[0].Selected = true;
@@ -2760,7 +2472,7 @@ namespace MultiMiner.Win.Forms
             ShowStartupTips();
 
             //do this last as it can take a few seconds
-            SetGpuEnvironmentVariables();
+            app.SetGpuEnvironmentVariables();
 
             //do this after all other data has loaded to prevent errors when the delay is set very low (1s)
             app.SetupMiningOnStartup();
@@ -2770,13 +2482,32 @@ namespace MultiMiner.Win.Forms
                 app.CancelMiningOnStartup();
 
             SetupCoalescedTimers();
-            
+
             app.SubmitMobileMinerPools();
 
             //so we know when culture changes
             SystemEvents.UserPreferenceChanged += SystemEventsUserPreferenceChanged;
 
             applicationSetup = true;
+        }
+
+        private void SetupApplicationViewModel()
+        {
+            app.NotificationReceived += HandleApplicationNotification;
+            app.NotificationDismissed += HandleNotificationDismissed;
+            app.CredentialsRequested += HandleCredentialsRequested;
+            app.MobileMinerAuthFailed += HandleMobileMinerAuthFailed;
+            app.DataModified += HandleAppViewModelModified;
+            app.ProgressStarted += HandleProgressStarted;
+            app.ProgressCompleted += HandleProgressCompleted;
+            app.ConfigurationModified += HandleConfigurationModified;
+            app.OnConfigurePerks += HandleConfigurePerks;
+            app.OnConfigurePools += HandleConfigurePools;
+            app.OnConfigureSettings += HandleConfigureSettings;
+            app.OnConfigureStrategies += HandleConfigureStrategies;
+            app.RemoteInstanceRegistered += HandleRemoteInstanceRegistered;
+            app.RemoteInstanceUnregistered += HandleRemoteInstanceUnregistered;
+            app.RemoteInstanceModified += HandleRemoteInstanceModified;
         }
 
         private void HandleRemoteInstanceModified(object sender, RemotingEventArgs ea)
@@ -2913,13 +2644,11 @@ namespace MultiMiner.Win.Forms
                 CultureInfo.CurrentCulture.ClearCachedData();
         }
 
-        private bool tearingDown = false;
         private void TearDownApplication()
         {
-            tearingDown = true;
             app.Context = null;
             SaveSettings();
-            StopMiningLocally();
+            app.StopMiningLocally();
             app.DisableRemoting();
         }
 
@@ -2983,30 +2712,7 @@ namespace MultiMiner.Win.Forms
 
             app.ApplicationConfiguration.SaveApplicationConfiguration();
         }
-
-        //required for GPU mining
-        private void SetGpuEnvironmentVariables()
-        {
-            if (app.ApplicationConfiguration.SetGpuEnvironmentVariables)
-            {
-                using (new HourGlass())
-                {
-                    const string GpuMaxAllocPercent = "GPU_MAX_ALLOC_PERCENT";
-                    const string GpuUseSyncObjects = "GPU_USE_SYNC_OBJECTS";
-
-                    SetEnvironmentVariableIfNotSet(GpuMaxAllocPercent, "100");
-                    SetEnvironmentVariableIfNotSet(GpuUseSyncObjects, "1");
-                }
-            }
-        }
-
-        private static void SetEnvironmentVariableIfNotSet(string name, string value)
-        {
-            string currentValue = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.User);
-            if (String.IsNullOrEmpty(currentValue))
-                Environment.SetEnvironmentVariable(name, value, EnvironmentVariableTarget.User);
-        }
-
+        
         private void FetchInitialCoinStats()
         {
             app.EngineConfiguration.LoadStrategyConfiguration(app.PathConfiguration.SharedConfigPath); //needed before refreshing coins
@@ -3016,16 +2722,7 @@ namespace MultiMiner.Win.Forms
             app.SetupCoinApi(); //so we target the correct API
             app.RefreshCoinStats();
         }
-
-        private void SetupMiningEngineEvents()
-        {
-            app.MiningEngine.LogProcessClose += LogProcessClose;
-            app.MiningEngine.LogProcessLaunch += LogProcessLaunch;
-            app.MiningEngine.ProcessLaunchFailed += ProcessLaunchFailed;
-            app.MiningEngine.ProcessAuthenticationFailed += ProcessAuthenticationFailed;
-        }
-
-        private const int MaxHistoryOnScreen = 1000;
+        
         private void LoadPreviousHistory()
         {
             const string logFileName = "MiningLog.json";
@@ -3038,14 +2735,14 @@ namespace MultiMiner.Win.Forms
                 try
                 {
                     List<LogProcessCloseArgs> loadLogFile = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
-                    loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - MaxHistoryOnScreen));
+                    loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - ApplicationViewModel.MaxHistoryOnScreen));
 
                     //add via the BindingSource, not logCloseEntries
                     //populating logCloseEntries and then binding causes errors on Linux
-                    logProcessCloseArgsBindingSource.SuspendBinding();
+                    app.LogProcessCloseArgsBindingSource.SuspendBinding();
                     foreach (LogProcessCloseArgs logProcessCloseArgs in loadLogFile)
-                        logProcessCloseArgsBindingSource.Add(logProcessCloseArgs);
-                    logProcessCloseArgsBindingSource.ResumeBinding();
+                        app.LogProcessCloseArgsBindingSource.Add(logProcessCloseArgs);
+                    app.LogProcessCloseArgsBindingSource.ResumeBinding();
                 }
                 catch (SystemException)
                 {
@@ -3305,7 +3002,7 @@ namespace MultiMiner.Win.Forms
                         bool wasMining = app.MiningEngine.Mining;
 
                         if (wasMining)
-                            StopMiningLocally();
+                            app.StopMiningLocally();
 
                         //remote first as we'll be restarting
                         if (allRigs)
@@ -3412,7 +3109,7 @@ namespace MultiMiner.Win.Forms
                     bool wasMining = app.MiningEngine.Mining;
 
                     if (wasMining)
-                        StopMiningLocally();
+                        app.StopMiningLocally();
 
                     if (allRigs)
                         app.InstallBackendMinerRemotely();
@@ -3596,39 +3293,6 @@ namespace MultiMiner.Win.Forms
         #endregion
 
         #region Mining logic
-        private void StartMining()
-        {
-            if (app.SelectedRemoteInstance == null)
-                StartMiningLocally();
-            else
-                app.StartMiningRemotely(app.SelectedRemoteInstance);
-        }
-
-        private void StopMining()
-        {
-            if (app.SelectedRemoteInstance == null)
-                StopMiningLocally();
-            else
-                app.StopMiningRemotely(app.SelectedRemoteInstance);
-        }
-
-        private void StopMiningLocally()
-        {
-            using (new HourGlass())
-            {
-                app.StopMiningLocally();
-            }
-        }
-        
-        private void RestartMiningLocallyIfMining()
-        {
-            if (app.MiningEngine.Mining)
-            {
-                StopMiningLocally();
-                StartMiningLocally();
-            }
-        }
-
         public void PostNotification(string text, ToolTipIcon icon, string informationUrl = "")
         {
             PostNotification(text, text, () => { }, icon, informationUrl);
@@ -3678,48 +3342,6 @@ namespace MultiMiner.Win.Forms
             notificationClickHandler = clickHandler;
 
             notifyIcon1.ShowBalloonTip(1000); // ms
-        }
-
-        private void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
-        {
-            //started mining but haven't yet assigned mining members
-            if (app.MiningCoinConfigurations == null)
-                return;
-
-            string coinName = minerProcess.MinerConfiguration.CoinName;
-            //reference miningCoinConfigurations so that we get access to the mining coins
-            Engine.Data.Configuration.Coin configuration = app.MiningCoinConfigurations.SingleOrDefault(c => c.PoolGroup.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
-            if (configuration == null)
-                return;
-
-            if (configuration.NotifyOnBlockFound2 && (foundBlocks > minerProcess.FoundBlocks))
-            {
-                minerProcess.FoundBlocks = foundBlocks;
-
-                PostNotification(String.Format("Block(s) found for {0} (block {1})",
-                    coinName, minerProcess.FoundBlocks), ToolTipIcon.Info);
-            }
-        }
-
-        private void CheckAndNotifyAcceptedShares(MinerProcess minerProcess, long acceptedShares)
-        {
-            //started mining but haven't yet assigned mining members
-            if (app.MiningCoinConfigurations == null)
-                return;
-
-            string coinName = minerProcess.MinerConfiguration.CoinName;
-            //reference miningCoinConfigurations so that we get access to the mining coins
-            Engine.Data.Configuration.Coin configuration = app.MiningCoinConfigurations.SingleOrDefault(c => c.PoolGroup.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
-            if (configuration == null)
-                return;
-
-            if (configuration.NotifyOnShareAccepted2 && (acceptedShares > minerProcess.AcceptedShares))
-            {
-                minerProcess.AcceptedShares = acceptedShares;
-
-                PostNotification(String.Format("Share(s) accepted for {0} (share {1})",
-                    coinName, minerProcess.AcceptedShares), ToolTipIcon.Info);
-            }
         }
 
         private bool updatingListView = false;
@@ -3807,12 +3429,13 @@ namespace MultiMiner.Win.Forms
             {
                 try
                 {
-                    app.StartMiningLocally();    }
-            catch (MinerLaunchException ex)
-            {
-                MessageBox.Show(ex.Message, "Error Launching Miner", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                    app.StartMiningLocally();
+                }
+                catch (MinerLaunchException ex)
+                {
+                    MessageBox.Show(ex.Message, "Error Launching Miner", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
             
             //so restart timer based on when mining started, not a constantly ticking timer
@@ -3842,7 +3465,7 @@ namespace MultiMiner.Win.Forms
                     if (app.EngineConfiguration.XgminerConfiguration.DesktopMode)
                     {
                         app.ToggleDynamicIntensityLocally(false);
-                        RestartMiningLocallyIfMining();
+                        app.RestartMiningLocallyIfMining();
                     }
                 }
                 //else if idle for less than the idleTimer interval, enable Desktop Mode
@@ -3851,7 +3474,7 @@ namespace MultiMiner.Win.Forms
                     if (!app.EngineConfiguration.XgminerConfiguration.DesktopMode)
                     {
                         app.ToggleDynamicIntensityLocally(true);
-                        RestartMiningLocallyIfMining();
+                        app.RestartMiningLocallyIfMining();
                     }
                 }
             }

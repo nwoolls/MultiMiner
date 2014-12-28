@@ -16,6 +16,7 @@ using MultiMiner.Utility.Serialization;
 using MultiMiner.UX.Data;
 using MultiMiner.UX.Data.Configuration;
 using MultiMiner.UX.Extensions;
+using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Api.Data;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Xgminer.Discovery;
@@ -118,7 +119,11 @@ namespace MultiMiner.UX.ViewModels
 
         //data sources
         private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
+        private readonly List<LogLaunchArgs> logLaunchEntries = new List<LogLaunchArgs>();
+        public readonly List<LogProcessCloseArgs> LogCloseEntries = new List<LogProcessCloseArgs>();
         public readonly BindingSource ApiLogEntryBindingSource = new BindingSource();
+        public readonly BindingSource LogProcessCloseArgsBindingSource = new BindingSource();
+        public readonly BindingSource LogLaunchArgsBindingSource = new BindingSource();
 
         //remoting
         private RemotingServer remotingServer;
@@ -165,6 +170,8 @@ namespace MultiMiner.UX.ViewModels
         public ApplicationViewModel()
         {
             ApiLogEntryBindingSource.DataSource = apiLogEntries;
+            LogLaunchArgsBindingSource.DataSource = logLaunchEntries;
+            LogProcessCloseArgsBindingSource.DataSource = LogCloseEntries;
         }
         #endregion
 
@@ -750,7 +757,7 @@ namespace MultiMiner.UX.ViewModels
             ConfigurationReaderWriter.WriteConfiguration(devices, KnownDevicesFileName());
         }
 
-        public void SaveChangesLocally()
+        private void SaveChangesLocally()
         {
             SaveViewModelValuesToConfiguration();
             EngineConfiguration.SaveDeviceConfigurations();
@@ -1659,6 +1666,31 @@ namespace MultiMiner.UX.ViewModels
         #endregion
 
         #region Mining logic
+        public void StartMining()
+        {
+            if (SelectedRemoteInstance == null)
+                StartMiningLocally();
+            else
+                StartMiningRemotely(SelectedRemoteInstance);
+        }
+
+        public void StopMining()
+        {
+            if (SelectedRemoteInstance == null)
+                StopMiningLocally();
+            else
+                StopMiningRemotely(SelectedRemoteInstance);
+        }
+
+        public void RestartMiningLocallyIfMining()
+        {
+            if (MiningEngine.Mining)
+            {
+                StopMiningLocally();
+                StartMiningLocally();
+            }
+        }
+
         public bool ScanHardwareLocally()
         {
             try
@@ -1841,6 +1873,33 @@ namespace MultiMiner.UX.ViewModels
             DataModified(this, new EventArgs());
         }
 
+        public Dictionary<string, double> GetIncomeForCoins()
+        {
+            Dictionary<string, double> coinsIncome = new Dictionary<string, double>();
+
+            MinerFormViewModel viewModelToView = GetViewModelToView();
+
+            foreach (DeviceViewModel deviceViewModel in viewModelToView.Devices)
+            {
+                //check for Coin != null, device may not have a coin configured
+                if (deviceViewModel.Coin != null)
+                {
+                    string coinSymbol = Engine.Data.KnownCoins.BitcoinSymbol;
+                    if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                        coinSymbol = deviceViewModel.Coin.Id;
+
+                    double coinIncome = deviceViewModel.Daily;
+
+                    if (coinsIncome.ContainsKey(coinSymbol))
+                        coinsIncome[coinSymbol] = coinsIncome[coinSymbol] + coinIncome;
+                    else
+                        coinsIncome[coinSymbol] = coinIncome;
+                }
+            }
+
+            return coinsIncome;
+        }
+
         private void EnableMiningStrategies(bool enabled = true)
         {
             EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = enabled;
@@ -1921,6 +1980,48 @@ namespace MultiMiner.UX.ViewModels
             SaveOwnedProcesses();
 
             DataModified(this, new EventArgs());
+        }
+
+        public void CheckAndNotifyFoundBlocks(MinerProcess minerProcess, long foundBlocks)
+        {
+            //started mining but haven't yet assigned mining members
+            if (MiningCoinConfigurations == null)
+                return;
+
+            string coinName = minerProcess.MinerConfiguration.CoinName;
+            //reference miningCoinConfigurations so that we get access to the mining coins
+            Engine.Data.Configuration.Coin configuration = MiningCoinConfigurations.SingleOrDefault(c => c.PoolGroup.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            if (configuration == null)
+                return;
+
+            if (configuration.NotifyOnBlockFound2 && (foundBlocks > minerProcess.FoundBlocks))
+            {
+                minerProcess.FoundBlocks = foundBlocks;
+
+                PostNotification(String.Format("Block(s) found for {0} (block {1})",
+                    coinName, minerProcess.FoundBlocks), ToolTipIcon.Info);
+            }
+        }
+
+        public void CheckAndNotifyAcceptedShares(MinerProcess minerProcess, long acceptedShares)
+        {
+            //started mining but haven't yet assigned mining members
+            if (MiningCoinConfigurations == null)
+                return;
+
+            string coinName = minerProcess.MinerConfiguration.CoinName;
+            //reference miningCoinConfigurations so that we get access to the mining coins
+            Engine.Data.Configuration.Coin configuration = MiningCoinConfigurations.SingleOrDefault(c => c.PoolGroup.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase));
+            if (configuration == null)
+                return;
+
+            if (configuration.NotifyOnShareAccepted2 && (acceptedShares > minerProcess.AcceptedShares))
+            {
+                minerProcess.AcceptedShares = acceptedShares;
+
+                PostNotification(String.Format("Share(s) accepted for {0} (share {1})",
+                    coinName, minerProcess.AcceptedShares), ToolTipIcon.Info);
+            }
         }
 
         public void ClearPoolsFlaggedDown()
@@ -3194,6 +3295,101 @@ namespace MultiMiner.UX.ViewModels
         #endregion
 
         #region RPC API
+        public void RefreshPoolInfo()
+        {
+            foreach (MinerProcess minerProcess in MiningEngine.MinerProcesses)
+            {
+                List<PoolInformation> poolInformation = GetPoolInfoFromProcess(minerProcess);
+
+                if (poolInformation == null) //handled failure getting API info
+                {
+                    minerProcess.MinerIsFrozen = true;
+                    continue;
+                }
+
+                LocalViewModel.ApplyPoolInformationResponseModels(minerProcess.CoinSymbol, poolInformation);
+            }
+            DataModified(this, new EventArgs());
+        }
+
+        private List<PoolInformation> GetPoolInfoFromProcess(MinerProcess minerProcess)
+        {
+            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<PoolInformation> poolInformation = null;
+            try
+            {
+                try
+                {
+                    poolInformation = apiContext.GetPoolInformation();
+                }
+                catch (IOException)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    poolInformation = null;
+                }
+            }
+            catch (SocketException)
+            {
+                //won't be able to connect for the first 5s or so
+                poolInformation = null;
+            }
+
+            return poolInformation;
+        }
+
+        public void PopulateSummaryInfoFromProcesses()
+        {
+            foreach (MinerProcess minerProcess in MiningEngine.MinerProcesses)
+            {
+                SummaryInformation summaryInformation = GetSummaryInfoFromProcess(minerProcess);
+
+                if (summaryInformation == null) //handled failure getting API info
+                {
+                    minerProcess.MinerIsFrozen = true;
+                    continue;
+                }
+
+                CheckAndNotifyFoundBlocks(minerProcess, summaryInformation.FoundBlocks);
+
+                CheckAndNotifyAcceptedShares(minerProcess, summaryInformation.AcceptedShares);
+            }
+        }
+
+        private SummaryInformation GetSummaryInfoFromProcess(MinerProcess minerProcess)
+        {
+            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            SummaryInformation summaryInformation = null;
+            try
+            {
+                try
+                {
+                    summaryInformation = apiContext.GetSummaryInformation();
+                }
+                catch (IOException)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    summaryInformation = null;
+                }
+            }
+            catch (SocketException)
+            {
+                //won't be able to connect for the first 5s or so
+                summaryInformation = null;
+            }
+
+            return summaryInformation;
+        }
+
         private void RefreshProcessDeviceStats(MinerProcess minerProcess)
         {
             ClearSuspectProcessFlags(minerProcess);
@@ -4151,7 +4347,7 @@ namespace MultiMiner.UX.ViewModels
             return GetStringHash(signature);
         }
 
-        public void StartMiningRemotely(Instance instance)
+        private void StartMiningRemotely(Instance instance)
         {
             PerformRemoteCommand(instance, (service) =>
             {
@@ -4160,7 +4356,7 @@ namespace MultiMiner.UX.ViewModels
             });
         }
 
-        public void SaveChangesRemotely(Instance instance)
+        private void SaveChangesRemotely(Instance instance)
         {
             PerformRemoteCommand(instance, (service) =>
             {
@@ -4210,7 +4406,7 @@ namespace MultiMiner.UX.ViewModels
         }
 
         private System.Threading.Timer timer = null;
-        public void StopMiningRemotely(Instance instance)
+        private void StopMiningRemotely(Instance instance)
         {
             PerformRemoteCommand(instance, (service) =>
             {
@@ -4483,6 +4679,14 @@ namespace MultiMiner.UX.ViewModels
         #endregion
 
         #region View / ViewModel behavior
+        public void SaveChanges()
+        {
+            if (SelectedRemoteInstance == null)
+                SaveChangesLocally();
+            else
+                SaveChangesRemotely(SelectedRemoteInstance);
+        }
+
         public MinerFormViewModel GetViewModelToView()
         {
             MinerFormViewModel viewModelToView = LocalViewModel;
@@ -4539,6 +4743,164 @@ namespace MultiMiner.UX.ViewModels
         {
             string path = MinerPath.GetPathToInstalledMiner(miner);
             return File.Exists(path);
+        }
+        #endregion
+
+        #region Application startup / setup
+        //required for GPU mining
+        public void SetGpuEnvironmentVariables()
+        {
+            if (ApplicationConfiguration.SetGpuEnvironmentVariables)
+            {
+                const string GpuMaxAllocPercent = "GPU_MAX_ALLOC_PERCENT";
+                const string GpuUseSyncObjects = "GPU_USE_SYNC_OBJECTS";
+
+                SetEnvironmentVariableIfNotSet(GpuMaxAllocPercent, "100");
+                SetEnvironmentVariableIfNotSet(GpuUseSyncObjects, "1");
+            }
+        }
+
+        private static void SetEnvironmentVariableIfNotSet(string name, string value)
+        {
+            string currentValue = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.User);
+            if (String.IsNullOrEmpty(currentValue))
+                Environment.SetEnvironmentVariable(name, value, EnvironmentVariableTarget.User);
+        }
+
+        public void SetupMiningEngineEvents()
+        {
+            MiningEngine.LogProcessClose += LogProcessClose;
+            MiningEngine.LogProcessLaunch += LogProcessLaunch;
+            MiningEngine.ProcessLaunchFailed += ProcessLaunchFailed;
+            MiningEngine.ProcessAuthenticationFailed += ProcessAuthenticationFailed;
+        }
+        #endregion
+
+        #region Mining event handlers
+        private void LogProcessLaunch(object sender, LogLaunchArgs ea)
+        {
+            LogLaunchArgsBindingSource.Position = LogLaunchArgsBindingSource.Add(ea);
+
+            while (LogLaunchArgsBindingSource.Count > 1000)
+                LogLaunchArgsBindingSource.RemoveAt(0);
+
+            LogProcessLaunchToFile(ea);
+        }
+
+        private void LogProcessLaunchToFile(LogLaunchArgs ea)
+        {
+            const string logFileName = "ProcessLog.json";
+            LogObjectToFile(ea, logFileName);
+        }
+
+        public const int MaxHistoryOnScreen = 1000;
+        private void LogProcessClose(object sender, LogProcessCloseArgs ea)
+        {
+            LogProcessCloseArgsBindingSource.Position = LogProcessCloseArgsBindingSource.Add(ea);
+
+            while (LogProcessCloseArgsBindingSource.Count > MaxHistoryOnScreen)
+                LogProcessCloseArgsBindingSource.RemoveAt(0);
+
+            LogProcessCloseToFile(ea);
+        }
+
+        private void LogProcessCloseToFile(LogProcessCloseArgs ea)
+        {
+            const string logFileName = "MiningLog.json";
+            //log an anonymous type so MinerConfiguration is ommitted
+            LogObjectToFile(
+                new
+                {
+                    StartDate = ea.StartDate,
+                    EndDate = ea.EndDate,
+                    CoinName = ea.CoinName,
+                    CoinSymbol = ea.CoinSymbol,
+                    StartPrice = ea.StartPrice,
+                    EndPrice = ea.EndPrice,
+                    AcceptedShares = ea.AcceptedShares,
+                    DeviceDescriptors = ea.DeviceDescriptors
+                }, logFileName);
+        }
+
+        public void LogNotificationToFile(string text)
+        {
+            const string logFileName = "NotificationLog.json";
+            LogObjectToFile(new
+            {
+                DateTime = DateTime.Now,
+                Notification = text
+            }, logFileName);
+        }
+
+        private void ProcessLaunchFailed(object sender, LaunchFailedArgs ea)
+        {
+            Context.BeginInvoke((Action)(() =>
+            {
+                if (EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
+                {
+                    string notificationReason = String.Empty;
+
+                    int enabledConfigurationCount = EngineConfiguration.CoinConfigurations.Count(c => c.Enabled);
+
+                    //only disable the configuration if there are others enabled - otherwise left idling
+                    if (enabledConfigurationCount > 1)
+                    {
+
+                        //if auto mining is enabled, flag pools down in the coin configuration and display a notification
+                        Engine.Data.Configuration.Coin coinConfiguration = EngineConfiguration.CoinConfigurations.SingleOrDefault(config => config.PoolGroup.Name.Equals(ea.CoinName, StringComparison.OrdinalIgnoreCase));
+                        coinConfiguration.PoolsDown = true;
+                        EngineConfiguration.SaveCoinConfigurations();
+
+                        //if no enabled configurations, stop mining
+                        int enabledConfigurations = EngineConfiguration.CoinConfigurations.Count(config => config.Enabled && !config.PoolsDown);
+                        if (enabledConfigurations == 0)
+                            StopMiningLocally();
+                        else
+                            //if there are enabled configurations, apply mining strategy
+                            CheckAndApplyMiningStrategy();
+
+                        notificationReason = String.Format("Configuration for {0} disabled - all pools down", ea.CoinName);
+                    }
+                    else
+                    {
+                        //otherwise just notify - relaunching option will take care of the rest
+                        notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
+                    }
+
+                    PostNotification(notificationReason, () =>
+                    {
+                        ConfigureCoinsLocally();
+                    }, ToolTipIcon.Error, "");
+                }
+                else
+                {
+                    if (!ApplicationConfiguration.RestartCrashedMiners)
+                    {
+                        //if we are not restarting miners, display a dialog
+                        MessageBox.Show(ea.Reason, "Launching Miner Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        //just notify - relaunching option will take care of the rest
+                        PostNotification(String.Format("All pools for {0} configuration are down", ea.CoinName), () =>
+                        {
+                            ConfigureCoinsLocally();
+                        }, ToolTipIcon.Error, "");
+                    }
+                }
+            }));
+        }
+
+        private void ProcessAuthenticationFailed(object sender, AuthenticationFailedArgs ea)
+        {
+            Context.BeginInvoke((Action)(() =>
+            {
+                //code to update UI
+                PostNotification(ea.Reason, () =>
+                {
+                    ConfigureCoinsLocally();
+                }, ToolTipIcon.Error, "");
+            }));
         }
         #endregion
     }
