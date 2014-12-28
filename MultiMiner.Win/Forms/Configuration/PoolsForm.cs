@@ -1,19 +1,19 @@
-﻿using MultiMiner.Engine.Data;
+﻿using MultiMiner.Engine;
+using MultiMiner.Engine.Data;
+using MultiMiner.Engine.Data.Configuration;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
+using MultiMiner.UX.Data;
+using MultiMiner.UX.Extensions;
 using MultiMiner.Xgminer.Data;
-using MultiMiner.Win.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Diagnostics;
-using MultiMiner.Engine;
-using MultiMiner.Engine.Data.Configuration;
-using MultiMiner.UX.Data;
 
 namespace MultiMiner.Win.Forms.Configuration
 {

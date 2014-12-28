@@ -2,9 +2,13 @@
 using MultiMiner.CoinApi.Data;
 using MultiMiner.Engine;
 using MultiMiner.Engine.Data;
+using MultiMiner.Engine.Data.Configuration;
+using MultiMiner.Engine.Installers;
 using MultiMiner.ExchangeApi.Data;
+using MultiMiner.MobileMiner.Data;
 using MultiMiner.MultipoolApi.Data;
 using MultiMiner.Services;
+using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.UX.Data;
 using MultiMiner.UX.Data.Configuration;
@@ -17,6 +21,7 @@ using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -27,14 +32,25 @@ namespace MultiMiner.UX.ViewModels
 {
     public class ApplicationViewModel
     {
+        #region Constants
+        public const int BFGMinerNotificationId = 100;
+        public const int MultiMinerNotificationId = 102;
+        #endregion
+
         #region Events
         //delegate declarations
         public delegate void NotificationEventHandler(object sender, NotificationEventArgs ea);
         public delegate void CredentialsEventHandler(object sender, CredentialsEventArgs ea);
+        public delegate void ProgressStartEventHandler(object sender, ProgressEventArgs ea);
 
         //event declarations        
         public event NotificationEventHandler NotificationReceived;
+        public event NotificationEventHandler NotificationDismissed;
         public event CredentialsEventHandler CredentialsRequested;
+        public event EventHandler MobileMinerAuthFailed;
+        public event EventHandler DataModified;
+        public event ProgressStartEventHandler ProgressStarted;
+        public event EventHandler ProgressCompleted;
         #endregion
 
         #region Fields
@@ -58,19 +74,27 @@ namespace MultiMiner.UX.ViewModels
         //Exchange API information
         private IEnumerable<ExchangeInformation> sellPrices;
 
-        //logic
-        private List<PoolGroup> knownCoins = new List<PoolGroup>();
-
         //view models
         public readonly MinerFormViewModel LocalViewModel = new MinerFormViewModel();
 
         //hardware information
         private List<Xgminer.Data.Device> devices;
+
+        //RPC API information
+        public readonly Dictionary<MinerProcess, List<DeviceDetails>> ProcessDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetails>>();
+        private Dictionary<string, double> minerNetworkDifficulty = new Dictionary<string, double>();
+        public readonly Dictionary<DeviceViewModel, string> LastDevicePoolMapping = new Dictionary<DeviceViewModel, string>();
         public readonly Dictionary<string, List<PoolInformation>> NetworkDevicePools = new Dictionary<string, List<PoolInformation>>();
         public readonly Dictionary<string, List<MinerStatistics>> NetworkDeviceStatistics = new Dictionary<string, List<MinerStatistics>>();
 
-        //logic
+        //mining logic
         private readonly MiningEngine miningEngine = new MiningEngine();
+        private int startupMiningCountdownSeconds = 0;
+        private List<PoolGroup> knownCoins = new List<PoolGroup>();
+
+        //MobileMiner API information
+        private readonly List<int> processedCommandIds = new List<int>();
+        private readonly List<MobileMiner.Data.Notification> queuedNotifications = new List<MobileMiner.Data.Notification>();
 
         //data sources
         private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
@@ -83,13 +107,18 @@ namespace MultiMiner.UX.ViewModels
         public List<PoolGroup> KnownCoins { get { return knownCoins; } }
         public IEnumerable<ExchangeInformation> SellPrices { get { return sellPrices; } }
         public MiningEngine MiningEngine { get { return miningEngine; } }
-        public List<Xgminer.Data.Device> Devices { get{ return devices; } }
+        public List<Xgminer.Data.Device> Devices { get { return devices; } }
+        public int StartupMiningCountdownSeconds { get { return startupMiningCountdownSeconds; } }
 
         //view models
         public MinerFormViewModel RemoteViewModel { get; set; } = new MinerFormViewModel();
         
         //threading
         public Control Context { get; set; }
+
+        //currently mining information
+        public List<Engine.Data.Configuration.Device> MiningDeviceConfigurations { get; set; }
+        public List<Engine.Data.Configuration.Coin> MiningCoinConfigurations { get; set; }
         #endregion
 
         #region Constructor
@@ -452,9 +481,70 @@ namespace MultiMiner.UX.ViewModels
             }
         }
 
-        public void SaveKnownDevicesToFile()
+        private void SaveKnownDevicesToFile()
         {
             ConfigurationReaderWriter.WriteConfiguration(devices, KnownDevicesFileName());
+        }
+
+        public void SaveChangesLocally()
+        {
+            SaveViewModelValuesToConfiguration();
+            EngineConfiguration.SaveDeviceConfigurations();
+
+            LocalViewModel.ApplyDeviceConfigurationModels(EngineConfiguration.DeviceConfigurations,
+                EngineConfiguration.CoinConfigurations);
+
+            SetHasChangesLocally(false);            
+        }
+
+        public void SetHasChangesLocally(bool hasChanges)
+        {
+            LocalViewModel.HasChanges = hasChanges;
+            DataModified(this, new EventArgs());
+        }
+
+        private void SaveViewModelValuesToConfiguration()
+        {
+            EngineConfiguration.DeviceConfigurations.Clear();
+
+            foreach (Xgminer.Data.Device device in Devices)
+            {
+                //don't assume 1-to-1 of Devices and ViewModel.Devices
+                //Devices doesn't include Network Devices
+                DeviceViewModel viewModel = LocalViewModel.Devices.Single(vm => vm.Equals(device));
+
+                //pull this from coin configurations, not known coins, may not be in CoinChoose
+                PoolGroup coin = viewModel.Coin;
+                Engine.Data.Configuration.Device deviceConfiguration = new Engine.Data.Configuration.Device();
+                deviceConfiguration.Assign(viewModel);
+                deviceConfiguration.Enabled = viewModel.Enabled;
+                deviceConfiguration.CoinSymbol = coin == null ? string.Empty : coin.Id;
+                EngineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+            }
+        }
+
+        public bool MiningConfigurationValid()
+        {
+            bool miningConfigurationValid = EngineConfiguration.DeviceConfigurations.Count(
+                c => DeviceConfigurationValid(c)) > 0;
+            if (!miningConfigurationValid)
+            {
+                miningConfigurationValid = EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
+                    (EngineConfiguration.CoinConfigurations.Count(c => c.Enabled) > 0) &&
+                    (EngineConfiguration.DeviceConfigurations.Count(c => c.Enabled) > 0);
+            }
+            return miningConfigurationValid;
+        }
+
+        private bool DeviceConfigurationValid(Engine.Data.Configuration.Device deviceConfiguration)
+        {
+            bool result = deviceConfiguration.Enabled && !string.IsNullOrEmpty(deviceConfiguration.CoinSymbol);
+            if (result)
+            {
+                Engine.Data.Configuration.Coin coinConfiguration = EngineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.PoolGroup.Id.Equals(deviceConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+                result = coinConfiguration == null ? false : coinConfiguration.Pools.Where(p => !String.IsNullOrEmpty(p.Host) && !String.IsNullOrEmpty(p.Username)).Count() > 0;
+            }
+            return result;
         }
         #endregion
 
@@ -468,7 +558,7 @@ namespace MultiMiner.UX.ViewModels
             LocalViewModel.ApplyCoinConfigurationModels(EngineConfiguration.CoinConfigurations);
         }
 
-        public void ApplyDevicesToViewModel()
+        private void ApplyDevicesToViewModel()
         {
             //ApplyDeviceModels() ensures we have a 1-to-1 with listview items
             LocalViewModel.ApplyDeviceModels(devices, NetworkDevicesConfiguration.Devices, MetadataConfiguration.Devices);
@@ -702,7 +792,7 @@ namespace MultiMiner.UX.ViewModels
             return result;
         }
 
-        public List<MinerStatistics> GetCachedMinerStatisticsFromViewModel(DeviceViewModel deviceViewModel)
+        private List<MinerStatistics> GetCachedMinerStatisticsFromViewModel(DeviceViewModel deviceViewModel)
         {
             string[] portions = deviceViewModel.Path.Split(':');
             string ipAddress = portions[0];
@@ -1026,17 +1116,17 @@ namespace MultiMiner.UX.ViewModels
             NotificationReceived(this, notification);
         }
 
-        public void PostNotification(string text, ToolTipIcon icon, string informationUrl = "")
+        private void PostNotification(string text, ToolTipIcon icon, string informationUrl = "")
         {
             PostNotification(text, text, () => { }, icon, informationUrl);
         }
 
-        public void PostNotification(string id, string text, ToolTipIcon icon, string informationUrl = "")
+        private void PostNotification(string id, string text, ToolTipIcon icon, string informationUrl = "")
         {
             PostNotification(id, text, () => { }, icon, informationUrl);
         }
 
-        public void PostNotification(string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
+        private void PostNotification(string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
         {
             PostNotification(text, text, clickHandler, icon, informationUrl);
         }
@@ -1100,6 +1190,315 @@ namespace MultiMiner.UX.ViewModels
             DevicesService service = new DevicesService(EngineConfiguration.XgminerConfiguration);
             service.UpdateDevicesForProxySettings(devices, miningEngine.Mining);
             AddMissingDeviceConfigurations();
+        }
+
+        public void StartMiningLocally()
+        {
+            //do not set Dynamic Intensity here - may have already been set by idleTimer_Tick
+            //don't want to override
+
+            CancelMiningOnStartup(); //in case clicked during countdown
+
+            SaveChangesLocally();
+
+            if (!MiningConfigurationValid())
+                return;
+
+            if (MiningEngine.Mining)
+                return;
+
+            //download miners BEFORE checking for config files
+            DownloadRequiredMiners();
+
+            if (!ApplicationViewModel.ConfigFileHandled())
+                return;
+            
+            int donationPercent = 0;
+            if (PerksConfiguration.PerksEnabled)
+                donationPercent = PerksConfiguration.DonationPercent;
+            MiningEngine.StartMining(
+                EngineConfiguration,
+                Devices,
+                CoinApiInformation
+                    .ToList(), //get a copy - populated async & collection may be modified
+                donationPercent);
+        
+
+            //do this AFTER we start mining to pick up any Auto-Mining changes
+
+            //create a deep clone of the mining & device configurations
+            //this is so we can accurately display e.g. the currently mining pools
+            //even if the user changes pool info without restartinging mining
+            MiningCoinConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Coin>, List<Engine.Data.Configuration.Coin>>(EngineConfiguration.CoinConfigurations);
+            MiningDeviceConfigurations = ObjectCopier.DeepCloneObject<List<Engine.Data.Configuration.Device>, List<Engine.Data.Configuration.Device>>(EngineConfiguration.DeviceConfigurations);
+
+            EngineConfiguration.SaveDeviceConfigurations(); //save any changes made by the engine
+
+            //update ViewModel with potential changes 
+            ApplyModelsToViewModel();
+            
+            DataModified(this, new EventArgs());
+
+            SaveOwnedProcesses();
+        }
+
+        public void SetAllDevicesToCoinLocally(string coinSymbol, bool disableStrategies)
+        {
+            bool wasMining = MiningEngine.Mining;
+            StopMiningLocally();
+
+            Engine.Data.Configuration.Coin coinConfiguration = EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coinSymbol));
+
+            EngineConfiguration.DeviceConfigurations.Clear();
+
+            foreach (Xgminer.Data.Device device in Devices)
+            {
+                //don't assume 1-to-1 of Devices and ViewModel.Devices
+                //Devices doesn't include Network Devices
+                DeviceViewModel viewModel = LocalViewModel.Devices.Single(vm => vm.Equals(device));
+
+                Engine.Data.Configuration.Device deviceConfiguration = new Engine.Data.Configuration.Device();
+                deviceConfiguration.Assign(viewModel);
+                if (viewModel.Kind == DeviceKind.NET)
+                {
+                    //assume BTC for Network Devices (for now)
+                    deviceConfiguration.CoinSymbol = Engine.Data.KnownCoins.BitcoinSymbol;
+                    deviceConfiguration.Enabled = true;
+                }
+                else if (viewModel.Kind == DeviceKind.PXY)
+                {
+                    if (viewModel.SupportsAlgorithm(coinConfiguration.PoolGroup.Algorithm) &&
+                        //don't change the Algo a Proxy is mining - don't know what is pointed at it
+                        (viewModel.Coin.Algorithm == coinConfiguration.PoolGroup.Algorithm))
+                        deviceConfiguration.CoinSymbol = coinConfiguration.PoolGroup.Id;
+                    else
+                        deviceConfiguration.CoinSymbol = viewModel.Coin == null ? String.Empty : viewModel.Coin.Name;
+
+                    deviceConfiguration.Enabled = viewModel.Enabled;
+                }
+                else
+                {
+                    if (viewModel.SupportsAlgorithm(coinConfiguration.PoolGroup.Algorithm))
+                        deviceConfiguration.CoinSymbol = coinConfiguration.PoolGroup.Id;
+                    else
+                        deviceConfiguration.CoinSymbol = viewModel.Coin == null ? String.Empty : viewModel.Coin.Name;
+
+                    deviceConfiguration.Enabled = viewModel.Enabled;
+                }
+
+                EngineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+            }
+
+            LocalViewModel.ApplyDeviceConfigurationModels(EngineConfiguration.DeviceConfigurations,
+                EngineConfiguration.CoinConfigurations);
+
+            EngineConfiguration.SaveDeviceConfigurations();
+            
+            if (wasMining)
+            {
+                bool wasAutoMining = EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins;
+                if (wasAutoMining)
+                    EnableMiningStrategies(false);
+
+                StartMiningLocally();
+
+                //only re-enable if they were enabled before
+                if (!disableStrategies && wasAutoMining)
+                    EnableMiningStrategies(true);
+            }
+            else
+            {
+                if (disableStrategies)
+                    EnableMiningStrategies(false);
+            }
+
+            DataModified(this, new EventArgs());
+        }
+
+        private void EnableMiningStrategies(bool enabled = true)
+        {
+            EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = enabled;
+            EngineConfiguration.SaveStrategyConfiguration();
+        }
+
+        //download miners required for configured coins / algorithms
+        private void DownloadRequiredMiners()
+        {
+            IEnumerable<string> configuredAlgorithms = EngineConfiguration.CoinConfigurations
+                .Where(config => config.Enabled)
+                .Select(config => config.PoolGroup.Algorithm)
+                .Distinct();
+
+            SerializableDictionary<string, string> algorithmMiners = EngineConfiguration.XgminerConfiguration.AlgorithmMiners;
+
+            foreach (string algorithmName in configuredAlgorithms)
+            {
+                //safe to assume we are downloading GPU miners here
+                MinerDescriptor miner = MinerFactory.Instance.GetMiner(DeviceKind.GPU, algorithmName, algorithmMiners);
+
+                //is miner configured for algorithm
+                if (miner != null)
+                    CheckAndDownloadMiner(miner);
+            }
+        }
+
+        private void CheckAndDownloadMiner(MinerDescriptor miner)
+        {
+            string installedFilePath = MinerPath.GetPathToInstalledMiner(miner);
+            if (!File.Exists(installedFilePath))
+                InstallBackendMinerLocally(miner);
+        }
+
+        public void InstallBackendMinerLocally(MinerDescriptor miner)
+        {
+            string minerName = miner.Name;
+
+            ProgressStarted(this, new ProgressEventArgs()
+            {
+                Text = String.Format("Downloading and installing {0} from {1}", minerName, new Uri(miner.Url).Authority)
+            });
+            
+            try
+            {
+                string minerPath = Path.Combine("Miners", minerName);
+                string destinationFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
+                MinerInstaller.InstallMiner(UserAgent.AgentString, miner, destinationFolder);
+                //may have been installed via Remoting - dismiss notification
+                NotificationDismissed(this, new NotificationEventArgs()
+                {
+                    Id = BFGMinerNotificationId.ToString()
+                });
+            }
+            finally
+            {
+                ProgressCompleted(this, new EventArgs());
+            }
+        }
+
+        public void CancelMiningOnStartup()
+        {
+            startupMiningCountdownSeconds = 0;
+            DataModified(this, new EventArgs());
+        }
+
+        public void StopMiningLocally()
+        {
+            LocalViewModel.ClearDeviceInformationFromViewModel();
+
+            UpdateDevicesForProxySettings();
+            ApplyModelsToViewModel();
+            ClearCachedNetworkDifficulties();
+            ProcessDeviceDetails.Clear();
+            LastDevicePoolMapping.Clear();
+
+            ClearPoolsFlaggedDown();
+            SaveOwnedProcesses();
+
+            DataModified(this, new EventArgs());
+        }
+
+        public void ClearPoolsFlaggedDown()
+        {
+            foreach (Engine.Data.Configuration.Coin coinConfiguration in EngineConfiguration.CoinConfigurations)
+                coinConfiguration.PoolsDown = false;
+            EngineConfiguration.SaveCoinConfigurations();
+        }
+
+        //https://github.com/nwoolls/MultiMiner/issues/152
+        //http://social.msdn.microsoft.com/Forums/vstudio/en-US/94ba760c-7080-4614-8a56-15582c48f900/child-process-keeps-parents-socket-open-diagnosticsprocess-and-nettcplistener?forum=netfxbcl
+        //keep track of processes we've launched so we can kill them later
+        public void SaveOwnedProcesses()
+        {
+            OwnedProcesses.SaveOwnedProcesses(MiningEngine.MinerProcesses.Select(mp => mp.Process), GetOwnedProcessFilePath());
+        }
+
+        private static string GetOwnedProcessFilePath()
+        {
+            return Path.Combine(Path.GetTempPath(), "MultiMiner.Processes.xml");
+        }
+
+        public static bool KillOwnedProcesses()
+        {
+            bool processesKilled = false;
+            string filePath = GetOwnedProcessFilePath();
+            IEnumerable<Process> ownedProcesses = OwnedProcesses.GetOwnedProcesses(filePath);
+            foreach (Process ownedProcess in ownedProcesses)
+            {
+                MinerProcess.KillProcess(ownedProcess);
+                processesKilled = true;
+            }
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+            return processesKilled;
+        }
+
+        private static bool ConfigFileHandled()
+        {
+            foreach (MinerDescriptor miner in MinerFactory.Instance.Miners)
+                if (!ConfigFileHandledForMiner(miner))
+                    return false;
+
+            return true;
+        }
+
+        private static bool ConfigFileHandledForMiner(MinerDescriptor miner)
+        {
+            const string bakExtension = ".mmbak";
+            string minerName = miner.Name;
+            string minerExecutablePath = MinerPath.GetPathToInstalledMiner(miner);
+            string confFileFilePath = String.Empty;
+
+            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+            {
+                string minerFolderName = "." + minerName;
+                string minerFileName = minerName + ".conf";
+                confFileFilePath = Path.Combine(Path.Combine(OSVersionPlatform.GetHomeDirectoryPath(), minerFolderName), minerFileName);
+            }
+            else
+            {
+                confFileFilePath = Path.ChangeExtension(minerExecutablePath, ".conf");
+            }
+
+            if (File.Exists(confFileFilePath))
+            {
+                string confFileName = Path.GetFileName(confFileFilePath);
+                string confBakFileName = confFileName + bakExtension;
+
+                DialogResult dialogResult = MessageBox.Show(String.Format("A {0} file has been detected in your miner directory. This file interferes with the arguments supplied by MultiMiner. Can MultiMiner rename this file to {1}?",
+                    confFileName, confBakFileName), "External Configuration Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (dialogResult == System.Windows.Forms.DialogResult.No)
+                    return false;
+
+                string confBakFileFilePath = confFileFilePath + bakExtension;
+                File.Delete(confBakFileFilePath);
+                File.Move(confFileFilePath, confBakFileFilePath);
+            }
+
+            return true;
+        }
+
+        public void CheckMiningOnStartupStatus()
+        {
+            if (StartupMiningCountdownSeconds > 0)
+            {
+                startupMiningCountdownSeconds--;
+                if (StartupMiningCountdownSeconds == 0)
+                {
+                    System.Windows.Forms.Application.DoEvents();
+                    StartMiningLocally();
+                }
+                DataModified(this, new EventArgs());
+            }
+        }
+
+        public void SetupMiningOnStartup()
+        {
+            if (ApplicationConfiguration.StartMiningOnStartup)
+            {
+                //minimum 1s delay for mining on startup - 0 not allowed
+                startupMiningCountdownSeconds = Math.Max(1, ApplicationConfiguration.StartupMiningDelay);
+                DataModified(this, new EventArgs());
+            }
         }
         #endregion
 
@@ -1165,7 +1564,7 @@ namespace MultiMiner.UX.ViewModels
             LogApiEventToFile(logEntry);
         }
 
-        public string GetCoinNameForApiContext(Xgminer.Api.ApiContext apiContext)
+        private string GetCoinNameForApiContext(Xgminer.Api.ApiContext apiContext)
         {
             string coinName = string.Empty;
 
@@ -1208,6 +1607,876 @@ namespace MultiMiner.UX.ViewModels
                     logDirectory = ApplicationConfiguration.LogFilePath;
             }
             return logDirectory;
+        }
+        #endregion
+
+        #region MobileMiner API
+        private string GetMobileMinerUrl()
+        {
+            string prefix = "https://";
+            if (!ApplicationConfiguration.MobileMinerUsesHttps)
+                prefix = "http://";
+
+            //custom domain makes it easier to migrate hosts if needed
+            string result = prefix + "api.mobileminerapp.com";
+
+            if (!OSVersionPlatform.IsWindowsVistaOrHigher())
+                //SNI SSL not supported on XP
+                result = prefix + "mobileminer.azurewebsites.net/api";
+
+            return result;
+        }
+
+        private const string mobileMinerApiKey = "P3mVX95iP7xfoI";
+
+        //don't show a dialog for a 403 after successful submissions.
+        //it's not ideal but there have been two reports now of this
+        //being triggered by someone who has valid credentials, and
+        //i've seen it myself as well
+        private bool mobileMinerSuccess = false;
+        public void SubmitMobileMinerStatistics()
+        {
+            //are remote monitoring enabled?
+            if (!ApplicationConfiguration.MobileMinerMonitoring)
+                return;
+
+            //is MobileMiner configured?
+            if (!ApplicationConfiguration.IsMobileMinerConfigured())
+                return;
+
+            List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList = new List<MobileMiner.Data.MiningStatistics>();
+
+            Action<List<MultiMiner.MobileMiner.Data.MiningStatistics>> asyncAction = AddAllMinerStatistics;
+            asyncAction.BeginInvoke(statisticsList,
+                ar =>
+                {
+                    asyncAction.EndInvoke(ar);
+
+                    //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
+                    if (Context == null) return;
+
+                    Context.BeginInvoke((Action)(() =>
+                    {
+                        //code to update UI
+
+                        if (statisticsList.Count > 0)
+                        {
+                            if (submitMiningStatisticsDelegate == null)
+                                submitMiningStatisticsDelegate = SubmitMiningStatistics;
+
+                            submitMiningStatisticsDelegate.BeginInvoke(statisticsList, submitMiningStatisticsDelegate.EndInvoke, null);
+                        }
+
+                    }));
+
+                }, null);
+        }
+
+        private void AddAllMinerStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
+        {
+            if (!ApplicationConfiguration.MobileMinerNetworkMonitorOnly)
+                AddLocalMinerStatistics(statisticsList);
+
+            AddAllNetworkMinerStatistics(statisticsList);
+        }
+
+        private void AddAllNetworkMinerStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
+        {
+            //is Network Device detection enabled?
+            if (!ApplicationConfiguration.NetworkDeviceDetection)
+                return;
+
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<NetworkDevices.NetworkDevice> networkDevices = NetworkDevicesConfiguration.Devices.ToList();
+
+            foreach (UX.Data.Configuration.NetworkDevices.NetworkDevice networkDevice in networkDevices)
+                AddNetworkMinerStatistics(networkDevice, statisticsList);
+        }
+
+        private void AddNetworkMinerStatistics(NetworkDevices.NetworkDevice networkDevice, List<MiningStatistics> statisticsList)
+        {
+            List<DeviceInformation> deviceInformationList = GetDeviceInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
+
+            if (deviceInformationList == null) //handled failure getting API info
+                return;
+
+            List<PoolInformation> poolInformationList = GetCachedPoolInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
+
+            Xgminer.Api.Data.VersionInformation versionInformation = GetVersionInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
+
+            //we cannot continue without versionInformation as the MinerName is required by MobileMiner or it returns HTTP 400
+            if (versionInformation == null) //handled failure getting API info
+                return;
+
+            foreach (DeviceInformation deviceInformation in deviceInformationList)
+            {
+                string devicePath = String.Format("{0}:{1}", networkDevice.IPAddress, networkDevice.Port);
+
+                //don't submit stats until we have a valid ViewModel for the Network Device
+                DeviceViewModel deviceViewModel = LocalViewModel.Devices.SingleOrDefault(d => d.Path.Equals(devicePath));
+                if (deviceViewModel == null)
+                    continue;
+
+                MobileMiner.Data.MiningStatistics miningStatistics = new MobileMiner.Data.MiningStatistics()
+                {
+                    // submit the Friendly device / machine name
+                    MachineName = LocalViewModel.GetFriendlyDeviceName(devicePath, devicePath),
+
+                    // versionInformation may be null if the read timed out
+                    MinerName = versionInformation == null ? String.Empty : versionInformation.Name,
+
+                    CoinName = Engine.Data.KnownCoins.BitcoinName,
+                    CoinSymbol = Engine.Data.KnownCoins.BitcoinSymbol,
+                    Algorithm = AlgorithmFullNames.SHA256,
+                    Appliance = true
+                };
+
+                miningStatistics.PopulateFrom(deviceInformation);
+
+                //ensure poolIndex is valid for poolInformationList
+                //user(s) reported index errors so we can't out on the RPC API here
+                //https://github.com/nwoolls/MultiMiner/issues/64
+                if ((deviceInformation.PoolIndex >= 0) &&
+                    // poolInformationList may be null if an RPC API call timed out
+                    (poolInformationList != null) &&
+                    (deviceInformation.PoolIndex < poolInformationList.Count))
+                {
+                    string poolUrl = poolInformationList[deviceInformation.PoolIndex].Url;
+                    miningStatistics.PoolName = poolUrl.DomainFromHost();
+
+                    Coin coinConfiguration = CoinConfigurationForPoolUrl(poolUrl);
+                    if (coinConfiguration != null)
+                    {
+                        miningStatistics.CoinName = coinConfiguration.PoolGroup.Name;
+                        miningStatistics.CoinSymbol = coinConfiguration.PoolGroup.Id;
+                        CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(coinConfiguration.PoolGroup.Algorithm);
+
+                        //MobileMiner is only SHA & Scrypt for now
+                        if ((algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA2) ||
+                            (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3))
+                            miningStatistics.Algorithm = AlgorithmFullNames.SHA256;
+                        else
+                            miningStatistics.Algorithm = AlgorithmFullNames.Scrypt;
+                    }
+                }
+
+                statisticsList.Add(miningStatistics);
+            }
+        }
+
+        public Coin CoinConfigurationForPoolUrl(string poolUrl)
+        {
+            Coin coinConfiguration =
+                EngineConfiguration.CoinConfigurations
+                    .FirstOrDefault(cc =>
+                        cc.Pools
+                            .Any(p => String.Format("{0}:{1}", p.Host.ShortHostFromHost(), p.Port).Equals(poolUrl.ShortHostFromHost(), StringComparison.OrdinalIgnoreCase))
+                    );
+
+            return coinConfiguration;
+        }
+
+        public List<DeviceInformation> GetDeviceInfoFromAddress(string ipAddress, int port)
+        {
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<DeviceInformation> deviceInformationList = null;
+            try
+            {
+                try
+                {
+                    //assume Network Devices, for now, run cgminer or older bfgminer with default --log of 5s
+                    const int NetworkDeviceLogInterval = 5;
+                    //some Network Devices don't have the horsepower to return API results immediately
+                    const int CommandTimeoutMs = 3000;
+                    deviceInformationList = apiContext.GetDeviceInformation(NetworkDeviceLogInterval, CommandTimeoutMs).Where(d => d.Enabled).ToList();
+                }
+                catch (IOException)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    deviceInformationList = null;
+                }
+            }
+            catch (SocketException)
+            {
+                //won't be able to connect for the first 5s or so
+                deviceInformationList = null;
+            }
+
+            return deviceInformationList;
+        }
+
+        private string GetFriendlyDeviceName(MultiMiner.Xgminer.Data.Device device)
+        {
+            string result = device.Name;
+
+            DeviceViewModel deviceViewModel = LocalViewModel.Devices.SingleOrDefault(d => d.Equals(device));
+            if ((deviceViewModel != null) && !String.IsNullOrEmpty(deviceViewModel.FriendlyName))
+                result = deviceViewModel.FriendlyName;
+
+            return result;
+        }
+
+        public VersionInformation GetVersionInfoFromAddress(string ipAddress, int port)
+        {
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            VersionInformation versionInformation = null;
+            try
+            {
+                try
+                {
+                    versionInformation = apiContext.GetVersionInformation();
+                }
+                catch (IOException)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    versionInformation = null;
+                }
+            }
+            catch (SocketException)
+            {
+                //won't be able to connect for the first 5s or so
+                versionInformation = null;
+            }
+
+            return versionInformation;
+        }
+
+        private void AddLocalMinerStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
+        {
+            //call ToList() so we can get a copy - otherwise risk:
+            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+            List<MinerProcess> minerProcesses = MiningEngine.MinerProcesses.ToList();
+
+            foreach (MinerProcess minerProcess in minerProcesses)
+            {
+                List<DeviceInformation> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
+
+                if (deviceInformationList == null) //handled failure getting API info
+                    continue;
+
+                //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
+                List<DeviceDetails> processDevices = GetProcessDeviceDetails(minerProcess, deviceInformationList);
+
+                if (processDevices == null) //handled failure getting API info
+                    continue;
+
+                foreach (DeviceInformation deviceInformation in deviceInformationList)
+                {
+                    MobileMiner.Data.MiningStatistics miningStatistics = new MobileMiner.Data.MiningStatistics();
+
+                    miningStatistics.MachineName = Environment.MachineName;
+
+                    PopulateMobileMinerStatistics(miningStatistics, deviceInformation, GetCoinNameForApiContext(minerProcess.ApiContext));
+
+                    DeviceDetails deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+                        && (d.ID == deviceInformation.ID));
+                    int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails, minerProcess);
+                    Xgminer.Data.Device device = Devices[deviceIndex];
+                    Engine.Data.Configuration.Coin coinConfiguration = CoinConfigurationForDevice(device);
+
+                    miningStatistics.FullName = GetFriendlyDeviceName(device);
+
+                    miningStatistics.PoolName = GetPoolNameByIndex(coinConfiguration, deviceInformation.PoolIndex).DomainFromHost();
+
+                    statisticsList.Add(miningStatistics);
+                }
+            }
+        }
+
+        public static string GetPoolNameByIndex(Engine.Data.Configuration.Coin coinConfiguration, int poolIndex)
+        {
+            string result = String.Empty;
+
+            if (poolIndex >= 0)
+            {
+                if (coinConfiguration != null)
+                {
+                    //the poolIndex may be greater than the Pools count if donating
+                    if (poolIndex < coinConfiguration.Pools.Count)
+                    {
+                        result = coinConfiguration.Pools[poolIndex].Host;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public Engine.Data.Configuration.Coin CoinConfigurationForDevice(Xgminer.Data.Device device)
+        {
+            //get the actual device configuration, text in the ListViewItem may be unsaved
+            Engine.Data.Configuration.Device deviceConfiguration = null;
+            if (MiningEngine.Mining &&
+                // if the timing is right, we may be .Mining but not yet have data in miningDeviceConfigurations
+                (MiningDeviceConfigurations != null))
+                deviceConfiguration = MiningDeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+            else
+                deviceConfiguration = EngineConfiguration.DeviceConfigurations.SingleOrDefault(dc => dc.Equals(device));
+
+            if (deviceConfiguration == null)
+                return null;
+
+            string itemCoinSymbol = deviceConfiguration.CoinSymbol;
+
+            List<Engine.Data.Configuration.Coin> configurations;
+            if (MiningEngine.Mining &&
+                // if the timing is right, we may be .Mining but not yet have data in miningCoinConfigurations
+                (MiningCoinConfigurations != null))
+                configurations = MiningCoinConfigurations;
+            else
+                configurations = EngineConfiguration.CoinConfigurations;
+
+            Engine.Data.Configuration.Coin coinConfiguration = configurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(itemCoinSymbol, StringComparison.OrdinalIgnoreCase));
+            return coinConfiguration;
+        }
+
+        public int GetDeviceIndexForDeviceDetails(DeviceDetails deviceDetails, MinerProcess minerProcess)
+        {
+            int result = Devices
+                .FindIndex((device) => {
+                    return device.Driver.Equals(deviceDetails.Driver, StringComparison.OrdinalIgnoreCase)
+                    &&
+                    (
+                        //serial == serial && path == path (serial may not be unique)
+                        (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
+                            && !String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
+
+                        //serial == serial && path == String.Empty - WinUSB/LibUSB has no path, but has a serial #
+                        || (!String.IsNullOrEmpty(device.Serial) && device.Serial.Equals(deviceDetails.Serial, StringComparison.OrdinalIgnoreCase)
+                            && String.IsNullOrEmpty(device.Path) && String.IsNullOrEmpty(deviceDetails.DevicePath))
+
+                        //path == path
+                        || (!String.IsNullOrEmpty(device.Path) && device.Path.Equals(deviceDetails.DevicePath, StringComparison.OrdinalIgnoreCase))
+
+                        //proxy == proxy && ID = RelativeIndex
+                        || (device.Driver.Equals("proxy", StringComparison.OrdinalIgnoreCase) && (minerProcess.MinerConfiguration.DeviceDescriptors.Contains(device)))
+
+                        //opencl = opencl && ID = RelativeIndex
+                        || (device.Driver.Equals("opencl", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+
+                        //cpu = cpu && ID = RelativeIndex
+                        || (device.Driver.Equals("cpu", StringComparison.OrdinalIgnoreCase) && (device.RelativeIndex == deviceDetails.ID))
+                    );
+
+                });
+
+            return result;
+        }
+
+        public List<DeviceDetails> GetProcessDeviceDetails(MinerProcess minerProcess, List<DeviceInformation> deviceInformationList)
+        {
+            List<DeviceDetails> processDevices = null;
+            if (ProcessDeviceDetails.ContainsKey(minerProcess))
+            {
+                processDevices = ProcessDeviceDetails[minerProcess];
+
+                foreach (DeviceInformation deviceInformation in deviceInformationList)
+                {
+                    DeviceDetails deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+                        && (d.ID == deviceInformation.ID));
+                    if (deviceDetails == null)
+                    {
+                        //devs API returned a device not in the previous DEVDETAILS response
+                        //need to clear our previous response and get a new one
+                        processDevices = null;
+                        break;
+                    }
+                }
+            }
+
+            if (processDevices == null)
+            {
+                processDevices = GetDeviceDetailsFromProcess(minerProcess);
+
+                //null returned if there is an RCP API error
+                if (processDevices != null)
+                    ProcessDeviceDetails[minerProcess] = processDevices;
+            }
+            return processDevices;
+        }
+
+        private List<DeviceDetails> GetDeviceDetailsFromProcess(MinerProcess minerProcess)
+        {
+            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<DeviceDetails> deviceDetailsList = null;
+            try
+            {
+                try
+                {
+                    deviceDetailsList = apiContext.GetDeviceDetails().ToList();
+                }
+                catch (IOException)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    deviceDetailsList = null;
+                }
+            }
+            catch (SocketException)
+            {
+                //won't be able to connect for the first 5s or so
+                deviceDetailsList = null;
+            }
+
+            return deviceDetailsList;
+        }
+
+
+        public List<DeviceInformation> GetDeviceInfoFromProcess(MinerProcess minerProcess)
+        {
+            Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<DeviceInformation> deviceInformationList = null;
+            try
+            {
+                try
+                {
+                    deviceInformationList = apiContext.GetDeviceInformation(minerProcess.MinerConfiguration.LogInterval).Where(d => d.Enabled).ToList();
+                }
+                catch (IOException)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    deviceInformationList = null;
+                }
+            }
+            catch (SocketException)
+            {
+                //won't be able to connect for the first 5s or so
+                deviceInformationList = null;
+            }
+
+            return deviceInformationList;
+        }
+
+        private void PopulateMobileMinerStatistics(MultiMiner.MobileMiner.Data.MiningStatistics miningStatistics, DeviceInformation deviceInformation,
+            string coinName)
+        {
+            miningStatistics.MinerName = "MultiMiner";
+            miningStatistics.CoinName = coinName;
+            Engine.Data.Configuration.Coin coinConfiguration = EngineConfiguration.CoinConfigurations.Single(c => c.PoolGroup.Name.Equals(coinName));
+            PoolGroup coin = coinConfiguration.PoolGroup;
+
+            //don't send non-coin Ids to MobileMiner
+            if (coin.Kind != PoolGroup.PoolGroupKind.MultiCoin)
+                miningStatistics.CoinSymbol = coin.Id;
+
+            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(coin.Algorithm);
+
+            //MobileMiner currently only supports SHA and Scrypt
+            //attempt to treat them as "Families" for now
+            if ((algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA2) ||
+                (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3))
+                //SHA family algorithms grouped together
+                miningStatistics.Algorithm = AlgorithmFullNames.SHA256;
+            else
+                //assume Scrypt for rest until MobileMiner supports more
+                miningStatistics.Algorithm = AlgorithmFullNames.Scrypt;
+
+            miningStatistics.PopulateFrom(deviceInformation);
+        }
+
+        private Action<List<MultiMiner.MobileMiner.Data.MiningStatistics>> submitMiningStatisticsDelegate;
+
+        private void SubmitMiningStatistics(List<MultiMiner.MobileMiner.Data.MiningStatistics> statisticsList)
+        {
+            try
+            {
+                //submit statistics
+                List<MobileMiner.Data.RemoteCommand> commands = MobileMiner.ApiContext.SubmitMiningStatistics(GetMobileMinerUrl(), mobileMinerApiKey,
+                    ApplicationConfiguration.MobileMinerEmailAddress, ApplicationConfiguration.MobileMinerApplicationKey,
+                    statisticsList, ApplicationConfiguration.MobileMinerRemoteCommands);
+
+                //process commands
+                if (ApplicationConfiguration.MobileMinerRemoteCommands)
+                    Context.BeginInvoke((Action<List<MobileMiner.Data.RemoteCommand>>)((c) => ProcessRemoteCommands(c)), commands);
+
+                mobileMinerSuccess = true;
+            }
+            catch (WebException ex)
+            {
+                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+                HandleMobileMinerWebException(ex);
+            }
+        }
+
+        public void QueueMobileMinerNotification(string text, MobileMiner.Data.NotificationKind kind)
+        {
+            MobileMiner.Data.Notification notification = new MobileMiner.Data.Notification()
+            {
+                NotificationText = text,
+                MachineName = Environment.MachineName,
+                NotificationKind = kind
+            };
+            queuedNotifications.Add(notification);
+        }
+
+        public void SubmitMobileMinerNotifications()
+        {
+            //are remote notifications enabled?
+            if (!ApplicationConfiguration.MobileMinerPushNotifications)
+                return;
+
+            //is MobileMiner configured?
+            if (!ApplicationConfiguration.IsMobileMinerConfigured())
+                return;
+
+            //do we have notifications to push?
+            if (queuedNotifications.Count == 0)
+                return;
+
+            if (submitNotificationsDelegate == null)
+                submitNotificationsDelegate = SubmitNotifications;
+
+            submitNotificationsDelegate.BeginInvoke(submitNotificationsDelegate.EndInvoke, null);
+        }
+
+        private Action submitNotificationsDelegate;
+
+        private void SubmitNotifications()
+        {
+            try
+            {
+                MobileMiner.ApiContext.SubmitNotifications(GetMobileMinerUrl(), mobileMinerApiKey,
+                        ApplicationConfiguration.MobileMinerEmailAddress, ApplicationConfiguration.MobileMinerApplicationKey,
+                        queuedNotifications);
+                queuedNotifications.Clear();
+            }
+            catch (Exception ex)
+            {
+                if ((ex is WebException) || (ex is ArgumentException))
+                {
+                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+                    //could also be a json parsing error
+                    return;
+                }
+                throw;
+            }
+        }
+
+        public void SubmitMobileMinerPools()
+        {
+            //are remote commands enabled?
+            if (!ApplicationConfiguration.MobileMinerRemoteCommands)
+                return;
+
+            //is MobileMiner configured?
+            if (!ApplicationConfiguration.IsMobileMinerConfigured())
+                return;
+
+            Dictionary<string, List<string>> machinePools = new Dictionary<string, List<string>>();
+            List<string> pools = new List<string>();
+            foreach (Coin coin in EngineConfiguration.CoinConfigurations.Where(cc => cc.Enabled))
+                pools.Add(coin.PoolGroup.Name);
+            machinePools[Environment.MachineName] = pools;
+
+            foreach (KeyValuePair<string, List<PoolInformation>> networkDevicePool in NetworkDevicePools)
+            {
+                //ipAddress:port
+                string machinePath = networkDevicePool.Key;
+                string machineName = LocalViewModel.GetFriendlyDeviceName(machinePath, machinePath);
+                // poolInformationList may be null if an RPC API call timed out
+                if (networkDevicePool.Value != null)
+                {
+                    machinePools[machineName] = networkDevicePool.Value
+                        .Select(pi => pi.Url.DomainFromHost()).ToList();
+                }
+            }
+
+            if (submitPoolsDelegate == null)
+                submitPoolsDelegate = SubmitPools;
+
+            submitPoolsDelegate.BeginInvoke(machinePools, submitPoolsDelegate.EndInvoke, null);
+        }
+
+        private Action<Dictionary<string, List<string>>> submitPoolsDelegate;
+
+        private void SubmitPools(Dictionary<string, List<string>> machinePools)
+        {
+            try
+            {
+                MobileMiner.ApiContext.SubmitMachinePools(GetMobileMinerUrl(), mobileMinerApiKey,
+                        ApplicationConfiguration.MobileMinerEmailAddress, ApplicationConfiguration.MobileMinerApplicationKey,
+                        machinePools);
+            }
+            catch (Exception ex)
+            {
+                if ((ex is WebException) || (ex is ArgumentException))
+                {
+                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+                    //could also be a json parsing error
+                    return;
+                }
+                throw;
+            }
+        }
+
+        private void HandleMobileMinerWebException(WebException webException)
+        {
+            HttpWebResponse response = webException.Response as HttpWebResponse;
+            if (response != null)
+            {
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    if (!mobileMinerSuccess)
+                    {
+                        ApplicationConfiguration.MobileMinerRemoteCommands = false;
+                        ApplicationConfiguration.SaveApplicationConfiguration();
+                        MobileMinerAuthFailed(this, new EventArgs());
+                    }
+                }
+                else if (ApplicationConfiguration.ShowApiErrors)
+                {
+                    ShowMobileMinerApiErrorNotification(webException);
+                }
+            }
+        }
+
+        private List<string> GetMobileMinerMachineNames()
+        {
+            List<string> machineNames = new List<string>();
+
+            if (!ApplicationConfiguration.MobileMinerNetworkMonitorOnly)
+                machineNames.Add(Environment.MachineName);
+
+            IEnumerable<DeviceViewModel> networkDevices = LocalViewModel.Devices.Where(d => d.Kind == DeviceKind.NET);
+            foreach (DeviceViewModel deviceViewModel in networkDevices)
+            {
+                string machineName = LocalViewModel.GetFriendlyDeviceName(deviceViewModel.Path, deviceViewModel.Path);
+                machineNames.Add(machineName);
+            }
+
+            return machineNames;
+        }
+
+        private void ProcessRemoteCommands(List<MobileMiner.Data.RemoteCommand> commands)
+        {
+            List<MobileMiner.Data.RemoteCommand> machineCommands = commands
+                .GroupBy(c => c.Machine.Name)
+                .Select(c => c.First())
+                .ToList();
+
+            if (machineCommands.Count > 0)
+            {
+                foreach (MobileMiner.Data.RemoteCommand command in machineCommands)
+                    ProcessRemoteCommand(command);
+            }
+        }
+
+        private void ProcessRemoteCommand(RemoteCommand command)
+        {
+            //check this before actually executing the command
+            //point being, say for some reason it takes 2 minutes to restart mining
+            //if we check for commands again in that time, we don't want to process it again
+            if (processedCommandIds.Contains(command.Id))
+                return;
+
+            processedCommandIds.Add(command.Id);
+            string commandText = command.CommandText;
+            string machineName = command.Machine.Name;
+
+            if (deleteRemoteCommandDelegate == null)
+                deleteRemoteCommandDelegate = DeleteRemoteCommand;
+
+            if (machineName.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase))
+            {
+                ProcessOwnRemoteCommand(commandText);
+                deleteRemoteCommandDelegate.BeginInvoke(command, deleteRemoteCommandDelegate.EndInvoke, null);
+            }
+            else
+            {
+                DeviceViewModel networkDevice = LocalViewModel.GetNetworkDeviceByFriendlyName(machineName);
+                if (networkDevice != null)
+                {
+                    ProcessNetworkDeviceRemoteCommand(commandText, networkDevice);
+                    deleteRemoteCommandDelegate.BeginInvoke(command, deleteRemoteCommandDelegate.EndInvoke, null);
+                }
+            }
+        }
+
+        private void ProcessNetworkDeviceRemoteCommand(string commandText, DeviceViewModel networkDevice)
+        {
+            Uri uri = new Uri("http://" + networkDevice.Path);
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            string action = "accessing " + networkDevice.FriendlyName;
+
+            try
+            {
+                if (commandText.StartsWith(RemoteCommandText.Switch, StringComparison.OrdinalIgnoreCase))
+                {
+                    action = "switching pools on " + networkDevice.FriendlyName;
+                    string[] parts = commandText.Split('|');
+                    string poolName = parts[1];
+
+                    //we may not have the pool info cached yet / anymore
+                    if (NetworkDevicePools.ContainsKey(networkDevice.Path))
+                    {
+                        List<PoolInformation> pools = NetworkDevicePools[networkDevice.Path];
+                        int poolIndex = pools.FindIndex(pi => pi.Url.DomainFromHost().Equals(poolName, StringComparison.OrdinalIgnoreCase));
+
+                        apiContext.SwitchPool(poolIndex);
+                    }
+                }
+                else if (commandText.Equals(RemoteCommandText.Restart, StringComparison.OrdinalIgnoreCase))
+                {
+                    RestartNetworkDevice(networkDevice);
+                }
+                else if (commandText.Equals(RemoteCommandText.Stop, StringComparison.OrdinalIgnoreCase))
+                {
+                    StopNetworkDevice(networkDevice);
+                }
+                else if (commandText.Equals(RemoteCommandText.Start, StringComparison.OrdinalIgnoreCase))
+                {
+                    StartNetworkDevice(networkDevice);
+                }
+            }
+            catch (SocketException ex)
+            {
+                PostNotification(String.Format("Error {0}: {1}", action, ex.Message), ToolTipIcon.Error);
+            }
+        }
+
+        private void ProcessOwnRemoteCommand(string commandText)
+        {
+            if (commandText.Equals(RemoteCommandText.Start, StringComparison.OrdinalIgnoreCase))
+            {
+                SaveChangesLocally(); //necessary to ensure device configurations exist for devices
+                StartMiningLocally();
+            }
+            else if (commandText.Equals(RemoteCommandText.Stop, StringComparison.OrdinalIgnoreCase))
+                StopMiningLocally();
+            else if (commandText.Equals(RemoteCommandText.Restart, StringComparison.OrdinalIgnoreCase))
+            {
+                StopMiningLocally();
+                SaveChangesLocally(); //necessary to ensure device configurations exist for devices
+                StartMiningLocally();
+            }
+            else if (commandText.StartsWith(RemoteCommandText.Switch, StringComparison.OrdinalIgnoreCase))
+            {
+                string[] parts = commandText.Split('|');
+                string coinName = parts[1];
+                Engine.Data.Configuration.Coin coinConfiguration = EngineConfiguration.CoinConfigurations.SingleOrDefault(cc => cc.PoolGroup.Name.Equals(coinName));
+                if (coinConfiguration != null)
+                    SetAllDevicesToCoinLocally(coinConfiguration.PoolGroup.Id, true);
+            }
+        }
+
+        public void ClearCachedNetworkDifficulties()
+        {
+            minerNetworkDifficulty.Clear();
+        }
+
+        private Action<MobileMiner.Data.RemoteCommand> deleteRemoteCommandDelegate;
+
+        private void DeleteRemoteCommand(MobileMiner.Data.RemoteCommand command)
+        {
+            try
+            {
+                MobileMiner.ApiContext.DeleteCommand(GetMobileMinerUrl(), mobileMinerApiKey,
+                                    ApplicationConfiguration.MobileMinerEmailAddress, ApplicationConfiguration.MobileMinerApplicationKey,
+                                    command.Machine.Name, command.Id);
+            }
+            catch (Exception ex)
+            {
+                if ((ex is WebException) || (ex is ArgumentException))
+                {
+                    //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+                    //could also be a json parsing error
+                    return;
+                }
+                throw;
+            }
+        }
+
+        private void ShowMobileMinerApiErrorNotification(WebException ex)
+        {
+            PostNotification(ex.Message,
+                String.Format("Error accessing the MobileMiner API ({0})", (int)((HttpWebResponse)ex.Response).StatusCode), () =>
+                {
+                    Process.Start("http://mobileminercom");
+                },
+                ToolTipIcon.Warning, "");
+        }
+        #endregion
+        
+        #region RPC API
+        //cache based on pool URI rather than coin symbol
+        //the coin symbol may be guessed wrong for Network Devices
+        //this can (and has) resulting in wildly inaccurate income estimates
+        public double GetCachedNetworkDifficulty(string poolUri)
+        {
+            double result = 0.0;
+            if (minerNetworkDifficulty.ContainsKey(poolUri))
+                result = minerNetworkDifficulty[poolUri];
+            return result;
+        }
+
+        private void SetCachedNetworkDifficulty(string poolUri, double difficulty)
+        {
+            minerNetworkDifficulty[poolUri] = difficulty;
+        }
+
+        public void CheckAndSetNetworkDifficulty(string ipAddress, int port, string poolUri)
+        {
+            double difficulty = GetCachedNetworkDifficulty(poolUri);
+            if (difficulty == 0.0)
+            {
+                MultiMiner.Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
+                difficulty = GetNetworkDifficultyFromMiner(apiContext);
+                SetCachedNetworkDifficulty(poolUri, difficulty);
+            }
+        }
+
+        private double GetNetworkDifficultyFromMiner(Xgminer.Api.ApiContext apiContext)
+        {
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            NetworkCoinInformation coinInformation = null;
+
+            try
+            {
+                try
+                {
+                    coinInformation = apiContext.GetCoinInformation();
+                }
+                catch (IOException)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    coinInformation = null;
+                }
+            }
+            catch (SocketException)
+            {
+                //won't be able to connect for the first 5s or so
+                coinInformation = null;
+            }
+
+            return coinInformation == null ? 0.0 : coinInformation.NetworkDifficulty;
         }
         #endregion
     }

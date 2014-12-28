@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
-    static class StringExtensions
+    public static class StringExtensions
     {
         public static bool VersionIsGreater(this string thisVersion, string thatVersion)
         {
