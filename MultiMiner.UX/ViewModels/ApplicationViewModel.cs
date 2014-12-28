@@ -4,6 +4,7 @@ using MultiMiner.Engine;
 using MultiMiner.Engine.Data;
 using MultiMiner.ExchangeApi.Data;
 using MultiMiner.MultipoolApi.Data;
+using MultiMiner.Services;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.UX.Data;
 using MultiMiner.UX.Data.Configuration;
@@ -13,6 +14,7 @@ using MultiMiner.Xgminer.Discovery;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -56,6 +58,12 @@ namespace MultiMiner.UX.ViewModels
 
         //view models
         public readonly MinerFormViewModel LocalViewModel = new MinerFormViewModel();
+
+        //hardware information
+        private List<Xgminer.Data.Device> devices;
+
+        //logic
+        private readonly MiningEngine miningEngine = new MiningEngine();
         #endregion
 
         #region Properties
@@ -63,6 +71,9 @@ namespace MultiMiner.UX.ViewModels
         public List<CoinInformation> CoinApiInformation { get { return coinApiInformation; } }
         public List<PoolGroup> KnownCoins { get { return knownCoins; } }
         public IEnumerable<ExchangeInformation> SellPrices { get { return sellPrices; } }
+        public MiningEngine MiningEngine { get { return miningEngine; } }
+        public List<Xgminer.Data.Device> Devices { get{ return devices; } }
+
         //view models
         public MinerFormViewModel RemoteViewModel { get; set; } = new MinerFormViewModel();
         #endregion
@@ -320,9 +331,128 @@ namespace MultiMiner.UX.ViewModels
             if (badCoin != null)
                 knownCoins.Remove(badCoin);
         }
+
+        private void ConfigureDevicesForNewUser()
+        {
+            Engine.Data.Configuration.Coin coinConfiguration = EngineConfiguration.CoinConfigurations.Single();
+
+            for (int i = 0; i < devices.Count; i++)
+            {
+                Engine.Data.Configuration.Device deviceConfiguration = new Engine.Data.Configuration.Device()
+                {
+                    CoinSymbol = coinConfiguration.PoolGroup.Id,
+                    Enabled = true
+                };
+
+                deviceConfiguration.Assign(devices[i]);
+                EngineConfiguration.DeviceConfigurations.Add(deviceConfiguration);
+            }
+
+            EngineConfiguration.SaveDeviceConfigurations();
+        }
+        
+        //each device needs to have a DeviceConfiguration
+        //this will add any missing ones after populating devices
+        //for instance if the user starts up the app with a new device
+        public void AddMissingDeviceConfigurations()
+        {
+            bool hasBtcConfigured = EngineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.PoolGroup.Id.Equals(Engine.Data.KnownCoins.BitcoinSymbol, StringComparison.OrdinalIgnoreCase));
+            bool hasLtcConfigured = EngineConfiguration.CoinConfigurations.Exists(c => c.Enabled && c.PoolGroup.Id.Equals(Engine.Data.KnownCoins.LitecoinSymbol, StringComparison.OrdinalIgnoreCase));
+
+            foreach (Xgminer.Data.Device device in devices)
+            {
+                Engine.Data.Configuration.Device existingConfiguration = EngineConfiguration.DeviceConfigurations.FirstOrDefault(
+                    c => (c.Equals(device)));
+                if (existingConfiguration == null)
+                {
+                    Engine.Data.Configuration.Device newConfiguration = new Engine.Data.Configuration.Device();
+
+                    newConfiguration.Assign(device);
+
+                    if (device.SupportsAlgorithm(AlgorithmNames.Scrypt) && hasLtcConfigured &&
+                        (device.Kind != DeviceKind.PXY)) //don't default Proxies to Litecoin
+                        newConfiguration.CoinSymbol = Engine.Data.KnownCoins.LitecoinSymbol;
+                    else if (device.SupportsAlgorithm(AlgorithmNames.SHA256) && hasBtcConfigured)
+                        newConfiguration.CoinSymbol = Engine.Data.KnownCoins.BitcoinSymbol;
+
+                    //don't enable newly added Proxies if we're mining
+                    newConfiguration.Enabled = (device.Kind != DeviceKind.PXY) || (!miningEngine.Mining);
+
+                    EngineConfiguration.DeviceConfigurations.Add(newConfiguration);
+                }
+            }
+        }
+
+        //try to match up devices without configurations with configurations without devices
+        //could happen if, for instance, a COM port changes for a device
+        private void FixOrphanedDeviceConfigurations()
+        {
+            foreach (Xgminer.Data.Device device in devices)
+            {
+                Engine.Data.Configuration.Device existingConfiguration = EngineConfiguration.DeviceConfigurations.FirstOrDefault(
+                    c => (c.Equals(device)));
+
+                //if there is no configuration specifically for the device
+                if (existingConfiguration == null)
+                {
+                    //find a configuration that uses the same driver and that, itself, has no specifically matching device
+                    Engine.Data.Configuration.Device orphanedConfiguration = EngineConfiguration.DeviceConfigurations.FirstOrDefault(
+                        c => c.Driver.Equals(device.Driver, StringComparison.OrdinalIgnoreCase) &&
+                                !devices.Exists(d => d.Equals(c)));
+
+                    if (orphanedConfiguration != null)
+                        orphanedConfiguration.Assign(device);
+                }
+            }
+        }
+
+        //each device needs to have a DeviceConfiguration
+        //this will remove any access ones after populating devices
+        //for instance if the user starts up the app with missing devices
+        private void RemoveExcessDeviceConfigurations()
+        {
+            EngineConfiguration.DeviceConfigurations.RemoveAll(c => !devices.Exists(d => d.Equals(c)));
+        }
+
+        private static string KnownDevicesFileName()
+        {
+            string filePath = ApplicationPaths.AppDataPath();
+            return Path.Combine(filePath, "KnownDevicesCache.xml");
+        }
+
+        public void LoadKnownDevicesFromFile()
+        {
+            string knownDevicesFileName = KnownDevicesFileName();
+            if (File.Exists(knownDevicesFileName))
+            {
+                devices = ConfigurationReaderWriter.ReadConfiguration<List<Xgminer.Data.Device>>(knownDevicesFileName);
+                UpdateDevicesForProxySettings();
+                ApplyModelsToViewModel();
+            }
+        }
+
+        public void SaveKnownDevicesToFile()
+        {
+            ConfigurationReaderWriter.WriteConfiguration(devices, KnownDevicesFileName());
+        }
         #endregion
 
         #region Model / ViewModel behavior
+        public void ApplyModelsToViewModel()
+        {
+            ApplyDevicesToViewModel();
+            LocalViewModel.ApplyDeviceConfigurationModels(EngineConfiguration.DeviceConfigurations,
+                EngineConfiguration.CoinConfigurations);
+            ApplyCoinInformationToViewModel();
+            LocalViewModel.ApplyCoinConfigurationModels(EngineConfiguration.CoinConfigurations);
+        }
+
+        public void ApplyDevicesToViewModel()
+        {
+            //ApplyDeviceModels() ensures we have a 1-to-1 with listview items
+            LocalViewModel.ApplyDeviceModels(devices, NetworkDevicesConfiguration.Devices, MetadataConfiguration.Devices);
+        }
+
         public void ApplyCoinInformationToViewModel()
         {
             if (coinApiInformation != null)
@@ -447,6 +577,67 @@ namespace MultiMiner.UX.ViewModels
             };
 
             NotificationReceived(this, notification);
+        }
+        #endregion
+
+        #region Mining logic
+        public bool ScanHardwareLocally()
+        {
+            try
+            {
+                DevicesService devicesService = new DevicesService(EngineConfiguration.XgminerConfiguration);
+                MinerDescriptor defaultMiner = MinerFactory.Instance.GetDefaultMiner();
+                devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner(defaultMiner));
+
+                //pull in virtual Proxy Devices
+                UpdateDevicesForProxySettings();
+
+                //safe to do here as we are Scanning Hardware - we are not mining
+                //no data to lose in the ViewModel
+                //clearing means our sort order within the ListView is preserved
+                //and things like selecting the first item work better
+                //http://social.msdn.microsoft.com/Forums/windows/en-US/8a81c5a6-251c-4bf9-91c5-a937b5cfe9f3/possible-bug-in-listview-control-topitem-property-doesnt-work-with-groups
+                LocalViewModel.Devices.Clear();
+
+                ApplyModelsToViewModel();
+            }
+            catch (Win32Exception)
+            {
+                //miner not installed/not launched
+                devices = new List<Xgminer.Data.Device>(); //dummy empty device list
+
+                return false;
+            }
+
+            if ((devices.Count > 0) && (EngineConfiguration.DeviceConfigurations.Count == 0) &&
+                (EngineConfiguration.CoinConfigurations.Count == 1))
+            {
+                //setup devices for a brand new user
+                ConfigureDevicesForNewUser();
+            }
+
+            //first try to match up devices without configurations with configurations without devices
+            //could happen if, for instance, a COM port changes for a device
+            FixOrphanedDeviceConfigurations();
+
+            //there needs to be a device config for each device
+            AddMissingDeviceConfigurations();
+            //but no configurations for devices that have gone missing
+            RemoveExcessDeviceConfigurations();
+            //remove any duplicate configurations
+            EngineConfiguration.RemoveDuplicateDeviceConfigurations();
+
+            //cache devices
+            SaveKnownDevicesToFile();
+
+            return true;
+        }
+
+        public void UpdateDevicesForProxySettings()
+        {
+            DevicesService service = new DevicesService(EngineConfiguration.XgminerConfiguration);
+            service.UpdateDevicesForProxySettings(devices, miningEngine.Mining);
+            AddMissingDeviceConfigurations();
         }
         #endregion
     }

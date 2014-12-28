@@ -100,6 +100,10 @@
       <Project>{5a05d03d-7006-406c-84b0-a2717a07ceb7}</Project>
       <Name>MultiMiner.NiceHash</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Services\MultiMiner.Services.csproj">
+      <Project>{cffa60ec-9486-4f45-bef2-05c1a3d68ea6}</Project>
+      <Name>MultiMiner.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
       <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
       <Name>MultiMiner.Utility</Name>
