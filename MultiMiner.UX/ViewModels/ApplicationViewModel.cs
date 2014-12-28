@@ -64,6 +64,10 @@ namespace MultiMiner.UX.ViewModels
 
         //logic
         private readonly MiningEngine miningEngine = new MiningEngine();
+
+        //data sources
+        private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
+        public readonly BindingSource ApiLogEntryBindingSource = new BindingSource();
         #endregion
 
         #region Properties
@@ -76,6 +80,16 @@ namespace MultiMiner.UX.ViewModels
 
         //view models
         public MinerFormViewModel RemoteViewModel { get; set; } = new MinerFormViewModel();
+        
+        //threading
+        public Control Context { get; set; }
+        #endregion
+
+        #region Constructor
+        public ApplicationViewModel()
+        {
+            ApiLogEntryBindingSource.DataSource = apiLogEntries;
+        }
         #endregion
 
         #region Coin API
@@ -673,6 +687,79 @@ namespace MultiMiner.UX.ViewModels
             {
                 //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
             }
+        }
+        #endregion
+
+        #region Mining event handlers
+        public void LogApiEvent(object sender, Xgminer.Api.LogEventArgs eventArgs)
+        {
+            ApiLogEntry logEntry = new ApiLogEntry();
+
+            logEntry.DateTime = eventArgs.DateTime;
+            logEntry.Request = eventArgs.Request;
+            logEntry.Response = eventArgs.Response;
+            Xgminer.Api.ApiContext apiContext = (Xgminer.Api.ApiContext)sender;
+            logEntry.CoinName = GetCoinNameForApiContext(apiContext);
+            logEntry.Machine = apiContext.IpAddress + ":" + apiContext.Port;
+
+            //make sure BeginInvoke is allowed
+            if (Context != null)
+            {
+                Context.BeginInvoke((Action)(() =>
+                {
+                    //code to update UI
+                    ApiLogEntryBindingSource.Position = ApiLogEntryBindingSource.Add(logEntry);
+                    while (ApiLogEntryBindingSource.Count > 1000)
+                        ApiLogEntryBindingSource.RemoveAt(0);
+                }));
+            }
+
+            LogApiEventToFile(logEntry);
+        }
+
+        public string GetCoinNameForApiContext(Xgminer.Api.ApiContext apiContext)
+        {
+            string coinName = string.Empty;
+
+            foreach (MinerProcess minerProcess in MiningEngine.MinerProcesses)
+            {
+                Xgminer.Api.ApiContext loopContext = minerProcess.ApiContext;
+                if (loopContext == apiContext)
+                {
+                    coinName = minerProcess.MinerConfiguration.CoinName;
+                    break;
+                }
+            }
+
+            return coinName;
+        }
+        #endregion
+
+        #region Logging logic
+        private void LogApiEventToFile(ApiLogEntry logEntry)
+        {
+            const string logFileName = "ApiLog.json";
+            LogObjectToFile(logEntry, logFileName);
+        }
+
+        public void LogObjectToFile(object objectToLog, string logFileName)
+        {
+            string logDirectory = GetLogDirectory();
+            string logFilePath = Path.Combine(logDirectory, logFileName);
+            ObjectLogger logger = new ObjectLogger(ApplicationConfiguration.RollOverLogFiles, ApplicationConfiguration.OldLogFileSets);
+            logger.LogObjectToFile(objectToLog, logFilePath);
+        }
+
+        public string GetLogDirectory()
+        {
+            string logDirectory = ApplicationPaths.AppDataPath();
+            if (!String.IsNullOrEmpty(ApplicationConfiguration.LogFilePath))
+            {
+                Directory.CreateDirectory(ApplicationConfiguration.LogFilePath);
+                if (Directory.Exists(ApplicationConfiguration.LogFilePath))
+                    logDirectory = ApplicationConfiguration.LogFilePath;
+            }
+            return logDirectory;
         }
         #endregion
     }

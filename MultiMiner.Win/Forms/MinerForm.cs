@@ -65,7 +65,6 @@ namespace MultiMiner.Win.Forms
         private List<Engine.Data.Configuration.Coin> miningCoinConfigurations;
 
         //data sources
-        private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
         private readonly List<LogLaunchArgs> logLaunchEntries = new List<LogLaunchArgs>();
         private readonly List<LogProcessCloseArgs> logCloseEntries = new List<LogProcessCloseArgs>();
 
@@ -2122,7 +2121,7 @@ namespace MultiMiner.Win.Forms
         {
             if (!String.IsNullOrEmpty(fileName))
             {
-                string logDirectory = GetLogDirectory();
+                string logDirectory = app.GetLogDirectory();
                 string logFilePath = Path.Combine(logDirectory, fileName);
                 Process.Start(logFilePath);
             }
@@ -2679,7 +2678,7 @@ namespace MultiMiner.Win.Forms
             else if (advancedTabControl.SelectedTab == processLogPage)
                 logLaunchArgsBindingSource.MoveLast();
             else if (advancedTabControl.SelectedTab == apiMonitorPage)
-                apiLogEntryBindingSource.MoveLast();
+                app.ApiLogEntryBindingSource.MoveLast();
         }
 
         private void settingsPlainButton_Click(object sender, EventArgs e)
@@ -4196,8 +4195,8 @@ namespace MultiMiner.Win.Forms
             Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
 
             //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
+            apiContext.LogEvent -= app.LogApiEvent;
+            apiContext.LogEvent += app.LogApiEvent;
 
             VersionInformation versionInformation = null;
             try
@@ -4246,7 +4245,7 @@ namespace MultiMiner.Win.Forms
 
                     miningStatistics.MachineName = Environment.MachineName;
 
-                    PopulateMobileMinerStatistics(miningStatistics, deviceInformation, GetCoinNameForApiContext(minerProcess.ApiContext));
+                    PopulateMobileMinerStatistics(miningStatistics, deviceInformation, app.GetCoinNameForApiContext(minerProcess.ApiContext));
 
                     DeviceDetails deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
                         && (d.ID == deviceInformation.ID));
@@ -4261,23 +4260,6 @@ namespace MultiMiner.Win.Forms
                     statisticsList.Add(miningStatistics);
                 }
             }
-        }
-
-        private string GetCoinNameForApiContext(Xgminer.Api.ApiContext apiContext)
-        {
-            string coinName = string.Empty;
-
-            foreach (MinerProcess minerProcess in app.MiningEngine.MinerProcesses)
-            {
-                Xgminer.Api.ApiContext loopContext = minerProcess.ApiContext;
-                if (loopContext == apiContext)
-                {
-                    coinName = minerProcess.MinerConfiguration.CoinName;
-                    break;
-                }
-            }
-
-            return coinName;
         }
 
         private void PopulateMobileMinerStatistics(MultiMiner.MobileMiner.Data.MiningStatistics miningStatistics, DeviceInformation deviceInformation,
@@ -4547,8 +4529,8 @@ namespace MultiMiner.Win.Forms
             Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
 
             //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
+            apiContext.LogEvent -= app.LogApiEvent;
+            apiContext.LogEvent += app.LogApiEvent;
 
             string action = "accessing " + networkDevice.FriendlyName;
 
@@ -4796,8 +4778,8 @@ namespace MultiMiner.Win.Forms
         private double GetNetworkDifficultyFromMiner(Xgminer.Api.ApiContext apiContext)
         {            
             //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
+            apiContext.LogEvent -= app.LogApiEvent;
+            apiContext.LogEvent += app.LogApiEvent;
 
             NetworkCoinInformation coinInformation = null;
 
@@ -5181,8 +5163,8 @@ namespace MultiMiner.Win.Forms
             Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
 
             //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
+            apiContext.LogEvent -= app.LogApiEvent;
+            apiContext.LogEvent += app.LogApiEvent;
 
             List<PoolInformation> poolInformation = null;
             try
@@ -5211,8 +5193,8 @@ namespace MultiMiner.Win.Forms
             Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
 
             //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
+            apiContext.LogEvent -= app.LogApiEvent;
+            apiContext.LogEvent += app.LogApiEvent;
 
             List<PoolInformation> poolInformation = null;
             try
@@ -5241,8 +5223,8 @@ namespace MultiMiner.Win.Forms
             Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
 
             //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
+            apiContext.LogEvent -= app.LogApiEvent;
+            apiContext.LogEvent += app.LogApiEvent;
 
             List<MinerStatistics> minerStatistics = null;
             try
@@ -5321,8 +5303,8 @@ namespace MultiMiner.Win.Forms
             Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
 
             //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
+            apiContext.LogEvent -= app.LogApiEvent;
+            apiContext.LogEvent += app.LogApiEvent;
 
             List<DeviceInformation> deviceInformationList = null;
             try
@@ -5355,8 +5337,8 @@ namespace MultiMiner.Win.Forms
             Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
 
             //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
+            apiContext.LogEvent -= app.LogApiEvent;
+            apiContext.LogEvent += app.LogApiEvent;
 
             List<DeviceInformation> deviceInformationList = null;
             try
@@ -5385,8 +5367,8 @@ namespace MultiMiner.Win.Forms
             Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
 
             //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
+            apiContext.LogEvent -= app.LogApiEvent;
+            apiContext.LogEvent += app.LogApiEvent;
 
             List<DeviceDetails> deviceDetailsList = null;
             try
@@ -5415,8 +5397,8 @@ namespace MultiMiner.Win.Forms
             Xgminer.Api.ApiContext apiContext = minerProcess.ApiContext;
 
             //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
+            apiContext.LogEvent -= app.LogApiEvent;
+            apiContext.LogEvent += app.LogApiEvent;
 
             SummaryInformation summaryInformation = null;
             try
@@ -5455,27 +5437,7 @@ namespace MultiMiner.Win.Forms
         private void LogProcessLaunchToFile(LogLaunchArgs ea)
         {
             const string logFileName = "ProcessLog.json";
-            LogObjectToFile(ea, logFileName);
-        }
-
-        private void LogObjectToFile(object objectToLog, string logFileName)
-        {
-            string logDirectory = GetLogDirectory();
-            string logFilePath = Path.Combine(logDirectory, logFileName);
-            ObjectLogger logger = new ObjectLogger(app.ApplicationConfiguration.RollOverLogFiles, app.ApplicationConfiguration.OldLogFileSets);
-            logger.LogObjectToFile(objectToLog, logFilePath);
-        }
-
-        private string GetLogDirectory()
-        {
-            string logDirectory = ApplicationPaths.AppDataPath();
-            if (!String.IsNullOrEmpty(app.ApplicationConfiguration.LogFilePath))
-            {
-                Directory.CreateDirectory(app.ApplicationConfiguration.LogFilePath);
-                if (Directory.Exists(app.ApplicationConfiguration.LogFilePath))
-                    logDirectory = app.ApplicationConfiguration.LogFilePath;
-            }
-            return logDirectory;
+            app.LogObjectToFile(ea, logFileName);
         }
 
         private void LogProcessClose(object sender, LogProcessCloseArgs ea)
@@ -5492,7 +5454,7 @@ namespace MultiMiner.Win.Forms
         {
             const string logFileName = "MiningLog.json";
             //log an anonymous type so MinerConfiguration is ommitted
-            LogObjectToFile(
+            app.LogObjectToFile(
                 new
                 {
                     StartDate = ea.StartDate,
@@ -5509,17 +5471,11 @@ namespace MultiMiner.Win.Forms
         private void LogNotificationToFile(string text)
         {
             const string logFileName = "NotificationLog.json";
-            LogObjectToFile(new
+            app.LogObjectToFile(new
             {
                 DateTime = DateTime.Now,
                 Notification = text
             }, logFileName);
-        }
-
-        private void LogApiEventToFile(ApiLogEntry logEntry)
-        {
-            const string logFileName = "ApiLog.json";
-            LogObjectToFile(logEntry, logFileName);
         }
         #endregion
 
@@ -5594,45 +5550,18 @@ namespace MultiMiner.Win.Forms
                 }, ToolTipIcon.Error, "");
             }));
         }
-
-        private void LogApiEvent(object sender, Xgminer.Api.LogEventArgs eventArgs)
-        {
-            ApiLogEntry logEntry = new ApiLogEntry();
-
-            logEntry.DateTime = eventArgs.DateTime;
-            logEntry.Request = eventArgs.Request;
-            logEntry.Response = eventArgs.Response;
-            Xgminer.Api.ApiContext apiContext = (Xgminer.Api.ApiContext)sender;
-            logEntry.CoinName = GetCoinNameForApiContext(apiContext);
-            logEntry.Machine = apiContext.IpAddress + ":" + apiContext.Port;
-
-            //make sure BeginInvoke is allowed
-            if (formHandleValid)
-            {
-                this.BeginInvoke((Action)(() =>
-                {
-                    //code to update UI
-                    apiLogEntryBindingSource.Position = apiLogEntryBindingSource.Add(logEntry);
-                    while (apiLogEntryBindingSource.Count > 1000)
-                        apiLogEntryBindingSource.RemoveAt(0);
-                }));
-            }
-
-            LogApiEventToFile(logEntry);
-        }
         #endregion
 
         #region Application startup / setup
-        private bool formHandleValid = false;
         protected override void OnHandleCreated(EventArgs e)
         {
-            formHandleValid = true;
+            app.Context = this;
             base.OnHandleCreated(e);
         }
 
         protected override void OnHandleDestroyed(EventArgs e)
         {
-            formHandleValid = false;
+            app.Context = null;
             base.OnHandleDestroyed(e);
         }
 
@@ -5678,7 +5607,7 @@ namespace MultiMiner.Win.Forms
 
             PositionCoinChooseLabels();
 
-            apiLogEntryBindingSource.DataSource = apiLogEntries;
+            apiLogGridView.DataSource = app.ApiLogEntryBindingSource;
 
             SetupMiningEngineEvents();
             logLaunchArgsBindingSource.DataSource = logLaunchEntries;
@@ -7567,8 +7496,8 @@ namespace MultiMiner.Win.Forms
             Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
 
             //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
+            apiContext.LogEvent -= app.LogApiEvent;
+            apiContext.LogEvent += app.LogApiEvent;
 
             string verb = enabled ? "enablepool" : "disablepool";
 
@@ -7591,8 +7520,8 @@ namespace MultiMiner.Win.Forms
             Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
 
             //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
+            apiContext.LogEvent -= app.LogApiEvent;
+            apiContext.LogEvent += app.LogApiEvent;
 
             string response = apiContext.RestartMining();
             bool result = !response.ToLower().Contains("STATUS=E".ToLower());
@@ -7627,8 +7556,8 @@ namespace MultiMiner.Win.Forms
             Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
 
             //setup logging
-            apiContext.LogEvent -= LogApiEvent;
-            apiContext.LogEvent += LogApiEvent;
+            apiContext.LogEvent -= app.LogApiEvent;
+            apiContext.LogEvent += app.LogApiEvent;
 
             apiContext.SwitchPool(poolIndex);
         }
