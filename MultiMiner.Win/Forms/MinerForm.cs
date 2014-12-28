@@ -51,9 +51,6 @@ namespace MultiMiner.Win.Forms
         //coalesced timers
         private Timers timers = new Timers();
         
-        //Exchange API information
-        private IEnumerable<ExchangeInformation> sellPrices;
-
         //RPC API information
         private Dictionary<string, double> minerNetworkDifficulty = new Dictionary<string, double>();
         private readonly Dictionary<MinerProcess, List<DeviceDetails>> processDeviceDetails = new Dictionary<MinerProcess, List<DeviceDetails>>();
@@ -383,7 +380,7 @@ namespace MultiMiner.Win.Forms
         private string GetCurrentCultureCurrency()
         {
             string currencySymbol = RegionInfo.CurrentRegion.ISOCurrencySymbol;
-            if ((sellPrices != null) && (sellPrices.SingleOrDefault(sp => sp.TargetCurrency.Equals(currencySymbol)) == null))
+            if ((app.SellPrices != null) && (app.SellPrices.SingleOrDefault(sp => sp.TargetCurrency.Equals(currencySymbol)) == null))
                 currencySymbol = "USD";
 
             return currencySymbol;
@@ -531,9 +528,9 @@ namespace MultiMiner.Win.Forms
                     //check .Mining to allow perks for Remoting when local PC is not mining
                     if ((miningEngine.Donating || !miningEngine.Mining) && app.PerksConfiguration.ShowExchangeRates
                     //ensure Exchange prices are available:
-                    && (sellPrices != null))
+                    && (app.SellPrices != null))
                     {
-                        ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                        ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
                         double btcExchangeRate = exchangeInformation.ExchangeRate;
                         double coinExchangeRate = 0.00;
 
@@ -1114,7 +1111,7 @@ namespace MultiMiner.Win.Forms
                 //no internet or error parsing API
                 return;
 
-            if (sellPrices == null)
+            if (app.SellPrices == null)
                 //no internet or error parsing API
                 return;
 
@@ -1124,7 +1121,7 @@ namespace MultiMiner.Win.Forms
 
             if (info != null)
             {
-                ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
 
                 if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
                 {
@@ -1178,7 +1175,7 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshIncomeSummary()
         {
-            if (sellPrices == null)
+            if (app.SellPrices == null)
             {
                 //no internet or error parsing API
                 incomeSummaryLabel.Text = "";
@@ -1219,7 +1216,7 @@ namespace MultiMiner.Win.Forms
                         .SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
                     if (coinInfo != null)
                     {
-                        ExchangeInformation exchangeInformation = sellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                        ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
                         usdSymbol = exchangeInformation.TargetSymbol;
                         double btcExchangeRate = exchangeInformation.ExchangeRate;
                         double coinUsd = btcExchangeRate * coinInfo.Price;
@@ -1475,7 +1472,7 @@ namespace MultiMiner.Win.Forms
             System.Windows.Forms.Application.DoEvents();
 
             if (app.PerksConfiguration.PerksEnabled && app.PerksConfiguration.ShowExchangeRates)
-                RefreshExchangeRates();
+                app.RefreshExchangeRates();
 
             RefreshListViewFromViewModel();
             RefreshIncomeSummary();
@@ -1678,7 +1675,7 @@ namespace MultiMiner.Win.Forms
             //already done in ctor //app.ApplicationConfiguration.LoadApplicationConfiguration();
 
             app.PerksConfiguration.LoadPerksConfiguration(app.PathConfiguration.SharedConfigPath);
-            RefreshExchangeRates();
+            app.RefreshExchangeRates();
 
             SetListViewStyle(app.ApplicationConfiguration.ListViewStyle);
 
@@ -3196,7 +3193,7 @@ namespace MultiMiner.Win.Forms
 
         private void thirtyMinuteTimer_Tick(object sender, EventArgs e)
         {
-            RefreshExchangeRates();
+            app.RefreshExchangeRates();
         }
 
         private void oneSecondTimer_Tick(object sender, EventArgs e)
@@ -4201,49 +4198,7 @@ namespace MultiMiner.Win.Forms
             CheckAndApplyMiningStrategy();
         }
         #endregion
-
-        #region Exchange API
-        private void RefreshExchangeRates()
-        {
-            if (app.PerksConfiguration.PerksEnabled && app.PerksConfiguration.ShowExchangeRates)
-            {
-                try
-                {
-                    sellPrices = new Blockchain.ApiContext().GetExchangeInformation();
-                }
-                catch (Exception ex)
-                {
-                    //don't crash if website cannot be resolved or JSON cannot be parsed
-                    if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException))
-                    {
-                        if (app.ApplicationConfiguration.ShowApiErrors)
-                            ShowExchangeApiErrorNotification(ex);
-                        return;
-                    }
-                    throw;
-                }
-            }
-        }
-
-        private void ShowExchangeApiErrorNotification(Exception ex)
-        {
-            ExchangeApi.IApiContext apiContext = new Blockchain.ApiContext();
-
-            string apiUrl = apiContext.GetApiUrl();
-            string apiName = apiContext.GetApiName();
-
-            string summary = String.Format("Error parsing the {0} JSON API", apiName);
-            string details = ex.Message;
-
-            PostNotification(ex.Message,
-                String.Format(summary, apiName), () =>
-                {
-                    MessageBox.Show(String.Format("{0}: {1}", summary, details), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                },
-                ToolTipIcon.Warning, apiUrl);
-        }
-        #endregion
-
+        
         #region MobileMiner API
         private string GetMobileMinerUrl()
         {

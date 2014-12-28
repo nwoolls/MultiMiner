@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System.Windows.Forms;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.MultipoolApi.Data;
+using MultiMiner.ExchangeApi.Data;
 
 namespace MultiMiner.UX.ViewModels
 {
@@ -45,6 +46,9 @@ namespace MultiMiner.UX.ViewModels
         //Coin API information
         private List<CoinInformation> coinApiInformation = new List<CoinInformation>();
 
+        //Exchange API information
+        private IEnumerable<ExchangeInformation> sellPrices;
+
         //logic
         private List<PoolGroup> knownCoins = new List<PoolGroup>();
 
@@ -56,7 +60,7 @@ namespace MultiMiner.UX.ViewModels
         public IApiContext SuccessfulApiContext { get { return successfulApiContext; } }
         public List<CoinInformation> CoinApiInformation { get { return coinApiInformation; } }
         public List<PoolGroup> KnownCoins { get { return knownCoins; } }
-
+        public IEnumerable<ExchangeInformation> SellPrices { get { return sellPrices; } }
         //view models
         public MinerFormViewModel RemoteViewModel { get; set; } = new MinerFormViewModel();
         #endregion
@@ -255,49 +259,29 @@ namespace MultiMiner.UX.ViewModels
 
         private void ShowCoinApiErrorNotification(IApiContext apiContext, Exception ex)
         {
-            string siteUrl = apiContext.GetInfoUrl();
             string apiUrl = apiContext.GetApiUrl();
             string apiName = apiContext.GetApiName();
 
             string summary = String.Format("Error parsing the {0} JSON API", apiName);
             string details = ex.Message;
 
-            Notification notification = new Notification()
+            PostNotification(ex.Message, summary, () =>
             {
-                Id = ex.Message,
-                Text = summary,
-                ClickHandler = () =>
-                {
-                    MessageBox.Show(String.Format("{0}: {1}", summary, details), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                },
-                Kind = ToolTipIcon.Warning,
-                InformationUrl = apiUrl
-            };
-
-            NotificationReceived(this, notification);
+                MessageBox.Show(String.Format("{0}: {1}", summary, details), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }, ToolTipIcon.Warning, apiUrl);
         }
         private void ShowMultipoolApiErrorNotification(MultipoolApi.IApiContext apiContext, Exception ex)
         {
-            string siteUrl = apiContext.GetInfoUrl();
             string apiUrl = apiContext.GetApiUrl();
             string apiName = apiContext.GetApiName();
 
             string summary = String.Format("Error parsing the {0} JSON API", apiName);
             string details = ex.Message;
-            
-            Notification notification = new Notification()
-            {
-                Id = ex.Message,
-                Text = summary,
-                ClickHandler = () =>
-                {
-                    MessageBox.Show(String.Format("{0}: {1}", summary, details), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                },
-                Kind = ToolTipIcon.Warning,
-                InformationUrl = apiUrl
-            };
 
-            NotificationReceived(this, notification);
+            PostNotification(ex.Message, summary, () =>
+            {
+                MessageBox.Show(String.Format("{0}: {1}", summary, details), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }, ToolTipIcon.Warning, apiUrl);
         }
         #endregion
 
@@ -344,5 +328,61 @@ namespace MultiMiner.UX.ViewModels
                     .ToList()); //get a copy - populated async & collection may be modified)
         }
         #endregion
+
+        #region Exchange API
+        public void RefreshExchangeRates()
+        {
+            if (PerksConfiguration.PerksEnabled && PerksConfiguration.ShowExchangeRates)
+            {
+                try
+                {
+                    sellPrices = new Blockchain.ApiContext().GetExchangeInformation();
+                }
+                catch (Exception ex)
+                {
+                    //don't crash if website cannot be resolved or JSON cannot be parsed
+                    if ((ex is WebException) || (ex is InvalidCastException) || (ex is FormatException))
+                    {
+                        if (ApplicationConfiguration.ShowApiErrors)
+                            ShowExchangeApiErrorNotification(ex);
+                        return;
+                    }
+                    throw;
+                }
+            }
+        }
+
+        private void ShowExchangeApiErrorNotification(Exception ex)
+        {
+            ExchangeApi.IApiContext apiContext = new Blockchain.ApiContext();
+
+            string apiUrl = apiContext.GetApiUrl();
+            string apiName = apiContext.GetApiName();
+
+            string summary = String.Format("Error parsing the {0} JSON API", apiName);
+            string details = ex.Message;
+
+            PostNotification(ex.Message,
+                String.Format(summary, apiName), () =>
+                {
+                    MessageBox.Show(String.Format("{0}: {1}", summary, details), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                },
+                ToolTipIcon.Warning, apiUrl);
+        }
+        #endregion
+        
+        private void PostNotification(string id, string text, Action clickHandler, ToolTipIcon kind, string informationUrl)
+        {
+            Notification notification = new Notification()
+            {
+                Id = id,
+                Text = text,
+                ClickHandler = clickHandler,
+                Kind = kind,
+                InformationUrl = informationUrl
+            };
+
+            NotificationReceived(this, notification);
+        }
     }
 }
