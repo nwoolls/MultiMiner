@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace MultiMiner.UX.Data
 {
-    public struct Notification
+    public struct NotificationEventArgs
     {
         public string Id;
         public string Text;

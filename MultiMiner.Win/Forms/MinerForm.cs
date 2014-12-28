@@ -23,7 +23,6 @@ using MultiMiner.Win.Forms.Configuration;
 using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Api.Data;
 using MultiMiner.Xgminer.Data;
-using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -56,8 +55,6 @@ namespace MultiMiner.Win.Forms
         //hardware information
         private readonly Dictionary<DeviceViewModel, DeviceDetails> deviceDetailsMapping = new Dictionary<DeviceViewModel, DeviceDetails>();
         private readonly Dictionary<DeviceViewModel, string> lastDevicePoolMapping = new Dictionary<DeviceViewModel, string>();
-        private readonly Dictionary<string, List<PoolInformation>> networkDevicePools = new Dictionary<string, List<PoolInformation>>();
-        private readonly Dictionary<string, List<MinerStatistics>> networkDeviceStatistics = new Dictionary<string, List<MinerStatistics>>();
         private readonly Dictionary<string, VersionInformation> networkDeviceVersions = new Dictionary<string, VersionInformation>();
 
         //currently mining information
@@ -460,7 +457,7 @@ namespace MultiMiner.Win.Forms
 
             if (deviceViewModel.Kind == DeviceKind.NET)
             {
-                if (NetworkDeviceWasStopped(deviceViewModel))
+                if (app.NetworkDeviceWasStopped(deviceViewModel))
                 {
                     listViewItem.ForeColor = SystemColors.GrayText;
                     listViewItem.UseItemStyleForSubItems = true;
@@ -2934,8 +2931,8 @@ namespace MultiMiner.Win.Forms
 
             //clear cached information for Network Devices
             //(so we pick up changes)
-            networkDevicePools.Clear();
-            networkDeviceStatistics.Clear();
+            app.NetworkDevicePools.Clear();
+            app.NetworkDeviceStatistics.Clear();
             networkDeviceVersions.Clear();
         }
 
@@ -2964,7 +2961,7 @@ namespace MultiMiner.Win.Forms
 
             //restart suspect network devices
             if (app.ApplicationConfiguration.RestartCrashedMiners)
-                RestartSuspectNetworkDevices();
+                app.RestartSuspectNetworkDevices();
         }
 
         private void thirtySecondTimer_Tick(object sender, EventArgs e)
@@ -4115,7 +4112,7 @@ namespace MultiMiner.Win.Forms
             if (deviceInformationList == null) //handled failure getting API info
                 return;
 
-            List<PoolInformation> poolInformationList = GetCachedPoolInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
+            List<PoolInformation> poolInformationList = app.GetCachedPoolInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
 
             Xgminer.Api.Data.VersionInformation versionInformation = GetVersionInfoFromAddress(networkDevice.IPAddress, networkDevice.Port);
 
@@ -4383,7 +4380,7 @@ namespace MultiMiner.Win.Forms
                 pools.Add(coin.PoolGroup.Name);
             machinePools[Environment.MachineName] = pools;
 
-            foreach (KeyValuePair<string, List<PoolInformation>> networkDevicePool in networkDevicePools)
+            foreach (KeyValuePair<string, List<PoolInformation>> networkDevicePool in app.NetworkDevicePools)
             {
                 //ipAddress:port
                 string machinePath = networkDevicePool.Key;
@@ -4543,9 +4540,9 @@ namespace MultiMiner.Win.Forms
                     string poolName = parts[1];
 
                     //we may not have the pool info cached yet / anymore
-                    if (networkDevicePools.ContainsKey(networkDevice.Path))
+                    if (app.NetworkDevicePools.ContainsKey(networkDevice.Path))
                     {
-                        List<PoolInformation> pools = networkDevicePools[networkDevice.Path];
+                        List<PoolInformation> pools = app.NetworkDevicePools[networkDevice.Path];
                         int poolIndex = pools.FindIndex(pi => pi.Url.DomainFromHost().Equals(poolName, StringComparison.OrdinalIgnoreCase));
 
                         apiContext.SwitchPool(poolIndex);
@@ -4553,15 +4550,15 @@ namespace MultiMiner.Win.Forms
                 }
                 else if (commandText.Equals(RemoteCommandText.Restart, StringComparison.OrdinalIgnoreCase))
                 {
-                    RestartNetworkDevice(networkDevice);
+                    app.RestartNetworkDevice(networkDevice);
                 }
                 else if (commandText.Equals(RemoteCommandText.Stop, StringComparison.OrdinalIgnoreCase))
                 {
-                    StopNetworkDevice(networkDevice);
+                    app.StopNetworkDevice(networkDevice);
                 }
                 else if (commandText.Equals(RemoteCommandText.Start, StringComparison.OrdinalIgnoreCase))
                 {
-                    StartNetworkDevice(networkDevice);
+                    app.StartNetworkDevice(networkDevice);
                 }
             }
             catch (SocketException ex)
@@ -4835,26 +4832,6 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private List<PoolInformation> GetCachedPoolInfoFromAddress(string address)
-        {
-            string[] parts = address.Split(':');
-            return GetCachedPoolInfoFromAddress(parts[0], int.Parse(parts[1]));
-        }
-
-        private List<PoolInformation> GetCachedPoolInfoFromAddress(string ipAddress, int port)
-        {
-            List<PoolInformation> poolInformationList = null;
-            string key = String.Format("{0}:{1}", ipAddress, port);
-            if (this.networkDevicePools.ContainsKey(key))
-                poolInformationList = this.networkDevicePools[key];
-            else
-            {
-                poolInformationList = GetPoolInfoFromAddress(ipAddress, port);
-                networkDevicePools[key] = poolInformationList;
-            }
-            return poolInformationList;
-        }
-
         private VersionInformation GetCachedMinerVersionFromAddress(string ipAddress, int port)
         {
             VersionInformation versionInfo = null;
@@ -4867,28 +4844,6 @@ namespace MultiMiner.Win.Forms
                 networkDeviceVersions[key] = versionInfo;
             }
             return versionInfo;
-        }
-
-        private List<MinerStatistics> GetCachedMinerStatisticsFromViewModel(DeviceViewModel deviceViewModel)
-        {
-            string[] portions = deviceViewModel.Path.Split(':');
-            string ipAddress = portions[0];
-            int port = int.Parse(portions[1]);
-            return GetCachedMinerStatisticsFromAddress(ipAddress, port);
-        }
-
-        private List<MinerStatistics> GetCachedMinerStatisticsFromAddress(string ipAddress, int port)
-        {
-            List<MinerStatistics> minerStatisticsList = null;
-            string key = String.Format("{0}:{1}", ipAddress, port);
-            if (this.networkDeviceStatistics.ContainsKey(key))
-                minerStatisticsList = this.networkDeviceStatistics[key];
-            else
-            {
-                minerStatisticsList = GetMinerStatisticsFromAddress(ipAddress, port);
-                networkDeviceStatistics[key] = minerStatisticsList;
-            }
-            return minerStatisticsList;
         }
 
         private void RefreshNetworkDeviceStatsAsync()
@@ -4958,7 +4913,7 @@ namespace MultiMiner.Win.Forms
                 //at the time
                 if (deviceInformationList != null)
                 {
-                    List<MinerStatistics> minerStatistics = GetCachedMinerStatisticsFromAddress(ipAddress, port);
+                    List<MinerStatistics> minerStatistics = app.GetCachedMinerStatisticsFromAddress(ipAddress, port);
                     //null if API call fails
                     //check for minerStatistics.Count > 0 needed (error reported with callstack)
                     if ((minerStatistics != null) && (minerStatistics.Count > 0))
@@ -4975,7 +4930,7 @@ namespace MultiMiner.Win.Forms
                         poolIndex = deviceInformation.PoolIndex >= 0 ? deviceInformation.PoolIndex : poolIndex;
                     }
 
-                    List<PoolInformation> poolInformationList = GetCachedPoolInfoFromAddress(ipAddress, port);
+                    List<PoolInformation> poolInformationList = app.GetCachedPoolInfoFromAddress(ipAddress, port);
                     if ((poolInformationList != null) &&
                         //ensure poolIndex is valid for poolInformationList
                         //user(s) reported index errors so we can't count on the RPC API here
@@ -5186,66 +5141,6 @@ namespace MultiMiner.Win.Forms
             }
 
             return poolInformation;
-        }
-
-        private List<PoolInformation> GetPoolInfoFromAddress(string ipAddress, int port)
-        {
-            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
-
-            //setup logging
-            apiContext.LogEvent -= app.LogApiEvent;
-            apiContext.LogEvent += app.LogApiEvent;
-
-            List<PoolInformation> poolInformation = null;
-            try
-            {
-                try
-                {
-                    poolInformation = apiContext.GetPoolInformation();
-                }
-                catch (IOException)
-                {
-                    //don't fail and crash out due to any issues communicating via the API
-                    poolInformation = null;
-                }
-            }
-            catch (SocketException)
-            {
-                //won't be able to connect for the first 5s or so
-                poolInformation = null;
-            }
-
-            return poolInformation;
-        }
-
-        private List<MinerStatistics> GetMinerStatisticsFromAddress(string ipAddress, int port)
-        {
-            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
-
-            //setup logging
-            apiContext.LogEvent -= app.LogApiEvent;
-            apiContext.LogEvent += app.LogApiEvent;
-
-            List<MinerStatistics> minerStatistics = null;
-            try
-            {
-                try
-                {
-                    minerStatistics = apiContext.GetMinerStatistics();
-                }
-                catch (IOException)
-                {
-                    //don't fail and crash out due to any issues communicating via the API
-                    minerStatistics = null;
-                }
-            }
-            catch (SocketException)
-            {
-                //won't be able to connect for the first 5s or so
-                minerStatistics = null;
-            }
-
-            return minerStatistics;
         }
 
         private void PopulateSummaryInfoFromProcesses()
@@ -5568,6 +5463,7 @@ namespace MultiMiner.Win.Forms
         private void SetupApplication()
         {
             app.NotificationReceived += HandleApplicationNotification;
+            app.CredentialsRequested += HandleCredentialsRequested;
 
             HandleStartupMinimizedToNotificationArea();
 
@@ -5688,7 +5584,18 @@ namespace MultiMiner.Win.Forms
             applicationSetup = true;
         }
 
-        private void HandleApplicationNotification(object sender, UX.Data.Notification ea)
+        private void HandleCredentialsRequested(object sender, CredentialsEventArgs ea)
+        {
+            CredentialsForm form = new CredentialsForm(ea.ProtectedResource, ea.Username, ea.Password);
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                ea.Username = form.Username;
+                ea.Password = form.Password;
+                ea.CredentialsProvided = true;
+            }
+        }
+
+        private void HandleApplicationNotification(object sender, UX.Data.NotificationEventArgs ea)
         {
             BeginInvoke((Action)(() =>
             {
@@ -7200,127 +7107,23 @@ namespace MultiMiner.Win.Forms
         #endregion
 
         #region Network Devices
-        
-        private void RestartSuspectNetworkDevices()
-        {
-            RestartNetworkDevicesForChainStatus();
-            RestartNetworkDevicesForSubparHashrate();
-        }
-
-        private bool DeviceIsWarmedUp(DeviceViewModel deviceViewModel)
-        {
-            bool warm = false;
-
-            List<MinerStatistics> statistics = GetCachedMinerStatisticsFromViewModel(deviceViewModel);
-            //null in case of API failure
-            if ((statistics != null) && (statistics.Count > 0))
-                warm = statistics.First().Elapsed > MiningEngine.SecondsToWarmUpMiner;
-
-            return warm;
-        }
-
-        private void RestartNetworkDevicesForSubparHashrate()
-        {
-            IEnumerable<DeviceViewModel> suspectNetworkDevices =
-                app.LocalViewModel
-                .Devices.Where(
-                    d => (d.Kind == DeviceKind.NET)
-                        && (d.AverageHashrate > 0)
-                        && ((d.CurrentHashrate / d.AverageHashrate) < 0.5)
-                        && DeviceIsWarmedUp(d)
-                ).ToList();
-
-            foreach (DeviceViewModel networkDevice in suspectNetworkDevices)
-                RestartSuspectNetworkDevice(networkDevice, "subpar hashrate");
-        }
-
-        private void RestartNetworkDevicesForChainStatus()
-        {
-            IEnumerable<DeviceViewModel> suspectNetworkDevices =
-                app.LocalViewModel
-                .Devices.Where(
-                    d => (d.Kind == DeviceKind.NET)
-                        && (d.ChainStatus.Any(cs => !String.IsNullOrEmpty(cs) && cs.Count(c => c == 'x') > 2))
-                        && DeviceIsWarmedUp(d)
-                ).ToList();
-
-            foreach (DeviceViewModel networkDevice in suspectNetworkDevices)
-            {
-                //we don't want to keep trying to restart it over and over - clear suspect status
-                ClearChainStatus(networkDevice);
-
-                RestartSuspectNetworkDevice(networkDevice, "chain status");
-            }
-        }
-
-        private bool NetworkDeviceWasStopped(DeviceViewModel networkDevice)
-        {
-            // networkDevicePools is keyed by IP:port, use .Path
-            List<PoolInformation> poolInformation = GetCachedPoolInfoFromAddress(networkDevice.Path);
-
-            if (poolInformation == null)
-                //RPC API call timed out
-                return false;
-
-            const string Disabled = "Disabled";
-
-            foreach (var pool in poolInformation)
-                if (!pool.Status.Equals(Disabled))
-                    return false;
-
-            return true;
-        }
-
-        private void RestartSuspectNetworkDevice(DeviceViewModel networkDevice, string reason)
-        {
-            //don't restart a Network Device we've stopped
-            if (NetworkDeviceWasStopped(networkDevice))
-                return;
-
-            string message = String.Format("Restarting {0} ({1})", networkDevice.FriendlyName, reason);
-            try
-            {
-                if (!RestartNetworkDevice(networkDevice))
-                {
-                    if (!app.ApplicationConfiguration.ShowApiErrors)
-                    {
-                        //early exit - we aren't notifying for API errors
-                        return;
-                    }
-
-                    message = String.Format("Access denied restarting {0} ({1})", networkDevice.FriendlyName, reason);
-                }
-            }
-            catch (SocketException)
-            {
-                message = String.Format("Timeout restarting {0} ({1})", networkDevice.FriendlyName, reason);
-            }
-
-            //code to update UI
-            PostNotification(message, ToolTipIcon.Error);
-        }
-
-        private static void ClearChainStatus(DeviceViewModel networkDevice)
-        {
-            for (int i = 0; i < networkDevice.ChainStatus.Length; i++)
-                networkDevice.ChainStatus[i] = String.Empty;
-        }
         private void StartSelectedNetworkDevices()
         {
             foreach (ListViewItem item in deviceListView.SelectedItems)
             {
                 DeviceViewModel deviceViewModel = (DeviceViewModel)item.Tag;
                 if (deviceViewModel.Kind == DeviceKind.NET)
-                    StartNetworkDevice(deviceViewModel);
+                    app.StartNetworkDevice(deviceViewModel);
             }
         }
+
         private void StopSelectedNetworkDevices()
         {
             foreach (ListViewItem item in deviceListView.SelectedItems)
             {
                 DeviceViewModel deviceViewModel = (DeviceViewModel)item.Tag;
                 if (deviceViewModel.Kind == DeviceKind.NET)
-                    StopNetworkDevice(deviceViewModel);
+                    app.StopNetworkDevice(deviceViewModel);
             }
         }
 
@@ -7330,7 +7133,7 @@ namespace MultiMiner.Win.Forms
             {
                 DeviceViewModel deviceViewModel = (DeviceViewModel)item.Tag;
                 if (deviceViewModel.Kind == DeviceKind.NET)
-                    RestartNetworkDevice(deviceViewModel);
+                    app.RestartNetworkDevice(deviceViewModel);
             }
         }
 
@@ -7340,27 +7143,15 @@ namespace MultiMiner.Win.Forms
             {
                 DeviceViewModel deviceViewModel = (DeviceViewModel)item.Tag;
                 if (deviceViewModel.Kind == DeviceKind.NET)
-                    RebootNetworkDevice(deviceViewModel);
+                    app.RebootNetworkDevice(deviceViewModel);
             }
-        }
-
-        private NetworkDevices.NetworkDevice GetNetworkDeviceByPath(string path)
-        {
-            Uri uri = new Uri("http://" + path);
-            return app.NetworkDevicesConfiguration.Devices.SingleOrDefault(nd => (nd.Port == uri.Port) && (nd.IPAddress == uri.Host));
-        }
-
-        private bool RebootNetworkDevice(DeviceViewModel deviceViewModel)
-        {
-            string commandText = "reboot";
-            return ExecuteNetworkDeviceCommand(deviceViewModel, commandText);
         }
 
         private void ExecuteCommandOnSelectedNetworkDevices()
         {
             //use Focused device for RecentCommands
             DeviceViewModel deviceViewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
-            NetworkDevices.NetworkDevice networkDevice = GetNetworkDeviceByPath(deviceViewModel.Path);
+            NetworkDevices.NetworkDevice networkDevice = app.GetNetworkDeviceByPath(deviceViewModel.Path);
             ShellCommandForm form = new ShellCommandForm(networkDevice.RecentCommands);
             if (form.ShowDialog() == DialogResult.OK)
             {
@@ -7370,10 +7161,10 @@ namespace MultiMiner.Win.Forms
 
                     if (deviceViewModel.Kind == DeviceKind.NET)
                     {
-                        bool success = ExecuteNetworkDeviceCommand(deviceViewModel, form.ShellCommand);
+                        bool success = app.ExecuteNetworkDeviceCommand(deviceViewModel, form.ShellCommand);
                         if (success)
                         {
-                            networkDevice = GetNetworkDeviceByPath(deviceViewModel.Path);
+                            networkDevice = app.GetNetworkDeviceByPath(deviceViewModel.Path);
                             networkDevice.RecentCommands.Remove(form.ShellCommand);
                             networkDevice.RecentCommands.Insert(0, form.ShellCommand);
                             app.NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
@@ -7381,185 +7172,6 @@ namespace MultiMiner.Win.Forms
                     }
                 }
             }
-        }
-
-        private bool ExecuteNetworkDeviceCommand(DeviceViewModel deviceViewModel, string commandText)
-        {
-            NetworkDevices.NetworkDevice networkDevice = GetNetworkDeviceByPath(deviceViewModel.Path);
-
-            string username = networkDevice.Username;
-            string password = networkDevice.Password;
-            string devicePath = deviceViewModel.Path;
-            string deviceName = devicePath;
-            if (!String.IsNullOrEmpty(deviceViewModel.FriendlyName))
-                deviceName = deviceViewModel.FriendlyName;
-
-            bool success = false;
-            bool stop = false;
-            bool prompt = String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password);
-
-            while (!success && !stop)
-            {
-                if (prompt)
-                {
-                    CredentialsForm form = new CredentialsForm(deviceName, username, password);
-                    if (form.ShowDialog() == DialogResult.OK)
-                    {
-                        username = form.Username;
-                        password = form.Password;
-                    }
-                    else
-                    {
-                        stop = true;
-                    }
-                }
-
-                if (!stop)
-                {
-                    Uri uri = new Uri("http://" + devicePath);
-                    using (SshClient client = new SshClient(uri.Host, username, password))
-                    {
-                        try
-                        {
-                            client.Connect();
-                        }
-                        catch (Exception ex)
-                        {
-                            if (ex is Renci.SshNet.Common.SshAuthenticationException)
-                                prompt = true;
-                            else if ((ex is SocketException) || (ex is Renci.SshNet.Common.SshOperationTimeoutException))
-                            {
-                                stop = true;
-                                PostNotification(String.Format("{0}: {1}", deviceName, ex.Message), ToolTipIcon.Error);
-                            }
-                            else throw;
-                        }
-
-                        if (client.IsConnected)
-                        {
-                            try
-                            {
-                                stop = true;
-                                success = ExecuteSshCommand(deviceName, client, commandText);
-                            }
-                            finally
-                            {
-                                client.Disconnect();
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (success)
-            {
-                networkDevice.Username = username;
-                networkDevice.Password = password;
-                app.NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
-            }
-
-            return success;
-        }
-
-        private bool ExecuteSshCommand(string deviceName, SshClient client, string commandText)
-        {
-            bool success;
-            SshCommand command = client.RunCommand(commandText);
-            success = command.ExitStatus == 0;
-
-            if (!success)
-                PostNotification(string.Format("{0}: {1}", deviceName, command.Error), ToolTipIcon.Error);
-
-            return success;
-        }
-
-        private bool StartNetworkDevice(DeviceViewModel networkDevice)
-        {
-            return ToggleNetworkDevicePools(networkDevice, true);
-        }
-
-        private bool StopNetworkDevice(DeviceViewModel networkDevice)
-        {
-            return ToggleNetworkDevicePools(networkDevice, false);
-        }
-
-        private bool ToggleNetworkDevicePools(DeviceViewModel networkDevice, bool enabled)
-        {
-            // networkDevicePools is keyed by IP:port, use .Path
-            List<PoolInformation> poolInformation = GetCachedPoolInfoFromAddress(networkDevice.Path);
-
-            if (poolInformation == null)
-                //RPC API call timed out
-                return false;
-
-            Uri uri = new Uri("http://" + networkDevice.Path);
-            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
-
-            //setup logging
-            apiContext.LogEvent -= app.LogApiEvent;
-            apiContext.LogEvent += app.LogApiEvent;
-
-            string verb = enabled ? "enablepool" : "disablepool";
-
-            for (int i = 0; i < poolInformation.Count; i++)
-            {
-                string response = apiContext.GetResponse(String.Format("{0}|{1}", verb, i));
-                if (!response.ToLower().Contains("STATUS=S".ToLower()))
-                    return false;
-            }
-
-            //remove cached data for pools
-            networkDevicePools.Remove(networkDevice.Path);
-
-            return true;
-        }
-
-        private bool RestartNetworkDevice(DeviceViewModel networkDevice)
-        {
-            Uri uri = new Uri("http://" + networkDevice.Path);
-            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
-
-            //setup logging
-            apiContext.LogEvent -= app.LogApiEvent;
-            apiContext.LogEvent += app.LogApiEvent;
-
-            string response = apiContext.RestartMining();
-            bool result = !response.ToLower().Contains("STATUS=E".ToLower());
-
-            if (result)
-            {
-                //clear cached stats so we do not restart newly restarted instances
-                networkDeviceStatistics.Remove(networkDevice.Path);
-            }
-
-            return result;
-        }
-
-        private void SetNetworkDevicePool(DeviceViewModel networkDevice, string poolUrl)
-        {
-            // networkDevicePools is keyed by IP:port, use .Path
-            List<PoolInformation> poolInformation = networkDevicePools[networkDevice.Path];
-
-            if (poolInformation == null)
-                //RPC API call timed out
-                return;
-
-            int poolIndex = poolInformation.FindIndex(pi => pi.Url.Equals(poolUrl));
-
-            if (poolIndex == -1)
-            {
-                //device doesn't have pool
-                return;
-            }
-
-            Uri uri = new Uri("http://" + networkDevice.Path);
-            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
-
-            //setup logging
-            apiContext.LogEvent -= app.LogApiEvent;
-            apiContext.LogEvent += app.LogApiEvent;
-
-            apiContext.SwitchPool(poolIndex);
         }
 
         private void NetworkDevicePoolClicked(object sender, EventArgs e)
@@ -7571,7 +7183,7 @@ namespace MultiMiner.Win.Forms
             {
                 DeviceViewModel deviceViewModel = (DeviceViewModel)item.Tag;
                 if (deviceViewModel.Kind == DeviceKind.NET)
-                    SetNetworkDevicePool(deviceViewModel, poolUrl);
+                    app.SetNetworkDevicePool(deviceViewModel, poolUrl);
             }
         }
 
@@ -7588,36 +7200,26 @@ namespace MultiMiner.Win.Forms
         private void ToggleNetworkDeviceSticky()
         {
             DeviceViewModel deviceViewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
-            NetworkDevices.NetworkDevice deviceConfiguration = app.NetworkDevicesConfiguration.Devices.Single(
-                cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
-
-            deviceConfiguration.Sticky = !deviceConfiguration.Sticky;
-            app.NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+            app.ToggleNetworkDeviceSticky(deviceViewModel);
         }
 
         private void ToggleNetworkDeviceHidden()
         {
             DeviceViewModel deviceViewModel = (DeviceViewModel)deviceListView.FocusedItem.Tag;
-            NetworkDevices.NetworkDevice deviceConfiguration = app.NetworkDevicesConfiguration.Devices.Single(
-                cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
-
-            deviceConfiguration.Hidden = !deviceConfiguration.Hidden;
-            app.NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
-
-            app.ApplyDevicesToViewModel();
+            app.ToggleNetworkDeviceHidden(deviceViewModel);
             RefreshListViewFromViewModel();
         }
-
+        
         private void PopulateNetworkDevicePoolMenu(DeviceViewModel viewModel)
         {
             networkDevicePoolMenu.DropDownItems.Clear();
 
-            if (!networkDevicePools.ContainsKey(viewModel.Path))
+            if (!app.NetworkDevicePools.ContainsKey(viewModel.Path))
                 //Network Device is offline but pinned
                 return;
             
             // networkDevicePools is keyed by IP:port, use .Path
-            List<PoolInformation> poolInformation = networkDevicePools[viewModel.Path];
+            List<PoolInformation> poolInformation = app.NetworkDevicePools[viewModel.Path];
 
             if (poolInformation == null)
                 //RPC API call timed out

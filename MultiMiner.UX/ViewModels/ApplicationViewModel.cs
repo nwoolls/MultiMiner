@@ -9,15 +9,18 @@ using MultiMiner.Utility.Serialization;
 using MultiMiner.UX.Data;
 using MultiMiner.UX.Data.Configuration;
 using MultiMiner.UX.Extensions;
+using MultiMiner.Xgminer.Api.Data;
 using MultiMiner.Xgminer.Data;
 using MultiMiner.Xgminer.Discovery;
 using Newtonsoft.Json;
+using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Windows.Forms;
 
 namespace MultiMiner.UX.ViewModels
@@ -26,10 +29,12 @@ namespace MultiMiner.UX.ViewModels
     {
         #region Events
         //delegate declarations
-        public delegate void NotificationEventHandler(object sender, Notification ea);
+        public delegate void NotificationEventHandler(object sender, NotificationEventArgs ea);
+        public delegate void CredentialsEventHandler(object sender, CredentialsEventArgs ea);
 
         //event declarations        
         public event NotificationEventHandler NotificationReceived;
+        public event CredentialsEventHandler CredentialsRequested;
         #endregion
 
         #region Fields
@@ -61,6 +66,8 @@ namespace MultiMiner.UX.ViewModels
 
         //hardware information
         private List<Xgminer.Data.Device> devices;
+        public readonly Dictionary<string, List<PoolInformation>> NetworkDevicePools = new Dictionary<string, List<PoolInformation>>();
+        public readonly Dictionary<string, List<MinerStatistics>> NetworkDeviceStatistics = new Dictionary<string, List<MinerStatistics>>();
 
         //logic
         private readonly MiningEngine miningEngine = new MiningEngine();
@@ -576,12 +583,438 @@ namespace MultiMiner.UX.ViewModels
 
             NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
         }
+
+        public void SetNetworkDevicePool(DeviceViewModel networkDevice, string poolUrl)
+        {
+            // networkDevicePools is keyed by IP:port, use .Path
+            List<PoolInformation> poolInformation = NetworkDevicePools[networkDevice.Path];
+
+            if (poolInformation == null)
+                //RPC API call timed out
+                return;
+
+            int poolIndex = poolInformation.FindIndex(pi => pi.Url.Equals(poolUrl));
+
+            if (poolIndex == -1)
+            {
+                //device doesn't have pool
+                return;
+            }
+
+            Uri uri = new Uri("http://" + networkDevice.Path);
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            apiContext.SwitchPool(poolIndex);
+        }
+
+        public List<PoolInformation> GetCachedPoolInfoFromAddress(string ipAddress, int port)
+        {
+            List<PoolInformation> poolInformationList = null;
+            string key = String.Format("{0}:{1}", ipAddress, port);
+            if (NetworkDevicePools.ContainsKey(key))
+                poolInformationList = NetworkDevicePools[key];
+            else
+            {
+                poolInformationList = GetPoolInfoFromAddress(ipAddress, port);
+                NetworkDevicePools[key] = poolInformationList;
+            }
+            return poolInformationList;
+        }
+
+        public List<PoolInformation> GetCachedPoolInfoFromAddress(string address)
+        {
+            string[] parts = address.Split(':');
+            return GetCachedPoolInfoFromAddress(parts[0], int.Parse(parts[1]));
+        }
+
+        private List<PoolInformation> GetPoolInfoFromAddress(string ipAddress, int port)
+        {
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<PoolInformation> poolInformation = null;
+            try
+            {
+                try
+                {
+                    poolInformation = apiContext.GetPoolInformation();
+                }
+                catch (IOException)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    poolInformation = null;
+                }
+            }
+            catch (SocketException)
+            {
+                //won't be able to connect for the first 5s or so
+                poolInformation = null;
+            }
+
+            return poolInformation;
+        }
+
+        public void ToggleNetworkDeviceHidden(DeviceViewModel deviceViewModel)
+        {
+            NetworkDevices.NetworkDevice deviceConfiguration = NetworkDevicesConfiguration.Devices.Single(
+                cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
+
+            deviceConfiguration.Hidden = !deviceConfiguration.Hidden;
+            NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+
+            ApplyDevicesToViewModel();
+        }
+
+        public void ToggleNetworkDeviceSticky(DeviceViewModel deviceViewModel)
+        {
+            NetworkDevices.NetworkDevice deviceConfiguration = NetworkDevicesConfiguration.Devices.Single(
+                cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
+
+            deviceConfiguration.Sticky = !deviceConfiguration.Sticky;
+            NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+        }
+
+        public bool RestartNetworkDevice(DeviceViewModel networkDevice)
+        {
+            Uri uri = new Uri("http://" + networkDevice.Path);
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            string response = apiContext.RestartMining();
+            bool result = !response.ToLower().Contains("STATUS=E".ToLower());
+
+            if (result)
+            {
+                //clear cached stats so we do not restart newly restarted instances
+                NetworkDeviceStatistics.Remove(networkDevice.Path);
+            }
+
+            return result;
+        }
+
+        public List<MinerStatistics> GetCachedMinerStatisticsFromViewModel(DeviceViewModel deviceViewModel)
+        {
+            string[] portions = deviceViewModel.Path.Split(':');
+            string ipAddress = portions[0];
+            int port = int.Parse(portions[1]);
+            return GetCachedMinerStatisticsFromAddress(ipAddress, port);
+        }
+
+        public List<MinerStatistics> GetCachedMinerStatisticsFromAddress(string ipAddress, int port)
+        {
+            List<MinerStatistics> minerStatisticsList = null;
+            string key = String.Format("{0}:{1}", ipAddress, port);
+            if (NetworkDeviceStatistics.ContainsKey(key))
+                minerStatisticsList = NetworkDeviceStatistics[key];
+            else
+            {
+                minerStatisticsList = GetMinerStatisticsFromAddress(ipAddress, port);
+                NetworkDeviceStatistics[key] = minerStatisticsList;
+            }
+            return minerStatisticsList;
+        }
+
+        private List<MinerStatistics> GetMinerStatisticsFromAddress(string ipAddress, int port)
+        {
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(port, ipAddress);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            List<MinerStatistics> minerStatistics = null;
+            try
+            {
+                try
+                {
+                    minerStatistics = apiContext.GetMinerStatistics();
+                }
+                catch (IOException)
+                {
+                    //don't fail and crash out due to any issues communicating via the API
+                    minerStatistics = null;
+                }
+            }
+            catch (SocketException)
+            {
+                //won't be able to connect for the first 5s or so
+                minerStatistics = null;
+            }
+
+            return minerStatistics;
+        }
+
+        public bool StartNetworkDevice(DeviceViewModel networkDevice)
+        {
+            return ToggleNetworkDevicePools(networkDevice, true);
+        }
+
+        public bool StopNetworkDevice(DeviceViewModel networkDevice)
+        {
+            return ToggleNetworkDevicePools(networkDevice, false);
+        }
+
+        private bool ToggleNetworkDevicePools(DeviceViewModel networkDevice, bool enabled)
+        {
+            // networkDevicePools is keyed by IP:port, use .Path
+            List<PoolInformation> poolInformation = GetCachedPoolInfoFromAddress(networkDevice.Path);
+
+            if (poolInformation == null)
+                //RPC API call timed out
+                return false;
+
+            Uri uri = new Uri("http://" + networkDevice.Path);
+            Xgminer.Api.ApiContext apiContext = new Xgminer.Api.ApiContext(uri.Port, uri.Host);
+
+            //setup logging
+            apiContext.LogEvent -= LogApiEvent;
+            apiContext.LogEvent += LogApiEvent;
+
+            string verb = enabled ? "enablepool" : "disablepool";
+
+            for (int i = 0; i < poolInformation.Count; i++)
+            {
+                string response = apiContext.GetResponse(String.Format("{0}|{1}", verb, i));
+                if (!response.ToLower().Contains("STATUS=S".ToLower()))
+                    return false;
+            }
+
+            //remove cached data for pools
+            NetworkDevicePools.Remove(networkDevice.Path);
+
+            return true;
+        }
+
+        public bool ExecuteNetworkDeviceCommand(DeviceViewModel deviceViewModel, string commandText)
+        {
+            NetworkDevices.NetworkDevice networkDevice = GetNetworkDeviceByPath(deviceViewModel.Path);
+
+            string username = networkDevice.Username;
+            string password = networkDevice.Password;
+            string devicePath = deviceViewModel.Path;
+            string deviceName = devicePath;
+            if (!String.IsNullOrEmpty(deviceViewModel.FriendlyName))
+                deviceName = deviceViewModel.FriendlyName;
+
+            bool success = false;
+            bool stop = false;
+            bool prompt = String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password);
+
+            while (!success && !stop)
+            {
+                if (prompt)
+                {
+                    CredentialsEventArgs ea = new CredentialsEventArgs()
+                    {
+                        ProtectedResource = deviceName,
+                        Username = username,
+                        Password = password
+                    };
+
+                    CredentialsRequested(this, ea);
+
+                    if (ea.CredentialsProvided)
+                    {
+                        username = ea.Username;
+                        password = ea.Password;
+                    }
+                    else
+                    {
+                        stop = true;
+                    }
+                }
+
+                if (!stop)
+                {
+                    Uri uri = new Uri("http://" + devicePath);
+                    using (SshClient client = new SshClient(uri.Host, username, password))
+                    {
+                        try
+                        {
+                            client.Connect();
+                        }
+                        catch (Exception ex)
+                        {
+                            if (ex is Renci.SshNet.Common.SshAuthenticationException)
+                                prompt = true;
+                            else if ((ex is SocketException) || (ex is Renci.SshNet.Common.SshOperationTimeoutException))
+                            {
+                                stop = true;
+                                PostNotification(String.Format("{0}: {1}", deviceName, ex.Message), ToolTipIcon.Error);
+                            }
+                            else throw;
+                        }
+
+                        if (client.IsConnected)
+                        {
+                            try
+                            {
+                                stop = true;
+                                success = ExecuteSshCommand(deviceName, client, commandText);
+                            }
+                            finally
+                            {
+                                client.Disconnect();
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (success)
+            {
+                networkDevice.Username = username;
+                networkDevice.Password = password;
+                NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+            }
+
+            return success;
+        }
+
+        public NetworkDevices.NetworkDevice GetNetworkDeviceByPath(string path)
+        {
+            Uri uri = new Uri("http://" + path);
+            return NetworkDevicesConfiguration.Devices.SingleOrDefault(nd => (nd.Port == uri.Port) && (nd.IPAddress == uri.Host));
+        }
+
+        public bool RebootNetworkDevice(DeviceViewModel deviceViewModel)
+        {
+            string commandText = "reboot";
+            return ExecuteNetworkDeviceCommand(deviceViewModel, commandText);
+        }
+
+        private bool ExecuteSshCommand(string deviceName, SshClient client, string commandText)
+        {
+            bool success;
+            SshCommand command = client.RunCommand(commandText);
+            success = command.ExitStatus == 0;
+
+            if (!success)
+                PostNotification(string.Format("{0}: {1}", deviceName, command.Error), ToolTipIcon.Error);
+
+            return success;
+        }
+
+        public void RestartSuspectNetworkDevices()
+        {
+            RestartNetworkDevicesForChainStatus();
+            RestartNetworkDevicesForSubparHashrate();
+        }
+
+        private bool DeviceIsWarmedUp(DeviceViewModel deviceViewModel)
+        {
+            bool warm = false;
+
+            List<MinerStatistics> statistics = GetCachedMinerStatisticsFromViewModel(deviceViewModel);
+            //null in case of API failure
+            if ((statistics != null) && (statistics.Count > 0))
+                warm = statistics.First().Elapsed > MiningEngine.SecondsToWarmUpMiner;
+
+            return warm;
+        }
+
+        private void RestartNetworkDevicesForSubparHashrate()
+        {
+            IEnumerable<DeviceViewModel> suspectNetworkDevices =
+                LocalViewModel
+                .Devices.Where(
+                    d => (d.Kind == DeviceKind.NET)
+                        && (d.AverageHashrate > 0)
+                        && ((d.CurrentHashrate / d.AverageHashrate) < 0.5)
+                        && DeviceIsWarmedUp(d)
+                ).ToList();
+
+            foreach (DeviceViewModel networkDevice in suspectNetworkDevices)
+                RestartSuspectNetworkDevice(networkDevice, "subpar hashrate");
+        }
+
+        private void RestartNetworkDevicesForChainStatus()
+        {
+            IEnumerable<DeviceViewModel> suspectNetworkDevices =
+                LocalViewModel
+                .Devices.Where(
+                    d => (d.Kind == DeviceKind.NET)
+                        && (d.ChainStatus.Any(cs => !String.IsNullOrEmpty(cs) && cs.Count(c => c == 'x') > 2))
+                        && DeviceIsWarmedUp(d)
+                ).ToList();
+
+            foreach (DeviceViewModel networkDevice in suspectNetworkDevices)
+            {
+                //we don't want to keep trying to restart it over and over - clear suspect status
+                ClearChainStatus(networkDevice);
+
+                RestartSuspectNetworkDevice(networkDevice, "chain status");
+            }
+        }
+
+        public bool NetworkDeviceWasStopped(DeviceViewModel networkDevice)
+        {
+            // networkDevicePools is keyed by IP:port, use .Path
+            List<PoolInformation> poolInformation = GetCachedPoolInfoFromAddress(networkDevice.Path);
+
+            if (poolInformation == null)
+                //RPC API call timed out
+                return false;
+
+            const string Disabled = "Disabled";
+
+            foreach (var pool in poolInformation)
+                if (!pool.Status.Equals(Disabled))
+                    return false;
+
+            return true;
+        }
+
+        private void RestartSuspectNetworkDevice(DeviceViewModel networkDevice, string reason)
+        {
+            //don't restart a Network Device we've stopped
+            if (NetworkDeviceWasStopped(networkDevice))
+                return;
+
+            string message = String.Format("Restarting {0} ({1})", networkDevice.FriendlyName, reason);
+            try
+            {
+                if (!RestartNetworkDevice(networkDevice))
+                {
+                    if (!ApplicationConfiguration.ShowApiErrors)
+                    {
+                        //early exit - we aren't notifying for API errors
+                        return;
+                    }
+
+                    message = String.Format("Access denied restarting {0} ({1})", networkDevice.FriendlyName, reason);
+                }
+            }
+            catch (SocketException)
+            {
+                message = String.Format("Timeout restarting {0} ({1})", networkDevice.FriendlyName, reason);
+            }
+
+            //code to update UI
+            PostNotification(message, ToolTipIcon.Error);
+        }
+
+        private static void ClearChainStatus(DeviceViewModel networkDevice)
+        {
+            for (int i = 0; i < networkDevice.ChainStatus.Length; i++)
+                networkDevice.ChainStatus[i] = String.Empty;
+        }
         #endregion
 
         #region Notifications
         private void PostNotification(string id, string text, Action clickHandler, ToolTipIcon kind, string informationUrl)
         {
-            Notification notification = new Notification()
+            NotificationEventArgs notification = new NotificationEventArgs()
             {
                 Id = id,
                 Text = text,
@@ -591,6 +1024,21 @@ namespace MultiMiner.UX.ViewModels
             };
 
             NotificationReceived(this, notification);
+        }
+
+        public void PostNotification(string text, ToolTipIcon icon, string informationUrl = "")
+        {
+            PostNotification(text, text, () => { }, icon, informationUrl);
+        }
+
+        public void PostNotification(string id, string text, ToolTipIcon icon, string informationUrl = "")
+        {
+            PostNotification(id, text, () => { }, icon, informationUrl);
+        }
+
+        public void PostNotification(string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
+        {
+            PostNotification(text, text, clickHandler, icon, informationUrl);
         }
         #endregion
 
