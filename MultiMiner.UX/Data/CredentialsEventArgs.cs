@@ -1,6 +1,8 @@
-﻿namespace MultiMiner.UX.Data
+﻿using System;
+
+namespace MultiMiner.UX.Data
 {
-    public class CredentialsEventArgs
+    public class CredentialsEventArgs : EventArgs
     {
         public string ProtectedResource;
         public string Username;
