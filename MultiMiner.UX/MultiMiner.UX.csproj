@@ -41,6 +41,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -49,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\ApiLogEntry.cs" />
+    <Compile Include="Data\ConfigurationEventArgs.cs" />
     <Compile Include="Data\Configuration\Application.cs" />
     <Compile Include="Data\Configuration\Metadata.cs" />
     <Compile Include="Data\Configuration\NetworkDevices.cs" />
@@ -59,12 +62,17 @@
     <Compile Include="Data\NotificationEventArgs.cs" />
     <Compile Include="Data\PoolFeatureAnchors.cs" />
     <Compile Include="Data\ProgressEventArgs.cs" />
+    <Compile Include="Data\RemotingEventArgs.cs" />
     <Compile Include="Data\UserAgent.cs" />
+    <Compile Include="Extensions\ApplicationConfigurationExtensions.cs" />
+    <Compile Include="Extensions\DeviceConfigurationExtensions.cs" />
+    <Compile Include="Extensions\EngineConfigurationExtensions.cs" />
     <Compile Include="Extensions\IPAddressExtensions.cs" />
     <Compile Include="Extensions\IPEndPointExtensions.cs" />
     <Compile Include="Extensions\MiningStatisticsExtensions.cs" />
     <Compile Include="Extensions\NetworkDeviceExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\XgminerConfigurationExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ApplicationViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
@@ -87,6 +95,10 @@
       <Project>{5b2b2592-689a-4de2-815c-259427a3d101}</Project>
       <Name>MultiMiner.CoinWarz</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Discovery\MultiMiner.Discovery.csproj">
+      <Project>{ccb532cd-4922-42a9-baf9-0e651a592467}</Project>
+      <Name>MultiMiner.Discovery</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Engine\MultiMiner.Engine.csproj">
       <Project>{845687bb-ec47-46d3-ac9d-6fcfb63de8f5}</Project>
       <Name>MultiMiner.Engine</Name>
@@ -106,6 +118,10 @@
     <ProjectReference Include="..\MultiMiner.NiceHash\MultiMiner.NiceHash.csproj">
       <Project>{5a05d03d-7006-406c-84b0-a2717a07ceb7}</Project>
       <Name>MultiMiner.NiceHash</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Remoting\MultiMiner.Remoting.csproj">
+      <Project>{db1b318b-b57f-4bf4-8e05-befe7970f64c}</Project>
+      <Name>MultiMiner.Remoting</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Services\MultiMiner.Services.csproj">
       <Project>{cffa60ec-9486-4f45-bef2-05c1a3d68ea6}</Project>

@@ -6,6 +6,7 @@ using MultiMiner.Discovery.Data;
 using MultiMiner.Win.Extensions;
 using System.Collections;
 using MultiMiner.Utility.Forms;
+using MultiMiner.Discovery;
 
 namespace MultiMiner.Win.Controls
 {
@@ -39,22 +40,21 @@ namespace MultiMiner.Win.Controls
         //event declarations        
         public event SelectedInstanceChangedHandler SelectedInstanceChanged;
 
-        public List<Instance> Instances { get; set; }
-        public Instance ThisPCInstance { get; set; }
+        private InstanceManager instanceManager;
 
         private Dictionary<Instance, Remoting.Data.Transfer.Machine> instanceMachines = new Dictionary<Instance, Remoting.Data.Transfer.Machine>();
         private Dictionary<Instance, DateTime> instanceUpdateDates = new Dictionary<Instance, DateTime>();
 
-        public InstancesControl()
+        public InstancesControl(InstanceManager instanceManager)
         {
             InitializeComponent();
-            Instances = new List<Instance>();
             treeView1.TreeViewNodeSorter = new InstanceSorter();
+            this.instanceManager = instanceManager;
         }
 
         public void RegisterInstance(Instance instance)
         {
-            if (Instances.SingleOrDefault(i => i.IpAddress.Equals(instance.IpAddress)) != null)
+            if (instanceManager.Instances.SingleOrDefault(i => i.IpAddress.Equals(instance.IpAddress)) != null)
                 //instance already registered
                 //added as an additional guard after user reported Sequence error with use of
                 //SingleOrDefault in ApplyMachineInformation()
@@ -67,7 +67,7 @@ namespace MultiMiner.Win.Controls
 
             if (isThisPc)
             {
-                ThisPCInstance = instance;
+                instanceManager.ThisPCInstance = instance;
                 nodeText = ThisPCText;
                 node = treeView1.Nodes[0].Nodes.Insert(0, instance.IpAddress, nodeText);
             }
@@ -89,7 +89,7 @@ namespace MultiMiner.Win.Controls
                 node.SelectedImageIndex = 1;
             }
 
-            Instances.Add(instance);
+            instanceManager.Instances.Add(instance);
 
             instanceUpdateDates[instance] = DateTime.Now;
 
@@ -104,21 +104,21 @@ namespace MultiMiner.Win.Controls
         public void UnregisterInstance(Instance instance)
         {
             treeView1.Nodes[0].Nodes.RemoveByKey(instance.IpAddress);
-            Instances.Remove(instance);
+            instanceManager.Instances.Remove(instance);
             instanceMachines.Remove(instance);
             RefreshNetworkTotals();
         }
 
         public void UnregisterInstances()
         {
-            Instances.Clear();
+            instanceManager.Instances.Clear();
             treeView1.Nodes[0].Nodes.Clear();
             instanceMachines.Clear();
         }
 
         private string GetMachineName(string ipAddress)
         {
-            Instance instance = Instances.Single(i => i.IpAddress.Equals(ipAddress));
+            Instance instance = instanceManager.Instances.Single(i => i.IpAddress.Equals(ipAddress));
             return GetMachineName(instance);
         }
 
@@ -134,9 +134,9 @@ namespace MultiMiner.Win.Controls
         public void ApplyMachineInformation(string ipAddress, Remoting.Data.Transfer.Machine machine)
         {
             if (ipAddress.Equals("localhost"))
-                ipAddress = ThisPCInstance.IpAddress;
+                ipAddress = instanceManager.ThisPCInstance.IpAddress;
 
-            Instance instance = Instances.SingleOrDefault(i => i.IpAddress.Equals(ipAddress));
+            Instance instance = instanceManager.Instances.SingleOrDefault(i => i.IpAddress.Equals(ipAddress));
             if (instance != null)
             {
                 instanceUpdateDates[instance] = DateTime.Now;
@@ -171,11 +171,11 @@ namespace MultiMiner.Win.Controls
         private void RemoveOrphans()
         {
             //remove instances (not This PC) that haven't broadcast a hashrate in 5 minutes
-            IEnumerable<Instance> orphans = Instances.Where(i => (i != ThisPCInstance) && (instanceUpdateDates[i].AddMinutes(5) < DateTime.Now)).ToList();
+            IEnumerable<Instance> orphans = instanceManager.Instances.Where(i => (i != instanceManager.ThisPCInstance) && (instanceUpdateDates[i].AddMinutes(5) < DateTime.Now)).ToList();
             foreach (Instance orphan in orphans)
             {
                 treeView1.Nodes[0].Nodes.RemoveByKey(orphan.IpAddress);
-                Instances.Remove(orphan);
+                instanceManager.Instances.Remove(orphan);
             }
         }
 
@@ -241,7 +241,7 @@ namespace MultiMiner.Win.Controls
         {
             if (SelectedInstanceChanged != null)
             {
-                Instance instance = Instances.SingleOrDefault(i => i.IpAddress.Equals(e.Node.Name));
+                Instance instance = instanceManager.Instances.SingleOrDefault(i => i.IpAddress.Equals(e.Node.Name));
                 if (instance != null)
                 {
                     SelectedInstanceChanged(this, instance);

@@ -1,7 +1,7 @@
 ﻿using MultiMiner.Utility.Serialization;
 using System.Linq;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
     public static class ApplicationConfigurationExtensions
     {

@@ -1,7 +1,7 @@
 ﻿using MultiMiner.Utility.Serialization;
 using System.Collections.Generic;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
     public static class DeviceConfigurationExtensions
     {

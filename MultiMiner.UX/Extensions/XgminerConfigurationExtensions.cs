@@ -1,9 +1,8 @@
 ﻿using MultiMiner.Utility.Serialization;
-using MultiMiner.Xgminer.Data;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
     internal static class XgminerConfigurationExtensions
     {

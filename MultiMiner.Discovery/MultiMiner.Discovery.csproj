@@ -46,6 +46,7 @@
     <Compile Include="Config.cs" />
     <Compile Include="Data\Instance.cs" />
     <Compile Include="InstanceChangedArgs.cs" />
+    <Compile Include="InstanceManager.cs" />
     <Compile Include="Listener.cs" />
     <Compile Include="Data\Packet.cs" />
     <Compile Include="Verbs.cs" />
