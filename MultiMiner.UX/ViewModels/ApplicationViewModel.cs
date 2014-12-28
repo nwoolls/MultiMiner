@@ -1,20 +1,22 @@
 ﻿using MultiMiner.CoinApi;
+using MultiMiner.CoinApi.Data;
 using MultiMiner.Engine;
 using MultiMiner.Engine.Data;
+using MultiMiner.ExchangeApi.Data;
+using MultiMiner.MultipoolApi.Data;
 using MultiMiner.Utility.Serialization;
+using MultiMiner.UX.Data;
 using MultiMiner.UX.Data.Configuration;
+using MultiMiner.UX.Extensions;
+using MultiMiner.Xgminer.Data;
+using MultiMiner.Xgminer.Discovery;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
-using MultiMiner.CoinApi.Data;
-using MultiMiner.UX.Data;
 using System.Net;
-using Newtonsoft.Json;
 using System.Windows.Forms;
-using MultiMiner.Xgminer.Data;
-using MultiMiner.MultipoolApi.Data;
-using MultiMiner.ExchangeApi.Data;
 
 namespace MultiMiner.UX.ViewModels
 {
@@ -370,7 +372,69 @@ namespace MultiMiner.UX.ViewModels
                 ToolTipIcon.Warning, apiUrl);
         }
         #endregion
-        
+
+        #region Network devices
+        public void FindNetworkDevices()
+        {
+            List<Utility.Net.LocalNetwork.NetworkInterfaceInfo> localIpRanges = Utility.Net.LocalNetwork.GetLocalNetworkInterfaces();
+            if (localIpRanges.Count == 0)
+                return; //no network connection
+
+            const int startingPort = 4028;
+            const int endingPort = 4030;
+
+            foreach (Utility.Net.LocalNetwork.NetworkInterfaceInfo interfaceInfo in localIpRanges)
+            {
+                List<IPEndPoint> miners = MinerFinder.Find(interfaceInfo.RangeStart, interfaceInfo.RangeEnd, startingPort, endingPort);
+
+                //remove own miners
+                miners.RemoveAll(m => Utility.Net.LocalNetwork.GetLocalIPAddresses().Contains(m.Address.ToString()));
+
+                List<NetworkDevices.NetworkDevice> newDevices = miners.ToNetworkDevices();
+
+                //merge in miners, don't remove miners here
+                //let CheckNetworkDevices() remove miners since it does not depend on port scanning
+                //some users are manually entering devices in the XML
+                List<NetworkDevices.NetworkDevice> existingDevices = NetworkDevicesConfiguration.Devices;
+                newDevices = newDevices
+                    .Where(d1 => !existingDevices.Any(d2 => d2.IPAddress.Equals(d1.IPAddress) && (d2.Port == d1.Port)))
+                    .ToList();
+                NetworkDevicesConfiguration.Devices.AddRange(newDevices);
+            }
+
+            NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+        }
+
+        public void CheckNetworkDevices()
+        {
+            List<IPEndPoint> endpoints = NetworkDevicesConfiguration.Devices.ToIPEndPoints();
+
+            //remove own miners
+            endpoints.RemoveAll(m => Utility.Net.LocalNetwork.GetLocalIPAddresses().Contains(m.Address.ToString()));
+
+            endpoints = MinerFinder.Check(endpoints);
+
+            List<NetworkDevices.NetworkDevice> existingDevices = NetworkDevicesConfiguration.Devices;
+            List<NetworkDevices.NetworkDevice> prunedDevices = endpoints.ToNetworkDevices();
+            //add in Sticky devices not already in the pruned devices
+            //Sticky devices allow users to mark Network Devices that should never be removed
+            prunedDevices.AddRange(
+                existingDevices
+                    .Where(d1 => d1.Sticky && !prunedDevices.Any(d2 => d2.IPAddress.Equals(d1.IPAddress) && (d2.Port == d1.Port)))
+            );
+
+            //filter the devices by prunedDevices - do not assign directly as we need to
+            //preserve properties on the existing configurations - e.g. Sticky
+            NetworkDevicesConfiguration.Devices =
+                NetworkDevicesConfiguration.Devices
+                .Where(ed => prunedDevices.Any(pd => pd.IPAddress.Equals(ed.IPAddress) && (pd.Port == ed.Port)))
+                .ToList();
+
+            NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+        }
+        #endregion
+
+        #region Notifications
         private void PostNotification(string id, string text, Action clickHandler, ToolTipIcon kind, string informationUrl)
         {
             Notification notification = new Notification()
@@ -384,5 +448,6 @@ namespace MultiMiner.UX.ViewModels
 
             NotificationReceived(this, notification);
         }
+        #endregion
     }
 }

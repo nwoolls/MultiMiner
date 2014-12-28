@@ -56,6 +56,7 @@
     <Compile Include="Data\PoolFeatureAnchors.cs" />
     <Compile Include="Data\UserAgent.cs" />
     <Compile Include="Extensions\IPAddressExtensions.cs" />
+    <Compile Include="Extensions\IPEndPointExtensions.cs" />
     <Compile Include="Extensions\NetworkDeviceExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ApplicationViewModel.cs" />
@@ -110,6 +111,10 @@
     <ProjectReference Include="..\MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj">
       <Project>{5b43ad9d-8b67-4aa8-b76d-aa83caf9d29f}</Project>
       <Name>MultiMiner.Xgminer.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Xgminer.Discovery\MultiMiner.Xgminer.Discovery.csproj">
+      <Project>{ed66caa1-4826-46e9-bb23-c56d0cff5c7a}</Project>
+      <Name>MultiMiner.Xgminer.Discovery</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Xgminer\MultiMiner.Xgminer.csproj">
       <Project>{0dbef993-1b34-4d80-ab6a-f662604325dc}</Project>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
     public static class IPEndPointExtensions
     {

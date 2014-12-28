@@ -91,7 +91,6 @@
     <Compile Include="Controls\DetailsControl.Designer.cs">
       <DependentUpon>DetailsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\IPEndPointExtensions.cs" />
     <Compile Include="Controls\InstancesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
