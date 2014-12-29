@@ -42,9 +42,16 @@ namespace MultiMiner.Utility.Net
             return new IPAddress(broadcastAddress);
         }
 
-        public static List<NetworkInterfaceInfo> GetLocalNetworkInterfaces()
+        private static List<NetworkInterfaceInfo> localNetworkInterfaces;
+        public static List<NetworkInterfaceInfo> GetLocalNetworkInterfaces(bool flushCache = false)
         {
-            List<NetworkInterfaceInfo> result = new List<NetworkInterfaceInfo>();
+            if (flushCache)
+                localNetworkInterfaces = null;
+
+            if (localNetworkInterfaces != null)
+                return localNetworkInterfaces;
+
+            localNetworkInterfaces = new List<NetworkInterfaceInfo>();
 
             NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
             foreach (NetworkInterface networkInterface in networkInterfaces)
@@ -79,12 +86,12 @@ namespace MultiMiner.Utility.Net
                         interfaceInfo.RangeStart = new IPAddress((long)(uint)IPAddress.HostToNetworkOrder((int)rangeStart));
                         interfaceInfo.RangeEnd = new IPAddress((long)(uint)IPAddress.HostToNetworkOrder((int)rangeEnd));
 
-                        result.Add(interfaceInfo);
+                        localNetworkInterfaces.Add(interfaceInfo);
                     }
                 }
             }
 
-            return result;
+            return localNetworkInterfaces;
         }
 
         public static List<string> GetLocalIPAddresses()
