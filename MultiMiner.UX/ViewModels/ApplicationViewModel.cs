@@ -1848,6 +1848,10 @@ namespace MultiMiner.UX.ViewModels
 
         private void UpdateDevicesForProxySettings()
         {
+            //devices not populated / loaded, e.g. remoting error loading app (socket in use)
+            if (devices == null)
+                return;
+
             DevicesService service = new DevicesService(EngineConfiguration.XgminerConfiguration);
             service.UpdateDevicesForProxySettings(devices, miningEngine.Mining);
             AddMissingDeviceConfigurations();
