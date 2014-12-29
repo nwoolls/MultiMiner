@@ -15,7 +15,7 @@ namespace MultiMiner.Utility.Networking.Tests
 
             for (int i = 0; i < times; i++)
             {
-                List<IPEndPoint> endpoints = PortScanner.Find("192.168.0.254-255", 4028, 4028);
+                List<IPEndPoint> endpoints = PortScanner.Find(IPAddress.Parse("192.168.0.254"), IPAddress.Parse("192.168.0.255"), 4028, 4028);
                 Assert.IsTrue(endpoints.Count > 0);
             }
         }

@@ -81,6 +81,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.NiceHash", "Mult
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.WhatMine", "MultiMiner.WhatMine\MultiMiner.WhatMine.csproj", "{4B0C2EDD-9A3E-41AF-B8EF-9A7A541D2E80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.UX", "MultiMiner.UX\MultiMiner.UX.csproj", "{A23B916F-0E06-43BB-97A4-F61AFE3A2F72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.UX.Tests", "MultiMiner.UX.Tests\MultiMiner.UX.Tests.csproj", "{DFCB2009-3EFA-4715-BFD2-CB5B776BA03E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -239,6 +243,14 @@ Global
 		{4B0C2EDD-9A3E-41AF-B8EF-9A7A541D2E80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B0C2EDD-9A3E-41AF-B8EF-9A7A541D2E80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B0C2EDD-9A3E-41AF-B8EF-9A7A541D2E80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A23B916F-0E06-43BB-97A4-F61AFE3A2F72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A23B916F-0E06-43BB-97A4-F61AFE3A2F72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A23B916F-0E06-43BB-97A4-F61AFE3A2F72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A23B916F-0E06-43BB-97A4-F61AFE3A2F72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFCB2009-3EFA-4715-BFD2-CB5B776BA03E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFCB2009-3EFA-4715-BFD2-CB5B776BA03E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFCB2009-3EFA-4715-BFD2-CB5B776BA03E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFCB2009-3EFA-4715-BFD2-CB5B776BA03E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

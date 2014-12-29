@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MultiMiner.Utility.Networking.Tests
@@ -17,13 +18,13 @@ namespace MultiMiner.Utility.Networking.Tests
         }
 
         [TestMethod]
-        public void GetLocalIPAddressRange_Succeeds()
+        public void GetLocalNetworkInterfaces_Succeeds()
         {
-            string localIPAddressRange = String.Empty;
+            System.Collections.Generic.List<MultiMiner.Utility.Net.LocalNetwork.NetworkInterfaceInfo> localNetworkInterfaces = null;
 
-            localIPAddressRange = Utility.Net.LocalNetwork.GetLocalIPAddressRange();
+            localNetworkInterfaces = Utility.Net.LocalNetwork.GetLocalNetworkInterfaces();
 
-            Assert.IsTrue(!String.IsNullOrEmpty(localIPAddressRange));
+            Assert.IsTrue(localNetworkInterfaces.Any());
         }
 
         [TestMethod]

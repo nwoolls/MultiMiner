@@ -5,7 +5,7 @@ namespace MultiMiner.Win.Extensions
 {
     public static class DateTimeExtensions
     {
-        private static string ToReallyShortDateString(this DateTime dateTime)
+        public static string ToReallyShortDateString(this DateTime dateTime)
         {
             //short date no year
             string shortDateString = dateTime.ToShortDateString();
