@@ -4,7 +4,7 @@ namespace MultiMiner.Utility.Forms
 {
     public partial class NoFlickerListView : ListView
     {
-        public NoFlickerListView()
+        protected NoFlickerListView()
         {
             //Activate double buffering
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);

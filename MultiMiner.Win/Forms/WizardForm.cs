@@ -1,19 +1,20 @@
 ﻿using MultiMiner.Engine;
+using MultiMiner.Engine.Data;
+using MultiMiner.Engine.Installers;
+using MultiMiner.MobileMiner.Helpers;
+using MultiMiner.Utility.Forms;
+using MultiMiner.Utility.OS;
+using MultiMiner.UX.Data;
+using MultiMiner.UX.Data.Configuration;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Windows.Forms;
-using System.Linq;
 using System.Drawing;
-using MultiMiner.UX.Data.Configuration;
-using MultiMiner.Utility.OS;
-using MultiMiner.MobileMiner.Helpers;
-using MultiMiner.Utility.Forms;
-using MultiMiner.Xgminer.Data;
-using MultiMiner.Engine.Data;
-using MultiMiner.UX.Data;
-using MultiMiner.Engine.Installers;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using Application = MultiMiner.UX.Data.Configuration.Application;
 
 namespace MultiMiner.Win.Forms
 {
@@ -296,8 +297,7 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
 
         private Engine.Data.Configuration.Engine CreateEngineConfiguration()
         {
-            Engine.Data.Configuration.Engine engineConfiguration;
-            engineConfiguration = new Engine.Data.Configuration.Engine();
+            Engine.Data.Configuration.Engine engineConfiguration = new Engine.Data.Configuration.Engine();
 
             Engine.Data.Configuration.Coin coinConfiguration = new Engine.Data.Configuration.Coin();
 
@@ -343,15 +343,16 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
 
         private UX.Data.Configuration.Application CreateApplicationConfiguration()
         {
-            UX.Data.Configuration.Application applicationConfiguraion;
-            applicationConfiguraion = new UX.Data.Configuration.Application();
-            applicationConfiguraion.MobileMinerMonitoring = remoteMonitoringCheck.Checked;
-            applicationConfiguraion.MobileMinerRemoteCommands = remoteCommandsCheck.Checked;
-            applicationConfiguraion.MobileMinerEmailAddress = emailAddressEdit.Text;
-            applicationConfiguraion.MobileMinerApplicationKey = appKeyEdit.Text;
+            Application applicationConfiguraion = new Application
+            {
+                MobileMinerMonitoring = remoteMonitoringCheck.Checked,
+                MobileMinerRemoteCommands = remoteCommandsCheck.Checked,
+                MobileMinerEmailAddress = emailAddressEdit.Text,
+                MobileMinerApplicationKey = appKeyEdit.Text,
+                BriefUserInterface = false
+            };
 
             //make things obvious for new user, don't hide them
-            applicationConfiguraion.BriefUserInterface = false;
 
             return applicationConfiguraion;
         }

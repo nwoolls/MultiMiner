@@ -38,8 +38,8 @@ namespace MultiMiner.Win.Forms
         #region Private fields  
         //fields
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
-        private bool applicationSetup = false;
-        private bool editingDeviceListView = false;
+        private bool applicationSetup;
+        private bool editingDeviceListView;
         private Action notificationClickHandler;
         
         //controls
@@ -49,7 +49,7 @@ namespace MultiMiner.Win.Forms
         
         //view models
         private readonly ApplicationViewModel app = new ApplicationViewModel();
-        private bool refreshViewRequested = false;
+        private bool refreshViewRequested;
         #endregion
 
         #region Constructor
@@ -64,7 +64,7 @@ namespace MultiMiner.Win.Forms
             app.ApplicationConfiguration.LoadApplicationConfiguration(app.PathConfiguration.SharedConfigPath);
 
             if (app.ApplicationConfiguration.StartupMinimized)
-                this.WindowState = FormWindowState.Minimized;
+                WindowState = FormWindowState.Minimized;
         }
         #endregion
         
@@ -78,18 +78,20 @@ namespace MultiMiner.Win.Forms
 
         private void SetupInstancesControl()
         {
-            instancesControl = new InstancesControl(app.InstanceManager);
-            instancesControl.Dock = DockStyle.Fill;
+            instancesControl = new InstancesControl(app.InstanceManager)
+            {
+                Dock = DockStyle.Fill,
+                Parent = instancesContainer.Panel1
+            };
             instancesControl.SelectedInstanceChanged += instancesControl1_SelectedInstanceChanged;
-            instancesControl.Parent = instancesContainer.Panel1;
         }
 
         private void SetupLookAndFeel()
         {
-            Version win8version = new Version(6, 2, 9200, 0);
+            Version win8Version = new Version(6, 2, 9200, 0);
 
             if (Environment.OSVersion.Platform == PlatformID.Win32NT &&
-                Environment.OSVersion.Version >= win8version)
+                Environment.OSVersion.Version >= win8Version)
             {
                 // its win8 or higher.
                 accessibleMenu.BackColor = SystemColors.ControlLightLight;
@@ -131,15 +133,15 @@ namespace MultiMiner.Win.Forms
             Control parent = detailsAreaContainer.Panel1;
 
             //carefully measured to fit notifications when they scroll
-            const int ControlOffset = 2;
-            const int ControlHeight = 148;
-            const int ControlWidth = 358;
+            const int controlOffset = 2;
+            const int controlHeight = 148;
+            const int controlWidth = 358;
 
-            this.notificationsControl = new NotificationsControl()
+            notificationsControl = new NotificationsControl()
             {
                 Visible = false,
-                Height = ControlHeight,
-                Width = ControlWidth,
+                Height = controlHeight,
+                Width = controlWidth,
                 Parent = parent,
                 Anchor = AnchorStyles.Right | AnchorStyles.Bottom
             };
@@ -152,9 +154,9 @@ namespace MultiMiner.Win.Forms
                 notificationsControl.Width += 50;
 
             //base this on control.Width, not ControlWidth
-            notificationsControl.Left = parent.Width - notificationsControl.Width - ControlOffset;
+            notificationsControl.Left = parent.Width - notificationsControl.Width - controlOffset;
             //same here
-            notificationsControl.Top = parent.Height - notificationsControl.Height - ControlOffset;
+            notificationsControl.Top = parent.Height - notificationsControl.Height - controlOffset;
         }
 
         private void SetupGridColumns()
@@ -200,12 +202,7 @@ namespace MultiMiner.Win.Forms
 
         private ListViewItem GetListViewItemForDeviceViewModel(DeviceViewModel deviceViewModel)
         {
-            foreach (ListViewItem item in deviceListView.Items)
-            {
-                if (item.Tag == deviceViewModel)
-                    return item;
-            }
-            return null;
+            return deviceListView.Items.Cast<ListViewItem>().FirstOrDefault(item => item.Tag == deviceViewModel);
         }
 
         private ListViewItem FindOrAddListViewItemForViewModel(DeviceViewModel deviceViewModel)
@@ -308,7 +305,7 @@ namespace MultiMiner.Win.Forms
             if (!app.MiningEngine.Mining)
             {
                 hashRateStatusLabel.Text = string.Empty;
-                notifyIcon1.Text = "MultiMiner - Stopped";
+                notifyIcon1.Text = @"MultiMiner - Stopped";
             }
 
             if (apiConsoleControl != null)
@@ -368,12 +365,10 @@ namespace MultiMiner.Win.Forms
             if (editingDeviceListView)
                 return;
 
-            List<int> selectedIndexes = new List<int>();
-            foreach (int selectedIndex in deviceListView.SelectedIndices)
-                selectedIndexes.Add(selectedIndex);
+            List<int> selectedIndexes = deviceListView.SelectedIndices.Cast<int>().ToList();
 
             deviceListView.BeginUpdate();
-            this.updatingListView = true;
+            updatingListView = true;
             try
             {
                 try
@@ -393,13 +388,12 @@ namespace MultiMiner.Win.Forms
 
                 RemoveListViewItemsMissingFromViewModel(viewModelToView);
 
-                for (int i = 0; i < viewModelToView.Devices.Count; i++)
+                foreach (DeviceViewModel deviceViewModel in viewModelToView.Devices)
                 {
                     //app is closing
                     if (app.Context == null)
                         return;
 
-                    DeviceViewModel deviceViewModel = viewModelToView.Devices[i];
                     RefreshListViewForDeviceViewModel(deviceViewModel);
                 }
 
@@ -417,7 +411,7 @@ namespace MultiMiner.Win.Forms
             finally
             {
                 deviceListView.EndUpdate();
-                this.updatingListView = false;
+                updatingListView = false;
             }
 
             AutoSizeListViewColumns();
@@ -504,7 +498,7 @@ namespace MultiMiner.Win.Forms
 
                 if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
                 {
-                    string unit = KnownCoins.BitcoinSymbol;
+                    const string unit = KnownCoins.BitcoinSymbol;
                     listViewItem.SubItems["Price"].Text = String.Format("{0} {1}", deviceViewModel.Price.ToFriendlyString(), unit);
 
                     //check .Mining to allow perks for Remoting when local PC is not mining
@@ -514,9 +508,8 @@ namespace MultiMiner.Win.Forms
                     {
                         ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
                         double btcExchangeRate = exchangeInformation.ExchangeRate;
-                        double coinExchangeRate = 0.00;
 
-                        coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
+                        double coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
 
                         listViewItem.SubItems["Exchange"].Tag = coinExchangeRate;
                         listViewItem.SubItems["Exchange"].Text = String.Format("{0}{1}", exchangeInformation.TargetSymbol, coinExchangeRate.ToFriendlyString(true));
@@ -526,13 +519,13 @@ namespace MultiMiner.Win.Forms
                 switch (app.EngineConfiguration.StrategyConfiguration.ProfitabilityKind)
                 {
                     case Strategy.CoinProfitabilityKind.AdjustedProfitability:
-                        listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AdjustedProfitability, 2) + "%";
+                        listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AdjustedProfitability, 2) + @"%";
                         break;
                     case Strategy.CoinProfitabilityKind.AverageProfitability:
-                        listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AverageProfitability, 2) + "%";
+                        listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.AverageProfitability, 2) + @"%";
                         break;
                     case Strategy.CoinProfitabilityKind.StraightProfitability:
-                        listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.Profitability, 2) + "%";
+                        listViewItem.SubItems["Profitability"].Text = Math.Round(deviceViewModel.Profitability, 2) + @"%";
                         break;
                 }
             }
@@ -545,7 +538,7 @@ namespace MultiMiner.Win.Forms
             //ensure column is visible in Tiles view
             if (String.IsNullOrEmpty(listViewItem.SubItems["Current"].Text) &&
                 (deviceListView.View == View.Tile))
-                listViewItem.SubItems["Current"].Text = "Idle";
+                listViewItem.SubItems["Current"].Text = @"Idle";
 
             double hashrate = app.WorkUtilityToHashrate(deviceViewModel.WorkUtility);
             listViewItem.SubItems["Effective"].Text = hashrate == 0 ? String.Empty : hashrate.ToHashrateString();
@@ -619,22 +612,13 @@ namespace MultiMiner.Win.Forms
 
         private static ToolStripMenuItem FindOrCreateAlgoMenuItem(ToolStripItemCollection parent, string algorithm)
         {
-            ToolStripMenuItem algoItem = null;
-
-            foreach (ToolStripMenuItem item in parent)
-            {
-                if (item.Text.Equals(algorithm.ToString()))
-                {
-                    algoItem = item;
-                    break;
-                }
-            }
+            ToolStripMenuItem algoItem = parent.Cast<ToolStripMenuItem>().FirstOrDefault(item => item.Text.Equals(algorithm.ToString()));
 
             if (algoItem == null)
             {
                 algoItem = new ToolStripMenuItem()
                 {
-                    Text = algorithm.ToString()
+                    Text = algorithm
                 };
                 parent.Add(algoItem);
             }
@@ -653,8 +637,8 @@ namespace MultiMiner.Win.Forms
 
             if (countingDown)
             {
-                startupMiningPanel.Left = (this.Width / 2) - (startupMiningPanel.Width / 2);
-                startupMiningPanel.Top = (this.Height / 2) - (startupMiningPanel.Height / 2);
+                startupMiningPanel.Left = (Width / 2) - (startupMiningPanel.Width / 2);
+                startupMiningPanel.Top = (Height / 2) - (startupMiningPanel.Height / 2);
 
                 countdownLabel.Text = string.Format("Mining will start automatically in {0} seconds...", countdownSeconds);
                 startupMiningPanel.Visible = true;
@@ -663,10 +647,10 @@ namespace MultiMiner.Win.Forms
 
         private void UpdateUtilityColumnHeader()
         {
-            ChangeSubItemText(deviceListView, utilityColumnHeader, app.ApplicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility");
+            ChangeSubItemText(utilityColumnHeader, app.ApplicationConfiguration.ShowWorkUtility ? "Work Utility" : "Utility");
         }
 
-        private void ChangeSubItemText(ListView listView, ColumnHeader columnHeader, string caption)
+        private void ChangeSubItemText(ColumnHeader columnHeader, string caption)
         {
             string oldValue = columnHeader.Text;
             columnHeader.Text = caption;
@@ -693,14 +677,14 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private const int maxColumnWidth = 195;
+        private const int MaxColumnWidth = 195;
         //optimized for speed        
         private static void SetColumWidth(ColumnHeader column, int width)
         {
             if ((width < 0) || (column.Width != width))
                 column.Width = width;
-            if (column.Width > maxColumnWidth)
-                column.Width = maxColumnWidth;
+            if (column.Width > MaxColumnWidth)
+                column.Width = MaxColumnWidth;
         }
 
         private void AutoSizeListViewColumns()
@@ -755,11 +739,7 @@ namespace MultiMiner.Win.Forms
                             continue;
                         }
 
-                        bool hasValue = false;
-                        if (i == 0)
-                            hasValue = true;
-                        else
-                            hasValue = ListViewColumnHasValues(column.Text);
+                        bool hasValue = i == 0 || ListViewColumnHasValues(column.Text);
 
                         if (hasValue)
                             SetColumWidth(column, -2);
@@ -776,10 +756,7 @@ namespace MultiMiner.Win.Forms
 
         private bool ListViewColumnHasValues(string headerText)
         {
-            foreach (ListViewItem item in deviceListView.Items)
-                if (!String.IsNullOrEmpty(item.SubItems[headerText].Text))
-                    return true;
-            return false;
+            return deviceListView.Items.Cast<ListViewItem>().Any(item => !String.IsNullOrEmpty(item.SubItems[headerText].Text));
         }
 
         private void RefreshCoinApiLabel()
@@ -910,10 +887,7 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshStrategiesLabel()
         {
-            if (app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
-                strategiesLabel.Text = " Strategies: enabled";
-            else
-                strategiesLabel.Text = " Strategies: disabled";
+            strategiesLabel.Text = app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins ? @" Strategies: enabled" : @" Strategies: disabled";
         }
 
         private void RefreshStrategiesCountdown()
@@ -1040,10 +1014,7 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshDetailsToggleButton()
         {
-            if (briefMode)
-                detailsToggleButton.Text = "▾ More details";
-            else
-                detailsToggleButton.Text = "▴ Fewer details";
+            detailsToggleButton.Text = briefMode ? @"▾ More details" : @"▴ Fewer details";
         }
 
         private void RefreshIncomeSummary()
@@ -1210,12 +1181,12 @@ namespace MultiMiner.Win.Forms
             if ((app.ApplicationConfiguration.AppPosition.Height > 0) &&
                 (app.ApplicationConfiguration.AppPosition.Width > 9))
             {
-                this.Location = new Point(app.ApplicationConfiguration.AppPosition.Left, app.ApplicationConfiguration.AppPosition.Top);
-                this.Size = new Size(app.ApplicationConfiguration.AppPosition.Width, app.ApplicationConfiguration.AppPosition.Height);
+                Location = new Point(app.ApplicationConfiguration.AppPosition.Left, app.ApplicationConfiguration.AppPosition.Top);
+                Size = new Size(app.ApplicationConfiguration.AppPosition.Width, app.ApplicationConfiguration.AppPosition.Height);
             }
 
             if (app.ApplicationConfiguration.Maximized)
-                this.WindowState = FormWindowState.Maximized;
+                WindowState = FormWindowState.Maximized;
             
             //can't set details container width until it is shown
             if (app.ApplicationConfiguration.InstancesAreaWidth > 0)
@@ -1246,8 +1217,8 @@ namespace MultiMiner.Win.Forms
 
         private void SavePosition()
         {
-            if (this.WindowState == FormWindowState.Normal)
-                app.ApplicationConfiguration.AppPosition = new Rectangle(this.Location, this.Size);
+            if (WindowState == FormWindowState.Normal)
+                app.ApplicationConfiguration.AppPosition = new Rectangle(Location, Size);
         }
         #endregion
 
@@ -1271,16 +1242,10 @@ namespace MultiMiner.Win.Forms
         {
             ToolStripItem menuItem = (ToolStripItem)sender;
             string coinSymbol = menuItem.Text;
-            List<DeviceDescriptor> devices = new List<DeviceDescriptor>();
-            MinerFormViewModel viewModelToView = app.GetViewModelToView();
+            List<DeviceDescriptor> descriptors = deviceListView.SelectedItems.Cast<ListViewItem>()
+                .Select(listViewItem => (DeviceViewModel) listViewItem.Tag).Cast<DeviceDescriptor>().ToList();
 
-            foreach (ListViewItem selectedItem in deviceListView.SelectedItems)
-            {
-                DeviceViewModel deviceViewModel = (DeviceViewModel)selectedItem.Tag;
-                devices.Add(deviceViewModel);
-            }
-
-            app.SetDevicesToCoin(devices, coinSymbol);
+            app.SetDevicesToCoin(descriptors, coinSymbol);
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -1331,7 +1296,7 @@ namespace MultiMiner.Win.Forms
             MinerFormViewModel viewModel = app.GetViewModelToView();
 
             //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
-            quickSwitchToolStripMenuItem.Enabled = viewModel.ConfiguredCoins.Count() > 0;
+            quickSwitchToolStripMenuItem.Enabled = viewModel.ConfiguredCoins.Any();
             //
             dynamicIntensityToolStripMenuItem.Visible = !app.EngineConfiguration.XgminerConfiguration.DisableGpu;
             dynamicIntensityToolStripMenuItem.Checked = viewModel.DynamicIntensity;
@@ -1440,8 +1405,10 @@ namespace MultiMiner.Win.Forms
             string arguments = args.Arguments;
             arguments = arguments.Replace("-T -q", String.Empty).Trim();
 
-            ProcessStartInfo startInfo = new ProcessStartInfo(args.ExecutablePath, arguments);
-            startInfo.WorkingDirectory = Path.GetDirectoryName(args.ExecutablePath);
+            ProcessStartInfo startInfo = new ProcessStartInfo(args.ExecutablePath, arguments)
+            {
+                WorkingDirectory = Path.GetDirectoryName(args.ExecutablePath)
+            };
             Process.Start(startInfo);
         }
 
@@ -1455,13 +1422,13 @@ namespace MultiMiner.Win.Forms
                     DataGridViewCell clickedCell = (sender as DataGridView).Rows[e.RowIndex].Cells[e.ColumnIndex];
 
                     // Here you can do whatever you want with the cell
-                    this.processLogGridView.CurrentCell = clickedCell;  // Select the clicked cell, for instance
+                    processLogGridView.CurrentCell = clickedCell;  // Select the clicked cell, for instance
 
                     // Get mouse position relative to the grid
-                    var relativeMousePosition = processLogGridView.PointToClient(Cursor.Position);
+                    Point relativeMousePosition = processLogGridView.PointToClient(Cursor.Position);
 
                     // Show the context menu
-                    this.processLogMenu.Show(processLogGridView, relativeMousePosition);
+                    processLogMenu.Show(processLogGridView, relativeMousePosition);
                 }
             }
         }
@@ -1471,10 +1438,10 @@ namespace MultiMiner.Win.Forms
             if (e.Button == MouseButtons.Right)
             {
                 // Get mouse position relative to the grid
-                var relativeMousePosition = processLogGridView.PointToClient(Cursor.Position);
+                Point relativeMousePosition = processLogGridView.PointToClient(Cursor.Position);
 
                 // Show the context menu
-                this.openLogMenu.Show(processLogGridView, relativeMousePosition);
+                openLogMenu.Show(processLogGridView, relativeMousePosition);
             }
         }
 
@@ -1643,7 +1610,7 @@ namespace MultiMiner.Win.Forms
             }
 
             Rectangle headerRect = new Rectangle(0, 0, deviceListView.Width, 20);
-            if (!headerRect.Contains(deviceListView.PointToClient(Control.MousePosition)))
+            if (!headerRect.Contains(deviceListView.PointToClient(MousePosition)))
                 e.Cancel = true;
 
             if (!e.Cancel)
@@ -1710,7 +1677,7 @@ namespace MultiMiner.Win.Forms
         {
             //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
 
-            quickSwitchPopupItem.Enabled = app.GetViewModelToView().ConfiguredCoins.Count() > 0;
+            quickSwitchPopupItem.Enabled = app.GetViewModelToView().ConfiguredCoins.Any();
         }
 
         private void quickSwitchPopupItem_DropDownOpening(object sender, EventArgs e)
@@ -1718,7 +1685,7 @@ namespace MultiMiner.Win.Forms
             RefreshQuickSwitchMenu(quickSwitchPopupItem);
         }
 
-        private bool briefMode = false;
+        private bool briefMode;
         private void detailsToggleButton_ButtonClick(object sender, EventArgs e)
         {
             SetBriefMode(!briefMode);
@@ -1737,7 +1704,7 @@ namespace MultiMiner.Win.Forms
 
         private void deviceListView_MouseClick(object sender, MouseEventArgs e)
         {
-            if ((e.Button == MouseButtons.Right) && (deviceListView.FocusedItem.Bounds.Contains(e.Location) == true))
+            if ((e.Button == MouseButtons.Right) && deviceListView.FocusedItem.Bounds.Contains(e.Location))
             {
                 if (deviceListView.FocusedItem.Group.Name.Equals("networkListViewGroup"))
                 {
@@ -1782,12 +1749,11 @@ namespace MultiMiner.Win.Forms
 
         private void deviceListView_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            if (this.updatingListView)
+            if (updatingListView)
                 return;
 
             bool enabled = e.Item.Checked;
             List<DeviceDescriptor> descriptors = new List<DeviceDescriptor>();
-            MinerFormViewModel viewModel = app.GetViewModelToView();
             DeviceViewModel device = (DeviceViewModel)e.Item.Tag;
             DeviceDescriptor descriptor = new DeviceDescriptor();
             ObjectCopier.CopyObject(device, descriptor);
@@ -1819,7 +1785,7 @@ namespace MultiMiner.Win.Forms
         private void advancedMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             //use > 0, not > 1, so if a lot of devices have blank configs you can easily set them all
-            quickSwitchItem.Enabled = app.EngineConfiguration.CoinConfigurations.Where(c => c.Enabled).Count() > 0;
+            quickSwitchItem.Enabled = app.EngineConfiguration.CoinConfigurations.Any(c => c.Enabled);
 
             dynamicIntensityButton.Visible = !app.EngineConfiguration.XgminerConfiguration.DisableGpu;
             dynamicIntensityButton.Checked = app.GetViewModelToView().DynamicIntensity;
@@ -1831,16 +1797,6 @@ namespace MultiMiner.Win.Forms
             notificationsControl.Visible = notificationsControl.NotificationCount() > 0;
             if (notificationsControl.Visible)
                 notificationsControl.BringToFront();
-        }
-
-        private void processLogButton_Click(object sender, EventArgs e)
-        {
-            ShowProcessLog();
-        }
-
-        private void historyButton_Click(object sender, EventArgs e)
-        {
-            ShowHistory();
         }
 
         private void historyGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
@@ -1892,21 +1848,21 @@ namespace MultiMiner.Win.Forms
             if (applicationSetup)
             {
                 //handling for minimizing to notifcation area
-                if (app.ApplicationConfiguration.MinimizeToNotificationArea && (this.WindowState == FormWindowState.Minimized))
+                if (app.ApplicationConfiguration.MinimizeToNotificationArea && (WindowState == FormWindowState.Minimized))
                 {
                     notifyIcon1.Visible = true;
-                    this.Hide();
+                    Hide();
                 }
-                else if (this.WindowState == FormWindowState.Normal)
+                else if (WindowState == FormWindowState.Normal)
                 {
                     notifyIcon1.Visible = false;
                 }
 
                 //handling for saving Maximized state
-                if (this.WindowState == FormWindowState.Maximized)
+                if (WindowState == FormWindowState.Maximized)
                     app.ApplicationConfiguration.Maximized = true;
 
-                if (this.WindowState == FormWindowState.Normal) //don't set to false for minimizing
+                if (WindowState == FormWindowState.Normal) //don't set to false for minimizing
                     app.ApplicationConfiguration.Maximized = false;
 
                 SavePosition();
@@ -1915,14 +1871,14 @@ namespace MultiMiner.Win.Forms
 
         private void notifyIcon1_DoubleClick(object sender, EventArgs e)
         {
-            this.Show();
-            this.WindowState = FormWindowState.Normal;
+            Show();
+            WindowState = FormWindowState.Normal;
         }
 
         private void showAppMenuItem_Click(object sender, EventArgs e)
         {
-            this.Show();
-            this.WindowState = FormWindowState.Normal;
+            Show();
+            WindowState = FormWindowState.Normal;
         }
 
         private void quitAppMenuItem_Click(object sender, EventArgs e)
@@ -1975,9 +1931,9 @@ namespace MultiMiner.Win.Forms
             if (app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
             {
                 DialogResult dialogResult = MessageBox.Show(
-                    "Would you like to disable Auto-Mining Strategies after switching coins?",
-                    "Quick Switch", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                    @"Would you like to disable Auto-Mining Strategies after switching coins?",
+                    @"Quick Switch", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
                     disableStrategies = true;
             }
             return disableStrategies;
@@ -1990,8 +1946,8 @@ namespace MultiMiner.Win.Forms
             {
                 DialogResult dialogResult = MessageBox.Show(
                     String.Format("Would you like to Quick Switch to {0} on all of your online rigs?", coinSymbol),
-                    "MultiMiner Remoting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                    @"MultiMiner Remoting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
                     allRigs = true;
             }
             return allRigs;
@@ -2004,7 +1960,7 @@ namespace MultiMiner.Win.Forms
 
         private void deviceListView_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            if (this.updatingListView)
+            if (updatingListView)
                 return;
 
             //disallow toggling check-state for Network Devices
@@ -2030,11 +1986,6 @@ namespace MultiMiner.Win.Forms
             DeviceViewModel deviceViewModel = (DeviceViewModel)editItem.Tag;
 
             app.RenameDevice(deviceViewModel, e.Label);
-        }
-
-        private void restartMiningToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            RestartSelectedNetworkDevices();
         }
 
         private void adminPageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2125,7 +2076,7 @@ namespace MultiMiner.Win.Forms
         {
             ToggleSideBarButtons(sender);
 
-            ShowAPIConsole();
+            ShowApiConsole();
         }
 
         private void historySideButton_Click(object sender, EventArgs e)
@@ -2348,6 +2299,12 @@ namespace MultiMiner.Win.Forms
             app.RemoteInstanceRegistered += HandleRemoteInstanceRegistered;
             app.RemoteInstanceUnregistered += HandleRemoteInstanceUnregistered;
             app.RemoteInstanceModified += HandleRemoteInstanceModified;
+            app.RemoteInstancesUnregistered += HandleRemoteInstancesUnregistered;
+        }
+
+        private void HandleRemoteInstancesUnregistered(object sender, EventArgs e)
+        {
+            instancesControl.UnregisterInstances();
         }
 
         private void HandleRemoteInstanceModified(object sender, RemotingEventArgs ea)
@@ -2365,40 +2322,40 @@ namespace MultiMiner.Win.Forms
             instancesControl.RegisterInstance(ea.Instance);
         }
 
-        private void HandleConfigureStrategies(object sender, UX.Data.ConfigurationEventArgs e)
+        private void HandleConfigureStrategies(object sender, ConfigurationEventArgs e)
         {
             StrategiesForm strategiesForm = new StrategiesForm(e.Engine.StrategyConfiguration, app.KnownCoins, e.Application);
             if (app.SelectedRemoteInstance != null)
                 strategiesForm.Text = String.Format("{0}: {1}", strategiesForm.Text, app.SelectedRemoteInstance.MachineName);
 
-            e.ConfigurationModified = strategiesForm.ShowDialog() == System.Windows.Forms.DialogResult.OK;
+            e.ConfigurationModified = strategiesForm.ShowDialog() == DialogResult.OK;
         }
 
-        private void HandleConfigureSettings(object sender, UX.Data.ConfigurationEventArgs e)
+        private void HandleConfigureSettings(object sender, ConfigurationEventArgs e)
         {
             SettingsForm settingsForm = new SettingsForm(e.Application, e.Engine.XgminerConfiguration, e.Paths, e.Perks);
             if (app.SelectedRemoteInstance != null)
                 settingsForm.Text = String.Format("{0}: {1}", settingsForm.Text, app.SelectedRemoteInstance.MachineName);
 
-            e.ConfigurationModified = settingsForm.ShowDialog() == System.Windows.Forms.DialogResult.OK;
+            e.ConfigurationModified = settingsForm.ShowDialog() == DialogResult.OK;
         }
 
-        private void HandleConfigurePools(object sender, UX.Data.ConfigurationEventArgs e)
+        private void HandleConfigurePools(object sender, ConfigurationEventArgs e)
         {
             PoolsForm coinsForm = new PoolsForm(e.Engine.CoinConfigurations, app.KnownCoins, e.Application, e.Perks);
             if (app.SelectedRemoteInstance != null)
                 coinsForm.Text = String.Format("{0}: {1}", coinsForm.Text, app.SelectedRemoteInstance.MachineName);
 
-            e.ConfigurationModified = coinsForm.ShowDialog() == System.Windows.Forms.DialogResult.OK;
+            e.ConfigurationModified = coinsForm.ShowDialog() == DialogResult.OK;
         }
 
-        private void HandleConfigurePerks(object sender, UX.Data.ConfigurationEventArgs e)
+        private void HandleConfigurePerks(object sender, ConfigurationEventArgs e)
         {
             PerksForm perksForm = new PerksForm(e.Perks);
             if (app.SelectedRemoteInstance != null)
                 perksForm.Text = String.Format("{0}: {1}", perksForm.Text, app.SelectedRemoteInstance.MachineName);
 
-            e.ConfigurationModified = perksForm.ShowDialog() == System.Windows.Forms.DialogResult.OK;
+            e.ConfigurationModified = perksForm.ShowDialog() == DialogResult.OK;
         }
 
         private void HandleConfigurationModified(object sender, EventArgs e)
@@ -2421,8 +2378,7 @@ namespace MultiMiner.Win.Forms
 
         private void HandleProgressStarted(object sender, ProgressEventArgs ea)
         {
-            progressForm = new ProgressForm(ea.Text);
-            progressForm.IsDownload = ea.IsDownload;
+            progressForm = new ProgressForm(ea.Text) { IsDownload = ea.IsDownload };
             progressForm.Show(); //not ShowDialog()
 
             //for Mono - show the UI
@@ -2438,9 +2394,9 @@ namespace MultiMiner.Win.Forms
 
         private void HandleMobileMinerAuthFailed(object sender, EventArgs e)
         {
-            MessageBox.Show("Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
+            MessageBox.Show(@"Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog." +
                             Environment.NewLine + Environment.NewLine +
-                            "MobileMiner remote commands will now be disabled.", "Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            @"MobileMiner remote commands will now be disabled.", @"Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             //check to make sure there are no modal windows already
             if (!ShowingModalDialog())
@@ -2455,11 +2411,7 @@ namespace MultiMiner.Win.Forms
 
         private static bool ShowingModalDialog()
         {
-            foreach (Form f in System.Windows.Forms.Application.OpenForms)
-                if (f.Modal)
-                    return true;
-
-            return false;
+            return System.Windows.Forms.Application.OpenForms.Cast<Form>().Any(f => f.Modal);
         }
 
         private void HandleCredentialsRequested(object sender, CredentialsEventArgs ea)
@@ -2473,7 +2425,7 @@ namespace MultiMiner.Win.Forms
             }
         }
 
-        private void HandleApplicationNotification(object sender, UX.Data.NotificationEventArgs ea)
+        private void HandleApplicationNotification(object sender, NotificationEventArgs ea)
         {
             BeginInvoke((Action)(() =>
             {
@@ -2503,13 +2455,13 @@ namespace MultiMiner.Win.Forms
             if (app.ApplicationConfiguration.StartupMinimized && app.ApplicationConfiguration.MinimizeToNotificationArea)
             {
                 notifyIcon1.Visible = true;
-                this.Hide();
+                Hide();
             }
         }
 
         private void ShowStartupTips()
         {
-            string tip = null;
+            string tip;
 
             switch (app.ApplicationConfiguration.TipsShown)
             {
@@ -2528,7 +2480,7 @@ namespace MultiMiner.Win.Forms
                             popupPosition.Offset(14, 6);
                             ShowCoinPopupMenu(deviceListView, popupPosition);
                         }
-                    }, ToolTipIcon.Info, "");
+                    }, ToolTipIcon.Info);
                     app.ApplicationConfiguration.TipsShown++;
                     break;
                 case 1:
@@ -2536,14 +2488,14 @@ namespace MultiMiner.Win.Forms
                     PostNotification(tip, () =>
                     {
                         deviceListContextMenu.Show(deviceListView, 150, 100);
-                    }, ToolTipIcon.Info, "");
+                    }, ToolTipIcon.Info);
                     app.ApplicationConfiguration.TipsShown++;
                     break;
                 case 2:
                     tip = "Tip: restart mining after changing any settings";
                     PostNotification(tip, () =>
                     {
-                    }, ToolTipIcon.Info, "");
+                    }, ToolTipIcon.Info);
                     app.ApplicationConfiguration.TipsShown++;
                     break;
                 case 3:
@@ -2551,7 +2503,7 @@ namespace MultiMiner.Win.Forms
                     PostNotification(tip, () =>
                     {
                         app.ConfigurePerksLocally();
-                    }, ToolTipIcon.Info, "");
+                    }, ToolTipIcon.Info);
                     app.ApplicationConfiguration.TipsShown++;
                     break;
             }
@@ -2577,7 +2529,7 @@ namespace MultiMiner.Win.Forms
 
             WizardForm wizardForm = new WizardForm(app.KnownCoins);
             DialogResult dialogResult = wizardForm.ShowDialog();
-            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            if (dialogResult == DialogResult.OK)
             {
                 Engine.Data.Configuration.Engine newEngineConfiguration;
                 UX.Data.Configuration.Application newApplicationConfiguration;
@@ -2608,11 +2560,11 @@ namespace MultiMiner.Win.Forms
 
                 DialogResult dialogResult = MessageBox.Show(String.Format(
                     "No copy of {0} was detected. " +
-                    "Would you like to download and install {0} now?", minerName), "Miner Not Found",
+                    "Would you like to download and install {0} now?", minerName), @"Miner Not Found",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 
-                if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                if (dialogResult == DialogResult.Yes)
                 {
                     app.InstallBackendMinerLocally(miner);
                     ScanHardwareLocally();
@@ -2621,8 +2573,8 @@ namespace MultiMiner.Win.Forms
             }
 
             if (showWarning)
-                MessageBox.Show("No copy of " + MinerNames.BFGMiner + " was detected. Please go to https://github.com/nwoolls/multiminer for instructions on installing " + MinerNames.BFGMiner + ".",
-                        "Miner Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(@"No copy of " + MinerNames.BFGMiner + @" was detected. Please go to https://github.com/nwoolls/multiminer for instructions on installing " + MinerNames.BFGMiner + @".",
+                        @"Miner Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
         #endregion
 
@@ -2643,19 +2595,13 @@ namespace MultiMiner.Win.Forms
                 HideAdvancedPanel();
                 WindowState = FormWindowState.Normal;
 
-                int newWidth = 0;
-
-                foreach (ColumnHeader column in deviceListView.Columns)
-                    newWidth += column.Width;
+                int newWidth = deviceListView.Columns.Cast<ColumnHeader>().Sum(column => column.Width);
                 newWidth += 40; //needs to be pretty wide for e.g. Aero Basic
-
                 newWidth = Math.Max(newWidth, 300);
-
                 //don't (automatically) set the width to crop notifications
                 newWidth = Math.Max(newWidth, notificationsControl.Width + 24);
 
                 Size = new Size(newWidth, 400);
-
             }
             else
             {
@@ -2732,7 +2678,7 @@ namespace MultiMiner.Win.Forms
             detailsAreaContainer.Panel2Collapsed = true;
         }
 
-        private bool detailsAreaSetup = false;
+        private bool detailsAreaSetup;
         private void ShowDetailsArea()
         {
             SetBriefMode(false);
@@ -2793,7 +2739,7 @@ namespace MultiMiner.Win.Forms
             aboutForm.ShowDialog();
         }
         
-        private void ShowAPIConsole()
+        private void ShowApiConsole()
         {
             if (apiConsoleControl == null)
                 apiConsoleControl = new ApiConsoleControl(app.MiningEngine.MinerProcesses, app.NetworkDevicesConfiguration.Devices, app.LocalViewModel);
@@ -2839,12 +2785,12 @@ namespace MultiMiner.Win.Forms
         #endregion
 
         #region Mining logic
-        public void PostNotification(string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
+        private void PostNotification(string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
         {
             PostNotification(text, text, clickHandler, icon, informationUrl);
         }
 
-        public void PostNotification(string id, string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
+        private void PostNotification(string id, string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
         {
             MobileMiner.Data.NotificationKind kind = MobileMiner.Data.NotificationKind.Information;
             switch (icon)
@@ -2872,7 +2818,7 @@ namespace MultiMiner.Win.Forms
         private void ShowBalloonNotification(string text, Action clickHandler, ToolTipIcon icon)
         {
             notifyIcon1.BalloonTipText = text;
-            notifyIcon1.BalloonTipTitle = "MultiMiner";
+            notifyIcon1.BalloonTipTitle = @"MultiMiner";
             notifyIcon1.BalloonTipIcon = icon;
 
             notificationClickHandler = clickHandler;
@@ -2880,7 +2826,7 @@ namespace MultiMiner.Win.Forms
             notifyIcon1.ShowBalloonTip(1000); // ms
         }
 
-        private bool updatingListView = false;
+        private bool updatingListView;
         private void ScanHardware()
         {
             if (app.SelectedRemoteInstance == null)
@@ -2920,22 +2866,6 @@ namespace MultiMiner.Win.Forms
                 finally
                 {
                     updatingListView = false;
-                }
-            }
-        }
-
-        private void StartMiningLocally()
-        {
-            using (new HourGlass())
-            {
-                try
-                {
-                    app.StartMiningLocally();
-                }
-                catch (MinerLaunchException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error Launching Miner", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
                 }
             }
         }
@@ -3060,11 +2990,9 @@ namespace MultiMiner.Win.Forms
                 //RPC API call timed out
                 return;
 
-            for (int i = 0; i < poolInformation.Count; i++)
+            foreach (PoolInformation pool in poolInformation)
             {
-                PoolInformation pool = poolInformation[i];
-                ToolStripMenuItem menuItem = new ToolStripMenuItem(pool.Url.DomainFromHost());
-                menuItem.Tag = pool;
+                ToolStripMenuItem menuItem = new ToolStripMenuItem(pool.Url.DomainFromHost()) { Tag = pool };
                 menuItem.Click += NetworkDevicePoolClicked;
                 networkDevicePoolMenu.DropDownItems.Add(menuItem);
             }

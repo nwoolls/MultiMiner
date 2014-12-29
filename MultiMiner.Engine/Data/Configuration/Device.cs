@@ -10,8 +10,8 @@ namespace MultiMiner.Engine.Data.Configuration
     {
         public Device()
         {
-            this.Enabled = true;
-            this.CoinSymbol = String.Empty;
+            Enabled = true;
+            CoinSymbol = String.Empty;
         }
 
         public string CoinSymbol { get; set; }

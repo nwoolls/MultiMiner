@@ -21,10 +21,9 @@ namespace MultiMiner.Utility.OS
                 return;
 
             WshShellClass wshShell = new WshShellClass();
-            IWshShortcut shortcut;
 
             // Create the shortcut
-            shortcut = (IWshShortcut)wshShell.CreateShortcut(shortcutFilePath);
+            IWshShortcut shortcut = (IWshShortcut)wshShell.CreateShortcut(shortcutFilePath);
 
             shortcut.TargetPath = Application.ExecutablePath;
             shortcut.WorkingDirectory = Application.StartupPath;
@@ -58,7 +57,7 @@ namespace MultiMiner.Utility.OS
 
         //used instead of shellClass.NameSpace() for compatibility with various Windows OS's
         //http://techitongue.blogspot.com/2012/06/shell32-code-compiled-on-windows-7.html
-        public static Shell32.Folder GetShell32NameSpace(Object folder)
+        private static Shell32.Folder GetShell32NameSpace(Object folder)
         {
             Type shellAppType = Type.GetTypeFromProgID("Shell.Application");
             Object shell = Activator.CreateInstance(shellAppType);

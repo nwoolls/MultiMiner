@@ -1,9 +1,8 @@
-﻿using MultiMiner.Utility.Serialization;
-using MultiMiner.Xgminer.Data;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
+using MultiMiner.Utility.Serialization;
 
 namespace MultiMiner.Engine.Data.Configuration
 {

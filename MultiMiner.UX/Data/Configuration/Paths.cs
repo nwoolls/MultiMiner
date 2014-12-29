@@ -10,7 +10,7 @@ namespace MultiMiner.UX.Data.Configuration
     {
         public string SharedConfigPath { get; set; }
 
-        public static string PathConfigurationFileName()
+        private static string PathConfigurationFileName()
         {
             return Path.Combine(ApplicationPaths.AppDataPath(), "PathConfiguration.xml");
         }

@@ -2,6 +2,7 @@
 using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MultiMiner.Win.Controls.Notifications
 {
@@ -84,10 +85,7 @@ namespace MultiMiner.Win.Controls.Notifications
 
         private void ClearNotifications()
         {
-            List<Control> controls = new List<Control>();
-
-            foreach (Control control in containerPanel.Controls)
-                controls.Add(control);
+            List<Control> controls = containerPanel.Controls.Cast<Control>().ToList();
 
             foreach (Control control in controls)
                 control.Parent = null;

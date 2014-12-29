@@ -18,7 +18,7 @@ namespace MultiMiner.Discovery
                 Send(IPAddress.Parse(localIPAddress), ipAddress, verb, fingerprint);
         }
 
-        public static void Send(IPAddress source, IPAddress destination, string verb, int fingerprint)
+        private static void Send(IPAddress source, IPAddress destination, string verb, int fingerprint)
         {
             using (UdpClient client = new UdpClient(new IPEndPoint(source, 0)))
             {

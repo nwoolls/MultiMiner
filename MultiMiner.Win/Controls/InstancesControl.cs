@@ -15,7 +15,7 @@ namespace MultiMiner.Win.Controls
         private const string ThisPCText = "This PC";
         private const string NetworkText = "Network";
 
-        public class InstanceSorter : IComparer
+        private class InstanceSorter : IComparer
         {
             // compare between two tree nodes
             public int Compare(object thisObj, object thatObj)
@@ -25,7 +25,7 @@ namespace MultiMiner.Win.Controls
 
                 if (thisNode.Tag != null)
                     return -1;
-                else if (thatNode.Tag != null)
+                if (thatNode.Tag != null)
                     return 1;
 
                 //alphabetically sorting
@@ -185,7 +185,6 @@ namespace MultiMiner.Win.Controls
 
             foreach (KeyValuePair<Instance, Remoting.Data.Transfer.Machine> instanceMachine in instanceMachines)
             {
-                Instance instance = instanceMachine.Key;
                 Remoting.Data.Transfer.Machine machine = instanceMachine.Value;
 
                 foreach (KeyValuePair<string, double> totalHashrate in machine.TotalHashrates)

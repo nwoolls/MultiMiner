@@ -7,7 +7,7 @@ namespace MultiMiner.Xgminer.Data
     {
         public Device()
         {
-            this.Platform = new DevicePlatform();
+            Platform = new DevicePlatform();
         }
 
         public string Name { get; set; }

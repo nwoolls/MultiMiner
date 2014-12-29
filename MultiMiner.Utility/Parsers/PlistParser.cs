@@ -8,7 +8,7 @@ namespace MultiMiner.Utility.Parsers
 
     public class PlistParser : Dictionary<string, object>
     {
-        public PlistParser()
+        private PlistParser()
         {
         }
 
@@ -17,7 +17,7 @@ namespace MultiMiner.Utility.Parsers
             Load(file);
         }
 
-        public void Load(string file)
+        private void Load(string file)
         {
             Clear();
 

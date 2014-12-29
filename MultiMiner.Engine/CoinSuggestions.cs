@@ -42,7 +42,7 @@ namespace MultiMiner.Engine
 
         private static IEnumerable<CoinInformation> FilterOutConfiguredCoins(IEnumerable<CoinInformation> coins, List<Coin> existingConfigurations)
         {
-            IEnumerable<CoinInformation> unconfiguredCoins = coins.Where((coin) =>
+            IEnumerable<CoinInformation> unconfiguredCoins = coins.Where(coin =>
                 {
                     return !String.IsNullOrEmpty(coin.Symbol) &&
                         !existingConfigurations.Any(config => config.PoolGroup.Id.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase));

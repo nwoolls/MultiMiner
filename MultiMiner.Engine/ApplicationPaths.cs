@@ -13,11 +13,9 @@ namespace MultiMiner.Engine
                 //store files in the working directory rather than AppData
                 return GetWorkingDirectory();
             }
-            else
-            {
-                string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                return Path.Combine(rootPath, "MultiMiner");
-            }
+
+            string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            return Path.Combine(rootPath, "MultiMiner");
         }
 
         //simply check for a file named "portable" in the same folder

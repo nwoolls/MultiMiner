@@ -1,21 +1,19 @@
 ﻿using MultiMiner.Engine;
+using MultiMiner.Engine.Data;
+using MultiMiner.Engine.Installers;
 using MultiMiner.Utility.Forms;
+using MultiMiner.Win.Extensions;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Windows.Forms;
-using MultiMiner.Win.Extensions;
 using System.Reflection;
-using MultiMiner.Engine.Data;
-using MultiMiner.Engine.Installers;
-using System.Collections.Generic;
-using MultiMiner.Xgminer.Data;
+using System.Windows.Forms;
 
 namespace MultiMiner.Win.Forms
 {
     public partial class AboutForm : MessageBoxFontForm
     {
-        public int backendMinerIndex {get; set;}
+        private int backendMinerIndex {get; set;}
 
         public AboutForm()
         {

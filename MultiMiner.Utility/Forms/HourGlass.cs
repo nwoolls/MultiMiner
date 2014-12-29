@@ -17,7 +17,7 @@ namespace MultiMiner.Utility.Forms
             Enabled = false;
         }
 
-        public static bool Enabled
+        private static bool Enabled
         {
             get { return Application.UseWaitCursor; }
             set

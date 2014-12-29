@@ -30,7 +30,7 @@ namespace MultiMiner.Win.Forms
             ActiveControl = inputTextBox;
         }
 
-        private bool populatingMiners = false;
+        private bool populatingMiners;
         public void PopulateMiners(List<MinerProcess> localMiners, List<NetworkDevices.NetworkDevice> networkMiners, MinerFormViewModel viewModel)
         {
             populatingMiners = true;

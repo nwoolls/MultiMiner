@@ -12,14 +12,14 @@ namespace MultiMiner.Win.Forms.Configuration
     public partial class MultipoolChooseForm : MessageBoxFontForm
     {
         public PoolGroup SelectedMultipool { get; set; }
-        public PoolGroup CurrentMultipool { get; set; }
+        private PoolGroup currentMultipool { get; set; }
 
         public MultipoolChooseForm() : this(null) { }
 
         public MultipoolChooseForm(PoolGroup currentMultipool)
         {
             InitializeComponent();
-            CurrentMultipool = currentMultipool;
+            this.currentMultipool = currentMultipool;
         }
 
         private void MultipoolChooseForm_Load(object sender, EventArgs e)
@@ -31,11 +31,11 @@ namespace MultiMiner.Win.Forms.Configuration
             PopulateMultipoolCombo();
             multipoolCombo.Text = "Other";
 
-            if (CurrentMultipool != null)
+            if (currentMultipool != null)
             {
-                string multipoolAlgorithm = CurrentMultipool.Algorithm;
+                string multipoolAlgorithm = currentMultipool.Algorithm;
                 algoCombo.Text = multipoolAlgorithm.ToSpaceDelimitedWords();
-                string multipoolApi = CurrentMultipool.Id.Replace(":" + multipoolAlgorithm, String.Empty);
+                string multipoolApi = currentMultipool.Id.Replace(":" + multipoolAlgorithm, String.Empty);
                 multipoolCombo.Text = multipoolApi;
             }
         }

@@ -12,7 +12,7 @@ namespace MultiMiner.Engine
     {
         
         private static volatile MinerFactory instance;
-        private readonly static object syncRoot = new Object();
+        private readonly static object SyncRoot = new Object();
 
         private MinerFactory() { }
 
@@ -22,7 +22,7 @@ namespace MultiMiner.Engine
             {
                 if (instance == null)
                 {
-                    lock (syncRoot)
+                    lock (SyncRoot)
                     {
                         if (instance == null)
                             instance = new MinerFactory();
@@ -45,10 +45,9 @@ namespace MultiMiner.Engine
 
             if (miners.ContainsKey(algorithmName))
                 return Miners.Single(m => m.Name.Equals(miners[algorithmName], StringComparison.OrdinalIgnoreCase));
-            else if (algorithm.DefaultMiner != null)
+            if (algorithm.DefaultMiner != null)
                 return Miners.Single(m => m.Name.Equals(algorithm.DefaultMiner, StringComparison.OrdinalIgnoreCase));
-            else
-                return null;
+            return null;
         }
 
         public MinerDescriptor GetMiner(DeviceKind deviceKind, string algorithmName, SerializableDictionary<string, string> miners)

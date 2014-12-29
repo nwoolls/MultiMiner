@@ -18,9 +18,9 @@ namespace MultiMiner.Engine.Data.Configuration
 
         public Coin()
         {
-            this.Pools = new List<MiningPool>();
-            this.Enabled = true;
-            this.PoolGroup = new PoolGroup();
+            Pools = new List<MiningPool>();
+            Enabled = true;
+            PoolGroup = new PoolGroup();
         }
 
         [XmlElement(ElementName = "Coin")]

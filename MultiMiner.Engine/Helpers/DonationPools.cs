@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Xgminer.Data;
 using System.Collections.Generic;
+using MultiMiner.Engine.Data.Configuration;
 
 namespace MultiMiner.Engine.Helpers
 {
@@ -7,10 +8,8 @@ namespace MultiMiner.Engine.Helpers
     {
         public static void Seed(List<Data.Configuration.Coin> configurations)
         {
-            Data.Configuration.Coin donationConfiguration;
-
             //BTC
-            donationConfiguration = CreateCoinConfiguration("BTC", "stratum+tcp://stratum.mining.eligius.st", 3334, "1LKwyLK4KhojsJUEvUx8bEmnmjohNMjRDM");
+            Coin donationConfiguration = CreateCoinConfiguration("BTC", "stratum+tcp://stratum.mining.eligius.st", 3334, "1LKwyLK4KhojsJUEvUx8bEmnmjohNMjRDM");
             configurations.Add(donationConfiguration);
 
             //LTC

@@ -7,12 +7,12 @@ namespace MultiMiner.Xgminer.Data.Configuration
     {
         public Miner()
         {
-            this.DeviceDescriptors = new List<DeviceDescriptor>();
-            this.Priority = ProcessPriorityClass.Normal;
-            this.Pools = new List<MiningPool>();
-            this.StratumProxyPort = 8332;
-            this.StratumProxyStratumPort = 3333;
-            this.LogInterval = 5;
+            DeviceDescriptors = new List<DeviceDescriptor>();
+            Priority = ProcessPriorityClass.Normal;
+            Pools = new List<MiningPool>();
+            StratumProxyPort = 8332;
+            StratumProxyStratumPort = 3333;
+            LogInterval = 5;
         }
 
         public string ExecutablePath { get; set; }

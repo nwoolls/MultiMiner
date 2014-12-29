@@ -6,9 +6,9 @@ namespace MultiMiner.Utility.Forms
     {
         public bool CheckFromDoubleClick { get; set; }
 
-        private bool checkWasFromDoubleClick = false;
+        private bool checkWasFromDoubleClick;
 
-        public ListViewEx()
+        protected ListViewEx()
         {
             InitializeComponent();
         }

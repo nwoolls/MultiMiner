@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Utility.Serialization;
 using System.Collections.Generic;
+using MultiMiner.Remoting.Data.Transfer.Configuration;
 
 namespace MultiMiner.UX.Extensions
 {
@@ -11,8 +12,7 @@ namespace MultiMiner.UX.Extensions
 
             foreach (Engine.Data.Configuration.Device modelConfig in modelObjects)
             {
-                Remoting.Data.Transfer.Configuration.Device transferObject;
-                transferObject = ObjectCopier.CloneObject<Engine.Data.Configuration.Device, Remoting.Data.Transfer.Configuration.Device>(modelConfig);
+                Device transferObject = ObjectCopier.CloneObject<Engine.Data.Configuration.Device, Remoting.Data.Transfer.Configuration.Device>(modelConfig);
                 transferObjects.Add(transferObject);
             }
 
@@ -25,8 +25,7 @@ namespace MultiMiner.UX.Extensions
 
             foreach (Remoting.Data.Transfer.Configuration.Device transferConfig in transferObjects)
             {
-                Engine.Data.Configuration.Device modelObject;
-                modelObject = ObjectCopier.CloneObject<Remoting.Data.Transfer.Configuration.Device, Engine.Data.Configuration.Device>(transferConfig);
+                Engine.Data.Configuration.Device modelObject = ObjectCopier.CloneObject<Remoting.Data.Transfer.Configuration.Device, Engine.Data.Configuration.Device>(transferConfig);
                 modelObjects.Add(modelObject);
             }
 

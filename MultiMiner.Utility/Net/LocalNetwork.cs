@@ -27,7 +27,7 @@ namespace MultiMiner.Utility.Net
             return GetLocalIPAddresses().FirstOrDefault();
         }
 
-        public static IPAddress GetBroadcastAddress(IPAddress address, IPAddress subnetMask)
+        private static IPAddress GetBroadcastAddress(IPAddress address, IPAddress subnetMask)
         {
             byte[] ipAdressBytes = address.GetAddressBytes();
             byte[] subnetMaskBytes = subnetMask.GetAddressBytes();
