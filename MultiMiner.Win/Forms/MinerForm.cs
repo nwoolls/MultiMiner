@@ -39,6 +39,7 @@ namespace MultiMiner.Win.Forms
         //fields
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
         private bool applicationSetup;
+        private bool detailsAreaSetup;
         private bool editingDeviceListView;
         private Action notificationClickHandler;
         
@@ -2677,20 +2678,16 @@ namespace MultiMiner.Win.Forms
             detailsAreaContainer.Panel2Collapsed = true;
         }
 
-        private bool detailsAreaSetup;
         private void ShowDetailsArea()
         {
             SetBriefMode(false);
             RefreshDetailsArea();
 
-
             if (!detailsAreaSetup && (app.ApplicationConfiguration.DetailsAreaWidth > 0))
             {
                 detailsAreaContainer.SplitterDistance = detailsAreaContainer.Width - app.ApplicationConfiguration.DetailsAreaWidth;
-
                 detailsAreaSetup = true;
             }
-
 
             detailsAreaContainer.Panel2Collapsed = false;
             detailsAreaContainer.Panel2.Show();
