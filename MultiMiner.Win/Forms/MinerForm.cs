@@ -1251,6 +1251,12 @@ namespace MultiMiner.Win.Forms
         {
             formActivated = true;
         }
+        private void MinerForm_Move(object sender, EventArgs e)
+        {
+            //position may be restored at any time in RefreshViewForConfigurationChanges()
+            //ensure the position is updated in ApplicationConfiguration
+            SavePosition();
+        }
 
         private void CoinMenuItemClick(object sender, EventArgs e)
         {

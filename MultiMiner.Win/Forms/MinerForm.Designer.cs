@@ -2020,6 +2020,7 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
+            this.Move += new System.EventHandler(this.MinerForm_Move);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.notifyIconMenuStrip.ResumeLayout(false);
             this.deviceListContextMenu.ResumeLayout(false);
