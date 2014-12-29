@@ -74,6 +74,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\Timers.cs" />
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="Net\ApiWebClient.cs">
       <SubType>Component</SubType>
     </Compile>

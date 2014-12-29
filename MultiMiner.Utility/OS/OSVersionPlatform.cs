@@ -20,10 +20,6 @@ namespace MultiMiner.Utility.OS
             return result;
         }
 
-        //From Managed.Windows.Forms/XplatUI
-        [DllImport("libc")]
-        private static extern int uname(IntPtr buf);
-
         private static bool IsRunningOnMac()
         {
             IntPtr buf = IntPtr.Zero;
@@ -31,7 +27,7 @@ namespace MultiMiner.Utility.OS
             {
                 buf = Marshal.AllocHGlobal(8192);
                 // This is a hacktastic way of getting sysname from uname ()
-                if (uname(buf) == 0)
+                if (NativeMethods.uname(buf) == 0)
                 {
                     string os = Marshal.PtrToStringAnsi(buf);
                     if (os == "Darwin")

@@ -44,10 +44,7 @@ namespace MultiMiner.Utility.Forms
         {
             if (OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix)
                 // Send WM_SETCURSOR
-                SendMessage(activeForm.Handle, 0x20, activeForm.Handle, (IntPtr)1);
+                NativeMethods.SendMessage(activeForm.Handle, 0x20, activeForm.Handle, (IntPtr)1);
         }
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
     }
 }

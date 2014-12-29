@@ -6,9 +6,6 @@ namespace MultiMiner.Utility.Forms
 {
     public class ReadOnlyTextBox : TextBox
     {
-        [DllImport("user32.dll")]
-        static extern bool HideCaret(IntPtr hWnd);
-
         public ReadOnlyTextBox()
         {
             this.ReadOnly = true;
@@ -18,7 +15,7 @@ namespace MultiMiner.Utility.Forms
 
         private void TextBoxGotFocus(object sender, EventArgs args)
         {
-            HideCaret(this.Handle);
+            NativeMethods.HideCaret(this.Handle);
         }
     }
 }
