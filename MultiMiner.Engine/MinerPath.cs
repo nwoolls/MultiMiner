@@ -9,7 +9,7 @@ namespace MultiMiner.Engine
     {
         public static string GetPathToInstalledMiner(MinerDescriptor miner)
         {
-            string executablePath = string.Empty;
+            string executablePath;
             
             switch (OSVersionPlatform.GetConcretePlatform())
             {
@@ -33,9 +33,8 @@ namespace MultiMiner.Engine
 
         private static string GetPathToMinerOnMacOSX(string minerName, string minerFileName)
         {
-            string executablePath;
             //try local path first
-            executablePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(@"Miners/{0}/bin/{1}", 
+            string executablePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(@"Miners/{0}/bin/{1}", 
                 minerName, minerFileName));
 
             if (!File.Exists(executablePath))
@@ -46,9 +45,8 @@ namespace MultiMiner.Engine
 
         private static string GetPathToMinerOnLinux(string minerName, string minerFileName)
         {
-            string executablePath;
             //try local path first
-            executablePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(@"Miners/{0}/bin/{1}",
+            string executablePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(@"Miners/{0}/bin/{1}",
                 minerName, minerFileName));
 
             if (!File.Exists(executablePath))

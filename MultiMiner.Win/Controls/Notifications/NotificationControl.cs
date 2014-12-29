@@ -50,7 +50,7 @@ namespace MultiMiner.Win.Controls.Notifications
         {
             closeButton.Size = new Size(22, 22);
             const int Offset = 2;
-            closeButton.Location = new Point(this.Width - closeButton.Width - Offset, 0 + Offset);
+            closeButton.Location = new Point(Width - closeButton.Width - Offset, 0 + Offset);
             infoPicture.Location = new Point(closeButton.Left - infoPicture.Width - Offset, closeButton.Top + 3);
             int labelWidth = infoPicture.Left - linkLabel.Left - Offset;
             if (!infoPicture.Visible)

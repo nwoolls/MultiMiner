@@ -165,7 +165,7 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             using (GPUMinerSettingsForm gpuSettingsForm = new GPUMinerSettingsForm(workingMinerConfiguration))
             {
-                System.Windows.Forms.DialogResult dialogResult = gpuSettingsForm.ShowDialog();
+                gpuSettingsForm.ShowDialog();
             }
         }
 

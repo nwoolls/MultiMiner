@@ -28,15 +28,15 @@ namespace MultiMiner.Xgminer
 
         public Miner(Data.Configuration.Miner minerConfig, bool legacyApi)
         {
-            this.minerConfiguration = minerConfig;
+            minerConfiguration = minerConfig;
             this.legacyApi = legacyApi;
         }
 
         //uses --ndevs, returns platform information
         public List<Device> EnumerateDevices()
         {
-            string arguments = MinerParameter.EnumerateDevices;
-            bool redirectOutput = true;
+            const string arguments = MinerParameter.EnumerateDevices;
+            const bool redirectOutput = true;
 
             Process minerProcess = StartMinerProcess(arguments, redirectOutput, legacyApi);
 
@@ -67,10 +67,8 @@ namespace MultiMiner.Xgminer
 
                 return MergeDeviceLists(sha256Devices, scryptDevices);
             }
-            else
-            {
-                return ListDevices(prettyNames, AlgorithmNames.SHA256, logging);
-            }
+
+            return ListDevices(prettyNames, AlgorithmNames.SHA256, logging);
         }
 
         private static List<Device> MergeDeviceLists(List<Device> list1, List<Device> list2)
@@ -454,7 +452,7 @@ namespace MultiMiner.Xgminer
             return process;
         }
 
-        private bool errorHandledByEvent = false;
+        private bool errorHandledByEvent;
         private void HandleProcessOutput(object sender, DataReceivedEventArgs e)
         {
             if (String.IsNullOrEmpty(e.Data))

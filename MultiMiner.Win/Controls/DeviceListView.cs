@@ -24,7 +24,7 @@ namespace MultiMiner.Win.Controls
         public DeviceListView()
         {
             ListViewItemSorter = new ItemComparer();
-            this.Sorting = SortOrder.Ascending;
+            Sorting = SortOrder.Ascending;
         }
     }
 }

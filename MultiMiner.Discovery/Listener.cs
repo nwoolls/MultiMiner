@@ -21,7 +21,7 @@ namespace MultiMiner.Discovery
 
         private UdpClient udpClient;
         private int fingerprint;
-        public bool listening { get; set; }
+        private bool listening { get; set; }
 
         private readonly List<Data.Instance> instances = new List<Data.Instance>();
 

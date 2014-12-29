@@ -13,11 +13,11 @@ namespace MultiMiner.Xgminer.Data
 
         public DeviceDescriptor()
         {
-            this.Driver = String.Empty;
-            this.Path = String.Empty;
-            this.RelativeIndex = -1;
-            this.Serial = String.Empty;
-            this.Kind = DeviceKind.None;
+            Driver = String.Empty;
+            Path = String.Empty;
+            RelativeIndex = -1;
+            Serial = String.Empty;
+            Kind = DeviceKind.None;
         }
 
         private const string DualMinerDriver = "dualminer";
@@ -33,7 +33,7 @@ namespace MultiMiner.Xgminer.Data
 
         public bool SupportsAlgorithm(string algorithm)
         {
-            bool result = false;
+            bool result;
 
             if (algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase))
             {
@@ -53,21 +53,20 @@ namespace MultiMiner.Xgminer.Data
 
         public override string ToString()
         {
-            if (this.Kind == DeviceKind.PXY)
+            if (Kind == DeviceKind.PXY)
                 return "proxy";
-            else if (this.Kind == DeviceKind.GPU)
-                return "opencl:" + this.RelativeIndex;
-            else
-                return String.Format("{0}:{1}", this.Driver, this.Path);
+            if (Kind == DeviceKind.GPU)
+                return "opencl:" + RelativeIndex;
+            return String.Format("{0}:{1}", Driver, Path);
         }
 
         public void Assign(DeviceDescriptor source)
         {
-            this.Kind = source.Kind;
-            this.RelativeIndex = source.RelativeIndex;
-            this.Driver = source.Driver;
-            this.Path = source.Path;
-            this.Serial = source.Serial;
+            Kind = source.Kind;
+            RelativeIndex = source.RelativeIndex;
+            Driver = source.Driver;
+            Path = source.Path;
+            Serial = source.Serial;
         }
 
         public new bool Equals(Object obj)
@@ -77,21 +76,18 @@ namespace MultiMiner.Xgminer.Data
 
             DeviceDescriptor target = (DeviceDescriptor)obj;
 
-            if (this.Kind == DeviceKind.PXY)
-                return target.Kind == DeviceKind.PXY && target.RelativeIndex == this.RelativeIndex;
-            else if (this.Kind == DeviceKind.GPU)
-                return target.Kind == DeviceKind.GPU && target.RelativeIndex == this.RelativeIndex;
-            else if (this.Kind == DeviceKind.CPU)
-                return target.Kind == DeviceKind.CPU && target.RelativeIndex == this.RelativeIndex;
-            else if (String.IsNullOrEmpty(target.Serial) || String.IsNullOrEmpty(this.Serial))
+            if (Kind == DeviceKind.PXY)
+                return target.Kind == DeviceKind.PXY && target.RelativeIndex == RelativeIndex;
+            if (Kind == DeviceKind.GPU)
+                return target.Kind == DeviceKind.GPU && target.RelativeIndex == RelativeIndex;
+            if (Kind == DeviceKind.CPU)
+                return target.Kind == DeviceKind.CPU && target.RelativeIndex == RelativeIndex;
+            if (String.IsNullOrEmpty(target.Serial) || String.IsNullOrEmpty(this.Serial))
                 //only match on Path if there is no Serial
                 //check for Serial on both sides as the Equals() needs to be bi-directional
-                return target.Driver.Equals(this.Driver, StringComparison.OrdinalIgnoreCase) && target.Path.Equals(this.Path, StringComparison.OrdinalIgnoreCase);
-            else
-                //match on Driver, Serial AND Path
-                //cannot just do Serial because, while it should be unique, in practice it is not
-                return target.Driver.Equals(this.Driver, StringComparison.OrdinalIgnoreCase) && target.Serial.Equals(this.Serial, StringComparison.OrdinalIgnoreCase)
-                    && target.Path.Equals(this.Path, StringComparison.OrdinalIgnoreCase);
+                return target.Driver.Equals(Driver, StringComparison.OrdinalIgnoreCase) && target.Path.Equals(Path, StringComparison.OrdinalIgnoreCase);
+            return target.Driver.Equals(Driver, StringComparison.OrdinalIgnoreCase) && target.Serial.Equals(Serial, StringComparison.OrdinalIgnoreCase)
+                   && target.Path.Equals(Path, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

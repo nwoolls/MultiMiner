@@ -17,7 +17,7 @@ namespace MultiMiner.Remoting.Broadcast
         public event PacketReceivedHandler PacketReceived;
 
         private UdpClient udpClient;
-        public bool listening { get; set; }
+        private bool listening { get; set; }
 
         public void Listen()
         {

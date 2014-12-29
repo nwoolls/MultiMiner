@@ -8,6 +8,7 @@ using MultiMiner.Xgminer.Data;
 using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Net;
 using System.Diagnostics;
+using System.Linq;
 
 namespace MultiMiner.Win.Controls
 {
@@ -51,11 +52,11 @@ namespace MultiMiner.Win.Controls
         {
             closeDetailsButton.Size = new Size(22, 22);
             const int offset = 2;
-            closeDetailsButton.Location = new Point(this.Width - closeDetailsButton.Width - offset, 0 + offset);
+            closeDetailsButton.Location = new Point(Width - closeDetailsButton.Width - offset, 0 + offset);
             closeDetailsButton.BringToFront();
 
-            workersGridView.Width = this.Width - (workersGridView.Left * 2);
-            workersGridView.Height = this.Height - workersGridView.Top - 6;
+            workersGridView.Width = Width - (workersGridView.Left * 2);
+            workersGridView.Height = Height - workersGridView.Top - 6;
         }
 
         public void ClearDetails(int deviceCount)
@@ -104,7 +105,7 @@ namespace MultiMiner.Win.Controls
 
             SetupDevicePicture(deviceViewModel);
 
-            nameLabel.Width = this.Width - nameLabel.Left - closeDetailsButton.Width;
+            nameLabel.Width = Width - nameLabel.Left - closeDetailsButton.Width;
 
             acceptedLabel.Text = deviceViewModel.AcceptedShares.ToString("#,#.###############");
             rejectedLabel.Text = deviceViewModel.RejectedShares.ToString("#,#.###############");
@@ -214,18 +215,9 @@ namespace MultiMiner.Win.Controls
 
         private void UpdateColumnVisibility()
         {
-            bool visible = false;
             foreach (DataGridViewColumn column in workersGridView.Columns)
             {
-                visible = false;
-                foreach (DataGridViewRow row in workersGridView.Rows)
-                {
-                    if (!String.IsNullOrEmpty((string)row.Cells[column.Index].FormattedValue))
-                    {
-                        visible = true;
-                        break;
-                    }
-                }
+                bool visible = workersGridView.Rows.Cast<DataGridViewRow>().Any(row => !String.IsNullOrEmpty((string) row.Cells[column.Index].FormattedValue));
                 column.Visible = visible;
             }
         }

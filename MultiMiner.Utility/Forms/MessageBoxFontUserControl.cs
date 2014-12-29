@@ -5,7 +5,7 @@ namespace MultiMiner.Utility.Forms
 {
     public partial class MessageBoxFontUserControl : UserControl
     {
-        public MessageBoxFontUserControl()
+        protected MessageBoxFontUserControl()
         {
             this.Font = SystemFonts.MessageBoxFont;
             InitializeComponent();

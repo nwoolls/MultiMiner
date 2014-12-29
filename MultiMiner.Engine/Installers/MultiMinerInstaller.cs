@@ -73,8 +73,6 @@ namespace MultiMiner.Engine.Installers
                         Process.Start(startInfo);
 
                         Environment.Exit(0);
-
-                        Directory.Delete(temporaryFolder, true);
                     }
                     else
                     {
@@ -89,7 +87,7 @@ namespace MultiMiner.Engine.Installers
             }
         }
 
-        public static string GetMinerDownloadUrl()
+        private static string GetMinerDownloadUrl()
         {
             string downloadUrl = String.Empty;
             
@@ -97,7 +95,7 @@ namespace MultiMiner.Engine.Installers
             const string downloadPath = "/releases/";
             string availableDownloadsHtml = new WebClient().DownloadString(String.Format("{0}{1}", downloadRoot, downloadPath));
 
-            string filePrefix = "MultiMiner";
+            const string filePrefix = "MultiMiner";
 
             string pattern = String.Format(@".*<a href="".+/MultiMiner/releases/(.+/{0}-\d+\.\d+\.\d+\.zip)", filePrefix);
             Match match = Regex.Match(availableDownloadsHtml, pattern);

@@ -20,7 +20,7 @@ namespace MultiMiner.Xgminer.Api
         public int Port { get; set; }
         public string IpAddress { get; set; }
 
-        public const int ShortCommandTimeoutMs = 500;
+        private const int ShortCommandTimeoutMs = 500;
         public const int LongCommandTimeoutMs = 5000;
         private const int ConnectTimeoutMS = 1000;
 

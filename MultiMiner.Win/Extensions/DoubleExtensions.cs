@@ -79,20 +79,18 @@ namespace MultiMiner.Win.Extensions
 
                 return RoundToSignificantDigits(value, 3).ToString("0.00##############");
             }
-            else
-            {
-                if (value >= 100)
-                    return value.ToString("#.#");
-                if (value >= 10)
-                    return value.ToString("#.##");
-                if (value >= 1)
-                    return value.ToString("#.###");
 
-                return RoundToSignificantDigits(value, 3).ToString(".################");
-            }
+            if (value >= 100)
+                return value.ToString("#.#");
+            if (value >= 10)
+                return value.ToString("#.##");
+            if (value >= 1)
+                return value.ToString("#.###");
+
+            return RoundToSignificantDigits(value, 3).ToString(".################");
         }
 
-        public static double RoundToSignificantDigits(this double d, int digits)
+        private static double RoundToSignificantDigits(this double d, int digits)
         {
             if (d == 0)
                 return 0;

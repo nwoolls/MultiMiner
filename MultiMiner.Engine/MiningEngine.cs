@@ -156,22 +156,15 @@ namespace MultiMiner.Engine
             }
         }
 
-        private bool mining = false;
-        public bool Mining
-        {
-            get
-            {
-                return mining;
-            }
-        }
+        public bool Mining { get; private set; }
 
-        public void RestartMining()
+        private void RestartMining()
         {
             StopMining();
             StartMining();
         }
 
-        private bool startingMining = false;
+        private bool startingMining;
         public void StartMining(Data.Configuration.Engine engineConfiguration, List<Xgminer.Data.Device> devices, List<CoinInformation> coinInformation, int donationPercent)
         {
             StopMining();
@@ -186,10 +179,10 @@ namespace MultiMiner.Engine
                 if (coinInformation != null) //null if no network connection
                     ApplyMiningStrategy(coinInformation);
 
-                if (!mining) //above call to ApplyMiningStrategy may have started mining due to config change
+                if (!Mining) //above call to ApplyMiningStrategy may have started mining due to config change
                     StartMining();
 
-                mining = true;
+                Mining = true;
             }
             finally
             {
@@ -197,7 +190,7 @@ namespace MultiMiner.Engine
             }
         }
 
-        private bool stoppingMining = false;
+        private bool stoppingMining;
         public void StopMining()
         {
             stoppingMining = true;
@@ -205,13 +198,13 @@ namespace MultiMiner.Engine
             {
                 foreach (MinerProcess minerProcess in minerProcesses)
                 {
-                    logProcessClose(minerProcess);
+                    DoLogProcessClose(minerProcess);
                     minerProcess.StopMining();
                 }
 
                 minerProcesses.Clear();
 
-                mining = false;
+                Mining = false;
             }
             finally
             {
@@ -230,31 +223,31 @@ namespace MultiMiner.Engine
             {
                 if (minerProcess.Process.HasExited)
                 {
-                    logProcessClose(minerProcess);
+                    DoLogProcessClose(minerProcess);
                     minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Process crashed");
-                    setupProcessStartInfo(minerProcess);
+                    SetupProcessStartInfo(minerProcess);
                     return true;
                 }
 
-                else if (minerProcess.HasDeadDevice)
+                if (minerProcess.HasDeadDevice)
                 {
-                    logProcessClose(minerProcess);
+                    DoLogProcessClose(minerProcess);
                     minerProcess.StopMining();
                     minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Dead device");
-                    setupProcessStartInfo(minerProcess);
+                    SetupProcessStartInfo(minerProcess);
                     return true;
                 }
 
-                else if (minerProcess.HasSickDevice)
+                if (minerProcess.HasSickDevice)
                 {
-                    logProcessClose(minerProcess);
+                    DoLogProcessClose(minerProcess);
                     minerProcess.StopMining();
                     minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Sick device");
-                    setupProcessStartInfo(minerProcess);
+                    SetupProcessStartInfo(minerProcess);
                     return true;
                 }
 
-                else if (minerProcess.HasZeroHashrateDevice || minerProcess.MinerIsFrozen || minerProcess.HasPoorPerformingDevice)
+                if (minerProcess.HasZeroHashrateDevice || minerProcess.MinerIsFrozen || minerProcess.HasPoorPerformingDevice)
                 {
                     TimeSpan processAge = DateTime.Now - minerProcess.Process.StartTime;
                     //this needs to give the devices long enough to spin up
@@ -262,11 +255,11 @@ namespace MultiMiner.Engine
                     //to warm up, such as Raspberry Pi
                     if (processAge.TotalSeconds > SecondsToWarmUpMiner)
                     {
-                        logProcessClose(minerProcess);
+                        DoLogProcessClose(minerProcess);
                         minerProcess.StopMining();
                         string reason = minerProcess.HasZeroHashrateDevice ? "Zero hashrate" : minerProcess.HasPoorPerformingDevice ? "Subpar hashrate" : "Frozen miner";
                         minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, reason);
-                        setupProcessStartInfo(minerProcess);
+                        SetupProcessStartInfo(minerProcess);
                         return true;
                     }
                 }
@@ -279,10 +272,10 @@ namespace MultiMiner.Engine
                     //AND have luck play out...
                     if (processAge.TotalSeconds > (30 * 60))
                     {
-                        logProcessClose(minerProcess);
+                        DoLogProcessClose(minerProcess);
                         minerProcess.StopMining();
                         minerProcess.Process = LaunchMinerProcess(minerProcess.MinerConfiguration, "Subpar shares");
-                        setupProcessStartInfo(minerProcess);
+                        SetupProcessStartInfo(minerProcess);
                         return true;
                     }
                 }
@@ -290,7 +283,7 @@ namespace MultiMiner.Engine
             return false;
         }
 
-        private void setupProcessStartInfo(MinerProcess minerProcess)
+        private void SetupProcessStartInfo(MinerProcess minerProcess)
         {
             string coinName = minerProcess.MinerConfiguration.CoinName;
             string coinSymbol = engineConfiguration.CoinConfigurations.Single(c => c.PoolGroup.Name.Equals(coinName, StringComparison.OrdinalIgnoreCase)).PoolGroup.Id;
@@ -306,9 +299,9 @@ namespace MultiMiner.Engine
             minerProcess.StartDate = DateTime.Now;
         }
 
-        private void logProcessClose(MinerProcess minerProcess)
+        private void DoLogProcessClose(MinerProcess minerProcess)
         {
-            if (this.LogProcessClose == null)
+            if (LogProcessClose == null)
                 return;
 
             DateTime startDate = minerProcess.StartDate;
@@ -336,29 +329,31 @@ namespace MultiMiner.Engine
             //get a copy using ToList() so we can change the list in the event handler without
             //affecting relaunching processes
             List<DeviceDescriptor> deviceDescriptors = minerProcess.MinerConfiguration.DeviceDescriptors.ToList();
-                        
-            LogProcessCloseArgs args = new LogProcessCloseArgs();
-            args.StartDate = startDate;
-            args.EndDate = endDate;
-            args.CoinName = coinName;
-            args.CoinSymbol = coinSymbol;
-            args.StartPrice = priceAtStart;
-            args.EndPrice = priceAtEnd;
-            args.DeviceDescriptors = deviceDescriptors;
-            args.MinerConfiguration = minerProcess.MinerConfiguration;
-            args.AcceptedShares = minerProcess.AcceptedShares;
-            this.LogProcessClose(this, args);
+
+            LogProcessCloseArgs args = new LogProcessCloseArgs
+            {
+                StartDate = startDate,
+                EndDate = endDate,
+                CoinName = coinName,
+                CoinSymbol = coinSymbol,
+                StartPrice = priceAtStart,
+                EndPrice = priceAtEnd,
+                DeviceDescriptors = deviceDescriptors,
+                MinerConfiguration = minerProcess.MinerConfiguration,
+                AcceptedShares = minerProcess.AcceptedShares
+            };
+            LogProcessClose(this, args);
         }
 
         private List<CoinInformation> coinInformation;
         //update engineConfiguration.DeviceConfiguration based on mining strategy & coin info
         public bool ApplyMiningStrategy(List<CoinInformation> coinInformation)
         {
+            if (coinInformation == null) //null if no network connection
+                return false;
+
             bool changed = false;
 
-            if (coinInformation == null) //null if no network connection
-                return changed;
-            
             //store this off so we can reference prices for logging
             this.coinInformation = coinInformation;
 
@@ -379,7 +374,7 @@ namespace MultiMiner.Engine
                 //use the copy here
                 IEnumerable<CoinInformation> filteredCoinInformation = coinInformationCopy.Where(c => configuredSymbols.Contains(c.Symbol));
 
-                if (filteredCoinInformation.Count() > 0)
+                if (filteredCoinInformation.Any())
                 {
                     //adjust profitabilities based on config adjustments
                     ApplyProfitabilityAdjustments(filteredCoinInformation);
@@ -488,14 +483,14 @@ namespace MultiMiner.Engine
 
             if (sha256ProfitableCoins.Count == 0)
             {
-                CoinInformation sha256Coin = orderedCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmFullNames.SHA256)).FirstOrDefault();
+                CoinInformation sha256Coin = orderedCoinInformation.FirstOrDefault(c => c.Algorithm.Equals(AlgorithmFullNames.SHA256));
                 if (sha256Coin != null)
                     sha256ProfitableCoins.Add(sha256Coin);
             }
 
             if (scryptProfitableCoins.Count == 0)
             {
-                CoinInformation scryptCoin = orderedCoinInformation.Where(c => c.Algorithm.Equals(AlgorithmFullNames.Scrypt)).FirstOrDefault();
+                CoinInformation scryptCoin = orderedCoinInformation.FirstOrDefault(c => c.Algorithm.Equals(AlgorithmFullNames.Scrypt));
                 if (scryptCoin != null)
                     scryptProfitableCoins.Add(scryptCoin);
             }
@@ -727,7 +722,7 @@ namespace MultiMiner.Engine
             //e.g. could have two setup and pointed at BTC, cannot handle launching with above processes
             LaunchProxyMiners(startingApiPort);
 
-            mining = true;
+            Mining = true;
         }
 
         private void LaunchProxyMiners(int apiPort)
@@ -821,7 +816,7 @@ namespace MultiMiner.Engine
                 CoinSymbol = coinSymbol
             };
 
-            setupProcessStartInfo(minerProcess);
+            SetupProcessStartInfo(minerProcess);
 
             minerProcesses.Add(minerProcess);
 
@@ -830,7 +825,7 @@ namespace MultiMiner.Engine
 
         private Process LaunchMinerProcess(Xgminer.Data.Configuration.Miner minerConfiguration, string reason)
         {
-            minerConfiguration.Priority = this.engineConfiguration.XgminerConfiguration.Priority;
+            minerConfiguration.Priority = engineConfiguration.XgminerConfiguration.Priority;
 
             //we launch 1 process per device kind now
             DeviceKind deviceKind = minerConfiguration.DeviceDescriptors.First().Kind;
@@ -838,9 +833,9 @@ namespace MultiMiner.Engine
             MinerDescriptor descriptor = MinerFactory.Instance.GetMiner(deviceKind, minerConfiguration.Algorithm, engineConfiguration.XgminerConfiguration.AlgorithmMiners);
 
             Xgminer.Miner miner = new Xgminer.Miner(minerConfiguration, descriptor.LegacyApi);
-            miner.LogLaunch += this.LogProcessLaunch;
-            miner.LaunchFailed += this.ProcessLaunchFailed;
-            miner.AuthenticationFailed += this.ProcessAuthenticationFailed;
+            miner.LogLaunch += LogProcessLaunch;
+            miner.LaunchFailed += ProcessLaunchFailed;
+            miner.AuthenticationFailed += ProcessAuthenticationFailed;
             Process process = miner.Launch(reason);
             return process;
         }
@@ -982,7 +977,7 @@ namespace MultiMiner.Engine
         {
             MiningPool donationPool = null;
 
-            Data.Configuration.Coin donationConfiguration = this.donationConfigurations.SingleOrDefault(dc => dc.PoolGroup.Id.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+            Data.Configuration.Coin donationConfiguration = donationConfigurations.SingleOrDefault(dc => dc.PoolGroup.Id.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             if (donationConfiguration != null)
             {
                 //inclusive lower, exclusive upper

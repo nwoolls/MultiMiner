@@ -23,7 +23,7 @@ namespace MultiMiner.Engine.Data.Configuration
         public Xgminer XgminerConfiguration { get; set; }
         public Strategy StrategyConfiguration { get; set; }
 
-        public void RemoveBlankPoolConfigurations()
+        private void RemoveBlankPoolConfigurations()
         {
             foreach (Coin coinConfiguration in CoinConfigurations)
             {
@@ -198,7 +198,7 @@ namespace MultiMiner.Engine.Data.Configuration
         private void FixDeviceConfigurationSymbolDiscrepencies()
         {
             bool save = DeviceConfigurations.Any(dc => dc.CoinSymbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase));
-            foreach (Configuration.Device deviceConfiguration in DeviceConfigurations.Where(dc => dc.CoinSymbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase)))
+            foreach (Device deviceConfiguration in DeviceConfigurations.Where(dc => dc.CoinSymbol.Equals(KnownCoins.BadDogecoinSymbol, StringComparison.OrdinalIgnoreCase)))
                 deviceConfiguration.CoinSymbol = KnownCoins.DogecoinSymbol;
             if (save)
                 SaveDeviceConfigurations();

@@ -15,7 +15,7 @@ namespace MultiMiner.Win.Extensions
         {
             const int peHeaderOffset = 60;
             const int linkerTimestampOffset = 8;
-            var b = new byte[2048];
+            byte[] b = new byte[2048];
             System.IO.FileStream s = null;
             try
             {
@@ -27,7 +27,7 @@ namespace MultiMiner.Win.Extensions
                 if (s != null)
                     s.Close();
             }
-            var dt = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(BitConverter.ToInt32(b, BitConverter.ToInt32(b, peHeaderOffset) + linkerTimestampOffset));
+            DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(BitConverter.ToInt32(b, BitConverter.ToInt32(b, peHeaderOffset) + linkerTimestampOffset));
             return dt.AddHours(TimeZone.CurrentTimeZone.GetUtcOffset(dt).Hours);
         }
     }
