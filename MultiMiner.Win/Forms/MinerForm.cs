@@ -1198,7 +1198,7 @@ namespace MultiMiner.Win.Forms
                 Size = new Size(app.ApplicationConfiguration.AppPosition.Width, app.ApplicationConfiguration.AppPosition.Height);
             }
 
-            if (app.ApplicationConfiguration.Maximized)
+            if (app.ApplicationConfiguration.Maximized && (WindowState != FormWindowState.Minimized))
                 WindowState = FormWindowState.Maximized;
             
             RefreshViewFromViewModel();
