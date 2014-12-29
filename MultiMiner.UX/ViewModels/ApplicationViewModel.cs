@@ -4913,6 +4913,9 @@ namespace MultiMiner.UX.ViewModels
                     foreach (LogProcessCloseArgs logProcessCloseArgs in loadLogFile)
                         LogProcessCloseArgsBindingSource.Add(logProcessCloseArgs);
                     LogProcessCloseArgsBindingSource.ResumeBinding();
+
+                    //scroll to latest entry
+                    LogProcessCloseArgsBindingSource.MoveLast();
                 }
                 catch (SystemException)
                 {
