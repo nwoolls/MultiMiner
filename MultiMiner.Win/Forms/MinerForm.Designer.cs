@@ -38,14 +38,14 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MinerForm));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("CPU", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("GPU", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("USB", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxy", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Network", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.notifyIconMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -76,27 +76,6 @@
             this.advancedAreaContainer = new System.Windows.Forms.SplitContainer();
             this.instancesContainer = new System.Windows.Forms.SplitContainer();
             this.detailsAreaContainer = new System.Windows.Forms.SplitContainer();
-            this.deviceListView = new MultiMiner.Win.Controls.DeviceListView();
-            this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.currentRateColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.coinColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.driverColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.difficultyColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.priceColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.exchangeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.profitabilityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.poolColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.tempColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.fanColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.hashrateColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.effectiveColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.incomeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.acceptedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.rejectedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.errorsColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.utilityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.intensityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.detailsControl1 = new MultiMiner.Win.Controls.DetailsControl();
             this.advancedTabControl = new System.Windows.Forms.TabControl();
             this.historyPage = new System.Windows.Forms.TabPage();
             this.historyGridView = new System.Windows.Forms.DataGridView();
@@ -229,6 +208,28 @@
             this.historySideButton = new System.Windows.Forms.ToolStripButton();
             this.apiMonitorSideButton = new System.Windows.Forms.ToolStripButton();
             this.processLogSideButton = new System.Windows.Forms.ToolStripButton();
+            this.refreshViewTimer = new System.Windows.Forms.Timer(this.components);
+            this.deviceListView = new MultiMiner.Win.Controls.DeviceListView();
+            this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.currentRateColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.coinColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.driverColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.difficultyColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.priceColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.exchangeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.profitabilityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.poolColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.tempColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.fanColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.hashrateColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.effectiveColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.incomeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.acceptedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.rejectedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.errorsColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.utilityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.intensityColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.detailsControl1 = new MultiMiner.Win.Controls.DetailsControl();
             this.notifyIconMenuStrip.SuspendLayout();
             this.deviceListContextMenu.SuspendLayout();
             this.columnHeaderMenu.SuspendLayout();
@@ -331,7 +332,7 @@
             // 
             this.coinPopupMenu.Name = "coinPopupMenu";
             this.coinPopupMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.coinPopupMenu.Size = new System.Drawing.Size(153, 26);
+            this.coinPopupMenu.Size = new System.Drawing.Size(61, 4);
             // 
             // largeImageList
             // 
@@ -541,186 +542,9 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(883, 111);
-            this.detailsAreaContainer.SplitterDistance = 666;
+            this.detailsAreaContainer.SplitterDistance = 667;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
-            // 
-            // deviceListView
-            // 
-            this.deviceListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.deviceListView.CheckBoxes = true;
-            this.deviceListView.CheckFromDoubleClick = false;
-            this.deviceListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.nameColumnHeader,
-            this.currentRateColumnHeader,
-            this.coinColumnHeader,
-            this.driverColumnHeader,
-            this.difficultyColumnHeader,
-            this.priceColumnHeader,
-            this.exchangeColumnHeader,
-            this.profitabilityColumnHeader,
-            this.poolColumnHeader,
-            this.tempColumnHeader,
-            this.fanColumnHeader,
-            this.hashrateColumnHeader,
-            this.effectiveColumnHeader,
-            this.incomeColumnHeader,
-            this.acceptedColumnHeader,
-            this.rejectedColumnHeader,
-            this.errorsColumnHeader,
-            this.utilityColumnHeader,
-            this.intensityColumnHeader});
-            this.deviceListView.ContextMenuStrip = this.columnHeaderMenu;
-            this.deviceListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            listViewGroup1.Header = "CPU";
-            listViewGroup1.Name = "cpuListViewGroup";
-            listViewGroup2.Header = "GPU";
-            listViewGroup2.Name = "gpuListViewGroup";
-            listViewGroup3.Header = "USB";
-            listViewGroup3.Name = "usbListViewGroup";
-            listViewGroup4.Header = "Proxy";
-            listViewGroup4.Name = "proxyListViewGroup";
-            listViewGroup5.Header = "Network";
-            listViewGroup5.Name = "networkListViewGroup";
-            this.deviceListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3,
-            listViewGroup4,
-            listViewGroup5});
-            this.deviceListView.LabelEdit = true;
-            this.deviceListView.LargeImageList = this.largeImageList;
-            this.deviceListView.Location = new System.Drawing.Point(0, 0);
-            this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(666, 111);
-            this.deviceListView.SmallImageList = this.smallImageList;
-            this.deviceListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.deviceListView.TabIndex = 2;
-            this.deviceListView.UseCompatibleStateImageBehavior = false;
-            this.deviceListView.View = System.Windows.Forms.View.Details;
-            this.deviceListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.deviceListView_AfterLabelEdit);
-            this.deviceListView.BeforeLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.deviceListView_BeforeLabelEdit);
-            this.deviceListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.deviceListView_ColumnClick);
-            this.deviceListView.ColumnWidthChanging += new System.Windows.Forms.ColumnWidthChangingEventHandler(this.deviceListView_ColumnWidthChanging);
-            this.deviceListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.deviceListView_ItemCheck);
-            this.deviceListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.deviceListView_ItemChecked);
-            this.deviceListView.SelectedIndexChanged += new System.EventHandler(this.deviceListView_SelectedIndexChanged);
-            this.deviceListView.DoubleClick += new System.EventHandler(this.deviceListView_DoubleClick);
-            this.deviceListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.deviceListView_MouseClick);
-            this.deviceListView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.deviceListView_MouseUp);
-            // 
-            // nameColumnHeader
-            // 
-            this.nameColumnHeader.Text = "Name";
-            // 
-            // currentRateColumnHeader
-            // 
-            this.currentRateColumnHeader.DisplayIndex = 11;
-            this.currentRateColumnHeader.Text = "Current";
-            this.currentRateColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // coinColumnHeader
-            // 
-            this.coinColumnHeader.Text = "Coin";
-            // 
-            // driverColumnHeader
-            // 
-            this.driverColumnHeader.DisplayIndex = 1;
-            this.driverColumnHeader.Text = "Driver";
-            // 
-            // difficultyColumnHeader
-            // 
-            this.difficultyColumnHeader.DisplayIndex = 3;
-            this.difficultyColumnHeader.Text = "Difficulty";
-            this.difficultyColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // priceColumnHeader
-            // 
-            this.priceColumnHeader.DisplayIndex = 4;
-            this.priceColumnHeader.Text = "Price";
-            this.priceColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // exchangeColumnHeader
-            // 
-            this.exchangeColumnHeader.DisplayIndex = 5;
-            this.exchangeColumnHeader.Text = "Exchange";
-            this.exchangeColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // profitabilityColumnHeader
-            // 
-            this.profitabilityColumnHeader.DisplayIndex = 6;
-            this.profitabilityColumnHeader.Text = "Profitability";
-            this.profitabilityColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.profitabilityColumnHeader.Width = 80;
-            // 
-            // poolColumnHeader
-            // 
-            this.poolColumnHeader.DisplayIndex = 7;
-            this.poolColumnHeader.Text = "Pool";
-            // 
-            // tempColumnHeader
-            // 
-            this.tempColumnHeader.DisplayIndex = 8;
-            this.tempColumnHeader.Text = "Temp";
-            this.tempColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // fanColumnHeader
-            // 
-            this.fanColumnHeader.DisplayIndex = 9;
-            this.fanColumnHeader.Text = "Fan";
-            this.fanColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // hashrateColumnHeader
-            // 
-            this.hashrateColumnHeader.DisplayIndex = 10;
-            this.hashrateColumnHeader.Text = "Average";
-            this.hashrateColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // effectiveColumnHeader
-            // 
-            this.effectiveColumnHeader.Text = "Effective";
-            this.effectiveColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // incomeColumnHeader
-            // 
-            this.incomeColumnHeader.Text = "Daily";
-            this.incomeColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // acceptedColumnHeader
-            // 
-            this.acceptedColumnHeader.Text = "Accepted";
-            this.acceptedColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // rejectedColumnHeader
-            // 
-            this.rejectedColumnHeader.Text = "Rejected";
-            this.rejectedColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // errorsColumnHeader
-            // 
-            this.errorsColumnHeader.Text = "Errors";
-            this.errorsColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // utilityColumnHeader
-            // 
-            this.utilityColumnHeader.Text = "Utility";
-            this.utilityColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // intensityColumnHeader
-            // 
-            this.intensityColumnHeader.Text = "Intensity";
-            // 
-            // detailsControl1
-            // 
-            this.detailsControl1.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.detailsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.detailsControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.detailsControl1.Location = new System.Drawing.Point(0, 0);
-            this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(214, 111);
-            this.detailsControl1.TabIndex = 0;
-            this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 
             // advancedTabControl
             // 
@@ -902,7 +726,7 @@
             this.processLogGridView.Name = "processLogGridView";
             this.processLogGridView.ReadOnly = true;
             this.processLogGridView.RowHeadersVisible = false;
-            this.processLogGridView.Size = new System.Drawing.Size(869, 50);
+            this.processLogGridView.Size = new System.Drawing.Size(869, 51);
             this.processLogGridView.TabIndex = 14;
             this.processLogGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.processLogGridView_CellFormatting);
             this.processLogGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.processLogGridView_CellMouseDown);
@@ -986,7 +810,7 @@
             this.apiLogGridView.Location = new System.Drawing.Point(3, 3);
             this.apiLogGridView.Name = "apiLogGridView";
             this.apiLogGridView.RowHeadersVisible = false;
-            this.apiLogGridView.Size = new System.Drawing.Size(869, 50);
+            this.apiLogGridView.Size = new System.Drawing.Size(869, 51);
             this.apiLogGridView.TabIndex = 13;
             this.apiLogGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.apiLogGridView_CellFormatting);
             // 
@@ -1992,6 +1816,188 @@
             this.processLogSideButton.Text = "Process Log";
             this.processLogSideButton.Click += new System.EventHandler(this.processLogSideButton_Click);
             // 
+            // refreshViewTimer
+            // 
+            this.refreshViewTimer.Interval = 500;
+            this.refreshViewTimer.Tick += new System.EventHandler(this.refreshViewTimer_Tick);
+            // 
+            // deviceListView
+            // 
+            this.deviceListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.deviceListView.CheckBoxes = true;
+            this.deviceListView.CheckFromDoubleClick = false;
+            this.deviceListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.nameColumnHeader,
+            this.currentRateColumnHeader,
+            this.coinColumnHeader,
+            this.driverColumnHeader,
+            this.difficultyColumnHeader,
+            this.priceColumnHeader,
+            this.exchangeColumnHeader,
+            this.profitabilityColumnHeader,
+            this.poolColumnHeader,
+            this.tempColumnHeader,
+            this.fanColumnHeader,
+            this.hashrateColumnHeader,
+            this.effectiveColumnHeader,
+            this.incomeColumnHeader,
+            this.acceptedColumnHeader,
+            this.rejectedColumnHeader,
+            this.errorsColumnHeader,
+            this.utilityColumnHeader,
+            this.intensityColumnHeader});
+            this.deviceListView.ContextMenuStrip = this.columnHeaderMenu;
+            this.deviceListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            listViewGroup1.Header = "CPU";
+            listViewGroup1.Name = "cpuListViewGroup";
+            listViewGroup2.Header = "GPU";
+            listViewGroup2.Name = "gpuListViewGroup";
+            listViewGroup3.Header = "USB";
+            listViewGroup3.Name = "usbListViewGroup";
+            listViewGroup4.Header = "Proxy";
+            listViewGroup4.Name = "proxyListViewGroup";
+            listViewGroup5.Header = "Network";
+            listViewGroup5.Name = "networkListViewGroup";
+            this.deviceListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4,
+            listViewGroup5});
+            this.deviceListView.LabelEdit = true;
+            this.deviceListView.LargeImageList = this.largeImageList;
+            this.deviceListView.Location = new System.Drawing.Point(0, 0);
+            this.deviceListView.Name = "deviceListView";
+            this.deviceListView.Size = new System.Drawing.Size(667, 111);
+            this.deviceListView.SmallImageList = this.smallImageList;
+            this.deviceListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.deviceListView.TabIndex = 2;
+            this.deviceListView.UseCompatibleStateImageBehavior = false;
+            this.deviceListView.View = System.Windows.Forms.View.Details;
+            this.deviceListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.deviceListView_AfterLabelEdit);
+            this.deviceListView.BeforeLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.deviceListView_BeforeLabelEdit);
+            this.deviceListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.deviceListView_ColumnClick);
+            this.deviceListView.ColumnWidthChanging += new System.Windows.Forms.ColumnWidthChangingEventHandler(this.deviceListView_ColumnWidthChanging);
+            this.deviceListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.deviceListView_ItemCheck);
+            this.deviceListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.deviceListView_ItemChecked);
+            this.deviceListView.SelectedIndexChanged += new System.EventHandler(this.deviceListView_SelectedIndexChanged);
+            this.deviceListView.DoubleClick += new System.EventHandler(this.deviceListView_DoubleClick);
+            this.deviceListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.deviceListView_MouseClick);
+            this.deviceListView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.deviceListView_MouseUp);
+            // 
+            // nameColumnHeader
+            // 
+            this.nameColumnHeader.Text = "Name";
+            // 
+            // currentRateColumnHeader
+            // 
+            this.currentRateColumnHeader.DisplayIndex = 11;
+            this.currentRateColumnHeader.Text = "Current";
+            this.currentRateColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // coinColumnHeader
+            // 
+            this.coinColumnHeader.Text = "Coin";
+            // 
+            // driverColumnHeader
+            // 
+            this.driverColumnHeader.DisplayIndex = 1;
+            this.driverColumnHeader.Text = "Driver";
+            // 
+            // difficultyColumnHeader
+            // 
+            this.difficultyColumnHeader.DisplayIndex = 3;
+            this.difficultyColumnHeader.Text = "Difficulty";
+            this.difficultyColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // priceColumnHeader
+            // 
+            this.priceColumnHeader.DisplayIndex = 4;
+            this.priceColumnHeader.Text = "Price";
+            this.priceColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // exchangeColumnHeader
+            // 
+            this.exchangeColumnHeader.DisplayIndex = 5;
+            this.exchangeColumnHeader.Text = "Exchange";
+            this.exchangeColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // profitabilityColumnHeader
+            // 
+            this.profitabilityColumnHeader.DisplayIndex = 6;
+            this.profitabilityColumnHeader.Text = "Profitability";
+            this.profitabilityColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.profitabilityColumnHeader.Width = 80;
+            // 
+            // poolColumnHeader
+            // 
+            this.poolColumnHeader.DisplayIndex = 7;
+            this.poolColumnHeader.Text = "Pool";
+            // 
+            // tempColumnHeader
+            // 
+            this.tempColumnHeader.DisplayIndex = 8;
+            this.tempColumnHeader.Text = "Temp";
+            this.tempColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // fanColumnHeader
+            // 
+            this.fanColumnHeader.DisplayIndex = 9;
+            this.fanColumnHeader.Text = "Fan";
+            this.fanColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // hashrateColumnHeader
+            // 
+            this.hashrateColumnHeader.DisplayIndex = 10;
+            this.hashrateColumnHeader.Text = "Average";
+            this.hashrateColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // effectiveColumnHeader
+            // 
+            this.effectiveColumnHeader.Text = "Effective";
+            this.effectiveColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // incomeColumnHeader
+            // 
+            this.incomeColumnHeader.Text = "Daily";
+            this.incomeColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // acceptedColumnHeader
+            // 
+            this.acceptedColumnHeader.Text = "Accepted";
+            this.acceptedColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // rejectedColumnHeader
+            // 
+            this.rejectedColumnHeader.Text = "Rejected";
+            this.rejectedColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // errorsColumnHeader
+            // 
+            this.errorsColumnHeader.Text = "Errors";
+            this.errorsColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // utilityColumnHeader
+            // 
+            this.utilityColumnHeader.Text = "Utility";
+            this.utilityColumnHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // intensityColumnHeader
+            // 
+            this.intensityColumnHeader.Text = "Intensity";
+            // 
+            // detailsControl1
+            // 
+            this.detailsControl1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.detailsControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.detailsControl1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.detailsControl1.Location = new System.Drawing.Point(0, 0);
+            this.detailsControl1.Name = "detailsControl1";
+            this.detailsControl1.Size = new System.Drawing.Size(213, 111);
+            this.detailsControl1.TabIndex = 0;
+            this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
+            // 
             // MinerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -2240,6 +2246,7 @@
         private System.Windows.Forms.ToolStripMenuItem restartMiningToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem startMiningToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopMiningToolStripMenuItem;
+        private System.Windows.Forms.Timer refreshViewTimer;
     }
 }
 

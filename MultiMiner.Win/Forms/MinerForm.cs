@@ -49,6 +49,7 @@ namespace MultiMiner.Win.Forms
         
         //view models
         private readonly ApplicationViewModel app = new ApplicationViewModel();
+        private bool refreshViewRequested = false;
         #endregion
 
         #region Constructor
@@ -280,6 +281,12 @@ namespace MultiMiner.Win.Forms
         
         private void RefreshViewFromViewModel()
         {
+            refreshViewRequested = true;
+        }
+
+        private void DoRefreshViewFromViewModel()
+        {
+            Debug.WriteLine(String.Format("{0}: {1}", Environment.TickCount, "RefreshViewFromViewModel"));
             PositionAdvancedAreaCloseButton();
             RefreshDetailsToggleButton();
             PositionCoinChooseLabels();
@@ -2182,6 +2189,15 @@ namespace MultiMiner.Win.Forms
         {
             app.SelectRemoteInstance(instance);
         }
+
+        private void refreshViewTimer_Tick(object sender, EventArgs e)
+        {
+            if (refreshViewRequested)
+            {
+                refreshViewRequested = false; //set before refreshing the View
+                DoRefreshViewFromViewModel();
+            }
+        }
         #endregion
         
         #region Application startup / setup
@@ -2226,6 +2242,10 @@ namespace MultiMiner.Win.Forms
             CloseDetailsArea();
 
             FetchInitialCoinStats();
+
+            //start updating the view
+            refreshViewTimer.Interval = 500;
+            refreshViewTimer.Enabled = true;
 
             app.UpdateBackendMinerAvailability(); //before CheckAndShowGettingStarted()
             CheckAndShowGettingStarted();
