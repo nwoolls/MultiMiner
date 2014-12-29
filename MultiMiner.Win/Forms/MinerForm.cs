@@ -43,7 +43,6 @@ namespace MultiMiner.Win.Forms
         private bool detailsAreaSetup;
         private bool editingDeviceListView;
         private Action notificationClickHandler;
-        private bool formActivated;
 
         //controls
         private NotificationsControl notificationsControl;
@@ -320,7 +319,7 @@ namespace MultiMiner.Win.Forms
             {
                 //can't set details container width until it is shown
                 //test with ApplicationConfiguration.StartupMinimized
-                if (formActivated && !instancesAreaSetup && (app.ApplicationConfiguration.InstancesAreaWidth > 0))
+                if (!instancesAreaSetup && (instancesContainer.Width > 0) && (app.ApplicationConfiguration.InstancesAreaWidth > 0))
                 {
                     instancesAreaSetup = true;
                     instancesContainer.SplitterDistance = app.ApplicationConfiguration.InstancesAreaWidth;
@@ -1246,11 +1245,7 @@ namespace MultiMiner.Win.Forms
         {
             deviceListView.Focus();
         }
-
-        private void MinerForm_Activated(object sender, EventArgs e)
-        {
-            formActivated = true;
-        }
+        
         private void MinerForm_Move(object sender, EventArgs e)
         {
             //position may be restored at any time in RefreshViewForConfigurationChanges()
