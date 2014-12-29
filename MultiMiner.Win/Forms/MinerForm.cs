@@ -1195,7 +1195,6 @@ namespace MultiMiner.Win.Forms
             SetupAccessibleMenu();
 
             app.SetupRestartTimer();
-            app.SetupRemoting();
             app.SetupCoinApi();
             app.CheckForUpdates();
             app.SetupCoinStatsTimer();

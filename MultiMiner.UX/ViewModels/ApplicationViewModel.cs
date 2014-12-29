@@ -592,6 +592,7 @@ namespace MultiMiner.UX.ViewModels
 
                 PerksConfiguration.SavePerksConfiguration();
 
+                SetupRemoting();
                 ConfigurationModified(this, new EventArgs());
             }
             else
