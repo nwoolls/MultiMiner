@@ -39,10 +39,12 @@ namespace MultiMiner.Win.Forms
         //fields
         private readonly double difficultyMuliplier = Math.Pow(2, 32);
         private bool applicationSetup;
+        private bool instancesAreaSetup;
         private bool detailsAreaSetup;
         private bool editingDeviceListView;
         private Action notificationClickHandler;
-        
+        private bool formActivated;
+
         //controls
         private NotificationsControl notificationsControl;
         private InstancesControl instancesControl;
@@ -314,6 +316,16 @@ namespace MultiMiner.Win.Forms
             
             instancesContainer.Panel1Collapsed = !app.PerksConfiguration.EnableRemoting || (app.InstanceManager.Instances.Count <= 1);
             instancesControl.Visible = !instancesContainer.Panel1Collapsed;
+            if (instancesControl.Visible)
+            {
+                //can't set details container width until it is shown
+                //test with ApplicationConfiguration.StartupMinimized
+                if (formActivated && !instancesAreaSetup && (app.ApplicationConfiguration.InstancesAreaWidth > 0))
+                {
+                    instancesAreaSetup = true;
+                    instancesContainer.SplitterDistance = app.ApplicationConfiguration.InstancesAreaWidth;
+                }
+            }
             
             dynamicIntensityButton.Checked = app.LocalViewModel.DynamicIntensity;
         }
@@ -1189,10 +1201,6 @@ namespace MultiMiner.Win.Forms
             if (app.ApplicationConfiguration.Maximized)
                 WindowState = FormWindowState.Maximized;
             
-            //can't set details container width until it is shown
-            if (app.ApplicationConfiguration.InstancesAreaWidth > 0)
-                instancesContainer.SplitterDistance = app.ApplicationConfiguration.InstancesAreaWidth;
-
             RefreshViewFromViewModel();
             
             System.Windows.Forms.Application.DoEvents();
@@ -1237,6 +1245,11 @@ namespace MultiMiner.Win.Forms
         private void MainForm_Shown(object sender, EventArgs e)
         {
             deviceListView.Focus();
+        }
+
+        private void MinerForm_Activated(object sender, EventArgs e)
+        {
+            formActivated = true;
         }
 
         private void CoinMenuItemClick(object sender, EventArgs e)
