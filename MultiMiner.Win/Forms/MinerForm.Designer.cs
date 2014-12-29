@@ -331,7 +331,7 @@
             // 
             this.coinPopupMenu.Name = "coinPopupMenu";
             this.coinPopupMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.coinPopupMenu.Size = new System.Drawing.Size(61, 4);
+            this.coinPopupMenu.Size = new System.Drawing.Size(153, 26);
             // 
             // largeImageList
             // 
@@ -541,7 +541,7 @@
             // 
             this.detailsAreaContainer.Panel2.Controls.Add(this.detailsControl1);
             this.detailsAreaContainer.Size = new System.Drawing.Size(883, 111);
-            this.detailsAreaContainer.SplitterDistance = 665;
+            this.detailsAreaContainer.SplitterDistance = 666;
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
@@ -592,7 +592,7 @@
             this.deviceListView.LargeImageList = this.largeImageList;
             this.deviceListView.Location = new System.Drawing.Point(0, 0);
             this.deviceListView.Name = "deviceListView";
-            this.deviceListView.Size = new System.Drawing.Size(665, 111);
+            this.deviceListView.Size = new System.Drawing.Size(666, 111);
             this.deviceListView.SmallImageList = this.smallImageList;
             this.deviceListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.deviceListView.TabIndex = 2;
@@ -718,7 +718,7 @@
             this.detailsControl1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.detailsControl1.Location = new System.Drawing.Point(0, 0);
             this.detailsControl1.Name = "detailsControl1";
-            this.detailsControl1.Size = new System.Drawing.Size(215, 111);
+            this.detailsControl1.Size = new System.Drawing.Size(214, 111);
             this.detailsControl1.TabIndex = 0;
             this.detailsControl1.CloseClicked += new MultiMiner.Win.Controls.DetailsControl.CloseClickedHandler(this.detailsControl1_CloseClicked);
             // 

@@ -280,6 +280,9 @@ namespace MultiMiner.Win.Forms
         
         private void RefreshViewFromViewModel()
         {
+            PositionAdvancedAreaCloseButton();
+            RefreshDetailsToggleButton();
+            PositionCoinChooseLabels();
             RefreshStrategiesCountdown();
             RefreshStrategiesLabel();
             RefreshListViewFromViewModel();
@@ -291,7 +294,6 @@ namespace MultiMiner.Win.Forms
             RefreshIncomeSummary();
             RefreshDetailsAreaIfVisible();
             RefreshCountdownLabel();
-            RefreshCoinPopupMenu();
             RefreshCoinStatsLabel();
             SetupStatusBarLabelLayouts();
             RefreshCoinApiLabel();
@@ -1107,7 +1109,35 @@ namespace MultiMiner.Win.Forms
                 }
             }
         }
-        
+
+        private void RefreshStatusBarFromViewModel()
+        {
+            MinerFormViewModel viewModel = app.GetViewModelToView();
+            //don't include Network Devices in the count for Remote ViewModels
+            deviceTotalLabel.Text = String.Format("{0} device(s)", viewModel.Devices.Count(d => d.Visible && ((viewModel == app.LocalViewModel) || (d.Kind != DeviceKind.NET))));
+
+            hashRateStatusLabel.Text = GetHashRateStatusText(viewModel);
+
+            hashRateStatusLabel.AutoSize = true;
+        }
+
+        private string GetHashRateStatusText(MinerFormViewModel viewModel)
+        {
+            string hashRateText = String.Empty;
+            IList<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
+            foreach (CoinAlgorithm algorithm in algorithms)
+            {
+                double hashRate = app.GetVisibleInstanceHashrate(algorithm.Name, viewModel == app.LocalViewModel);
+                if (hashRate > 0.00)
+                {
+                    if (!String.IsNullOrEmpty(hashRateText))
+                        hashRateText = hashRateText + "   ";
+                    hashRateText = String.Format("{0}{1}: {2}", hashRateText, algorithm.Name, hashRate.ToHashrateString());
+                }
+            }
+            return hashRateText;
+        }
+
         private static void ClearCoinStatsForGridListViewItem(ListViewItem item)
         {
             item.SubItems["Difficulty"].Tag = 0.0;
@@ -1156,37 +1186,14 @@ namespace MultiMiner.Win.Forms
                 app.RefreshExchangeRates();
             
             SetupAccessibleMenu();
+
             app.SetupRestartTimer();
-
             app.SetupRemoting();
-
             app.SetupCoinApi();
             app.CheckForUpdates();
             app.SetupCoinStatsTimer();
             app.SuggestCoinsToMine();
-
             app.SetGpuEnvironmentVariables();
-
-            RefreshViewFromViewModel();
-            
-            System.Windows.Forms.Application.DoEvents();
-        }
-        #endregion
-
-        #region Settings logic
-        private void LoadSettings()
-        {
-            app.EngineConfiguration.LoadAllConfigurations(app.PathConfiguration.SharedConfigPath);
-
-            app.SetupCoinApi();
-
-            RefreshStrategiesLabel();
-            RefreshStrategiesCountdown();
-
-            //already done in ctor //app.ApplicationConfiguration.LoadApplicationConfiguration();
-
-            app.PerksConfiguration.LoadPerksConfiguration(app.PathConfiguration.SharedConfigPath);
-            app.RefreshExchangeRates();
 
             SetListViewStyle(app.ApplicationConfiguration.ListViewStyle);
 
@@ -1203,31 +1210,28 @@ namespace MultiMiner.Win.Forms
 
             if (app.ApplicationConfiguration.Maximized)
                 this.WindowState = FormWindowState.Maximized;
-
-            HideAdvancedPanel();
-
+            
             //can't set details container width until it is shown
             if (app.ApplicationConfiguration.InstancesAreaWidth > 0)
                 instancesContainer.SplitterDistance = app.ApplicationConfiguration.InstancesAreaWidth;
+
+            RefreshViewFromViewModel();
             
-            app.SetupCoinStatsTimer();
-
-            app.ClearPoolsFlaggedDown();
-
-            app.ApplyModelsToViewModel();
-            app.LocalViewModel.DynamicIntensity = app.EngineConfiguration.XgminerConfiguration.DesktopMode;
-            dynamicIntensityButton.Checked = app.LocalViewModel.DynamicIntensity;
-
-            app.MetadataConfiguration.LoadDeviceMetadataConfiguration();
-
-            //allow resize/maximize/etc to render
             System.Windows.Forms.Application.DoEvents();
+        }
+        #endregion
+
+        #region Settings logic
+        private void LoadSettings()
+        {
+            app.LoadSettings();
+
+            RefreshViewForConfigurationChanges();
         }
                 
         private void SaveSettings()
         {
             SavePosition();
-
             app.ApplicationConfiguration.DetailsAreaWidth = detailsAreaContainer.Width - detailsAreaContainer.SplitterDistance;
             app.ApplicationConfiguration.InstancesAreaWidth = instancesContainer.SplitterDistance;
 
@@ -1736,11 +1740,33 @@ namespace MultiMiner.Win.Forms
                 }
                 else
                 {
-                    string currentCoin = GetCurrentlySelectedCoinName();
-                    CheckCoinInPopupMenu(currentCoin);
-                    coinPopupMenu.Show(Cursor.Position);
+                    ShowCoinPopupMenu();
                 }
             }
+        }
+
+        private void ShowCoinPopupMenu()
+        {
+            ShowCoinPopupMenu(Cursor.Position);
+        }
+
+        private void ShowCoinPopupMenu(Control control, Point position)
+        {
+            SetupCoinPopupMenu();
+            coinPopupMenu.Show(control, position);
+        }
+
+        private void ShowCoinPopupMenu(Point screenLocation)
+        {
+            SetupCoinPopupMenu();
+            coinPopupMenu.Show(screenLocation);
+        }
+
+        private void SetupCoinPopupMenu()
+        {
+            string currentCoin = GetCurrentlySelectedCoinName();
+            RefreshCoinPopupMenu();
+            CheckCoinInPopupMenu(currentCoin);
         }
 
         private string GetCurrentlySelectedCoinName()
@@ -2175,6 +2201,8 @@ namespace MultiMiner.Win.Forms
         {
             SetupApplicationViewModel();
 
+            HideAdvancedPanel();
+
             HandleStartupMinimizedToNotificationArea();
 
             accessibleMenu.Visible = false;
@@ -2193,7 +2221,7 @@ namespace MultiMiner.Win.Forms
 
             SetupGridColumns();
 
-            LoadPreviousHistory();
+            app.LoadPreviousHistory();
 
             CloseDetailsArea();
 
@@ -2203,18 +2231,8 @@ namespace MultiMiner.Win.Forms
             CheckAndShowGettingStarted();
 
             LoadSettings();
-
-            RefreshDetailsToggleButton();
-
-            RefreshCoinApiLabel();
-
-            RefreshCoinPopupMenu();
-
-            PositionCoinChooseLabels();
-
-            apiLogGridView.DataSource = app.ApiLogEntryBindingSource;
-            processLogGridView.DataSource = app.LogLaunchArgsBindingSource;
-            historyGridView.DataSource = app.LogProcessCloseArgsBindingSource;
+            
+            SetupGridViewDataBinding();
 
             app.SetupMiningEngineEvents();
 
@@ -2227,12 +2245,10 @@ namespace MultiMiner.Win.Forms
 
             //check for disowned miners before refreshing devices
             if (app.ApplicationConfiguration.DetectDisownedMiners)
-                CheckForDisownedMiners();
+                app.CheckForDisownedMiners();
 
             app.SetupRemoting();
-
-            SetupStatusBarLabelLayouts();
-
+            
             app.CheckAndDownloadMiners();
 
             app.CheckForUpdates();
@@ -2240,7 +2256,6 @@ namespace MultiMiner.Win.Forms
             app.SetHasChangesLocally(false);
 
             app.LoadKnownDevicesFromFile();
-            RefreshListViewFromViewModel();
 
             //ONLY if null, e.g. first launch or no XML
             //don't keep scanning on startup if there are no devices
@@ -2257,17 +2272,13 @@ namespace MultiMiner.Win.Forms
 
             //may need to do this if XML files became corrupt
             app.AddMissingDeviceConfigurations();
-
-            UpdateMiningButtons();
-
+            
             if (deviceListView.Items.Count > 0)
             {
                 deviceListView.Items[0].Selected = true;
                 deviceListView.Items[0].Focused = true;
             }
-
-            PositionAdvancedAreaCloseButton();
-
+            
             SetupAccessibleMenu();
 
             ShowStartupTips();
@@ -2286,10 +2297,19 @@ namespace MultiMiner.Win.Forms
 
             app.SubmitMobileMinerPools();
 
+            RefreshViewFromViewModel();
+
             //so we know when culture changes
             SystemEvents.UserPreferenceChanged += SystemEventsUserPreferenceChanged;
 
             applicationSetup = true;
+        }
+
+        private void SetupGridViewDataBinding()
+        {
+            apiLogGridView.DataSource = app.ApiLogEntryBindingSource;
+            processLogGridView.DataSource = app.LogLaunchArgsBindingSource;
+            historyGridView.DataSource = app.LogProcessCloseArgsBindingSource;
         }
 
         private void SetupApplicationViewModel()
@@ -2376,6 +2396,7 @@ namespace MultiMiner.Win.Forms
         private void HandleProgressCompleted(object sender, EventArgs e)
         {
             progressForm.Close();
+            progressForm.Dispose();
             progressForm = null;
         }
 
@@ -2392,12 +2413,8 @@ namespace MultiMiner.Win.Forms
         }
 
         private void HandleAppViewModelModified(object sender, EventArgs e)
-        {
-            System.Windows.Forms.Application.DoEvents();
-            
+        {            
             RefreshViewFromViewModel();
-
-            System.Windows.Forms.Application.DoEvents();
         }
 
         private void HandleMobileMinerAuthFailed(object sender, EventArgs e)
@@ -2490,7 +2507,7 @@ namespace MultiMiner.Win.Forms
                             ListViewItem firstItem = deviceListView.Items[0];
                             Point popupPosition = firstItem.Position;
                             popupPosition.Offset(14, 6);
-                            coinPopupMenu.Show(deviceListView, popupPosition);
+                            ShowCoinPopupMenu(deviceListView, popupPosition);
                         }
                     }, ToolTipIcon.Info, "");
                     app.ApplicationConfiguration.TipsShown++;
@@ -2532,38 +2549,6 @@ namespace MultiMiner.Win.Forms
             app.SetupCoinApi(); //so we target the correct API
             app.RefreshCoinStats();
         }
-        
-        private void LoadPreviousHistory()
-        {
-            const string logFileName = "MiningLog.json";
-            string logDirectory = ApplicationPaths.AppDataPath();
-            if (Directory.Exists(app.ApplicationConfiguration.LogFilePath))
-                logDirectory = app.ApplicationConfiguration.LogFilePath;
-            string logFilePath = Path.Combine(logDirectory, logFileName);
-            if (File.Exists(logFilePath))
-            {
-                try
-                {
-                    List<LogProcessCloseArgs> loadLogFile = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
-                    loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - ApplicationViewModel.MaxHistoryOnScreen));
-
-                    //add via the BindingSource, not logCloseEntries
-                    //populating logCloseEntries and then binding causes errors on Linux
-                    app.LogProcessCloseArgsBindingSource.SuspendBinding();
-                    foreach (LogProcessCloseArgs logProcessCloseArgs in loadLogFile)
-                        app.LogProcessCloseArgsBindingSource.Add(logProcessCloseArgs);
-                    app.LogProcessCloseArgsBindingSource.ResumeBinding();
-                }
-                catch (SystemException)
-                {
-                    //old MiningLog.json file - wrong format serialized
-                    //MiningLog.json rolls over so we will eventually be able to
-                    //load the previous log file
-                    //seen as both ArgumentException and InvalidCastException - catching SystemException
-                    return;
-                }
-            }
-        }
 
         private void CheckAndShowGettingStarted()
         {
@@ -2591,56 +2576,6 @@ namespace MultiMiner.Win.Forms
 
                 SetBriefMode(app.ApplicationConfiguration.BriefUserInterface);
             }
-        }
-
-        private void CheckForDisownedMiners()
-        {
-            //to-do: detect disowned miners for all types of running miners
-
-            if (DisownedMinersDetected())
-            {
-                DialogResult messageBoxResult = MessageBox.Show("MultiMiner has detected running miners that it does not own. Would you like to kill them?",
-                    "Disowned Miners Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (messageBoxResult == System.Windows.Forms.DialogResult.Yes)
-                    KillDisownedMiners();
-            }
-        }
-
-        private bool DisownedMinersDetected()
-        {
-            foreach (MinerDescriptor miner in MinerFactory.Instance.Miners)
-                if (DisownedMinersDetected(miner.FileName))
-                    return true;
-
-            return false;
-        }
-
-        private bool DisownedMinersDetected(string minerName)
-        {
-            List<Process> disownedMiners = Process.GetProcessesByName(minerName).ToList();
-
-            foreach (MinerProcess minerProcess in app.MiningEngine.MinerProcesses)
-                disownedMiners.Remove(minerProcess.Process);
-
-            return disownedMiners.Count > 0;
-        }
-
-        private void KillDisownedMiners()
-        {
-            foreach (MinerDescriptor miner in MinerFactory.Instance.Miners)
-                KillDisownedMiners(miner.FileName);
-        }
-
-        private void KillDisownedMiners(string fileName)
-        {
-            List<Process> disownedMiners = Process.GetProcessesByName(fileName).ToList();
-
-            foreach (MinerProcess minerProcess in app.MiningEngine.MinerProcesses)
-                disownedMiners.Remove(minerProcess.Process);
-
-            foreach (Process disownedMiner in disownedMiners)
-                MinerProcess.KillProcess(disownedMiner);
         }
 
         private void ShowNotInstalledMinerWarning()
@@ -2885,16 +2820,6 @@ namespace MultiMiner.Win.Forms
         #endregion
 
         #region Mining logic
-        public void PostNotification(string text, ToolTipIcon icon, string informationUrl = "")
-        {
-            PostNotification(text, text, () => { }, icon, informationUrl);
-        }
-
-        public void PostNotification(string id, string text, ToolTipIcon icon, string informationUrl = "")
-        {
-            PostNotification(id, text, () => { }, icon, informationUrl);
-        }
-
         public void PostNotification(string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
         {
             PostNotification(text, text, clickHandler, icon, informationUrl);
@@ -2952,14 +2877,9 @@ namespace MultiMiner.Win.Forms
 
             using (new HourGlass())
             {
-                ProgressForm progressForm = new ProgressForm("Scanning hardware for devices capable of mining. Please be patient.");
                 updatingListView = true;
                 try
                 {
-                    progressForm.IsDownload = false;
-                    //not ShowDialog()
-                    progressForm.Show();
-
                     if (app.ScanHardwareLocally())
                     {
                         RefreshListViewFromViewModel();
@@ -2981,38 +2901,8 @@ namespace MultiMiner.Win.Forms
                 finally
                 {
                     updatingListView = false;
-                    progressForm.Close();
-                    progressForm.Dispose();
                 }
             }
-        }
-
-        private void RefreshStatusBarFromViewModel()
-        {
-            MinerFormViewModel viewModel = app.GetViewModelToView();
-            //don't include Network Devices in the count for Remote ViewModels
-            deviceTotalLabel.Text = String.Format("{0} device(s)", viewModel.Devices.Count(d => d.Visible && ((viewModel == app.LocalViewModel) || (d.Kind != DeviceKind.NET))));
-            
-            hashRateStatusLabel.Text = GetHashRateStatusText(viewModel);
-
-            hashRateStatusLabel.AutoSize = true;
-        }
-
-        private string GetHashRateStatusText(MinerFormViewModel viewModel)
-        {
-            string hashRateText = String.Empty;
-            IList<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
-            foreach (CoinAlgorithm algorithm in algorithms)
-            {
-                double hashRate = app.GetVisibleInstanceHashrate(algorithm.Name, viewModel == app.LocalViewModel);
-                if (hashRate > 0.00)
-                {
-                    if (!String.IsNullOrEmpty(hashRateText))
-                        hashRateText = hashRateText + "   ";
-                    hashRateText = String.Format("{0}{1}: {2}", hashRateText, algorithm.Name, hashRate.ToHashrateString());
-                }
-            }
-            return hashRateText;
         }
 
         private void StartMiningLocally()
@@ -3029,15 +2919,6 @@ namespace MultiMiner.Win.Forms
                     return;
                 }
             }
-            
-            //so restart timer based on when mining started, not a constantly ticking timer
-            //see https://bitcointalk.org/index.php?topic=248173.msg4593795#msg4593795
-            app.SetupRestartTimer();
-            
-            if (app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
-                // if no Internet / network connection, we did not Auto-Mine
-                (app.CoinApiInformation != null))
-                app.ShowCoinChangeNotification();
         }
         #endregion
 

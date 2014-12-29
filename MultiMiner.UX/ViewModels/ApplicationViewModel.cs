@@ -164,7 +164,7 @@ namespace MultiMiner.UX.ViewModels
         public bool RemoteInstanceMining { get { return remoteInstanceMining; } }
 
         //view models
-        public MinerFormViewModel RemoteViewModel { get; set; } = new MinerFormViewModel();
+        public MinerFormViewModel RemoteViewModel { get; set; }
         
         //threading
         public Control Context { get; set; }
@@ -183,6 +183,8 @@ namespace MultiMiner.UX.ViewModels
 
             coinStatsTimer.Tick += coinStatsTimer_Tick;
             restartTimer.Tick += restartTimer_Tick;
+
+            RemoteViewModel = new MinerFormViewModel();
         }
         #endregion
 
@@ -478,7 +480,6 @@ namespace MultiMiner.UX.ViewModels
                 UpdateDevicesForProxySettings();
                 ApplyModelsToViewModel();
                 ConfigurationModified(this, new EventArgs());
-                DataModified(this, new EventArgs());
             }
             else
             {
@@ -631,6 +632,19 @@ namespace MultiMiner.UX.ViewModels
         #endregion
 
         #region Settings logic
+        public void LoadSettings()
+        {
+            EngineConfiguration.LoadAllConfigurations(PathConfiguration.SharedConfigPath);
+            SetupCoinApi();
+            PerksConfiguration.LoadPerksConfiguration(PathConfiguration.SharedConfigPath);
+            RefreshExchangeRates();
+            SetupCoinStatsTimer();
+            ClearPoolsFlaggedDown();
+            ApplyModelsToViewModel();
+            LocalViewModel.DynamicIntensity = EngineConfiguration.XgminerConfiguration.DesktopMode;
+            MetadataConfiguration.LoadDeviceMetadataConfiguration();
+        }
+
         private void LoadKnownCoinsFromFile()
         {
             string knownCoinsFileName = KnownCoinsFileName();
@@ -1770,53 +1784,64 @@ namespace MultiMiner.UX.ViewModels
 
         public bool ScanHardwareLocally()
         {
+            ProgressStarted(this, new ProgressEventArgs()
+            {
+                Text = "Scanning hardware for devices capable of mining. Please be patient."
+            });
             try
             {
-                DevicesService devicesService = new DevicesService(EngineConfiguration.XgminerConfiguration);
-                MinerDescriptor defaultMiner = MinerFactory.Instance.GetDefaultMiner();
-                devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner(defaultMiner));
+                try
+                {
+                    DevicesService devicesService = new DevicesService(EngineConfiguration.XgminerConfiguration);
+                    MinerDescriptor defaultMiner = MinerFactory.Instance.GetDefaultMiner();
+                    devices = devicesService.GetDevices(MinerPath.GetPathToInstalledMiner(defaultMiner));
 
-                //pull in virtual Proxy Devices
-                UpdateDevicesForProxySettings();
+                    //pull in virtual Proxy Devices
+                    UpdateDevicesForProxySettings();
 
-                //safe to do here as we are Scanning Hardware - we are not mining
-                //no data to lose in the ViewModel
-                //clearing means our sort order within the ListView is preserved
-                //and things like selecting the first item work better
-                //http://social.msdn.microsoft.com/Forums/windows/en-US/8a81c5a6-251c-4bf9-91c5-a937b5cfe9f3/possible-bug-in-listview-control-topitem-property-doesnt-work-with-groups
-                LocalViewModel.Devices.Clear();
+                    //safe to do here as we are Scanning Hardware - we are not mining
+                    //no data to lose in the ViewModel
+                    //clearing means our sort order within the ListView is preserved
+                    //and things like selecting the first item work better
+                    //http://social.msdn.microsoft.com/Forums/windows/en-US/8a81c5a6-251c-4bf9-91c5-a937b5cfe9f3/possible-bug-in-listview-control-topitem-property-doesnt-work-with-groups
+                    LocalViewModel.Devices.Clear();
 
-                ApplyModelsToViewModel();
+                    ApplyModelsToViewModel();
+                }
+                catch (Win32Exception)
+                {
+                    //miner not installed/not launched
+                    devices = new List<Xgminer.Data.Device>(); //dummy empty device list
+
+                    return false;
+                }
+
+                if ((devices.Count > 0) && (EngineConfiguration.DeviceConfigurations.Count == 0) &&
+                    (EngineConfiguration.CoinConfigurations.Count == 1))
+                {
+                    //setup devices for a brand new user
+                    ConfigureDevicesForNewUser();
+                }
+
+                //first try to match up devices without configurations with configurations without devices
+                //could happen if, for instance, a COM port changes for a device
+                FixOrphanedDeviceConfigurations();
+
+                //there needs to be a device config for each device
+                AddMissingDeviceConfigurations();
+                //but no configurations for devices that have gone missing
+                RemoveExcessDeviceConfigurations();
+                //remove any duplicate configurations
+                EngineConfiguration.RemoveDuplicateDeviceConfigurations();
+
+                //cache devices
+                SaveKnownDevicesToFile();
             }
-            catch (Win32Exception)
+            finally
             {
-                //miner not installed/not launched
-                devices = new List<Xgminer.Data.Device>(); //dummy empty device list
-
-                return false;
+                ProgressCompleted(this, new EventArgs());
             }
-
-            if ((devices.Count > 0) && (EngineConfiguration.DeviceConfigurations.Count == 0) &&
-                (EngineConfiguration.CoinConfigurations.Count == 1))
-            {
-                //setup devices for a brand new user
-                ConfigureDevicesForNewUser();
-            }
-
-            //first try to match up devices without configurations with configurations without devices
-            //could happen if, for instance, a COM port changes for a device
-            FixOrphanedDeviceConfigurations();
-
-            //there needs to be a device config for each device
-            AddMissingDeviceConfigurations();
-            //but no configurations for devices that have gone missing
-            RemoveExcessDeviceConfigurations();
-            //remove any duplicate configurations
-            EngineConfiguration.RemoveDuplicateDeviceConfigurations();
-
-            //cache devices
-            SaveKnownDevicesToFile();
-
+            
             return true;
         }
 
@@ -1875,6 +1900,15 @@ namespace MultiMiner.UX.ViewModels
             DataModified(this, new EventArgs());
 
             SaveOwnedProcesses();
+
+            //so restart timer based on when mining started, not a constantly ticking timer
+            //see https://bitcointalk.org/index.php?topic=248173.msg4593795#msg4593795
+            SetupRestartTimer();
+
+            if (EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins &&
+                // if no Internet / network connection, we did not Auto-Mine
+                (CoinApiInformation != null))
+                ShowCoinChangeNotification();
         }
 
         private void SetAllDevicesToCoinLocally(string coinSymbol, bool disableStrategies)
@@ -2045,6 +2079,8 @@ namespace MultiMiner.UX.ViewModels
 
         public void StopMiningLocally()
         {
+            miningEngine.StopMining();
+
             LocalViewModel.ClearDeviceInformationFromViewModel();
 
             UpdateDevicesForProxySettings();
@@ -2302,7 +2338,7 @@ namespace MultiMiner.UX.ViewModels
             }
         }
 
-        public void ShowCoinChangeNotification()
+        private void ShowCoinChangeNotification()
         {
             IEnumerable<string> coinList = MiningEngine.MinerProcesses
                 .Select(mp => mp.CoinSymbol)
@@ -4850,6 +4886,88 @@ namespace MultiMiner.UX.ViewModels
             MiningEngine.LogProcessLaunch += LogProcessLaunch;
             MiningEngine.ProcessLaunchFailed += ProcessLaunchFailed;
             MiningEngine.ProcessAuthenticationFailed += ProcessAuthenticationFailed;
+        }
+
+        public void LoadPreviousHistory()
+        {
+            const string logFileName = "MiningLog.json";
+            string logDirectory = ApplicationPaths.AppDataPath();
+            if (Directory.Exists(ApplicationConfiguration.LogFilePath))
+                logDirectory = ApplicationConfiguration.LogFilePath;
+            string logFilePath = Path.Combine(logDirectory, logFileName);
+            if (File.Exists(logFilePath))
+            {
+                try
+                {
+                    List<LogProcessCloseArgs> loadLogFile = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
+                    loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - ApplicationViewModel.MaxHistoryOnScreen));
+
+                    //add via the BindingSource, not logCloseEntries
+                    //populating logCloseEntries and then binding causes errors on Linux
+                    LogProcessCloseArgsBindingSource.SuspendBinding();
+                    foreach (LogProcessCloseArgs logProcessCloseArgs in loadLogFile)
+                        LogProcessCloseArgsBindingSource.Add(logProcessCloseArgs);
+                    LogProcessCloseArgsBindingSource.ResumeBinding();
+                }
+                catch (SystemException)
+                {
+                    //old MiningLog.json file - wrong format serialized
+                    //MiningLog.json rolls over so we will eventually be able to
+                    //load the previous log file
+                    //seen as both ArgumentException and InvalidCastException - catching SystemException
+                    return;
+                }
+            }
+        }
+
+        public void CheckForDisownedMiners()
+        {
+            //to-do: detect disowned miners for all types of running miners
+
+            if (DisownedMinersDetected())
+            {
+                DialogResult messageBoxResult = MessageBox.Show("MultiMiner has detected running miners that it does not own. Would you like to kill them?",
+                    "Disowned Miners Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (messageBoxResult == System.Windows.Forms.DialogResult.Yes)
+                    KillDisownedMiners();
+            }
+        }
+
+        private bool DisownedMinersDetected()
+        {
+            foreach (MinerDescriptor miner in MinerFactory.Instance.Miners)
+                if (DisownedMinersDetected(miner.FileName))
+                    return true;
+
+            return false;
+        }
+
+        private bool DisownedMinersDetected(string minerName)
+        {
+            List<Process> disownedMiners = Process.GetProcessesByName(minerName).ToList();
+
+            foreach (MinerProcess minerProcess in MiningEngine.MinerProcesses)
+                disownedMiners.Remove(minerProcess.Process);
+
+            return disownedMiners.Count > 0;
+        }
+
+        private void KillDisownedMiners()
+        {
+            foreach (MinerDescriptor miner in MinerFactory.Instance.Miners)
+                KillDisownedMiners(miner.FileName);
+        }
+
+        private void KillDisownedMiners(string fileName)
+        {
+            List<Process> disownedMiners = Process.GetProcessesByName(fileName).ToList();
+
+            foreach (MinerProcess minerProcess in MiningEngine.MinerProcesses)
+                disownedMiners.Remove(minerProcess.Process);
+
+            foreach (Process disownedMiner in disownedMiners)
+                MinerProcess.KillProcess(disownedMiner);
         }
         #endregion
 
