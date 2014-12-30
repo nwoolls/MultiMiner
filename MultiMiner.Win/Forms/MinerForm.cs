@@ -304,12 +304,6 @@ namespace MultiMiner.Win.Forms
             SetupStatusBarLabelLayouts();
             RefreshCoinApiLabel();
 
-            if (!app.MiningEngine.Mining)
-            {
-                hashRateStatusLabel.Text = string.Empty;
-                notifyIcon1.Text = @"MultiMiner - Stopped";
-            }
-
             if (apiConsoleControl != null)
                 apiConsoleControl.PopulateMiners(app.MiningEngine.MinerProcesses, app.NetworkDevicesConfiguration.Devices, app.LocalViewModel);
             
