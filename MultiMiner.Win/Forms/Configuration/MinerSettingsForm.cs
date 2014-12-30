@@ -1,13 +1,12 @@
-﻿using MultiMiner.Utility.Forms;
-using MultiMiner.Utility.OS;
+﻿using MultiMiner.Engine;
+using MultiMiner.Engine.Extensions;
+using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.UX.Data.Configuration;
 using MultiMiner.Xgminer.Data;
 using System;
-using MultiMiner.Engine.Extensions;
-using System.Linq;
-using MultiMiner.Engine;
 using System.Diagnostics;
+using System.Linq;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -38,7 +37,8 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             xgminerConfigurationBindingSource.DataSource = workingMinerConfiguration;
             applicationConfigurationBindingSource.DataSource = workingApplicationConfiguration;
-            PopulateIntervalCombo();
+            PopulateIntervalCombo(intervalCombo);
+            PopulateIntervalCombo(networkIntervalCombo);
             PopulateAlgorithmCombo();
             LoadSettings();
 
@@ -50,16 +50,14 @@ namespace MultiMiner.Win.Forms.Configuration
             algoArgCombo.Items.Clear();
             System.Collections.Generic.List<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
             foreach (CoinAlgorithm algorithm in algorithms)
-            {
                 algoArgCombo.Items.Add(algorithm.Name.ToSpaceDelimitedWords());
-            }
         }
-
-        private void PopulateIntervalCombo()
+        
+        private static void PopulateIntervalCombo(System.Windows.Forms.ComboBox combo)
         {
-            intervalCombo.Items.Clear();
+            combo.Items.Clear();
             foreach (Application.TimerInterval interval in (Application.TimerInterval[])Enum.GetValues(typeof(Application.TimerInterval)))
-                intervalCombo.Items.Add(interval.ToString().ToSpaceDelimitedWords());
+                combo.Items.Add(interval.ToString().ToSpaceDelimitedWords());
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -73,6 +71,7 @@ namespace MultiMiner.Win.Forms.Configuration
         private void LoadSettings()
         {
             intervalCombo.SelectedIndex = (int)workingApplicationConfiguration.ScheduledRestartMiningInterval;
+            networkIntervalCombo.SelectedIndex = (int)workingApplicationConfiguration.ScheduledRestartNetworkDevicesInterval;
 
             algoArgCombo.SelectedIndex = 0;
 
@@ -95,6 +94,7 @@ namespace MultiMiner.Win.Forms.Configuration
                 workingMinerConfiguration.DesktopMode = false;
 
             workingApplicationConfiguration.ScheduledRestartMiningInterval = (Application.TimerInterval)intervalCombo.SelectedIndex;
+            workingApplicationConfiguration.ScheduledRestartNetworkDevicesInterval = (Application.TimerInterval)networkIntervalCombo.SelectedIndex;
 
             SaveProxySettings();
         }

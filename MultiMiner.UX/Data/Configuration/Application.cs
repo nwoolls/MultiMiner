@@ -23,7 +23,9 @@ namespace MultiMiner.UX.Data.Configuration
             TwoHours = 4,
             ThreeHours = 5,
             SixHours = 6,
-            TwelveHours = 7
+            TwelveHours = 7,
+            TwentyFourHours = 8,
+            FortyEightHours = 9
         }
 
         public Application()
@@ -95,6 +97,9 @@ namespace MultiMiner.UX.Data.Configuration
 
         public bool ScheduledRestartMining { get; set; }
         public TimerInterval ScheduledRestartMiningInterval { get; set; }
+        public bool ScheduledRestartNetworkDevices { get; set; }
+        public bool ScheduledRebootNetworkDevices { get; set; }
+        public TimerInterval ScheduledRestartNetworkDevicesInterval { get; set; }
 
         private string configDirectory;
         public string ApplicationConfigurationFileName()

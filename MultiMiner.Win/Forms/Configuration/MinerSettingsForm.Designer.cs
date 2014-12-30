@@ -45,7 +45,6 @@
             this.proxyPortEdit = new System.Windows.Forms.TextBox();
             this.proxyCheckBox = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.intervalCombo = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -59,13 +58,17 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.gpuSettingsLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.networkIntervalCombo = new System.Windows.Forms.ComboBox();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).BeginInit();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox3
@@ -75,10 +78,10 @@
             this.groupBox3.Controls.Add(this.checkBox3);
             this.groupBox3.Controls.Add(this.textBox4);
             this.groupBox3.Controls.Add(this.label8);
-            this.groupBox3.Location = new System.Drawing.Point(14, 71);
+            this.groupBox3.Location = new System.Drawing.Point(14, 97);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(444, 93);
-            this.groupBox3.TabIndex = 0;
+            this.groupBox3.TabIndex = 5;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Arguments";
             // 
@@ -151,7 +154,7 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.proxyPortEdit);
             this.groupBox2.Controls.Add(this.proxyCheckBox);
-            this.groupBox2.Location = new System.Drawing.Point(14, 295);
+            this.groupBox2.Location = new System.Drawing.Point(14, 296);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(445, 127);
             this.groupBox2.TabIndex = 7;
@@ -228,13 +231,9 @@
             this.checkBox1.Location = new System.Drawing.Point(18, 15);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(137, 19);
-            this.checkBox1.TabIndex = 1;
+            this.checkBox1.TabIndex = 0;
             this.checkBox1.Text = "Restart mining every:";
             this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.UX.Data.Configuration.Application);
             // 
             // intervalCombo
             // 
@@ -250,10 +249,10 @@
             "3 hours",
             "6 hours",
             "12 hours"});
-            this.intervalCombo.Location = new System.Drawing.Point(171, 13);
+            this.intervalCombo.Location = new System.Drawing.Point(210, 13);
             this.intervalCombo.Name = "intervalCombo";
-            this.intervalCombo.Size = new System.Drawing.Size(105, 23);
-            this.intervalCombo.TabIndex = 2;
+            this.intervalCombo.Size = new System.Drawing.Size(117, 23);
+            this.intervalCombo.TabIndex = 1;
             // 
             // groupBox1
             // 
@@ -264,9 +263,9 @@
             this.groupBox1.Controls.Add(this.textBox2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Location = new System.Drawing.Point(14, 170);
+            this.groupBox1.Location = new System.Drawing.Point(14, 196);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(445, 119);
+            this.groupBox1.Size = new System.Drawing.Size(445, 94);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "API Settings";
@@ -275,7 +274,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label3.Location = new System.Drawing.Point(119, 92);
+            this.label3.Location = new System.Drawing.Point(272, 59);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(158, 15);
             this.label3.TabIndex = 28;
@@ -298,7 +297,7 @@
             this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.xgminerConfigurationBindingSource, "AllowedApiIps", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox2.Location = new System.Drawing.Point(119, 55);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(311, 23);
+            this.textBox2.Size = new System.Drawing.Size(143, 23);
             this.textBox2.TabIndex = 1;
             // 
             // label1
@@ -340,7 +339,7 @@
             this.button1.Location = new System.Drawing.Point(14, 15);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(27, 27);
-            this.button1.TabIndex = 8;
+            this.button1.TabIndex = 2;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -369,10 +368,10 @@
             // gpuSettingsLink
             // 
             this.gpuSettingsLink.AutoSize = true;
-            this.gpuSettingsLink.Location = new System.Drawing.Point(40, 47);
+            this.gpuSettingsLink.Location = new System.Drawing.Point(40, 73);
             this.gpuSettingsLink.Name = "gpuSettingsLink";
             this.gpuSettingsLink.Size = new System.Drawing.Size(164, 15);
-            this.gpuSettingsLink.TabIndex = 15;
+            this.gpuSettingsLink.TabIndex = 4;
             this.gpuSettingsLink.TabStop = true;
             this.gpuSettingsLink.Text = "Advanced GPU miner settings";
             this.gpuSettingsLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.gpuSettingsLink_LinkClicked);
@@ -380,11 +379,60 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.hardware_option;
-            this.pictureBox1.Location = new System.Drawing.Point(18, 45);
+            this.pictureBox1.Location = new System.Drawing.Point(18, 71);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(19, 18);
             this.pictureBox1.TabIndex = 16;
             this.pictureBox1.TabStop = false;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Checked = true;
+            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "ScheduledRestartNetworkDevices", true));
+            this.checkBox2.Location = new System.Drawing.Point(18, 44);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(187, 19);
+            this.checkBox2.TabIndex = 17;
+            this.checkBox2.Text = "Restart Network Devices every:";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // networkIntervalCombo
+            // 
+            this.networkIntervalCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.networkIntervalCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.networkIntervalCombo.FormattingEnabled = true;
+            this.networkIntervalCombo.Items.AddRange(new object[] {
+            "5 minutes",
+            "15 minutes",
+            "30 minutes",
+            "1 hour",
+            "3 hours",
+            "6 hours",
+            "12 hours"});
+            this.networkIntervalCombo.Location = new System.Drawing.Point(210, 42);
+            this.networkIntervalCombo.Name = "networkIntervalCombo";
+            this.networkIntervalCombo.Size = new System.Drawing.Size(117, 23);
+            this.networkIntervalCombo.TabIndex = 2;
+            // 
+            // checkBox4
+            // 
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Checked = true;
+            this.checkBox4.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox4.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "ScheduledRebootNetworkDevices", true));
+            this.checkBox4.Location = new System.Drawing.Point(339, 44);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(105, 19);
+            this.checkBox4.TabIndex = 3;
+            this.checkBox4.Text = "Reboot instead";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.UX.Data.Configuration.Application);
             // 
             // MinerSettingsForm
             // 
@@ -392,13 +440,16 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(471, 491);
+            this.Controls.Add(this.checkBox4);
+            this.Controls.Add(this.checkBox2);
+            this.Controls.Add(this.networkIntervalCombo);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.gpuSettingsLink);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.intervalCombo);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -413,11 +464,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -454,5 +505,8 @@
         private System.Windows.Forms.LinkLabel gpuSettingsLink;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.ComboBox networkIntervalCombo;
+        private System.Windows.Forms.CheckBox checkBox4;
     }
 }

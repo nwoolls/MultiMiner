@@ -91,6 +91,7 @@ namespace MultiMiner.UX.ViewModels
         private readonly Timers timers = new Timers();
         private readonly Timer coinStatsTimer = new Timer();
         private readonly Timer restartTimer = new Timer();
+        private readonly Timer networkRestartTimer = new Timer();
 
         //configuration
         public readonly Engine.Data.Configuration.Engine EngineConfiguration = new Engine.Data.Configuration.Engine();
@@ -189,6 +190,8 @@ namespace MultiMiner.UX.ViewModels
 
             coinStatsTimer.Tick += coinStatsTimer_Tick;
             restartTimer.Tick += restartTimer_Tick;
+            networkRestartTimer.Tick += networkRestartTimer_Tick;
+            SetupNetworkRestartTimer();
 
             RemoteViewModel = new MinerFormViewModel();
         }
@@ -1450,7 +1453,7 @@ namespace MultiMiner.UX.ViewModels
             return true;
         }
 
-        public bool ExecuteNetworkDeviceCommand(DeviceViewModel deviceViewModel, string commandText)
+        public bool ExecuteNetworkDeviceCommand(DeviceViewModel deviceViewModel, string commandText, bool unattended = false)
         {
             NetworkDevices.NetworkDevice networkDevice = GetNetworkDeviceByPath(deviceViewModel.Path);
 
@@ -1464,6 +1467,9 @@ namespace MultiMiner.UX.ViewModels
             bool success = false;
             bool stop = false;
             bool prompt = String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password);
+
+            if (unattended && prompt)
+                return false;
 
             while (!success && !stop)
             {
@@ -1542,9 +1548,9 @@ namespace MultiMiner.UX.ViewModels
             return NetworkDevicesConfiguration.Devices.SingleOrDefault(nd => (nd.Port == uri.Port) && (nd.IPAddress == uri.Host));
         }
 
-        public bool RebootNetworkDevice(DeviceViewModel deviceViewModel)
+        public bool RebootNetworkDevice(DeviceViewModel deviceViewModel, bool unattended = false)
         {
-            return ExecuteNetworkDeviceCommand(deviceViewModel, "reboot");
+            return ExecuteNetworkDeviceCommand(deviceViewModel, "reboot", unattended);
         }
 
         private bool ExecuteSshCommand(string deviceName, SshClient client, string commandText)
@@ -5210,6 +5216,60 @@ namespace MultiMiner.UX.ViewModels
             restartTimer.Enabled = ApplicationConfiguration.ScheduledRestartMining;
         }
 
+        public void SetupNetworkRestartTimer()
+        {
+            networkRestartTimer.Interval = ApplicationConfiguration.ScheduledRestartNetworkDevicesInterval.ToMinutes() * 60 * 1000; //dynamic
+            networkRestartTimer.Enabled = ApplicationConfiguration.ScheduledRestartNetworkDevices;
+        }
+
+        private void networkRestartTimer_Tick(object sender, EventArgs e)
+        {
+            if (ApplicationConfiguration.ScheduledRebootNetworkDevices)
+                RebootAllNetworkDevicesAsync();
+            else
+                RestartAllNetworkDevicesAsync();
+        }
+
+        private void RebootAllNetworkDevicesAsync()
+        {
+            Action asyncAction = RebootAllNetworkDevices;
+            asyncAction.BeginInvoke(asyncAction.EndInvoke, null);
+        }
+
+        private void RebootAllNetworkDevices()
+        {
+            //there may be more than once miner process per IP
+            //we only want to send the reboot command once per-IP
+            List<DeviceViewModel> distinctNetworkDevices = LocalViewModel.Devices
+                .Where(d => d.Kind == DeviceKind.NET)
+                .GroupBy(d => d.Path.Split(':').First())
+                .Select(g => g.First())
+                .ToList();
+
+            distinctNetworkDevices.ForEach(d => RebootNetworkDevice(d, true));
+        }
+
+        private void RestartAllNetworkDevicesAsync()
+        {
+            Action asyncAction = RestartAllNetworkDevices;
+            asyncAction.BeginInvoke(asyncAction.EndInvoke, null);
+        }
+
+        private void RestartAllNetworkDevices()
+        {
+            LocalViewModel.Devices.Where(d => d.Kind == DeviceKind.NET).ToList().ForEach((d) =>
+            {
+                try
+                {
+                    RestartNetworkDevice(d);
+                }
+                catch (SocketException)
+                {
+                    //device is not online / RPC API is down
+                }
+            });
+        }
+        
         private void restartTimer_Tick(object sender, EventArgs e)
         {
             RestartMiningLocallyIfMining();
