@@ -1541,7 +1541,15 @@ namespace MultiMiner.UX.ViewModels
 
         public bool RebootNetworkDevice(DeviceViewModel deviceViewModel)
         {
-            return ExecuteNetworkDeviceCommand(deviceViewModel, "reboot");
+            bool result = ExecuteNetworkDeviceCommand(deviceViewModel, "reboot");
+
+            if (result)
+            {
+                //clear cached stats so we do not restart newly restarted instances
+                networkDeviceStatistics.Remove(deviceViewModel.Path);
+            }
+
+            return result;
         }
 
         private bool ExecuteSshCommand(string deviceName, SshClient client, string commandText)
