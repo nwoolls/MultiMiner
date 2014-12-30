@@ -1,6 +1,7 @@
 ﻿using MultiMiner.CoinApi.Data;
 using MultiMiner.Xgminer.Data;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Linq;
 
 namespace MultiMiner.WhatMine.Extensions
@@ -30,12 +31,12 @@ namespace MultiMiner.WhatMine.Extensions
         private static string FixAlgorithmName(string algorithm)
         {
             string result = algorithm;
-            if (algorithm.Equals(ApiContext.ScryptNFactor, System.StringComparison.OrdinalIgnoreCase))
+            if (algorithm.Equals(ApiContext.ScryptNFactor, StringComparison.OrdinalIgnoreCase))
                 result = AlgorithmFullNames.ScryptN;
             else
             {
-                var knownAlgorithm = KnownAlgorithms.Algorithms.Single(a => a.Name.Equals(algorithm, System.StringComparison.OrdinalIgnoreCase));
-                result = knownAlgorithm.FullName;
+                KnownAlgorithm knownAlgorithm = KnownAlgorithms.Algorithms.SingleOrDefault(a => a.Name.Equals(algorithm, StringComparison.OrdinalIgnoreCase));
+                if (knownAlgorithm != null) result = knownAlgorithm.FullName;
             }
             return result;
         }
