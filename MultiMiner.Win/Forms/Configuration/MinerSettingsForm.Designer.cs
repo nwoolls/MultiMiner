@@ -47,7 +47,6 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.intervalCombo = new System.Windows.Forms.ComboBox();
-            this.autoDesktopCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -55,11 +54,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.gpuSettingsLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -228,9 +227,9 @@
             this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "ScheduledRestartMining", true));
             this.checkBox1.Location = new System.Drawing.Point(18, 15);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(135, 19);
+            this.checkBox1.Size = new System.Drawing.Size(137, 19);
             this.checkBox1.TabIndex = 1;
-            this.checkBox1.Text = "Restart miners every:";
+            this.checkBox1.Text = "Restart mining every:";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // applicationConfigurationBindingSource
@@ -255,17 +254,6 @@
             this.intervalCombo.Name = "intervalCombo";
             this.intervalCombo.Size = new System.Drawing.Size(105, 23);
             this.intervalCombo.TabIndex = 2;
-            // 
-            // autoDesktopCheckBox
-            // 
-            this.autoDesktopCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.autoDesktopCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "AutoSetDesktopMode", true));
-            this.autoDesktopCheckBox.Location = new System.Drawing.Point(291, 6);
-            this.autoDesktopCheckBox.Name = "autoDesktopCheckBox";
-            this.autoDesktopCheckBox.Size = new System.Drawing.Size(162, 36);
-            this.autoDesktopCheckBox.TabIndex = 3;
-            this.autoDesktopCheckBox.Text = "Set Dynamic Intensity based on computer use";
-            this.autoDesktopCheckBox.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
@@ -345,6 +333,17 @@
             this.panel1.Size = new System.Drawing.Size(471, 54);
             this.panel1.TabIndex = 8;
             // 
+            // button1
+            // 
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(14, 15);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 8;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // saveButton
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -387,17 +386,6 @@
             this.pictureBox1.TabIndex = 16;
             this.pictureBox1.TabStop = false;
             // 
-            // button1
-            // 
-            this.button1.AccessibleName = "Help";
-            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
-            this.button1.Location = new System.Drawing.Point(14, 15);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(27, 27);
-            this.button1.TabIndex = 8;
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // MinerSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -410,7 +398,6 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.intervalCombo);
-            this.Controls.Add(this.autoDesktopCheckBox);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -448,7 +435,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.CheckBox autoDesktopCheckBox;
         private System.Windows.Forms.BindingSource applicationConfigurationBindingSource;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.ComboBox intervalCombo;

@@ -8,6 +8,7 @@ using MultiMiner.Engine;
 using MultiMiner.Utility.Serialization;
 using System.Windows.Forms;
 using System.Diagnostics;
+using MultiMiner.Utility.OS;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -15,13 +16,18 @@ namespace MultiMiner.Win.Forms.Configuration
     {
         private readonly Engine.Data.Configuration.Xgminer minerConfiguration;
         private readonly Engine.Data.Configuration.Xgminer workingMinerConfiguration;
+        private readonly UX.Data.Configuration.Application applicationConfiguration;
+        private readonly UX.Data.Configuration.Application workingApplicationConfiguration;
 
-        public GPUMinerSettingsForm(Engine.Data.Configuration.Xgminer minerConfiguration)
+        public GPUMinerSettingsForm(Engine.Data.Configuration.Xgminer minerConfiguration,
+            UX.Data.Configuration.Application applicationConfiguration)
         {
             InitializeComponent();
             this.minerConfiguration = minerConfiguration;
             this.workingMinerConfiguration = ObjectCopier.CloneObject<Engine.Data.Configuration.Xgminer, Engine.Data.Configuration.Xgminer>(minerConfiguration);
-
+            this.applicationConfiguration = applicationConfiguration;
+            this.workingApplicationConfiguration = ObjectCopier.CloneObject<UX.Data.Configuration.Application, UX.Data.Configuration.Application>(applicationConfiguration);
+            
             //manual clone needed
             this.workingMinerConfiguration.AlgorithmMiners = new SerializableDictionary<string, string>();
             foreach (string key in this.minerConfiguration.AlgorithmMiners.Keys)
@@ -31,10 +37,17 @@ namespace MultiMiner.Win.Forms.Configuration
         private void GPUMinerSettingsForm_Load(object sender, EventArgs e)
         {
             PopulateAlgorithmList();
+            applicationBindingSource.DataSource = workingApplicationConfiguration;
             xgminerConfigurationBindingSource.DataSource = workingMinerConfiguration;
 
             string algorithmName = AlgorithmNames.Scrypt.ToSpaceDelimitedWords();
             algoListView.Items.Find(algorithmName, false).First().Selected = true;
+            UpdateAutoCheckBox();
+        }
+
+        private void UpdateAutoCheckBox()
+        {
+            autoDesktopCheckBox.Enabled = !disableGpuCheckbox.Checked && (OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix);
         }
 
         private void PopulateMinerCombo()
@@ -80,6 +93,7 @@ namespace MultiMiner.Win.Forms.Configuration
         private void saveButton_Click(object sender, EventArgs e)
         {
             ObjectCopier.CopyObject(workingMinerConfiguration, minerConfiguration);
+            ObjectCopier.CopyObject(workingApplicationConfiguration, applicationConfiguration);
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
@@ -195,6 +209,11 @@ namespace MultiMiner.Win.Forms.Configuration
         private void button1_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/nwoolls/MultiMiner/wiki/Settings#advanced-gpu-miner-settings");
+        }
+
+        private void disableGpuCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateAutoCheckBox();
         }
     }
 }

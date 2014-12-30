@@ -38,7 +38,6 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             xgminerConfigurationBindingSource.DataSource = workingMinerConfiguration;
             applicationConfigurationBindingSource.DataSource = workingApplicationConfiguration;
-            autoDesktopCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
             PopulateIntervalCombo();
             PopulateAlgorithmCombo();
             LoadSettings();
@@ -76,8 +75,6 @@ namespace MultiMiner.Win.Forms.Configuration
             intervalCombo.SelectedIndex = (int)workingApplicationConfiguration.ScheduledRestartMiningInterval;
 
             algoArgCombo.SelectedIndex = 0;
-            
-            autoDesktopCheckBox.Enabled = !workingMinerConfiguration.DisableGpu;
 
             LoadProxySettings();
         }
@@ -163,7 +160,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void gpuSettingsLink_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
         {
-            using (GPUMinerSettingsForm gpuSettingsForm = new GPUMinerSettingsForm(workingMinerConfiguration))
+            using (GPUMinerSettingsForm gpuSettingsForm = new GPUMinerSettingsForm(workingMinerConfiguration, workingApplicationConfiguration))
             {
                 gpuSettingsForm.ShowDialog();
             }

@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GPUMinerSettingsForm));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
@@ -46,9 +47,11 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.label3 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.autoDesktopCheckBox = new System.Windows.Forms.CheckBox();
+            this.applicationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -58,10 +61,21 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 270);
+            this.panel1.Location = new System.Drawing.Point(0, 295);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(337, 54);
             this.panel1.TabIndex = 7;
+            // 
+            // button1
+            // 
+            this.button1.AccessibleName = "Help";
+            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
+            this.button1.Location = new System.Drawing.Point(12, 14);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(27, 27);
+            this.button1.TabIndex = 2;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // saveButton
             // 
@@ -89,10 +103,10 @@
             // 
             this.checkBox2.AutoSize = true;
             this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.xgminerConfigurationBindingSource, "TerminateGpuMiners", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox2.Location = new System.Drawing.Point(12, 241);
+            this.checkBox2.Location = new System.Drawing.Point(12, 265);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(145, 19);
-            this.checkBox2.TabIndex = 6;
+            this.checkBox2.Size = new System.Drawing.Size(144, 19);
+            this.checkBox2.TabIndex = 7;
             this.checkBox2.Text = "Terminate GPU miners";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
@@ -103,13 +117,14 @@
             // disableGpuCheckbox
             // 
             this.disableGpuCheckbox.AutoSize = true;
-            this.disableGpuCheckbox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.xgminerConfigurationBindingSource, "DisableGpu", true));
-            this.disableGpuCheckbox.Location = new System.Drawing.Point(12, 210);
+            this.disableGpuCheckbox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.xgminerConfigurationBindingSource, "DisableGpu", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.disableGpuCheckbox.Location = new System.Drawing.Point(12, 238);
             this.disableGpuCheckbox.Name = "disableGpuCheckbox";
             this.disableGpuCheckbox.Size = new System.Drawing.Size(131, 19);
-            this.disableGpuCheckbox.TabIndex = 5;
+            this.disableGpuCheckbox.TabIndex = 6;
             this.disableGpuCheckbox.Text = "Disable GPU mining";
             this.disableGpuCheckbox.UseVisualStyleBackColor = true;
+            this.disableGpuCheckbox.CheckedChanged += new System.EventHandler(this.disableGpuCheckbox_CheckedChanged);
             // 
             // minerCombo
             // 
@@ -207,23 +222,29 @@
             this.label3.TabIndex = 12;
             this.label3.Text = "Algorithms:";
             // 
-            // button1
+            // autoDesktopCheckBox
             // 
-            this.button1.AccessibleName = "Help";
-            this.button1.Image = global::MultiMiner.Win.Properties.Resources.help1;
-            this.button1.Location = new System.Drawing.Point(12, 14);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(27, 27);
-            this.button1.TabIndex = 3;
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.autoDesktopCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.autoDesktopCheckBox.AutoSize = true;
+            this.autoDesktopCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationBindingSource, "AutoSetDesktopMode", true));
+            this.autoDesktopCheckBox.Location = new System.Drawing.Point(12, 209);
+            this.autoDesktopCheckBox.Name = "autoDesktopCheckBox";
+            this.autoDesktopCheckBox.Size = new System.Drawing.Size(267, 19);
+            this.autoDesktopCheckBox.TabIndex = 5;
+            this.autoDesktopCheckBox.Text = "Set Dynamic Intensity based on computer use";
+            this.autoDesktopCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // applicationBindingSource
+            // 
+            this.applicationBindingSource.DataSource = typeof(MultiMiner.UX.Data.Configuration.Application);
             // 
             // GPUMinerSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(337, 324);
+            this.ClientSize = new System.Drawing.Size(337, 349);
+            this.Controls.Add(this.autoDesktopCheckBox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.algoListView);
             this.Controls.Add(this.removeButton);
@@ -245,6 +266,7 @@
             this.Load += new System.EventHandler(this.GPUMinerSettingsForm_Load);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -269,5 +291,7 @@
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox autoDesktopCheckBox;
+        private System.Windows.Forms.BindingSource applicationBindingSource;
     }
 }
