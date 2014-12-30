@@ -168,7 +168,8 @@ namespace MultiMiner.Win.Controls
 
         private void SetupProxyDetails(DeviceViewModel deviceViewModel)
         {
-            proxyInfoPanel.Visible = false;
+            bool visible = false;
+
             if (deviceViewModel.Kind == DeviceKind.PXY)
             {
                 string[] ports = deviceViewModel.Path.Split(':');
@@ -178,10 +179,13 @@ namespace MultiMiner.Win.Controls
                     proxyGetworkLabel.Text = String.Format("http://{0}:{1}", localIPAddress, ports[0]);
                     proxyStratumLabel.Text = String.Format("stratum+tcp://{0}:{1}", localIPAddress, ports[1]);
 
-                    proxyInfoPanel.BringToFront();
-                    proxyInfoPanel.Visible = true;
+                    visible = true;
                 }
             }
+
+            proxyInfoPanel.Visible = visible;
+            if (visible)
+                proxyInfoPanel.BringToFront();
         }
 
         private void SetupNetworkDeviceDetails(DeviceViewModel deviceViewModel)
