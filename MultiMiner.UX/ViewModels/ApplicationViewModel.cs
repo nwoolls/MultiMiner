@@ -2236,7 +2236,8 @@ namespace MultiMiner.UX.ViewModels
                 if ((deviceViewModel != null) && (deviceViewModel.Kind != DeviceKind.NET))
                     deviceViewModel.Coin = EngineConfiguration.CoinConfigurations.Single(cc => cc.PoolGroup.Name.Equals(coinName)).PoolGroup;
             }
-            
+            ApplyCoinInformationToViewModel();
+
             SetHasChangesLocally(true);
         }
 
@@ -2421,7 +2422,8 @@ namespace MultiMiner.UX.ViewModels
 
             LocalViewModel.ApplyDeviceConfigurationModels(EngineConfiguration.DeviceConfigurations,
                 EngineConfiguration.CoinConfigurations);
-            
+            ApplyCoinInformationToViewModel();
+
             SetHasChangesLocally(false);
         }
 
