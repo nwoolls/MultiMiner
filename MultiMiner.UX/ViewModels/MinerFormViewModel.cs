@@ -78,7 +78,8 @@ namespace MultiMiner.UX.ViewModels
             {
                 DeviceViewModel deviceViewModel = Devices.SingleOrDefault(d => d.Equals(metadata));
                 if (deviceViewModel != null)
-                    ObjectCopier.CopyObject(metadata, deviceViewModel);
+                    //only assigned customized values, rest are keys for Equals()
+                    deviceViewModel.FriendlyName = metadata.FriendlyName;
             }
 
             //remove entries from Devices not found in deviceModels or  networkDeviceModels
