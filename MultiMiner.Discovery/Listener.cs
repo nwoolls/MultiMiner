@@ -130,7 +130,9 @@ namespace MultiMiner.Discovery
                 //lock for thread-safety - collection may be modified
                 lock (instances)
                 {
-                    Data.Instance instance = instances.SingleOrDefault(i => i.IpAddress.Equals(ipAddress));
+                    //search by MachineName and Fingerprint - these are unique while IP address may not be
+                    //reasoning - the same machine may have multiple IP addresses as discovery supports multiple interfaces
+                    Data.Instance instance = instances.SingleOrDefault(i => i.MachineName.Equals(packet.MachineName) && (i.Fingerprint == packet.Fingerprint));
                     if (instance != null)
                     {
                         instances.Remove(instance);
