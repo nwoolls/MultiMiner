@@ -546,6 +546,7 @@
             this.detailsAreaContainer.SplitterWidth = 3;
             this.detailsAreaContainer.TabIndex = 3;
             // 
+            this.deviceListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.deviceListView_KeyDown);
             // advancedTabControl
             // 
             this.advancedTabControl.Controls.Add(this.historyPage);

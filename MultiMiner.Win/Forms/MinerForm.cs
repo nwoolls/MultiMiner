@@ -1253,6 +1253,18 @@ namespace MultiMiner.Win.Forms
             SavePosition();
         }
 
+        private void deviceListView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == (Keys.A | Keys.Control))
+                SelectAllDevices();
+        }
+
+        private void SelectAllDevices()
+        {
+            foreach (ListViewItem item in deviceListView.Items)
+                item.Selected = true;
+        }
+
         private void CoinMenuItemClick(object sender, EventArgs e)
         {
             ToolStripItem menuItem = (ToolStripItem)sender;
