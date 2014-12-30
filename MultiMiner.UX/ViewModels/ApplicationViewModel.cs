@@ -1350,11 +1350,7 @@ namespace MultiMiner.UX.ViewModels
             string response = apiContext.RestartMining();
             bool result = !response.ToLower().Contains("STATUS=E".ToLower());
 
-            if (result)
-            {
-                //clear cached stats so we do not restart newly restarted instances
-                networkDeviceStatistics.Remove(networkDevice.Path);
-            }
+            if (result) networkDevice.LastRestart = DateTime.Now;
 
             return result;
         }
@@ -1550,7 +1546,19 @@ namespace MultiMiner.UX.ViewModels
 
         public bool RebootNetworkDevice(DeviceViewModel deviceViewModel, bool unattended = false)
         {
-            return ExecuteNetworkDeviceCommand(deviceViewModel, "reboot", unattended);
+            bool result = ExecuteNetworkDeviceCommand(deviceViewModel, "reboot", unattended);
+            if (result)
+            {
+                //do not just flag this ViewModel rebooted
+                //there may be several ViewModels with this IP, but only one
+                //will be send the RebootNetworkDevice command
+                string prefix = deviceViewModel.Path.Split(':').First() + ":";
+                List<DeviceViewModel> ipDevices = LocalViewModel.Devices
+                    .Where(d => (d.Kind == DeviceKind.NET) && d.Path.StartsWith(prefix))
+                    .ToList();
+                ipDevices.ForEach(d => d.LastReboot = DateTime.Now);
+            }
+            return result;
         }
 
         private bool ExecuteSshCommand(string deviceName, SshClient client, string commandText)
@@ -1578,6 +1586,14 @@ namespace MultiMiner.UX.ViewModels
             //null in case of API failure
             if ((statistics != null) && (statistics.Count > 0))
                 warm = statistics.First().Elapsed > MiningEngine.SecondsToWarmUpMiner;
+
+            //track this internally as well - in practice we cannot trust our
+            //cached miner statistics data above 100%, especially in cases of a reboot
+            if (warm)
+            {
+                warm = ((deviceViewModel.LastRestart == null) || ((DateTime.Now - deviceViewModel.LastRestart).Value.TotalSeconds > MiningEngine.SecondsToWarmUpMiner))
+                    && ((deviceViewModel.LastReboot == null) || ((DateTime.Now - deviceViewModel.LastReboot).Value.TotalSeconds > MiningEngine.SecondsToWarmUpMiner));
+            }
 
             return warm;
         }
