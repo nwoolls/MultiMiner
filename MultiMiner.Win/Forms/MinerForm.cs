@@ -42,6 +42,7 @@ namespace MultiMiner.Win.Forms
         private bool instancesAreaSetup;
         private bool detailsAreaSetup;
         private bool editingDeviceListView;
+        private bool keyPressHandled;
         private Action notificationClickHandler;
 
         //controls
@@ -1256,7 +1257,37 @@ namespace MultiMiner.Win.Forms
         private void deviceListView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyData == (Keys.A | Keys.Control))
+            {
+                //CTRL+A to select all devices
                 SelectAllDevices();
+                e.Handled = true;
+            }
+            else if (deviceListView.SelectedItems.Count == deviceListView.Items.Count)
+            {
+                //allow selecting groups
+                //e.g. CTRL+A, N for Network
+                char keyChar = (char)e.KeyValue;
+                e.Handled = SelectDeviceGroup(keyChar.ToString());
+            }
+            keyPressHandled = e.Handled;
+        }
+
+        private void deviceListView_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = keyPressHandled;
+            keyPressHandled = false;
+        }
+
+        private bool SelectDeviceGroup(string prefix)
+        {
+            bool result = false;
+            foreach (ListViewItem listViewItem in deviceListView.Items)
+            {
+                listViewItem.Selected = listViewItem.Group.Header.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
+                if (listViewItem.Selected)
+                    result = true;
+            }
+            return result;
         }
 
         private void SelectAllDevices()
