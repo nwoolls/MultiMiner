@@ -104,6 +104,7 @@ namespace MultiMiner.UX.ViewModels
         private IApiContext coinChooseApiContext;
         private IApiContext coinWarzApiContext;
         private IApiContext whatMineApiContext;
+        private IApiContext whatToMineApiContext;
 
         //Coin API information
         private List<CoinInformation> coinApiInformation = new List<CoinInformation>();
@@ -199,6 +200,7 @@ namespace MultiMiner.UX.ViewModels
             coinWarzApiContext = new CoinWarz.ApiContext(ApplicationConfiguration.CoinWarzApiKey);
             coinChooseApiContext = new CoinChoose.ApiContext();
             whatMineApiContext = new WhatMine.ApiContext(ApplicationConfiguration.WhatMineApiKey);
+            whatToMineApiContext = new WhatToMine.ApiContext();
         }
 
         private void RefreshAllCoinStats()
@@ -215,6 +217,9 @@ namespace MultiMiner.UX.ViewModels
                 return coinWarzApiContext;
             if (ApplicationConfiguration.UseWhatMineApi)
                 return whatMineApiContext;
+            if (ApplicationConfiguration.UseWhatToMineApi)
+                return whatToMineApiContext;
+
             return coinChooseApiContext;
         }
 
@@ -233,6 +238,11 @@ namespace MultiMiner.UX.ViewModels
             else if (ApplicationConfiguration.UseWhatMineApi)
             {
                 preferredApiContext = whatMineApiContext;
+                backupApiContext = coinChooseApiContext;
+            }
+            else if (ApplicationConfiguration.UseWhatToMineApi)
+            {
+                preferredApiContext = whatToMineApiContext;
                 backupApiContext = coinChooseApiContext;
             }
             else
@@ -428,6 +438,7 @@ namespace MultiMiner.UX.ViewModels
             bool oldNetworkDeviceDetection = ApplicationConfiguration.NetworkDeviceDetection;
             bool oldCoinWarzValue = ApplicationConfiguration.UseCoinWarzApi;
             bool oldWhatMineValue = ApplicationConfiguration.UseWhatMineApi;
+            bool oldWhatToMineValue = ApplicationConfiguration.UseWhatToMineApi;
             string oldCoinWarzKey = ApplicationConfiguration.CoinWarzApiKey;
             string oldWhatMineKey = ApplicationConfiguration.WhatMineApiKey;
 
@@ -465,6 +476,7 @@ namespace MultiMiner.UX.ViewModels
                 //don't refresh coin stats excessively
                 if ((oldCoinWarzValue != ApplicationConfiguration.UseCoinWarzApi) ||
                     !oldCoinWarzKey.Equals(ApplicationConfiguration.CoinWarzApiKey) ||
+                    (oldWhatToMineValue != ApplicationConfiguration.UseWhatToMineApi) ||
                     (oldWhatMineValue != ApplicationConfiguration.UseWhatMineApi) ||
                     !oldWhatMineKey.Equals(ApplicationConfiguration.WhatMineApiKey))
                 {

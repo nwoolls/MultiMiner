@@ -42,6 +42,7 @@ namespace MultiMiner.Win.Forms.Configuration
             this.mobileMinerInfoLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.remoteMonitoringCheck = new System.Windows.Forms.CheckBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.appKeyEdit = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.emailAddressEdit = new System.Windows.Forms.TextBox();
@@ -67,16 +68,15 @@ namespace MultiMiner.Win.Forms.Configuration
             this.button1 = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox3
@@ -169,7 +169,8 @@ namespace MultiMiner.Win.Forms.Configuration
             this.coinApiCombo.Items.AddRange(new object[] {
             "CoinChoose.com",
             "CoinWarz.com",
-            "WhatMine.com"});
+            "WhatMine.com",
+            "WhatToMine.com"});
             this.coinApiCombo.Location = new System.Drawing.Point(121, 25);
             this.coinApiCombo.Name = "coinApiCombo";
             this.coinApiCombo.Size = new System.Drawing.Size(124, 23);
@@ -206,6 +207,10 @@ namespace MultiMiner.Win.Forms.Configuration
             this.remoteMonitoringCheck.TabIndex = 5;
             this.remoteMonitoringCheck.Text = "Enable MobileMiner monitoring";
             this.remoteMonitoringCheck.UseVisualStyleBackColor = true;
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.UX.Data.Configuration.Application);
             // 
             // appKeyEdit
             // 
@@ -488,10 +493,6 @@ namespace MultiMiner.Win.Forms.Configuration
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.UX.Data.Configuration.Application);
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -514,6 +515,7 @@ namespace MultiMiner.Win.Forms.Configuration
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
@@ -521,7 +523,6 @@ namespace MultiMiner.Win.Forms.Configuration
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }

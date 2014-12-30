@@ -71,6 +71,7 @@ namespace MultiMiner.Win.Forms.Configuration
         private const int CoinChooseIndex = 0;
         private const int CoinWarzIndex = 1;
         private const int WhatMineIndex = 2;
+        private const int WhatToMineIndex = 3;
         
         private void SaveSettings()
         {
@@ -78,6 +79,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
             applicationConfiguration.UseCoinWarzApi = coinApiCombo.SelectedIndex == CoinWarzIndex;
             applicationConfiguration.UseWhatMineApi = coinApiCombo.SelectedIndex == WhatMineIndex;
+            applicationConfiguration.UseWhatToMineApi = coinApiCombo.SelectedIndex == WhatToMineIndex;
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -87,7 +89,10 @@ namespace MultiMiner.Win.Forms.Configuration
             autoLaunchCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
             sysTrayCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
 
-            coinApiCombo.SelectedIndex = applicationConfiguration.UseCoinWarzApi ? CoinWarzIndex : (applicationConfiguration.UseWhatMineApi ? WhatMineIndex : CoinChooseIndex);
+            coinApiCombo.SelectedIndex = applicationConfiguration.UseCoinWarzApi ? CoinWarzIndex : 
+                (applicationConfiguration.UseWhatMineApi ? WhatMineIndex : 
+                (applicationConfiguration.UseWhatToMineApi ? WhatToMineIndex :
+                CoinChooseIndex));
             PopulateApiKey();
         }
 

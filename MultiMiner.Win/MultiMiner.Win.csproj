@@ -390,6 +390,10 @@
       <Project>{4b0c2edd-9a3e-41af-b8ef-9a7a541d2e80}</Project>
       <Name>MultiMiner.WhatMine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.WhatToMine\MultiMiner.WhatToMine.csproj">
+      <Project>{6b967bb0-692a-4ad5-99ee-93c054f05792}</Project>
+      <Name>MultiMiner.WhatToMine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj">
       <Project>{5B43AD9D-8B67-4AA8-B76D-AA83CAF9D29F}</Project>
       <Name>MultiMiner.Xgminer.Api</Name>

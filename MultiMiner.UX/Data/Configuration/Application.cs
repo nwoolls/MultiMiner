@@ -80,6 +80,7 @@ namespace MultiMiner.UX.Data.Configuration
         public string CoinWarzApiKey { get; set; }
         public bool UseWhatMineApi { get; set; }
         public string WhatMineApiKey { get; set; }
+        public bool UseWhatToMineApi { get; set; }
 
         public TimerInterval StrategyCheckInterval { get; set; }
         

@@ -74,7 +74,9 @@ Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MultipoolApi.pdb"; DestDir: "{
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.NiceHash.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.NiceHash.pdb"; DestDir: "{app}"; Flags: ignoreversion     
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatMine.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatMine.pdb"; DestDir: "{app}"; Flags: ignoreversion       
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatMine.pdb"; DestDir: "{app}"; Flags: ignoreversion           
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatToMine.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatToMine.pdb"; DestDir: "{app}"; Flags: ignoreversion       
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.UX.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.UX.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion       
