@@ -1173,6 +1173,7 @@ namespace MultiMiner.Win.Forms
             SetupAccessibleMenu();
 
             app.SetupRestartTimer();
+            app.SetupNetworkRestartTimer();
             app.SetupCoinApi();
             app.CheckForUpdates();
             app.SetupCoinStatsTimer();
@@ -2951,12 +2952,16 @@ namespace MultiMiner.Win.Forms
 
         private void RebootSelectedNetworkDevices()
         {
-            foreach (ListViewItem item in deviceListView.SelectedItems)
-            {
-                DeviceViewModel deviceViewModel = (DeviceViewModel)item.Tag;
-                if (deviceViewModel.Kind == DeviceKind.NET)
-                    app.RebootNetworkDevice(deviceViewModel);
-            }
+            //there may be more than once miner process per IP
+            //we only want to send the reboot command once per-IP
+            List<DeviceViewModel> distinctNetworkDevices = deviceListView.SelectedItems.Cast<ListViewItem>()
+                .Select(lvi => (DeviceViewModel)lvi.Tag)
+                .Where(d => d.Kind == DeviceKind.NET)
+                .GroupBy(d => d.Path.Split(':').First())
+                .Select(g => g.First())
+                .ToList();
+
+            distinctNetworkDevices.ForEach(d => app.RebootNetworkDevice(d));
         }
 
         private void ExecuteCommandOnSelectedNetworkDevices()
