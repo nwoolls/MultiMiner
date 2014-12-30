@@ -1123,7 +1123,8 @@ namespace MultiMiner.UX.ViewModels
             else
             {
                 versionInfo = GetVersionInfoFromAddress(ipAddress, port);
-                networkDeviceVersions[key] = versionInfo;
+                //don't cache null so we'll retry
+                if (versionInfo != null) networkDeviceVersions[key] = versionInfo;
             }
             return versionInfo;
         }
@@ -1272,7 +1273,8 @@ namespace MultiMiner.UX.ViewModels
             else
             {
                 poolInformationList = GetPoolInfoFromAddress(ipAddress, port);
-                NetworkDevicePools[key] = poolInformationList;
+                //don't cache null so we'll retry
+                if (poolInformationList != null) NetworkDevicePools[key] = poolInformationList;
             }
             return poolInformationList;
         }
@@ -1371,7 +1373,8 @@ namespace MultiMiner.UX.ViewModels
             else
             {
                 minerStatisticsList = GetMinerStatisticsFromAddress(ipAddress, port);
-                networkDeviceStatistics[key] = minerStatisticsList;
+                //don't cache null so we'll retry
+                if (minerStatisticsList != null) networkDeviceStatistics[key] = minerStatisticsList;
             }
             return minerStatisticsList;
         }
