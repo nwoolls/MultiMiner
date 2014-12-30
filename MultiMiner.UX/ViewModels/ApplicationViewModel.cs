@@ -1616,10 +1616,16 @@ namespace MultiMiner.UX.ViewModels
             }
         }
 
+        //this is a high-traffic call, guard against making repeated RPC calls
         public bool NetworkDeviceWasStopped(DeviceViewModel networkDevice)
         {
-            // networkDevicePools is keyed by IP:port, use .Path
-            List<PoolInformation> poolInformation = GetCachedPoolInfoFromAddress(networkDevice.Path);
+            List<PoolInformation> poolInformation = null;
+
+            //networkDevicePools is keyed by IP:port, use .Path
+            //do not call GetCachedPoolInfoFromAddress() as it may make an RPC call
+            //see method warning above
+            if (NetworkDevicePools.ContainsKey(networkDevice.Path))
+                poolInformation = NetworkDevicePools[networkDevice.Path];
 
             if (poolInformation == null)
                 //RPC API call timed out
