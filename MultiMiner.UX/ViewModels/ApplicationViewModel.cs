@@ -1194,8 +1194,9 @@ namespace MultiMiner.UX.ViewModels
             {
                 List<IPEndPoint> miners = MinerFinder.Find(interfaceInfo.RangeStart, interfaceInfo.RangeEnd, startingPort, endingPort);
 
-                //remove own miners
-                miners.RemoveAll(m => LocalNetwork.GetLocalIPAddresses().Contains(m.Address.ToString()));
+                //do not remove local IP addresses
+                //we want the ability to discover other miners on the same PC
+                //our processes only whitelist 127.0.0.1, not the network facing IP
 
                 List<NetworkDevices.NetworkDevice> newDevices = miners.ToNetworkDevices();
 
