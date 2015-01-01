@@ -92,6 +92,7 @@ namespace MultiMiner.UX.ViewModels
         private readonly Timer coinStatsTimer = new Timer();
         private readonly Timer restartTimer = new Timer();
         private readonly Timer networkRestartTimer = new Timer();
+        private readonly Timer networkScanTimer = new Timer();
 
         //configuration
         public readonly Engine.Data.Configuration.Engine EngineConfiguration = new Engine.Data.Configuration.Engine();
@@ -191,7 +192,9 @@ namespace MultiMiner.UX.ViewModels
             coinStatsTimer.Tick += coinStatsTimer_Tick;
             restartTimer.Tick += restartTimer_Tick;
             networkRestartTimer.Tick += networkRestartTimer_Tick;
+            networkScanTimer.Tick += networkScanTimer_Tick;
             SetupNetworkRestartTimer();
+            SetupNetworkScanTimer();
 
             RemoteViewModel = new MinerFormViewModel();
         }
@@ -490,10 +493,7 @@ namespace MultiMiner.UX.ViewModels
                 //if we are not detecting Network Devices, start the async checks
                 if (ApplicationConfiguration.NetworkDeviceDetection &&
                     (!oldNetworkDeviceDetection))
-                {
-                    CheckNetworkDevicesAsync();
-                    FindNetworkDevicesAsync();
-                }
+                    RunNetworkDeviceScan();
 
                 SubmitMobileMinerPools();
 
@@ -949,10 +949,7 @@ namespace MultiMiner.UX.ViewModels
             NetworkDevicesConfiguration.LoadNetworkDevicesConfiguration();
 
             if (ApplicationConfiguration.NetworkDeviceDetection)
-            {
-                CheckNetworkDevicesAsync();
-                FindNetworkDevicesAsync();
-            }
+                RunNetworkDeviceScan();
         }
 
         private void CheckNetworkDevicesAsync()
@@ -1172,6 +1169,9 @@ namespace MultiMiner.UX.ViewModels
                 ar =>
                 {
                     asyncAction.EndInvoke(ar);
+                    
+                    //re-enable network scan timer, we're done scanning
+                    networkScanTimer.Enabled = true;
 
                     //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
                     if (Context == null) return;
@@ -1238,6 +1238,16 @@ namespace MultiMiner.UX.ViewModels
                 .ToList();
 
             NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+        }
+
+        private void RunNetworkDeviceScan()
+        {
+            //disable network scan timer, scan starting
+            //scan may take longer than networkScanTimer.Interval
+            networkScanTimer.Enabled = false;
+
+            CheckNetworkDevicesAsync();
+            FindNetworkDevicesAsync();
         }
 
         public void SetNetworkDevicePool(DeviceViewModel networkDevice, string poolUrl)
@@ -5244,12 +5254,26 @@ namespace MultiMiner.UX.ViewModels
             networkRestartTimer.Enabled = ApplicationConfiguration.ScheduledRestartNetworkDevices;
         }
 
+        private void SetupNetworkScanTimer()
+        {
+            networkScanTimer.Interval = 15 * 60 * 1000;
+            networkScanTimer.Enabled = false;
+        }
+
         private void networkRestartTimer_Tick(object sender, EventArgs e)
         {
             if (ApplicationConfiguration.ScheduledRebootNetworkDevices)
                 RebootAllNetworkDevicesAsync();
             else
                 RestartAllNetworkDevicesAsync();
+        }
+
+        private void networkScanTimer_Tick(object sender, EventArgs e)
+        {
+            ClearCachedNetworkDifficulties();
+
+            if (ApplicationConfiguration.NetworkDeviceDetection)
+                RunNetworkDeviceScan();
         }
 
         private void RebootAllNetworkDevicesAsync()
@@ -5329,7 +5353,6 @@ namespace MultiMiner.UX.ViewModels
             timers.CreateTimer(Timers.FiveMinuteInterval, fiveMinuteTimer_Tick);
             timers.CreateTimer(Timers.TenSecondInterval, tenSecondTimer_Tick);
             timers.CreateTimer(Timers.FifteenSecondInterval, fifteenSecondTimer_Tick);
-            timers.CreateTimer(Timers.FifteenMinuteInterval, fifteenMinuteTimer_Tick);
             timers.CreateTimer(Timers.ThirtyMinuteInterval, thirtyMinuteTimer_Tick);
             timers.CreateTimer(Timers.OneSecondInterval, oneSecondTimer_Tick);
             timers.CreateTimer(Timers.TwelveHourInterval, twelveHourTimer_Tick);
@@ -5412,17 +5435,6 @@ namespace MultiMiner.UX.ViewModels
 
             if (MiningEngine.Mining)
                 RefreshPoolInfo();
-        }
-
-        private void fifteenMinuteTimer_Tick(object sender, EventArgs e)
-        {
-            ClearCachedNetworkDifficulties();
-
-            if (ApplicationConfiguration.NetworkDeviceDetection)
-            {
-                CheckNetworkDevicesAsync();
-                FindNetworkDevicesAsync();
-            }
         }
 
         private void fifteenSecondTimer_Tick(object sender, EventArgs e)
