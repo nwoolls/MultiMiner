@@ -1,5 +1,6 @@
 ﻿using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Parsers;
+using MultiMiner.Utility.Net.Extensions;
 using System;
 using System.Management;
 using System.Net;
@@ -43,7 +44,9 @@ namespace MultiMiner.Utility.Net
         }
 
         private static List<NetworkInterfaceInfo> localNetworkInterfaces;
-        public static List<NetworkInterfaceInfo> GetLocalNetworkInterfaces(bool flushCache = false)
+        public static List<NetworkInterfaceInfo> GetLocalNetworkInterfaces(
+            SubnetClass subnetClasses = SubnetClass.C, 
+            bool flushCache = false)
         {
             if (flushCache)
                 localNetworkInterfaces = null;
@@ -64,6 +67,12 @@ namespace MultiMiner.Utility.Net
                 IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
                 foreach (UnicastIPAddressInformation ipInformation in ipProperties.UnicastAddresses)
                 {
+                    SubnetClass interfaceClass = ipInformation.IPv4Mask.GetSubnetClass();
+                                        
+                    //optionally scan class A & B subnets
+                    if (!((subnetClasses & interfaceClass) == interfaceClass))
+                        continue;
+
                     IPAddress ipAddress = ipInformation.Address;
 
                     if (ipAddress.AddressFamily == AddressFamily.InterNetwork)

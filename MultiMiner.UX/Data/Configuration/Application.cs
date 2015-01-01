@@ -68,6 +68,8 @@ namespace MultiMiner.UX.Data.Configuration
         public string SubmittedStatsVersion { get; set; }
         public bool ShowWorkUtility { get; set; }
         public bool NetworkDeviceDetection { get; set; }
+        public bool NetworkDeviceScanClassB { get; set; }
+        public bool NetworkDeviceScanClassA { get; set; }
         public bool SaveCoinsToAllMachines { get; set; }
 
         public bool MobileMinerMonitoring { get; set; }

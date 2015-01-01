@@ -1183,7 +1183,13 @@ namespace MultiMiner.UX.ViewModels
 
         private void FindNetworkDevices()
         {
-            List<LocalNetwork.NetworkInterfaceInfo> localIpRanges = LocalNetwork.GetLocalNetworkInterfaces();
+            SubnetClass subnetClasses = SubnetClass.C;
+            if (ApplicationConfiguration.NetworkDeviceScanClassB)
+                subnetClasses = subnetClasses | SubnetClass.B;
+            if (ApplicationConfiguration.NetworkDeviceScanClassA)
+                subnetClasses = subnetClasses | SubnetClass.A;
+
+            List<LocalNetwork.NetworkInterfaceInfo> localIpRanges = LocalNetwork.GetLocalNetworkInterfaces(subnetClasses);
             if (localIpRanges.Count == 0)
                 return; //no network connection
 

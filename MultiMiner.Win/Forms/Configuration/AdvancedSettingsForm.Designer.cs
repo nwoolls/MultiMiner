@@ -50,8 +50,10 @@
             this.label9 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.checkBox6 = new System.Windows.Forms.CheckBox();
+            this.checkBox7 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pathConfigurationBindingSource)).BeginInit();
@@ -240,21 +242,10 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 317);
+            this.panel1.Location = new System.Drawing.Point(0, 335);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(497, 54);
             this.panel1.TabIndex = 6;
-            // 
-            // checkBox5
-            // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "NetworkDeviceDetection", true));
-            this.checkBox5.Location = new System.Drawing.Point(24, 268);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(371, 19);
-            this.checkBox5.TabIndex = 33;
-            this.checkBox5.Text = "Automatically detect Network Devices (AntMiner S1, Avalon, etc.)";
-            this.checkBox5.UseVisualStyleBackColor = true;
             // 
             // button1
             // 
@@ -267,6 +258,39 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // checkBox5
+            // 
+            this.checkBox5.AutoSize = true;
+            this.checkBox5.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "NetworkDeviceDetection", true));
+            this.checkBox5.Location = new System.Drawing.Point(24, 268);
+            this.checkBox5.Name = "checkBox5";
+            this.checkBox5.Size = new System.Drawing.Size(412, 19);
+            this.checkBox5.TabIndex = 33;
+            this.checkBox5.Text = "Automatically detect Network Devices (AntMiner, KnC, Spondoolies, etc.)";
+            this.checkBox5.UseVisualStyleBackColor = true;
+            // 
+            // checkBox6
+            // 
+            this.checkBox6.AutoSize = true;
+            this.checkBox6.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "NetworkDeviceScanClassB", true));
+            this.checkBox6.Location = new System.Drawing.Point(43, 298);
+            this.checkBox6.Name = "checkBox6";
+            this.checkBox6.Size = new System.Drawing.Size(133, 19);
+            this.checkBox6.TabIndex = 34;
+            this.checkBox6.Text = "Scan class B subnets";
+            this.checkBox6.UseVisualStyleBackColor = true;
+            // 
+            // checkBox7
+            // 
+            this.checkBox7.AutoSize = true;
+            this.checkBox7.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "NetworkDeviceScanClassA", true));
+            this.checkBox7.Location = new System.Drawing.Point(196, 298);
+            this.checkBox7.Name = "checkBox7";
+            this.checkBox7.Size = new System.Drawing.Size(134, 19);
+            this.checkBox7.TabIndex = 35;
+            this.checkBox7.Text = "Scan class A subnets";
+            this.checkBox7.UseVisualStyleBackColor = true;
+            // 
             // AdvancedSettingsForm
             // 
             this.AcceptButton = this.saveButton;
@@ -274,7 +298,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(497, 371);
+            this.ClientSize = new System.Drawing.Size(497, 389);
+            this.Controls.Add(this.checkBox7);
+            this.Controls.Add(this.checkBox6);
             this.Controls.Add(this.checkBox5);
             this.Controls.Add(this.checkBox4);
             this.Controls.Add(this.checkBox3);
@@ -332,5 +358,7 @@
         private System.Windows.Forms.CheckBox checkBox4;
         private System.Windows.Forms.CheckBox checkBox5;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox checkBox6;
+        private System.Windows.Forms.CheckBox checkBox7;
     }
 }
