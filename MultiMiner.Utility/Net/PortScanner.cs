@@ -16,10 +16,9 @@ namespace MultiMiner.Utility.Net
             List<IPEndPoint> endpoints = new List<IPEndPoint>();
 
             List<IPAddress> ipAddresses = new IPRange(startingIp, endingIp).GetIPAddresses().ToList();
-
-            //optimize until we need otherwise
-            ipAddresses.RemoveAll(ip => LocalNetwork.GetLocalIPAddresses().Contains(ip.ToString()));
-            ipAddresses.RemoveAll(ip => ip.ToString().EndsWith(".0"));
+            
+            //do not remove local IP addresses
+            //we want the ability to discover other miners on the same PC
 
             foreach (IPAddress ipAddress in ipAddresses)
                 for (int currentPort = startingPort; currentPort <= endingPort; currentPort++)
