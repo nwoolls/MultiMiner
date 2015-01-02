@@ -23,7 +23,7 @@ namespace MultiMiner.Xgminer.Api.Tests
             const int logInterval = 1;
             
             //act
-            DeviceInformationParser.ParseTextForDeviceInformation(apiText, deviceInformation, logInterval);
+            DeviceInformationParser.ParseTextForDeviceInformation(apiText, deviceInformation);
 
             //assert
             Assert.IsTrue(deviceInformation.Count > 0);
@@ -42,7 +42,7 @@ namespace MultiMiner.Xgminer.Api.Tests
             List<DeviceInformation> deviceInformation = new List<DeviceInformation>();
             
             //act
-            DeviceInformationParser.ParseTextForDeviceInformation(apiText, deviceInformation, 5);
+            DeviceInformationParser.ParseTextForDeviceInformation(apiText, deviceInformation);
 
             //assert
             Assert.IsTrue(deviceInformation.Count > 0);
@@ -73,7 +73,7 @@ namespace MultiMiner.Xgminer.Api.Tests
                     List<DeviceInformation> deviceInformation = new List<DeviceInformation>();
 
                     //act
-                    DeviceInformationParser.ParseTextForDeviceInformation(apiText, deviceInformation, 5);
+                    DeviceInformationParser.ParseTextForDeviceInformation(apiText, deviceInformation);
 
                     //assert
                     Assert.IsTrue(deviceInformation.Count > 0);
