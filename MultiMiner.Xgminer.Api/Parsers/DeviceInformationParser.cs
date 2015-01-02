@@ -7,7 +7,7 @@ namespace MultiMiner.Xgminer.Api.Parsers
 {
     public class DeviceInformationParser : ResponseTextParser
     {
-        public static void ParseTextForDeviceInformation(string text, List<DeviceInformation> deviceInformation, int logInterval)
+        public static void ParseTextForDeviceInformation(string text, List<DeviceInformation> deviceInformation)
         {
             List<string> responseParts = ParseResponseText(text);
             if (responseParts.Count == 0)
@@ -59,17 +59,23 @@ namespace MultiMiner.Xgminer.Api.Parsers
 
                     newDevice.AverageHashrate = TryToParseDouble(keyValuePairs, "MHS av", 0.00) * 1000;
 
-                    //seen both MHS 5s and MHS 1s
-                    //the key here is based on the value passed for --log to bfgminer
-                    newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, logInterval);
+                    //try for a 5m reading first
+                    //some Network Devices (Spondoolies) have wildly innacurate 5s entries
+                    if (newDevice.CurrentHashrate == 0.0)
+                        //check for 5m
+                        newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, "5m");
+
+                    if (newDevice.CurrentHashrate == 0.0)
+                        //check for 1m
+                        newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, "1m");
 
                     if (newDevice.CurrentHashrate == 0.0)
                         //check for 20s
-                        newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, 20);
+                        newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, "20s");
 
                     if (newDevice.CurrentHashrate == 0.0)
                         //check for 5s
-                        newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, 5);
+                        newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, "5s");
                     
                     newDevice.AcceptedShares = TryToParseInt(keyValuePairs, "Accepted", 0);                    
                     newDevice.RejectedShares = TryToParseInt(keyValuePairs, "Rejected", 0);                    
@@ -96,9 +102,9 @@ namespace MultiMiner.Xgminer.Api.Parsers
             }
         }
 
-        private static double GetCurrentHashrate(Dictionary<string, string> keyValuePairs, int logInterval)
+        private static double GetCurrentHashrate(Dictionary<string, string> keyValuePairs, string logInterval)
         {
-            string currentRateKey = String.Format("MHS {0}s", logInterval);
+            string currentRateKey = String.Format("MHS {0}", logInterval);
             if (keyValuePairs.ContainsKey(currentRateKey))
                 return TryToParseDouble(keyValuePairs, currentRateKey, 0.00) * 1000;
             return 0.0;

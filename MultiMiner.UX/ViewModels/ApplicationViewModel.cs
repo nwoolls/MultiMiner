@@ -2816,11 +2816,9 @@ namespace MultiMiner.UX.ViewModels
             {
                 try
                 {
-                    //assume Network Devices, for now, run cgminer or older bfgminer with default --log of 5s
-                    const int networkDeviceLogInterval = 5;
                     //some Network Devices don't have the horsepower to return API results immediately
                     const int commandTimeoutMs = 3000;
-                    deviceInformationList = apiContext.GetDeviceInformation(networkDeviceLogInterval, commandTimeoutMs).Where(d => d.Enabled).ToList();
+                    deviceInformationList = apiContext.GetDeviceInformation(commandTimeoutMs).Where(d => d.Enabled).ToList();
                 }
                 catch (IOException)
                 {
@@ -3070,7 +3068,7 @@ namespace MultiMiner.UX.ViewModels
             {
                 try
                 {
-                    deviceInformationList = apiContext.GetDeviceInformation(minerProcess.MinerConfiguration.LogInterval).Where(d => d.Enabled).ToList();
+                    deviceInformationList = apiContext.GetDeviceInformation().Where(d => d.Enabled).ToList();
                 }
                 catch (IOException)
                 {

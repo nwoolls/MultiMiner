@@ -30,11 +30,11 @@ namespace MultiMiner.Xgminer.Api
             this.IpAddress = ipAddress;
         }
 
-        public List<DeviceInformation> GetDeviceInformation(int logInterval, int timeoutMs = ShortCommandTimeoutMs)
+        public List<DeviceInformation> GetDeviceInformation(int timeoutMs = ShortCommandTimeoutMs)
         {
             string textResponse = GetResponse(ApiVerb.Devs, timeoutMs);
             List<DeviceInformation> result = new List<DeviceInformation>();
-            DeviceInformationParser.ParseTextForDeviceInformation(textResponse, result, logInterval);
+            DeviceInformationParser.ParseTextForDeviceInformation(textResponse, result);
             return result;
         }
 
