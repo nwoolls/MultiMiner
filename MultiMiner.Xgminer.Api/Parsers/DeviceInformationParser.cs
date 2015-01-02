@@ -56,16 +56,21 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     newDevice.PowerTune = TryToParseInt(keyValuePairs, "Powertune", 0);
                     if (keyValuePairs.ContainsKey("Intensity")) //check required for bfgminer 3.3.0
                         newDevice.Intensity = keyValuePairs["Intensity"];
+                    newDevice.DeviceElapsed = TryToParseInt(keyValuePairs, "Device Elapsed", 0);
 
                     newDevice.AverageHashrate = TryToParseDouble(keyValuePairs, "MHS av", 0.00) * 1000;
 
                     //try for a 5m reading first
                     //some Network Devices (Spondoolies) have wildly innacurate 5s entries
-                    if (newDevice.CurrentHashrate == 0.0)
+                    if ((newDevice.CurrentHashrate == 0.0)
+                        //consider DeviceElapsed for accurate R3-Box stats
+                        && (newDevice.DeviceElapsed >= (5 * 60)))
                         //check for 5m
                         newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, "5m");
 
-                    if (newDevice.CurrentHashrate == 0.0)
+                    if ((newDevice.CurrentHashrate == 0.0)
+                        //consider DeviceElapsed for accurate R3-Box stats
+                        && (newDevice.DeviceElapsed >= 60))
                         //check for 1m
                         newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, "1m");
 
@@ -84,11 +89,10 @@ namespace MultiMiner.Xgminer.Api.Parsers
                     newDevice.WorkUtility = TryToParseDouble(keyValuePairs, "Work Utility", 0.00);                
                     newDevice.PoolIndex = TryToParseInt(keyValuePairs, "Last Share Pool", -1);
                     newDevice.HardwareErrorsPercent = TryToParseDouble(keyValuePairs, "Device Hardware%", 0.00);
-                    newDevice.RejectedSharesPercent = TryToParseDouble(keyValuePairs, "Device Rejected%", 0.00);
-                    
+                    newDevice.RejectedSharesPercent = TryToParseDouble(keyValuePairs, "Device Rejected%", 0.00);                    
                     newDevice.LastShareDifficulty = TryToParseDouble(keyValuePairs, "Last Share Difficulty", 0.00);
                     newDevice.DifficultyAccepted = TryToParseDouble(keyValuePairs, "Difficulty Accepted", 0.00);
-                    newDevice.DeviceElapsed = TryToParseInt(keyValuePairs, "Device Elapsed", 0);
+
                     if (newDevice.WorkUtility == 0.0)
                     {
                         if (newDevice.DeviceElapsed > 0)
