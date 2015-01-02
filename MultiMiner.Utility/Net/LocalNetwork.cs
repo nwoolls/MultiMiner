@@ -54,7 +54,7 @@ namespace MultiMiner.Utility.Net
             if (localNetworkInterfaces != null)
                 return localNetworkInterfaces;
 
-            localNetworkInterfaces = new List<NetworkInterfaceInfo>();
+            List<NetworkInterfaceInfo> workingInterfaces = new List<NetworkInterfaceInfo>();
 
             NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
             foreach (NetworkInterface networkInterface in networkInterfaces)
@@ -95,10 +95,13 @@ namespace MultiMiner.Utility.Net
                         interfaceInfo.RangeStart = new IPAddress((long)(uint)IPAddress.HostToNetworkOrder((int)rangeStart));
                         interfaceInfo.RangeEnd = new IPAddress((long)(uint)IPAddress.HostToNetworkOrder((int)rangeEnd));
 
-                        localNetworkInterfaces.Add(interfaceInfo);
+                        workingInterfaces.Add(interfaceInfo);
                     }
                 }
             }
+
+            //cache the results
+            localNetworkInterfaces = workingInterfaces;
 
             return localNetworkInterfaces;
         }
