@@ -1170,13 +1170,17 @@ namespace MultiMiner.UX.ViewModels
                 {
                     asyncAction.EndInvoke(ar);
                     
-                    //re-enable network scan timer, we're done scanning
-                    networkScanTimer.Enabled = true;
 
                     //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
                     if (Context == null) return;
 
-                    Context.BeginInvoke((Action)(HandleNetworkDeviceDiscovery));
+                    Context.BeginInvoke((Action)(() =>
+                    {
+                        //code to update UI
+                        HandleNetworkDeviceDiscovery();
+                        //re-enable network scan timer, we're done scanning
+                        networkScanTimer.Enabled = true;
+                    }));
 
                 }, null);
         }
