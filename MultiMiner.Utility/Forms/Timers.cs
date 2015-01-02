@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace MultiMiner.Utility.Forms
 {
@@ -21,16 +20,16 @@ namespace MultiMiner.Utility.Forms
         public const int OneHourInterval = OneMinuteInterval * minutesPerHour;
         public const int TwelveHourInterval = OneHourInterval * 12;
 
-        private List<System.Windows.Forms.Timer> timers = new List<System.Windows.Forms.Timer>();
+        private List<System.Timers.Timer> timers = new List<System.Timers.Timer>();
 
-        public System.Windows.Forms.Timer CreateTimer(int interval, EventHandler eventHandler)
+        public System.Timers.Timer CreateTimer(int interval, System.Timers.ElapsedEventHandler eventHandler)
         {
-            System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer()
+            System.Timers.Timer timer = new System.Timers.Timer()
             {
                 Interval = interval,
                 Enabled = true
             };
-            timer.Tick += eventHandler;
+            timer.Elapsed += eventHandler;
 
             timers.Add(timer);
 

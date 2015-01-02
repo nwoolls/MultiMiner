@@ -286,7 +286,6 @@ namespace MultiMiner.Win.Forms
 
         private void DoRefreshViewFromViewModel()
         {
-            Debug.WriteLine(String.Format("{0}: {1}", Environment.TickCount, "RefreshViewFromViewModel"));
             PositionAdvancedAreaCloseButton();
             RefreshDetailsToggleButton();
             PositionCoinChooseLabels();
