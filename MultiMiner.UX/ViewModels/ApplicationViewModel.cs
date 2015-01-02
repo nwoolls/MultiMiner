@@ -39,6 +39,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
+using System.Timers;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Application = MultiMiner.UX.Data.Configuration.Application;
@@ -89,10 +90,10 @@ namespace MultiMiner.UX.ViewModels
         #region Fields
         //coalesced timers
         private readonly Timers timers = new Timers();
-        private readonly Timer coinStatsTimer = new Timer();
-        private readonly Timer restartTimer = new Timer();
-        private readonly Timer networkRestartTimer = new Timer();
-        private readonly Timer networkScanTimer = new Timer();
+        private readonly System.Timers.Timer coinStatsTimer = new System.Timers.Timer();
+        private readonly System.Timers.Timer restartTimer = new System.Timers.Timer();
+        private readonly System.Timers.Timer networkRestartTimer = new System.Timers.Timer();
+        private readonly System.Timers.Timer networkScanTimer = new System.Timers.Timer();
 
         //configuration
         public readonly Engine.Data.Configuration.Engine EngineConfiguration = new Engine.Data.Configuration.Engine();
@@ -189,10 +190,10 @@ namespace MultiMiner.UX.ViewModels
             LogLaunchArgsBindingSource.DataSource = logLaunchEntries;
             LogProcessCloseArgsBindingSource.DataSource = LogCloseEntries;
 
-            coinStatsTimer.Tick += coinStatsTimer_Tick;
-            restartTimer.Tick += restartTimer_Tick;
-            networkRestartTimer.Tick += networkRestartTimer_Tick;
-            networkScanTimer.Tick += networkScanTimer_Tick;
+            coinStatsTimer.Elapsed += coinStatsTimer_Tick;
+            restartTimer.Elapsed += restartTimer_Tick;
+            networkRestartTimer.Elapsed += networkRestartTimer_Tick;
+            networkScanTimer.Elapsed += networkScanTimer_Tick;
             SetupNetworkRestartTimer();
             SetupNetworkScanTimer();
 
@@ -1784,7 +1785,7 @@ namespace MultiMiner.UX.ViewModels
             deviceViewModel.FriendlyName = name;
         }
 
-        private void CheckIdleTimeForDynamicIntensity(long timerInterval)
+        private void CheckIdleTimeForDynamicIntensity(double timerInterval)
         {
             if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
                 return; //idle detection code uses User32.dll
@@ -5269,7 +5270,7 @@ namespace MultiMiner.UX.ViewModels
             networkScanTimer.Enabled = false;
         }
 
-        private void networkRestartTimer_Tick(object sender, EventArgs e)
+        private void networkRestartTimer_Tick(object sender, ElapsedEventArgs e)
         {
             if (ApplicationConfiguration.ScheduledRebootNetworkDevices)
                 RebootAllNetworkDevicesAsync();
@@ -5277,7 +5278,7 @@ namespace MultiMiner.UX.ViewModels
                 RestartAllNetworkDevicesAsync();
         }
 
-        private void networkScanTimer_Tick(object sender, EventArgs e)
+        private void networkScanTimer_Tick(object sender, ElapsedEventArgs e)
         {
             ClearCachedNetworkDifficulties();
 
@@ -5344,11 +5345,11 @@ namespace MultiMiner.UX.ViewModels
             coinStatsTimer.Enabled = true;
         }
 
-        private void coinStatsTimer_Tick(object sender, EventArgs e)
+        private void coinStatsTimer_Tick(object sender, ElapsedEventArgs e)
         {
             RefreshCoinStatsAsync();
 
-            CoinStatsCountdownMinutes = coinStatsTimer.Interval / 1000 / 60;
+            CoinStatsCountdownMinutes = (int)coinStatsTimer.Interval / 1000 / 60;
         }
 
         public void SetupCoalescedTimers()
@@ -5369,19 +5370,19 @@ namespace MultiMiner.UX.ViewModels
         #endregion
 
 #if DEBUG
-        private void debugOneSecondTimer_Tick(object sender, EventArgs e)
+        private void debugOneSecondTimer_Tick(object sender, ElapsedEventArgs e)
         {
             //updates in order to try to reproduce threading issues
             if (DataModified != null) DataModified(this, new EventArgs());
         }
 #endif
 
-        private void oneHourTimer_Tick(object sender, EventArgs e)
+        private void oneHourTimer_Tick(object sender, ElapsedEventArgs e)
         {
             ClearPoolsFlaggedDown();
         }
 
-        private void oneMinuteTimer_Tick(object sender, EventArgs e)
+        private void oneMinuteTimer_Tick(object sender, ElapsedEventArgs e)
         {
             //if we do this with the Settings dialog open the user may have partially entered credentials
             SubmitMobileMinerStatistics();
@@ -5408,13 +5409,13 @@ namespace MultiMiner.UX.ViewModels
                 RestartSuspectNetworkDevices();
         }
 
-        private void twelveHourTimer_Tick(object sender, EventArgs e)
+        private void twelveHourTimer_Tick(object sender, ElapsedEventArgs e)
         {
             UpdateBackendMinerAvailability();
             CheckForUpdates();
         }
 
-        private void fiveMinuteTimer_Tick(object sender, EventArgs e)
+        private void fiveMinuteTimer_Tick(object sender, ElapsedEventArgs e)
         {
             //submit queued notifications to MobileMiner
             SubmitMobileMinerNotifications();
@@ -5429,7 +5430,7 @@ namespace MultiMiner.UX.ViewModels
             networkDeviceVersions.Clear();
         }
 
-        private void thirtySecondTimer_Tick(object sender, EventArgs e)
+        private void thirtySecondTimer_Tick(object sender, ElapsedEventArgs e)
         {
             UpdateLocalViewFromRemoteInstance();
 
@@ -5446,28 +5447,28 @@ namespace MultiMiner.UX.ViewModels
                 RefreshPoolInfo();
         }
 
-        private void fifteenSecondTimer_Tick(object sender, EventArgs e)
+        private void fifteenSecondTimer_Tick(object sender, ElapsedEventArgs e)
         {
             if (ApplicationConfiguration.NetworkDeviceDetection)
                 RefreshNetworkDeviceStatsAsync();
         }
 
-        private void tenSecondTimer_Tick(object sender, EventArgs e)
+        private void tenSecondTimer_Tick(object sender, ElapsedEventArgs e)
         {
             if (MiningEngine.Mining)
             {
-                long timerInterval = ((Timer)sender).Interval;
+                double timerInterval = ((System.Timers.Timer)sender).Interval;
                 CheckIdleTimeForDynamicIntensity(timerInterval);
                 RefreshAllDeviceStats();
             }
         }
 
-        private void thirtyMinuteTimer_Tick(object sender, EventArgs e)
+        private void thirtyMinuteTimer_Tick(object sender, ElapsedEventArgs e)
         {
             RefreshExchangeRates();
         }
 
-        private void oneSecondTimer_Tick(object sender, EventArgs e)
+        private void oneSecondTimer_Tick(object sender, ElapsedEventArgs e)
         {
             CheckMiningOnStartupStatus();
         }
