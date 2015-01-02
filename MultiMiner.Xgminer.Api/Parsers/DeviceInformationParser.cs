@@ -82,6 +82,10 @@ namespace MultiMiner.Xgminer.Api.Parsers
                         //check for 5s
                         newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, "5s");
                     
+                    if (newDevice.CurrentHashrate == 0.0)
+                        //check for 1s
+                        newDevice.CurrentHashrate = GetCurrentHashrate(keyValuePairs, "1s");
+
                     newDevice.AcceptedShares = TryToParseInt(keyValuePairs, "Accepted", 0);                    
                     newDevice.RejectedShares = TryToParseInt(keyValuePairs, "Rejected", 0);                    
                     newDevice.HardwareErrors = TryToParseInt(keyValuePairs, "Hardware Errors", 0);
