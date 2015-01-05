@@ -3130,7 +3130,17 @@ namespace MultiMiner.UX.ViewModels
 
                 //process commands
                 if (ApplicationConfiguration.MobileMinerRemoteCommands)
+                {
+                    //if we aren't mining we need another fetch for this machine
+                    if (!statisticsList.Any(sl => sl.MachineName.Equals(Environment.MachineName)))
+                    {
+                        commands.AddRange(MobileMiner.ApiContext.GetCommands(GetMobileMinerUrl(), MobileMinerApiKey,
+                            ApplicationConfiguration.MobileMinerEmailAddress, ApplicationConfiguration.MobileMinerApplicationKey,
+                            new List<string> { Environment.MachineName }));
+                    }
+
                     Context.BeginInvoke((Action<List<RemoteCommand>>)ProcessRemoteCommands, commands);
+                }
 
                 mobileMinerSuccess = true;
             }
