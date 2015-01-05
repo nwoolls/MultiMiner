@@ -17,6 +17,7 @@ namespace MultiMiner.Utility.Serialization
             this.oldFileSets = oldFileSets;
         }
 
+        //dates will be in UTC after loading
         public static IEnumerable<T> LoadLogFile<T>(string logFilePath)
         {
             string[] logFile = File.ReadAllLines(logFilePath);

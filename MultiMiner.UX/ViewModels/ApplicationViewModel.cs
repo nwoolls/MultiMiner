@@ -4895,13 +4895,22 @@ namespace MultiMiner.UX.ViewModels
             {
                 try
                 {
-                    List<LogProcessCloseArgs> loadLogFile = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
-                    loadLogFile.RemoveRange(0, Math.Max(0, loadLogFile.Count - MaxHistoryOnScreen));
+                    List<LogProcessCloseArgs> previousHistory = ObjectLogger.LoadLogFile<LogProcessCloseArgs>(logFilePath).ToList();
+                    
+                    //fix dates = they are serialized as UTC
+                    previousHistory.ForEach((hist) =>
+                    {
+                        hist.StartDate = DateTime.SpecifyKind(hist.StartDate, DateTimeKind.Utc).ToLocalTime();
+                        hist.EndDate = DateTime.SpecifyKind(hist.EndDate, DateTimeKind.Utc).ToLocalTime();
+                    });
+
+                    //only load MaxHistoryOnScreen
+                    previousHistory.RemoveRange(0, Math.Max(0, previousHistory.Count - MaxHistoryOnScreen));
 
                     //add via the BindingSource, not logCloseEntries
                     //populating logCloseEntries and then binding causes errors on Linux
                     LogProcessCloseArgsBindingSource.SuspendBinding();
-                    foreach (LogProcessCloseArgs logProcessCloseArgs in loadLogFile)
+                    foreach (LogProcessCloseArgs logProcessCloseArgs in previousHistory)
                         LogProcessCloseArgsBindingSource.Add(logProcessCloseArgs);
                     LogProcessCloseArgsBindingSource.ResumeBinding();
 

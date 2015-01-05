@@ -86,7 +86,7 @@ for (( i = 1 ; i < ${#response_arr[@]} ; i++ )) do
 
 	hashrate_ratio=$(pct $current_hashrate $average_hashrate 0)
 
-	if (( 75 < $hashrate_ratio < 125 )) ; then
+	if (( 75 < $hashrate_ratio && $hashrate_ratio < 125 )) ; then
 		echo -e "${dk_gray}[${green}SUCCESS${dk_gray}]${clear} hashrate ratio is sane (${lt_gray}current=${current_hashrate} average=${average_hashrate} ratio=${hashrate_ratio}${clear})"
 	else
 		echo -e "${dk_gray}[${red}FAILURE${dk_gray}]${clear} hashrate ratio is NOT sane (${lt_gray}current=${current_hashrate} average=${average_hashrate} ratio=${hashrate_ratio}${clear})"		
