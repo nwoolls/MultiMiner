@@ -2089,7 +2089,7 @@ namespace MultiMiner.UX.ViewModels
                 //is miner configured for algorithm?
                 if ((miner != null)
                     //is miner available for download on this OS?
-                    && String.IsNullOrEmpty(miner.Url))
+                    && !String.IsNullOrEmpty(miner.Url))
                 {
                     CheckAndDownloadMiner(miner);
                 }
