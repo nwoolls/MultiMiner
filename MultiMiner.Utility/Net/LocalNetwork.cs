@@ -67,7 +67,20 @@ namespace MultiMiner.Utility.Net
                 IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
                 foreach (UnicastIPAddressInformation ipInformation in ipProperties.UnicastAddresses)
                 {
-                    SubnetClass interfaceClass = ipInformation.IPv4Mask.GetSubnetClass();
+                    IPAddress ipv4Mask = null;
+
+                    if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+                    {
+                        //Mono does not implement IPv4Mask
+                        //see https://bugzilla.xamarin.com/show_bug.cgi?id=2033
+                        string mask = IPInfoTools.GetIPv4Mask(networkInterface.Name);
+                        if (mask == null || IPAddress.TryParse(mask, out ipv4Mask) == false)
+                            ipv4Mask = IPAddress.Parse("255.255.255.0"); // default to this
+                    }
+                    else
+                        ipv4Mask = ipInformation.IPv4Mask;
+
+                    SubnetClass interfaceClass = ipv4Mask.GetSubnetClass();
                                         
                     //optionally scan class A & B subnets
                     if (!((subnetClasses & interfaceClass) == interfaceClass))
@@ -80,7 +93,7 @@ namespace MultiMiner.Utility.Net
                         NetworkInterfaceInfo interfaceInfo = new NetworkInterfaceInfo();
 
                         interfaceInfo.Host = ipAddress;
-                        interfaceInfo.Netmask = ipInformation.IPv4Mask;
+                        interfaceInfo.Netmask = ipv4Mask;
                         interfaceInfo.Broadcast = GetBroadcastAddress(interfaceInfo.Host, interfaceInfo.Netmask);
 
                         //deprecations are known - we only support IPv4 scanning with this code
