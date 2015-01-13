@@ -2086,9 +2086,13 @@ namespace MultiMiner.UX.ViewModels
                 //safe to assume we are downloading GPU miners here
                 MinerDescriptor miner = MinerFactory.Instance.GetMiner(DeviceKind.GPU, algorithmName, algorithmMiners);
 
-                //is miner configured for algorithm
-                if (miner != null)
+                //is miner configured for algorithm?
+                if ((miner != null)
+                    //is miner available for download on this OS?
+                    && !String.IsNullOrEmpty(miner.Url))
+                {
                     CheckAndDownloadMiner(miner);
+                }
             }
         }
 
