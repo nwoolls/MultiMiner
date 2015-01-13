@@ -4972,7 +4972,9 @@ namespace MultiMiner.UX.ViewModels
 
         private void KillDisownedMiners()
         {
-            foreach (MinerDescriptor miner in MinerFactory.Instance.Miners)
+            //declare a local to avoid a bug under Mono when enumerating with a Singleton
+            List<MinerDescriptor> miners = MinerFactory.Instance.Miners;
+            foreach (MinerDescriptor miner in miners)
                 KillDisownedMiners(miner.FileName);
         }
 
@@ -5243,7 +5245,9 @@ namespace MultiMiner.UX.ViewModels
 
             if (availableMiners != null)
             {
-                foreach (MinerDescriptor minerDescriptor in MinerFactory.Instance.Miners)
+                //declare a local to avoid a bug under Mono when enumerating with a Singleton
+                List<MinerDescriptor> miners = MinerFactory.Instance.Miners;
+                foreach (MinerDescriptor minerDescriptor in miners)
                 {
                     AvailableMiner availableMiner = availableMiners.SingleOrDefault(am => am.Name.Equals(minerDescriptor.Name, StringComparison.OrdinalIgnoreCase));
                     //no Scrypt-Jane miner for OS X (yet)
