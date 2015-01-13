@@ -4271,17 +4271,19 @@ namespace MultiMiner.UX.ViewModels
         private void StopDiscovery()
         {
             if (discoveryListener != null)
+            {
                 discoveryListener.Stop();
 
-            //broadcast after so we aren't needless processing our own message
-            try
-            {
-                Discovery.Broadcaster.Broadcast(Verbs.Offline, fingerprint);
-            }
-            catch (SocketException ex)
-            {
-                //e.g. no network connection on Linux
-                ShowMultiMinerRemotingError(ex);
+                //broadcast after so we don't needlessly process our own message
+                try
+                {
+                    Discovery.Broadcaster.Broadcast(Verbs.Offline, fingerprint);
+                }
+                catch (SocketException ex)
+                {
+                    //e.g. no network connection on Linux
+                    ShowMultiMinerRemotingError(ex);
+                }
             }
         }
 
