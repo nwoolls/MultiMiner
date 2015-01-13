@@ -233,7 +233,7 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //VTC
-            donationConfiguration = CreateCoinConfiguration("VTC", "stratum+tcp://vtc.poolz.net", 3333);
+            donationConfiguration = CreateCoinConfiguration("VTC", "stratum+tcp://pool.verters.com", 4444);
             configurations.Add(donationConfiguration);
 
             //DRK
@@ -355,6 +355,10 @@ namespace MultiMiner.Engine.Helpers
 
             //MYR
             donationConfiguration = CreateCoinConfiguration("MYR", "stratum+tcp://mine1.myr.nonce-pool.com", 3360);
+            configurations.Add(donationConfiguration);
+
+            //QRK
+            donationConfiguration = CreateCoinConfiguration("QRK", "stratum+tcp://mine1coinmine.pl", 6010);
             configurations.Add(donationConfiguration);
         }
 
