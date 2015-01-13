@@ -79,6 +79,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Net\Extensions\IPAddressExtensions.cs" />
+    <Compile Include="Net\IPInfoTools.cs" />
     <Compile Include="Net\SubnetClass.cs" />
     <Compile Include="OS\OwnedProcesses.cs" />
     <Compile Include="OS\StartupShortcut.cs" />
