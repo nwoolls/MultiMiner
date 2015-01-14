@@ -2808,7 +2808,12 @@ namespace MultiMiner.UX.ViewModels
                 EngineConfiguration.CoinConfigurations
                     .FirstOrDefault(cc =>
                         cc.Pools
-                            .Any(p => String.Format("{0}:{1}", p.Host.ShortHostFromHost(), p.Port).Equals(poolUrl.ShortHostFromHost(), StringComparison.OrdinalIgnoreCase))
+                            .Any((p) => {
+                                //trim trailing slashes
+                                string configurationPool = String.Format("{0}:{1}", p.Host.ShortHostFromHost(), p.Port).TrimEnd('/');
+                                string comparisonPool = poolUrl.ShortHostFromHost().TrimEnd('/');
+                                return configurationPool.Equals(comparisonPool, StringComparison.OrdinalIgnoreCase);
+                                })
                     );
 
             return coinConfiguration;
