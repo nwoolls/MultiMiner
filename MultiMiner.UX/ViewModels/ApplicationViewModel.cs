@@ -213,6 +213,10 @@ namespace MultiMiner.UX.ViewModels
 
         private void RefreshAllCoinStats()
         {
+            //always load known coins from file
+            //CoinChoose may not show coins it once did if there are no orders
+            LoadKnownCoinsFromFile();
+
             RefreshSingleCoinStats();
             RefreshMultiCoinStats();
         }
@@ -233,10 +237,6 @@ namespace MultiMiner.UX.ViewModels
 
         private void RefreshSingleCoinStats()
         {
-            //always load known coins from file
-            //CoinChoose may not show coins it once did if there are no orders
-            LoadKnownCoinsFromFile();
-
             IApiContext preferredApiContext, backupApiContext;
             if (ApplicationConfiguration.UseCoinWarzApi)
             {
@@ -264,6 +264,8 @@ namespace MultiMiner.UX.ViewModels
                 //don't try to use CoinWarz as a backup unless the user has entered an API key for CoinWarz
                 ((backupApiContext == coinChooseApiContext) || !String.IsNullOrEmpty(ApplicationConfiguration.CoinWarzApiKey)))
                 ApplyCoinInformationToViewModel(backupApiContext);
+
+            ApplyCoinInformationToViewModel();
 
             FixCoinSymbolDiscrepencies();
         }
@@ -384,7 +386,6 @@ namespace MultiMiner.UX.ViewModels
 
                 successfulApiContext = apiContext;
 
-                ApplyCoinInformationToViewModel();
             }
             catch (Exception ex)
             {
