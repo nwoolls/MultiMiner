@@ -121,6 +121,7 @@
             this.algorithmCombo.Location = new System.Drawing.Point(129, 75);
             this.algorithmCombo.Name = "algorithmCombo";
             this.algorithmCombo.Size = new System.Drawing.Size(125, 23);
+            this.algorithmCombo.Sorted = true;
             this.algorithmCombo.TabIndex = 2;
             // 
             // label3

@@ -57,6 +57,7 @@ namespace MultiMiner.UX.ViewModels
         #region Constants
         private const int BfgMinerNotificationId = 100;
         private const int MultiMinerNotificationId = 102;
+        public const string PrimaryAlgorithm = AlgorithmNames.SHA256;
         #endregion
 
         #region Events

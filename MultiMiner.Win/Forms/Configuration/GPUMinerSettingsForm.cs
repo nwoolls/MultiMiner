@@ -40,8 +40,8 @@ namespace MultiMiner.Win.Forms.Configuration
             applicationBindingSource.DataSource = workingApplicationConfiguration;
             xgminerConfigurationBindingSource.DataSource = workingMinerConfiguration;
 
-            string algorithmName = AlgorithmNames.Scrypt.ToSpaceDelimitedWords();
-            algoListView.Items.Find(algorithmName, false).First().Selected = true;
+            if (algoListView.Items.Count > 0)
+                algoListView.Items[0].Selected = true;
             UpdateAutoCheckBox();
         }
 
@@ -94,7 +94,7 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             ObjectCopier.CopyObject(workingMinerConfiguration, minerConfiguration);
             ObjectCopier.CopyObject(workingApplicationConfiguration, applicationConfiguration);
-            DialogResult = System.Windows.Forms.DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
         private void minerCombo_SelectedIndexChanged(object sender, EventArgs e)
