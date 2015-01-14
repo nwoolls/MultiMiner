@@ -91,40 +91,40 @@ namespace MultiMiner.Engine
             algorithm.MinerArguments[MinerNames.BFGMiner] = AlgorithmParameter.Scrypt;
 
             algorithm = factory.RegisterAlgorithm(AlgorithmNames.Keccak, AlgorithmFullNames.Keccak, CoinAlgorithm.AlgorithmFamily.SHA3);
-            algorithm.DefaultMiner = MinerNames.MaxcoinCGMiner;
-            algorithm.MinerArguments[MinerNames.MaxcoinCGMiner] = AlgorithmParameter.Keccak;
+            algorithm.DefaultMiner = MinerNames.SGMiner5;
+            algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmKeccak;
 
             algorithm = factory.RegisterAlgorithm(AlgorithmNames.Groestl, AlgorithmFullNames.Groestl, CoinAlgorithm.AlgorithmFamily.SHA3);
-            algorithm.DefaultMiner = MinerNames.SPHSGMiner;
-            algorithm.MinerArguments[MinerNames.SPHSGMiner] = AlgorithmParameter.KernelGroestcoin;
+            algorithm.DefaultMiner = MinerNames.SGMiner5;
+            algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmGroestlcoin;
 
             algorithm = factory.RegisterAlgorithm(AlgorithmNames.ScryptN, AlgorithmFullNames.ScryptN, CoinAlgorithm.AlgorithmFamily.Scrypt);
-            algorithm.DefaultMiner = MinerNames.SGMiner;
-            algorithm.MinerArguments[MinerNames.SGMiner] = AlgorithmParameter.AlgorithmNScrypt;
+            algorithm.DefaultMiner = MinerNames.SGMiner5;
+            algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmScryptNFactor11;
 
             algorithm = factory.RegisterAlgorithm(AlgorithmNames.ScryptJane, AlgorithmFullNames.ScryptJane, CoinAlgorithm.AlgorithmFamily.Scrypt);
             algorithm.DefaultMiner = MinerNames.KalrothSJCGMiner;
             algorithm.MinerArguments[MinerNames.KalrothSJCGMiner] = AlgorithmParameter.ScryptJane;
 
             algorithm = factory.RegisterAlgorithm(AlgorithmNames.Quark, AlgorithmFullNames.Quark, CoinAlgorithm.AlgorithmFamily.Unknown);
-            algorithm.DefaultMiner = MinerNames.SPHSGMiner;
-            algorithm.MinerArguments[MinerNames.SPHSGMiner] = AlgorithmParameter.KernelQuarkcoin;
+            algorithm.DefaultMiner = MinerNames.SGMiner5;
+            algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmQuarkcoin;
 
             algorithm = factory.RegisterAlgorithm(AlgorithmNames.X11, AlgorithmFullNames.X11, CoinAlgorithm.AlgorithmFamily.Unknown);
-            algorithm.DefaultMiner = MinerNames.LBSPHSGMiner;
-            algorithm.MinerArguments[MinerNames.LBSPHSGMiner] = AlgorithmParameter.KernelX11Mod;
+            algorithm.DefaultMiner = MinerNames.SGMiner5;
+            algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmX11;
 
             algorithm = factory.RegisterAlgorithm(AlgorithmNames.X13, AlgorithmFullNames.X13, CoinAlgorithm.AlgorithmFamily.Unknown);
-            algorithm.DefaultMiner = MinerNames.LBSPHSGMiner;
-            algorithm.MinerArguments[MinerNames.LBSPHSGMiner] = AlgorithmParameter.KernelX13Mod;
+            algorithm.DefaultMiner = MinerNames.SGMiner5;
+            algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmX13;
 
             algorithm = factory.RegisterAlgorithm(AlgorithmNames.X14, AlgorithmFullNames.X14, CoinAlgorithm.AlgorithmFamily.Unknown);
-            algorithm.DefaultMiner = MinerNames.AZNSGMiner;
-            algorithm.MinerArguments[MinerNames.AZNSGMiner] = AlgorithmParameter.PoolAlgorithmX14Old;
+            algorithm.DefaultMiner = MinerNames.SGMiner5;
+            algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmX14;
 
             algorithm = factory.RegisterAlgorithm(AlgorithmNames.X15, AlgorithmFullNames.X15, CoinAlgorithm.AlgorithmFamily.Unknown);
-            algorithm.DefaultMiner = MinerNames.AZNSGMiner;
-            algorithm.MinerArguments[MinerNames.AZNSGMiner] = AlgorithmParameter.PoolAlgorithmBitBlockOld;
+            algorithm.DefaultMiner = MinerNames.SGMiner5;
+            algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmX15;
         }
 
         private static void RegisterMiners()
@@ -138,6 +138,7 @@ namespace MultiMiner.Engine
             factory.RegisterMiner(MinerNames.AZNSGMiner, MinerNames.SGMiner, true);
             factory.RegisterMiner(MinerNames.SPHSGMiner, MinerNames.SGMiner, true);
             factory.RegisterMiner(MinerNames.MaxcoinCGMiner, MinerNames.CGMiner, true);
+            factory.RegisterMiner(MinerNames.SGMiner5, MinerNames.SGMiner, true);
 
             string minersDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Miners");
             factory.RegisterMiners(minersDirectory);
