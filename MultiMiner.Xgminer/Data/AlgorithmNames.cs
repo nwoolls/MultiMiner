@@ -14,6 +14,8 @@
         public const string ScryptJane = "ScryptJane";
         public const string Keccak = "Keccak";
         public const string Nist5 = "Nist5";
+        public const string NeoScrypt = "NeoScrypt";
+        public const string Lyra2RE = "Lyra2RE";
     }
 
     public static class AlgorithmFullNames
@@ -30,8 +32,12 @@
         public const string ScryptJane = "Scrypt-Jane";
         public const string Keccak = "Keccak";
         public const string Nist5 = "Nist5";
+        public const string NeoScrypt = "NeoScrypt";
+        public const string Lyra2RE = "Lyra2RE";
     }
 
+    //used for determining profitability with Multipools
+    //reference at https://www.nicehash.com/index.jsp?p=multialgo
     public static class AlgorithmMultipliers
     {
         public const double SHA256 = 1.0;
@@ -46,5 +52,7 @@
         public const double ScryptJane = 0.0005;
         public const double Keccak = 0.5;
         public const double Nist5 = 0.015;
+        public const double NeoScrypt = 0.0003;
+        public const double Lyra2RE = 0.00125;
     }
 }

@@ -4,6 +4,7 @@ namespace MultiMiner.Xgminer.Data
 {
     public class CoinAlgorithm
     {
+        //used for determining work utility / effective hashrate
         public enum AlgorithmFamily
         {
             Unknown,

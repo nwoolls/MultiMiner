@@ -39,6 +39,12 @@ namespace MultiMiner.NiceHash.Extensions
                 case 7:
                     multipoolInformation.Algorithm = AlgorithmNames.Nist5;
                     break;
+                case 8:
+                    multipoolInformation.Algorithm = AlgorithmNames.NeoScrypt;
+                    break;
+                case 9:
+                    multipoolInformation.Algorithm = AlgorithmNames.Lyra2RE;
+                    break;
                 default:
                     //unknown algo
                     return false;
