@@ -111,7 +111,7 @@ namespace MultiMiner.UX.ViewModels
         private IApiContext whatToMineApiContext;
 
         //Coin API information
-        private List<CoinInformation> coinApiInformation = new List<CoinInformation>();
+        private readonly List<CoinInformation> coinApiInformation = new List<CoinInformation>();
 
         //Exchange API information
 
@@ -213,6 +213,10 @@ namespace MultiMiner.UX.ViewModels
 
         private void RefreshAllCoinStats()
         {
+            //always load known coins from file
+            //CoinChoose may not show coins it once did if there are no orders
+            LoadKnownCoinsFromFile();
+
             RefreshSingleCoinStats();
             RefreshMultiCoinStats();
         }
@@ -233,10 +237,6 @@ namespace MultiMiner.UX.ViewModels
 
         private void RefreshSingleCoinStats()
         {
-            //always load known coins from file
-            //CoinChoose may not show coins it once did if there are no orders
-            LoadKnownCoinsFromFile();
-
             IApiContext preferredApiContext, backupApiContext;
             if (ApplicationConfiguration.UseCoinWarzApi)
             {
@@ -259,11 +259,13 @@ namespace MultiMiner.UX.ViewModels
                 backupApiContext = coinWarzApiContext;
             }
 
-            bool success = ApplyCoinInformationToViewModel(preferredApiContext);
+            bool success = RefreshSingleCoinStats(preferredApiContext);
             if (!success &&
                 //don't try to use CoinWarz as a backup unless the user has entered an API key for CoinWarz
                 ((backupApiContext == coinChooseApiContext) || !String.IsNullOrEmpty(ApplicationConfiguration.CoinWarzApiKey)))
-                ApplyCoinInformationToViewModel(backupApiContext);
+                RefreshSingleCoinStats(backupApiContext);
+
+            ApplyCoinInformationToViewModel();
 
             FixCoinSymbolDiscrepencies();
         }
@@ -294,6 +296,7 @@ namespace MultiMiner.UX.ViewModels
             if (multipoolInformation == null)
                 return;
 
+            CoinApiInformation.RemoveAll(c => c.IsMultiCoin);
             CoinApiInformation.AddRange(multipoolInformation
                 .Select(mpi => new CoinInformation
                 {
@@ -375,16 +378,20 @@ namespace MultiMiner.UX.ViewModels
             }
         }
 
-        private bool ApplyCoinInformationToViewModel(IApiContext apiContext)
+        private bool RefreshSingleCoinStats(IApiContext apiContext)
         {
             try
             {
                 //remove dupes by Symbol in case the Coin API returns them - seen from user
-                coinApiInformation = apiContext.GetCoinInformation(UserAgent.AgentString).GroupBy(c => c.Symbol).Select(g => g.First()).ToList();
+                IEnumerable<CoinInformation> newCoinInformation = apiContext.GetCoinInformation(UserAgent.AgentString).GroupBy(c => c.Symbol).Select(g => g.First()).ToList();
+
+                //do not set / overwrite CoinApiInformation - update the contents
+                //otherwise we remove valid MultiCoin information that may fail to be
+                //refreshed in RefreshMultiCoinStats()
+                CoinApiInformation.RemoveAll(c => !c.IsMultiCoin);
+                CoinApiInformation.AddRange(newCoinInformation);
 
                 successfulApiContext = apiContext;
-
-                ApplyCoinInformationToViewModel();
             }
             catch (Exception ex)
             {
