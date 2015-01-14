@@ -62,7 +62,8 @@ namespace MultiMiner.Engine
                 {
                     CoinAlgorithm existingAlgorithm = existingAlgorithms.SingleOrDefault(ea => ea.Name.Equals(customAlgorithm.Name));
                     if (existingAlgorithm != null)
-                        ObjectCopier.CopyObject(customAlgorithm, existingAlgorithm);
+                        //don't override our Family - user may have added an algo before we support it
+                        ObjectCopier.CopyObject(customAlgorithm, existingAlgorithm, "Family");
                     else
                         existingAlgorithms.Add(customAlgorithm);
                 }
