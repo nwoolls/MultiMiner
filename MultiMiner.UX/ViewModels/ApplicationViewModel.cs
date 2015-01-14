@@ -259,11 +259,11 @@ namespace MultiMiner.UX.ViewModels
                 backupApiContext = coinWarzApiContext;
             }
 
-            bool success = ApplyCoinInformationToViewModel(preferredApiContext);
+            bool success = RefreshSingleCoinStats(preferredApiContext);
             if (!success &&
                 //don't try to use CoinWarz as a backup unless the user has entered an API key for CoinWarz
                 ((backupApiContext == coinChooseApiContext) || !String.IsNullOrEmpty(ApplicationConfiguration.CoinWarzApiKey)))
-                ApplyCoinInformationToViewModel(backupApiContext);
+                RefreshSingleCoinStats(backupApiContext);
 
             ApplyCoinInformationToViewModel();
 
@@ -377,7 +377,7 @@ namespace MultiMiner.UX.ViewModels
             }
         }
 
-        private bool ApplyCoinInformationToViewModel(IApiContext apiContext)
+        private bool RefreshSingleCoinStats(IApiContext apiContext)
         {
             try
             {
