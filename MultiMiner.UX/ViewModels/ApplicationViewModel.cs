@@ -302,7 +302,8 @@ namespace MultiMiner.UX.ViewModels
                     AverageProfitability = mpi.Profitability,
                     AdjustedProfitability = mpi.Profitability,
                     Price = mpi.Price,
-                    Algorithm = KnownAlgorithms.Algorithms.Single(ka => ka.Name.Equals(mpi.Algorithm)).FullName
+                    Algorithm = KnownAlgorithms.Algorithms.Single(ka => ka.Name.Equals(mpi.Algorithm)).FullName,
+                    IsMultiCoin = true
                 }));
         }
 
@@ -2473,6 +2474,7 @@ namespace MultiMiner.UX.ViewModels
                 knownCoin.Id = item.Symbol;
                 knownCoin.Name = item.Name;
                 knownCoin.Algorithm = item.Algorithm;
+                knownCoin.Kind = item.IsMultiCoin ? PoolGroup.PoolGroupKind.MultiCoin : PoolGroup.PoolGroupKind.SingleCoin;
             }
             SaveKnownCoinsToFile();
         }

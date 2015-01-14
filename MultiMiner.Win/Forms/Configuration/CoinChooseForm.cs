@@ -50,7 +50,8 @@ namespace MultiMiner.Win.Forms.Configuration
         private void PopulateCoinCombo()
         {
             CoinAlgorithm algorithm = GetSelectedAlgorithm();
-            filteredCoins = sortedCoins.Where(sc => sc.Algorithm.Equals(algorithm.FullName, StringComparison.OrdinalIgnoreCase)).ToList();
+            filteredCoins = sortedCoins.Where(sc => (sc.Kind == PoolGroup.PoolGroupKind.SingleCoin) 
+                && sc.Algorithm.Equals(algorithm.FullName, StringComparison.OrdinalIgnoreCase)).ToList();
 
             coinCombo.Text = String.Empty;
             coinCombo.Items.Clear();

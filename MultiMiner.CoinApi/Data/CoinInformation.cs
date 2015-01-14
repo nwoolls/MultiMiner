@@ -19,5 +19,6 @@ namespace MultiMiner.CoinApi.Data
         public double AdjustedProfitability { get; set; }
         public double AverageProfitability { get; set; }
         public double AverageHashRate { get; set; }
+        public bool IsMultiCoin { get; set; }
     }
 }

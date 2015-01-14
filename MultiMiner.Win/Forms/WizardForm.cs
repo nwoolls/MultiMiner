@@ -56,11 +56,14 @@ namespace MultiMiner.Win.Forms
             coinComboBox.Items.Add(KnownCoins.LitecoinName);
             coinComboBox.Items.Add("-");
 
-            foreach (PoolGroup coin in coins)
-            {
-                if (coinComboBox.Items.IndexOf(coin.Name) == -1)
-                    coinComboBox.Items.Add(coin.Name);
-            }
+            coins.Where(c => c.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                .OrderBy(c => c.Name)
+                .ToList()
+                .ForEach((c) =>
+                {
+                    if (coinComboBox.Items.IndexOf(c.Name) == -1)
+                        coinComboBox.Items.Add(c.Name);
+                });
         }
 
         private void SetupWizardTabControl()
