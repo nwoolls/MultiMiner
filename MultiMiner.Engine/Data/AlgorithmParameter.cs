@@ -12,5 +12,7 @@
         public const string AlgorithmX13 = "--algorithm x13";
         public const string AlgorithmX14 = "--algorithm x14";
         public const string AlgorithmX15 = "--algorithm x15";
+        public const string AlgorithmNeoScrypt = "--algorithm neoscrypt";
+        public const string AlgorithmLyra2RE = "--algorithm lyra2re";
     }
 }

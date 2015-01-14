@@ -75,6 +75,18 @@
                 Name = AlgorithmNames.Nist5,
                 FullName = AlgorithmFullNames.Nist5,
                 Multiplier = AlgorithmMultipliers.Nist5
+            },
+            new KnownAlgorithm
+            {
+                Name = AlgorithmNames.NeoScrypt,
+                FullName = AlgorithmFullNames.NeoScrypt,
+                Multiplier = AlgorithmMultipliers.NeoScrypt
+            },
+            new KnownAlgorithm
+            {
+                Name = AlgorithmNames.Lyra2RE,
+                FullName = AlgorithmFullNames.Lyra2RE,
+                Multiplier = AlgorithmMultipliers.Lyra2RE
             }
         };
     }
