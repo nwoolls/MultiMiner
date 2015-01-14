@@ -195,6 +195,7 @@
             this.algoListView.Name = "algoListView";
             this.algoListView.Size = new System.Drawing.Size(230, 97);
             this.algoListView.SmallImageList = this.imageList1;
+            this.algoListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.algoListView.TabIndex = 0;
             this.algoListView.UseCompatibleStateImageBehavior = false;
             this.algoListView.View = System.Windows.Forms.View.List;

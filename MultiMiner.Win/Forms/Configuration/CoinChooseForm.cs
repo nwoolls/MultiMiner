@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using MultiMiner.UX.ViewModels;
 
 namespace MultiMiner.Win.Forms.Configuration
 {
@@ -26,9 +27,8 @@ namespace MultiMiner.Win.Forms.Configuration
         private void CoinChooseForm_Load(object sender, EventArgs e)
         {
             PopulateAlgorithmCombo();
-            if (algoCombo.Items.Count > 0)
-                algoCombo.SelectedIndex = 0;
-            
+            algoCombo.Text = ApplicationViewModel.PrimaryAlgorithm;
+
             coinCombo.Focus();
         }
 

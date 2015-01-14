@@ -132,6 +132,7 @@
             this.algoCombo.Location = new System.Drawing.Point(96, 10);
             this.algoCombo.Name = "algoCombo";
             this.algoCombo.Size = new System.Drawing.Size(175, 23);
+            this.algoCombo.Sorted = true;
             this.algoCombo.TabIndex = 11;
             // 
             // pictureBox1

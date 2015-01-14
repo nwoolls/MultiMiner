@@ -3,6 +3,7 @@ using MultiMiner.Engine.Extensions;
 using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.UX.Data.Configuration;
+using MultiMiner.UX.ViewModels;
 using MultiMiner.Xgminer.Data;
 using System;
 using System.Diagnostics;
@@ -42,7 +43,7 @@ namespace MultiMiner.Win.Forms.Configuration
             PopulateAlgorithmCombo();
             LoadSettings();
 
-            algoArgCombo.Text = AlgorithmNames.SHA256.ToSpaceDelimitedWords();
+            algoArgCombo.Text = ApplicationViewModel.PrimaryAlgorithm;
         }
 
         private void PopulateAlgorithmCombo()

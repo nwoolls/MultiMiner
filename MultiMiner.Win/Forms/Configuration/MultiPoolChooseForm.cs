@@ -2,6 +2,7 @@
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Extensions;
 using MultiMiner.Utility.Forms;
+using MultiMiner.UX.ViewModels;
 using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
@@ -25,8 +26,7 @@ namespace MultiMiner.Win.Forms.Configuration
         private void MultipoolChooseForm_Load(object sender, EventArgs e)
         {
             PopulateAlgorithmCombo();
-            if (algoCombo.Items.Count > 0)
-                algoCombo.SelectedIndex = 0;
+            algoCombo.Text = ApplicationViewModel.PrimaryAlgorithm;
 
             PopulateMultipoolCombo();
             multipoolCombo.Text = "Other";
