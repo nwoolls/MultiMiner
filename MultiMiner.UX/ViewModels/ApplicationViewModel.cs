@@ -111,7 +111,7 @@ namespace MultiMiner.UX.ViewModels
         private IApiContext whatToMineApiContext;
 
         //Coin API information
-        private List<CoinInformation> coinApiInformation = new List<CoinInformation>();
+        private readonly List<CoinInformation> coinApiInformation = new List<CoinInformation>();
 
         //Exchange API information
 
@@ -296,6 +296,7 @@ namespace MultiMiner.UX.ViewModels
             if (multipoolInformation == null)
                 return;
 
+            CoinApiInformation.RemoveAll(c => c.IsMultiCoin);
             CoinApiInformation.AddRange(multipoolInformation
                 .Select(mpi => new CoinInformation
                 {
@@ -382,10 +383,15 @@ namespace MultiMiner.UX.ViewModels
             try
             {
                 //remove dupes by Symbol in case the Coin API returns them - seen from user
-                coinApiInformation = apiContext.GetCoinInformation(UserAgent.AgentString).GroupBy(c => c.Symbol).Select(g => g.First()).ToList();
+                IEnumerable<CoinInformation> newCoinInformation = apiContext.GetCoinInformation(UserAgent.AgentString).GroupBy(c => c.Symbol).Select(g => g.First()).ToList();
+
+                //do not set / overwrite CoinApiInformation - update the contents
+                //otherwise we remove valid MultiCoin information that may fail to be
+                //refreshed in RefreshMultiCoinStats()
+                CoinApiInformation.RemoveAll(c => !c.IsMultiCoin);
+                CoinApiInformation.AddRange(newCoinInformation);
 
                 successfulApiContext = apiContext;
-
             }
             catch (Exception ex)
             {
