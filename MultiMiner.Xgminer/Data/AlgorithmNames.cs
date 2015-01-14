@@ -36,6 +36,7 @@
         public const string Lyra2RE = "Lyra2RE";
     }
 
+    //how difficult is each algo on the same hardware relative to SHA256
     //used for determining profitability with Multipools
     //reference at https://www.nicehash.com/index.jsp?p=multialgo
     public static class AlgorithmMultipliers

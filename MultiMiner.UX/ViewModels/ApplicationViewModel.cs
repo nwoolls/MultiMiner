@@ -1104,14 +1104,23 @@ namespace MultiMiner.UX.ViewModels
             CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
             if (algorithm.Family == CoinAlgorithm.AlgorithmFamily.Scrypt)
             {
+                //2^16
                 const int dumbScryptMultiplier = 65536;
                 return workUtility / dumbScryptMultiplier;
             }
 
             if (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3)
             {
+                //2^8
                 const int dumbSha3Multiplier = 256;
                 return workUtility / dumbSha3Multiplier;
+            }
+
+            if (algorithm.Family == CoinAlgorithm.AlgorithmFamily.Lyra2)
+            {
+                //2^7
+                const int dumbLyra2Multiplier = 128;
+                return workUtility / dumbLyra2Multiplier;
             }
 
             return workUtility;
