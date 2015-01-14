@@ -131,7 +131,7 @@ namespace MultiMiner.Engine
             algorithm.DefaultMiner = MinerNames.SGMiner5;
             algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmNeoScrypt;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Lyra2RE, AlgorithmFullNames.Lyra2RE, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Lyra2RE, AlgorithmFullNames.Lyra2RE, CoinAlgorithm.AlgorithmFamily.Lyra2);
             algorithm.DefaultMiner = MinerNames.SGMiner5;
             algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmLyra2RE;
         }

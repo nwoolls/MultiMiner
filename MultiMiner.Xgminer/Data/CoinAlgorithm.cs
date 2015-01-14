@@ -10,7 +10,8 @@ namespace MultiMiner.Xgminer.Data
             Unknown,
             SHA2,
             SHA3,
-            Scrypt
+            Scrypt,
+            Lyra2
         }
 
         //general info
