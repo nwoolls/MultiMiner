@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
-    static class DoubleExtensions
+    public static class DoubleExtensions
     {
         public static string ToDifficultyString(this double difficulty)
         {

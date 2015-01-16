@@ -28,6 +28,7 @@ msbuild.updateAssemblyVersion("../MultiMiner.NiceHash/Properties/AssemblyInfo.cs
 msbuild.updateAssemblyVersion("../MultiMiner.WhatMine/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.WhatToMine/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.UX/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.TUI/Properties/AssemblyInfo.cs", appVersion);
 
 //rebuild each .NET project - Release configurations
 msbuild.rebuild("../MultiMiner.CoinApi/MultiMiner.CoinApi.csproj", { configuration: "Release" });
@@ -54,6 +55,7 @@ msbuild.rebuild("../MultiMiner.NiceHash/MultiMiner.NiceHash.csproj", { configura
 msbuild.rebuild("../MultiMiner.WhatMine/MultiMiner.WhatMine.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.WhatToMine/MultiMiner.WhatToMine.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.UX/MultiMiner.UX.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.TUI/MultiMiner.TUI.csproj", { configuration: "Release" });
 
 //export environment variable for InnoSetup to use for app version
 export("MM_AppVersion", shortAppVersion);
@@ -114,6 +116,8 @@ file.copy("../MultiMiner.Win/bin/Release/MultiMiner.WhatToMine.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.WhatToMine.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.UX.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.UX.pdb", "PF/");
+file.copy("../MultiMiner.TUI/bin/Release/MultiMiner.TUI.exe", "PF/");
+file.copy("../MultiMiner.TUI/bin/Release/MultiMiner.TUI.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Renci.SshNet.dll", "PF/");
 zip.compress("Output/MultiMiner-" + shortAppVersion + ".zip", "PF/", "*.*", true);
@@ -176,6 +180,8 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.WhatToMine.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.UX.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.UX.pdb,\
+../MultiMiner.TUI/bin/Release/MultiMiner.TUI.exe,\
+../MultiMiner.TUI/bin/Release/MultiMiner.TUI.pdb,\
 ../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll,\
 ../MultiMiner.Win/bin/Release/Renci.SshNet.dll \
 -i ../MultiMiner.Win/MultiMiner.icns \

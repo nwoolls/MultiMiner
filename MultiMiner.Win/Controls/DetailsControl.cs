@@ -1,7 +1,7 @@
 ﻿using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Net;
+using MultiMiner.UX.Extensions;
 using MultiMiner.UX.ViewModels;
-using MultiMiner.Win.Extensions;
 using MultiMiner.Xgminer.Data;
 using System;
 using System.Diagnostics;

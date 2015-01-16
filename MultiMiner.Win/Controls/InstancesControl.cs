@@ -1,6 +1,6 @@
 ﻿using MultiMiner.Discovery;
 using MultiMiner.Discovery.Data;
-using MultiMiner.Win.Extensions;
+using MultiMiner.UX.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;

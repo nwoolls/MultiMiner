@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
     public static class DateTimeExtensions
     {

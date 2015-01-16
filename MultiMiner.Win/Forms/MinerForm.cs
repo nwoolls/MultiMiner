@@ -16,7 +16,6 @@ using MultiMiner.UX.Extensions;
 using MultiMiner.UX.ViewModels;
 using MultiMiner.Win.Controls;
 using MultiMiner.Win.Controls.Notifications;
-using MultiMiner.Win.Extensions;
 using MultiMiner.Win.Forms.Configuration;
 using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Api.Data;
@@ -2277,8 +2276,6 @@ namespace MultiMiner.Win.Forms
             app.CheckForUpdates();
 
             app.SetHasChangesLocally(false);
-
-            app.LoadKnownDevicesFromFile();
 
             //ONLY if null, e.g. first launch or no XML
             //don't keep scanning on startup if there are no devices

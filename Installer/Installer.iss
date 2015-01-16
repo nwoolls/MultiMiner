@@ -80,7 +80,9 @@ Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatMine.pdb"; DestDir: "{app}
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatToMine.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatToMine.pdb"; DestDir: "{app}"; Flags: ignoreversion       
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.UX.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\MultiMiner.UX.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.UX.pdb"; DestDir: "{app}"; Flags: ignoreversion        
+Source: "..\MultiMiner.TUI\bin\Release\MultiMiner.TUI.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.TUI\bin\Release\MultiMiner.TUI.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion       
 Source: "..\MultiMiner.Win\bin\Release\Renci.SshNet.dll"; DestDir: "{app}"; Flags: ignoreversion
 
