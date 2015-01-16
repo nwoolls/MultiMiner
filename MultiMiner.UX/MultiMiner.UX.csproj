@@ -67,7 +67,10 @@
     <Compile Include="Data\RemotingEventArgs.cs" />
     <Compile Include="Data\UserAgent.cs" />
     <Compile Include="Extensions\ApplicationConfigurationExtensions.cs" />
+    <Compile Include="Extensions\AssemblyExtensions.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\DeviceConfigurationExtensions.cs" />
+    <Compile Include="Extensions\DoubleExtensions.cs" />
     <Compile Include="Extensions\EngineConfigurationExtensions.cs" />
     <Compile Include="Extensions\IPAddressExtensions.cs" />
     <Compile Include="Extensions\IPEndPointExtensions.cs" />

@@ -671,14 +671,18 @@ namespace MultiMiner.UX.ViewModels
         public void LoadSettings()
         {
             EngineConfiguration.LoadAllConfigurations(PathConfiguration.SharedConfigPath);
-            SetupCoinApi();
             PerksConfiguration.LoadPerksConfiguration(PathConfiguration.SharedConfigPath);
+            metadataConfiguration.LoadDeviceMetadataConfiguration();
+            NetworkDevicesConfiguration.LoadNetworkDevicesConfiguration();
+            LoadKnownDevicesFromFile();
+
+            SetupCoinApi();
             RefreshExchangeRates();
             SetupCoinStatsTimer();
             ClearPoolsFlaggedDown();
             ApplyModelsToViewModel();
+
             LocalViewModel.DynamicIntensity = EngineConfiguration.XgminerConfiguration.DesktopMode;
-            metadataConfiguration.LoadDeviceMetadataConfiguration();
         }
 
         private void LoadKnownCoinsFromFile()
@@ -798,7 +802,7 @@ namespace MultiMiner.UX.ViewModels
             return System.IO.Path.Combine(filePath, "KnownDevicesCache.xml");
         }
 
-        public void LoadKnownDevicesFromFile()
+        private void LoadKnownDevicesFromFile()
         {
             string knownDevicesFileName = KnownDevicesFileName();
             if (File.Exists(knownDevicesFileName))
@@ -961,8 +965,6 @@ namespace MultiMiner.UX.ViewModels
         public void SetupNetworkDeviceDetection()
         {
             //network devices
-            NetworkDevicesConfiguration.LoadNetworkDevicesConfiguration();
-
             if (ApplicationConfiguration.NetworkDeviceDetection)
                 RunNetworkDeviceScan();
         }
@@ -5422,7 +5424,7 @@ namespace MultiMiner.UX.ViewModels
         private void debugOneSecondTimer_Tick(object sender, ElapsedEventArgs e)
         {
             //updates in order to try to reproduce threading issues
-            if (DataModified != null) DataModified(this, new EventArgs());
+            //if (DataModified != null) DataModified(this, new EventArgs());
         }
 #endif
 

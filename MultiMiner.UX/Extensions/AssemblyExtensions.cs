@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System;
 
-namespace MultiMiner.Win.Extensions
+namespace MultiMiner.UX.Extensions
 {
     public static class AssemblyExtensions
     {
