@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MultiMiner.Utility.Forms
+namespace MultiMiner.Utility.Timers
 {
     public class Timers
     {

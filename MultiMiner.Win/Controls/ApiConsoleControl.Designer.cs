@@ -30,9 +30,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApiConsoleControl));
             this.splitter1 = new System.Windows.Forms.Splitter();
-            this.helpTextBox = new MultiMiner.Utility.Forms.ReadOnlyTextBox();
+            this.helpTextBox = new Controls.ReadOnlyTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.outputTextBox = new MultiMiner.Utility.Forms.ReadOnlyTextBox();
+            this.outputTextBox = new Controls.ReadOnlyTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.minerComboBox = new System.Windows.Forms.ComboBox();
@@ -173,8 +173,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox minerComboBox;
         private System.Windows.Forms.TextBox inputTextBox;
-        private Utility.Forms.ReadOnlyTextBox helpTextBox;
-        private Utility.Forms.ReadOnlyTextBox outputTextBox;
+        private Controls.ReadOnlyTextBox helpTextBox;
+        private Controls.ReadOnlyTextBox outputTextBox;
         private System.Windows.Forms.Button button1;
     }
 }

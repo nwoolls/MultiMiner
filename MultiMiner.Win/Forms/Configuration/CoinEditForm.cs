@@ -1,9 +1,8 @@
-﻿using MultiMiner.Engine.Data;
-using MultiMiner.Utility.Forms;
-using MultiMiner.Xgminer.Data;
+﻿using MultiMiner.Engine;
+using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Extensions;
+using MultiMiner.Xgminer.Data;
 using System;
-using MultiMiner.Engine;
 
 namespace MultiMiner.Win.Forms.Configuration
 {

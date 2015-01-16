@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace MultiMiner.Utility.Serialization
@@ -63,8 +62,8 @@ namespace MultiMiner.Utility.Serialization
             if (File.Exists(backupFileName))
             {
                 //restore backup file
-                MessageBox.Show(String.Format("The file {0} was 0 bytes (likely due to a crash on startup).\n\nA previous backup will be restored.",
-                    Path.GetFileName(fileName)), "Invalid Configuration", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //MessageBox.Show(String.Format("The file {0} was 0 bytes (likely due to a crash on startup).\n\nA previous backup will be restored.",
+                //    Path.GetFileName(fileName)), "Invalid Configuration", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 File.Delete(fileName);
                 File.Copy(backupFileName, fileName);
 
@@ -78,8 +77,8 @@ namespace MultiMiner.Utility.Serialization
             else
             {
                 //load defaults
-                MessageBox.Show(String.Format("The file {0} was 0 bytes (likely due to a crash on startup).\n\nDefault settings for this file will be loaded.",
-                    Path.GetFileName(fileName)), "Invalid Configuration", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //MessageBox.Show(String.Format("The file {0} was 0 bytes (likely due to a crash on startup).\n\nDefault settings for this file will be loaded.",
+                //    Path.GetFileName(fileName)), "Invalid Configuration", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                 //delete the corrupt file
                 //reasoning: if the user does not make some setting changes, the error will persist on startup

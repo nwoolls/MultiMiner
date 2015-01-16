@@ -3,8 +3,9 @@ using IWshRuntimeLibrary;
 #endif
 using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace MultiMiner.Utility.OS
 {
@@ -13,8 +14,11 @@ namespace MultiMiner.Utility.OS
 #if !__MonoCS__
         public static void CreateStartupFolderShortcut()
         {
+            Assembly assembly = Assembly.GetEntryAssembly();
+            AssemblyName assemblyName = assembly.GetName();
+
             string startUpFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-            string shortcutFilePath = Path.Combine(startUpFolderPath, Application.ProductName + ".lnk");
+            string shortcutFilePath = Path.Combine(startUpFolderPath, assemblyName.Name.Split('.').First() + ".lnk");
 
             if (System.IO.File.Exists(shortcutFilePath))
                 //shortcut already exists
@@ -25,8 +29,8 @@ namespace MultiMiner.Utility.OS
             // Create the shortcut
             IWshShortcut shortcut = (IWshShortcut)wshShell.CreateShortcut(shortcutFilePath);
 
-            shortcut.TargetPath = Application.ExecutablePath;
-            shortcut.WorkingDirectory = Application.StartupPath;
+            shortcut.TargetPath = assembly.Location;
+            shortcut.WorkingDirectory = Environment.CurrentDirectory;
 
             shortcut.Save();
         }
@@ -70,26 +74,18 @@ namespace MultiMiner.Utility.OS
 
             DirectoryInfo di = null;
 
-            try
-            {
-                di = new DirectoryInfo(startUpFolderPath);
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show(String.Format("An error occurred enumerating startup folder {0}{1}{2}", startUpFolderPath, Environment.NewLine, ex.Message),
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
+            di = new DirectoryInfo(startUpFolderPath);
             if (di == null)
                 return;
 
+            Assembly assembly = Assembly.GetEntryAssembly();
             FileInfo[] files = di.GetFiles("*.lnk");
 
             foreach (FileInfo fi in files)
             {
                 string shortcutTargetFile = GetShortcutTargetFile(fi.FullName);
 
-                if (shortcutTargetFile.Equals(Application.ExecutablePath,
+                if (shortcutTargetFile.Equals(assembly.Location,
                       StringComparison.InvariantCultureIgnoreCase))
                 {
                     System.IO.File.Delete(fi.FullName);

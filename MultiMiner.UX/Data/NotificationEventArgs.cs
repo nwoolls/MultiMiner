@@ -1,5 +1,5 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using MultiMiner.MobileMiner.Data;
+using System;
 
 namespace MultiMiner.UX.Data
 {
@@ -8,7 +8,7 @@ namespace MultiMiner.UX.Data
         public string Id;
         public string Text;
         public Action ClickHandler;
-        public ToolTipIcon Kind;
+        public NotificationKind Kind;
         public string InformationUrl;
     }
 }

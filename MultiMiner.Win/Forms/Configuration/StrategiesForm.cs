@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using MultiMiner.UX.Data.Configuration;
-using MultiMiner.Utility.Forms;
 using MultiMiner.Engine.Data;
 using System.Diagnostics;
 

@@ -1,12 +1,12 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Engine.Data;
+using MultiMiner.Engine.Data.Configuration;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace MultiMiner.UX.Data.Configuration
@@ -38,7 +38,7 @@ namespace MultiMiner.UX.Data.Configuration
             this.MobileMinerUsesHttps = true;
             this.SuggestionsAlgorithm = CoinSuggestionsAlgorithm.SHA256 | CoinSuggestionsAlgorithm.Scrypt;
             this.CheckForMinerUpdates = true;
-            this.ListViewStyle = View.Details;
+            this.ListViewStyle = ListViewStyle.Details;
             this.HiddenColumns = new List<string>();
             this.SetGpuEnvironmentVariables = true;
             this.CoinWarzApiKey = String.Empty; //simplify handling NULL
@@ -58,7 +58,7 @@ namespace MultiMiner.UX.Data.Configuration
         public Rectangle AppPosition { get; set; }
         public bool CheckForMinerUpdates { get; set; }
         public bool BriefUserInterface { get; set; }
-        public View ListViewStyle { get; set; }
+        public ListViewStyle ListViewStyle { get; set; }
         public List<string> HiddenColumns { get; set; }
         public bool ShowApiErrors { get; set; }
         public bool UseAccessibleMenu { get; set; }

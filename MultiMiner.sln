@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.UX", "MultiMiner
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.WhatToMine", "MultiMiner.WhatToMine\MultiMiner.WhatToMine.csproj", "{6B967BB0-692A-4AD5-99EE-93C054F05792}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiMiner.MobileMiner.Embed", "MultiMiner.MobileMiner.Embed\MultiMiner.MobileMiner.Embed.csproj", "{94F1A985-4DB1-46F0-A522-30B3A968E7DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +163,14 @@ Global
 		{6B967BB0-692A-4AD5-99EE-93C054F05792}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B967BB0-692A-4AD5-99EE-93C054F05792}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B967BB0-692A-4AD5-99EE-93C054F05792}.Release|Any CPU.Build.0 = Release|Any CPU
+		{759B14BD-DAB2-4126-BD79-374036196605}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{759B14BD-DAB2-4126-BD79-374036196605}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{759B14BD-DAB2-4126-BD79-374036196605}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{759B14BD-DAB2-4126-BD79-374036196605}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94F1A985-4DB1-46F0-A522-30B3A968E7DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94F1A985-4DB1-46F0-A522-30B3A968E7DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94F1A985-4DB1-46F0-A522-30B3A968E7DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94F1A985-4DB1-46F0-A522-30B3A968E7DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
