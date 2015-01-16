@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{759B14BD-DAB2-4126-BD79-374036196605}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MultiMiner.TUI</RootNamespace>
+    <AssemblyName>MultiMiner.TUI</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MinerApplication.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimpleAsyncResult.cs" />
+    <Compile Include="SimpleSyncObject.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MultiMiner.Coinbase\MultiMiner.Coinbase.csproj">
+      <Project>{95f6c880-7ab3-441b-8d41-28c0ad507b62}</Project>
+      <Name>MultiMiner.Coinbase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Coinchoose\MultiMiner.CoinChoose.csproj">
+      <Project>{d9b3f627-cb7a-454c-af8f-70c8fb584553}</Project>
+      <Name>MultiMiner.CoinChoose</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.CoinWarz\MultiMiner.CoinWarz.csproj">
+      <Project>{5b2b2592-689a-4de2-815c-259427a3d101}</Project>
+      <Name>MultiMiner.CoinWarz</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Discovery\MultiMiner.Discovery.csproj">
+      <Project>{ccb532cd-4922-42a9-baf9-0e651a592467}</Project>
+      <Name>MultiMiner.Discovery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Engine\MultiMiner.Engine.csproj">
+      <Project>{845687bb-ec47-46d3-ac9d-6fcfb63de8f5}</Project>
+      <Name>MultiMiner.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.ExchangeApi\MultiMiner.ExchangeApi.csproj">
+      <Project>{dce499f9-0751-4088-b45b-67ae0e612362}</Project>
+      <Name>MultiMiner.ExchangeApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.MobileMiner\MultiMiner.MobileMiner.csproj">
+      <Project>{70622816-5853-4470-9432-9acda2e96089}</Project>
+      <Name>MultiMiner.MobileMiner</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.MultipoolApi\MultiMiner.MultipoolApi.csproj">
+      <Project>{4af4b34a-07db-456b-9c58-b0863435fe54}</Project>
+      <Name>MultiMiner.MultipoolApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.NiceHash\MultiMiner.NiceHash.csproj">
+      <Project>{5a05d03d-7006-406c-84b0-a2717a07ceb7}</Project>
+      <Name>MultiMiner.NiceHash</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Remoting\MultiMiner.Remoting.csproj">
+      <Project>{db1b318b-b57f-4bf4-8e05-befe7970f64c}</Project>
+      <Name>MultiMiner.Remoting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Services\MultiMiner.Services.csproj">
+      <Project>{cffa60ec-9486-4f45-bef2-05c1a3d68ea6}</Project>
+      <Name>MultiMiner.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Stats\MultiMiner.Stats.csproj">
+      <Project>{2cf95427-df1d-4061-8580-f143f04a0439}</Project>
+      <Name>MultiMiner.Stats</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Utility\MultiMiner.Utility.csproj">
+      <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
+      <Name>MultiMiner.Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.UX\MultiMiner.UX.csproj">
+      <Project>{a23b916f-0e06-43bb-97a4-f61afe3a2f72}</Project>
+      <Name>MultiMiner.UX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.WhatMine\MultiMiner.WhatMine.csproj">
+      <Project>{4b0c2edd-9a3e-41af-b8ef-9a7a541d2e80}</Project>
+      <Name>MultiMiner.WhatMine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.WhatToMine\MultiMiner.WhatToMine.csproj">
+      <Project>{6b967bb0-692a-4ad5-99ee-93c054f05792}</Project>
+      <Name>MultiMiner.WhatToMine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Xgminer.Api\MultiMiner.Xgminer.Api.csproj">
+      <Project>{5b43ad9d-8b67-4aa8-b76d-aa83caf9d29f}</Project>
+      <Name>MultiMiner.Xgminer.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Xgminer.Discovery\MultiMiner.Xgminer.Discovery.csproj">
+      <Project>{ed66caa1-4826-46e9-bb23-c56d0cff5c7a}</Project>
+      <Name>MultiMiner.Xgminer.Discovery</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Xgminer\MultiMiner.Xgminer.csproj">
+      <Project>{0dbef993-1b34-4d80-ab6a-f662604325dc}</Project>
+      <Name>MultiMiner.Xgminer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
