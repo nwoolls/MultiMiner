@@ -62,6 +62,27 @@
     <Compile Include="Controls\DeviceListView.Designer.cs">
       <DependentUpon>DeviceListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ListViewEx.cs">
+      <SubType>component</SubType>
+    </Compile>
+    <Compile Include="Controls\ListViewEx.designer.cs">
+      <DependentUpon>ListViewEx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MessageBoxFontUserControl.cs">
+      <SubType>usercontrol</SubType>
+    </Compile>
+    <Compile Include="Controls\MessageBoxFontUserControl.Designer.cs">
+      <DependentUpon>MessageBoxFontUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NoFlickerListView.cs">
+      <SubType>component</SubType>
+    </Compile>
+    <Compile Include="Controls\NoFlickerListView.Designer.cs">
+      <DependentUpon>NoFlickerListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ReadOnlyTextBox.cs">
+      <SubType>component</SubType>
+    </Compile>
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Forms\AboutForm.cs">
       <SubType>Form</SubType>
@@ -82,13 +103,13 @@
       <DependentUpon>AdvancedSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\DetailsControl.cs">
-      <SubType>UserControl</SubType>
+      <SubType>usercontrol</SubType>
     </Compile>
     <Compile Include="Controls\DetailsControl.Designer.cs">
       <DependentUpon>DetailsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\InstancesControl.cs">
-      <SubType>UserControl</SubType>
+      <SubType>usercontrol</SubType>
     </Compile>
     <Compile Include="Controls\InstancesControl.Designer.cs">
       <DependentUpon>InstancesControl.cs</DependentUpon>
@@ -143,6 +164,13 @@
     <Compile Include="Forms\CredentialsForm.Designer.cs">
       <DependentUpon>CredentialsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\HourGlass.cs" />
+    <Compile Include="Forms\MessageBoxFontForm.cs">
+      <SubType>form</SubType>
+    </Compile>
+    <Compile Include="Forms\MessageBoxFontForm.Designer.cs">
+      <DependentUpon>MessageBoxFontForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MinerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -150,13 +178,13 @@
       <DependentUpon>MinerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Notifications\NotificationControl.cs">
-      <SubType>UserControl</SubType>
+      <SubType>usercontrol</SubType>
     </Compile>
     <Compile Include="Controls\Notifications\NotificationControl.Designer.cs">
       <DependentUpon>NotificationControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Notifications\NotificationsControl.cs">
-      <SubType>UserControl</SubType>
+      <SubType>usercontrol</SubType>
     </Compile>
     <Compile Include="Controls\Notifications\NotificationsControl.Designer.cs">
       <DependentUpon>NotificationsControl.cs</DependentUpon>
@@ -179,6 +207,7 @@
     <Compile Include="Forms\ShellCommandForm.Designer.cs">
       <DependentUpon>ShellCommandForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Forms\ProgressForm.cs">
       <SubType>Form</SubType>
@@ -353,6 +382,10 @@
     <ProjectReference Include="..\MultiMiner.ExchangeApi\MultiMiner.ExchangeApi.csproj">
       <Project>{dce499f9-0751-4088-b45b-67ae0e612362}</Project>
       <Name>MultiMiner.ExchangeApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.MobileMiner.Embed\MultiMiner.MobileMiner.Embed.csproj">
+      <Project>{94f1a985-4db1-46f0-a522-30b3a968e7da}</Project>
+      <Name>MultiMiner.MobileMiner.Embed</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.MobileMiner\MultiMiner.MobileMiner.csproj">
       <Project>{70622816-5853-4470-9432-9ACDA2E96089}</Project>

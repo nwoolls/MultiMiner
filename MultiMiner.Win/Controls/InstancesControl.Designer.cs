@@ -1,5 +1,4 @@
-﻿using MultiMiner.Utility.Forms;
-namespace MultiMiner.Win.Controls
+﻿namespace MultiMiner.Win.Controls
 {
     partial class InstancesControl : MessageBoxFontUserControl
     {

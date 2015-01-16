@@ -1,6 +1,6 @@
-﻿namespace MultiMiner.Utility.Forms
+﻿namespace MultiMiner.Win.Controls
 {
-    partial class NoFlickerListView
+    public partial class MessageBoxFontUserControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         }
 
         #endregion

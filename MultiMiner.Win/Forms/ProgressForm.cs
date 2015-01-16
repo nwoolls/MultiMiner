@@ -1,5 +1,4 @@
-﻿using MultiMiner.Utility.Forms;
-using MultiMiner.Win.Properties;
+﻿using MultiMiner.Win.Properties;
 using System.Drawing;
 
 namespace MultiMiner.Win.Forms

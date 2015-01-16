@@ -50,6 +50,7 @@
     <Compile Include="Data\AlgorithmParameter.cs" />
     <Compile Include="Data\CoinSuggestionsAlgorithm.cs" />
     <Compile Include="Data\Configuration\Coin.cs" />
+    <Compile Include="Data\Configuration\ListViewStyle.cs" />
     <Compile Include="Data\Configuration\Strategy.cs" />
     <Compile Include="Data\PoolGroup.cs" />
     <Compile Include="Data\Configuration\Device.cs" />

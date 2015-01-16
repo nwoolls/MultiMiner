@@ -2,7 +2,6 @@
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Installers;
 using MultiMiner.MobileMiner.Helpers;
-using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
 using MultiMiner.UX.Data;
 using MultiMiner.UX.Data.Configuration;

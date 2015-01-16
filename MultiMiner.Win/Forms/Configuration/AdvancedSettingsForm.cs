@@ -1,5 +1,4 @@
 ﻿using MultiMiner.Engine;
-using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.IO;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.UX.Data.Configuration;

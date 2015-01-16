@@ -1,5 +1,4 @@
 ﻿using MultiMiner.MobileMiner.Helpers;
-using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.OS;
 using MultiMiner.UX.Data.Configuration;
 using System;

@@ -1,7 +1,6 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Installers;
-using MultiMiner.Utility.Forms;
 using MultiMiner.Win.Extensions;
 using System;
 using System.Diagnostics;

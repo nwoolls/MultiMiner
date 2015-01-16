@@ -1,7 +1,6 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Extensions;
-using MultiMiner.Utility.Forms;
 using MultiMiner.UX.ViewModels;
 using MultiMiner.Xgminer.Data;
 using System;

@@ -1,5 +1,4 @@
-﻿using MultiMiner.Utility.Forms;
-using MultiMiner.Utility.Serialization;
+﻿using MultiMiner.Utility.Serialization;
 using MultiMiner.UX.Data.Configuration;
 using System;
 using System.Diagnostics;
