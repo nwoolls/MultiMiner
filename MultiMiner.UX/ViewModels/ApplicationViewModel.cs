@@ -48,6 +48,7 @@ using Device = MultiMiner.Xgminer.Data.Device;
 using Listener = MultiMiner.Discovery.Listener;
 using Path = MultiMiner.Remoting.Data.Transfer.Configuration.Path;
 using Perks = MultiMiner.UX.Data.Configuration.Perks;
+using System.Globalization;
 
 namespace MultiMiner.UX.ViewModels
 {
@@ -5011,6 +5012,41 @@ namespace MultiMiner.UX.ViewModels
 
             foreach (Process disownedMiner in disownedMiners)
                 MinerProcess.KillProcess(disownedMiner);
+        }
+
+        public string GetCurrentCultureCurrency()
+        {
+            string currencySymbol = RegionInfo.CurrentRegion.ISOCurrencySymbol;
+            if ((SellPrices != null) && (SellPrices.SingleOrDefault(sp => sp.TargetCurrency.Equals(currencySymbol)) == null))
+                currencySymbol = "USD";
+
+            return currencySymbol;
+        }
+
+        private bool ShouldShowExchangeRates()
+        {
+            //check .Mining to allow perks for Remoting when local PC is not mining
+            return ((MiningEngine.Donating || !MiningEngine.Mining) && PerksConfiguration.ShowExchangeRates
+                //ensure Exchange prices are available:
+                && (SellPrices != null));
+        }
+
+        public string GetExchangeRate(DeviceViewModel device)
+        {
+            var exchange = String.Empty;
+            if (device.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+            {
+                if (ShouldShowExchangeRates())
+                {
+                    ExchangeInformation exchangeInformation = SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                    double btcExchangeRate = exchangeInformation.ExchangeRate;
+
+                    double coinExchangeRate = device.Price * btcExchangeRate;
+
+                    exchange = String.Format("{0}{1}", exchangeInformation.TargetSymbol, coinExchangeRate.ToFriendlyString(true));
+                }
+            }
+            return exchange;
         }
         #endregion
 

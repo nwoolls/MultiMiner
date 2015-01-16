@@ -269,15 +269,6 @@ namespace MultiMiner.Win.Forms
 
             return listViewItem;
         }
-
-        private string GetCurrentCultureCurrency()
-        {
-            string currencySymbol = RegionInfo.CurrentRegion.ISOCurrencySymbol;
-            if ((app.SellPrices != null) && (app.SellPrices.SingleOrDefault(sp => sp.TargetCurrency.Equals(currencySymbol)) == null))
-                currencySymbol = "USD";
-
-            return currencySymbol;
-        }
         
         private void RefreshViewFromViewModel()
         {
@@ -512,7 +503,7 @@ namespace MultiMiner.Win.Forms
                     //ensure Exchange prices are available:
                     && (app.SellPrices != null))
                     {
-                        ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                        ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(app.GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
                         double btcExchangeRate = exchangeInformation.ExchangeRate;
 
                         double coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
@@ -974,7 +965,7 @@ namespace MultiMiner.Win.Forms
 
             if (info != null)
             {
-                ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(app.GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
 
                 if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
                 {
@@ -1066,7 +1057,7 @@ namespace MultiMiner.Win.Forms
                         .SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
                     if (coinInfo != null)
                     {
-                        ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                        ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(app.GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
                         usdSymbol = exchangeInformation.TargetSymbol;
                         double btcExchangeRate = exchangeInformation.ExchangeRate;
                         double coinUsd = btcExchangeRate * coinInfo.Price;
