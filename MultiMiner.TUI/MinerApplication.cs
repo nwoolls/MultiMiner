@@ -1,4 +1,6 @@
-﻿using MultiMiner.UX.Data;
+﻿using MultiMiner.Engine.Data;
+using MultiMiner.ExchangeApi.Data;
+using MultiMiner.UX.Data;
 using MultiMiner.UX.Extensions;
 using MultiMiner.UX.ViewModels;
 using System;
@@ -56,8 +58,15 @@ namespace MultiMiner.TUI
             };
 
             app.Context = threadContext;
+
             app.ApplicationConfiguration.LoadApplicationConfiguration(app.PathConfiguration.SharedConfigPath);
+            app.EngineConfiguration.LoadStrategyConfiguration(app.PathConfiguration.SharedConfigPath); //needed before refreshing coins
+            app.EngineConfiguration.LoadCoinConfigurations(app.PathConfiguration.SharedConfigPath); //needed before refreshing coins
             app.LoadSettings();
+
+            app.SetupCoinApi(); //so we target the correct API
+            app.RefreshCoinStats();
+
             app.SetupCoalescedTimers();
             app.UpdateBackendMinerAvailability();
             app.CheckAndDownloadMiners();
@@ -100,12 +109,37 @@ namespace MultiMiner.TUI
             {
                 var device = devices[i];
                 var name = String.IsNullOrEmpty(device.FriendlyName) ? device.Name : device.FriendlyName;
-                var hashrate = device.CurrentHashrate.ToHashrateString();
+                var shortName = name.EllipsisString(11, "..");
+                var hashrate = device.CurrentHashrate.ToHashrateString().Replace(" ", "").PadLeft(10);
+                var coinSymbol = device.Coin.Id.ShortCoinSymbol();
+                var exchange = app.GetExchangeRate(device);
+                var pool = device.Pool.DomainFromHost();
+                var kind = device.Kind.ToString().First();
+
+                var difficulty = app.GetCachedNetworkDifficulty(device.Pool ?? String.Empty);
+                if (difficulty == 0.0)
+                    difficulty = device.Difficulty;
+                var diffStr = difficulty.ToDifficultyString().Replace(" ", "").PadLeft(7);
 
                 Console.SetCursorPosition(0, i);
-                Console.Write(name);
+                Console.Write(kind);
+                
+                Console.SetCursorPosition(2, i);
+                Console.Write(shortName);
 
-                Console.SetCursorPosition(20, i);
+                Console.SetCursorPosition(14, i);
+                Console.Write(coinSymbol);
+
+                Console.SetCursorPosition(22, i);
+                Console.Write(diffStr);
+
+                Console.SetCursorPosition(31, i);
+                Console.Write(exchange);
+
+                Console.SetCursorPosition(39, i);
+                Console.Write(pool);
+
+                Console.SetCursorPosition(54, i);
                 Console.Write(hashrate);
             }
 
