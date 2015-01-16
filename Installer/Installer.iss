@@ -50,7 +50,9 @@ Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinChoose.pdb"; DestDir: "{ap
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinWarz.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinWarz.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MobileMiner.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MobileMiner.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MobileMiner.pdb"; DestDir: "{app}"; Flags: ignoreversion  
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MobileMiner.Embed.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MobileMiner.Embed.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Engine.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Engine.pdb"; DestDir: "{app}"; Flags: ignoreversion 
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Stats.dll"; DestDir: "{app}"; Flags: ignoreversion
