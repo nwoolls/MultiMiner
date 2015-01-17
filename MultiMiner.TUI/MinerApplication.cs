@@ -85,7 +85,7 @@ namespace MultiMiner.TUI
 
             app.NotificationDismissed += (object sender, NotificationEventArgs e) =>
             {
-                notifications.RemoveAll(n => n.Id.Equals(e.Id));
+                notifications.RemoveAll(n => !String.IsNullOrEmpty(n.Id) && n.Id.Equals(e.Id));
                 screenDirty = true;
             };
 
