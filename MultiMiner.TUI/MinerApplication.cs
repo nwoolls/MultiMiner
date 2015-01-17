@@ -1,6 +1,7 @@
 ﻿using MultiMiner.UX.Data;
 using MultiMiner.UX.Extensions;
 using MultiMiner.UX.ViewModels;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +19,9 @@ namespace MultiMiner.TUI
         private const string RestartCommand = "restart";
         private const string ScanCommand = "scan";
         private const string SwitchAllCommand = "SwitchAll";
+        private const string PoolCommand = "Pool";
+        private const string AddVerb = "Add";
+        private const string RemoveVerb = "Remove";
 
         private const string Ellipsis = "..";
 
@@ -155,7 +159,7 @@ namespace MultiMiner.TUI
             oldWindowWidth = Console.WindowWidth;
 
 #if DEBUG
-            OutputJunk();
+            //OutputJunk();
 #endif
 
             OutputDevices();
@@ -316,7 +320,7 @@ namespace MultiMiner.TUI
                 var device = devices[i];
                 var name = String.IsNullOrEmpty(device.FriendlyName) ? device.Name : device.FriendlyName;
                 var hashrate = device.CurrentHashrate.ToHashrateString().Replace(" ", "");
-                var coinSymbol = device.Coin.Id.ShortCoinSymbol();
+                var coinSymbol = device.Coin == null ? String.Empty : device.Coin.Id.ShortCoinSymbol();
                 var exchange = app.GetExchangeRate(device);
                 var pool = device.Pool.DomainFromHost();
                 var kind = device.Kind.ToString().First();
@@ -412,13 +416,9 @@ namespace MultiMiner.TUI
             else if (InputMatchesCommand(input, ScanCommand))
                 app.ScanHardwareLocally();
             else if (InputMatchesCommand(input, SwitchAllCommand))
-            {
-                var parts = input.Split(' ');
-                if (parts.Count() == 2)
-                    app.SetAllDevicesToCoin(parts[1], true);
-                else
-                    AddNotification(String.Format("Syntax: {0} symbol", SwitchAllCommand.ToLower()));
-            }
+                HandleSwitchAllCommand(input);
+            else if (InputMatchesCommand(input, PoolCommand))
+                HandlePoolCommand(input);
             else
             {
                 AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
@@ -429,6 +429,82 @@ namespace MultiMiner.TUI
             if ((commandQueue.Count == 0) || !commandQueue.Last().Equals(input))
                 commandQueue.Add(input);
             commandIndex = commandQueue.Count - 1;
+        }
+
+        private void HandleSwitchAllCommand(string input)
+        {
+            var parts = input.Split(' ');
+            if (parts.Count() == 2)
+                app.SetAllDevicesToCoin(parts[1], true);
+            else
+                AddNotification(String.Format("Syntax: {0} symbol", SwitchAllCommand.ToLower()));
+        }
+
+        private void HandlePoolCommand(string input)
+        {
+            var syntax = String.Format("Syntax:{0} {{ add | remove }} symbol url user pass", PoolCommand.ToLower());
+            var parts = input.Split(' ');
+            if (parts.Count() == 6)
+            {
+                var verb = parts[1];
+                var symbol = parts[2];
+                var url = parts[3];
+                var user = parts[4];
+                var pass = parts[5];
+
+                CoinApi.Data.CoinInformation coin = app.CoinApiInformation.SingleOrDefault(c => c.Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase));
+                if (coin == null)
+                {
+                    AddNotification(String.Format("Unknown coin: {0}", symbol));
+                    return; //early exit
+                }
+
+                bool add = verb.Equals(AddVerb, StringComparison.OrdinalIgnoreCase);
+                bool remove = verb.Equals(RemoveVerb, StringComparison.OrdinalIgnoreCase);
+                if (add)
+                {
+                    Engine.Data.Configuration.Coin coinConfig = app.EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase));
+                    if (coinConfig == null)
+                    {
+                        coinConfig = new Engine.Data.Configuration.Coin();
+                        var algorithm = coin.Algorithm;
+
+                        //we don't want the FullName
+                        KnownAlgorithm knownAlgorithm = KnownAlgorithms.Algorithms.SingleOrDefault(a => a.FullName.Equals(algorithm, StringComparison.OrdinalIgnoreCase));
+                        if (knownAlgorithm != null) algorithm = knownAlgorithm.Name;
+
+                        coinConfig.PoolGroup = new Engine.Data.PoolGroup
+                        {
+                            Algorithm = algorithm,
+                            Id = coin.Symbol,
+                            Kind = coin.Symbol.Contains(':') ? Engine.Data.PoolGroup.PoolGroupKind.MultiCoin : Engine.Data.PoolGroup.PoolGroupKind.SingleCoin,
+                            Name = coin.Name
+                        };
+                        app.EngineConfiguration.CoinConfigurations.Add(coinConfig);
+                    }
+
+                    Uri uri = new Uri(url);
+                    Xgminer.Data.MiningPool poolConfig = new Xgminer.Data.MiningPool
+                    {
+                        Host = uri.GetComponents(UriComponents.AbsoluteUri & ~UriComponents.Port, UriFormat.UriEscaped),
+                        Port = uri.Port,
+                        Password = pass,
+                        Username = user
+                    };
+                    coinConfig.Pools.Add(poolConfig);
+                    app.EngineConfiguration.SaveCoinConfigurations();
+                }
+                else if (remove)
+                {
+
+                }
+                else
+                {
+                    AddNotification(syntax);
+                }
+            }
+            else
+                AddNotification(syntax);
         }
 
         private void HandleCommandNavigation(bool navigateUp)
