@@ -52,12 +52,14 @@ namespace MultiMiner.TUI
             app.ProgressStarted += (object sender, ProgressEventArgs e) =>
             {
                 currentProgress = e.Text;
+                UpdateScreen();
                 screenDirty = true;
             };
 
             app.ProgressCompleted += (object sender, EventArgs e) =>
             {
                 currentProgress = String.Empty;
+                UpdateScreen();
                 screenDirty = true;
             };
 
@@ -125,9 +127,9 @@ namespace MultiMiner.TUI
 
             OutputDevices();
 
-            OutputNotifications();
-
             OutputProgress();
+
+            OutputNotifications();
 
             OutputStatus();
 
@@ -192,8 +194,9 @@ namespace MultiMiner.TUI
         
         private void OutputProgress()
         {
+            var output = currentProgress.FitRight(Console.WindowWidth, Ellipsis);
             if (SetCursorPosition(0, Console.WindowHeight - 3))
-                Console.Write(currentProgress);
+                Console.Write(output);
         }
 
         private void OutputDevices()
