@@ -11,9 +11,13 @@ namespace MultiMiner.TUI
 {
     class MinerApplication
     {
-        private const string QuitCommand = "quit";
+        //upper-case chars serve as a command alias, e.g. Quit = q
+        private const string QuitCommand = "Quit";
         private const string StartCommand = "start";
         private const string StopCommand = "stop";
+        private const string RestartCommand = "restart";
+        private const string ScanCommand = "scan";
+        private const string SwitchAllCommand = "SwitchAll";
 
         private const string Ellipsis = "..";
 
@@ -21,16 +25,25 @@ namespace MultiMiner.TUI
         private readonly ISynchronizeInvoke threadContext = new SimpleSyncObject();
         private readonly Timer forceDirtyTimer = new Timer(1000);
         private readonly List<NotificationEventArgs> notifications = new List<NotificationEventArgs>();
+        private readonly List<string> commandQueue = new List<string>();
+
         private bool screenDirty = false;
         private string currentInput = String.Empty;
         private string currentProgress = String.Empty;
         private bool quitApplication = false;
         private int oldWindowHeight = 0;
         private int oldWindowWidth = 0;
+        private int commandIndex = -1;
 
         public void Run()
         {
             Console.CursorVisible = false;
+
+            Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs e) =>
+            {
+                quitApplication = true;  //exit main loop
+                e.Cancel = true;         //prevent the app from quitting so we can close properly
+            };
 
             forceDirtyTimer.Elapsed += (object sender, ElapsedEventArgs e) =>
             {
@@ -52,15 +65,13 @@ namespace MultiMiner.TUI
             app.ProgressStarted += (object sender, ProgressEventArgs e) =>
             {
                 currentProgress = e.Text;
-                UpdateScreen();
-                screenDirty = true;
+                UpdateScreen(true);
             };
 
             app.ProgressCompleted += (object sender, EventArgs e) =>
             {
                 currentProgress = String.Empty;
-                UpdateScreen();
-                screenDirty = true;
+                UpdateScreen(true);
             };
 
             app.NotificationReceived += (object sender, NotificationEventArgs e) =>
@@ -81,6 +92,15 @@ namespace MultiMiner.TUI
             app.EngineConfiguration.LoadStrategyConfiguration(app.PathConfiguration.SharedConfigPath); //needed before refreshing coins
             app.EngineConfiguration.LoadCoinConfigurations(app.PathConfiguration.SharedConfigPath); //needed before refreshing coins
             app.LoadSettings();
+
+            //kill known owned processes to release inherited socket handles
+            if (ApplicationViewModel.KillOwnedProcesses())
+                //otherwise may still be prompted below by check for disowned miners
+                System.Threading.Thread.Sleep(500);
+
+            //check for disowned miners before refreshing devices
+            if (app.ApplicationConfiguration.DetectDisownedMiners)
+                app.CheckForDisownedMiners();
 
             app.SetupCoinApi(); //so we target the correct API
             app.RefreshCoinStats();
@@ -111,9 +131,10 @@ namespace MultiMiner.TUI
             }
         }
 
-        private void UpdateScreen()
+        private void UpdateScreen(bool force = false)
         {
-            if (!screenDirty) return;
+            if (!screenDirty && !force) return;
+            screenDirty = false;
 
             if ((oldWindowHeight != Console.WindowHeight) || (oldWindowWidth != Console.WindowWidth))
                 Console.Clear();
@@ -136,8 +157,6 @@ namespace MultiMiner.TUI
             var output = OutputIncome();
 
             OutputInput(Console.WindowWidth - 1 - output.Length);
-
-            screenDirty = false;
         }
 
         private void OutputJunk()
@@ -160,7 +179,9 @@ namespace MultiMiner.TUI
             for (int i = 0; i < recentNotifications.Count; i++)
             {
                 const int MaxWidth = 55;
-                if (SetCursorPosition(Console.WindowWidth - MaxWidth, Console.WindowHeight - (NotificationCount - 1 - i)))
+                var column = Console.WindowWidth - MaxWidth;
+                var row = GetProgressRow() - (recentNotifications.Count - i);
+                if (SetCursorPosition(column, row))
                     Console.Write(recentNotifications[i].Text.FitLeft(MaxWidth, Ellipsis));
             }
         }
@@ -211,6 +232,16 @@ namespace MultiMiner.TUI
         private static int GetProgressRow()
         {
             return Console.WindowHeight - 3;
+        }
+
+        private void AddNotification(string text)
+        {
+            notifications.Add(new NotificationEventArgs
+            {
+                Text = text
+            });
+            screenDirty = true;
+            UpdateScreen();
         }
 
         private void OutputDevices()
@@ -282,21 +313,83 @@ namespace MultiMiner.TUI
                 }
                 else if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    var input = currentInput;
+                    var input = currentInput.Trim();
                     currentInput = String.Empty;
                     UpdateScreen();
 
-                    if (input.Equals(QuitCommand, StringComparison.OrdinalIgnoreCase))
-                        quitApplication = true;
-                    else if (input.Equals(StartCommand, StringComparison.OrdinalIgnoreCase))
-                        app.StartMining();
-                    else if (input.Equals(StopCommand, StringComparison.OrdinalIgnoreCase))
-                        app.StopMining();
+                    HandleCommandInput(input);
                 }
+                else if ((keyInfo.Key == ConsoleKey.UpArrow) || (keyInfo.Key == ConsoleKey.DownArrow))
+                    HandleCommandNavigation(keyInfo.Key == ConsoleKey.UpArrow);
                 else
                 {
                     string key = keyInfo.KeyChar.ToString().ToLower();
                     currentInput = currentInput + key;
+                }
+            }
+        }
+
+        private bool InputMatchesCommand(string input, string command)
+        {
+            var firstWord = input.Split(' ').First();
+            var alias = new String(command.Where(c => Char.IsUpper(c)).ToArray());
+            return firstWord.Equals(command, StringComparison.OrdinalIgnoreCase)
+                || (!String.IsNullOrEmpty(alias) && firstWord.Equals(alias, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private void HandleCommandInput(string input)
+        {
+            if (InputMatchesCommand(input, QuitCommand))
+                quitApplication = true;
+            else if (InputMatchesCommand(input, StartCommand))
+                app.StartMining();
+            else if (InputMatchesCommand(input, StopCommand))
+                app.StopMining();
+            else if (InputMatchesCommand(input, RestartCommand))
+                app.RestartMining();
+            else if (InputMatchesCommand(input, ScanCommand))
+                app.ScanHardwareLocally();
+            else if (InputMatchesCommand(input, SwitchAllCommand))
+            {
+                var parts = input.Split(' ');
+                if (parts.Count() == 2)
+                    app.SetAllDevicesToCoin(parts[1], true);
+                else
+                    AddNotification(String.Format("Syntax: quickswitch symbol", input.Split(' ').First()));
+            }
+            else
+            {
+                AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
+                return; //exit early
+            }
+
+            //successful command
+            if ((commandQueue.Count == 0) || !commandQueue.Last().Equals(input))
+                commandQueue.Add(input);
+            commandIndex = commandQueue.Count - 1;
+        }
+
+        private void HandleCommandNavigation(bool navigateUp)
+        {
+            if (navigateUp)
+            {
+                if (commandIndex >= 0)
+                {
+                    currentInput = commandQueue[commandIndex];
+                    if (commandIndex > 0) commandIndex--;
+                }
+            }
+            else
+            {
+                if (commandIndex < commandQueue.Count - 1)
+                {
+                    commandIndex++;
+                    currentInput = commandQueue[commandIndex];
+                }
+                else
+                {
+                    commandIndex = commandQueue.Count - 1;
+                    currentInput = String.Empty;
                 }
             }
         }

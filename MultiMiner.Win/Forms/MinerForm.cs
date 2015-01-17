@@ -2815,10 +2815,6 @@ namespace MultiMiner.Win.Forms
                     {
                         RefreshListViewFromViewModel();
                         RefreshDetailsAreaIfVisible();
-
-                        //clean up mappings from previous device list
-                        app.DeviceDetailsMapping.Clear();
-
                         RefreshStatusBarFromViewModel();
 
                         //it may not be possible to mine after discovering devices
