@@ -227,6 +227,16 @@ namespace MultiMiner.TUI
             return Console.WindowHeight - 3;
         }
 
+        private void AddNotification(string text)
+        {
+            notifications.Add(new NotificationEventArgs
+            {
+                Text = text
+            });
+            screenDirty = true;
+            UpdateScreen();
+        }
+
         private void OutputDevices()
         {
             var minerForm = app.GetViewModelToView();
@@ -296,7 +306,7 @@ namespace MultiMiner.TUI
                 }
                 else if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    var input = currentInput;
+                    var input = currentInput.Trim();
                     currentInput = String.Empty;
                     UpdateScreen();
 
@@ -306,6 +316,8 @@ namespace MultiMiner.TUI
                         app.StartMining();
                     else if (input.Equals(StopCommand, StringComparison.OrdinalIgnoreCase))
                         app.StopMining();
+                    else
+                        AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
                 }
                 else
                 {
