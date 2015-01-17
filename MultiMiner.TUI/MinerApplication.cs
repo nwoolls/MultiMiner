@@ -11,7 +11,8 @@ namespace MultiMiner.TUI
 {
     class MinerApplication
     {
-        private const string QuitCommand = "quit";
+        //upper-case chars serve as a command alias, e.g. Quit = q
+        private const string QuitCommand = "Quit";
         private const string StartCommand = "start";
         private const string StopCommand = "stop";
         private const string RestartCommand = "restart";
@@ -327,17 +328,25 @@ namespace MultiMiner.TUI
             }
         }
 
+        private bool InputMatchesCommand(string input, string command)
+        {
+            var firstWord = input.Split(' ').First();
+            var alias = new String(command.Where(c => Char.IsUpper(c)).ToArray());
+            return firstWord.Equals(command, StringComparison.OrdinalIgnoreCase)
+                || (!String.IsNullOrEmpty(alias) && firstWord.Equals(alias, StringComparison.OrdinalIgnoreCase));
+        }
+
         private void HandleCommandInput(string input)
         {
-            if (input.Equals(QuitCommand, StringComparison.OrdinalIgnoreCase))
+            if (InputMatchesCommand(input, QuitCommand))
                 quitApplication = true;
-            else if (input.Equals(StartCommand, StringComparison.OrdinalIgnoreCase))
+            else if (InputMatchesCommand(input, StartCommand))
                 app.StartMining();
-            else if (input.Equals(StopCommand, StringComparison.OrdinalIgnoreCase))
+            else if (InputMatchesCommand(input, StopCommand))
                 app.StopMining();
-            else if (input.Equals(RestartCommand, StringComparison.OrdinalIgnoreCase))
+            else if (InputMatchesCommand(input, RestartCommand))
                 app.RestartMining();
-            else if (input.Equals(ScanCommand, StringComparison.OrdinalIgnoreCase))
+            else if (InputMatchesCommand(input, ScanCommand))
                 app.ScanHardwareLocally();
             else
             {
