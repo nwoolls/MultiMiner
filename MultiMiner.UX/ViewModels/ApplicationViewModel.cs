@@ -940,6 +940,8 @@ namespace MultiMiner.UX.ViewModels
 
         private void CalculateDailyIncome(DeviceViewModel device)
         {
+            if (device.Coin == null) return;
+
             CoinInformation info = CoinApiInformation
                 .ToList() //get a copy - populated async & collection may be modified
                 .SingleOrDefault(c => c.Symbol.Equals(device.Coin.Id, StringComparison.OrdinalIgnoreCase));
@@ -5096,7 +5098,7 @@ namespace MultiMiner.UX.ViewModels
         public string GetExchangeRate(DeviceViewModel device)
         {
             var exchange = String.Empty;
-            if (device.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+            if ((device.Coin != null) && (device.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin))
             {
                 if (ShouldShowExchangeRates())
                 {
