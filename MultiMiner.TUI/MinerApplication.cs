@@ -58,15 +58,13 @@ namespace MultiMiner.TUI
             app.ProgressStarted += (object sender, ProgressEventArgs e) =>
             {
                 currentProgress = e.Text;
-                UpdateScreen();
-                screenDirty = true;
+                UpdateScreen(true);
             };
 
             app.ProgressCompleted += (object sender, EventArgs e) =>
             {
                 currentProgress = String.Empty;
-                UpdateScreen();
-                screenDirty = true;
+                UpdateScreen(true);
             };
 
             app.NotificationReceived += (object sender, NotificationEventArgs e) =>
@@ -126,9 +124,10 @@ namespace MultiMiner.TUI
             }
         }
 
-        private void UpdateScreen()
+        private void UpdateScreen(bool force = false)
         {
-            if (!screenDirty) return;
+            if (!screenDirty && !force) return;
+            screenDirty = false;
 
             if ((oldWindowHeight != Console.WindowHeight) || (oldWindowWidth != Console.WindowWidth))
                 Console.Clear();
@@ -151,8 +150,6 @@ namespace MultiMiner.TUI
             var output = OutputIncome();
 
             OutputInput(Console.WindowWidth - 1 - output.Length);
-
-            screenDirty = false;
         }
 
         private void OutputJunk()
