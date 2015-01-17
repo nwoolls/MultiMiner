@@ -258,14 +258,16 @@ namespace MultiMiner.TUI
                 }
                 else if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    if (currentInput.Equals(QuitCommand, StringComparison.OrdinalIgnoreCase))
-                        quitApplication = true;
-                    else if (currentInput.Equals(StartCommand, StringComparison.OrdinalIgnoreCase))
-                        app.StartMining();
-                    else if (currentInput.Equals(StopCommand, StringComparison.OrdinalIgnoreCase))
-                        app.StopMining();
-
+                    var input = currentInput;
                     currentInput = String.Empty;
+                    UpdateScreen();
+
+                    if (input.Equals(QuitCommand, StringComparison.OrdinalIgnoreCase))
+                        quitApplication = true;
+                    else if (input.Equals(StartCommand, StringComparison.OrdinalIgnoreCase))
+                        app.StartMining();
+                    else if (input.Equals(StopCommand, StringComparison.OrdinalIgnoreCase))
+                        app.StopMining();
                 }
                 else
                 {
