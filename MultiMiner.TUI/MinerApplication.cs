@@ -345,6 +345,8 @@ namespace MultiMiner.TUI
                 }
                 else if (keyInfo.Key == ConsoleKey.Enter)
                 {
+                    if (String.IsNullOrEmpty(currentInput)) return;
+
                     var input = currentInput.Trim();
                     currentInput = String.Empty;
                     UpdateScreen();
