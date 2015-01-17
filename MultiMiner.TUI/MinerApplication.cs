@@ -26,6 +26,9 @@ namespace MultiMiner.TUI
         private readonly Timer forceDirtyTimer = new Timer(1000);
         private readonly List<NotificationEventArgs> notifications = new List<NotificationEventArgs>();
         private readonly List<string> commandQueue = new List<string>();
+        private readonly bool isWindows = Utility.OS.OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
+        private readonly bool isLinux = Utility.OS.OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix;
+        private readonly bool isMac = Utility.OS.OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX;
 
         private bool screenDirty = false;
         private string currentInput = String.Empty;
@@ -198,7 +201,7 @@ namespace MultiMiner.TUI
         private string OutputIncome()
         {
             var incomeSummary = app.GetIncomeSummaryText();
-            if (SetCursorPosition(Console.WindowWidth - 1 - incomeSummary.Length, Console.WindowHeight - 1))
+            if (SetCursorPosition(Console.WindowWidth - (isWindows ? 1 : 0) - incomeSummary.Length, Console.WindowHeight - 1))
             {
                 WriteText(incomeSummary, ConsoleColor.White, ConsoleColor.DarkGray);
                 return incomeSummary;
@@ -224,12 +227,16 @@ namespace MultiMiner.TUI
             var row = Console.WindowHeight - 1;
             if (SetCursorPosition(0, row))
             {
-                //http://stackoverflow.com/questions/25084384/filling-last-line-in-console
-                WriteText(" ", ConsoleColor.Gray, ConsoleColor.DarkGray);
-                Console.MoveBufferArea(0, row, 1, 1, Console.WindowWidth - 1, row);
+                //[ERROR] FATAL UNHANDLED EXCEPTION: System.NotImplementedException: The requested feature is not implemented.
+                if (isWindows)
+                {
+                    //http://stackoverflow.com/questions/25084384/filling-last-line-in-console
+                    WriteText(" ", ConsoleColor.Gray, ConsoleColor.DarkGray);
+                    Console.MoveBufferArea(0, row, 1, 1, Console.WindowWidth - 1, row);
+                }
 
                 SetCursorPosition(0, row);
-                var width = totalWidth - Prefix.Length - 1;
+                var width = totalWidth - Prefix.Length - (isWindows ? 1 : 0);
                 var text = String.Format("{0}{1}", Prefix, currentInput.TrimStart().FitRight(width, Ellipsis));
                 WriteText(text, ConsoleColor.White, ConsoleColor.DarkGray);
             }
