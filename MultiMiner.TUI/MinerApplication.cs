@@ -355,7 +355,7 @@ namespace MultiMiner.TUI
                 if (parts.Count() == 2)
                     app.SetAllDevicesToCoin(parts[1], true);
                 else
-                    AddNotification(String.Format("Syntax: quickswitch symbol", input.Split(' ').First()));
+                    AddNotification(String.Format("Syntax: {0} symbol", SwitchAllCommand.ToLower()));
             }
             else
             {
