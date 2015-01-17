@@ -1,9 +1,8 @@
-﻿using MultiMiner.Engine.Data;
-using MultiMiner.ExchangeApi.Data;
-using MultiMiner.UX.Data;
+﻿using MultiMiner.UX.Data;
 using MultiMiner.UX.Extensions;
 using MultiMiner.UX.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Timers;
@@ -16,13 +15,18 @@ namespace MultiMiner.TUI
         private const string StartCommand = "start";
         private const string StopCommand = "stop";
 
+        private const string Ellipsis = "..";
+
         private readonly ApplicationViewModel app = new ApplicationViewModel();
+        private readonly ISynchronizeInvoke threadContext = new SimpleSyncObject();
+        private readonly Timer forceDirtyTimer = new Timer(1000);
+        private readonly List<NotificationEventArgs> notifications = new List<NotificationEventArgs>();
         private bool screenDirty = false;
         private string currentInput = String.Empty;
         private string currentProgress = String.Empty;
         private bool quitApplication = false;
-        private readonly ISynchronizeInvoke threadContext = new SimpleSyncObject();
-        private readonly Timer forceDirtyTimer = new Timer(1000);
+        private int oldWindowHeight = 0;
+        private int oldWindowWidth = 0;
 
         public void Run()
         {
@@ -57,6 +61,18 @@ namespace MultiMiner.TUI
                 screenDirty = true;
             };
 
+            app.NotificationReceived += (object sender, NotificationEventArgs e) =>
+            {
+                notifications.Add(e);
+                screenDirty = true;
+            };
+
+            app.NotificationDismissed += (object sender, NotificationEventArgs e) =>
+            {
+                notifications.RemoveAll(n => n.Id.Equals(e.Id));
+                screenDirty = true;
+            };
+
             app.Context = threadContext;
 
             app.ApplicationConfiguration.LoadApplicationConfiguration(app.PathConfiguration.SharedConfigPath);
@@ -72,6 +88,8 @@ namespace MultiMiner.TUI
             app.CheckAndDownloadMiners();
             app.SetupRemoting();
             app.SetupNetworkDeviceDetection();
+            app.CheckForUpdates();
+            app.SetupMiningOnStartup();
 
             MainLoop();
 
@@ -86,7 +104,7 @@ namespace MultiMiner.TUI
             while (!quitApplication)
             {
                 // Sleep for a short period
-                System.Threading.Thread.Sleep(100);
+                System.Threading.Thread.Sleep(10);
                 
                 HandleInput();
 
@@ -98,8 +116,88 @@ namespace MultiMiner.TUI
         {
             if (!screenDirty) return;
 
-            Console.Clear();
+            if ((oldWindowHeight != Console.WindowHeight) 
+                || (oldWindowWidth != Console.WindowWidth))
+                Console.Clear();
 
+            oldWindowHeight = Console.WindowHeight;
+            oldWindowWidth = Console.WindowWidth;
+
+            OutputDevices();
+
+            OutputNotifications();
+
+            OutputProgress();
+
+            OutputStatus();
+
+            var output = OutputIncome();
+
+            OutputInput(Console.WindowWidth - 1 - output.Length);
+
+            screenDirty = false;
+        }
+
+        private void OutputNotifications()
+        {
+            const int NotificationCount = 5;
+
+            var recentNotifications = notifications.ToList();
+            recentNotifications.Reverse();
+            recentNotifications = recentNotifications.Take(NotificationCount).ToList();
+            recentNotifications.Reverse();
+            for (int i = 0; i < recentNotifications.Count; i++)
+            {
+                const int MaxWidth = 55;
+                if (SetCursorPosition(Console.WindowWidth - MaxWidth, Console.WindowHeight - (NotificationCount - 1 - i)))
+                    Console.Write(recentNotifications[i].Text.FitLeft(MaxWidth, Ellipsis));
+            }
+        }
+
+        private bool SetCursorPosition(int left, int top)
+        {
+            if ((left < 0) || (left >= Console.WindowWidth) || (top < 0) || (top >= Console.WindowHeight)) return false;
+
+            Console.SetCursorPosition(left, top);
+
+            return true;
+        }
+
+        private string OutputIncome()
+        {
+            var incomeSummary = app.GetIncomeSummaryText();
+            if (SetCursorPosition(Console.WindowWidth - 1 - incomeSummary.Length, Console.WindowHeight - 1))
+            {
+                Console.Write(incomeSummary);
+                return incomeSummary;
+            }
+            return String.Empty;
+        }
+
+        private void OutputInput(int totalWidth)
+        {
+            const string Prefix = "> ";
+            if (SetCursorPosition(0, Console.WindowHeight - 1))
+                Console.Write("{0}{1}", Prefix, currentInput.TrimStart().FitRight(totalWidth - Prefix.Length - 1, Ellipsis));
+        }
+
+        private void OutputStatus()
+        {
+            const int Part1Width = 16;
+            var deviceStatus = String.Format("{0} device(s)", app.GetVisibleDeviceCount()).FitRight(Part1Width, Ellipsis);
+            var hashrateStatus = app.GetHashRateStatusText().Replace("   ", " ").FitLeft(Console.WindowWidth - deviceStatus.Length, Ellipsis);
+            if (SetCursorPosition(0, Console.WindowHeight - 2))
+                Console.Write("{0}{1}", deviceStatus, hashrateStatus);
+        }
+        
+        private void OutputProgress()
+        {
+            if (SetCursorPosition(0, Console.WindowHeight - 3))
+                Console.Write(currentProgress);
+        }
+
+        private void OutputDevices()
+        {
             var minerForm = app.GetViewModelToView();
             var devices = minerForm.Devices
                 .Where(d => d.Visible)
@@ -109,47 +207,34 @@ namespace MultiMiner.TUI
             {
                 var device = devices[i];
                 var name = String.IsNullOrEmpty(device.FriendlyName) ? device.Name : device.FriendlyName;
-                var shortName = name.EllipsisString(11, "..");
-                var hashrate = device.CurrentHashrate.ToHashrateString().Replace(" ", "").PadLeft(10);
+                var hashrate = device.CurrentHashrate.ToHashrateString().Replace(" ", "");
                 var coinSymbol = device.Coin.Id.ShortCoinSymbol();
                 var exchange = app.GetExchangeRate(device);
                 var pool = device.Pool.DomainFromHost();
                 var kind = device.Kind.ToString().First();
+                var difficulty = device.Difficulty.ToDifficultyString().Replace(" ", "");
 
-                var difficulty = app.GetCachedNetworkDifficulty(device.Pool ?? String.Empty);
-                if (difficulty == 0.0)
-                    difficulty = device.Difficulty;
-                var diffStr = difficulty.ToDifficultyString().Replace(" ", "").PadLeft(7);
+                if (SetCursorPosition(0, i))
+                    Console.Write(kind);
 
-                Console.SetCursorPosition(0, i);
-                Console.Write(kind);
-                
-                Console.SetCursorPosition(2, i);
-                Console.Write(shortName);
+                if (SetCursorPosition(2, i))
+                    Console.Write(name.FitRight(11, Ellipsis));
 
-                Console.SetCursorPosition(14, i);
-                Console.Write(coinSymbol);
+                if (SetCursorPosition(14, i))
+                    Console.Write(coinSymbol.FitRight(5, Ellipsis));
 
-                Console.SetCursorPosition(22, i);
-                Console.Write(diffStr);
+                if (SetCursorPosition(22, i))
+                    Console.Write(difficulty.FitLeft(7, Ellipsis));
 
-                Console.SetCursorPosition(31, i);
-                Console.Write(exchange);
+                if (SetCursorPosition(31, i))
+                    Console.Write(exchange.FitCurrency(9));
 
-                Console.SetCursorPosition(39, i);
-                Console.Write(pool);
+                if (SetCursorPosition(41, i))
+                    Console.Write(pool.FitRight(14, Ellipsis));
 
-                Console.SetCursorPosition(54, i);
-                Console.Write(hashrate);
+                if (SetCursorPosition(56, i))
+                    Console.Write(hashrate.FitLeft(10, Ellipsis));
             }
-
-            Console.SetCursorPosition(0, Console.WindowHeight - 2);
-            Console.Write(currentProgress);
-
-            Console.SetCursorPosition(0, Console.WindowHeight - 1);
-            Console.Write("Input: {0}", currentInput);
-
-            screenDirty = false;
         }
 
         private void HandleInput()

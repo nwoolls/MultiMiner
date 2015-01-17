@@ -1,6 +1,7 @@
 ﻿using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -72,6 +73,27 @@ namespace MultiMiner.UX.Extensions
             return new String(text.Where(c => Char.IsNumber(c) || Char.IsUpper(c)).ToArray());
         }
 
+        public static string FitCurrency(this string amount, int totalWidth)
+        {
+            var result = amount.PadCurrency();
+            if (result.Length > totalWidth) result = result.Substring(0, totalWidth);
+            return result;
+        }
+
+        public static string PadCurrency(this string amount)
+        {
+            if (String.IsNullOrEmpty(amount)) return String.Empty;
+
+            var result = amount;
+
+            var symbol = amount[0];
+            var parts = amount.Remove(0, 1).Split(new string[] { CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator }, StringSplitOptions.None);
+
+            result = symbol + parts[0].PadLeft(4) + CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator + parts[1].PadRight(3);
+
+            return result;
+        }
+
         public static string ShortCoinSymbol(this string coinSymbol)
         {
             //may be BTC or, for MultiCoin groups, NiceHash:X11, NiceHash:NeoScrypt, Other:SHA256
@@ -101,6 +123,16 @@ namespace MultiMiner.UX.Extensions
             }
 
             return result;
+        }
+
+        public static string FitLeft(this string text, int totalWidth, string ellipsis)
+        {
+            return text.EllipsisString(totalWidth, ellipsis).PadLeft(totalWidth);
+        }
+
+        public static string FitRight(this string text, int totalWidth, string ellipsis)
+        {
+            return text.EllipsisString(totalWidth, ellipsis).PadRight(totalWidth);
         }
 
         public static bool ParseHostAndPort(this string hostAndPort, out string host, out int port)
