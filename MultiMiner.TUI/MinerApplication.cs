@@ -14,6 +14,8 @@ namespace MultiMiner.TUI
         private const string QuitCommand = "quit";
         private const string StartCommand = "start";
         private const string StopCommand = "stop";
+        private const string RestartCommand = "restart";
+        private const string ScanCommand = "scan";
 
         private const string Ellipsis = "..";
 
@@ -316,6 +318,10 @@ namespace MultiMiner.TUI
                         app.StartMining();
                     else if (input.Equals(StopCommand, StringComparison.OrdinalIgnoreCase))
                         app.StopMining();
+                    else if (input.Equals(RestartCommand, StringComparison.OrdinalIgnoreCase))
+                        app.RestartMining();
+                    else if (input.Equals(ScanCommand, StringComparison.OrdinalIgnoreCase))
+                        app.ScanHardwareLocally();
                     else
                         AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
                 }
