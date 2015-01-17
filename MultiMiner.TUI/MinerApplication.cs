@@ -17,6 +17,7 @@ namespace MultiMiner.TUI
         private const string StopCommand = "stop";
         private const string RestartCommand = "restart";
         private const string ScanCommand = "scan";
+        private const string SwitchAllCommand = "SwitchAll";
 
         private const string Ellipsis = "..";
 
@@ -348,6 +349,14 @@ namespace MultiMiner.TUI
                 app.RestartMining();
             else if (InputMatchesCommand(input, ScanCommand))
                 app.ScanHardwareLocally();
+            else if (InputMatchesCommand(input, SwitchAllCommand))
+            {
+                var parts = input.Split(' ');
+                if (parts.Count() == 2)
+                    app.SetAllDevicesToCoin(parts[1], true);
+                else
+                    AddNotification(String.Format("Syntax: quickswitch symbol", input.Split(' ').First()));
+            }
             else
             {
                 AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
