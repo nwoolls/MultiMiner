@@ -2042,7 +2042,17 @@ namespace MultiMiner.UX.ViewModels
 
         private void SetAllDevicesToCoinLocally(string coinSymbol, bool disableStrategies)
         {
-            Coin coinConfiguration = EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+            Coin coinConfiguration = EngineConfiguration
+                .CoinConfigurations
+                .SingleOrDefault(c => c.PoolGroup.Id.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+
+            if (coinConfiguration == null)
+            {
+                //try short-hand
+                coinConfiguration = EngineConfiguration
+                    .CoinConfigurations
+                    .SingleOrDefault(c => c.PoolGroup.Id.ShortCoinSymbol().Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+            }
 
             //no such coin symbol
             if (coinConfiguration == null) return;

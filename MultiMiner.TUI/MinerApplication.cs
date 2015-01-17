@@ -156,15 +156,15 @@ namespace MultiMiner.TUI
 
             var output = OutputIncome();
 
-            OutputInput(Console.WindowWidth - 1 - output.Length);
+            OutputInput(Console.WindowWidth - output.Length);
         }
 
         private void OutputJunk()
         {
-            for (int row = 0; row < Console.WindowHeight - 1; row++)
+            for (int row = 0; row < Console.WindowHeight; row++)
             {
                 if (SetCursorPosition(0, row))
-                    Console.Write(new string('X', Console.WindowWidth));
+                    WriteText(new string('X', Console.WindowWidth));
             }
         }
 
@@ -182,7 +182,7 @@ namespace MultiMiner.TUI
                 var column = Console.WindowWidth - MaxWidth;
                 var row = GetProgressRow() - (recentNotifications.Count - i);
                 if (SetCursorPosition(column, row))
-                    Console.Write(recentNotifications[i].Text.FitLeft(MaxWidth, Ellipsis));
+                    WriteText(recentNotifications[i].Text.FitLeft(MaxWidth, Ellipsis));
             }
         }
 
@@ -200,17 +200,39 @@ namespace MultiMiner.TUI
             var incomeSummary = app.GetIncomeSummaryText();
             if (SetCursorPosition(Console.WindowWidth - 1 - incomeSummary.Length, Console.WindowHeight - 1))
             {
-                Console.Write(incomeSummary);
+                WriteText(incomeSummary, ConsoleColor.White, ConsoleColor.DarkGray);
                 return incomeSummary;
             }
             return String.Empty;
         }
 
+        private void WriteText(string text, ConsoleColor foreground = ConsoleColor.Gray, ConsoleColor background = ConsoleColor.Black)
+        {
+            ConsoleColor oldForeground = Console.ForegroundColor;
+            ConsoleColor oldBackground = Console.BackgroundColor;
+            Console.ForegroundColor = foreground;
+            Console.BackgroundColor = background;
+            Console.Write(text);
+            Console.ForegroundColor = oldForeground;
+            Console.BackgroundColor = oldBackground;
+            SetCursorPosition(0, 0);
+        }
+
         private void OutputInput(int totalWidth)
         {
             const string Prefix = "> ";
-            if (SetCursorPosition(0, Console.WindowHeight - 1))
-                Console.Write("{0}{1}", Prefix, currentInput.TrimStart().FitRight(totalWidth - Prefix.Length - 1, Ellipsis));
+            var row = Console.WindowHeight - 1;
+            if (SetCursorPosition(0, row))
+            {
+                //http://stackoverflow.com/questions/25084384/filling-last-line-in-console
+                WriteText(" ", ConsoleColor.Gray, ConsoleColor.DarkGray);
+                Console.MoveBufferArea(0, row, 1, 1, Console.WindowWidth - 1, row);
+
+                SetCursorPosition(0, row);
+                var width = totalWidth - Prefix.Length - 1;
+                var text = String.Format("{0}{1}", Prefix, currentInput.TrimStart().FitRight(width, Ellipsis));
+                WriteText(text, ConsoleColor.White, ConsoleColor.DarkGray);
+            }
         }
 
         private void OutputStatus()
@@ -219,14 +241,17 @@ namespace MultiMiner.TUI
             var deviceStatus = String.Format("{0} device(s)", app.GetVisibleDeviceCount()).FitRight(Part1Width, Ellipsis);
             var hashrateStatus = app.GetHashRateStatusText().Replace("   ", " ").FitLeft(Console.WindowWidth - deviceStatus.Length, Ellipsis);
             if (SetCursorPosition(0, Console.WindowHeight - 2))
-                Console.Write("{0}{1}", deviceStatus, hashrateStatus);
+            {
+                var text = String.Format("{0}{1}", deviceStatus, hashrateStatus);
+                WriteText(text, ConsoleColor.White, ConsoleColor.DarkGray);
+            }
         }
         
         private void OutputProgress()
         {
             var output = currentProgress.FitRight(Console.WindowWidth, Ellipsis);
             if (SetCursorPosition(0, GetProgressRow()))
-                Console.Write(output);
+                WriteText(output, ConsoleColor.White, String.IsNullOrEmpty(currentProgress) ? ConsoleColor.Black : ConsoleColor.DarkBlue);
         }
 
         private static int GetProgressRow()
@@ -263,26 +288,26 @@ namespace MultiMiner.TUI
                 var difficulty = device.Difficulty.ToDifficultyString().Replace(" ", "");
 
                 if (SetCursorPosition(0, i))
-                    Console.Write(kind.ToString().PadRight(2));
+                    WriteText(kind.ToString().PadRight(2), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(2, i))
-                    Console.Write(name.PadFitRight(12, Ellipsis));
+                    WriteText(name.PadFitRight(12, Ellipsis), device.Enabled ? device.Kind == Xgminer.Data.DeviceKind.NET || app.MiningEngine.Mining ? ConsoleColor.White : ConsoleColor.Gray : ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(14, i))
-                    Console.Write(coinSymbol.PadFitRight(8, Ellipsis));
+                    WriteText(coinSymbol.PadFitRight(8, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(21, i))
-                    Console.Write(difficulty.PadFitLeft(8, Ellipsis));
+                    WriteText(difficulty.PadFitLeft(8, Ellipsis), ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(29, i))
-                    Console.Write(exchange.FitCurrency(9).PadLeft(10).PadRight(11));
+                    WriteText(exchange.FitCurrency(9).PadLeft(10).PadRight(11), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(40, i))
-                    Console.Write(pool.PadFitRight(15, Ellipsis));
+                    WriteText(pool.PadFitRight(15, Ellipsis), ConsoleColor.DarkGray);
 
                 var left = 55;
                 if (SetCursorPosition(left, i))
-                    Console.Write(hashrate.FitLeft(10, Ellipsis).PadRight(Console.WindowWidth - left));
+                    WriteText(hashrate.FitLeft(10, Ellipsis).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
             }
 
             for (int i = devices.Count; i < GetProgressRow(); i++)
@@ -292,7 +317,7 @@ namespace MultiMiner.TUI
         private void ClearRow(int row)
         {
             if (SetCursorPosition(0, row))
-                Console.Write(new string(' ', Console.WindowWidth));
+                WriteText(new string(' ', Console.WindowWidth));
         }
 
         private void HandleInput()
@@ -355,7 +380,7 @@ namespace MultiMiner.TUI
                 if (parts.Count() == 2)
                     app.SetAllDevicesToCoin(parts[1], true);
                 else
-                    AddNotification(String.Format("Syntax: quickswitch symbol", input.Split(' ').First()));
+                    AddNotification(String.Format("Syntax: {0} symbol", SwitchAllCommand.ToLower()));
             }
             else
             {
