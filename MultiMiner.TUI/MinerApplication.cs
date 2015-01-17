@@ -105,11 +105,8 @@ namespace MultiMiner.TUI
         {
             while (!quitApplication)
             {
-                // Sleep for a short period
-                System.Threading.Thread.Sleep(10);
-                
+                System.Threading.Thread.Sleep(10);                
                 HandleInput();
-
                 UpdateScreen();
             }
         }
@@ -118,12 +115,15 @@ namespace MultiMiner.TUI
         {
             if (!screenDirty) return;
 
-            if ((oldWindowHeight != Console.WindowHeight) 
-                || (oldWindowWidth != Console.WindowWidth))
+            if ((oldWindowHeight != Console.WindowHeight) || (oldWindowWidth != Console.WindowWidth))
                 Console.Clear();
 
             oldWindowHeight = Console.WindowHeight;
             oldWindowWidth = Console.WindowWidth;
+
+#if DEBUG
+            OutputJunk();
+#endif
 
             OutputDevices();
 
@@ -138,6 +138,15 @@ namespace MultiMiner.TUI
             OutputInput(Console.WindowWidth - 1 - output.Length);
 
             screenDirty = false;
+        }
+
+        private void OutputJunk()
+        {
+            for (int row = 0; row < Console.WindowHeight - 1; row++)
+            {
+                if (SetCursorPosition(0, row))
+                    Console.Write(new string('X', Console.WindowWidth));
+            }
         }
 
         private void OutputNotifications()
@@ -195,8 +204,13 @@ namespace MultiMiner.TUI
         private void OutputProgress()
         {
             var output = currentProgress.FitRight(Console.WindowWidth, Ellipsis);
-            if (SetCursorPosition(0, Console.WindowHeight - 3))
+            if (SetCursorPosition(0, GetProgressRow()))
                 Console.Write(output);
+        }
+
+        private static int GetProgressRow()
+        {
+            return Console.WindowHeight - 3;
         }
 
         private void OutputDevices()
@@ -218,26 +232,36 @@ namespace MultiMiner.TUI
                 var difficulty = device.Difficulty.ToDifficultyString().Replace(" ", "");
 
                 if (SetCursorPosition(0, i))
-                    Console.Write(kind);
+                    Console.Write(kind.ToString().PadRight(2));
 
                 if (SetCursorPosition(2, i))
-                    Console.Write(name.FitRight(11, Ellipsis));
+                    Console.Write(name.PadFitRight(12, Ellipsis));
 
                 if (SetCursorPosition(14, i))
-                    Console.Write(coinSymbol.FitRight(5, Ellipsis));
+                    Console.Write(coinSymbol.PadFitRight(8, Ellipsis));
 
-                if (SetCursorPosition(22, i))
-                    Console.Write(difficulty.FitLeft(7, Ellipsis));
+                if (SetCursorPosition(21, i))
+                    Console.Write(difficulty.PadFitLeft(8, Ellipsis));
 
-                if (SetCursorPosition(31, i))
-                    Console.Write(exchange.FitCurrency(9));
+                if (SetCursorPosition(29, i))
+                    Console.Write(exchange.FitCurrency(9).PadLeft(10).PadRight(11));
 
-                if (SetCursorPosition(41, i))
-                    Console.Write(pool.FitRight(14, Ellipsis));
+                if (SetCursorPosition(40, i))
+                    Console.Write(pool.PadFitRight(15, Ellipsis));
 
-                if (SetCursorPosition(56, i))
-                    Console.Write(hashrate.FitLeft(10, Ellipsis));
+                var left = 55;
+                if (SetCursorPosition(left, i))
+                    Console.Write(hashrate.FitLeft(10, Ellipsis).PadRight(Console.WindowWidth - left));
             }
+
+            for (int i = devices.Count; i < GetProgressRow(); i++)
+                ClearRow(i);
+        }
+
+        private void ClearRow(int row)
+        {
+            if (SetCursorPosition(0, row))
+                Console.Write(new string(' ', Console.WindowWidth));
         }
 
         private void HandleInput()

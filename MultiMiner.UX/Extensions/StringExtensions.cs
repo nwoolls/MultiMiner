@@ -135,6 +135,16 @@ namespace MultiMiner.UX.Extensions
             return text.EllipsisString(totalWidth, ellipsis).PadRight(totalWidth);
         }
 
+        public static string PadFitRight(this string text, int totalWidth, string ellipsis)
+        {
+            return text.EllipsisString(totalWidth - 1, ellipsis).PadRight(totalWidth);
+        }
+
+        public static string PadFitLeft(this string text, int totalWidth, string ellipsis)
+        {
+            return text.EllipsisString(totalWidth - 1, ellipsis).PadLeft(totalWidth);
+        }
+
         public static bool ParseHostAndPort(this string hostAndPort, out string host, out int port)
         {
             const char Separator = ':';
