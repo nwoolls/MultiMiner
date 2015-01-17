@@ -29,7 +29,7 @@ namespace MultiMiner.Utility.IO
             startInfo.CreateNoWindow = true;
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.FileName = "tar";
-            startInfo.Arguments = String.Format("-xzvf \"{0}\" -C \"{1}\"", zipFilePath, temporaryPath);
+            startInfo.Arguments = String.Format("-xzf \"{0}\" -C \"{1}\"", zipFilePath, temporaryPath);
             
             Process process = Process.Start(startInfo);
             process.WaitForExit();
