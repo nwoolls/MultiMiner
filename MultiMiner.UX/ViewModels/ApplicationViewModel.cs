@@ -58,6 +58,7 @@ namespace MultiMiner.UX.ViewModels
         private const int BfgMinerNotificationId = 100;
         private const int MultiMinerNotificationId = 102;
         public const string PrimaryAlgorithm = AlgorithmNames.SHA256;
+        private readonly double DifficultyMuliplier = Math.Pow(2, 32);
         #endregion
 
         #region Events
@@ -915,8 +916,53 @@ namespace MultiMiner.UX.ViewModels
         private void ApplyCoinInformationToViewModel()
         {
             if (coinApiInformation != null)
-                LocalViewModel.ApplyCoinInformationModels(coinApiInformation
-                    .ToList()); //get a copy - populated async & collection may be modified)
+                LocalViewModel.ApplyCoinInformationModels(
+                    coinApiInformation.ToList() //get a copy - populated async & collection may be modified)
+                );
+
+            LocalViewModel.Devices.ForEach((d) =>
+            {
+                //apply real network difficulty (reported by miners) where possible                
+                //we may have known difficulties that aren't int he Coin API info
+                CalculateDifficulty(d);
+
+                //calculate daily income
+                CalculateDailyIncome(d);
+            });
+        }
+
+        private void CalculateDifficulty(DeviceViewModel device)
+        {
+            var difficulty = GetCachedNetworkDifficulty(device.Pool ?? String.Empty);
+            if (difficulty != 0.0)
+                device.Difficulty = difficulty;
+        }
+
+        private void CalculateDailyIncome(DeviceViewModel device)
+        {
+            CoinInformation info = CoinApiInformation
+                .ToList() //get a copy - populated async & collection may be modified
+                .SingleOrDefault(c => c.Symbol.Equals(device.Coin.Id, StringComparison.OrdinalIgnoreCase));
+
+            if (info != null)
+            {
+                if (device.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
+                {
+                    double hashrate = device.CurrentHashrate * 1000;
+                    double fullDifficulty = device.Difficulty * DifficultyMuliplier;
+                    double secondsToCalcShare = fullDifficulty / hashrate;
+                    const double secondsPerDay = 86400;
+                    double sharesPerDay = secondsPerDay / secondsToCalcShare;
+                    double btcPerDay = sharesPerDay * info.Reward;
+
+                    device.Daily = btcPerDay;
+                }
+                else
+                {
+                    //info.Price is in BTC/Ghs/Day
+                    device.Daily = info.Price * device.CurrentHashrate / 1000 / 1000;
+                }
+            };
         }
         #endregion
 
@@ -5047,6 +5093,84 @@ namespace MultiMiner.UX.ViewModels
                 }
             }
             return exchange;
+        }
+
+        public string GetHashRateStatusText()
+        {
+            MinerFormViewModel viewModel = GetViewModelToView();
+            string hashRateText = String.Empty;
+            IList<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
+            foreach (CoinAlgorithm algorithm in algorithms)
+            {
+                double hashRate = GetVisibleInstanceHashrate(algorithm.Name, viewModel == LocalViewModel);
+                if (hashRate > 0.00)
+                {
+                    if (!String.IsNullOrEmpty(hashRateText))
+                        hashRateText = hashRateText + "   ";
+                    hashRateText = String.Format("{0}{1}: {2}", hashRateText, algorithm.Name, hashRate.ToHashrateString());
+                }
+            }
+            return hashRateText;
+        }
+
+        public int GetVisibleDeviceCount()
+        {
+            MinerFormViewModel viewModel = GetViewModelToView();
+            //don't include Network Devices in the count for Remote ViewModels
+            return viewModel.Devices.Count(d => d.Visible && ((viewModel == LocalViewModel) || (d.Kind != DeviceKind.NET)));
+        }
+
+        public string GetIncomeSummaryText()
+        {
+            //no internet or error parsing API
+            if (SellPrices == null) return String.Empty;
+
+            //no internet or error parsing API
+            if (CoinApiInformation == null) return String.Empty;
+
+            //check .Mining to allow perks for Remoting when local PC is not mining
+            if ((!MiningEngine.Donating && MiningEngine.Mining) || !PerksConfiguration.ShowIncomeRates)
+                return String.Empty;
+
+            Dictionary<string, double> incomeForCoins = GetIncomeForCoins();
+
+            if (incomeForCoins.Count == 0) return String.Empty;
+
+            string summary = String.Empty;
+
+            const string addition = " + ";
+            double usdTotal = 0.00;
+            string usdSymbol = "$";
+            foreach (string coinSymbol in incomeForCoins.Keys)
+            {
+                double coinIncome = incomeForCoins[coinSymbol];
+                CoinInformation coinInfo = CoinApiInformation
+                    .ToList() //get a copy - populated async & collection may be modified
+                    .SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+                if (coinInfo != null)
+                {
+                    ExchangeInformation exchangeInformation = SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                    usdSymbol = exchangeInformation.TargetSymbol;
+                    double btcExchangeRate = exchangeInformation.ExchangeRate;
+                    double coinUsd = btcExchangeRate * coinInfo.Price;
+
+                    double coinDailyUsd = coinIncome * coinUsd;
+                    usdTotal += coinDailyUsd;
+
+                    if (coinIncome > 0)
+                        summary = String.Format("{0}{1} {2}{3}", summary, coinIncome.ToFriendlyString(), coinInfo.Symbol, addition);
+                }
+            }
+
+            if (!String.IsNullOrEmpty(summary))
+            {
+                summary = summary.Remove(summary.Length - addition.Length, addition.Length); //remove trailing " + "
+
+                if (PerksConfiguration.ShowExchangeRates)
+                    summary = String.Format("{0} = {1}{2} / day", summary, usdSymbol, usdTotal.ToFriendlyString(true));
+            }
+
+            return summary;
         }
         #endregion
 
