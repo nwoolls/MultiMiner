@@ -88,6 +88,15 @@ namespace MultiMiner.TUI
             app.EngineConfiguration.LoadCoinConfigurations(app.PathConfiguration.SharedConfigPath); //needed before refreshing coins
             app.LoadSettings();
 
+            //kill known owned processes to release inherited socket handles
+            if (ApplicationViewModel.KillOwnedProcesses())
+                //otherwise may still be prompted below by check for disowned miners
+                System.Threading.Thread.Sleep(500);
+
+            //check for disowned miners before refreshing devices
+            if (app.ApplicationConfiguration.DetectDisownedMiners)
+                app.CheckForDisownedMiners();
+
             app.SetupCoinApi(); //so we target the correct API
             app.RefreshCoinStats();
 
