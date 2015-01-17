@@ -32,6 +32,12 @@ namespace MultiMiner.TUI
         {
             Console.CursorVisible = false;
 
+            Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs e) =>
+            {
+                quitApplication = true;  //exit main loop
+                e.Cancel = true;         //prevent the app from quitting so we can close properly
+            };
+
             forceDirtyTimer.Elapsed += (object sender, ElapsedEventArgs e) =>
             {
                 //so we pick up resized consoles
