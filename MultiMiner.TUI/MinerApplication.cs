@@ -33,6 +33,8 @@ namespace MultiMiner.TUI
         private bool screenDirty = false;
         private string currentInput = String.Empty;
         private string currentProgress = String.Empty;
+        private PromptEventArgs currentPrompt;
+        private DateTime promptTime;
         private bool quitApplication = false;
         private int oldWindowHeight = 0;
         private int oldWindowWidth = 0;
@@ -87,6 +89,13 @@ namespace MultiMiner.TUI
             {
                 notifications.RemoveAll(n => !String.IsNullOrEmpty(n.Id) && n.Id.Equals(e.Id));
                 screenDirty = true;
+            };
+
+            app.PromptReceived += (object sender, PromptEventArgs e) =>
+            {
+                currentPrompt = e;
+                promptTime = DateTime.Now;
+                UpdateScreen(true);
             };
 
             app.Context = threadContext;
@@ -151,7 +160,7 @@ namespace MultiMiner.TUI
 
             OutputDevices();
 
-            OutputProgress();
+            OutputSpecial();
 
             OutputNotifications();
 
@@ -183,7 +192,7 @@ namespace MultiMiner.TUI
             {
                 const int MaxWidth = 55;
                 var column = Console.WindowWidth - MaxWidth;
-                var row = GetProgressRow() - (recentNotifications.Count - i);
+                var row = GetSpecialRow() - (recentNotifications.Count - i);
                 if (SetCursorPosition(column, row))
                     WriteText(recentNotifications[i].Text.FitLeft(MaxWidth, Ellipsis));
             }
@@ -254,14 +263,33 @@ namespace MultiMiner.TUI
             }
         }
         
-        private void OutputProgress()
+        private void OutputSpecial()
         {
-            var output = currentProgress.FitRight(Console.WindowWidth, Ellipsis);
-            if (SetCursorPosition(0, GetProgressRow()))
+            var output = String.Empty;
+            if (currentPrompt != null)
+            {
+                if ((DateTime.Now - promptTime).TotalSeconds > 30)
+                    currentPrompt = null;
+                else
+                {
+                    var text = String.Format("{0}: {1}", currentPrompt.Caption, currentPrompt.Text);
+                    output = text.FitRight(Console.WindowWidth, Ellipsis);
+                    if (SetCursorPosition(0, GetSpecialRow()))
+                        WriteText(output, ConsoleColor.White, 
+                            currentPrompt.Icon == PromptIcon.Error 
+                            ? ConsoleColor.DarkRed 
+                            : currentPrompt.Icon == PromptIcon.Warning
+                            ? ConsoleColor.DarkYellow : ConsoleColor.DarkBlue);
+                    return; //early exit, prompt rendered
+                }
+            }
+
+            output = currentProgress.FitRight(Console.WindowWidth, Ellipsis);
+            if (SetCursorPosition(0, GetSpecialRow()))
                 WriteText(output, ConsoleColor.White, String.IsNullOrEmpty(currentProgress) ? ConsoleColor.Black : ConsoleColor.DarkBlue);
         }
 
-        private static int GetProgressRow()
+        private static int GetSpecialRow()
         {
             return Console.WindowHeight - 3;
         }
@@ -317,7 +345,7 @@ namespace MultiMiner.TUI
                     WriteText(hashrate.FitLeft(10, Ellipsis).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
             }
 
-            for (int i = devices.Count; i < GetProgressRow(); i++)
+            for (int i = devices.Count; i < GetSpecialRow(); i++)
                 ClearRow(i);
         }
 
