@@ -172,7 +172,9 @@ namespace MultiMiner.TUI
             for (int i = 0; i < recentNotifications.Count; i++)
             {
                 const int MaxWidth = 55;
-                if (SetCursorPosition(Console.WindowWidth - MaxWidth, Console.WindowHeight - (NotificationCount - 1 - i)))
+                var column = Console.WindowWidth - MaxWidth;
+                var row = GetProgressRow() - (recentNotifications.Count - i);
+                if (SetCursorPosition(column, row))
                     Console.Write(recentNotifications[i].Text.FitLeft(MaxWidth, Ellipsis));
             }
         }
