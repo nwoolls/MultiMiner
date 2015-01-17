@@ -1951,6 +1951,9 @@ namespace MultiMiner.UX.ViewModels
                 //remove any duplicate configurations
                 EngineConfiguration.RemoveDuplicateDeviceConfigurations();
 
+                //clean up mappings from previous device list
+                DeviceDetailsMapping.Clear();
+
                 //cache devices
                 SaveKnownDevicesToFile();
             }
