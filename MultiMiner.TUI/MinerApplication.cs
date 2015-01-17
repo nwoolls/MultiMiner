@@ -23,12 +23,15 @@ namespace MultiMiner.TUI
         private readonly ISynchronizeInvoke threadContext = new SimpleSyncObject();
         private readonly Timer forceDirtyTimer = new Timer(1000);
         private readonly List<NotificationEventArgs> notifications = new List<NotificationEventArgs>();
+        private readonly List<string> commandQueue = new List<string>();
+
         private bool screenDirty = false;
         private string currentInput = String.Empty;
         private string currentProgress = String.Empty;
         private bool quitApplication = false;
         private int oldWindowHeight = 0;
         private int oldWindowWidth = 0;
+        private int commandIndex = -1;
 
         public void Run()
         {
@@ -312,23 +315,63 @@ namespace MultiMiner.TUI
                     currentInput = String.Empty;
                     UpdateScreen();
 
-                    if (input.Equals(QuitCommand, StringComparison.OrdinalIgnoreCase))
-                        quitApplication = true;
-                    else if (input.Equals(StartCommand, StringComparison.OrdinalIgnoreCase))
-                        app.StartMining();
-                    else if (input.Equals(StopCommand, StringComparison.OrdinalIgnoreCase))
-                        app.StopMining();
-                    else if (input.Equals(RestartCommand, StringComparison.OrdinalIgnoreCase))
-                        app.RestartMining();
-                    else if (input.Equals(ScanCommand, StringComparison.OrdinalIgnoreCase))
-                        app.ScanHardwareLocally();
-                    else
-                        AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
+                    HandleCommandInput(input);
                 }
+                else if ((keyInfo.Key == ConsoleKey.UpArrow) || (keyInfo.Key == ConsoleKey.DownArrow))
+                    HandleCommandNavigation(keyInfo.Key == ConsoleKey.UpArrow);
                 else
                 {
                     string key = keyInfo.KeyChar.ToString().ToLower();
                     currentInput = currentInput + key;
+                }
+            }
+        }
+
+        private void HandleCommandInput(string input)
+        {
+            if (input.Equals(QuitCommand, StringComparison.OrdinalIgnoreCase))
+                quitApplication = true;
+            else if (input.Equals(StartCommand, StringComparison.OrdinalIgnoreCase))
+                app.StartMining();
+            else if (input.Equals(StopCommand, StringComparison.OrdinalIgnoreCase))
+                app.StopMining();
+            else if (input.Equals(RestartCommand, StringComparison.OrdinalIgnoreCase))
+                app.RestartMining();
+            else if (input.Equals(ScanCommand, StringComparison.OrdinalIgnoreCase))
+                app.ScanHardwareLocally();
+            else
+            {
+                AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
+                return; //exit early
+            }
+
+            //successful command
+            if ((commandQueue.Count == 0) || !commandQueue.Last().Equals(input))
+                commandQueue.Add(input);
+            commandIndex = commandQueue.Count - 1;
+        }
+
+        private void HandleCommandNavigation(bool navigateUp)
+        {
+            if (navigateUp)
+            {
+                if (commandIndex >= 0)
+                {
+                    currentInput = commandQueue[commandIndex];
+                    if (commandIndex > 0) commandIndex--;
+                }
+            }
+            else
+            {
+                if (commandIndex < commandQueue.Count - 1)
+                {
+                    commandIndex++;
+                    currentInput = commandQueue[commandIndex];
+                }
+                else
+                {
+                    commandIndex = commandQueue.Count - 1;
+                    currentInput = String.Empty;
                 }
             }
         }
