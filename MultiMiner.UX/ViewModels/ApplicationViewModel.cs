@@ -2623,6 +2623,155 @@ namespace MultiMiner.UX.ViewModels
             else
                 ToggleDevicesRemotely(SelectedRemoteInstance, devices, enabled);
         }
+
+        public string GetCurrentCultureCurrency()
+        {
+            string currencySymbol = RegionInfo.CurrentRegion.ISOCurrencySymbol;
+            if ((SellPrices != null) && (SellPrices.SingleOrDefault(sp => sp.TargetCurrency.Equals(currencySymbol)) == null))
+                currencySymbol = "USD";
+
+            return currencySymbol;
+        }
+
+        private bool ShouldShowExchangeRates()
+        {
+            //check .Mining to allow perks for Remoting when local PC is not mining
+            return ((MiningEngine.Donating || !MiningEngine.Mining) && PerksConfiguration.ShowExchangeRates
+                //ensure Exchange prices are available:
+                && (SellPrices != null));
+        }
+
+        public string GetExchangeRate(DeviceViewModel device)
+        {
+            var exchange = String.Empty;
+            if ((device.Coin != null) && (device.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin))
+            {
+                if (ShouldShowExchangeRates())
+                {
+                    ExchangeInformation exchangeInformation = SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                    double btcExchangeRate = exchangeInformation.ExchangeRate;
+
+                    double coinExchangeRate = device.Price * btcExchangeRate;
+
+                    exchange = String.Format("{0}{1}", exchangeInformation.TargetSymbol, coinExchangeRate.ToFriendlyString(true));
+                }
+            }
+            return exchange;
+        }
+
+        public string GetHashRateStatusText()
+        {
+            MinerFormViewModel viewModel = GetViewModelToView();
+            string hashRateText = String.Empty;
+            IList<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
+            foreach (CoinAlgorithm algorithm in algorithms)
+            {
+                double hashRate = GetVisibleInstanceHashrate(algorithm.Name, viewModel == LocalViewModel);
+                if (hashRate > 0.00)
+                {
+                    if (!String.IsNullOrEmpty(hashRateText))
+                        hashRateText = hashRateText + "   ";
+                    hashRateText = String.Format("{0}{1}: {2}", hashRateText, algorithm.Name, hashRate.ToHashrateString());
+                }
+            }
+            return hashRateText;
+        }
+
+        public int GetVisibleDeviceCount()
+        {
+            MinerFormViewModel viewModel = GetViewModelToView();
+            //don't include Network Devices in the count for Remote ViewModels
+            return viewModel.Devices.Count(d => d.Visible && ((viewModel == LocalViewModel) || (d.Kind != DeviceKind.NET)));
+        }
+
+        public string GetIncomeSummaryText()
+        {
+            //no internet or error parsing API
+            if (SellPrices == null) return String.Empty;
+
+            //no internet or error parsing API
+            if (CoinApiInformation == null) return String.Empty;
+
+            //check .Mining to allow perks for Remoting when local PC is not mining
+            if ((!MiningEngine.Donating && MiningEngine.Mining) || !PerksConfiguration.ShowIncomeRates)
+                return String.Empty;
+
+            Dictionary<string, double> incomeForCoins = GetIncomeForCoins();
+
+            if (incomeForCoins.Count == 0) return String.Empty;
+
+            string summary = String.Empty;
+
+            const string addition = " + ";
+            double usdTotal = 0.00;
+            string usdSymbol = "$";
+            foreach (string coinSymbol in incomeForCoins.Keys)
+            {
+                double coinIncome = incomeForCoins[coinSymbol];
+                CoinInformation coinInfo = CoinApiInformation
+                    .ToList() //get a copy - populated async & collection may be modified
+                    .SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
+                if (coinInfo != null)
+                {
+                    ExchangeInformation exchangeInformation = SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                    usdSymbol = exchangeInformation.TargetSymbol;
+                    double btcExchangeRate = exchangeInformation.ExchangeRate;
+                    double coinUsd = btcExchangeRate * coinInfo.Price;
+
+                    double coinDailyUsd = coinIncome * coinUsd;
+                    usdTotal += coinDailyUsd;
+
+                    if (coinIncome > 0)
+                        summary = String.Format("{0}{1} {2}{3}", summary, coinIncome.ToFriendlyString(), coinInfo.Symbol, addition);
+                }
+            }
+
+            if (!String.IsNullOrEmpty(summary))
+            {
+                summary = summary.Remove(summary.Length - addition.Length, addition.Length); //remove trailing " + "
+
+                if (PerksConfiguration.ShowExchangeRates)
+                    summary = String.Format("{0} = {1}{2} / day", summary, usdSymbol, usdTotal.ToFriendlyString(true));
+            }
+
+            return summary;
+        }
+
+        public MiningPool AddNewPool(CoinApi.Data.CoinInformation coin, string url, string user, string pass)
+        {
+            Engine.Data.Configuration.Coin coinConfig = EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase));
+            if (coinConfig == null)
+            {
+                coinConfig = new Engine.Data.Configuration.Coin();
+                var algorithm = coin.Algorithm;
+
+                //we don't want the FullName
+                KnownAlgorithm knownAlgorithm = KnownAlgorithms.Algorithms.SingleOrDefault(a => a.FullName.Equals(algorithm, StringComparison.OrdinalIgnoreCase));
+                if (knownAlgorithm != null) algorithm = knownAlgorithm.Name;
+
+                coinConfig.PoolGroup = new Engine.Data.PoolGroup
+                {
+                    Algorithm = algorithm,
+                    Id = coin.Symbol,
+                    Kind = coin.Symbol.Contains(':') ? Engine.Data.PoolGroup.PoolGroupKind.MultiCoin : Engine.Data.PoolGroup.PoolGroupKind.SingleCoin,
+                    Name = coin.Name
+                };
+                EngineConfiguration.CoinConfigurations.Add(coinConfig);
+            }
+
+            Uri uri = new Uri(url);
+            Xgminer.Data.MiningPool poolConfig = new Xgminer.Data.MiningPool
+            {
+                Host = uri.GetComponents(UriComponents.AbsoluteUri & ~UriComponents.Port, UriFormat.UriEscaped),
+                Port = uri.Port,
+                Password = pass,
+                Username = user
+            };
+            coinConfig.Pools.Add(poolConfig);
+            EngineConfiguration.SaveCoinConfigurations();
+
+            return poolConfig;
+        }
         #endregion
 
         #region Stats API
@@ -4116,10 +4265,7 @@ namespace MultiMiner.UX.ViewModels
                 if (ea.Engine != null)
                 {
                     ObjectCopier.CopyObject(ea.Engine.ToModelObject(), EngineConfiguration);
-                    EngineConfiguration.SaveCoinConfigurations();
-                    EngineConfiguration.SaveMinerConfiguration();
-                    EngineConfiguration.SaveStrategyConfiguration();
-                    EngineConfiguration.SaveDeviceConfigurations();
+                    EngineConfiguration.SaveAllConfigurations();
                 }
 
                 if (ea.Path != null)
@@ -5076,119 +5222,6 @@ namespace MultiMiner.UX.ViewModels
 
             foreach (Process disownedMiner in disownedMiners)
                 MinerProcess.KillProcess(disownedMiner);
-        }
-
-        public string GetCurrentCultureCurrency()
-        {
-            string currencySymbol = RegionInfo.CurrentRegion.ISOCurrencySymbol;
-            if ((SellPrices != null) && (SellPrices.SingleOrDefault(sp => sp.TargetCurrency.Equals(currencySymbol)) == null))
-                currencySymbol = "USD";
-
-            return currencySymbol;
-        }
-
-        private bool ShouldShowExchangeRates()
-        {
-            //check .Mining to allow perks for Remoting when local PC is not mining
-            return ((MiningEngine.Donating || !MiningEngine.Mining) && PerksConfiguration.ShowExchangeRates
-                //ensure Exchange prices are available:
-                && (SellPrices != null));
-        }
-
-        public string GetExchangeRate(DeviceViewModel device)
-        {
-            var exchange = String.Empty;
-            if ((device.Coin != null) && (device.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin))
-            {
-                if (ShouldShowExchangeRates())
-                {
-                    ExchangeInformation exchangeInformation = SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
-                    double btcExchangeRate = exchangeInformation.ExchangeRate;
-
-                    double coinExchangeRate = device.Price * btcExchangeRate;
-
-                    exchange = String.Format("{0}{1}", exchangeInformation.TargetSymbol, coinExchangeRate.ToFriendlyString(true));
-                }
-            }
-            return exchange;
-        }
-
-        public string GetHashRateStatusText()
-        {
-            MinerFormViewModel viewModel = GetViewModelToView();
-            string hashRateText = String.Empty;
-            IList<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
-            foreach (CoinAlgorithm algorithm in algorithms)
-            {
-                double hashRate = GetVisibleInstanceHashrate(algorithm.Name, viewModel == LocalViewModel);
-                if (hashRate > 0.00)
-                {
-                    if (!String.IsNullOrEmpty(hashRateText))
-                        hashRateText = hashRateText + "   ";
-                    hashRateText = String.Format("{0}{1}: {2}", hashRateText, algorithm.Name, hashRate.ToHashrateString());
-                }
-            }
-            return hashRateText;
-        }
-
-        public int GetVisibleDeviceCount()
-        {
-            MinerFormViewModel viewModel = GetViewModelToView();
-            //don't include Network Devices in the count for Remote ViewModels
-            return viewModel.Devices.Count(d => d.Visible && ((viewModel == LocalViewModel) || (d.Kind != DeviceKind.NET)));
-        }
-
-        public string GetIncomeSummaryText()
-        {
-            //no internet or error parsing API
-            if (SellPrices == null) return String.Empty;
-
-            //no internet or error parsing API
-            if (CoinApiInformation == null) return String.Empty;
-
-            //check .Mining to allow perks for Remoting when local PC is not mining
-            if ((!MiningEngine.Donating && MiningEngine.Mining) || !PerksConfiguration.ShowIncomeRates)
-                return String.Empty;
-
-            Dictionary<string, double> incomeForCoins = GetIncomeForCoins();
-
-            if (incomeForCoins.Count == 0) return String.Empty;
-
-            string summary = String.Empty;
-
-            const string addition = " + ";
-            double usdTotal = 0.00;
-            string usdSymbol = "$";
-            foreach (string coinSymbol in incomeForCoins.Keys)
-            {
-                double coinIncome = incomeForCoins[coinSymbol];
-                CoinInformation coinInfo = CoinApiInformation
-                    .ToList() //get a copy - populated async & collection may be modified
-                    .SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
-                if (coinInfo != null)
-                {
-                    ExchangeInformation exchangeInformation = SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
-                    usdSymbol = exchangeInformation.TargetSymbol;
-                    double btcExchangeRate = exchangeInformation.ExchangeRate;
-                    double coinUsd = btcExchangeRate * coinInfo.Price;
-
-                    double coinDailyUsd = coinIncome * coinUsd;
-                    usdTotal += coinDailyUsd;
-
-                    if (coinIncome > 0)
-                        summary = String.Format("{0}{1} {2}{3}", summary, coinIncome.ToFriendlyString(), coinInfo.Symbol, addition);
-                }
-            }
-
-            if (!String.IsNullOrEmpty(summary))
-            {
-                summary = summary.Remove(summary.Length - addition.Length, addition.Length); //remove trailing " + "
-
-                if (PerksConfiguration.ShowExchangeRates)
-                    summary = String.Format("{0} = {1}{2} / day", summary, usdSymbol, usdTotal.ToFriendlyString(true));
-            }
-
-            return summary;
         }
         #endregion
 

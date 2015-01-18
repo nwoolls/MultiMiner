@@ -61,6 +61,40 @@ namespace MultiMiner.TUI
             };
             forceDirtyTimer.Enabled = true;
 
+            SetupApplicationViewModel();
+
+            LoadSettings();
+
+            //kill known owned processes to release inherited socket handles
+            if (ApplicationViewModel.KillOwnedProcesses())
+                //otherwise may still be prompted below by check for disowned miners
+                System.Threading.Thread.Sleep(500);
+
+            //check for disowned miners before refreshing devices
+            if (app.ApplicationConfiguration.DetectDisownedMiners)
+                app.CheckForDisownedMiners();
+
+            app.SetupCoinApi(); //so we target the correct API
+            app.RefreshCoinStats();
+
+            app.SetupCoalescedTimers();
+            app.UpdateBackendMinerAvailability();
+            app.CheckAndDownloadMiners();
+            app.SetupRemoting();
+            app.SetupNetworkDeviceDetection();
+            app.CheckForUpdates();
+            app.SetupMiningOnStartup();
+
+            MainLoop();
+
+            SaveSettings();
+            app.StopMiningLocally();
+            app.DisableRemoting();
+            app.Context = null;
+        }
+
+        private void SetupApplicationViewModel()
+        {
             app.DataModified += (object sender, EventArgs e) =>
             {
                 screenDirty = true;
@@ -103,38 +137,20 @@ namespace MultiMiner.TUI
             };
 
             app.Context = threadContext;
+        }
 
+        private void SaveSettings()
+        {
+            app.EngineConfiguration.SaveAllConfigurations();
+            app.ApplicationConfiguration.SaveApplicationConfiguration();
+        }
+
+        private void LoadSettings()
+        {
             app.ApplicationConfiguration.LoadApplicationConfiguration(app.PathConfiguration.SharedConfigPath);
             app.EngineConfiguration.LoadStrategyConfiguration(app.PathConfiguration.SharedConfigPath); //needed before refreshing coins
             app.EngineConfiguration.LoadCoinConfigurations(app.PathConfiguration.SharedConfigPath); //needed before refreshing coins
             app.LoadSettings();
-
-            //kill known owned processes to release inherited socket handles
-            if (ApplicationViewModel.KillOwnedProcesses())
-                //otherwise may still be prompted below by check for disowned miners
-                System.Threading.Thread.Sleep(500);
-
-            //check for disowned miners before refreshing devices
-            if (app.ApplicationConfiguration.DetectDisownedMiners)
-                app.CheckForDisownedMiners();
-
-            app.SetupCoinApi(); //so we target the correct API
-            app.RefreshCoinStats();
-
-            app.SetupCoalescedTimers();
-            app.UpdateBackendMinerAvailability();
-            app.CheckAndDownloadMiners();
-            app.SetupRemoting();
-            app.SetupNetworkDeviceDetection();
-            app.CheckForUpdates();
-            app.SetupMiningOnStartup();
-
-            MainLoop();
-
-            app.Context = null;
-            app.ApplicationConfiguration.SaveApplicationConfiguration();
-            app.StopMiningLocally();
-            app.DisableRemoting();
         }
 
         private void MainLoop()
@@ -444,13 +460,12 @@ namespace MultiMiner.TUI
         {
             var syntax = String.Format("Syntax:{0} {{ add | remove }} symbol url user pass", PoolCommand.ToLower());
             var parts = input.Split(' ');
-            if (parts.Count() == 6)
+
+            if (parts.Count() >= 4)
             {
                 var verb = parts[1];
                 var symbol = parts[2];
                 var url = parts[3];
-                var user = parts[4];
-                var pass = parts[5];
 
                 CoinApi.Data.CoinInformation coin = app.CoinApiInformation.SingleOrDefault(c => c.Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase));
                 if (coin == null)
@@ -461,47 +476,20 @@ namespace MultiMiner.TUI
 
                 bool add = verb.Equals(AddVerb, StringComparison.OrdinalIgnoreCase);
                 bool remove = verb.Equals(RemoveVerb, StringComparison.OrdinalIgnoreCase);
-                if (add)
+
+                if (add && (parts.Count() == 6))
                 {
-                    Engine.Data.Configuration.Coin coinConfig = app.EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase));
-                    if (coinConfig == null)
-                    {
-                        coinConfig = new Engine.Data.Configuration.Coin();
-                        var algorithm = coin.Algorithm;
-
-                        //we don't want the FullName
-                        KnownAlgorithm knownAlgorithm = KnownAlgorithms.Algorithms.SingleOrDefault(a => a.FullName.Equals(algorithm, StringComparison.OrdinalIgnoreCase));
-                        if (knownAlgorithm != null) algorithm = knownAlgorithm.Name;
-
-                        coinConfig.PoolGroup = new Engine.Data.PoolGroup
-                        {
-                            Algorithm = algorithm,
-                            Id = coin.Symbol,
-                            Kind = coin.Symbol.Contains(':') ? Engine.Data.PoolGroup.PoolGroupKind.MultiCoin : Engine.Data.PoolGroup.PoolGroupKind.SingleCoin,
-                            Name = coin.Name
-                        };
-                        app.EngineConfiguration.CoinConfigurations.Add(coinConfig);
-                    }
-
-                    Uri uri = new Uri(url);
-                    Xgminer.Data.MiningPool poolConfig = new Xgminer.Data.MiningPool
-                    {
-                        Host = uri.GetComponents(UriComponents.AbsoluteUri & ~UriComponents.Port, UriFormat.UriEscaped),
-                        Port = uri.Port,
-                        Password = pass,
-                        Username = user
-                    };
-                    coinConfig.Pools.Add(poolConfig);
-                    app.EngineConfiguration.SaveCoinConfigurations();
+                    var user = parts[4];
+                    var pass = parts[5];
+                    
+                    app.AddNewPool(coin, url, user, pass);
                 }
                 else if (remove)
                 {
 
                 }
                 else
-                {
                     AddNotification(syntax);
-                }
             }
             else
                 AddNotification(syntax);
