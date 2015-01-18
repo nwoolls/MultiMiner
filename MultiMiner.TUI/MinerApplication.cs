@@ -486,7 +486,9 @@ namespace MultiMiner.TUI
                 }
                 else if (remove)
                 {
+                    var user = parts.Count() > 4 ? parts[4] : String.Empty;
 
+                    app.RemoveExistingPool(coin, url, user);
                 }
                 else
                     AddNotification(syntax);

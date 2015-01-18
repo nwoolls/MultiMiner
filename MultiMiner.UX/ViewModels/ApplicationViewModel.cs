@@ -2737,6 +2737,37 @@ namespace MultiMiner.UX.ViewModels
             return summary;
         }
 
+        public bool RemoveExistingPool(CoinApi.Data.CoinInformation coin, string url, string user)
+        {
+            Engine.Data.Configuration.Coin coinConfig = EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase));
+            if (coinConfig == null) return false;
+
+            MiningPool poolConfig = coinConfig.Pools.FirstOrDefault((p) =>
+            {
+                //url may or may not have protocol, but URI ctor requires one
+                //so strip any that exists with ShortHostFromHost() then add a dummy
+                Uri uri = new Uri("http://" + url.ShortHostFromHost());
+
+                var cleanUri = uri.GetComponents(UriComponents.AbsoluteUri & ~UriComponents.Port,
+                               UriFormat.UriEscaped);
+
+                var portsEqual = (p.Port == uri.Port);
+                var hostsEqual = (p.Host.ShortHostFromHost().Equals(cleanUri.ShortHostFromHost(), StringComparison.OrdinalIgnoreCase));
+                var usersEqual = (string.IsNullOrEmpty(user) || p.Username.Equals(user, StringComparison.OrdinalIgnoreCase));
+
+                return portsEqual
+                    && hostsEqual
+                    && usersEqual;
+            });
+
+            if (poolConfig == null) return false;
+
+            coinConfig.Pools.Remove(poolConfig);
+            EngineConfiguration.SaveCoinConfigurations();
+
+            return true;
+        }
+
         public MiningPool AddNewPool(CoinApi.Data.CoinInformation coin, string url, string user, string pass)
         {
             Engine.Data.Configuration.Coin coinConfig = EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase));
