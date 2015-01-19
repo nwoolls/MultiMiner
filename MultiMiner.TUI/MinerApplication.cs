@@ -238,11 +238,9 @@ namespace MultiMiner.TUI
             recentNotifications.Reverse();
             for (int i = 0; i < recentNotifications.Count; i++)
             {
-                const int MaxWidth = 55;
-                var column = Console.WindowWidth - MaxWidth;
                 var row = GetSpecialRow() - (recentNotifications.Count - i);
-                if (SetCursorPosition(column, row))
-                    WriteText(recentNotifications[i].Text.FitLeft(MaxWidth, Ellipsis));
+                if (SetCursorPosition(0, row))
+                    WriteText(recentNotifications[i].Text.FitLeft(Console.WindowWidth, Ellipsis));
             }
         }
 
@@ -416,7 +414,7 @@ namespace MultiMiner.TUI
             if (parts.Count() == 2)
                 app.SetAllDevicesToCoin(parts[1], true);
             else
-                AddNotification(String.Format("Syntax: {0} symbol", SwitchAllCommand.ToLower()));
+                AddNotification(String.Format("{0} symbol", SwitchAllCommand.ToLower()));
         }
 
         private void HandleScreenCommand(string input)
@@ -443,7 +441,7 @@ namespace MultiMiner.TUI
 
         private void HandlePoolCommand(string input)
         {
-            var syntax = String.Format("Syntax:{0} {{ add | remove | list }} symbol url user pass", PoolCommand.ToLower());
+            var syntax = String.Format("{0} {{ add | remove | list }} symbol url user pass", PoolCommand.ToLower());
             var parts = input.Split(' ');
 
             if (parts.Count() >= 2)
