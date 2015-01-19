@@ -10,6 +10,12 @@ namespace MultiMiner.TUI
 {
     class MinerApplication : ConsoleApplication
     {
+        enum Screen
+        {
+            Main,
+            Repl
+        }
+
         //upper-case chars serve as a command alias, e.g. Quit = q
         private const string QuitCommand = "Quit";
         private const string StartCommand = "start";
@@ -20,12 +26,15 @@ namespace MultiMiner.TUI
         private const string PoolCommand = "Pool";
         private const string AddVerb = "Add";
         private const string RemoveVerb = "Remove";
+        private const string ScreenCommand = "SCreen";
 
         private const string Ellipsis = "..";
 
         private readonly ApplicationViewModel app = new ApplicationViewModel();
         private readonly ISynchronizeInvoke threadContext = new SimpleSyncObject();
         private readonly List<NotificationEventArgs> notifications = new List<NotificationEventArgs>();
+        private readonly List<string> replBuffer = new List<string>();
+
         private readonly bool isWindows = Utility.OS.OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
         private readonly bool isLinux = Utility.OS.OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix;
         private readonly bool isMac = Utility.OS.OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX;
@@ -33,6 +42,7 @@ namespace MultiMiner.TUI
         private string currentProgress = String.Empty;
         private PromptEventArgs currentPrompt;
         private DateTime promptTime;
+        private Screen currentScreen = Screen.Main;
 
         #region ConsoleApplication overrides
         protected override void SetupApplication()
@@ -133,6 +143,39 @@ namespace MultiMiner.TUI
             //OutputJunk();
 #endif
 
+            if (currentScreen == Screen.Repl)
+                RenderReplScreen();
+            else
+                RenderMainScreen();
+        }
+        
+        private void RenderReplScreen()
+        {
+            OutputReplBuffer();
+
+            OutputInput(Console.WindowWidth);
+        }
+
+        private void OutputReplBuffer()
+        {
+            var lines = replBuffer.ToList();
+            lines.Reverse();
+            lines = lines.Take(Console.WindowHeight - 1).ToList();
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                var line = lines[i];
+
+                if (SetCursorPosition(0, i))
+                    WriteText(line.PadFitRight(Console.WindowWidth, Ellipsis));
+            }
+
+            for (int i = lines.Count; i < Console.WindowHeight - 1; i++)
+                ClearRow(i);
+        }
+
+        private void RenderMainScreen()
+        {
             OutputDevices();
 
             OutputSpecial();
@@ -162,6 +205,8 @@ namespace MultiMiner.TUI
                 HandleSwitchAllCommand(input);
             else if (InputMatchesCommand(input, PoolCommand))
                 HandlePoolCommand(input);
+            else if (InputMatchesCommand(input, ScreenCommand))
+                HandleScreenCommand(input);
             else
             {
                 AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
@@ -371,6 +416,28 @@ namespace MultiMiner.TUI
                 app.SetAllDevicesToCoin(parts[1], true);
             else
                 AddNotification(String.Format("Syntax: {0} symbol", SwitchAllCommand.ToLower()));
+        }
+
+        private void HandleScreenCommand(string input)
+        {
+            var parts = input.Split(' ');
+            if (parts.Count() == 2)
+            {
+                var screenName = parts[1];
+                if (screenName.Equals(Screen.Repl.ToString(), StringComparison.OrdinalIgnoreCase))
+                    currentScreen = Screen.Repl;
+                else
+                    currentScreen = Screen.Main;
+                RenderScreen();
+            }
+            else
+            {
+                if (currentScreen == Screen.Main)
+                    currentScreen = Screen.Repl;
+                else
+                    currentScreen = Screen.Main;
+                RenderScreen();
+            }
         }
 
         private void HandlePoolCommand(string input)
