@@ -458,21 +458,7 @@ namespace MultiMiner.TUI
                     if (parts.Count() >= 3)
                         symbol = parts[2];
 
-                    var configs = app.EngineConfiguration.CoinConfigurations
-                        .Where(c => String.IsNullOrEmpty(symbol)
-                            || (c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
-                            || (c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))));
-
-                    foreach (var config in configs)
-                    {
-                        config.Pools.ForEach((p) =>
-                        {
-                            replBuffer.Add(p.Host);
-                        });
-                    }
-
-                    currentScreen = Screen.Repl;
-                    RenderScreen();
+                    HandlePoolListCommand(symbol);
                 }
                 else if(parts.Count() >= 4)
                 {
@@ -508,6 +494,25 @@ namespace MultiMiner.TUI
             }
             else
                 AddNotification(syntax);
+        }
+
+        private void HandlePoolListCommand(string symbol)
+        {
+            var configs = app.EngineConfiguration.CoinConfigurations
+                .Where(c => String.IsNullOrEmpty(symbol)
+                    || (c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
+                    || (c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))));
+
+            foreach (var config in configs)
+            {
+                config.Pools.ForEach((p) =>
+                {
+                    replBuffer.Add(config.PoolGroup.Id.ShortCoinSymbol().PadFitRight(8, Ellipsis) + ": " + p.Host.ShortHostFromHost());
+                });
+            }
+
+            currentScreen = Screen.Repl;
+            RenderScreen();
         }
     }
 }
