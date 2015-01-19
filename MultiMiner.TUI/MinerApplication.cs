@@ -26,6 +26,7 @@ namespace MultiMiner.TUI
         private const string PoolCommand = "Pool";
         private const string AddVerb = "Add";
         private const string RemoveVerb = "Remove";
+        private const string ListVerb = "List";
         private const string ScreenCommand = "SCreen";
 
         private const string Ellipsis = "..";
@@ -442,37 +443,67 @@ namespace MultiMiner.TUI
 
         private void HandlePoolCommand(string input)
         {
-            var syntax = String.Format("Syntax:{0} {{ add | remove }} symbol url user pass", PoolCommand.ToLower());
+            var syntax = String.Format("Syntax:{0} {{ add | remove | list }} symbol url user pass", PoolCommand.ToLower());
             var parts = input.Split(' ');
 
-            if (parts.Count() >= 4)
+            if (parts.Count() >= 2)
             {
                 var verb = parts[1];
-                var symbol = parts[2];
-                var url = parts[3];
-
-                CoinApi.Data.CoinInformation coin = app.CoinApiInformation.SingleOrDefault(c => c.Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase));
-                if (coin == null)
-                {
-                    AddNotification(String.Format("Unknown coin: {0}", symbol));
-                    return; //early exit
-                }
 
                 bool add = verb.Equals(AddVerb, StringComparison.OrdinalIgnoreCase);
                 bool remove = verb.Equals(RemoveVerb, StringComparison.OrdinalIgnoreCase);
+                bool list = verb.Equals(ListVerb, StringComparison.OrdinalIgnoreCase);
 
-                if (add && (parts.Count() == 6))
+                if (list)
                 {
-                    var user = parts[4];
-                    var pass = parts[5];
-                    
-                    app.AddNewPool(coin, url, user, pass);
+                    var symbol = String.Empty;
+                    if (parts.Count() >= 3)
+                        symbol = parts[2];
+
+                    var configs = app.EngineConfiguration.CoinConfigurations
+                        .Where(c => String.IsNullOrEmpty(symbol)
+                            || (c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
+                            || (c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))));
+
+                    foreach (var config in configs)
+                    {
+                        config.Pools.ForEach((p) =>
+                        {
+                            replBuffer.Add(p.Host);
+                        });
+                    }
+
+                    currentScreen = Screen.Repl;
+                    RenderScreen();
                 }
-                else if (remove)
+                else if(parts.Count() >= 4)
                 {
-                    var user = parts.Count() > 4 ? parts[4] : String.Empty;
+                    var symbol = parts[2];
+                    var url = parts[3];
 
-                    app.RemoveExistingPool(coin, url, user);
+                    CoinApi.Data.CoinInformation coin = app.CoinApiInformation.SingleOrDefault(c => c.Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase));
+                    if (coin == null)
+                    {
+                        AddNotification(String.Format("Unknown coin: {0}", symbol));
+                        return; //early exit
+                    }
+
+
+                    if (add && (parts.Count() == 6))
+                    {
+                        var user = parts[4];
+                        var pass = parts[5];
+
+                        app.AddNewPool(coin, url, user, pass);
+                    }
+                    else if (remove)
+                    {
+                        var user = parts.Count() > 4 ? parts[4] : String.Empty;
+
+                        app.RemoveExistingPool(coin, url, user);
+                    }
+                    else
+                        AddNotification(syntax);
                 }
                 else
                     AddNotification(syntax);
