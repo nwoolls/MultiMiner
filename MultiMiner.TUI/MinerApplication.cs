@@ -404,7 +404,7 @@ namespace MultiMiner.TUI
         
         private bool InputMatchesCommand(string input, string command)
         {
-            var firstWord = input.Split(' ').First();
+            var firstWord = input.Split(' ').First().TrimStart('/');
             var alias = new String(command.Where(c => Char.IsUpper(c)).ToArray());
             return firstWord.Equals(command, StringComparison.OrdinalIgnoreCase)
                 || (!String.IsNullOrEmpty(alias) && firstWord.Equals(alias, StringComparison.OrdinalIgnoreCase));
