@@ -1,0 +1,152 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+
+namespace MultiMiner.TUI
+{
+    abstract class ConsoleApplication
+    {
+        private readonly List<string> commandQueue = new List<string>();
+
+        private bool quitApplication;
+        private int oldWindowHeight;
+        private int oldWindowWidth;
+        private int commandIndex = -1;
+
+        protected bool ScreenDirty { get; set; }
+        protected string CurrentInput { get; set; }
+
+        protected abstract void SetupApplication();
+        protected abstract void LoadSettings();
+        protected abstract void StartupApplication();
+        protected abstract void RenderScreen();
+        protected abstract bool HandleCommandInput(string input);
+        protected abstract void SaveSettings();
+        protected abstract void TearDownApplication();
+
+        public ConsoleApplication()
+        {
+            CurrentInput = String.Empty;
+        }
+
+        public void Run()
+        {
+            Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs e) =>
+            {
+                quitApplication = true;  //exit MainLoop()
+                e.Cancel = true;         //prevent so we can quit gracefully in MainLoop()
+            };
+            
+            SetupApplication();
+
+            LoadSettings();
+
+            StartupApplication();
+
+            MainLoop();
+
+            SaveSettings();
+
+            TearDownApplication();
+        }
+
+        protected void Quit()
+        {
+            quitApplication = true;
+        }
+
+        private void MainLoop()
+        {
+            while (!quitApplication)
+            {
+                Thread.Sleep(10);
+                HandleInput();
+                UpdateScreen();
+            }
+        }
+
+        private void UpdateScreen()
+        {
+            if ((oldWindowHeight != Console.WindowHeight) || (oldWindowWidth != Console.WindowWidth))
+            {
+                Console.Clear();
+                ScreenDirty = true;
+            }
+
+            if (!ScreenDirty) return;
+            ScreenDirty = false;
+
+            oldWindowHeight = Console.WindowHeight;
+            oldWindowWidth = Console.WindowWidth;
+
+            RenderScreen();
+        }
+        
+        private void HandleInput()
+        {
+            if (Console.KeyAvailable)
+            {
+                ScreenDirty = true;
+
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                if (keyInfo.Key == ConsoleKey.Backspace)
+                {
+                    if (CurrentInput.Length > 0)
+                        CurrentInput = CurrentInput.Substring(0, CurrentInput.Length - 1);
+                }
+                else if (keyInfo.Key == ConsoleKey.Escape)
+                {
+                    CurrentInput = String.Empty;
+                }
+                else if (keyInfo.Key == ConsoleKey.Enter)
+                {
+                    if (String.IsNullOrEmpty(CurrentInput)) return;
+
+                    var input = CurrentInput.Trim();
+                    CurrentInput = String.Empty;
+                    UpdateScreen();
+
+                    if (HandleCommandInput(input))
+                    {
+                        if ((commandQueue.Count == 0) || !commandQueue.Last().Equals(input))
+                            commandQueue.Add(input);
+                        commandIndex = commandQueue.Count - 1;
+                    }
+                }
+                else if ((keyInfo.Key == ConsoleKey.UpArrow) || (keyInfo.Key == ConsoleKey.DownArrow))
+                    HandleCommandNavigation(keyInfo.Key == ConsoleKey.UpArrow);
+                else
+                {
+                    string key = keyInfo.KeyChar.ToString().ToLower();
+                    CurrentInput = CurrentInput + key;
+                }
+            }
+        }
+
+        private void HandleCommandNavigation(bool navigateUp)
+        {
+            if (navigateUp)
+            {
+                if (commandIndex >= 0)
+                {
+                    CurrentInput = commandQueue[commandIndex];
+                    if (commandIndex > 0) commandIndex--;
+                }
+            }
+            else
+            {
+                if (commandIndex < commandQueue.Count - 1)
+                {
+                    commandIndex++;
+                    CurrentInput = commandQueue[commandIndex];
+                }
+                else
+                {
+                    commandIndex = commandQueue.Count - 1;
+                    CurrentInput = String.Empty;
+                }
+            }
+        }
+    }
+}

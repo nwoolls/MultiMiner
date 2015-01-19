@@ -65,7 +65,7 @@ namespace MultiMiner.UX.Extensions
 
         public static string ShortHostFromHost(this string host)
         {
-            return host.Replace("http://", "").Replace("stratum+tcp://", "");
+            return host.Replace("http://", "").Replace("stratum+tcp://", "").TrimEnd('/');
         }
 
         private static string StripLowerChars(this string text)

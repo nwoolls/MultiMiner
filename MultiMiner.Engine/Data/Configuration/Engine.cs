@@ -185,6 +185,14 @@ namespace MultiMiner.Engine.Data.Configuration
             RemoveIvalidCoinsFromDeviceConfigurations();
         }
 
+        public void SaveAllConfigurations()
+        {
+            SaveCoinConfigurations();
+            SaveMinerConfiguration();
+            SaveStrategyConfiguration();
+            SaveDeviceConfigurations();
+        }
+
         public void LoadMinerConfiguration()
         {
             XgminerConfiguration.LoadMinerConfiguration();

@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleApplication.cs" />
     <Compile Include="MinerApplication.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -51,6 +52,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MultiMiner.Blockchain\MultiMiner.Blockchain.csproj">
+      <Project>{73c7f5aa-1bd3-49d2-90ab-96e3903c05cd}</Project>
+      <Name>MultiMiner.Blockchain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.CoinApi\MultiMiner.CoinApi.csproj">
+      <Project>{9e86f77a-68b9-4d72-82d2-855878ba8cb1}</Project>
+      <Name>MultiMiner.CoinApi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Coinbase\MultiMiner.Coinbase.csproj">
       <Project>{95f6c880-7ab3-441b-8d41-28c0ad507b62}</Project>
       <Name>MultiMiner.Coinbase</Name>
