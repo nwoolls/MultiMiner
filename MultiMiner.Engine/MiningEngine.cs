@@ -53,7 +53,7 @@ namespace MultiMiner.Engine
                 List<CoinAlgorithm> customAlgorithms = ConfigurationReaderWriter.ReadConfiguration<List<CoinAlgorithm>>(dataFilePath);
                 foreach (CoinAlgorithm customAlgorithm in customAlgorithms)
                 {
-                    CoinAlgorithm existingAlgorithm = existingAlgorithms.SingleOrDefault(ea => ea.Name.Equals(customAlgorithm.Name));
+                    CoinAlgorithm existingAlgorithm = existingAlgorithms.SingleOrDefault(ea => ea.Name.Equals(customAlgorithm.Name, StringComparison.OrdinalIgnoreCase));
                     if (existingAlgorithm != null)
                         //don't override our Family - user may have added an algo before we support it
                         //don't override BuiltIn - user may have added an algo before we support it
