@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Web.Script.Serialization;
 using System.Linq;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace MultiMiner.Discovery
 {
@@ -95,8 +95,7 @@ namespace MultiMiner.Discovery
 
             string jsonData = Encoding.ASCII.GetString(bytes);
 
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            Data.Packet packet = serializer.Deserialize<Data.Packet>(jsonData);
+            Data.Packet packet = JsonConvert.DeserializeObject<Data.Packet>(jsonData);
 
             if (packet.Verb.Equals(Verbs.Online))
             {

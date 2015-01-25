@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Web.Script.Serialization;
 using System.Collections.Generic;
 using System;
+using Newtonsoft.Json;
 
 namespace MultiMiner.Remoting.Broadcast
 {
@@ -22,15 +22,13 @@ namespace MultiMiner.Remoting.Broadcast
         {
             using (UdpClient client = new UdpClient(new IPEndPoint(source, 0)))
             {
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-
-                string jsonPayload = serializer.Serialize(payload);
+                string jsonPayload = JsonConvert.SerializeObject(payload);
 
                 Packet packet = new Packet();
                 packet.Descriptor = payload.GetType().FullName;
                 packet.Payload = jsonPayload;
 
-                string jsonPacket = serializer.Serialize(packet);
+                string jsonPacket = JsonConvert.SerializeObject(packet);
 
                 byte[] bytes = Encoding.ASCII.GetBytes(jsonPacket);
 

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Net;
-using System.Web.Script.Serialization;
 using System;
 using System.Text;
 using System.Threading;
 using MultiMiner.Utility.Net;
+using Newtonsoft.Json;
 
 namespace MultiMiner.MobileMiner
 {
@@ -22,8 +22,7 @@ namespace MultiMiner.MobileMiner
                 //specify UTF8 so devices with Unicode characters are posted up properly
                 client.Encoding = Encoding.UTF8;
 
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                string jsonData = serializer.Serialize(miningStatistics);
+                string jsonData = JsonConvert.SerializeObject(miningStatistics);
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
 
                 string response = ExecuteWebAction(() =>
@@ -31,7 +30,7 @@ namespace MultiMiner.MobileMiner
                     return client.UploadString(fullUrl, jsonData);
                 });
 
-                return serializer.Deserialize<List<Data.RemoteCommand>>(response);
+                return JsonConvert.DeserializeObject<List<Data.RemoteCommand>>(response);
             }
         }
 
@@ -67,8 +66,7 @@ namespace MultiMiner.MobileMiner
                 url, emailAddress, applicationKey, apiKey);
             using (WebClient client = new ApiWebClient())
             {
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                string jsonData = serializer.Serialize(notifications);
+                string jsonData = JsonConvert.SerializeObject(notifications);
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
 
                 ExecuteWebAction(() =>
@@ -83,8 +81,7 @@ namespace MultiMiner.MobileMiner
             if (!url.EndsWith("/"))
                 url = url + "/";
             
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            string jsonData = serializer.Serialize(machineNames);
+            string jsonData = JsonConvert.SerializeObject(machineNames);
 
             string fullUrl = String.Format("{0}RemoteCommands?emailAddress={1}&applicationKey={2}&apiKey={4}",
                 url, emailAddress, applicationKey, jsonData, apiKey);
@@ -98,7 +95,7 @@ namespace MultiMiner.MobileMiner
                     return client.UploadString(fullUrl, jsonData);
                 });
 
-                return serializer.Deserialize<List<Data.RemoteCommand>>(response);
+                return JsonConvert.DeserializeObject<List<Data.RemoteCommand>>(response);
             }
         }
 
@@ -115,8 +112,7 @@ namespace MultiMiner.MobileMiner
                     return client.UploadString(fullUrl, "DELETE", "");
                 });
 
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                return serializer.Deserialize<Data.RemoteCommand>(response);
+                return JsonConvert.DeserializeObject<Data.RemoteCommand>(response);
             }
         }
 
@@ -129,8 +125,7 @@ namespace MultiMiner.MobileMiner
                 url, emailAddress, applicationKey, apiKey);
             using (WebClient client = new ApiWebClient())
             {
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                string jsonData = serializer.Serialize(machinePools);
+                string jsonData = JsonConvert.SerializeObject(machinePools);
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
 
                 ExecuteWebAction(() =>

@@ -15,8 +15,6 @@ namespace MultiMiner.MobileMiner
 
         private const string EmbedAction = "embed";
         private const string MobileMinerWebUrl = "http://web.mobileminerapp.com";
-        private const string EmailParameter = "email";
-        private const string AppKeyParameter = "key";
         private static Dictionary<string, WebBrowser> embeddedBrowsers = new Dictionary<string, WebBrowser>();
         private static bool embeddedBrowserAuthenticated = false;
         private const string FormUrlEncodedHeader = "Content-Type: application/x-www-form-urlencoded\r\n";
@@ -42,10 +40,8 @@ namespace MultiMiner.MobileMiner
             bool postCredentials = !embeddedBrowserAuthenticated && !String.IsNullOrEmpty(emailAddress);
             if (postCredentials)
             {
-                NameValueCollection values = HttpUtility.ParseQueryString(String.Empty);
-                values[EmailParameter] = emailAddress;
-                values[AppKeyParameter] = applicationKey;
-                byte[] data = Encoding.UTF8.GetBytes(values.ToString());
+                var postString = String.Format("email={0}&key={1}", emailAddress, applicationKey);
+                byte[] data = Encoding.UTF8.GetBytes(postString);
 
                 //use POST-Redirect-GET to login without leaving credentials in history
                 embeddedBrowser.Navigate(url, null, data, FormUrlEncodedHeader);

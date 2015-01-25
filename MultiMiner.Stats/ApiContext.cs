@@ -1,8 +1,8 @@
 ﻿using MultiMiner.Utility.Net;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Text;
-using System.Web.Script.Serialization;
 
 namespace MultiMiner.Stats
 {
@@ -17,9 +17,8 @@ namespace MultiMiner.Stats
             {
                 //specify UTF8 so devices with Unicode characters are posted up properly
                 client.Encoding = Encoding.UTF8;
-
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                string jsonData = serializer.Serialize(machine);
+                                
+                string jsonData = JsonConvert.SerializeObject(machine);
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
                 string response = client.UploadString(fullUrl, jsonData);
             }
