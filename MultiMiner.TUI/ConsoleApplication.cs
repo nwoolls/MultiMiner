@@ -21,6 +21,7 @@ namespace MultiMiner.TUI
         protected abstract void LoadSettings();
         protected abstract void StartupApplication();
         protected abstract void RenderScreen();
+        protected abstract void RenderInput();
         protected abstract bool HandleCommandInput(string input);
         protected abstract void SaveSettings();
         protected abstract void TearDownApplication();
@@ -60,7 +61,8 @@ namespace MultiMiner.TUI
         {
             while (!quitApplication)
             {
-                Thread.Sleep(10);
+                //sleeping longer than 2 does not seem to improve resources but does hurt responiveness
+                Thread.Sleep(2);
                 HandleInput();
                 UpdateScreen();
             }
@@ -87,8 +89,6 @@ namespace MultiMiner.TUI
         {
             if (Console.KeyAvailable)
             {
-                ScreenDirty = true;
-
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
                 if (keyInfo.Key == ConsoleKey.Backspace)
                 {
@@ -105,7 +105,7 @@ namespace MultiMiner.TUI
 
                     var input = CurrentInput.Trim();
                     CurrentInput = String.Empty;
-                    UpdateScreen();
+                    RenderInput();
 
                     if (HandleCommandInput(input))
                     {
@@ -121,6 +121,7 @@ namespace MultiMiner.TUI
                     string key = keyInfo.KeyChar.ToString().ToLower();
                     CurrentInput = CurrentInput + key;
                 }
+                RenderInput();
             }
         }
 
