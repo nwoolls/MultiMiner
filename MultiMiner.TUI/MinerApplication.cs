@@ -44,6 +44,7 @@ namespace MultiMiner.TUI
         private PromptEventArgs currentPrompt;
         private DateTime promptTime;
         private Screen currentScreen = Screen.Main;
+        private string incomeSummaryText;
 
         #region ConsoleApplication overrides
         protected override void SetupApplication()
@@ -150,6 +151,14 @@ namespace MultiMiner.TUI
                 RenderMainScreen();
         }
         
+        protected override void RenderInput()
+        {
+            if (currentScreen == Screen.Repl)
+                OutputInput(Console.WindowWidth);
+            else
+                OutputInput(Console.WindowWidth - incomeSummaryText.Length);
+        }
+
         private void RenderReplScreen()
         {
             OutputReplBuffer();
@@ -185,9 +194,12 @@ namespace MultiMiner.TUI
 
             OutputStatus();
 
-            var output = OutputIncome();
+            incomeSummaryText = OutputIncome();
 
-            OutputInput(Console.WindowWidth - output.Length);
+            //[ERROR] FATAL UNHANDLED EXCEPTION: System.NotImplementedException: The requested feature is not implemented.
+            if (isWindows) FillLastCell();
+
+            OutputInput(Console.WindowWidth - incomeSummaryText.Length);
         }
 
         protected override bool HandleCommandInput(string input)
@@ -276,20 +288,23 @@ namespace MultiMiner.TUI
             SetCursorPosition(0, 0);
         }
 
+        private void FillLastCell()
+        {
+            var row = Console.WindowHeight - 1;
+            if (SetCursorPosition(0, row))
+            {
+                //http://stackoverflow.com/questions/25084384/filling-last-line-in-console
+                WriteText(" ", ConsoleColor.Gray, ConsoleColor.DarkGray);
+                Console.MoveBufferArea(0, row, 1, 1, Console.WindowWidth - 1, row);
+            }
+        }
+
         private void OutputInput(int totalWidth)
         {
             const string Prefix = "> ";
             var row = Console.WindowHeight - 1;
             if (SetCursorPosition(0, row))
             {
-                //[ERROR] FATAL UNHANDLED EXCEPTION: System.NotImplementedException: The requested feature is not implemented.
-                if (isWindows)
-                {
-                    //http://stackoverflow.com/questions/25084384/filling-last-line-in-console
-                    WriteText(" ", ConsoleColor.Gray, ConsoleColor.DarkGray);
-                    Console.MoveBufferArea(0, row, 1, 1, Console.WindowWidth - 1, row);
-                }
-
                 SetCursorPosition(0, row);
                 var width = totalWidth - Prefix.Length - (isWindows ? 1 : 0);
                 var text = String.Format("{0}{1}", Prefix, CurrentInput.TrimStart().FitRight(width, Ellipsis));
