@@ -172,6 +172,7 @@ namespace MultiMiner.TUI
             var lines = replBuffer.ToList();
             lines.Reverse();
             lines = lines.Take(Console.WindowHeight - 1).ToList();
+            lines.Reverse();
 
             for (int i = 0; i < lines.Count; i++)
             {
