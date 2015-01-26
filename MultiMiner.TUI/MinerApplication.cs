@@ -28,6 +28,7 @@ namespace MultiMiner.TUI
         private const string RemoveVerb = "Remove";
         private const string ListVerb = "List";
         private const string ScreenCommand = "SCreen";
+        private const string ClearScreenCommand = "CLearScreen";
 
         private const string Ellipsis = "..";
 
@@ -220,6 +221,11 @@ namespace MultiMiner.TUI
                 HandlePoolCommand(input);
             else if (InputMatchesCommand(input, ScreenCommand))
                 HandleScreenCommand(input);
+            else if (InputMatchesCommand(input, ClearScreenCommand))
+            {
+                replBuffer.Clear();
+                RenderScreen();
+            }
             else
             {
                 AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
