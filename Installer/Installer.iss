@@ -35,8 +35,6 @@ PrivilegesRequired=lowest
 [Files]
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Win.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Win.pdb"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\Interop.IWshRuntimeLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\Interop.Shell32.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinApi.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinApi.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Coinbase.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -97,26 +95,30 @@ Filename: "{app}\{#MyAppExeName}"; Flags: nowait postinstall skipifsilent; Descr
 Type: dirifempty; Name: "{app}"
 
 [CustomMessages]
-DotNetMissing={#MyAppName} requires version 3.5 of the Microsoft .NET Framework. Would you like to download it now?
+DotNetMissing={#MyAppName} requires version 4.0 of the Microsoft .NET Framework. Would you like to download it now?
 
 [Code]
-function IsDotNET35Detected: Boolean;
+function IsDotNET40Detected: Boolean;
 var
   ErrorCode: Integer;
   InstallValue: Cardinal;  
+  ClientProfileInstalled, FullProfileInstalled: Boolean;
+  RootKeyName: String;
 begin
   Result := True;
-  if not RegQueryDWordValue(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5', 
-    'Install', InstallValue) or (InstallValue <> 1) then
+  RootKeyName := 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4.0\';
+  ClientProfileInstalled := RegQueryDWordValue(HKLM, RootKeyName + 'Client', 'Install', InstallValue) and (InstallValue = 1);   
+  FullProfileInstalled := RegQueryDWordValue(HKLM, RootKeyName + 'Full', 'Install', InstallValue) and (InstallValue = 1);
+  if not ClientProfileInstalled and not FullProfileInstalled then
   begin
     Result := False;
     if MsgBox(ExpandConstant('{cm:DotNetMissing}'), mbConfirmation, MB_YESNO) = IDYES then
-      ShellExec('', 'http://www.microsoft.com/downloads/details.aspx?FamilyID=333325fd-ae52-4e35-b531-508d977d32a6&DisplayLang=en',
+      ShellExec('', 'http://www.microsoft.com/en-us/download/details.aspx?id=24872',
         '', '', SW_SHOWNORMAL, ewNoWait, ErrorCode);
   end;
 end;
 
 function InitializeSetup: Boolean;
 begin
-  Result := IsDotNET35Detected;
+  Result := IsDotNET40Detected;
 end;
