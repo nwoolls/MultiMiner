@@ -46,6 +46,7 @@ namespace MultiMiner.TUI
         private DateTime promptTime;
         private Screen currentScreen = Screen.Main;
         private string incomeSummaryText;
+        private int replOffset = 0;
 
         #region ConsoleApplication overrides
         protected override void SetupApplication()
@@ -169,21 +170,29 @@ namespace MultiMiner.TUI
 
         private void OutputReplBuffer()
         {
-            var lines = replBuffer.ToList();
-            lines.Reverse();
-            lines = lines.Take(Console.WindowHeight - 1).ToList();
-            lines.Reverse();
+            var printableHeight = Console.WindowHeight - 1;
+            List<string> lines = GetVisibleReplLines(printableHeight);
+            var offset = printableHeight - lines.Count;
+
+            for (int i = 0; i < offset; i++)
+                ClearRow(i);
 
             for (int i = 0; i < lines.Count; i++)
             {
                 var line = lines[i];
-
-                if (SetCursorPosition(0, i))
+                if (SetCursorPosition(0, i + offset))
                     WriteText(line.PadFitRight(Console.WindowWidth, Ellipsis));
             }
+        }
 
-            for (int i = lines.Count; i < Console.WindowHeight - 1; i++)
-                ClearRow(i);
+        private List<string> GetVisibleReplLines(int printableHeight)
+        {
+            var lines = replBuffer.ToList();
+            lines.Reverse();
+            lines.RemoveRange(0, replOffset);
+            lines = lines.Take(printableHeight).ToList();
+            lines.Reverse();
+            return lines;
         }
 
         private void RenderMainScreen()
@@ -202,6 +211,23 @@ namespace MultiMiner.TUI
             if (isWindows) FillLastCell();
 
             OutputInput(Console.WindowWidth - incomeSummaryText.Length);
+        }
+
+        protected override void HandleScreenNavigation(bool pageUp)
+        {
+            if (currentScreen == Screen.Repl) HandleReplScreenNavigation(pageUp);
+        }
+
+        private void HandleReplScreenNavigation(bool pageUp)
+        {
+            var printableHeight = Console.WindowHeight - 1;
+
+            if (pageUp)
+                replOffset = Math.Min(replBuffer.Count - printableHeight, replOffset + printableHeight);
+            else
+                replOffset = Math.Max(0, replOffset - printableHeight);
+
+            OutputReplBuffer();
         }
 
         protected override bool HandleCommandInput(string input)
