@@ -2859,9 +2859,10 @@ namespace MultiMiner.UX.ViewModels
                 Context.BeginInvoke((Action)(() =>
                 {
                     //code to update UI
-                    ApiLogEntries.Add(logEntry);
-                    while (ApiLogEntries.Count > 1000)
+                    //remove then add so BindingList position is on latest entry
+                    while (ApiLogEntries.Count > MaxLogEntriesOnScreen)
                         ApiLogEntries.RemoveAt(0);
+                    ApiLogEntries.Add(logEntry);
                 }), null);
             }
 
@@ -5190,7 +5191,7 @@ namespace MultiMiner.UX.ViewModels
                     });
 
                     //only load MaxHistoryOnScreen
-                    previousHistory.RemoveRange(0, Math.Max(0, previousHistory.Count - MaxHistoryOnScreen));
+                    previousHistory.RemoveRange(0, Math.Max(0, previousHistory.Count - MaxLogEntriesOnScreen));
 
                     foreach (LogProcessCloseArgs logProcessCloseArgs in previousHistory)
                         LogCloseEntries.Add(logProcessCloseArgs);
@@ -5257,10 +5258,10 @@ namespace MultiMiner.UX.ViewModels
         #region Mining event handlers
         private void LogProcessLaunch(object sender, LogLaunchArgs ea)
         {
-            LogLaunchEntries.Add(ea);
-
-            while (LogLaunchEntries.Count > 1000)
+            //remove then add so BindingList position is on latest entry
+            while (LogLaunchEntries.Count > MaxLogEntriesOnScreen)
                 LogLaunchEntries.RemoveAt(0);
+            LogLaunchEntries.Add(ea);
 
             LogProcessLaunchToFile(ea);
         }
@@ -5271,13 +5272,13 @@ namespace MultiMiner.UX.ViewModels
             LogObjectToFile(ea, logFileName);
         }
 
-        private const int MaxHistoryOnScreen = 1000;
+        private const int MaxLogEntriesOnScreen = 1000;
         private void LogProcessClose(object sender, LogProcessCloseArgs ea)
         {
-            LogCloseEntries.Add(ea);
-
-            while (LogCloseEntries.Count > MaxHistoryOnScreen)
+            //remove then add so BindingList position is on latest entry
+            while (LogCloseEntries.Count > MaxLogEntriesOnScreen)
                 LogCloseEntries.RemoveAt(0);
+            LogCloseEntries.Add(ea);
 
             LogProcessCloseToFile(ea);
         }
