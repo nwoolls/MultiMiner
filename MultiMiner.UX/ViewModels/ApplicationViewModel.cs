@@ -2861,7 +2861,7 @@ namespace MultiMiner.UX.ViewModels
                 {
                     //code to update UI
                     ApiLogEntries.Add(logEntry);
-                    while (ApiLogEntries.Count > 1000)
+                    while (ApiLogEntries.Count > MaxLogEntriesOnScreen)
                         ApiLogEntries.RemoveAt(0);
                 }), null);
             }
@@ -5192,7 +5192,7 @@ namespace MultiMiner.UX.ViewModels
                     });
 
                     //only load MaxHistoryOnScreen
-                    previousHistory.RemoveRange(0, Math.Max(0, previousHistory.Count - MaxHistoryOnScreen));
+                    previousHistory.RemoveRange(0, Math.Max(0, previousHistory.Count - MaxLogEntriesOnScreen));
 
                     foreach (LogProcessCloseArgs logProcessCloseArgs in previousHistory)
                         LogCloseEntries.Add(logProcessCloseArgs);
@@ -5261,7 +5261,7 @@ namespace MultiMiner.UX.ViewModels
         {
             LogLaunchEntries.Add(ea);
 
-            while (LogLaunchEntries.Count > 1000)
+            while (LogLaunchEntries.Count > MaxLogEntriesOnScreen)
                 LogLaunchEntries.RemoveAt(0);
 
             LogProcessLaunchToFile(ea);
@@ -5273,12 +5273,12 @@ namespace MultiMiner.UX.ViewModels
             LogObjectToFile(ea, logFileName);
         }
 
-        private const int MaxHistoryOnScreen = 1000;
+        private const int MaxLogEntriesOnScreen = 1000;
         private void LogProcessClose(object sender, LogProcessCloseArgs ea)
         {
             LogCloseEntries.Add(ea);
 
-            while (LogCloseEntries.Count > MaxHistoryOnScreen)
+            while (LogCloseEntries.Count > MaxLogEntriesOnScreen)
                 LogCloseEntries.RemoveAt(0);
 
             LogProcessCloseToFile(ea);
