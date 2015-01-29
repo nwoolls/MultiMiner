@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Timers;
 
 namespace MultiMiner.TUI
 {
@@ -37,6 +38,7 @@ namespace MultiMiner.TUI
         private readonly ISynchronizeInvoke threadContext = new SimpleSyncObject();
         private readonly List<NotificationEventArgs> notifications = new List<NotificationEventArgs>();
         private readonly List<string> replBuffer = new List<string>();
+        private readonly Timer mineOnStartTimer = new Timer(2000);
 
         private readonly bool isWindows = Utility.OS.OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
         private readonly bool isLinux = Utility.OS.OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix;
@@ -97,6 +99,18 @@ namespace MultiMiner.TUI
             };
 
             app.Context = threadContext;
+
+            mineOnStartTimer.Elapsed += (object sender, ElapsedEventArgs e) =>
+            {
+                if (app.StartupMiningCountdownSeconds > 0)
+                    currentProgress = string.Format("Mining will start automatically in {0} seconds...", app.StartupMiningCountdownSeconds);
+                else
+                {
+                    currentProgress = String.Empty;
+                    mineOnStartTimer.Enabled = false;
+                }
+                RenderScreen();
+            };
         }
 
         protected override void LoadSettings()
@@ -128,6 +142,8 @@ namespace MultiMiner.TUI
             app.SetupNetworkDeviceDetection();
             app.CheckForUpdates();
             app.SetupMiningOnStartup();
+
+            mineOnStartTimer.Enabled = true;
         }
 
         protected override void TearDownApplication()
@@ -493,7 +509,7 @@ namespace MultiMiner.TUI
                 var exchange = app.GetExchangeRate(device);
                 var pool = device.Pool.DomainFromHost();
                 var kind = device.Kind.ToString().First();
-                var difficulty = device.Difficulty.ToDifficultyString().Replace(" ", "");
+                var difficulty = device.Difficulty > 0 ? device.Difficulty.ToDifficultyString().Replace(" ", "") : String.Empty;
                 var temp = device.Temperature > 0 ? device.Temperature + "°" : String.Empty;
 
                 if (SetCursorPosition(0, i))
