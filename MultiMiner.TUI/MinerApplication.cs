@@ -493,7 +493,7 @@ namespace MultiMiner.TUI
                 var exchange = app.GetExchangeRate(device);
                 var pool = device.Pool.DomainFromHost();
                 var kind = device.Kind.ToString().First();
-                var difficulty = device.Difficulty.ToDifficultyString().Replace(" ", "");
+                var difficulty = device.Difficulty > 0 ? device.Difficulty.ToDifficultyString().Replace(" ", "") : String.Empty;
                 var temp = device.Temperature > 0 ? device.Temperature + "°" : String.Empty;
 
                 if (SetCursorPosition(0, i))
