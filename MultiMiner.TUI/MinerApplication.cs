@@ -377,10 +377,13 @@ namespace MultiMiner.TUI
             var row = Console.WindowHeight - 1;
             if (SetCursorPosition(0, row))
             {
-                SetCursorPosition(0, row);
-                var width = totalWidth - Prefix.Length - (isWindows ? 1 : 0);
-                var text = String.Format("{0}{1}", Prefix, CurrentInput.TrimStart().FitRight(width, Ellipsis));
-                WriteText(text, ConsoleColor.White, ConsoleColor.DarkGray);
+                WriteText(Prefix, ConsoleColor.Gray, ConsoleColor.DarkGray);
+                if (SetCursorPosition(Prefix.Length, row))
+                {
+                    var width = totalWidth - Prefix.Length - (isWindows ? 1 : 0);
+                    var text = CurrentInput.TrimStart().FitRight(width, Ellipsis);
+                    WriteText(text, ConsoleColor.White, ConsoleColor.DarkGray);
+                }
             }
         }
 
