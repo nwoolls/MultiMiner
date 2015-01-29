@@ -487,8 +487,8 @@ namespace MultiMiner.TUI
             {
                 var device = devices[i];
                 var name = String.IsNullOrEmpty(device.FriendlyName) ? device.Name : device.FriendlyName;
-                var averageHashrate = device.AverageHashrate.ToHashrateString().Replace(" ", "");
-                var effectiveHashrate = app.WorkUtilityToHashrate(device.WorkUtility).ToHashrateString().Replace(" ", "");
+                var averageHashrate = device.AverageHashrate > 0 ? device.AverageHashrate.ToHashrateString().Replace(" ", "") : String.Empty;
+                var effectiveHashrate = device.WorkUtility > 0 ? app.WorkUtilityToHashrate(device.WorkUtility).ToHashrateString().Replace(" ", "") : String.Empty;
                 var coinSymbol = device.Coin == null ? String.Empty : device.Coin.Id.ShortCoinSymbol();
                 var exchange = app.GetExchangeRate(device);
                 var pool = device.Pool.DomainFromHost();
