@@ -48,6 +48,7 @@ namespace MultiMiner.TUI
         private Screen currentScreen = Screen.Main;
         private string incomeSummaryText = String.Empty;
         private int replOffset = 0;
+        private int screenNameWidth = 0;
 
         #region ConsoleApplication overrides
         protected override void SetupApplication()
@@ -159,16 +160,18 @@ namespace MultiMiner.TUI
         protected override void RenderInput()
         {
             if (currentScreen == Screen.Main)
-                OutputInput(Console.WindowWidth - incomeSummaryText.Length);
+                OutputInput(Console.WindowWidth - (incomeSummaryText.Length > 0 ? incomeSummaryText.Length : screenNameWidth));
             else
-                OutputInput(Console.WindowWidth);
+                OutputInput(Console.WindowWidth - screenNameWidth);
         }
 
         private void RenderApiLogScreen()
         {
             OutputApiLog();
 
-            OutputInput(Console.WindowWidth);
+            screenNameWidth = OutputScreenName();
+
+            OutputInput(Console.WindowWidth - screenNameWidth);
         }
 
         private void OutputApiLog()
@@ -183,11 +186,19 @@ namespace MultiMiner.TUI
             for (int i = 0; i < logEntries.Count; i++)
             {
                 var logEntry = logEntries[i];
+
                 var line = logEntry.Machine.PadFitRight(20, Ellipsis)
-                        + logEntry.Request.ShortHostFromHost().PadFitRight(10, Ellipsis)
+                        + logEntry.Request.PadFitRight(10, Ellipsis)
                         + logEntry.Response.PadFitRight(Console.WindowWidth - 30, Ellipsis);
+
                 if (SetCursorPosition(0, i + offset))
-                    WriteText(line.PadFitRight(Console.WindowWidth + 2, Ellipsis));
+                    WriteText(logEntry.Machine.PadFitRight(20, Ellipsis), ConsoleColor.White);
+
+                if (SetCursorPosition(20, i + offset))
+                    WriteText(logEntry.Request.PadFitRight(10, Ellipsis), ConsoleColor.DarkGray);
+
+                if (SetCursorPosition(30, i + offset))
+                    WriteText(logEntry.Response.PadFitRight(Console.WindowWidth - 30, Ellipsis));
             }
         }
 
@@ -195,7 +206,9 @@ namespace MultiMiner.TUI
         {
             OutputReplBuffer();
 
-            OutputInput(Console.WindowWidth);
+            screenNameWidth = OutputScreenName();
+
+            OutputInput(Console.WindowWidth - screenNameWidth);
         }
 
         private void OutputReplBuffer()
@@ -245,11 +258,16 @@ namespace MultiMiner.TUI
             OutputStatus();
 
             incomeSummaryText = OutputIncome();
+            var widthOffset = incomeSummaryText.Length;
+            if (widthOffset == 0)
+            {
+                screenNameWidth = OutputScreenName();
+                widthOffset = screenNameWidth;
+            }
 
             //[ERROR] FATAL UNHANDLED EXCEPTION: System.NotImplementedException: The requested feature is not implemented.
             if (isWindows) FillLastCell();
-
-            OutputInput(Console.WindowWidth - incomeSummaryText.Length);
+            OutputInput(Console.WindowWidth - widthOffset);
         }
 
         protected override void HandleScreenNavigation(bool pageUp)
@@ -337,6 +355,25 @@ namespace MultiMiner.TUI
             return true;
         }
 
+        private int OutputScreenName()
+        {
+            var screenName = currentScreen.ToString().ToLower();
+            var offset = isWindows ? 1 : 0;
+            var printableWidth = Console.WindowHeight - 1;
+
+            if (SetCursorPosition(Console.WindowWidth - offset - screenName.Length - 2, printableWidth))
+                WriteText("[", ConsoleColor.Gray, ConsoleColor.DarkGray);
+
+            if (SetCursorPosition(Console.WindowWidth - offset - screenName.Length - 1, printableWidth))
+                WriteText(screenName, ConsoleColor.White, ConsoleColor.DarkGray);
+
+            if (SetCursorPosition(Console.WindowWidth - offset - 1, printableWidth))
+                WriteText("]", ConsoleColor.Gray, ConsoleColor.DarkGray);
+
+            //return width of printed characters
+            return screenName.Length + 2;
+        }
+
         private string OutputIncome()
         {
             var incomeSummary = app.GetIncomeSummaryText();
@@ -377,10 +414,13 @@ namespace MultiMiner.TUI
             var row = Console.WindowHeight - 1;
             if (SetCursorPosition(0, row))
             {
-                SetCursorPosition(0, row);
-                var width = totalWidth - Prefix.Length - (isWindows ? 1 : 0);
-                var text = String.Format("{0}{1}", Prefix, CurrentInput.TrimStart().FitRight(width, Ellipsis));
-                WriteText(text, ConsoleColor.White, ConsoleColor.DarkGray);
+                WriteText(Prefix, ConsoleColor.Gray, ConsoleColor.DarkGray);
+                if (SetCursorPosition(Prefix.Length, row))
+                {
+                    var width = totalWidth - Prefix.Length - (isWindows ? 1 : 0);
+                    var text = CurrentInput.TrimStart().FitRight(width, Ellipsis);
+                    WriteText(text, ConsoleColor.White, ConsoleColor.DarkGray);
+                }
             }
         }
 
