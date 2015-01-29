@@ -115,11 +115,12 @@ namespace MultiMiner.UX.Extensions
             
             if (text.Length > totalWidth)
             {
-                var partLen = (totalWidth - ellipsis.Length) / 2;
+                var part1Len = (int)Math.Floor((totalWidth - ellipsis.Length) / 2.0);
+                var part2Len = (int)Math.Ceiling((totalWidth - ellipsis.Length) / 2.0);
                 result = String.Format("{0}{1}{2}",
-                    text.Substring(0, partLen),
+                    text.Substring(0, part1Len),
                     ellipsis,
-                    text.Substring(text.Length - partLen));
+                    text.Substring(text.Length - part2Len));
             }
 
             return result;

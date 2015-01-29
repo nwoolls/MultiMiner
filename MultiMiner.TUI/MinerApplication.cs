@@ -487,12 +487,14 @@ namespace MultiMiner.TUI
             {
                 var device = devices[i];
                 var name = String.IsNullOrEmpty(device.FriendlyName) ? device.Name : device.FriendlyName;
-                var hashrate = device.CurrentHashrate.ToHashrateString().Replace(" ", "");
+                var averageHashrate = device.AverageHashrate.ToHashrateString().Replace(" ", "");
+                var effectiveHashrate = app.WorkUtilityToHashrate(device.WorkUtility).ToHashrateString().Replace(" ", "");
                 var coinSymbol = device.Coin == null ? String.Empty : device.Coin.Id.ShortCoinSymbol();
                 var exchange = app.GetExchangeRate(device);
                 var pool = device.Pool.DomainFromHost();
                 var kind = device.Kind.ToString().First();
                 var difficulty = device.Difficulty.ToDifficultyString().Replace(" ", "");
+                var temp = device.Temperature > 0 ? device.Temperature + "°" : String.Empty;
 
                 if (SetCursorPosition(0, i))
                     WriteText(kind.ToString().PadRight(2), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
@@ -510,11 +512,17 @@ namespace MultiMiner.TUI
                     WriteText(exchange.FitCurrency(9).PadLeft(10).PadRight(11), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(40, i))
-                    WriteText(pool.PadFitRight(15, Ellipsis), ConsoleColor.DarkGray);
+                    WriteText(pool.PadFitRight(10, Ellipsis), ConsoleColor.DarkGray);
 
-                var left = 55;
+                if (SetCursorPosition(49, i))
+                    WriteText(averageHashrate.PadFitLeft(11, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
+
+                if (SetCursorPosition(60, i))
+                    WriteText(effectiveHashrate.FitLeft(11, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
+
+                var left = 71;
                 if (SetCursorPosition(left, i))
-                    WriteText(hashrate.FitLeft(10, Ellipsis).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
+                    WriteText(temp.FitLeft(6, Ellipsis).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.DarkGray : ConsoleColor.DarkGray);
             }
 
             for (int i = devices.Count; i < GetSpecialRow(); i++)
