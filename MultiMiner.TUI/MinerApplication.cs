@@ -45,7 +45,7 @@ namespace MultiMiner.TUI
         private PromptEventArgs currentPrompt;
         private DateTime promptTime;
         private Screen currentScreen = Screen.Main;
-        private string incomeSummaryText;
+        private string incomeSummaryText = String.Empty;
         private int replOffset = 0;
 
         #region ConsoleApplication overrides
