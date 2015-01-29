@@ -13,7 +13,8 @@ namespace MultiMiner.TUI
         enum Screen
         {
             Main,
-            Repl
+            Repl,
+            ApiLog
         }
 
         //upper-case chars serve as a command alias, e.g. Quit = q
@@ -45,7 +46,8 @@ namespace MultiMiner.TUI
         private PromptEventArgs currentPrompt;
         private DateTime promptTime;
         private Screen currentScreen = Screen.Main;
-        private string incomeSummaryText;
+        private string incomeSummaryText = String.Empty;
+        private int replOffset = 0;
 
         #region ConsoleApplication overrides
         protected override void SetupApplication()
@@ -148,16 +150,45 @@ namespace MultiMiner.TUI
 
             if (currentScreen == Screen.Repl)
                 RenderReplScreen();
+            else if (currentScreen == Screen.ApiLog)
+                RenderApiLogScreen();
             else
                 RenderMainScreen();
         }
         
         protected override void RenderInput()
         {
-            if (currentScreen == Screen.Repl)
-                OutputInput(Console.WindowWidth);
-            else
+            if (currentScreen == Screen.Main)
                 OutputInput(Console.WindowWidth - incomeSummaryText.Length);
+            else
+                OutputInput(Console.WindowWidth);
+        }
+
+        private void RenderApiLogScreen()
+        {
+            OutputApiLog();
+
+            OutputInput(Console.WindowWidth);
+        }
+
+        private void OutputApiLog()
+        {
+            var printableHeight = Console.WindowHeight - 1;
+            List<ApiLogEntry> logEntries = GetVisibleApiLogEntries(printableHeight);
+            var offset = printableHeight - logEntries.Count;
+
+            for (int i = 0; i < offset; i++)
+                ClearRow(i);
+
+            for (int i = 0; i < logEntries.Count; i++)
+            {
+                var logEntry = logEntries[i];
+                var line = logEntry.Machine.PadFitRight(20, Ellipsis)
+                        + logEntry.Request.ShortHostFromHost().PadFitRight(10, Ellipsis)
+                        + logEntry.Response.PadFitRight(Console.WindowWidth - 30, Ellipsis);
+                if (SetCursorPosition(0, i + offset))
+                    WriteText(line.PadFitRight(Console.WindowWidth + 2, Ellipsis));
+            }
         }
 
         private void RenderReplScreen()
@@ -169,21 +200,38 @@ namespace MultiMiner.TUI
 
         private void OutputReplBuffer()
         {
-            var lines = replBuffer.ToList();
-            lines.Reverse();
-            lines = lines.Take(Console.WindowHeight - 1).ToList();
-            lines.Reverse();
+            var printableHeight = Console.WindowHeight - 1;
+            List<string> lines = GetVisibleReplLines(printableHeight);
+            var offset = printableHeight - lines.Count;
+
+            for (int i = 0; i < offset; i++)
+                ClearRow(i);
 
             for (int i = 0; i < lines.Count; i++)
             {
                 var line = lines[i];
-
-                if (SetCursorPosition(0, i))
-                    WriteText(line.PadFitRight(Console.WindowWidth, Ellipsis));
+                if (SetCursorPosition(0, i + offset))
+                    WriteText(line.PadFitRight(Console.WindowWidth + 2, Ellipsis));
             }
+        }
 
-            for (int i = lines.Count; i < Console.WindowHeight - 1; i++)
-                ClearRow(i);
+        private List<string> GetVisibleReplLines(int printableHeight)
+        {
+            var lines = replBuffer.ToList();
+            lines.Reverse();
+            lines.RemoveRange(0, replOffset);
+            lines = lines.Take(printableHeight).ToList();
+            lines.Reverse();
+            return lines;
+        }
+
+        private List<ApiLogEntry> GetVisibleApiLogEntries(int printableHeight)
+        {
+            var entries = app.ApiLogEntries.ToList();
+            entries.Reverse();
+            entries = entries.Take(printableHeight).ToList();
+            entries.Reverse();
+            return entries;
         }
 
         private void RenderMainScreen()
@@ -202,6 +250,23 @@ namespace MultiMiner.TUI
             if (isWindows) FillLastCell();
 
             OutputInput(Console.WindowWidth - incomeSummaryText.Length);
+        }
+
+        protected override void HandleScreenNavigation(bool pageUp)
+        {
+            if (currentScreen == Screen.Repl) HandleReplScreenNavigation(pageUp);
+        }
+
+        private void HandleReplScreenNavigation(bool pageUp)
+        {
+            var printableHeight = Console.WindowHeight - 1;
+
+            if (pageUp)
+                replOffset = Math.Min(replBuffer.Count - printableHeight, replOffset + printableHeight);
+            else
+                replOffset = Math.Max(0, replOffset - printableHeight);
+
+            OutputReplBuffer();
         }
 
         protected override bool HandleCommandInput(string input)
@@ -445,16 +510,23 @@ namespace MultiMiner.TUI
             if (parts.Count() == 2)
             {
                 var screenName = parts[1];
-                if (screenName.Equals(Screen.Repl.ToString(), StringComparison.OrdinalIgnoreCase))
-                    currentScreen = Screen.Repl;
-                else
-                    currentScreen = Screen.Main;
+                try
+                {
+                    currentScreen = (Screen)Enum.Parse(typeof(Screen), screenName, true);
+                }
+                catch (ArgumentException)
+                {
+                    //unknown screen specified
+                    AddNotification(String.Format("unknown screen: {0}", screenName));
+                }
                 RenderScreen();
             }
             else
             {
                 if (currentScreen == Screen.Main)
                     currentScreen = Screen.Repl;
+                else if (currentScreen == Screen.Repl)
+                    currentScreen = Screen.ApiLog;
                 else
                     currentScreen = Screen.Main;
                 RenderScreen();
@@ -525,11 +597,15 @@ namespace MultiMiner.TUI
                     || (c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
                     || (c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))));
 
+            var index = 0;
             foreach (var config in configs)
             {
                 config.Pools.ForEach((p) =>
                 {
-                    replBuffer.Add(config.PoolGroup.Id.ShortCoinSymbol().PadFitRight(8, Ellipsis) + ": " + p.Host.ShortHostFromHost());
+                    replBuffer.Add((++index).ToString().FitLeft(2, Ellipsis) + " "
+                        + config.PoolGroup.Id.ShortCoinSymbol().PadFitRight(8, Ellipsis) 
+                        + p.Host.ShortHostFromHost().PadFitRight(49, Ellipsis)
+                        + p.Username.PadFitRight(20, Ellipsis));
                 });
             }
 
