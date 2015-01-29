@@ -120,9 +120,14 @@ namespace MultiMiner.TUI
                 else if ((keyInfo.Key == ConsoleKey.PageUp) || (keyInfo.Key == ConsoleKey.PageDown))
                     HandleScreenNavigation(keyInfo.Key == ConsoleKey.PageUp);
                 else
-                {
-                    string key = keyInfo.KeyChar.ToString().ToLower();
-                    CurrentInput = CurrentInput + key;
+                {                    
+                    var keyChar = keyInfo.KeyChar;
+                    //disallow control chars - these can come in over remote terminals e.g. VNC
+                    if (!Char.IsControl(keyChar))
+                    {
+                        string key = keyChar.ToString().ToLower();
+                        CurrentInput = CurrentInput + key;
+                    }
                 }
                 RenderInput();
             }
