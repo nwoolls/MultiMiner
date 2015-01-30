@@ -2229,6 +2229,8 @@ namespace MultiMiner.UX.ViewModels
 
         public void StopMiningLocally()
         {
+            CancelMiningOnStartup(); //in case called during countdown
+
             miningEngine.StopMining();
 
             LocalViewModel.ClearDeviceInformationFromViewModel();
