@@ -126,22 +126,22 @@ namespace MultiMiner.TUI
                 Quit();
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Start, CommandAliases.Start, (input) =>
+            commandProcessor.RegisterCommand(CommandNames.Start, String.Empty, (input) =>
             {
                 app.StartMining();
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Stop, CommandAliases.Stop, (input) =>
+            commandProcessor.RegisterCommand(CommandNames.Stop, String.Empty, (input) =>
             {
                 app.StopMining();
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Restart, CommandAliases.Restart, (input) =>
+            commandProcessor.RegisterCommand(CommandNames.Restart, String.Empty, (input) =>
             {
                 app.RestartMining();
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Scan, CommandAliases.Scan, (input) =>
+            commandProcessor.RegisterCommand(CommandNames.Scan, String.Empty, (input) =>
             {
                 app.ScanHardwareLocally();
             });
@@ -176,6 +176,11 @@ namespace MultiMiner.TUI
             {
                 replBuffer.Clear();
                 RenderScreen();
+            });
+
+            commandProcessor.RegisterCommand(CommandNames.Strategies, string.Empty, (input) =>
+            {
+                HandleStrategiesCommand(input);
             });
         }
 
@@ -655,6 +660,48 @@ namespace MultiMiner.TUI
 
             screenManager.SetCurrentScreen(ScreenNames.Repl);
             RenderScreen();
+        }
+
+        private void HandleStrategiesCommand(string[] input)
+        {
+            if (input.Count() >= 2)
+            {
+                var firstArgument = input[1];
+                if (firstArgument.Equals(CommandNames.On, StringComparison.OrdinalIgnoreCase))
+                {
+                    app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = true;
+                    AddNotification("Auto mining strategies enabled");
+                }
+                else if (firstArgument.Equals(CommandNames.Off, StringComparison.OrdinalIgnoreCase))
+                {
+                    app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false;
+                    AddNotification("Auto mining strategies disabled");
+                }
+                else if (firstArgument.Equals(CommandNames.Set, StringComparison.OrdinalIgnoreCase))
+                {
+                    var lastArgument = input.Last();
+                    if (lastArgument.Equals(CommandNames.Profit, StringComparison.OrdinalIgnoreCase))
+                        app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Profitability;
+                    else if (lastArgument.Equals(CommandNames.Diff, StringComparison.OrdinalIgnoreCase))
+                        app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Difficulty;
+                    else if (lastArgument.Equals(CommandNames.Price, StringComparison.OrdinalIgnoreCase))
+                        app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Price;
+                    else
+                    {
+                        AddNotification(String.Format("{0} on|off|set [profit|diff|price]", CommandNames.Strategies.ToLower()));
+                        return; //early exit, wrong syntax
+                    }
+                    AddNotification("Auto mining basis set to " + app.EngineConfiguration.StrategyConfiguration.MiningBasis);
+                }
+                else
+                {
+                    AddNotification(String.Format("{0} on|off|set [profit|diff|price]", CommandNames.Strategies.ToLower()));
+                    return; //early exit, wrong syntax
+                }
+                app.EngineConfiguration.SaveStrategyConfiguration();
+            }
+            else
+                AddNotification(String.Format("{0} on|off|set [profit|diff|price]", CommandNames.Strategies.ToLower()));
         }
     }
 }
