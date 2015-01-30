@@ -148,9 +148,8 @@ namespace MultiMiner.TUI
 
             commandProcessor.RegisterCommand(CommandNames.SwitchAll, CommandAliases.SwitchAll, (input) =>
             {
-                var parts = input.Split(' ');
-                if (parts.Count() == 2)
-                    app.SetAllDevicesToCoin(parts[1], true);
+                if (input.Count() == 2)
+                    app.SetAllDevicesToCoin(input[1], true);
                 else
                     AddNotification(String.Format("{0} symbol", CommandNames.SwitchAll.ToLower()));
             });
@@ -162,9 +161,12 @@ namespace MultiMiner.TUI
 
             commandProcessor.RegisterCommand(CommandNames.Screen, CommandAliases.Screen, (input) =>
             {
-                var parts = input.Split(' ');
-                if (parts.Count() == 2)
-                    SetCurrentScreen(parts[1]);
+                if (input.Count() == 2)
+                {
+                    if (!screenManager.SetCurrentScreen(input[1]))
+                        //unknown screen specified
+                        AddNotification(String.Format("unknown screen: {0}", input[1]));
+                }
                 else
                     screenManager.AdvanceCurrentScreen();
                 RenderScreen();
@@ -576,23 +578,13 @@ namespace MultiMiner.TUI
                 WriteText(new string(' ', Console.WindowWidth));
         }
         
-        private void SetCurrentScreen(string screenName)
-        {
-            if (!screenManager.SetCurrentScreen(screenName))
-            {
-                //unknown screen specified
-                AddNotification(String.Format("unknown screen: {0}", screenName));
-            }
-        }
-
-        private void HandlePoolCommand(string input)
+        private void HandlePoolCommand(string[] input)
         {
             var syntax = String.Format("{0} {{ add | remove | list }} symbol url user pass", CommandNames.Pool.ToLower());
-            var parts = input.Split(' ');
 
-            if (parts.Count() >= 2)
+            if (input.Count() >= 2)
             {
-                var verb = parts[1];
+                var verb = input[1];
 
                 bool add = verb.Equals(CommandNames.Add, StringComparison.OrdinalIgnoreCase);
                 bool remove = verb.Equals(CommandNames.Remove, StringComparison.OrdinalIgnoreCase);
@@ -601,15 +593,15 @@ namespace MultiMiner.TUI
                 if (list)
                 {
                     var symbol = String.Empty;
-                    if (parts.Count() >= 3)
-                        symbol = parts[2];
+                    if (input.Count() >= 3)
+                        symbol = input[2];
 
                     HandlePoolListCommand(symbol);
                 }
-                else if(parts.Count() >= 4)
+                else if(input.Count() >= 4)
                 {
-                    var symbol = parts[2];
-                    var url = parts[3];
+                    var symbol = input[2];
+                    var url = input[3];
 
                     CoinApi.Data.CoinInformation coin = app.CoinApiInformation.SingleOrDefault(c => c.Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase));
                     if (coin == null)
@@ -619,16 +611,16 @@ namespace MultiMiner.TUI
                     }
 
 
-                    if (add && (parts.Count() == 6))
+                    if (add && (input.Count() == 6))
                     {
-                        var user = parts[4];
-                        var pass = parts[5];
+                        var user = input[4];
+                        var pass = input[5];
 
                         app.AddNewPool(coin, url, user, pass);
                     }
                     else if (remove)
                     {
-                        var user = parts.Count() > 4 ? parts[4] : String.Empty;
+                        var user = input.Count() > 4 ? input[4] : String.Empty;
 
                         app.RemoveExistingPool(coin, url, user);
                     }
