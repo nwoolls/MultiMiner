@@ -1,5 +1,9 @@
-﻿using MultiMiner.UX.Data;
+﻿using MultiMiner.TUI.Data;
+using MultiMiner.Utility.Async;
+using MultiMiner.UX.Data;
 using MultiMiner.UX.Extensions;
+using MultiMiner.UX.IO;
+using MultiMiner.UX.OS;
 using MultiMiner.UX.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -18,20 +22,6 @@ namespace MultiMiner.TUI
             ApiLog
         }
 
-        //upper-case chars serve as a command alias, e.g. Quit = q
-        private const string QuitCommand = "Quit";
-        private const string StartCommand = "start";
-        private const string StopCommand = "stop";
-        private const string RestartCommand = "restart";
-        private const string ScanCommand = "scan";
-        private const string SwitchAllCommand = "SwitchAll";
-        private const string PoolCommand = "Pool";
-        private const string AddVerb = "Add";
-        private const string RemoveVerb = "Remove";
-        private const string ListVerb = "List";
-        private const string ScreenCommand = "SCreen";
-        private const string ClearScreenCommand = "CLearScreen";
-
         private const string Ellipsis = "..";
 
         private readonly ApplicationViewModel app = new ApplicationViewModel();
@@ -39,6 +29,7 @@ namespace MultiMiner.TUI
         private readonly List<NotificationEventArgs> notifications = new List<NotificationEventArgs>();
         private readonly List<string> replBuffer = new List<string>();
         private readonly Timer mineOnStartTimer = new Timer(2000);
+        private readonly CommandProcessor commandProcessor = new CommandProcessor();
 
         private readonly bool isWindows = Utility.OS.OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
         private readonly bool isLinux = Utility.OS.OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix;
@@ -111,6 +102,57 @@ namespace MultiMiner.TUI
                 }
                 RenderScreen();
             };
+
+            RegisterCommands();
+        }
+
+        private void RegisterCommands()
+        {
+            commandProcessor.RegisterCommand(CommandNames.Quit, CommandAliases.Quit, (input) =>
+            {
+                Quit();
+            });
+
+            commandProcessor.RegisterCommand(CommandNames.Start, CommandAliases.Start, (input) =>
+            {
+                app.StartMining();
+            });
+
+            commandProcessor.RegisterCommand(CommandNames.Stop, CommandAliases.Stop, (input) =>
+            {
+                app.StopMining();
+            });
+
+            commandProcessor.RegisterCommand(CommandNames.Restart, CommandAliases.Restart, (input) =>
+            {
+                app.RestartMining();
+            });
+
+            commandProcessor.RegisterCommand(CommandNames.Scan, CommandAliases.Scan, (input) =>
+            {
+                app.ScanHardwareLocally();
+            });
+
+            commandProcessor.RegisterCommand(CommandNames.SwitchAll, CommandAliases.SwitchAll, (input) =>
+            {
+                HandleSwitchAllCommand(input);
+            });
+
+            commandProcessor.RegisterCommand(CommandNames.Pool, CommandAliases.Pool, (input) =>
+            {
+                HandlePoolCommand(input);
+            });
+
+            commandProcessor.RegisterCommand(CommandNames.Screen, CommandAliases.Screen, (input) =>
+            {
+                HandleScreenCommand(input);
+            });
+
+            commandProcessor.RegisterCommand(CommandNames.ClearScreen, CommandAliases.ClearScreen, (input) =>
+            {
+                replBuffer.Clear();
+                RenderScreen();
+            });
         }
 
         protected override void LoadSettings()
@@ -305,28 +347,7 @@ namespace MultiMiner.TUI
 
         protected override bool HandleCommandInput(string input)
         {
-            if (InputMatchesCommand(input, QuitCommand))
-                Quit();
-            else if (InputMatchesCommand(input, StartCommand))
-                app.StartMining();
-            else if (InputMatchesCommand(input, StopCommand))
-                app.StopMining();
-            else if (InputMatchesCommand(input, RestartCommand))
-                app.RestartMining();
-            else if (InputMatchesCommand(input, ScanCommand))
-                app.ScanHardwareLocally();
-            else if (InputMatchesCommand(input, SwitchAllCommand))
-                HandleSwitchAllCommand(input);
-            else if (InputMatchesCommand(input, PoolCommand))
-                HandlePoolCommand(input);
-            else if (InputMatchesCommand(input, ScreenCommand))
-                HandleScreenCommand(input);
-            else if (InputMatchesCommand(input, ClearScreenCommand))
-            {
-                replBuffer.Clear();
-                RenderScreen();
-            }
-            else
+            if (!commandProcessor.ProcessCommand(input))
             {
                 AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
                 return false; //exit early
@@ -551,21 +572,13 @@ namespace MultiMiner.TUI
                 WriteText(new string(' ', Console.WindowWidth));
         }
         
-        private bool InputMatchesCommand(string input, string command)
-        {
-            var firstWord = input.Split(' ').First().TrimStart('/');
-            var alias = new String(command.Where(c => Char.IsUpper(c)).ToArray());
-            return firstWord.Equals(command, StringComparison.OrdinalIgnoreCase)
-                || (!String.IsNullOrEmpty(alias) && firstWord.Equals(alias, StringComparison.OrdinalIgnoreCase));
-        }
-
         private void HandleSwitchAllCommand(string input)
         {
             var parts = input.Split(' ');
             if (parts.Count() == 2)
                 app.SetAllDevicesToCoin(parts[1], true);
             else
-                AddNotification(String.Format("{0} symbol", SwitchAllCommand.ToLower()));
+                AddNotification(String.Format("{0} symbol", CommandNames.SwitchAll.ToLower()));
         }
 
         private void HandleScreenCommand(string input)
@@ -599,16 +612,16 @@ namespace MultiMiner.TUI
 
         private void HandlePoolCommand(string input)
         {
-            var syntax = String.Format("{0} {{ add | remove | list }} symbol url user pass", PoolCommand.ToLower());
+            var syntax = String.Format("{0} {{ add | remove | list }} symbol url user pass", CommandNames.Pool.ToLower());
             var parts = input.Split(' ');
 
             if (parts.Count() >= 2)
             {
                 var verb = parts[1];
 
-                bool add = verb.Equals(AddVerb, StringComparison.OrdinalIgnoreCase);
-                bool remove = verb.Equals(RemoveVerb, StringComparison.OrdinalIgnoreCase);
-                bool list = verb.Equals(ListVerb, StringComparison.OrdinalIgnoreCase);
+                bool add = verb.Equals(CommandNames.Add, StringComparison.OrdinalIgnoreCase);
+                bool remove = verb.Equals(CommandNames.Remove, StringComparison.OrdinalIgnoreCase);
+                bool list = verb.Equals(CommandNames.List, StringComparison.OrdinalIgnoreCase);
 
                 if (list)
                 {

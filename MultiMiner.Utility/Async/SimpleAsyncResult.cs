@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 
-namespace MultiMiner.TUI
+namespace MultiMiner.Utility.Async
 {
-    class SimpleAsyncResult : IAsyncResult
+    public class SimpleAsyncResult : IAsyncResult
     {
         private object state;
         

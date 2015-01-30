@@ -2,9 +2,9 @@
 using System.ComponentModel;
 using System.Threading;
 
-namespace MultiMiner.TUI
+namespace MultiMiner.Utility.Async
 {
-    class SimpleSyncObject : ISynchronizeInvoke
+    public class SimpleSyncObject : ISynchronizeInvoke
     {
         private readonly object sync = new object();
         
