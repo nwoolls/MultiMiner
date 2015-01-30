@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NativeMethods.cs" />
+    <Compile Include="OS\NativeMethods.cs" />
     <Compile Include="Timers\Timers.cs" />
     <Compile Include="Net\ApiWebClient.cs">
       <SubType>Component</SubType>
