@@ -6,9 +6,9 @@ namespace MultiMiner.UX.IO
 {
     public class CommandProcessor
     {
-        private readonly Dictionary<string, Action<string>> commandHandlers = new Dictionary<string, Action<string>>();
+        private readonly Dictionary<string, Action<string[]>> commandHandlers = new Dictionary<string, Action<string[]>>();
 
-        public void RegisterCommand(string name, string alias, Action<string> handler)
+        public void RegisterCommand(string name, string alias, Action<string[]> handler)
         {
             commandHandlers[name.ToLower()] = handler;
             if (!String.IsNullOrEmpty(alias))
@@ -17,9 +17,10 @@ namespace MultiMiner.UX.IO
 
         public bool ProcessCommand(string input)
         {
-            var commandName = input.Split(' ').First().TrimStart('/');
-            if (!commandHandlers.ContainsKey(commandName.ToLower())) return false;
-            commandHandlers[commandName.ToLower()](input);
+            var words = input.Split(' ');
+            var firstWord = words.First().TrimStart('/');
+            if (!commandHandlers.ContainsKey(firstWord.ToLower())) return false;
+            commandHandlers[firstWord.ToLower()](words);
             return true;
         }
     }

@@ -15,13 +15,6 @@ namespace MultiMiner.TUI
 {
     class MinerApplication : ConsoleApplication
     {
-        enum Screen
-        {
-            Main,
-            Repl,
-            ApiLog
-        }
-
         private const string Ellipsis = "..";
 
         private readonly ApplicationViewModel app = new ApplicationViewModel();
@@ -30,6 +23,7 @@ namespace MultiMiner.TUI
         private readonly List<string> replBuffer = new List<string>();
         private readonly Timer mineOnStartTimer = new Timer(2000);
         private readonly CommandProcessor commandProcessor = new CommandProcessor();
+        private readonly ScreenManager screenManager = new ScreenManager();
 
         private readonly bool isWindows = Utility.OS.OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
         private readonly bool isLinux = Utility.OS.OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix;
@@ -38,7 +32,6 @@ namespace MultiMiner.TUI
         private string currentProgress = String.Empty;
         private PromptEventArgs currentPrompt;
         private DateTime promptTime;
-        private Screen currentScreen = Screen.Main;
         private string incomeSummaryText = String.Empty;
         private int replOffset = 0;
         private int screenNameWidth = 0;
@@ -104,6 +97,26 @@ namespace MultiMiner.TUI
             };
 
             RegisterCommands();
+
+            RegisterScreens();
+        }
+
+        private void RegisterScreens()
+        {
+            screenManager.RegisterScreen(ScreenNames.Main, () =>
+            {
+                RenderMainScreen();
+            });
+
+            screenManager.RegisterScreen(ScreenNames.Repl, () =>
+            {
+                RenderReplScreen();
+            });
+
+            screenManager.RegisterScreen(ScreenNames.ApiLog, () =>
+            {
+                RenderApiLogScreen();
+            });
         }
 
         private void RegisterCommands()
@@ -135,7 +148,10 @@ namespace MultiMiner.TUI
 
             commandProcessor.RegisterCommand(CommandNames.SwitchAll, CommandAliases.SwitchAll, (input) =>
             {
-                HandleSwitchAllCommand(input);
+                if (input.Count() == 2)
+                    app.SetAllDevicesToCoin(input[1], true);
+                else
+                    AddNotification(String.Format("{0} symbol", CommandNames.SwitchAll.ToLower()));
             });
 
             commandProcessor.RegisterCommand(CommandNames.Pool, CommandAliases.Pool, (input) =>
@@ -145,7 +161,15 @@ namespace MultiMiner.TUI
 
             commandProcessor.RegisterCommand(CommandNames.Screen, CommandAliases.Screen, (input) =>
             {
-                HandleScreenCommand(input);
+                if (input.Count() == 2)
+                {
+                    if (!screenManager.SetCurrentScreen(input[1]))
+                        //unknown screen specified
+                        AddNotification(String.Format("unknown screen: {0}", input[1]));
+                }
+                else
+                    screenManager.AdvanceCurrentScreen();
+                RenderScreen();
             });
 
             commandProcessor.RegisterCommand(CommandNames.ClearScreen, CommandAliases.ClearScreen, (input) =>
@@ -203,21 +227,12 @@ namespace MultiMiner.TUI
 
         protected override void RenderScreen()
         {
-#if DEBUG
-            //OutputJunk();
-#endif
-
-            if (currentScreen == Screen.Repl)
-                RenderReplScreen();
-            else if (currentScreen == Screen.ApiLog)
-                RenderApiLogScreen();
-            else
-                RenderMainScreen();
+            screenManager.RenderScreen();
         }
         
         protected override void RenderInput()
         {
-            if (currentScreen == Screen.Main)
+            if (screenManager.CurrentScreen.Equals(ScreenNames.Main.ToLower()))
                 OutputInput(Console.WindowWidth - (incomeSummaryText.Length > 0 ? incomeSummaryText.Length : screenNameWidth));
             else
                 OutputInput(Console.WindowWidth - screenNameWidth);
@@ -330,7 +345,7 @@ namespace MultiMiner.TUI
 
         protected override void HandleScreenNavigation(bool pageUp)
         {
-            if (currentScreen == Screen.Repl) HandleReplScreenNavigation(pageUp);
+            if (screenManager.CurrentScreen.Equals(ScreenNames.Repl.ToLower())) HandleReplScreenNavigation(pageUp);
         }
 
         private void HandleReplScreenNavigation(bool pageUp)
@@ -357,16 +372,7 @@ namespace MultiMiner.TUI
             return true;
         }
         #endregion
-
-        private void OutputJunk()
-        {
-            for (int row = 0; row < Console.WindowHeight; row++)
-            {
-                if (SetCursorPosition(0, row))
-                    WriteText(new string('X', Console.WindowWidth));
-            }
-        }
-
+        
         private void OutputNotifications()
         {
             const int NotificationCount = 5;
@@ -394,7 +400,7 @@ namespace MultiMiner.TUI
 
         private int OutputScreenName()
         {
-            var screenName = currentScreen.ToString().ToLower();
+            var screenName = screenManager.CurrentScreen;
             var offset = isWindows ? 1 : 0;
             var printableWidth = Console.WindowHeight - 1;
 
@@ -572,52 +578,13 @@ namespace MultiMiner.TUI
                 WriteText(new string(' ', Console.WindowWidth));
         }
         
-        private void HandleSwitchAllCommand(string input)
-        {
-            var parts = input.Split(' ');
-            if (parts.Count() == 2)
-                app.SetAllDevicesToCoin(parts[1], true);
-            else
-                AddNotification(String.Format("{0} symbol", CommandNames.SwitchAll.ToLower()));
-        }
-
-        private void HandleScreenCommand(string input)
-        {
-            var parts = input.Split(' ');
-            if (parts.Count() == 2)
-            {
-                var screenName = parts[1];
-                try
-                {
-                    currentScreen = (Screen)Enum.Parse(typeof(Screen), screenName, true);
-                }
-                catch (ArgumentException)
-                {
-                    //unknown screen specified
-                    AddNotification(String.Format("unknown screen: {0}", screenName));
-                }
-                RenderScreen();
-            }
-            else
-            {
-                if (currentScreen == Screen.Main)
-                    currentScreen = Screen.Repl;
-                else if (currentScreen == Screen.Repl)
-                    currentScreen = Screen.ApiLog;
-                else
-                    currentScreen = Screen.Main;
-                RenderScreen();
-            }
-        }
-
-        private void HandlePoolCommand(string input)
+        private void HandlePoolCommand(string[] input)
         {
             var syntax = String.Format("{0} {{ add | remove | list }} symbol url user pass", CommandNames.Pool.ToLower());
-            var parts = input.Split(' ');
 
-            if (parts.Count() >= 2)
+            if (input.Count() >= 2)
             {
-                var verb = parts[1];
+                var verb = input[1];
 
                 bool add = verb.Equals(CommandNames.Add, StringComparison.OrdinalIgnoreCase);
                 bool remove = verb.Equals(CommandNames.Remove, StringComparison.OrdinalIgnoreCase);
@@ -626,15 +593,15 @@ namespace MultiMiner.TUI
                 if (list)
                 {
                     var symbol = String.Empty;
-                    if (parts.Count() >= 3)
-                        symbol = parts[2];
+                    if (input.Count() >= 3)
+                        symbol = input[2];
 
                     HandlePoolListCommand(symbol);
                 }
-                else if(parts.Count() >= 4)
+                else if(input.Count() >= 4)
                 {
-                    var symbol = parts[2];
-                    var url = parts[3];
+                    var symbol = input[2];
+                    var url = input[3];
 
                     CoinApi.Data.CoinInformation coin = app.CoinApiInformation.SingleOrDefault(c => c.Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase));
                     if (coin == null)
@@ -644,16 +611,16 @@ namespace MultiMiner.TUI
                     }
 
 
-                    if (add && (parts.Count() == 6))
+                    if (add && (input.Count() == 6))
                     {
-                        var user = parts[4];
-                        var pass = parts[5];
+                        var user = input[4];
+                        var pass = input[5];
 
                         app.AddNewPool(coin, url, user, pass);
                     }
                     else if (remove)
                     {
-                        var user = parts.Count() > 4 ? parts[4] : String.Empty;
+                        var user = input.Count() > 4 ? input[4] : String.Empty;
 
                         app.RemoveExistingPool(coin, url, user);
                     }
@@ -686,7 +653,7 @@ namespace MultiMiner.TUI
                 });
             }
 
-            currentScreen = Screen.Repl;
+            screenManager.SetCurrentScreen(ScreenNames.Repl);
             RenderScreen();
         }
     }
