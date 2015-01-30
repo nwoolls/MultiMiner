@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OS\NativeMethods.cs" />
+    <Compile Include="Async\SimpleAsyncResult.cs" />
+    <Compile Include="Async\SimpleSyncObject.cs" />
     <Compile Include="Timers\Timers.cs" />
     <Compile Include="Net\ApiWebClient.cs">
       <SubType>Component</SubType>

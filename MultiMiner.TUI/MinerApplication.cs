@@ -1,4 +1,5 @@
 ﻿using MultiMiner.UX.Data;
+using MultiMiner.Utility.Async;
 using MultiMiner.UX.Extensions;
 using MultiMiner.UX.ViewModels;
 using System;
