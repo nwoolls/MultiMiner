@@ -81,6 +81,7 @@
     <Compile Include="Extensions\XgminerConfigurationExtensions.cs" />
     <Compile Include="Data\PromptEventArgs.cs" />
     <Compile Include="IO\CommandProcessor.cs" />
+    <Compile Include="IO\ScreenManager.cs" />
     <Compile Include="OS\ConsoleApplication.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ApplicationViewModel.cs" />

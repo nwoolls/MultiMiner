@@ -15,13 +15,6 @@ namespace MultiMiner.TUI
 {
     class MinerApplication : ConsoleApplication
     {
-        enum Screen
-        {
-            Main,
-            Repl,
-            ApiLog
-        }
-
         private const string Ellipsis = "..";
 
         private readonly ApplicationViewModel app = new ApplicationViewModel();
@@ -30,6 +23,7 @@ namespace MultiMiner.TUI
         private readonly List<string> replBuffer = new List<string>();
         private readonly Timer mineOnStartTimer = new Timer(2000);
         private readonly CommandProcessor commandProcessor = new CommandProcessor();
+        private readonly ScreenManager screenManager = new ScreenManager();
 
         private readonly bool isWindows = Utility.OS.OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
         private readonly bool isLinux = Utility.OS.OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix;
@@ -38,7 +32,6 @@ namespace MultiMiner.TUI
         private string currentProgress = String.Empty;
         private PromptEventArgs currentPrompt;
         private DateTime promptTime;
-        private Screen currentScreen = Screen.Main;
         private string incomeSummaryText = String.Empty;
         private int replOffset = 0;
         private int screenNameWidth = 0;
@@ -104,6 +97,26 @@ namespace MultiMiner.TUI
             };
 
             RegisterCommands();
+
+            RegisterScreens();
+        }
+
+        private void RegisterScreens()
+        {
+            screenManager.RegisterScreen(ScreenNames.Main, () =>
+            {
+                RenderMainScreen();
+            });
+
+            screenManager.RegisterScreen(ScreenNames.Repl, () =>
+            {
+                RenderReplScreen();
+            });
+
+            screenManager.RegisterScreen(ScreenNames.ApiLog, () =>
+            {
+                RenderApiLogScreen();
+            });
         }
 
         private void RegisterCommands()
@@ -153,7 +166,7 @@ namespace MultiMiner.TUI
                 if (parts.Count() == 2)
                     SetCurrentScreen(parts[1]);
                 else
-                    AdvanceCurrentScreen();
+                    screenManager.AdvanceCurrentScreen();
                 RenderScreen();
             });
 
@@ -212,17 +225,12 @@ namespace MultiMiner.TUI
 
         protected override void RenderScreen()
         {
-            if (currentScreen == Screen.Repl)
-                RenderReplScreen();
-            else if (currentScreen == Screen.ApiLog)
-                RenderApiLogScreen();
-            else
-                RenderMainScreen();
+            screenManager.RenderScreen();
         }
         
         protected override void RenderInput()
         {
-            if (currentScreen == Screen.Main)
+            if (screenManager.CurrentScreen.Equals(ScreenNames.Main.ToLower()))
                 OutputInput(Console.WindowWidth - (incomeSummaryText.Length > 0 ? incomeSummaryText.Length : screenNameWidth));
             else
                 OutputInput(Console.WindowWidth - screenNameWidth);
@@ -335,7 +343,7 @@ namespace MultiMiner.TUI
 
         protected override void HandleScreenNavigation(bool pageUp)
         {
-            if (currentScreen == Screen.Repl) HandleReplScreenNavigation(pageUp);
+            if (screenManager.CurrentScreen.Equals(ScreenNames.Repl.ToLower())) HandleReplScreenNavigation(pageUp);
         }
 
         private void HandleReplScreenNavigation(bool pageUp)
@@ -390,7 +398,7 @@ namespace MultiMiner.TUI
 
         private int OutputScreenName()
         {
-            var screenName = currentScreen.ToString().ToLower();
+            var screenName = screenManager.CurrentScreen;
             var offset = isWindows ? 1 : 0;
             var printableWidth = Console.WindowHeight - 1;
 
@@ -568,22 +576,9 @@ namespace MultiMiner.TUI
                 WriteText(new string(' ', Console.WindowWidth));
         }
         
-        private void AdvanceCurrentScreen()
-        {
-            var screenValue = (int)currentScreen;
-            screenValue++;
-            if (screenValue >= Enum.GetValues(typeof(Screen)).Length)
-                screenValue = 0;
-            currentScreen = (Screen)screenValue;
-        }
-
         private void SetCurrentScreen(string screenName)
         {
-            try
-            {
-                currentScreen = (Screen)Enum.Parse(typeof(Screen), screenName, true);
-            }
-            catch (ArgumentException)
+            if (!screenManager.SetCurrentScreen(screenName))
             {
                 //unknown screen specified
                 AddNotification(String.Format("unknown screen: {0}", screenName));
@@ -666,7 +661,7 @@ namespace MultiMiner.TUI
                 });
             }
 
-            currentScreen = Screen.Repl;
+            screenManager.SetCurrentScreen(ScreenNames.Repl);
             RenderScreen();
         }
     }
