@@ -177,6 +177,11 @@ namespace MultiMiner.TUI
                 replBuffer.Clear();
                 RenderScreen();
             });
+
+            commandProcessor.RegisterCommand(CommandNames.Strategies, string.Empty, (input) =>
+            {
+                HandleStrategiesCommand(input);
+            });
         }
 
         protected override void LoadSettings()
@@ -655,6 +660,48 @@ namespace MultiMiner.TUI
 
             screenManager.SetCurrentScreen(ScreenNames.Repl);
             RenderScreen();
+        }
+
+        private void HandleStrategiesCommand(string[] input)
+        {
+            if (input.Count() >= 2)
+            {
+                var firstArgument = input[1];
+                if (firstArgument.Equals(CommandNames.On, StringComparison.OrdinalIgnoreCase))
+                {
+                    app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = true;
+                    AddNotification("Auto mining strategies enabled");
+                }
+                else if (firstArgument.Equals(CommandNames.Off, StringComparison.OrdinalIgnoreCase))
+                {
+                    app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false;
+                    AddNotification("Auto mining strategies disabled");
+                }
+                else if (firstArgument.Equals(CommandNames.Set, StringComparison.OrdinalIgnoreCase))
+                {
+                    var lastArgument = input.Last();
+                    if (lastArgument.Equals(CommandNames.Profit, StringComparison.OrdinalIgnoreCase))
+                        app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Profitability;
+                    else if (lastArgument.Equals(CommandNames.Diff, StringComparison.OrdinalIgnoreCase))
+                        app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Difficulty;
+                    else if (lastArgument.Equals(CommandNames.Price, StringComparison.OrdinalIgnoreCase))
+                        app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Price;
+                    else
+                    {
+                        AddNotification(String.Format("{0} on|off|set [profit|diff|price]", CommandNames.Strategies.ToLower()));
+                        return; //early exit, wrong syntax
+                    }
+                    AddNotification("Auto mining basis set to " + app.EngineConfiguration.StrategyConfiguration.MiningBasis);
+                }
+                else
+                {
+                    AddNotification(String.Format("{0} on|off|set [profit|diff|price]", CommandNames.Strategies.ToLower()));
+                    return; //early exit, wrong syntax
+                }
+                app.EngineConfiguration.SaveStrategyConfiguration();
+            }
+            else
+                AddNotification(String.Format("{0} on|off|set [profit|diff|price]", CommandNames.Strategies.ToLower()));
         }
     }
 }

@@ -14,6 +14,13 @@
         public const string List = "List";
         public const string Screen = "Screen";
         public const string ClearScreen = "ClearScreen";
+        public const string Strategies = "Strats";
+        public const string On = "On";
+        public const string Off = "Off";
+        public const string Set = "Set";
+        public const string Profit = "Profit";
+        public const string Diff = "Diff";
+        public const string Price = "Price";
     }
 
     class CommandAliases
