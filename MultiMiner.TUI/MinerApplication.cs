@@ -126,22 +126,22 @@ namespace MultiMiner.TUI
                 Quit();
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Start, CommandAliases.Start, (input) =>
+            commandProcessor.RegisterCommand(CommandNames.Start, String.Empty, (input) =>
             {
                 app.StartMining();
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Stop, CommandAliases.Stop, (input) =>
+            commandProcessor.RegisterCommand(CommandNames.Stop, String.Empty, (input) =>
             {
                 app.StopMining();
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Restart, CommandAliases.Restart, (input) =>
+            commandProcessor.RegisterCommand(CommandNames.Restart, String.Empty, (input) =>
             {
                 app.RestartMining();
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Scan, CommandAliases.Scan, (input) =>
+            commandProcessor.RegisterCommand(CommandNames.Scan, String.Empty, (input) =>
             {
                 app.ScanHardwareLocally();
             });
