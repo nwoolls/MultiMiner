@@ -203,10 +203,6 @@ namespace MultiMiner.TUI
 
         protected override void RenderScreen()
         {
-#if DEBUG
-            //OutputJunk();
-#endif
-
             if (currentScreen == Screen.Repl)
                 RenderReplScreen();
             else if (currentScreen == Screen.ApiLog)
@@ -357,16 +353,7 @@ namespace MultiMiner.TUI
             return true;
         }
         #endregion
-
-        private void OutputJunk()
-        {
-            for (int row = 0; row < Console.WindowHeight; row++)
-            {
-                if (SetCursorPosition(0, row))
-                    WriteText(new string('X', Console.WindowWidth));
-            }
-        }
-
+        
         private void OutputNotifications()
         {
             const int NotificationCount = 5;
