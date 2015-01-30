@@ -1,6 +1,7 @@
 ﻿using MultiMiner.UX.Data;
 using MultiMiner.Utility.Async;
 using MultiMiner.UX.Extensions;
+using MultiMiner.UX.OS;
 using MultiMiner.UX.ViewModels;
 using System;
 using System.Collections.Generic;

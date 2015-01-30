@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MultiMiner.TUI
+namespace MultiMiner.UX.OS
 {
-    abstract class ConsoleApplication
+    public abstract class ConsoleApplication
     {
         private readonly List<string> commandQueue = new List<string>();
 
