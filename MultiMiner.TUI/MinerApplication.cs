@@ -135,7 +135,11 @@ namespace MultiMiner.TUI
 
             commandProcessor.RegisterCommand(CommandNames.SwitchAll, CommandAliases.SwitchAll, (input) =>
             {
-                HandleSwitchAllCommand(input);
+                var parts = input.Split(' ');
+                if (parts.Count() == 2)
+                    app.SetAllDevicesToCoin(parts[1], true);
+                else
+                    AddNotification(String.Format("{0} symbol", CommandNames.SwitchAll.ToLower()));
             });
 
             commandProcessor.RegisterCommand(CommandNames.Pool, CommandAliases.Pool, (input) =>
@@ -145,7 +149,12 @@ namespace MultiMiner.TUI
 
             commandProcessor.RegisterCommand(CommandNames.Screen, CommandAliases.Screen, (input) =>
             {
-                HandleScreenCommand(input);
+                var parts = input.Split(' ');
+                if (parts.Count() == 2)
+                    SetCurrentScreen(parts[1]);
+                else
+                    AdvanceCurrentScreen();
+                RenderScreen();
             });
 
             commandProcessor.RegisterCommand(CommandNames.ClearScreen, CommandAliases.ClearScreen, (input) =>
@@ -559,41 +568,25 @@ namespace MultiMiner.TUI
                 WriteText(new string(' ', Console.WindowWidth));
         }
         
-        private void HandleSwitchAllCommand(string input)
+        private void AdvanceCurrentScreen()
         {
-            var parts = input.Split(' ');
-            if (parts.Count() == 2)
-                app.SetAllDevicesToCoin(parts[1], true);
-            else
-                AddNotification(String.Format("{0} symbol", CommandNames.SwitchAll.ToLower()));
+            var screenValue = (int)currentScreen;
+            screenValue++;
+            if (screenValue >= Enum.GetValues(typeof(Screen)).Length)
+                screenValue = 0;
+            currentScreen = (Screen)screenValue;
         }
 
-        private void HandleScreenCommand(string input)
+        private void SetCurrentScreen(string screenName)
         {
-            var parts = input.Split(' ');
-            if (parts.Count() == 2)
+            try
             {
-                var screenName = parts[1];
-                try
-                {
-                    currentScreen = (Screen)Enum.Parse(typeof(Screen), screenName, true);
-                }
-                catch (ArgumentException)
-                {
-                    //unknown screen specified
-                    AddNotification(String.Format("unknown screen: {0}", screenName));
-                }
-                RenderScreen();
+                currentScreen = (Screen)Enum.Parse(typeof(Screen), screenName, true);
             }
-            else
+            catch (ArgumentException)
             {
-                if (currentScreen == Screen.Main)
-                    currentScreen = Screen.Repl;
-                else if (currentScreen == Screen.Repl)
-                    currentScreen = Screen.ApiLog;
-                else
-                    currentScreen = Screen.Main;
-                RenderScreen();
+                //unknown screen specified
+                AddNotification(String.Format("unknown screen: {0}", screenName));
             }
         }
 
