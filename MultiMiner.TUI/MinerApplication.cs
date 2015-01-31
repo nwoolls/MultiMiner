@@ -176,6 +176,8 @@ namespace MultiMiner.TUI
             });
 
             commandProcessor.RegisterCommand(CommandNames.Strategies, string.Empty, HandleStrategiesCommand);
+
+            commandProcessor.RegisterCommand(CommandNames.Notifications, string.Empty, HandeNotificationsCommand);
         }
 
         protected override void LoadSettings()
@@ -698,6 +700,43 @@ namespace MultiMiner.TUI
             }
             else
                 AddNotification(String.Format("{0} on|off|set [profit|diff|price]", CommandNames.Strategies.ToLower()));
+        }
+
+        private void HandeNotificationsCommand(string[] input)
+        {
+            if (input.Count() >= 2)
+            {
+                var verb = input[1];
+                if (verb.Equals(CommandNames.Clear, StringComparison.OrdinalIgnoreCase))
+                {
+                    notifications.Clear();
+                    return; //early exit - success
+                }
+                else if (input.Count() == 3)
+                {
+                    var last = input.Last();
+                    var index = -1;
+                    if (Int32.TryParse(last, out index))
+                    {
+                        index--; //user enters 1-based
+                        if ((index >= 0) && (index < notifications.Count))
+                        {
+                            if (verb.Equals(CommandNames.Remove, StringComparison.OrdinalIgnoreCase))
+                            {
+                                notifications.RemoveAt(index);
+                                return; //early exit - success
+                            }
+                            else if (verb.Equals(CommandNames.Act, StringComparison.OrdinalIgnoreCase))
+                            {
+                                notifications[index].ClickHandler();
+                                return; //early exit - success
+                            }
+                        }
+                    }
+                }
+            }
+
+            AddNotification(String.Format("{0} act|remove|clear note_number", CommandNames.Notifications.ToLower()));
         }
     }
 }

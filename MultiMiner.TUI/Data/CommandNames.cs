@@ -21,6 +21,9 @@
         public const string Profit = "Profit";
         public const string Diff = "Diff";
         public const string Price = "Price";
+        public const string Notifications = "Notes";
+        public const string Clear = "Clear";
+        public const string Act = "Act";
     }
 
     class CommandAliases
