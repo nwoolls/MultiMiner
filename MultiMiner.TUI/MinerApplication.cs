@@ -154,10 +154,7 @@ namespace MultiMiner.TUI
                     AddNotification(String.Format("{0} symbol", CommandNames.SwitchAll.ToLower()));
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Pool, CommandAliases.Pool, (input) =>
-            {
-                HandlePoolCommand(input);
-            });
+            commandProcessor.RegisterCommand(CommandNames.Strategies, string.Empty, HandlePoolCommand);
 
             commandProcessor.RegisterCommand(CommandNames.Screen, CommandAliases.Screen, (input) =>
             {
@@ -178,10 +175,7 @@ namespace MultiMiner.TUI
                 RenderScreen();
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Strategies, string.Empty, (input) =>
-            {
-                HandleStrategiesCommand(input);
-            });
+            commandProcessor.RegisterCommand(CommandNames.Strategies, string.Empty, HandleStrategiesCommand);
         }
 
         protected override void LoadSettings()
@@ -372,6 +366,8 @@ namespace MultiMiner.TUI
                 AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
                 return false; //exit early
             }
+
+            RenderScreen();
 
             //successful command
             return true;
