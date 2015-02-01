@@ -292,6 +292,7 @@ namespace MultiMiner.TUI
                 String.Empty,
                 (input) =>
             {
+                replBuffer.Add(String.Empty);
                 commandProcessor.OutputHelp();
                 screenManager.SetCurrentScreen(ScreenNames.Repl);
                 RenderScreen();
@@ -416,6 +417,12 @@ namespace MultiMiner.TUI
             for (int i = 0; i < lines.Count; i++)
             {
                 var line = lines[i];
+
+                if (String.IsNullOrEmpty(line))
+                {
+                    ClearRow(i);
+                    continue;
+                }
 
                 if (SetCursorPosition(0, i + offset))
                     WriteText(":", ConsoleColor.White);
@@ -768,6 +775,10 @@ namespace MultiMiner.TUI
                 .Where(c => String.IsNullOrEmpty(symbol)
                     || (c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
                     || (c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))));
+
+            if (configs.Count() == 0) return;
+
+            replBuffer.Add(String.Empty);
 
             var index = 0;
             foreach (var config in configs)
