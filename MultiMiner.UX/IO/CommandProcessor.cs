@@ -12,6 +12,8 @@ namespace MultiMiner.UX.IO
             public string Alias;
             public string Syntax;
             public Func<string[], bool> Handler;
+
+            public string FullSyntax { get { return String.Format("{0}{1} {2}", Name, String.IsNullOrEmpty(Alias) ? String.Empty : "|" + Alias, Syntax); } }
         }
 
         private readonly List<Command> commands = new List<Command>();
@@ -43,7 +45,7 @@ namespace MultiMiner.UX.IO
             var firstWord = words.First().TrimStart('/').ToLower();
             var command = commands.SingleOrDefault(c => c.Name.Equals(firstWord) || c.Alias.Equals(firstWord));
             if (command == null) return false;
-            if (!command.Handler(words)) syntaxCallback(command.Syntax);
+            if (!command.Handler(words)) syntaxCallback(command.FullSyntax);
             return true;
         }
 
@@ -52,7 +54,7 @@ namespace MultiMiner.UX.IO
             commands
                 .OrderBy(c => c.Name)
                 .ToList()
-                .ForEach(c => helpCallback(String.Format("{0}{1} {2}", c.Name, String.IsNullOrEmpty(c.Alias) ? String.Empty : "|" + c.Alias, c.Syntax)));
+                .ForEach(c => helpCallback(c.FullSyntax));
         }
     }
 }
