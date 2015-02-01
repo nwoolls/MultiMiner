@@ -26,6 +26,7 @@
         public const string Act = "Act";
         public const string Network = "Net";
         public const string Reboot = "Reboot";
+        public const string Help = "Help";
     }
 
     class CommandAliases

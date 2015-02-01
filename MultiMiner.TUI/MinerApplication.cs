@@ -24,7 +24,7 @@ namespace MultiMiner.TUI
         private readonly List<NotificationEventArgs> notifications = new List<NotificationEventArgs>();
         private readonly List<string> replBuffer = new List<string>();
         private readonly Timer mineOnStartTimer = new Timer(2000);
-        private readonly CommandProcessor commandProcessor = new CommandProcessor();
+        private readonly CommandProcessor commandProcessor;
         private readonly ScreenManager screenManager = new ScreenManager();
 
         private readonly bool isWindows = Utility.OS.OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
@@ -37,6 +37,14 @@ namespace MultiMiner.TUI
         private string incomeSummaryText = String.Empty;
         private int replOffset = 0;
         private int screenNameWidth = 0;
+
+        public MinerApplication()
+        {
+            commandProcessor = new CommandProcessor(AddNotification, (s) =>
+            {
+                replBuffer.Add(s);
+            });
+        }
 
         #region ConsoleApplication overrides
         protected override void SetupApplication()
@@ -161,42 +169,81 @@ namespace MultiMiner.TUI
 
         private void RegisterCommands()
         {
-            commandProcessor.RegisterCommand(CommandNames.Quit, CommandAliases.Quit, (input) =>
+            commandProcessor.RegisterCommand(
+                CommandNames.Quit, 
+                CommandAliases.Quit,
+                String.Empty,
+                (input) =>
             {
                 Quit();
+                return true;
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Start, String.Empty, (input) =>
+            commandProcessor.RegisterCommand(
+                CommandNames.Start, 
+                String.Empty,
+                String.Empty,
+                (input) =>
             {
                 app.StartMining();
+                return true;
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Stop, String.Empty, (input) =>
+            commandProcessor.RegisterCommand(
+                CommandNames.Stop, 
+                String.Empty,
+                String.Empty,
+                (input) =>
             {
                 app.StopMining();
+                return true;
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Restart, String.Empty, (input) =>
+            commandProcessor.RegisterCommand(
+                CommandNames.Restart, 
+                String.Empty,
+                String.Empty,
+                (input) =>
             {
                 app.RestartMining();
+                return true;
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Scan, String.Empty, (input) =>
+            commandProcessor.RegisterCommand(
+                CommandNames.Scan, 
+                String.Empty,
+                String.Empty,
+                (input) =>
             {
                 app.ScanHardwareLocally();
+                return true;
             });
 
-            commandProcessor.RegisterCommand(CommandNames.SwitchAll, CommandAliases.SwitchAll, (input) =>
+            commandProcessor.RegisterCommand(
+                CommandNames.SwitchAll, 
+                CommandAliases.SwitchAll,
+                "<symbol>",
+                (input) =>
             {
                 if (input.Count() == 2)
                     app.SetAllDevicesToCoin(input[1], true);
                 else
-                    AddNotification(String.Format("{0} <symbol>", CommandNames.SwitchAll.ToLower()));
+                    return false;
+
+                return true;
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Pool, CommandAliases.Pool, HandlePoolCommand);
+            commandProcessor.RegisterCommand(
+                CommandNames.Pool, 
+                CommandAliases.Pool,
+                "<add|remove|list> [symbol] [url] [user] [pass]",
+                HandlePoolCommand);
 
-            commandProcessor.RegisterCommand(CommandNames.Screen, CommandAliases.Screen, (input) =>
+            commandProcessor.RegisterCommand(
+                CommandNames.Screen, 
+                CommandAliases.Screen,
+                "[main|repl|apilog]",
+                (input) =>
             {
                 if (input.Count() == 2)
                 {
@@ -207,19 +254,49 @@ namespace MultiMiner.TUI
                 else
                     screenManager.AdvanceCurrentScreen();
                 RenderScreen();
+                return true;
             });
 
-            commandProcessor.RegisterCommand(CommandNames.ClearScreen, CommandAliases.ClearScreen, (input) =>
+            commandProcessor.RegisterCommand(
+                CommandNames.ClearScreen, 
+                CommandAliases.ClearScreen,
+                String.Empty,
+                (input) =>
             {
                 replBuffer.Clear();
                 RenderScreen();
+                return true;
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Strategies, string.Empty, HandleStrategiesCommand);
+            commandProcessor.RegisterCommand(
+                CommandNames.Strategies, 
+                String.Empty,
+                "<on|off|set> [profit|diff|price]", 
+                HandleStrategiesCommand);
 
-            commandProcessor.RegisterCommand(CommandNames.Notifications, string.Empty, HandeNotificationsCommand);
+            commandProcessor.RegisterCommand(
+                CommandNames.Notifications, 
+                String.Empty,
+                "<act|remove|clear> [note_number]",
+                HandeNotificationsCommand);
 
-            commandProcessor.RegisterCommand(CommandNames.Network, string.Empty, HandeNetworkCommand);
+            commandProcessor.RegisterCommand(
+                CommandNames.Network, 
+                String.Empty,
+                "<start|stop|restart|reboot> <ip_address[:port]>", 
+                HandeNetworkCommand);
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Help, 
+                String.Empty,
+                String.Empty,
+                (input) =>
+            {
+                commandProcessor.OutputHelp();
+                screenManager.SetCurrentScreen(ScreenNames.Repl);
+                RenderScreen();
+                return true;
+            });
         }
 
         protected override void LoadSettings()
@@ -339,8 +416,14 @@ namespace MultiMiner.TUI
             for (int i = 0; i < lines.Count; i++)
             {
                 var line = lines[i];
+
                 if (SetCursorPosition(0, i + offset))
-                    WriteText(line.PadFitRight(Console.WindowWidth + 2, Ellipsis));
+                    WriteText(":", ConsoleColor.White);
+                if (SetCursorPosition(1, i + offset))
+                    WriteText(": ", ConsoleColor.DarkGray);
+
+                if (SetCursorPosition(3, i + offset))
+                    WriteText(line.PadFitRight(Console.WindowWidth, Ellipsis));
             }
         }
 
@@ -561,6 +644,7 @@ namespace MultiMiner.TUI
             {
                 Text = text
             });
+            replBuffer.Add(text); //so TUI-specific notes show on both screens
             RenderScreen();
         }
 
@@ -623,10 +707,8 @@ namespace MultiMiner.TUI
                 WriteText(new string(' ', Console.WindowWidth));
         }
         
-        private void HandlePoolCommand(string[] input)
+        private bool HandlePoolCommand(string[] input)
         {
-            var syntax = String.Format("{0} <add|remove|list> [symbol] [url] [user] [pass]", CommandNames.Pool.ToLower());
-
             if (input.Count() >= 2)
             {
                 var verb = input[1];
@@ -643,7 +725,7 @@ namespace MultiMiner.TUI
 
                     HandlePoolListCommand(symbol);
                 }
-                else if(input.Count() >= 4)
+                else if (input.Count() >= 4)
                 {
                     var symbol = input[2];
                     var url = input[3];
@@ -652,9 +734,8 @@ namespace MultiMiner.TUI
                     if (coin == null)
                     {
                         AddNotification(String.Format("Unknown coin: {0}", symbol));
-                        return; //early exit
+                        return true; //early exit
                     }
-
 
                     if (add && (input.Count() == 6))
                     {
@@ -670,13 +751,15 @@ namespace MultiMiner.TUI
                         app.RemoveExistingPool(coin, url, user);
                     }
                     else
-                        AddNotification(syntax);
+                        return false;
                 }
                 else
-                    AddNotification(syntax);
+                    return false;
             }
             else
-                AddNotification(syntax);
+                return false;
+
+            return true;
         }
 
         private void HandlePoolListCommand(string symbol)
@@ -693,7 +776,7 @@ namespace MultiMiner.TUI
                 {
                     replBuffer.Add((++index).ToString().FitLeft(2, Ellipsis) + " "
                         + config.PoolGroup.Id.ShortCoinSymbol().PadFitRight(8, Ellipsis) 
-                        + p.Host.ShortHostFromHost().PadFitRight(49, Ellipsis)
+                        + p.Host.ShortHostFromHost().PadFitRight(47, Ellipsis)
                         + p.Username.PadFitRight(20, Ellipsis));
                 });
             }
@@ -702,7 +785,7 @@ namespace MultiMiner.TUI
             RenderScreen();
         }
 
-        private void HandleStrategiesCommand(string[] input)
+        private bool HandleStrategiesCommand(string[] input)
         {
             if (input.Count() >= 2)
             {
@@ -727,24 +810,22 @@ namespace MultiMiner.TUI
                     else if (lastArgument.Equals(CommandNames.Price, StringComparison.OrdinalIgnoreCase))
                         app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Price;
                     else
-                    {
-                        AddNotification(String.Format("{0} <on|off|set> [profit|diff|price]", CommandNames.Strategies.ToLower()));
-                        return; //early exit, wrong syntax
-                    }
+                        return false; //early exit, wrong syntax
+
                     AddNotification("Auto mining basis set to " + app.EngineConfiguration.StrategyConfiguration.MiningBasis);
                 }
                 else
-                {
-                    AddNotification(String.Format("{0} <on|off|set> [profit|diff|price]", CommandNames.Strategies.ToLower()));
-                    return; //early exit, wrong syntax
-                }
+                    return false; //early exit, wrong syntax
+
                 app.EngineConfiguration.SaveStrategyConfiguration();
             }
             else
-                AddNotification(String.Format("{0} <on|off|set> [profit|diff|price]", CommandNames.Strategies.ToLower()));
+                return false; //early exit, wrong syntax
+
+            return true;
         }
 
-        private void HandeNotificationsCommand(string[] input)
+        private bool HandeNotificationsCommand(string[] input)
         {
             if (input.Count() >= 2)
             {
@@ -752,7 +833,7 @@ namespace MultiMiner.TUI
                 if (verb.Equals(CommandNames.Clear, StringComparison.OrdinalIgnoreCase))
                 {
                     notifications.Clear();
-                    return; //early exit - success
+                    return true; //early exit - success
                 }
                 else if (input.Count() == 3)
                 {
@@ -766,22 +847,22 @@ namespace MultiMiner.TUI
                             if (verb.Equals(CommandNames.Remove, StringComparison.OrdinalIgnoreCase))
                             {
                                 notifications.RemoveAt(index);
-                                return; //early exit - success
+                                return true; //early exit - success
                             }
                             else if (verb.Equals(CommandNames.Act, StringComparison.OrdinalIgnoreCase))
                             {
                                 notifications[index].ClickHandler();
-                                return; //early exit - success
+                                return true; //early exit - success
                             }
                         }
                     }
                 }
             }
 
-            AddNotification(String.Format("{0} <act|remove|clear> [note_number]", CommandNames.Notifications.ToLower()));
+            return false;
         }
 
-        private void HandeNetworkCommand(string[] input)
+        private bool HandeNetworkCommand(string[] input)
         {
             if (input.Count() >= 3)
             {
@@ -796,27 +877,31 @@ namespace MultiMiner.TUI
                     if (verb.Equals(CommandNames.Restart, StringComparison.OrdinalIgnoreCase))
                     {
                         app.RestartNetworkDevice(networkDevice);
-                        return; //early exit - success
+                        AddNotification(String.Format("Restarting {0}", networkDevice.Path));
+                        return true; //early exit - success
                     }
                     else if (verb.Equals(CommandNames.Start, StringComparison.OrdinalIgnoreCase))
                     {
                         app.StartNetworkDevice(networkDevice);
-                        return; //early exit - success
+                        AddNotification(String.Format("Starting {0}", networkDevice.Path));
+                        return true; //early exit - success
                     }
                     else if (verb.Equals(CommandNames.Stop, StringComparison.OrdinalIgnoreCase))
                     {
                         app.StopNetworkDevice(networkDevice);
-                        return; //early exit - success
+                        AddNotification(String.Format("Stopping {0}", networkDevice.Path));
+                        return true; //early exit - success
                     }
                     else if (verb.Equals(CommandNames.Reboot, StringComparison.OrdinalIgnoreCase))
                     {
                         app.RebootNetworkDevice(networkDevice);
-                        return; //early exit - success
+                        AddNotification(String.Format("Rebooting {0}", networkDevice.Path));
+                        return true; //early exit - success
                     }
                 }
             }
 
-            AddNotification(String.Format("{0} <start|stop|restart|reboot> <ip_address[:port]>", CommandNames.Network.ToLower()));
+            return false;
         }
     }
 }
