@@ -638,6 +638,7 @@ namespace MultiMiner.TUI
             {
                 Text = text
             });
+            replBuffer.Add(text); //so TUI-specific notes show on both screens
             RenderScreen();
         }
 
@@ -870,21 +871,25 @@ namespace MultiMiner.TUI
                     if (verb.Equals(CommandNames.Restart, StringComparison.OrdinalIgnoreCase))
                     {
                         app.RestartNetworkDevice(networkDevice);
+                        AddNotification(String.Format("Restarting {0}", networkDevice.Path));
                         return true; //early exit - success
                     }
                     else if (verb.Equals(CommandNames.Start, StringComparison.OrdinalIgnoreCase))
                     {
                         app.StartNetworkDevice(networkDevice);
+                        AddNotification(String.Format("Starting {0}", networkDevice.Path));
                         return true; //early exit - success
                     }
                     else if (verb.Equals(CommandNames.Stop, StringComparison.OrdinalIgnoreCase))
                     {
                         app.StopNetworkDevice(networkDevice);
+                        AddNotification(String.Format("Stopping {0}", networkDevice.Path));
                         return true; //early exit - success
                     }
                     else if (verb.Equals(CommandNames.Reboot, StringComparison.OrdinalIgnoreCase))
                     {
                         app.RebootNetworkDevice(networkDevice);
+                        AddNotification(String.Format("Rebooting {0}", networkDevice.Path));
                         return true; //early exit - success
                     }
                 }
