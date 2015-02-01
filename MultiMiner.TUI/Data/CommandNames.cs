@@ -21,6 +21,11 @@
         public const string Profit = "Profit";
         public const string Diff = "Diff";
         public const string Price = "Price";
+        public const string Notifications = "Notes";
+        public const string Clear = "Clear";
+        public const string Act = "Act";
+        public const string Network = "Net";
+        public const string Reboot = "Reboot";
     }
 
     class CommandAliases
