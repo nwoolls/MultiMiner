@@ -416,8 +416,14 @@ namespace MultiMiner.TUI
             for (int i = 0; i < lines.Count; i++)
             {
                 var line = lines[i];
+
                 if (SetCursorPosition(0, i + offset))
-                    WriteText(line.PadFitRight(Console.WindowWidth + 2, Ellipsis));
+                    WriteText(":", ConsoleColor.White);
+                if (SetCursorPosition(1, i + offset))
+                    WriteText(": ", ConsoleColor.DarkGray);
+
+                if (SetCursorPosition(3, i + offset))
+                    WriteText(line.PadFitRight(Console.WindowWidth, Ellipsis));
             }
         }
 
@@ -770,7 +776,7 @@ namespace MultiMiner.TUI
                 {
                     replBuffer.Add((++index).ToString().FitLeft(2, Ellipsis) + " "
                         + config.PoolGroup.Id.ShortCoinSymbol().PadFitRight(8, Ellipsis) 
-                        + p.Host.ShortHostFromHost().PadFitRight(49, Ellipsis)
+                        + p.Host.ShortHostFromHost().PadFitRight(47, Ellipsis)
                         + p.Username.PadFitRight(20, Ellipsis));
                 });
             }
