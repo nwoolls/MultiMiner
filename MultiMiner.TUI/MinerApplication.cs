@@ -234,8 +234,8 @@ namespace MultiMiner.TUI
             });
 
             commandProcessor.RegisterCommand(
-                CommandNames.Pool, 
-                CommandAliases.Pool,
+                CommandNames.Pools, 
+                CommandAliases.Pools,
                 "<add|remove|list> [symbol] [url] [user] [pass]",
                 HandlePoolCommand);
 
