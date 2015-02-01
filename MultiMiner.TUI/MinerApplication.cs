@@ -154,7 +154,7 @@ namespace MultiMiner.TUI
                     AddNotification(String.Format("{0} symbol", CommandNames.SwitchAll.ToLower()));
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Strategies, string.Empty, HandlePoolCommand);
+            commandProcessor.RegisterCommand(CommandNames.Pool, CommandAliases.Pool, HandlePoolCommand);
 
             commandProcessor.RegisterCommand(CommandNames.Screen, CommandAliases.Screen, (input) =>
             {
