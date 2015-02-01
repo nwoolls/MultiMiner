@@ -1,4 +1,5 @@
-﻿using MultiMiner.TUI.Data;
+﻿using MultiMiner.Engine.Installers;
+using MultiMiner.TUI.Data;
 using MultiMiner.Utility.Async;
 using MultiMiner.UX.Data;
 using MultiMiner.UX.Extensions;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Timers;
 
 namespace MultiMiner.TUI
@@ -40,6 +42,8 @@ namespace MultiMiner.TUI
         protected override void SetupApplication()
         {
             Console.CursorVisible = false;
+
+            RenderSplashScreen();
 
             app.DataModified += (object sender, EventArgs e) =>
             {
@@ -99,6 +103,35 @@ namespace MultiMiner.TUI
             RegisterCommands();
 
             RegisterScreens();
+        }
+
+        private void RenderSplashScreen()
+        {
+            var compileDate = Assembly.GetExecutingAssembly().GetCompileDate();
+            var minerVersion = MultiMinerInstaller.GetInstalledMinerVersion();
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("  _____     _ _   _ _____ _");
+            Console.WriteLine(" |     |_ _| | |_|_|     |_|___ ___ ___");
+            Console.WriteLine(" | | | | | | |  _| | | | | |   | -_|  _|");
+            Console.WriteLine(" |_|_|_|___|_|_| |_|_|_|_|_|_|_|___|_|  ");
+
+            var row = 5;
+            if (SetCursorPosition(1, row))
+            {
+                var versionText = String.Format("{0}", minerVersion);
+                var copyrightText = String.Format("(C) 2013-{0} - {1}", compileDate.Year, "http://multiminerapp.com");
+                WriteText(versionText, ConsoleColor.White);
+
+                if (SetCursorPosition(versionText.Length + 2, row))
+                    WriteText("[", ConsoleColor.DarkGray);
+
+                if (SetCursorPosition(versionText.Length + 3, row))
+                    WriteText(copyrightText, ConsoleColor.Gray);
+
+                if (SetCursorPosition(versionText.Length + 3 + copyrightText.Length, row))
+                    WriteText("]", ConsoleColor.DarkGray);
+            }
         }
 
         private void RegisterScreens()
