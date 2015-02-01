@@ -178,6 +178,8 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(CommandNames.Strategies, string.Empty, HandleStrategiesCommand);
 
             commandProcessor.RegisterCommand(CommandNames.Notifications, string.Empty, HandeNotificationsCommand);
+
+            commandProcessor.RegisterCommand(CommandNames.Network, string.Empty, HandeNetworkCommand);
         }
 
         protected override void LoadSettings()
@@ -737,6 +739,44 @@ namespace MultiMiner.TUI
             }
 
             AddNotification(String.Format("{0} act|remove|clear note_number", CommandNames.Notifications.ToLower()));
+        }
+
+        private void HandeNetworkCommand(string[] input)
+        {
+            if (input.Count() >= 3)
+            {
+                var verb = input[1];
+                var path = input[2];
+                if (!path.Contains(':')) path = path + ":4028";
+
+                var networkDevice = app.LocalViewModel.Devices.SingleOrDefault((d) => d.Visible && d.Path.Equals(path, StringComparison.OrdinalIgnoreCase));
+
+                if (networkDevice != null)
+                {
+                    if (verb.Equals(CommandNames.Restart, StringComparison.OrdinalIgnoreCase))
+                    {
+                        app.RestartNetworkDevice(networkDevice);
+                        return; //early exit - success
+                    }
+                    else if (verb.Equals(CommandNames.Start, StringComparison.OrdinalIgnoreCase))
+                    {
+                        app.StartNetworkDevice(networkDevice);
+                        return; //early exit - success
+                    }
+                    else if (verb.Equals(CommandNames.Stop, StringComparison.OrdinalIgnoreCase))
+                    {
+                        app.StopNetworkDevice(networkDevice);
+                        return; //early exit - success
+                    }
+                    else if (verb.Equals(CommandNames.Reboot, StringComparison.OrdinalIgnoreCase))
+                    {
+                        app.RebootNetworkDevice(networkDevice);
+                        return; //early exit - success
+                    }
+                }
+            }
+
+            AddNotification(String.Format("{0} start|stop|restart|reboot ip_address[:port]", CommandNames.Network.ToLower()));
         }
     }
 }
