@@ -116,36 +116,47 @@ namespace MultiMiner.TUI
             Console.CursorVisible = false;
             Console.Clear();
 
+            OutputAboutInfo();
+        }
+
+        private const int SplashInfoHeight = 6;
+        private void OutputAboutInfo()
+        {
             var compileDate = Assembly.GetExecutingAssembly().GetCompileDate();
             var minerVersion = MultiMinerInstaller.GetInstalledMinerVersion();
 
             var row = 0;
 
-            if (SetCursorPosition(1, row++))
-                WriteText(" _____     _ _   _ _____ _", ConsoleColor.Cyan);
-            if (SetCursorPosition(1, row++))
-                WriteText("|     |_ _| | |_|_|     |_|___ ___ ___", ConsoleColor.Cyan);
-            if (SetCursorPosition(1, row++))
-                WriteText("| | | | | | |  _| | | | | |   | -_|  _|", ConsoleColor.Cyan);
-            if (SetCursorPosition(1, row++))
-                WriteText("|_|_|_|___|_|_| |_|_|_|_|_|_|_|___|_|  ", ConsoleColor.Cyan);
+            if (SetCursorPosition(0, row++))
+                WriteText("  _____     _ _   _ _____ _".PadRight(Console.WindowWidth), ConsoleColor.Cyan);
+            if (SetCursorPosition(0, row++))
+                WriteText(" |     |_ _| | |_|_|     |_|___ ___ ___".PadRight(Console.WindowWidth), ConsoleColor.Cyan);
+            if (SetCursorPosition(0, row++))
+                WriteText(" | | | | | | |  _| | | | | |   | -_|  _|".PadRight(Console.WindowWidth), ConsoleColor.Cyan);
+            if (SetCursorPosition(0, row++))
+                WriteText(" |_|_|_|___|_|_| |_|_|_|_|_|_|_|___|_|  ".PadRight(Console.WindowWidth), ConsoleColor.Cyan);
 
+            ClearRow(row);
             row++;
 
-            if (SetCursorPosition(1, row))
+            var col = 0;
+            if (SetCursorPosition(col, row))
             {
-                var versionText = String.Format("{0}", minerVersion);
+                var versionText = String.Format(" {0}", minerVersion);
                 var copyrightText = String.Format("(C) 2013-{0} - {1}", compileDate.Year, "http://multiminerapp.com");
                 WriteText(versionText, ConsoleColor.White);
 
-                if (SetCursorPosition(versionText.Length + 2, row))
+                col = versionText.Length + 2;
+                if (SetCursorPosition(col, row))
                     WriteText("[", ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(versionText.Length + 3, row))
+                col++;
+                if (SetCursorPosition(col, row))
                     WriteText(copyrightText, ConsoleColor.Gray);
 
-                if (SetCursorPosition(versionText.Length + 3 + copyrightText.Length, row))
-                    WriteText("]", ConsoleColor.DarkGray);
+                col += copyrightText.Length;
+                if (SetCursorPosition(col, row))
+                    WriteText("]".PadRight(Console.WindowWidth - col), ConsoleColor.DarkGray);
             }
         }
 
@@ -410,8 +421,15 @@ namespace MultiMiner.TUI
             var printableHeight = Console.WindowHeight - 1;
             List<string> lines = GetVisibleReplLines(printableHeight);
             var offset = printableHeight - lines.Count;
+            var start = 0;
 
-            for (int i = 0; i < offset; i++)
+            if (offset >= SplashInfoHeight)
+            {
+                OutputAboutInfo();
+                start = SplashInfoHeight;
+            }
+
+            for (int i = start; i < offset; i++)
                 ClearRow(i);
 
             for (int i = 0; i < lines.Count; i++)
@@ -420,7 +438,7 @@ namespace MultiMiner.TUI
 
                 if (String.IsNullOrEmpty(line))
                 {
-                    ClearRow(i);
+                    ClearRow(i + offset);
                     continue;
                 }
 
