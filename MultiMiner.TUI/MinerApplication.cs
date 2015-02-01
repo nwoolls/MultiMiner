@@ -151,10 +151,10 @@ namespace MultiMiner.TUI
                 if (input.Count() == 2)
                     app.SetAllDevicesToCoin(input[1], true);
                 else
-                    AddNotification(String.Format("{0} symbol", CommandNames.SwitchAll.ToLower()));
+                    AddNotification(String.Format("{0} <symbol>", CommandNames.SwitchAll.ToLower()));
             });
 
-            commandProcessor.RegisterCommand(CommandNames.Strategies, string.Empty, HandlePoolCommand);
+            commandProcessor.RegisterCommand(CommandNames.Pool, CommandAliases.Pool, HandlePoolCommand);
 
             commandProcessor.RegisterCommand(CommandNames.Screen, CommandAliases.Screen, (input) =>
             {
@@ -585,7 +585,7 @@ namespace MultiMiner.TUI
         
         private void HandlePoolCommand(string[] input)
         {
-            var syntax = String.Format("{0} {{ add | remove | list }} symbol url user pass", CommandNames.Pool.ToLower());
+            var syntax = String.Format("{0} <add|remove|list> [symbol] [url] [user] [pass]", CommandNames.Pool.ToLower());
 
             if (input.Count() >= 2)
             {
@@ -688,20 +688,20 @@ namespace MultiMiner.TUI
                         app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Price;
                     else
                     {
-                        AddNotification(String.Format("{0} on|off|set [profit|diff|price]", CommandNames.Strategies.ToLower()));
+                        AddNotification(String.Format("{0} <on|off|set> [profit|diff|price]", CommandNames.Strategies.ToLower()));
                         return; //early exit, wrong syntax
                     }
                     AddNotification("Auto mining basis set to " + app.EngineConfiguration.StrategyConfiguration.MiningBasis);
                 }
                 else
                 {
-                    AddNotification(String.Format("{0} on|off|set [profit|diff|price]", CommandNames.Strategies.ToLower()));
+                    AddNotification(String.Format("{0} <on|off|set> [profit|diff|price]", CommandNames.Strategies.ToLower()));
                     return; //early exit, wrong syntax
                 }
                 app.EngineConfiguration.SaveStrategyConfiguration();
             }
             else
-                AddNotification(String.Format("{0} on|off|set [profit|diff|price]", CommandNames.Strategies.ToLower()));
+                AddNotification(String.Format("{0} <on|off|set> [profit|diff|price]", CommandNames.Strategies.ToLower()));
         }
 
         private void HandeNotificationsCommand(string[] input)
@@ -738,7 +738,7 @@ namespace MultiMiner.TUI
                 }
             }
 
-            AddNotification(String.Format("{0} act|remove|clear note_number", CommandNames.Notifications.ToLower()));
+            AddNotification(String.Format("{0} <act|remove|clear> [note_number]", CommandNames.Notifications.ToLower()));
         }
 
         private void HandeNetworkCommand(string[] input)
@@ -776,7 +776,7 @@ namespace MultiMiner.TUI
                 }
             }
 
-            AddNotification(String.Format("{0} start|stop|restart|reboot ip_address[:port]", CommandNames.Network.ToLower()));
+            AddNotification(String.Format("{0} <start|stop|restart|reboot> <ip_address[:port]>", CommandNames.Network.ToLower()));
         }
     }
 }
