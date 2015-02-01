@@ -41,8 +41,6 @@ namespace MultiMiner.TUI
         #region ConsoleApplication overrides
         protected override void SetupApplication()
         {
-            Console.CursorVisible = false;
-
             RenderSplashScreen();
 
             app.DataModified += (object sender, EventArgs e) =>
@@ -107,16 +105,25 @@ namespace MultiMiner.TUI
 
         private void RenderSplashScreen()
         {
+            Console.CursorVisible = false;
+            Console.Clear();
+
             var compileDate = Assembly.GetExecutingAssembly().GetCompileDate();
             var minerVersion = MultiMinerInstaller.GetInstalledMinerVersion();
 
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("  _____     _ _   _ _____ _");
-            Console.WriteLine(" |     |_ _| | |_|_|     |_|___ ___ ___");
-            Console.WriteLine(" | | | | | | |  _| | | | | |   | -_|  _|");
-            Console.WriteLine(" |_|_|_|___|_|_| |_|_|_|_|_|_|_|___|_|  ");
+            var row = 0;
 
-            var row = 5;
+            if (SetCursorPosition(1, row++))
+                WriteText(" _____     _ _   _ _____ _", ConsoleColor.Cyan);
+            if (SetCursorPosition(1, row++))
+                WriteText("|     |_ _| | |_|_|     |_|___ ___ ___", ConsoleColor.Cyan);
+            if (SetCursorPosition(1, row++))
+                WriteText("| | | | | | |  _| | | | | |   | -_|  _|", ConsoleColor.Cyan);
+            if (SetCursorPosition(1, row++))
+                WriteText("|_|_|_|___|_|_| |_|_|_|_|_|_|_|___|_|  ", ConsoleColor.Cyan);
+
+            row++;
+
             if (SetCursorPosition(1, row))
             {
                 var versionText = String.Format("{0}", minerVersion);
