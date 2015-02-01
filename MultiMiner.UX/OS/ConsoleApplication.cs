@@ -51,6 +51,9 @@ namespace MultiMiner.UX.OS
             SaveSettings();
 
             TearDownApplication();
+
+            //otherwise artifacts are left on-screen
+            Console.Clear();
         }
 
         protected void Quit()
