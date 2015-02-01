@@ -13,6 +13,8 @@ namespace MultiMiner.UX.OS
         private int oldWindowHeight;
         private int oldWindowWidth;
         private int commandIndex = -1;
+        private ConsoleColor initialForegroundColor;
+        private ConsoleColor initialBackgroundColor;
 
         protected bool ScreenDirty { get; set; }
         protected string CurrentInput { get; set; }
@@ -34,6 +36,8 @@ namespace MultiMiner.UX.OS
 
         public void Run()
         {
+            BackupColors();
+
             Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs e) =>
             {
                 quitApplication = true;  //exit MainLoop()
@@ -54,6 +58,20 @@ namespace MultiMiner.UX.OS
 
             //otherwise artifacts are left on-screen
             Console.Clear();
+
+            RestoreColors();
+        }
+
+        private void RestoreColors()
+        {
+            Console.ForegroundColor = initialForegroundColor;
+            Console.BackgroundColor = initialBackgroundColor;
+        }
+
+        private void BackupColors()
+        {
+            initialForegroundColor = Console.ForegroundColor;
+            initialBackgroundColor = Console.BackgroundColor;
         }
 
         protected void Quit()
