@@ -294,7 +294,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Network, 
                 String.Empty,
-                "<start|stop|restart|reboot> <ip_address[:port]>", 
+                "<start|stop|restart|reboot|hide|pin|rename> <ip[:port]> [name]", 
                 HandeNetworkCommand);
 
             commandProcessor.RegisterCommand(
@@ -926,6 +926,34 @@ namespace MultiMiner.TUI
                         app.RebootNetworkDevice(networkDevice);
                         AddNotification(String.Format("Rebooting {0}", networkDevice.Path));
                         return true; //early exit - success
+                    }
+                    else if (verb.Equals(CommandNames.Pin, StringComparison.OrdinalIgnoreCase))
+                    {
+                        bool sticky;
+                        app.ToggleNetworkDeviceSticky(networkDevice, out sticky);
+                        AddNotification(String.Format("{0} is now {1}", networkDevice.Path, sticky ? "pinned" : "unpinned"));
+                        return true; //early exit - success
+                    }
+                    else if (verb.Equals(CommandNames.Hide, StringComparison.OrdinalIgnoreCase))
+                    {
+                        //current limitations in how .Visible is treated mean we can only hide and not un-hide
+                        //hiding means the entry will no longer be in the view model to un-hide
+                        //the GUI currently has the same limitation - must unhide via XML
+                        bool hidden;
+                        app.ToggleNetworkDeviceHidden(networkDevice, out hidden);
+                        AddNotification(String.Format("{0} is now {1}", networkDevice.Path, hidden ? "hidden" : "visible"));
+                        return true; //early exit - success
+                    }
+                    else if (input.Count() >= 4)
+                    {
+                        var lastWords = String.Join(" ", input.Skip(3).ToArray());
+
+                        if (verb.Equals(CommandNames.Rename, StringComparison.OrdinalIgnoreCase))
+                        {
+                            app.RenameDevice(networkDevice, lastWords);
+                            AddNotification(String.Format("{0} renamed to {1}", networkDevice.Path, lastWords));
+                            return true; //early exit - success
+                        }
                     }
                 }
             }

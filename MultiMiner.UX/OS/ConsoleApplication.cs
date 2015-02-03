@@ -146,7 +146,8 @@ namespace MultiMiner.UX.OS
                     //disallow control chars - these can come in over remote terminals e.g. VNC
                     if (!Char.IsControl(keyChar))
                     {
-                        string key = keyChar.ToString().ToLower();
+                        //allow mixed-case, e.g. naming entities
+                        string key = keyChar.ToString();
                         CurrentInput = CurrentInput + key;
                     }
                 }

@@ -1415,6 +1415,12 @@ namespace MultiMiner.UX.ViewModels
 
         public void ToggleNetworkDeviceHidden(DeviceViewModel deviceViewModel)
         {
+            bool hidden;
+            ToggleNetworkDeviceHidden(deviceViewModel, out hidden);
+        }
+
+        public void ToggleNetworkDeviceHidden(DeviceViewModel deviceViewModel, out bool hidden)
+        {
             NetworkDevices.NetworkDevice deviceConfiguration = NetworkDevicesConfiguration.Devices.Single(
                 cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
 
@@ -1422,15 +1428,25 @@ namespace MultiMiner.UX.ViewModels
             NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
 
             ApplyDevicesToViewModel();
+
+            hidden = deviceConfiguration.Hidden;
         }
 
         public void ToggleNetworkDeviceSticky(DeviceViewModel deviceViewModel)
+        {
+            bool sticky;
+            ToggleNetworkDeviceSticky(deviceViewModel, out sticky);
+        }
+
+        public void ToggleNetworkDeviceSticky(DeviceViewModel deviceViewModel, out bool sticky)
         {
             NetworkDevices.NetworkDevice deviceConfiguration = NetworkDevicesConfiguration.Devices.Single(
                 cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
 
             deviceConfiguration.Sticky = !deviceConfiguration.Sticky;
             NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+
+            sticky = deviceConfiguration.Sticky;
         }
 
         public bool RestartNetworkDevice(DeviceViewModel networkDevice)
