@@ -29,6 +29,7 @@
         public const string Help = "Help";
         public const string Rename = "Rename";
         public const string Pin = "Pin";
+        public const string Hide = "Hide";
     }
 
     class CommandAliases
