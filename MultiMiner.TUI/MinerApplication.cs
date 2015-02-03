@@ -294,7 +294,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Network, 
                 String.Empty,
-                "<start|stop|restart|reboot|rename> <ip_address[:port]> [new_name]", 
+                "<start|stop|restart|reboot|pin|rename> <ip_address[:port]> [new_name]", 
                 HandeNetworkCommand);
 
             commandProcessor.RegisterCommand(
@@ -925,6 +925,13 @@ namespace MultiMiner.TUI
                     {
                         app.RebootNetworkDevice(networkDevice);
                         AddNotification(String.Format("Rebooting {0}", networkDevice.Path));
+                        return true; //early exit - success
+                    }
+                    else if (verb.Equals(CommandNames.Pin, StringComparison.OrdinalIgnoreCase))
+                    {
+                        bool sticky;
+                        app.ToggleNetworkDeviceSticky(networkDevice, out sticky);
+                        AddNotification(String.Format("{0} is now {1}", networkDevice.Path, sticky ? "pinned" : "unpinned"));
                         return true; //early exit - success
                     }
                     else if (input.Count() >= 4)

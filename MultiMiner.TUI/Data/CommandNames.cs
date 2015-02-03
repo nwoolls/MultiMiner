@@ -28,6 +28,7 @@
         public const string Reboot = "Reboot";
         public const string Help = "Help";
         public const string Rename = "Rename";
+        public const string Pin = "Pin";
     }
 
     class CommandAliases
