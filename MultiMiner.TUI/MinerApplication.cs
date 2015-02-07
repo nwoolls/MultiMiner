@@ -680,6 +680,8 @@ namespace MultiMiner.TUI
                 .Where(d => d.Visible)
                 .ToList();
 
+            var kindCounts = new Dictionary<char, int>();
+
             for (int i = 0; i < devices.Count; i++)
             {
                 var device = devices[i];
@@ -690,36 +692,41 @@ namespace MultiMiner.TUI
                 var exchange = app.GetExchangeRate(device);
                 var pool = device.Pool.DomainFromHost();
                 var kind = device.Kind.ToString().First();
+                if (kindCounts.ContainsKey(kind))
+                    kindCounts[kind]++;
+                else
+                    kindCounts[kind] = 1;
+                var deviceId = kind + kindCounts[kind].ToString();
                 var difficulty = device.Difficulty > 0 ? device.Difficulty.ToDifficultyString().Replace(" ", "") : String.Empty;
-                var temp = device.Temperature > 0 ? device.Temperature + "°" : String.Empty;
+                var temperature = device.Temperature > 0 ? device.Temperature + "°" : String.Empty;
 
                 if (SetCursorPosition(0, i))
-                    WriteText(kind.ToString().PadRight(2), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
+                    WriteText(deviceId.ToString().PadRight(4), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(2, i))
+                if (SetCursorPosition(4, i))
                     WriteText(name.PadFitRight(12, Ellipsis), device.Enabled ? device.Kind == Xgminer.Data.DeviceKind.NET || app.MiningEngine.Mining ? ConsoleColor.White : ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(14, i))
+                if (SetCursorPosition(16, i))
                     WriteText(coinSymbol.PadFitRight(8, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(21, i))
+                if (SetCursorPosition(23, i))
                     WriteText(difficulty.PadFitLeft(8, Ellipsis), ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(29, i))
+                if (SetCursorPosition(31, i))
                     WriteText(exchange.FitCurrency(9).PadLeft(10).PadRight(11), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(40, i))
+                if (SetCursorPosition(42, i))
                     WriteText(pool.PadFitRight(10, Ellipsis), ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(49, i))
+                if (SetCursorPosition(51, i))
                     WriteText(averageHashrate.PadFitLeft(11, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(60, i))
+                if (SetCursorPosition(62, i))
                     WriteText(effectiveHashrate.FitLeft(11, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                var left = 71;
+                var left = 73;
                 if (SetCursorPosition(left, i))
-                    WriteText(temp.FitLeft(6, Ellipsis).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.DarkGray : ConsoleColor.DarkGray);
+                    WriteText(temperature.FitLeft(5, Ellipsis).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.DarkGray : ConsoleColor.DarkGray);
             }
 
             for (int i = devices.Count; i < GetSpecialRow(); i++)
