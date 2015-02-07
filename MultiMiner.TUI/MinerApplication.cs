@@ -293,7 +293,7 @@ namespace MultiMiner.TUI
 
             commandProcessor.RegisterCommand(
                 CommandNames.Network, 
-                String.Empty,
+                CommandAliases.Network,
                 "<start|stop|restart|reboot|hide|pin|rename> <ip[:port]> [name]", 
                 HandeNetworkCommand);
 

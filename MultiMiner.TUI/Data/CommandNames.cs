@@ -39,5 +39,6 @@
         public const string Pools = "P";
         public const string Screen = "SC";
         public const string ClearScreen = "CLS";
+        public const string Network = "N";
     }
 }
