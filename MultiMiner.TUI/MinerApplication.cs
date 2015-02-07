@@ -6,6 +6,7 @@ using MultiMiner.UX.Extensions;
 using MultiMiner.UX.IO;
 using MultiMiner.UX.OS;
 using MultiMiner.UX.ViewModels;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -293,7 +294,7 @@ namespace MultiMiner.TUI
 
             commandProcessor.RegisterCommand(
                 CommandNames.Network, 
-                String.Empty,
+                CommandAliases.Network,
                 "<start|stop|restart|reboot|hide|pin|rename> <ip[:port]> [name]", 
                 HandeNetworkCommand);
 
@@ -309,6 +310,12 @@ namespace MultiMiner.TUI
                 RenderScreen();
                 return true;
             });
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Device,
+                CommandAliases.Device,
+                "<enable|rename> <id> [name]",
+                HandeDeviceCommand);
         }
 
         protected override void LoadSettings()
@@ -675,10 +682,9 @@ namespace MultiMiner.TUI
 
         private void OutputDevices()
         {
-            var minerForm = app.GetViewModelToView();
-            var devices = minerForm.Devices
-                .Where(d => d.Visible)
-                .ToList();
+            List<DeviceViewModel> devices = GetVisibleDevices();
+
+            var kindCounts = new Dictionary<char, int>();
 
             for (int i = 0; i < devices.Count; i++)
             {
@@ -690,40 +696,54 @@ namespace MultiMiner.TUI
                 var exchange = app.GetExchangeRate(device);
                 var pool = device.Pool.DomainFromHost();
                 var kind = device.Kind.ToString().First();
+                if (kindCounts.ContainsKey(kind))
+                    kindCounts[kind]++;
+                else
+                    kindCounts[kind] = 1;
+                var deviceId = kind + kindCounts[kind].ToString();
                 var difficulty = device.Difficulty > 0 ? device.Difficulty.ToDifficultyString().Replace(" ", "") : String.Empty;
-                var temp = device.Temperature > 0 ? device.Temperature + "°" : String.Empty;
+                var temperature = device.Temperature > 0 ? device.Temperature + "°" : String.Empty;
 
                 if (SetCursorPosition(0, i))
-                    WriteText(kind.ToString().PadRight(2), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
+                    WriteText(deviceId.ToString().PadRight(4), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(2, i))
+                if (SetCursorPosition(4, i))
                     WriteText(name.PadFitRight(12, Ellipsis), device.Enabled ? device.Kind == Xgminer.Data.DeviceKind.NET || app.MiningEngine.Mining ? ConsoleColor.White : ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(14, i))
+                if (SetCursorPosition(16, i))
                     WriteText(coinSymbol.PadFitRight(8, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(21, i))
+                if (SetCursorPosition(23, i))
                     WriteText(difficulty.PadFitLeft(8, Ellipsis), ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(29, i))
+                if (SetCursorPosition(31, i))
                     WriteText(exchange.FitCurrency(9).PadLeft(10).PadRight(11), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(40, i))
+                if (SetCursorPosition(42, i))
                     WriteText(pool.PadFitRight(10, Ellipsis), ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(49, i))
+                if (SetCursorPosition(51, i))
                     WriteText(averageHashrate.PadFitLeft(11, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(60, i))
+                if (SetCursorPosition(62, i))
                     WriteText(effectiveHashrate.FitLeft(11, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                var left = 71;
+                var left = 73;
                 if (SetCursorPosition(left, i))
-                    WriteText(temp.FitLeft(6, Ellipsis).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.DarkGray : ConsoleColor.DarkGray);
+                    WriteText(temperature.FitLeft(5, Ellipsis).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.DarkGray : ConsoleColor.DarkGray);
             }
 
             for (int i = devices.Count; i < GetSpecialRow(); i++)
                 ClearRow(i);
+        }
+
+        private List<DeviceViewModel> GetVisibleDevices()
+        {
+            var minerForm = app.GetViewModelToView();
+            var devices = minerForm.Devices
+                .Where(d => d.Visible)
+                .ToList();
+            return devices;
         }
 
         private void ClearRow(int row)
@@ -959,6 +979,63 @@ namespace MultiMiner.TUI
             }
 
             return false;
+        }
+
+        private bool HandeDeviceCommand(string[] input)
+        {
+            if (input.Count() >= 3)
+            {
+                var verb = input[1];
+                var deviceId = input[2];
+
+                var device = GetDeviceById(deviceId);
+                
+                if (device != null)
+                {
+                    if (verb.Equals(CommandNames.Enable, StringComparison.OrdinalIgnoreCase)
+                        //can't enable/disable Network Devices
+                        && (device.Kind != DeviceKind.NET))
+                    {
+                        bool enabled = !device.Enabled;
+                        app.ToggleDevices(new List<DeviceDescriptor> { device }, enabled);
+                        AddNotification(String.Format("{0} is now {1}",  device.Path, enabled ? "enabled" : "disabled"));
+                        return true; //early exit - success
+                    }
+                    else if (input.Count() >= 4)
+                    {
+                        var lastWords = String.Join(" ", input.Skip(3).ToArray());
+
+                        if (verb.Equals(CommandNames.Rename, StringComparison.OrdinalIgnoreCase))
+                        {
+                            app.RenameDevice(device, lastWords);
+                            AddNotification(String.Format("{0} renamed to {1}", device.Path, lastWords));
+                            return true; //early exit - success
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        private DeviceViewModel GetDeviceById(string deviceId)
+        {
+            var index = -1;
+            var valid = int.TryParse(deviceId.Substring(1), out index);
+
+            if (!valid) return null;
+
+            index--;
+
+            var devices = GetVisibleDevices();
+            var kindId = deviceId.First().ToString();
+            var kindDevices = devices
+                .Where(d => d.Kind.ToString().StartsWith(kindId, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if ((index >= 0) && (index < kindDevices.Count))
+                return kindDevices[index];
+
+            return null;         
         }
     }
 }
