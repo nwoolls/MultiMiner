@@ -30,6 +30,7 @@
         public const string Rename = "Rename";
         public const string Pin = "Pin";
         public const string Hide = "Hide";
+        public const string Device = "Dev";
     }
 
     class CommandAliases
@@ -40,5 +41,6 @@
         public const string Screen = "SC";
         public const string ClearScreen = "CLS";
         public const string Network = "N";
+        public const string Device = "D";
     }
 }

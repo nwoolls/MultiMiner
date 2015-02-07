@@ -309,6 +309,12 @@ namespace MultiMiner.TUI
                 RenderScreen();
                 return true;
             });
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Device,
+                CommandAliases.Device,
+                "<rename> <id> [name]",
+                HandeDeviceCommand);
         }
 
         protected override void LoadSettings()
@@ -675,10 +681,7 @@ namespace MultiMiner.TUI
 
         private void OutputDevices()
         {
-            var minerForm = app.GetViewModelToView();
-            var devices = minerForm.Devices
-                .Where(d => d.Visible)
-                .ToList();
+            List<DeviceViewModel> devices = GetVisibleDevices();
 
             var kindCounts = new Dictionary<char, int>();
 
@@ -731,6 +734,15 @@ namespace MultiMiner.TUI
 
             for (int i = devices.Count; i < GetSpecialRow(); i++)
                 ClearRow(i);
+        }
+
+        private List<DeviceViewModel> GetVisibleDevices()
+        {
+            var minerForm = app.GetViewModelToView();
+            var devices = minerForm.Devices
+                .Where(d => d.Visible)
+                .ToList();
+            return devices;
         }
 
         private void ClearRow(int row)
@@ -966,6 +978,54 @@ namespace MultiMiner.TUI
             }
 
             return false;
+        }
+
+        private bool HandeDeviceCommand(string[] input)
+        {
+            if (input.Count() >= 3)
+            {
+                var verb = input[1];
+                var deviceId = input[2];
+
+                var device = GetDeviceById(deviceId);
+                
+                if (device != null)
+                {
+                    if (input.Count() >= 4)
+                    {
+                        var lastWords = String.Join(" ", input.Skip(3).ToArray());
+
+                        if (verb.Equals(CommandNames.Rename, StringComparison.OrdinalIgnoreCase))
+                        {
+                            app.RenameDevice(device, lastWords);
+                            AddNotification(String.Format("{0} renamed to {1}", device.Path, lastWords));
+                            return true; //early exit - success
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        private DeviceViewModel GetDeviceById(string deviceId)
+        {
+            var index = -1;
+            var valid = int.TryParse(deviceId.Substring(1), out index);
+
+            if (!valid) return null;
+
+            index--;
+
+            var devices = GetVisibleDevices();
+            var kindId = deviceId.First().ToString();
+            var kindDevices = devices
+                .Where(d => d.Kind.ToString().StartsWith(kindId, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if ((index >= 0) && (index < kindDevices.Count))
+                return kindDevices[index];
+
+            return null;         
         }
     }
 }
