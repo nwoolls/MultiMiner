@@ -31,6 +31,7 @@
         public const string Pin = "Pin";
         public const string Hide = "Hide";
         public const string Device = "Dev";
+        public const string Enable = "Enable";
     }
 
     class CommandAliases

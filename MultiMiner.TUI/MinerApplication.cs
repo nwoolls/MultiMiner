@@ -6,6 +6,7 @@ using MultiMiner.UX.Extensions;
 using MultiMiner.UX.IO;
 using MultiMiner.UX.OS;
 using MultiMiner.UX.ViewModels;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -313,7 +314,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Device,
                 CommandAliases.Device,
-                "<rename> <id> [name]",
+                "<enable|rename> <id> [name]",
                 HandeDeviceCommand);
         }
 
@@ -991,7 +992,16 @@ namespace MultiMiner.TUI
                 
                 if (device != null)
                 {
-                    if (input.Count() >= 4)
+                    if (verb.Equals(CommandNames.Enable, StringComparison.OrdinalIgnoreCase)
+                        //can't enable/disable Network Devices
+                        && (device.Kind != DeviceKind.NET))
+                    {
+                        bool enabled = !device.Enabled;
+                        app.ToggleDevices(new List<DeviceDescriptor> { device }, enabled);
+                        AddNotification(String.Format("{0} is now {1}",  device.Path, enabled ? "enabled" : "disabled"));
+                        return true; //early exit - success
+                    }
+                    else if (input.Count() >= 4)
                     {
                         var lastWords = String.Join(" ", input.Skip(3).ToArray());
 
