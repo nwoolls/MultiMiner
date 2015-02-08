@@ -598,8 +598,9 @@ namespace MultiMiner.TUI
                 if (SetCursorPosition(20, i + offset))
                     WriteText(logEntry.Request.PadFitRight(10, Ellipsis), ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(30, i + offset))
-                    WriteText(logEntry.Response.PadFitRight(Console.WindowWidth - 30, Ellipsis));
+                var col = 30;
+                if (SetCursorPosition(col, i + offset))
+                    WriteText(logEntry.Response.PadFitRight(Console.WindowWidth - col + 2, Ellipsis));
             }
         }
 
