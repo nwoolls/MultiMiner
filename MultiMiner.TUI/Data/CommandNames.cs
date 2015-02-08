@@ -16,9 +16,10 @@
         public const string Network = "Net";
         public const string Help = "Help";
         public const string Device = "Dev";
+        public const string Set = "Set";
     }
 
-    class ArgumentNames
+    class CommandArguments
     {
         public const string Start = "Start";
         public const string Stop = "Stop";

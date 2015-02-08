@@ -33,12 +33,14 @@ namespace MultiMiner.UX.IO
             index++;
             if (index >= keyList.Count) index = 0;
             currentScreen = keyList[index];
+            RenderScreen();
         }
 
         public bool SetCurrentScreen(string name)
         {
             if (!screenRenderers.ContainsKey(name.ToLower())) return false;
             currentScreen = name.ToLower();
+            RenderScreen();
             return true;
         }
     }
