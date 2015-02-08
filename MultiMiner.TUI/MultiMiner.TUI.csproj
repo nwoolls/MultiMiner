@@ -44,6 +44,7 @@
     <Compile Include="Data\CommandNames.cs" />
     <Compile Include="Data\PoolListEntry.cs" />
     <Compile Include="Data\ScreenNames.cs" />
+    <Compile Include="Data\SettingNames.cs" />
     <Compile Include="MinerApplication.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -33,6 +33,7 @@ namespace MultiMiner.TUI
         private readonly List<string> replBuffer = new List<string>();
         private readonly Timer mineOnStartTimer = new Timer(2000);
         private readonly CommandProcessor commandProcessor;
+        private readonly CommandProcessor settingsProcessor;
         private readonly ScreenManager screenManager = new ScreenManager();
 
         private readonly bool isWindows = Utility.OS.OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
@@ -56,6 +57,15 @@ namespace MultiMiner.TUI
             commandProcessor = new CommandProcessor(AddNotification, (s) =>
             {
                 replBuffer.Add(s);
+            });
+
+            settingsProcessor = new CommandProcessor(AddNotification, (s) =>
+            {
+                var setCommand = CommandNames.Set.ToLower();
+                if (s.StartsWith("\t"))
+                    replBuffer.Add(s);
+                else
+                    replBuffer.Add(String.Format("{0} {1}", setCommand, s));
             });
         }
 
@@ -131,8 +141,8 @@ namespace MultiMiner.TUI
             };
 
             RegisterCommands();
-
             RegisterScreens();
+            RegisterSettings();
         }
 
         private void RenderSplashScreen()
@@ -210,6 +220,83 @@ namespace MultiMiner.TUI
             {
                 RenderProcLogScreen();
             });
+        }
+
+        private void RegisterSettings()
+        {
+            settingsProcessor.RegisterCommand(
+                SettingNames.MobileMiner,
+                string.Empty,
+                "on|off|email|appkey [address|key]",
+                new string[]
+                {
+                    "set mobileminer on",
+                    "set mobileminer off",
+                    "set mobileminer email user@example.org",
+                    "set mobileminer appkey mr8q-lp67-bvt1"
+                },
+                HandleMobileMinerSetting);
+
+            settingsProcessor.RegisterCommand(
+                CommandNames.Help,
+                CommandAliases.Help,
+                "[setting]",
+                new string[]
+                {
+                    "help",
+                    "h mobileminer"
+                },
+                (input) =>
+                {
+                    if (input.Count() <= 2)
+                    {
+                        OutputCommandHelp(settingsProcessor, input);
+                        return true;
+                    }
+                    return false;
+                });
+        }
+
+        private bool HandleMobileMinerSetting(string[] input)
+        {
+            var success = false;
+
+            if (input.Count() >= 2)
+            {
+                var arg1 = input[1];
+                if (arg1.Equals(SettingArguments.On, StringComparison.OrdinalIgnoreCase))
+                {
+                    app.ApplicationConfiguration.MobileMinerMonitoring = true;
+                    AddNotification(String.Format("MobileMiner monitoring set to: {0}", arg1));
+                    success = true;
+                }
+                else if (arg1.Equals(SettingArguments.Off, StringComparison.OrdinalIgnoreCase))
+                {
+                    app.ApplicationConfiguration.MobileMinerMonitoring = true;
+                    AddNotification(String.Format("MobileMiner monitoring set to: {0}", arg1));
+                    success = true;
+                }
+                else if (input.Count() >= 3)
+                {
+                    var arg2 = input[1];
+                    if (arg1.Equals(SettingArguments.Email, StringComparison.OrdinalIgnoreCase))
+                    {
+                        app.ApplicationConfiguration.MobileMinerEmailAddress = arg2;
+                        AddNotification(String.Format("MobileMiner email set to: {0}", arg1));
+                        success = true;
+                    }
+                    else if (arg1.Equals(SettingArguments.AppKey, StringComparison.OrdinalIgnoreCase))
+                    {
+                        app.ApplicationConfiguration.MobileMinerApplicationKey = arg2;
+                        AddNotification(String.Format("MobileMiner appkey set to: {0}", arg1));
+                        success = true;
+                    }
+                }
+            }
+
+            if (success)
+                app.ApplicationConfiguration.SaveApplicationConfiguration();
+            return success;
         }
 
         private void RegisterCommands()
@@ -391,15 +478,7 @@ namespace MultiMiner.TUI
             {
                 if (input.Count() <= 2)
                 {
-                    replBuffer.Add(String.Empty);
-
-                    if (input.Count() == 1)
-                        commandProcessor.OutputHelp();
-                    else
-                        commandProcessor.OutputComamndHelp(input[1]);
-
-                    screenManager.SetCurrentScreen(ScreenNames.Repl);
-                    RenderScreen();
+                    OutputCommandHelp(commandProcessor, input);
                     return true;
                 }
                 return false;
@@ -416,6 +495,19 @@ namespace MultiMiner.TUI
                     "d name u2 My USB Miner"
                 },
                 HandeDeviceCommand);
+        }
+
+        private void OutputCommandHelp(CommandProcessor processor, string[] input)
+        {
+            replBuffer.Add(String.Empty);
+
+            if (input.Count() == 1)
+                processor.OutputHelp();
+            else
+                processor.OutputComamndHelp(input[1]);
+
+            screenManager.SetCurrentScreen(ScreenNames.Repl);
+            RenderScreen();
         }
 
         protected override void LoadSettings()
@@ -756,9 +848,22 @@ namespace MultiMiner.TUI
                 return true;
             }
 
+            var firstWord = input.Split(' ').First();
+            if (firstWord.Equals(CommandNames.Set, StringComparison.OrdinalIgnoreCase))
+            {
+                var setInput = input.Remove(0, CommandNames.Set.Length).Trim();
+                firstWord = setInput.Split(' ').First();
+                if (!settingsProcessor.ProcessCommand(setInput))
+                {
+                    AddNotification(string.Format("Unknown setting: {0}", firstWord));
+                    return false; //exit early
+                }
+                return true;
+            }
+
             if (!commandProcessor.ProcessCommand(input))
             {
-                AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
+                AddNotification(string.Format("Unknown command: {0}", firstWord));
                 return false; //exit early
             }
 
