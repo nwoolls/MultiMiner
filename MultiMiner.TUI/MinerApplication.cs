@@ -819,7 +819,7 @@ namespace MultiMiner.TUI
                     kindCounts[kind] = 1;
                 var deviceId = kind + (kindCounts[kind] + firstIndex).ToString();
                 var difficulty = device.Difficulty > 0 ? device.Difficulty.ToDifficultyString().Replace(" ", "") : String.Empty;
-                var temperature = device.Temperature > 0 ? device.Temperature + "°" : String.Empty;
+                var temperature = device.Temperature > 0 ? (int)device.Temperature + "°" : String.Empty;
 
                 if (SetCursorPosition(0, row))
                     WriteText(deviceId.ToString().PadRight(4), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
