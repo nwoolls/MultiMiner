@@ -165,7 +165,7 @@ namespace MultiMiner.TUI
             {
                 var versionText = String.Format(" {0}", minerVersion);
                 var copyrightText = String.Format("(C) 2013-{0} - {1}", compileDate.Year, "http://multiminerapp.com");
-                WriteText(versionText, ConsoleColor.White);
+                WriteText(versionText.PadRight(8), ConsoleColor.White);
 
                 col = versionText.Length + 2;
                 if (SetCursorPosition(col, row))
