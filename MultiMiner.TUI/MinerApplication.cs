@@ -314,7 +314,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Device,
                 CommandAliases.Device,
-                "<enable|rename> <id> [name]",
+                "<enable|switch|rename> <id> [symbol|name]",
                 HandeDeviceCommand);
         }
 
@@ -1003,14 +1003,38 @@ namespace MultiMiner.TUI
                         return true; //early exit - success
                     }
                     else if (input.Count() >= 4)
-                    {
-                        var lastWords = String.Join(" ", input.Skip(3).ToArray());
-
-                        if (verb.Equals(CommandNames.Rename, StringComparison.OrdinalIgnoreCase))
+                    {                        
+                        if (verb.Equals(ArgumentNames.Switch, StringComparison.OrdinalIgnoreCase)
+                            //can't enable/disable Network Devices
+                            && (device.Kind != DeviceKind.NET))
                         {
-                            app.RenameDevice(device, lastWords);
-                            AddNotification(String.Format("{0} renamed to {1}", device.Path, lastWords));
-                            return true; //early exit - success
+                            var symbol = input[3];
+
+                            var configs = app.EngineConfiguration.CoinConfigurations
+                                .Where(c => String.IsNullOrEmpty(symbol)
+                                    || (c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
+                                    || (c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))))
+                                .ToList();
+
+                            if (configs.Count > 0)
+                            {
+                                var coinName = configs.First().PoolGroup.Name;
+                                app.SetDevicesToCoin(new List<DeviceDescriptor> { device }, coinName);
+                                app.SaveChanges();
+                                AddNotification(String.Format("{0} set to {1}: type restart to apply", device.Path, coinName));
+                                return true; //early exit - success
+                            }
+                        }
+                        else
+                        {
+                            var lastWords = String.Join(" ", input.Skip(3).ToArray());
+
+                            if (verb.Equals(ArgumentNames.Rename, StringComparison.OrdinalIgnoreCase))
+                            {
+                                app.RenameDevice(device, lastWords);
+                                AddNotification(String.Format("{0} renamed to {1}", device.Path, lastWords));
+                                return true; //early exit - success
+                            }
                         }
                     }
                 }
