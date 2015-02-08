@@ -1353,6 +1353,20 @@ namespace MultiMiner.UX.ViewModels
                 return;
             }
 
+            SetNetworkDevicePoolIndex(networkDevice, poolIndex);
+        }
+
+        public bool SetNetworkDevicePoolIndex(DeviceViewModel networkDevice, int poolIndex)
+        {
+            if (poolIndex < 0)
+                return false; //invalid index
+
+            // networkDevicePools is keyed by IP:port, use .Path
+            List<PoolInformation> poolInformation = NetworkDevicePools[networkDevice.Path];
+
+            if ((poolInformation != null) && (poolIndex >= poolInformation.Count))
+                return false; //invalid index
+
             Uri uri = new Uri("http://" + networkDevice.Path);
             ApiContext apiContext = new ApiContext(uri.Port, uri.Host);
 
@@ -1361,6 +1375,8 @@ namespace MultiMiner.UX.ViewModels
             apiContext.LogEvent += LogApiEvent;
 
             apiContext.SwitchPool(poolIndex);
+
+            return true;
         }
 
         private List<PoolInformation> GetCachedPoolInfoFromAddress(string ipAddress, int port)
