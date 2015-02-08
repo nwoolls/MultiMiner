@@ -295,7 +295,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Network, 
                 CommandAliases.Network,
-                "<start|stop|restart|reboot|hide|pin|rename> <ip[:port]> [name]", 
+                "<start|stop|restart|reboot|hide|pin|rename> <ip[:port]|id> [name]", 
                 HandeNetworkCommand);
 
             commandProcessor.RegisterCommand(
@@ -920,6 +920,11 @@ namespace MultiMiner.TUI
                 if (!path.Contains(':')) path = path + ":4028";
 
                 var networkDevice = app.LocalViewModel.Devices.SingleOrDefault((d) => d.Visible && d.Path.Equals(path, StringComparison.OrdinalIgnoreCase));
+                if (networkDevice == null)
+                {
+                    networkDevice = GetDeviceById(input[2]);
+                    if (networkDevice.Kind != DeviceKind.NET) networkDevice = null;
+                }
 
                 if (networkDevice != null)
                 {
