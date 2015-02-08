@@ -1352,6 +1352,20 @@ namespace MultiMiner.UX.ViewModels
                 return;
             }
 
+            SetNetworkDevicePoolIndex(networkDevice, poolIndex);
+        }
+
+        public bool SetNetworkDevicePoolIndex(DeviceViewModel networkDevice, int poolIndex)
+        {
+            if (poolIndex < 0)
+                return false; //invalid index
+
+            // networkDevicePools is keyed by IP:port, use .Path
+            List<PoolInformation> poolInformation = NetworkDevicePools[networkDevice.Path];
+
+            if ((poolInformation != null) && (poolIndex >= poolInformation.Count))
+                return false; //invalid index
+
             Uri uri = new Uri("http://" + networkDevice.Path);
             ApiContext apiContext = new ApiContext(uri.Port, uri.Host);
 
@@ -1360,6 +1374,8 @@ namespace MultiMiner.UX.ViewModels
             apiContext.LogEvent += LogApiEvent;
 
             apiContext.SwitchPool(poolIndex);
+
+            return true;
         }
 
         private List<PoolInformation> GetCachedPoolInfoFromAddress(string ipAddress, int port)
@@ -2754,11 +2770,23 @@ namespace MultiMiner.UX.ViewModels
             return summary;
         }
 
-        public bool RemoveExistingPool(CoinApi.Data.CoinInformation coin, string url, string user)
+        public bool RemoveExistingPool(string coinSymbol, string url, string user)
         {
-            Engine.Data.Configuration.Coin coinConfig = EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase));
+            Engine.Data.Configuration.Coin coinConfig = EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             if (coinConfig == null) return false;
 
+            MiningPool poolConfig = FindPoolConfiguration(coinConfig, url, user);
+
+            if (poolConfig == null) return false;
+
+            coinConfig.Pools.Remove(poolConfig);
+            EngineConfiguration.SaveCoinConfigurations();
+
+            return true;
+        }
+
+        public MiningPool FindPoolConfiguration(Coin coinConfig, string url, string user)
+        {
             MiningPool poolConfig = coinConfig.Pools.FirstOrDefault((p) =>
             {
                 //url may or may not have protocol, but URI ctor requires one
@@ -2776,13 +2804,7 @@ namespace MultiMiner.UX.ViewModels
                     && hostsEqual
                     && usersEqual;
             });
-
-            if (poolConfig == null) return false;
-
-            coinConfig.Pools.Remove(poolConfig);
-            EngineConfiguration.SaveCoinConfigurations();
-
-            return true;
+            return poolConfig;
         }
 
         public MiningPool AddNewPool(CoinApi.Data.CoinInformation coin, string url, string user, string pass)

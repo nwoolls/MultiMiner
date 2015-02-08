@@ -205,6 +205,7 @@ namespace MultiMiner.TUI
                 CommandNames.Quit, 
                 CommandAliases.Quit,
                 String.Empty,
+                new string[] { },
                 (input) =>
             {
                 Quit();
@@ -215,6 +216,7 @@ namespace MultiMiner.TUI
                 CommandNames.Start, 
                 String.Empty,
                 String.Empty,
+                new string[] { },
                 (input) =>
             {
                 app.StartMining();
@@ -225,6 +227,7 @@ namespace MultiMiner.TUI
                 CommandNames.Stop, 
                 String.Empty,
                 String.Empty,
+                new string[] { },
                 (input) =>
             {
                 app.StopMining();
@@ -235,6 +238,7 @@ namespace MultiMiner.TUI
                 CommandNames.Restart, 
                 String.Empty,
                 String.Empty,
+                new string[] { },
                 (input) =>
             {
                 app.RestartMining();
@@ -245,6 +249,7 @@ namespace MultiMiner.TUI
                 CommandNames.Scan, 
                 String.Empty,
                 String.Empty,
+                new string[] { },
                 (input) =>
             {
                 app.ScanHardwareLocally();
@@ -254,7 +259,12 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.SwitchAll, 
                 CommandAliases.SwitchAll,
-                "<symbol>",
+                "symbol",
+                new string[] 
+                {
+                    "switchall btc",
+                    "sa ltc"
+                },
                 (input) =>
             {
                 if (input.Count() == 2)
@@ -268,13 +278,28 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Pools, 
                 CommandAliases.Pools,
-                "<add|remove|list> [symbol] [url] [user] [pass]",
+                "add|remove|edit|list [symbol|pool#] [url] [user] [pass]",
+                new string[]
+                {
+                    "pools list",
+                    "p add btc stratum+tcp://some.pool.com:3333 my.worker pass",
+                    "p remove btc some.pool.com:3333",
+                    "p remove 3",
+                    "p edit 3 stratum+tcp://other.pool.com:3334 my.worker pass"
+                },
                 HandlePoolCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Screen, 
                 CommandAliases.Screen,
                 "[main|repl|apilog]",
+                new string[]
+                {
+                    "screen main",
+                    "sc repl",
+                    "sc apilog",
+                    "sc"
+                },
                 (input) =>
             {
                 if (input.Count() == 2)
@@ -293,6 +318,7 @@ namespace MultiMiner.TUI
                 CommandNames.ClearScreen, 
                 CommandAliases.ClearScreen,
                 String.Empty,
+                new string[] { },
                 (input) =>
             {
                 replBuffer.Clear();
@@ -303,38 +329,79 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Strategies, 
                 String.Empty,
-                "<on|off|set> [profit|diff|price]", 
+                "on|off|set [profit|diff|price]",
+                new string[] 
+                {
+                    "strats on",
+                    "strats off",
+                    "strats set proffit"
+                },
                 HandleStrategiesCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Notifications, 
                 String.Empty,
-                "<act|remove|clear> [note_number]",
+                "act|remove|clear [note#]",
+                new string[] 
+                {
+                    "notes remove 1",
+                    "notes clear",
+                    "notes act 2"
+                },
                 HandeNotificationsCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Network, 
                 CommandAliases.Network,
-                "<start|stop|restart|reboot|hide|pin|rename> <ip[:port]|id> [name]", 
+                "start|stop|restart|reboot|switch|hide|pin|name ip[:port]|id [pool#|name]",
+                new string[] 
+                {
+                    "net start 192.168.0.99",
+                    "n stop 192.168.0.199:4029",
+                    "n restart n3",
+                    "n switch n3 2",
+                    "n hide 192.168.0.99",
+                    "n name 192.168.0.99 My Network Miner"
+                },
                 HandeNetworkCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Help, 
-                String.Empty,
-                String.Empty,
+                CommandAliases.Help,
+                "[command]",
+                new string[] 
+                {
+                    "help",
+                    "h pool"
+                },
                 (input) =>
             {
-                replBuffer.Add(String.Empty);
-                commandProcessor.OutputHelp();
-                screenManager.SetCurrentScreen(ScreenNames.Repl);
-                RenderScreen();
-                return true;
+                if (input.Count() <= 2)
+                {
+                    replBuffer.Add(String.Empty);
+
+                    if (input.Count() == 1)
+                        commandProcessor.OutputHelp();
+                    else
+                        commandProcessor.OutputComamndHelp(input[1]);
+
+                    screenManager.SetCurrentScreen(ScreenNames.Repl);
+                    RenderScreen();
+                    return true;
+                }
+                return false;
             });
 
             commandProcessor.RegisterCommand(
                 CommandNames.Device,
                 CommandAliases.Device,
-                "<enable|switch|rename> <id> [symbol|name]",
+                "enable|switch|name dev_id [symbol|name]",
+                new string[] 
+                {
+                    "dev enable u1",
+                    "d switch g1 ltc",
+                    "d name u2 My USB Miner"
+                },
                 HandeDeviceCommand);
         }
 
@@ -533,9 +600,11 @@ namespace MultiMiner.TUI
             var visibleDeviceCount = GetVisibleDevices().Count;
 
             if (pageUp)
-                mainOffset = Math.Max(0, mainOffset - printableHeight);
+                mainOffset = mainOffset - printableHeight;
             else
                 mainOffset = Math.Min(visibleDeviceCount - printableHeight, mainOffset + printableHeight);
+
+            mainOffset = Math.Max(0, mainOffset);
 
             RenderMainScreen();
         }
@@ -819,7 +888,7 @@ namespace MultiMiner.TUI
                     kindCounts[kind] = 1;
                 var deviceId = kind + (kindCounts[kind] + firstIndex).ToString();
                 var difficulty = device.Difficulty > 0 ? device.Difficulty.ToDifficultyString().Replace(" ", "") : String.Empty;
-                var temperature = device.Temperature > 0 ? device.Temperature + "°" : String.Empty;
+                var temperature = device.Temperature > 0 ? (int)device.Temperature + "°" : String.Empty;
 
                 if (SetCursorPosition(0, row))
                     WriteText(deviceId.ToString().PadRight(4), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
@@ -880,6 +949,7 @@ namespace MultiMiner.TUI
                 bool add = verb.Equals(ArgumentNames.Add, StringComparison.OrdinalIgnoreCase);
                 bool remove = verb.Equals(ArgumentNames.Remove, StringComparison.OrdinalIgnoreCase);
                 bool list = verb.Equals(ArgumentNames.List, StringComparison.OrdinalIgnoreCase);
+                bool edit = verb.Equals(ArgumentNames.Edit, StringComparison.OrdinalIgnoreCase);
 
                 if (list)
                 {
@@ -888,66 +958,183 @@ namespace MultiMiner.TUI
                         symbol = input[2];
 
                     HandlePoolListCommand(symbol);
+                    return true; //early exit
                 }
-                else if (input.Count() >= 4)
+                else if (remove)
+                {
+                    if (HandlePoolRemoveCommand(input))
+                        return true;
+                }
+                else if (edit)
+                {
+                    if ((input.Count() == 6) && HandlePoolEditCommand(input))
+                        return true;
+                }
+                else if (input.Count() >= 3)
                 {
                     var symbol = input[2];
-                    var url = input[3];
 
-                    CoinApi.Data.CoinInformation coin = app.CoinApiInformation.SingleOrDefault(c => c.Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase));
+                    CoinApi.Data.CoinInformation coin = app.CoinApiInformation.SingleOrDefault(
+                        c => c.Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase)
+                        || c.Symbol.ShortCoinSymbol().Equals(symbol, StringComparison.Ordinal));
+
                     if (coin == null)
                     {
                         AddNotification(String.Format("Unknown coin: {0}", symbol));
                         return true; //early exit
                     }
-
-                    if (add && (input.Count() == 6))
+                    else if (input.Count() >= 4)
                     {
-                        var user = input[4];
-                        var pass = input[5];
+                        var url = input[3];
 
-                        app.AddNewPool(coin, url, user, pass);
-                    }
-                    else if (remove)
-                    {
-                        var user = input.Count() > 4 ? input[4] : String.Empty;
+                        if (add && (input.Count() == 6))
+                        {
+                            var user = input[4];
+                            var pass = input[5];
 
-                        app.RemoveExistingPool(coin, url, user);
+                            app.AddNewPool(coin, url, user, pass);
+                            return true; //early exit
+                        }
                     }
-                    else
-                        return false;
                 }
-                else
-                    return false;
             }
-            else
-                return false;
 
-            return true;
+            return false;
         }
 
-        private void HandlePoolListCommand(string symbol)
+        private bool HandlePoolEditCommand(string[] input)
         {
-            var configs = app.EngineConfiguration.CoinConfigurations
-                .Where(c => String.IsNullOrEmpty(symbol)
-                    || (c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
-                    || (c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))));
+            var symbol = input[2];
+            var url = input[3];
+            var user = input[4];
 
-            if (configs.Count() == 0) return;
+            var coinConfig = app.EngineConfiguration.CoinConfigurations.SingleOrDefault(
+                c => c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
+                || c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase));
+            MiningPool poolConfig = null;
 
-            replBuffer.Add(String.Empty);
+            if (coinConfig == null)
+            {
+                var index = -1;
+                if (int.TryParse(symbol, out index))
+                {
+                    index--;
+                    var fullPoolList = GetPoolList();
+                    if ((index >= 0) && (index < fullPoolList.Count))
+                    {
+                        coinConfig = fullPoolList[index].Configuration;
+                        poolConfig = fullPoolList[index].Pool;
 
-            var index = 0;
+                    }
+                }
+            }
+            else
+                poolConfig = app.FindPoolConfiguration(coinConfig, url, String.Empty);
+
+            if (poolConfig != null)
+            {
+                var pass = input[5];
+                Uri uri = new UriBuilder(url).Uri;
+
+                poolConfig.Host = uri.GetComponents(UriComponents.AbsoluteUri & ~UriComponents.Port, UriFormat.UriEscaped);
+                poolConfig.Port = uri.Port;
+                poolConfig.Password = pass;
+                poolConfig.Username = user;
+                app.EngineConfiguration.SaveCoinConfigurations();
+
+                AddNotification(String.Format("Pool {0} updated", url));
+                
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool HandlePoolRemoveCommand(string[] input)
+        {
+            var symbol = input[2];
+
+            var coin = app.EngineConfiguration.CoinConfigurations.SingleOrDefault(
+                c => c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
+                || c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase));
+
+            if (coin == null)
+            {
+                var index = -1;
+                if (int.TryParse(symbol, out index))
+                {
+                    index--;
+                    var fullPoolList = GetPoolList();
+                    if ((index >= 0) && (index < fullPoolList.Count))
+                    {
+                        fullPoolList[index].Configuration.Pools.Remove(fullPoolList[index].Pool);
+                        app.EngineConfiguration.SaveCoinConfigurations();
+                        AddNotification(String.Format("Pool {0}:{1} removed", fullPoolList[index].Pool.Host, fullPoolList[index].Pool.Port));
+                        return true; //early exit
+
+                    }
+                    AddNotification(String.Format("Invalid pool number: {0}", symbol));
+                    return true; //early exit
+                }
+            }
+            else if (input.Count() >= 4)
+            {
+                var url = input[3];
+                var user = input.Count() > 4 ? input[4] : String.Empty;
+
+                if (app.RemoveExistingPool(coin.PoolGroup.Id, url, user))
+                    AddNotification(String.Format("Pool {0} removed", url));
+                else
+                    AddNotification(String.Format("Pool {0} not found", url));
+                return true; //early exit
+            }
+            return false;
+        }
+
+        private List<PoolListEntry> GetPoolList()
+        {
+            var result = new List<PoolListEntry>();            
+            var configs = app.EngineConfiguration.CoinConfigurations;
+            if (configs.Count() == 0) return result;
+            
             foreach (var config in configs)
             {
                 config.Pools.ForEach((p) =>
                 {
-                    replBuffer.Add((++index).ToString().FitLeft(2, Ellipsis) + " "
-                        + config.PoolGroup.Id.ShortCoinSymbol().PadFitRight(8, Ellipsis) 
-                        + p.Host.ShortHostFromHost().PadFitRight(47, Ellipsis)
-                        + p.Username.PadFitRight(20, Ellipsis));
+                    result.Add(new PoolListEntry
+                    {
+                        Configuration = config,
+                        Pool = p
+                    });
                 });
             }
+            
+            return result;
+        }
+
+        private void HandlePoolListCommand(string symbol)
+        {
+            var fullPoolList = GetPoolList();
+            var filteredPoolList = fullPoolList
+                .Where(p => string.IsNullOrEmpty(symbol)
+                    || (p.Configuration.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
+                    || (p.Configuration.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))))
+                .ToList();
+            
+            if (filteredPoolList.Count() == 0) return;
+
+            replBuffer.Add(String.Empty);
+
+            filteredPoolList.ForEach((p) =>
+            {
+                UriBuilder builder = new UriBuilder(p.Pool.Host.Trim());
+                builder.Port = p.Pool.Port;
+                
+                replBuffer.Add((fullPoolList.IndexOf(p) + 1).ToString().FitLeft(2, Ellipsis) + " "
+                    + p.Configuration.PoolGroup.Id.ShortCoinSymbol().PadFitRight(8, Ellipsis) 
+                    + builder.Uri.ToString().ShortHostFromHost().PadFitRight(47, Ellipsis)
+                    + p.Pool.Username.PadFitRight(20, Ellipsis));
+            });
 
             screenManager.SetCurrentScreen(ScreenNames.Repl);
             RenderScreen();
@@ -1092,11 +1279,25 @@ namespace MultiMiner.TUI
                     {
                         var lastWords = String.Join(" ", input.Skip(3).ToArray());
 
-                        if (verb.Equals(ArgumentNames.Rename, StringComparison.OrdinalIgnoreCase))
+                        if (verb.Equals(ArgumentNames.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             app.RenameDevice(networkDevice, lastWords);
                             AddNotification(String.Format("{0} renamed to {1}", networkDevice.Path, lastWords));
                             return true; //early exit - success
+                        }
+                        else if (verb.Equals(ArgumentNames.Switch, StringComparison.OrdinalIgnoreCase))
+                        {
+                            var index = -1;
+                            if (int.TryParse(lastWords, out index))
+                            {
+                                index--;
+                                if (app.SetNetworkDevicePoolIndex(networkDevice, index))
+                                    AddNotification(String.Format("Switching {0} to pool #{1}", networkDevice.Path, lastWords));
+                                else
+                                    AddNotification(String.Format("Pool #{0} is invalid for {1}", lastWords, networkDevice.Path));
+
+                                return true; //early exit - success
+                            }
                         }
                     }
                 }
@@ -1153,7 +1354,7 @@ namespace MultiMiner.TUI
                         {
                             var lastWords = String.Join(" ", input.Skip(3).ToArray());
 
-                            if (verb.Equals(ArgumentNames.Rename, StringComparison.OrdinalIgnoreCase))
+                            if (verb.Equals(ArgumentNames.Name, StringComparison.OrdinalIgnoreCase))
                             {
                                 app.RenameDevice(device, lastWords);
                                 AddNotification(String.Format("{0} renamed to {1}", device.Path, lastWords));

@@ -35,11 +35,12 @@
         public const string Clear = "Clear";
         public const string Act = "Act";
         public const string Reboot = "Reboot";
-        public const string Rename = "Rename";
+        public const string Name = "Name";
         public const string Pin = "Pin";
         public const string Hide = "Hide";
         public const string Enable = "Enable";
         public const string Switch = "Switch";
+        public const string Edit = "Edit";
     }
 
     class CommandAliases
@@ -51,5 +52,6 @@
         public const string ClearScreen = "CLS";
         public const string Network = "N";
         public const string Device = "D";
+        public const string Help = "H";
     }
 }
