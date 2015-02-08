@@ -641,28 +641,38 @@ namespace MultiMiner.TUI
         
         private void OutputSpecial()
         {
-            var output = String.Empty;
             if (currentPrompt != null)
             {
                 if ((DateTime.Now - promptTime).TotalSeconds > 30)
                     currentPrompt = null;
                 else
                 {
-                    var text = String.Format("{0}: {1}", currentPrompt.Caption, currentPrompt.Text);
-                    output = text.FitRight(Console.WindowWidth, Ellipsis);
-                    if (SetCursorPosition(0, GetSpecialRow()))
-                        WriteText(output, ConsoleColor.White, 
-                            currentPrompt.Icon == PromptIcon.Error 
-                            ? ConsoleColor.DarkRed 
-                            : currentPrompt.Icon == PromptIcon.Warning
-                            ? ConsoleColor.DarkYellow : ConsoleColor.DarkBlue);
+                    OutputCurrentPrompt();
                     return; //early exit, prompt rendered
                 }
             }
 
-            output = currentProgress.FitRight(Console.WindowWidth, Ellipsis);
+            OutputCurrentProgress();
+        }
+
+        private void OutputCurrentProgress()
+        {
+            var output = currentProgress.FitRight(Console.WindowWidth, Ellipsis);
             if (SetCursorPosition(0, GetSpecialRow()))
                 WriteText(output, ConsoleColor.White, String.IsNullOrEmpty(currentProgress) ? ConsoleColor.Black : ConsoleColor.DarkBlue);
+        }
+
+
+        private void OutputCurrentPrompt()
+        {
+            var text = String.Format("{0}: {1}", currentPrompt.Caption, currentPrompt.Text);
+            var output = text.FitRight(Console.WindowWidth, Ellipsis);
+            if (SetCursorPosition(0, GetSpecialRow()))
+                WriteText(output, ConsoleColor.White,
+                    currentPrompt.Icon == PromptIcon.Error
+                    ? ConsoleColor.DarkRed
+                    : currentPrompt.Icon == PromptIcon.Warning
+                    ? ConsoleColor.DarkYellow : ConsoleColor.DarkBlue);
         }
 
         private static int GetSpecialRow()
