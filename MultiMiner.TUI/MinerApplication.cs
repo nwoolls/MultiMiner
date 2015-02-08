@@ -44,6 +44,7 @@ namespace MultiMiner.TUI
         private DateTime promptTime;
         private string incomeSummaryText = String.Empty;
         private int replOffset = 0;
+        private int mainOffset = 0;
         private int screenNameWidth = 0;
 
         private CredentialsPhase credentialsPhase;
@@ -522,7 +523,21 @@ namespace MultiMiner.TUI
 
         protected override void HandleScreenNavigation(bool pageUp)
         {
+            if (screenManager.CurrentScreen.Equals(ScreenNames.Main.ToLower())) HandleMainScreenNavigation(pageUp);
             if (screenManager.CurrentScreen.Equals(ScreenNames.Repl.ToLower())) HandleReplScreenNavigation(pageUp);
+        }
+
+        private void HandleMainScreenNavigation(bool pageUp)
+        {
+            var printableHeight = GetSpecialRow() - GetVisibleNotifications().Count;
+            var visibleDeviceCount = GetVisibleDevices().Count;
+
+            if (pageUp)
+                mainOffset = Math.Max(0, mainOffset - printableHeight);
+            else
+                mainOffset = Math.Min(visibleDeviceCount - printableHeight, mainOffset + printableHeight);
+
+            RenderMainScreen();
         }
 
         private void HandleReplScreenNavigation(bool pageUp)
@@ -785,7 +800,10 @@ namespace MultiMiner.TUI
 
             var kindCounts = new Dictionary<char, int>();
 
-            for (int i = 0; i < devices.Count; i++)
+            var firstIndex = 0 + mainOffset;
+            var row = 0;
+
+            for (int i = firstIndex; (i < devices.Count) && (row < GetSpecialRow() - GetVisibleNotifications().Count); i++)
             {
                 var device = devices[i];
                 var name = String.IsNullOrEmpty(device.FriendlyName) ? device.Name : device.FriendlyName;
@@ -799,37 +817,39 @@ namespace MultiMiner.TUI
                     kindCounts[kind]++;
                 else
                     kindCounts[kind] = 1;
-                var deviceId = kind + kindCounts[kind].ToString();
+                var deviceId = kind + (kindCounts[kind] + firstIndex).ToString();
                 var difficulty = device.Difficulty > 0 ? device.Difficulty.ToDifficultyString().Replace(" ", "") : String.Empty;
                 var temperature = device.Temperature > 0 ? device.Temperature + "°" : String.Empty;
 
-                if (SetCursorPosition(0, i))
+                if (SetCursorPosition(0, row))
                     WriteText(deviceId.ToString().PadRight(4), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(4, i))
+                if (SetCursorPosition(4, row))
                     WriteText(name.PadFitRight(12, Ellipsis), device.Enabled ? device.Kind == Xgminer.Data.DeviceKind.NET || app.MiningEngine.Mining ? ConsoleColor.White : ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(16, i))
+                if (SetCursorPosition(16, row))
                     WriteText(coinSymbol.PadFitRight(8, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(23, i))
+                if (SetCursorPosition(23, row))
                     WriteText(difficulty.PadFitLeft(8, Ellipsis), ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(31, i))
+                if (SetCursorPosition(31, row))
                     WriteText(exchange.FitCurrency(9).PadLeft(10).PadRight(11), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(42, i))
+                if (SetCursorPosition(42, row))
                     WriteText(pool.PadFitRight(10, Ellipsis), ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(51, i))
+                if (SetCursorPosition(51, row))
                     WriteText(averageHashrate.PadFitLeft(11, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(62, i))
+                if (SetCursorPosition(62, row))
                     WriteText(effectiveHashrate.FitLeft(11, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
                 var left = 73;
-                if (SetCursorPosition(left, i))
+                if (SetCursorPosition(left, row))
                     WriteText(temperature.FitLeft(5, Ellipsis).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.DarkGray : ConsoleColor.DarkGray);
+
+                row++;
             }
 
             for (int i = devices.Count; i < GetSpecialRow(); i++)
