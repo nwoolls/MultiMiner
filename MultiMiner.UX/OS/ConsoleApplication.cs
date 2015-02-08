@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MultiMiner.TUI
+namespace MultiMiner.UX.OS
 {
-    abstract class ConsoleApplication
+    public abstract class ConsoleApplication
     {
         private readonly List<string> commandQueue = new List<string>();
 
@@ -13,6 +13,8 @@ namespace MultiMiner.TUI
         private int oldWindowHeight;
         private int oldWindowWidth;
         private int commandIndex = -1;
+        private ConsoleColor initialForegroundColor;
+        private ConsoleColor initialBackgroundColor;
 
         protected bool ScreenDirty { get; set; }
         protected string CurrentInput { get; set; }
@@ -23,6 +25,8 @@ namespace MultiMiner.TUI
         protected abstract void RenderScreen();
         protected abstract void RenderInput();
         protected abstract bool HandleCommandInput(string input);
+        protected abstract void HandleInputCanceled();
+        protected abstract void HandleScreenNavigation(bool pageUp);
         protected abstract void SaveSettings();
         protected abstract void TearDownApplication();
 
@@ -33,6 +37,8 @@ namespace MultiMiner.TUI
 
         public void Run()
         {
+            BackupColors();
+
             Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs e) =>
             {
                 quitApplication = true;  //exit MainLoop()
@@ -50,6 +56,23 @@ namespace MultiMiner.TUI
             SaveSettings();
 
             TearDownApplication();
+
+            //otherwise artifacts are left on-screen
+            Console.Clear();
+
+            RestoreColors();
+        }
+
+        private void RestoreColors()
+        {
+            Console.ForegroundColor = initialForegroundColor;
+            Console.BackgroundColor = initialBackgroundColor;
+        }
+
+        private void BackupColors()
+        {
+            initialForegroundColor = Console.ForegroundColor;
+            initialBackgroundColor = Console.BackgroundColor;
         }
 
         protected void Quit()
@@ -97,6 +120,7 @@ namespace MultiMiner.TUI
                 }
                 else if (keyInfo.Key == ConsoleKey.Escape)
                 {
+                    HandleInputCanceled();
                     CurrentInput = String.Empty;
                 }
                 else if (keyInfo.Key == ConsoleKey.Enter)
@@ -116,10 +140,18 @@ namespace MultiMiner.TUI
                 }
                 else if ((keyInfo.Key == ConsoleKey.UpArrow) || (keyInfo.Key == ConsoleKey.DownArrow))
                     HandleCommandNavigation(keyInfo.Key == ConsoleKey.UpArrow);
+                else if ((keyInfo.Key == ConsoleKey.PageUp) || (keyInfo.Key == ConsoleKey.PageDown))
+                    HandleScreenNavigation(keyInfo.Key == ConsoleKey.PageUp);
                 else
-                {
-                    string key = keyInfo.KeyChar.ToString().ToLower();
-                    CurrentInput = CurrentInput + key;
+                {                    
+                    var keyChar = keyInfo.KeyChar;
+                    //disallow control chars - these can come in over remote terminals e.g. VNC
+                    if (!Char.IsControl(keyChar))
+                    {
+                        //allow mixed-case, e.g. naming entities
+                        string key = keyChar.ToString();
+                        CurrentInput = CurrentInput + key;
+                    }
                 }
                 RenderInput();
             }

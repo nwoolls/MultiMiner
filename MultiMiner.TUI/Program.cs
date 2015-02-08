@@ -1,7 +1,5 @@
-﻿using MultiMiner.UX.ViewModels;
-using System;
-using System.Threading;
-using System.Timers;
+﻿using System;
+using System.Diagnostics;
 
 namespace MultiMiner.TUI
 {
@@ -10,7 +8,14 @@ namespace MultiMiner.TUI
     {
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
             new MinerApplication().Run();
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            EventLog.WriteEntry("Application Error", (e.ExceptionObject as Exception).ToString(), EventLogEntryType.Error, 1000);
         }
     }
 }

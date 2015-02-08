@@ -1,40 +1,38 @@
-﻿using MultiMiner.UX.Data;
+﻿using MultiMiner.Engine.Installers;
+using MultiMiner.TUI.Data;
+using MultiMiner.Utility.Async;
+using MultiMiner.UX.Data;
 using MultiMiner.UX.Extensions;
+using MultiMiner.UX.IO;
+using MultiMiner.UX.OS;
 using MultiMiner.UX.ViewModels;
+using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
+using System.Timers;
 
 namespace MultiMiner.TUI
 {
     class MinerApplication : ConsoleApplication
     {
-        enum Screen
+        enum CredentialsPhase
         {
-            Main,
-            Repl
+            None,
+            Username,
+            Password
         }
-
-        //upper-case chars serve as a command alias, e.g. Quit = q
-        private const string QuitCommand = "Quit";
-        private const string StartCommand = "start";
-        private const string StopCommand = "stop";
-        private const string RestartCommand = "restart";
-        private const string ScanCommand = "scan";
-        private const string SwitchAllCommand = "SwitchAll";
-        private const string PoolCommand = "Pool";
-        private const string AddVerb = "Add";
-        private const string RemoveVerb = "Remove";
-        private const string ListVerb = "List";
-        private const string ScreenCommand = "SCreen";
-
-        private const string Ellipsis = "..";
 
         private readonly ApplicationViewModel app = new ApplicationViewModel();
         private readonly ISynchronizeInvoke threadContext = new SimpleSyncObject();
         private readonly List<NotificationEventArgs> notifications = new List<NotificationEventArgs>();
         private readonly List<string> replBuffer = new List<string>();
+        private readonly Timer mineOnStartTimer = new Timer(2000);
+        private readonly CommandProcessor commandProcessor;
+        private readonly CommandProcessor settingsProcessor;
+        private readonly ScreenManager screenManager = new ScreenManager();
 
         private readonly bool isWindows = Utility.OS.OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
         private readonly bool isLinux = Utility.OS.OSVersionPlatform.GetConcretePlatform() == PlatformID.Unix;
@@ -43,13 +41,42 @@ namespace MultiMiner.TUI
         private string currentProgress = String.Empty;
         private PromptEventArgs currentPrompt;
         private DateTime promptTime;
-        private Screen currentScreen = Screen.Main;
-        private string incomeSummaryText;
+        private string incomeSummaryText = String.Empty;
+        private int replOffset = 0;
+        private int mainOffset = 0;
+        private int screenNameWidth = 0;
 
-        #region ConsoleApplication overrides
+        private CredentialsPhase credentialsPhase;
+        private DeviceViewModel credentialsTarget;
+        private string credentialsUsername;
+
+        public MinerApplication()
+        {
+            commandProcessor = new CommandProcessor(AddNotification, (s) =>
+            {
+                replBuffer.Add(s);
+            });
+
+            var setCommand = CommandNames.Set.ToLower();
+            settingsProcessor = new CommandProcessor((s) =>
+            {
+                AddNotification(String.Format("{0} {1}", setCommand, s));
+            }, 
+            (s) =>
+            {
+                if (s.StartsWith("\t"))
+                    replBuffer.Add(s);
+                else
+                    replBuffer.Add(String.Format("{0} {1}", setCommand, s));
+            });
+        }
+
         protected override void SetupApplication()
         {
-            Console.CursorVisible = false;
+            RenderSplashScreen();
+
+            app.SetupMiningEngineEvents();
+            app.LoadPreviousHistory();
 
             app.DataModified += (object sender, EventArgs e) =>
             {
@@ -92,7 +119,375 @@ namespace MultiMiner.TUI
                 RenderScreen();
             };
 
+            app.CredentialsRequested += (object sender, CredentialsEventArgs e) =>
+            {
+                e.CredentialsProvided = false;
+                credentialsPhase = CredentialsPhase.Username;
+                credentialsTarget = app.LocalViewModel.GetNetworkDeviceByFriendlyName(e.ProtectedResource);
+                RenderScreen();
+            };
+
             app.Context = threadContext;
+
+            mineOnStartTimer.Elapsed += (object sender, ElapsedEventArgs e) =>
+            {
+                if (app.StartupMiningCountdownSeconds > 0)
+                    currentProgress = string.Format("Mining will start automatically in {0} seconds...", app.StartupMiningCountdownSeconds);
+                else
+                {
+                    currentProgress = String.Empty;
+                    mineOnStartTimer.Enabled = false;
+                }
+                RenderScreen();
+            };
+
+            RegisterCommands();
+            RegisterScreens();
+            RegisterSettings();
+        }
+
+        private void RenderSplashScreen()
+        {
+            Console.CursorVisible = false;
+            Console.Clear();
+
+            OutputAboutInfo();
+        }
+
+        private const int SplashInfoHeight = 6;
+        private void OutputAboutInfo()
+        {
+            var compileDate = Assembly.GetExecutingAssembly().GetCompileDate();
+            var minerVersion = MultiMinerInstaller.GetInstalledMinerVersion();
+
+            var row = 0;
+
+            if (SetCursorPosition(0, row++))
+                WriteText("  _____     _ _   _ _____ _".PadRight(Console.WindowWidth), ConsoleColor.Cyan);
+            if (SetCursorPosition(0, row++))
+                WriteText(" |     |_ _| | |_|_|     |_|___ ___ ___".PadRight(Console.WindowWidth), ConsoleColor.Cyan);
+            if (SetCursorPosition(0, row++))
+                WriteText(" | | | | | | |  _| | | | | |   | -_|  _|".PadRight(Console.WindowWidth), ConsoleColor.Cyan);
+            if (SetCursorPosition(0, row++))
+                WriteText(" |_|_|_|___|_|_| |_|_|_|_|_|_|_|___|_|  ".PadRight(Console.WindowWidth), ConsoleColor.Cyan);
+
+            ClearRow(row);
+            row++;
+
+            var col = 0;
+            if (SetCursorPosition(col, row))
+            {
+                var versionText = String.Format(" {0}", minerVersion);
+                var copyrightText = String.Format("(C) 2013-{0} - {1}", compileDate.Year, "http://multiminerapp.com");
+                WriteText(versionText.PadRight(8), ConsoleColor.White);
+
+                col = versionText.Length + 2;
+                if (SetCursorPosition(col, row))
+                    WriteText("[", ConsoleColor.DarkGray);
+
+                col++;
+                if (SetCursorPosition(col, row))
+                    WriteText(copyrightText, ConsoleColor.Gray);
+
+                col += copyrightText.Length;
+                if (SetCursorPosition(col, row))
+                    WriteText("]".PadRight(Console.WindowWidth - col), ConsoleColor.DarkGray);
+            }
+        }
+
+        private void RegisterScreens()
+        {
+            screenManager.RegisterScreen(ScreenNames.Main, () =>
+            {
+                RenderMainScreen();
+            });
+
+            screenManager.RegisterScreen(ScreenNames.Repl, () =>
+            {
+                RenderReplScreen();
+            });
+
+            screenManager.RegisterScreen(ScreenNames.History, () =>
+            {
+                RenderHistoryScreen();
+            });
+
+            screenManager.RegisterScreen(ScreenNames.ApiLog, () =>
+            {
+                RenderApiLogScreen();
+            });
+
+            screenManager.RegisterScreen(ScreenNames.ProcLog, () =>
+            {
+                RenderProcLogScreen();
+            });
+        }
+
+        private void RegisterSettings()
+        {
+            settingsProcessor.RegisterCommand(
+                SettingNames.MobileMiner,
+                string.Empty,
+                "on|off|email|appkey [address|key]",
+                new string[]
+                {
+                    "set mobileminer on",
+                    "set mobileminer off",
+                    "set mobileminer email user@example.org",
+                    "set mobileminer appkey mr8q-lp67-bvt1"
+                },
+                new Commands.Settings.MobileMinerCommand(app, AddNotification).HandleCommand);
+
+            settingsProcessor.RegisterCommand(
+                CommandNames.Help,
+                CommandAliases.Help,
+                "[setting]",
+                new string[]
+                {
+                    "help",
+                    "h mobileminer"
+                },
+                (input) =>
+                {
+                    if (input.Count() <= 2)
+                    {
+                        OutputCommandHelp(settingsProcessor, input);
+                        return true;
+                    }
+                    return false;
+                });
+
+            settingsProcessor.RegisterCommand(
+                SettingNames.CoinApi,
+                string.Empty,
+                "coinchoose|coinwarz|whatmine|whattomine",
+                new string[]
+                {
+                    "set coinapi coinwarz",
+                    "set coinapi whattomine"
+                },
+                new Commands.Settings.CoinApiCommand(app, AddNotification).HandleCommand);
+
+            settingsProcessor.RegisterCommand(
+                SettingNames.CoinWarz,
+                string.Empty,
+                "apikey key",
+                new string[]
+                {
+                    "set coinwarz apikey 9602a70905884c4e9609d20b90163408"
+                },
+                new Commands.Settings.CoinWarzCommand(app, AddNotification).HandleCommand);
+
+            settingsProcessor.RegisterCommand(
+                SettingNames.WhatMine,
+                string.Empty,
+                "apikey key",
+                new string[]
+                {
+                    "set coinwarz whatmine 9602a70905884c4e9609d20b90163408"
+                },
+                new Commands.Settings.WhatMineCommand(app, AddNotification).HandleCommand);
+
+            settingsProcessor.RegisterCommand(
+                SettingNames.Perks,
+                string.Empty,
+                "on|off|percent [percent]",
+                new string[]
+                {
+                    "set perks on",
+                    "set perks percent 2"
+                },
+                new Commands.Settings.PerksCommand(app, AddNotification).HandleCommand);
+        }
+        
+        private void RegisterCommands()
+        {
+            commandProcessor.RegisterCommand(
+                CommandNames.Quit, 
+                CommandAliases.Quit,
+                String.Empty,
+                new string[] { },
+                (input) =>
+            {
+                Quit();
+                return true;
+            });
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Start, 
+                String.Empty,
+                String.Empty,
+                new string[] { },
+                (input) =>
+            {
+                app.StartMining();
+                return true;
+            });
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Stop, 
+                String.Empty,
+                String.Empty,
+                new string[] { },
+                (input) =>
+            {
+                app.StopMining();
+                return true;
+            });
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Restart, 
+                String.Empty,
+                String.Empty,
+                new string[] { },
+                (input) =>
+            {
+                app.RestartMining();
+                return true;
+            });
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Scan, 
+                String.Empty,
+                String.Empty,
+                new string[] { },
+                (input) =>
+            {
+                app.ScanHardwareLocally();
+                return true;
+            });
+
+            commandProcessor.RegisterCommand(
+                CommandNames.SwitchAll, 
+                CommandAliases.SwitchAll,
+                "symbol",
+                new string[] 
+                {
+                    "switchall btc",
+                    "sa ltc"
+                },
+                new Commands.SwitchAllCommand(app).HandleCommand);
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Pools, 
+                CommandAliases.Pools,
+                "add|remove|edit|list [symbol|pool#] [url] [user] [pass]",
+                new string[]
+                {
+                    "pools list",
+                    "p add btc stratum+tcp://some.pool.com:3333 my.worker pass",
+                    "p remove btc some.pool.com:3333",
+                    "p remove 3",
+                    "p edit 3 stratum+tcp://other.pool.com:3334 my.worker pass"
+                },
+                new Commands.PoolCommand(app, screenManager, AddNotification, replBuffer).HandleCommand);
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Screen, 
+                CommandAliases.Screen,
+                "[main|repl|history|apilog|proclog]",
+                new string[]
+                {
+                    "screen main",
+                    "sc repl",
+                    "sc apilog",
+                    "sc"
+                },
+                new Commands.ScreenCommand(app, screenManager, AddNotification).HandleCommand);
+
+            commandProcessor.RegisterCommand(
+                CommandNames.ClearScreen, 
+                CommandAliases.ClearScreen,
+                String.Empty,
+                new string[] { },
+                (input) =>
+            {
+                replBuffer.Clear();
+                RenderScreen();
+                return true;
+            });
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Strategies, 
+                String.Empty,
+                "on|off|set [profit|diff|price]",
+                new string[] 
+                {
+                    "strats on",
+                    "strats off",
+                    "strats set proffit"
+                },
+                new Commands.StrategiesCommand(app, AddNotification).HandleCommand);
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Notifications, 
+                String.Empty,
+                "act|remove|clear [note#]",
+                new string[] 
+                {
+                    "notes remove 1",
+                    "notes clear",
+                    "notes act 2"
+                },
+                new Commands.NotificationsCommand(notifications).HandleCommand);
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Network, 
+                CommandAliases.Network,
+                "start|stop|restart|reboot|switch|hide|pin|name ip[:port]|id [pool#|name]",
+                new string[] 
+                {
+                    "net start 192.168.0.99",
+                    "n stop 192.168.0.199:4029",
+                    "n restart n3",
+                    "n switch n3 2",
+                    "n hide 192.168.0.99",
+                    "n name 192.168.0.99 My Network Miner"
+                },
+                new Commands.NetworkCommand(app, AddNotification).HandleCommand);
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Help, 
+                CommandAliases.Help,
+                "[command]",
+                new string[] 
+                {
+                    "help",
+                    "h pool"
+                },
+                (input) =>
+            {
+                if (input.Count() <= 2)
+                {
+                    OutputCommandHelp(commandProcessor, input);
+                    return true;
+                }
+                return false;
+            });
+
+            commandProcessor.RegisterCommand(
+                CommandNames.Device,
+                CommandAliases.Device,
+                "enable|switch|name dev_id [symbol|name]",
+                new string[] 
+                {
+                    "dev enable u1",
+                    "d switch g1 ltc",
+                    "d name u2 My USB Miner"
+                },
+                new Commands.DeviceCommand(app, AddNotification).HandleCommand);
+        }
+
+        private void OutputCommandHelp(CommandProcessor processor, string[] input)
+        {
+            replBuffer.Add(String.Empty);
+
+            if (input.Count() == 1)
+                processor.OutputHelp();
+            else
+                processor.OutputComamndHelp(input[1]);
+
+            screenManager.SetCurrentScreen(ScreenNames.Repl);
         }
 
         protected override void LoadSettings()
@@ -124,6 +519,8 @@ namespace MultiMiner.TUI
             app.SetupNetworkDeviceDetection();
             app.CheckForUpdates();
             app.SetupMiningOnStartup();
+
+            mineOnStartTimer.Enabled = true;
         }
 
         protected override void TearDownApplication()
@@ -141,47 +538,224 @@ namespace MultiMiner.TUI
 
         protected override void RenderScreen()
         {
-#if DEBUG
-            //OutputJunk();
-#endif
-
-            if (currentScreen == Screen.Repl)
-                RenderReplScreen();
-            else
-                RenderMainScreen();
+            screenManager.RenderScreen();
         }
         
         protected override void RenderInput()
         {
-            if (currentScreen == Screen.Repl)
-                OutputInput(Console.WindowWidth);
+            if (screenManager.CurrentScreen.Equals(ScreenNames.Main.ToLower()))
+                OutputInput(Console.WindowWidth - (incomeSummaryText.Length > 0 ? incomeSummaryText.Length : screenNameWidth));
             else
-                OutputInput(Console.WindowWidth - incomeSummaryText.Length);
+                OutputInput(Console.WindowWidth - screenNameWidth);
+        }
+
+        private void RenderProcLogScreen()
+        {
+            OutputProcLog();
+
+            screenNameWidth = OutputScreenName();
+
+            OutputInput(Console.WindowWidth - screenNameWidth);
+        }
+
+        private void OutputProcLog()
+        {
+            var printableHeight = Console.WindowHeight - 1;
+            List<Xgminer.LogLaunchArgs> logEntries = GetVisibleLogLaunchEntries(printableHeight);
+            var offset = printableHeight - logEntries.Count;
+
+            for (int i = 0; i < offset; i++)
+                ClearRow(i);
+
+            for (int i = 0; i < logEntries.Count; i++)
+            {
+                var logEntry = logEntries[i];
+
+                if (SetCursorPosition(0, i + offset))
+                    WriteText(logEntry.DateTime.ToReallyShortDateTimeString().PadFitRight(14), ConsoleColor.DarkGray);
+
+                if (SetCursorPosition(14, i + offset))
+                    WriteText(logEntry.CoinName.PadFitRight(9), ConsoleColor.White);
+
+                if (SetCursorPosition(23, i + offset))
+                    WriteText(System.IO.Path.GetFileName(logEntry.ExecutablePath).PadFitRight(13));
+
+                var lastColWidth = 16;
+                var col = 36;
+                if (SetCursorPosition(col, i + offset))
+                    WriteText(logEntry.Arguments.PadFitRight(Console.BufferWidth - col - lastColWidth), ConsoleColor.DarkGray);
+
+                if (SetCursorPosition(Console.BufferWidth - lastColWidth, i + offset))
+                    WriteText(logEntry.Reason.PadFitRight(lastColWidth));
+            }
+        }
+
+        private void RenderApiLogScreen()
+        {
+            OutputApiLog();
+
+            screenNameWidth = OutputScreenName();
+
+            OutputInput(Console.WindowWidth - screenNameWidth);
+        }
+
+        private void RenderHistoryScreen()
+        {
+            OutputHistory();
+
+            screenNameWidth = OutputScreenName();
+
+            OutputInput(Console.WindowWidth - screenNameWidth);
+        }
+
+        private void OutputHistory()
+        {
+            var printableHeight = Console.WindowHeight - 1;
+            List<Engine.LogProcessCloseArgs> logEntries = GetVisibleLogCloseEntries(printableHeight);
+            var offset = printableHeight - logEntries.Count;
+
+            for (int i = 0; i < offset; i++)
+                ClearRow(i);
+
+            for (int i = 0; i < logEntries.Count; i++)
+            {
+                var logEntry = logEntries[i];
+                
+                if (SetCursorPosition(0, i + offset))
+                    WriteText(logEntry.EndDate.ToReallyShortDateTimeString().PadFitRight(14), ConsoleColor.DarkGray);
+
+                if (SetCursorPosition(14, i + offset))
+                    WriteText(logEntry.CoinSymbol.ShortCoinSymbol().PadFitRight(8), ConsoleColor.White);
+
+                if (SetCursorPosition(22, i + offset))
+                    WriteText(logEntry.StartPrice.ToFriendlyString().PadFitLeft(9) + " ");
+
+                TimeSpan timeSpan = logEntry.EndDate - logEntry.StartDate;
+                var duration = String.Format("{0:0.##} min", timeSpan.TotalMinutes);
+
+                if (SetCursorPosition(32, i + offset))
+                    WriteText(duration.PadFitRight(11));
+
+                var devicesString = String.Empty;
+                if (logEntry.DeviceDescriptors != null)
+                    devicesString = GetFormattedDevicesString(logEntry.DeviceDescriptors);
+
+                var col = 43;
+                if (SetCursorPosition(col, i + offset))
+                    WriteText(devicesString.PadFitRight(Console.WindowWidth - col));
+            }
+        }
+
+        private static string GetFormattedDevicesString(List<DeviceDescriptor> deviceDescriptors)
+        {
+            return String.Join(" ", deviceDescriptors.Select(d => d.ToString()).ToArray());
+        }
+
+        private void OutputApiLog()
+        {
+            var printableHeight = Console.WindowHeight - 1;
+            List<ApiLogEntry> logEntries = GetVisibleApiLogEntries(printableHeight);
+            var offset = printableHeight - logEntries.Count;
+
+            for (int i = 0; i < offset; i++)
+                ClearRow(i);
+
+            for (int i = 0; i < logEntries.Count; i++)
+            {
+                var logEntry = logEntries[i];
+
+                if (SetCursorPosition(0, i + offset))
+                    WriteText(logEntry.Machine.PadFitRight(20), ConsoleColor.White);
+
+                if (SetCursorPosition(20, i + offset))
+                    WriteText(logEntry.Request.PadFitRight(10), ConsoleColor.DarkGray);
+
+                var col = 30;
+                if (SetCursorPosition(col, i + offset))
+                    WriteText(logEntry.Response.PadFitRight(Console.WindowWidth - col + 2));
+            }
         }
 
         private void RenderReplScreen()
         {
             OutputReplBuffer();
 
-            OutputInput(Console.WindowWidth);
+            screenNameWidth = OutputScreenName();
+
+            OutputInput(Console.WindowWidth - screenNameWidth);
         }
 
         private void OutputReplBuffer()
         {
-            var lines = replBuffer.ToList();
-            lines.Reverse();
-            lines = lines.Take(Console.WindowHeight - 1).ToList();
+            var printableHeight = Console.WindowHeight - 1;
+            List<string> lines = GetVisibleReplLines(printableHeight);
+            var offset = printableHeight - lines.Count;
+            var start = 0;
+
+            if (offset >= SplashInfoHeight)
+            {
+                OutputAboutInfo();
+                start = SplashInfoHeight;
+            }
+
+            for (int i = start; i < offset; i++)
+                ClearRow(i);
 
             for (int i = 0; i < lines.Count; i++)
             {
                 var line = lines[i];
 
-                if (SetCursorPosition(0, i))
-                    WriteText(line.PadFitRight(Console.WindowWidth, Ellipsis));
-            }
+                if (String.IsNullOrEmpty(line))
+                {
+                    ClearRow(i + offset);
+                    continue;
+                }
 
-            for (int i = lines.Count; i < Console.WindowHeight - 1; i++)
-                ClearRow(i);
+                if (SetCursorPosition(0, i + offset))
+                    WriteText(":", ConsoleColor.White);
+                if (SetCursorPosition(1, i + offset))
+                    WriteText(": ", ConsoleColor.DarkGray);
+
+                if (SetCursorPosition(3, i + offset))
+                    WriteText(line.PadFitRight(Console.WindowWidth));
+            }
+        }
+
+        private List<string> GetVisibleReplLines(int printableHeight)
+        {
+            var lines = replBuffer.ToList();
+            lines.Reverse();
+            lines.RemoveRange(0, replOffset);
+            lines = lines.Take(printableHeight).ToList();
+            lines.Reverse();
+            return lines;
+        }
+
+        private List<Engine.LogProcessCloseArgs> GetVisibleLogCloseEntries(int printableHeight)
+        {
+            var entries = app.LogCloseEntries.ToList();
+            entries.Reverse();
+            entries = entries.Take(printableHeight).ToList();
+            entries.Reverse();
+            return entries;
+        }
+
+        private List<Xgminer.LogLaunchArgs> GetVisibleLogLaunchEntries(int printableHeight)
+        {
+            var entries = app.LogLaunchEntries.ToList();
+            entries.Reverse();
+            entries = entries.Take(printableHeight).ToList();
+            entries.Reverse();
+            return entries;
+        }
+
+        private List<ApiLogEntry> GetVisibleApiLogEntries(int printableHeight)
+        {
+            var entries = app.ApiLogEntries.ToList();
+            entries.Reverse();
+            entries = entries.Take(printableHeight).ToList();
+            entries.Reverse();
+            return entries;
         }
 
         private void RenderMainScreen()
@@ -195,52 +769,142 @@ namespace MultiMiner.TUI
             OutputStatus();
 
             incomeSummaryText = OutputIncome();
+            var widthOffset = incomeSummaryText.Length;
+            if (widthOffset == 0)
+            {
+                screenNameWidth = OutputScreenName();
+                widthOffset = screenNameWidth;
+            }
 
             //[ERROR] FATAL UNHANDLED EXCEPTION: System.NotImplementedException: The requested feature is not implemented.
             if (isWindows) FillLastCell();
+            OutputInput(Console.WindowWidth - widthOffset);
+        }
 
-            OutputInput(Console.WindowWidth - incomeSummaryText.Length);
+        protected override void HandleScreenNavigation(bool pageUp)
+        {
+            if (screenManager.CurrentScreen.Equals(ScreenNames.Main.ToLower())) HandleMainScreenNavigation(pageUp);
+            if (screenManager.CurrentScreen.Equals(ScreenNames.Repl.ToLower())) HandleReplScreenNavigation(pageUp);
+        }
+
+        private void HandleMainScreenNavigation(bool pageUp)
+        {
+            var printableHeight = GetSpecialRow() - GetVisibleNotifications().Count;
+            var visibleDeviceCount = app.GetVisibleDevices().Count;
+
+            if (pageUp)
+                mainOffset = mainOffset - printableHeight;
+            else
+                mainOffset = Math.Min(visibleDeviceCount - printableHeight, mainOffset + printableHeight);
+
+            mainOffset = Math.Max(0, mainOffset);
+
+            RenderMainScreen();
+        }
+
+        private void HandleReplScreenNavigation(bool pageUp)
+        {
+            var printableHeight = Console.WindowHeight - 1;
+
+            if (pageUp)
+                replOffset = Math.Min(replBuffer.Count - printableHeight, replOffset + printableHeight);
+            else
+                replOffset = Math.Max(0, replOffset - printableHeight);
+
+            OutputReplBuffer();
+        }
+
+        protected override void HandleInputCanceled()
+        {
+            credentialsPhase = CredentialsPhase.None;
+            RenderScreen();
         }
 
         protected override bool HandleCommandInput(string input)
         {
-            if (InputMatchesCommand(input, QuitCommand))
-                Quit();
-            else if (InputMatchesCommand(input, StartCommand))
-                app.StartMining();
-            else if (InputMatchesCommand(input, StopCommand))
-                app.StopMining();
-            else if (InputMatchesCommand(input, RestartCommand))
-                app.RestartMining();
-            else if (InputMatchesCommand(input, ScanCommand))
-                app.ScanHardwareLocally();
-            else if (InputMatchesCommand(input, SwitchAllCommand))
-                HandleSwitchAllCommand(input);
-            else if (InputMatchesCommand(input, PoolCommand))
-                HandlePoolCommand(input);
-            else if (InputMatchesCommand(input, ScreenCommand))
-                HandleScreenCommand(input);
-            else
+            if (credentialsPhase != CredentialsPhase.None)
             {
-                AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
+                HandleCredentialsInput(input);
+                return true;
+            }
+
+            var firstWord = input.Split(' ').First();
+            if (firstWord.Equals(CommandNames.Set, StringComparison.OrdinalIgnoreCase))
+            {
+                var setInput = input.Remove(0, CommandNames.Set.Length).Trim();
+                if (String.IsNullOrEmpty(setInput))
+                    OutputCommandHelp(settingsProcessor, input.Split(' '));
+                else
+                {
+                    firstWord = setInput.Split(' ').First();
+                    if (!settingsProcessor.ProcessCommand(setInput))
+                    {
+                        AddNotification(string.Format("Unknown setting: {0}", firstWord));
+                        return false; //exit early
+                    }
+                }
+                return true;
+            }
+
+            if (!commandProcessor.ProcessCommand(input))
+            {
+                AddNotification(string.Format("Unknown command: {0}", firstWord));
                 return false; //exit early
             }
+
+            RenderScreen();
 
             //successful command
             return true;
         }
-        #endregion
 
-        private void OutputJunk()
+        private void HandleCredentialsInput(string input)
         {
-            for (int row = 0; row < Console.WindowHeight; row++)
+            if (credentialsPhase == CredentialsPhase.Username)
             {
+                credentialsUsername = input;
+                credentialsPhase = CredentialsPhase.Password;
+                RenderScreen();
+            }
+            else
+            {
+                var networkDevice = app.GetNetworkDeviceByPath(credentialsTarget.Path);
+
+                networkDevice.Username = credentialsUsername;
+                networkDevice.Password = input;
+
+                //clear prompt & render before rebooting - rebooting currently blocks
+                credentialsPhase = CredentialsPhase.None;
+                RenderScreen();
+
+                var success = app.RebootNetworkDevice(credentialsTarget);
+                
+                if (success)
+                {
+                    AddNotification(String.Format("Rebooting {0}", credentialsTarget.Path));
+                    app.NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+                }
+                else
+                {
+                    AddNotification(String.Format("Unable to reboot {0}", credentialsTarget.Path));
+                    networkDevice.Username = String.Empty;
+                    networkDevice.Password = String.Empty;
+                }
+            }
+        }
+        
+        private void OutputNotifications()
+        {
+            List<NotificationEventArgs> recentNotifications = GetVisibleNotifications();
+            for (int i = 0; i < recentNotifications.Count; i++)
+            {
+                var row = GetSpecialRow() - (recentNotifications.Count - i);
                 if (SetCursorPosition(0, row))
-                    WriteText(new string('X', Console.WindowWidth));
+                    WriteText(recentNotifications[i].Text.FitLeft(Console.WindowWidth));
             }
         }
 
-        private void OutputNotifications()
+        private List<NotificationEventArgs> GetVisibleNotifications()
         {
             const int NotificationCount = 5;
 
@@ -248,12 +912,7 @@ namespace MultiMiner.TUI
             recentNotifications.Reverse();
             recentNotifications = recentNotifications.Take(NotificationCount).ToList();
             recentNotifications.Reverse();
-            for (int i = 0; i < recentNotifications.Count; i++)
-            {
-                var row = GetSpecialRow() - (recentNotifications.Count - i);
-                if (SetCursorPosition(0, row))
-                    WriteText(recentNotifications[i].Text.FitLeft(Console.WindowWidth, Ellipsis));
-            }
+            return recentNotifications;
         }
 
         private bool SetCursorPosition(int left, int top)
@@ -263,6 +922,25 @@ namespace MultiMiner.TUI
             Console.SetCursorPosition(left, top);
 
             return true;
+        }
+
+        private int OutputScreenName()
+        {
+            var screenName = screenManager.CurrentScreen;
+            var offset = isWindows ? 1 : 0;
+            var printableWidth = Console.WindowHeight - 1;
+
+            if (SetCursorPosition(Console.WindowWidth - offset - screenName.Length - 2, printableWidth))
+                WriteText("[", ConsoleColor.Gray, ConsoleColor.DarkGray);
+
+            if (SetCursorPosition(Console.WindowWidth - offset - screenName.Length - 1, printableWidth))
+                WriteText(screenName, ConsoleColor.White, ConsoleColor.DarkGray);
+
+            if (SetCursorPosition(Console.WindowWidth - offset - 1, printableWidth))
+                WriteText("]", ConsoleColor.Gray, ConsoleColor.DarkGray);
+
+            //return width of printed characters
+            return screenName.Length + 2;
         }
 
         private string OutputIncome()
@@ -305,18 +983,21 @@ namespace MultiMiner.TUI
             var row = Console.WindowHeight - 1;
             if (SetCursorPosition(0, row))
             {
-                SetCursorPosition(0, row);
-                var width = totalWidth - Prefix.Length - (isWindows ? 1 : 0);
-                var text = String.Format("{0}{1}", Prefix, CurrentInput.TrimStart().FitRight(width, Ellipsis));
-                WriteText(text, ConsoleColor.White, ConsoleColor.DarkGray);
+                WriteText(Prefix, ConsoleColor.Gray, ConsoleColor.DarkGray);
+                if (SetCursorPosition(Prefix.Length, row))
+                {
+                    var width = totalWidth - Prefix.Length - (isWindows ? 1 : 0);
+                    var text = CurrentInput.TrimStart().FitRight(width);
+                    WriteText(text, ConsoleColor.White, ConsoleColor.DarkGray);
+                }
             }
         }
 
         private void OutputStatus()
         {
             const int Part1Width = 16;
-            var deviceStatus = String.Format("{0} device(s)", app.GetVisibleDeviceCount()).FitRight(Part1Width, Ellipsis);
-            var hashrateStatus = app.GetHashRateStatusText().Replace("   ", " ").FitLeft(Console.WindowWidth - deviceStatus.Length, Ellipsis);
+            var deviceStatus = String.Format("{0} device(s)", app.GetVisibleDeviceCount()).FitRight(Part1Width);
+            var hashrateStatus = app.GetHashRateStatusText().Replace("   ", " ").FitLeft(Console.WindowWidth - deviceStatus.Length);
             if (SetCursorPosition(0, Console.WindowHeight - 2))
             {
                 var text = String.Format("{0}{1}", deviceStatus, hashrateStatus);
@@ -326,83 +1007,124 @@ namespace MultiMiner.TUI
         
         private void OutputSpecial()
         {
-            var output = String.Empty;
+            if (credentialsPhase != CredentialsPhase.None)
+            {
+                OutputCredentialsPrompt();
+                return; //early exit, prompt rendered
+            }
+
             if (currentPrompt != null)
             {
                 if ((DateTime.Now - promptTime).TotalSeconds > 30)
                     currentPrompt = null;
                 else
                 {
-                    var text = String.Format("{0}: {1}", currentPrompt.Caption, currentPrompt.Text);
-                    output = text.FitRight(Console.WindowWidth, Ellipsis);
-                    if (SetCursorPosition(0, GetSpecialRow()))
-                        WriteText(output, ConsoleColor.White, 
-                            currentPrompt.Icon == PromptIcon.Error 
-                            ? ConsoleColor.DarkRed 
-                            : currentPrompt.Icon == PromptIcon.Warning
-                            ? ConsoleColor.DarkYellow : ConsoleColor.DarkBlue);
+                    OutputCurrentPrompt();
                     return; //early exit, prompt rendered
                 }
             }
 
-            output = currentProgress.FitRight(Console.WindowWidth, Ellipsis);
+            OutputCurrentProgress();
+        }
+
+        private void OutputCurrentProgress()
+        {
+            var output = currentProgress.FitRight(Console.WindowWidth);
             if (SetCursorPosition(0, GetSpecialRow()))
                 WriteText(output, ConsoleColor.White, String.IsNullOrEmpty(currentProgress) ? ConsoleColor.Black : ConsoleColor.DarkBlue);
+        }
+
+        private void OutputCredentialsPrompt()
+        {
+            var prompt = String.Format(credentialsPhase == CredentialsPhase.Username ? 
+                "SSH username for {0} (ESC to cancel):" : 
+                "SSH password for {0} (ESC to cancel):", 
+                credentialsTarget.Path);
+            var output = prompt.FitRight(Console.WindowWidth);
+            if (SetCursorPosition(0, GetSpecialRow()))
+                WriteText(output, ConsoleColor.White, ConsoleColor.DarkBlue);
+        }
+
+        private void OutputCurrentPrompt()
+        {
+            var text = String.Format("{0}: {1}", currentPrompt.Caption, currentPrompt.Text);
+            var output = text.FitRight(Console.WindowWidth);
+            if (SetCursorPosition(0, GetSpecialRow()))
+                WriteText(output, ConsoleColor.White,
+                    currentPrompt.Icon == PromptIcon.Error
+                    ? ConsoleColor.DarkRed
+                    : currentPrompt.Icon == PromptIcon.Warning
+                    ? ConsoleColor.DarkYellow : ConsoleColor.DarkBlue);
         }
 
         private static int GetSpecialRow()
         {
             return Console.WindowHeight - 3;
         }
-
+        
         private void AddNotification(string text)
         {
-            notifications.Add(new NotificationEventArgs
-            {
-                Text = text
-            });
+            notifications.Add(new NotificationEventArgs { Text = text });
+            replBuffer.Add(text); //so TUI-specific notes show on both screens
             RenderScreen();
         }
 
         private void OutputDevices()
         {
-            var minerForm = app.GetViewModelToView();
-            var devices = minerForm.Devices
-                .Where(d => d.Visible)
-                .ToList();
+            List<DeviceViewModel> devices = app.GetVisibleDevices();
 
-            for (int i = 0; i < devices.Count; i++)
+            var kindCounts = new Dictionary<char, int>();
+
+            var firstIndex = 0 + mainOffset;
+            var row = 0;
+
+            for (int i = firstIndex; (i < devices.Count) && (row < GetSpecialRow() - GetVisibleNotifications().Count); i++)
             {
                 var device = devices[i];
                 var name = String.IsNullOrEmpty(device.FriendlyName) ? device.Name : device.FriendlyName;
-                var hashrate = device.CurrentHashrate.ToHashrateString().Replace(" ", "");
+                var averageHashrate = device.AverageHashrate > 0 ? device.AverageHashrate.ToHashrateString().Replace(" ", "") : String.Empty;
+                var effectiveHashrate = device.WorkUtility > 0 ? app.WorkUtilityToHashrate(device.WorkUtility).ToHashrateString().Replace(" ", "") : String.Empty;
                 var coinSymbol = device.Coin == null ? String.Empty : device.Coin.Id.ShortCoinSymbol();
                 var exchange = app.GetExchangeRate(device);
                 var pool = device.Pool.DomainFromHost();
                 var kind = device.Kind.ToString().First();
-                var difficulty = device.Difficulty.ToDifficultyString().Replace(" ", "");
+                if (kindCounts.ContainsKey(kind))
+                    kindCounts[kind]++;
+                else
+                    kindCounts[kind] = 1;
+                var deviceId = kind + (kindCounts[kind] + firstIndex).ToString();
+                var difficulty = device.Difficulty > 0 ? device.Difficulty.ToDifficultyString().Replace(" ", "") : String.Empty;
+                var temperature = device.Temperature > 0 ? (int)device.Temperature + "°" : String.Empty;
 
-                if (SetCursorPosition(0, i))
-                    WriteText(kind.ToString().PadRight(2), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
+                if (SetCursorPosition(0, row))
+                    WriteText(deviceId.ToString().PadRight(4), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(2, i))
-                    WriteText(name.PadFitRight(12, Ellipsis), device.Enabled ? device.Kind == Xgminer.Data.DeviceKind.NET || app.MiningEngine.Mining ? ConsoleColor.White : ConsoleColor.Gray : ConsoleColor.DarkGray);
+                if (SetCursorPosition(4, row))
+                    WriteText(name.PadFitRight(12), device.Enabled ? device.Kind == Xgminer.Data.DeviceKind.NET || app.MiningEngine.Mining ? ConsoleColor.White : ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(14, i))
-                    WriteText(coinSymbol.PadFitRight(8, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
+                if (SetCursorPosition(16, row))
+                    WriteText(coinSymbol.PadFitRight(8), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(21, i))
-                    WriteText(difficulty.PadFitLeft(8, Ellipsis), ConsoleColor.DarkGray);
+                if (SetCursorPosition(23, row))
+                    WriteText(difficulty.PadFitLeft(8), ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(29, i))
+                if (SetCursorPosition(31, row))
                     WriteText(exchange.FitCurrency(9).PadLeft(10).PadRight(11), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(40, i))
-                    WriteText(pool.PadFitRight(15, Ellipsis), ConsoleColor.DarkGray);
+                if (SetCursorPosition(42, row))
+                    WriteText(pool.PadFitRight(10), ConsoleColor.DarkGray);
 
-                var left = 55;
-                if (SetCursorPosition(left, i))
-                    WriteText(hashrate.FitLeft(10, Ellipsis).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
+                if (SetCursorPosition(51, row))
+                    WriteText(averageHashrate.PadFitLeft(11), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
+
+                if (SetCursorPosition(62, row))
+                    WriteText(effectiveHashrate.FitLeft(11), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
+
+                var left = 73;
+                if (SetCursorPosition(left, row))
+                    WriteText(temperature.FitLeft(5).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.DarkGray : ConsoleColor.DarkGray);
+
+                row++;
             }
 
             for (int i = devices.Count; i < GetSpecialRow(); i++)
@@ -413,121 +1135,6 @@ namespace MultiMiner.TUI
         {
             if (SetCursorPosition(0, row))
                 WriteText(new string(' ', Console.WindowWidth));
-        }
-        
-        private bool InputMatchesCommand(string input, string command)
-        {
-            var firstWord = input.Split(' ').First().TrimStart('/');
-            var alias = new String(command.Where(c => Char.IsUpper(c)).ToArray());
-            return firstWord.Equals(command, StringComparison.OrdinalIgnoreCase)
-                || (!String.IsNullOrEmpty(alias) && firstWord.Equals(alias, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private void HandleSwitchAllCommand(string input)
-        {
-            var parts = input.Split(' ');
-            if (parts.Count() == 2)
-                app.SetAllDevicesToCoin(parts[1], true);
-            else
-                AddNotification(String.Format("{0} symbol", SwitchAllCommand.ToLower()));
-        }
-
-        private void HandleScreenCommand(string input)
-        {
-            var parts = input.Split(' ');
-            if (parts.Count() == 2)
-            {
-                var screenName = parts[1];
-                if (screenName.Equals(Screen.Repl.ToString(), StringComparison.OrdinalIgnoreCase))
-                    currentScreen = Screen.Repl;
-                else
-                    currentScreen = Screen.Main;
-                RenderScreen();
-            }
-            else
-            {
-                if (currentScreen == Screen.Main)
-                    currentScreen = Screen.Repl;
-                else
-                    currentScreen = Screen.Main;
-                RenderScreen();
-            }
-        }
-
-        private void HandlePoolCommand(string input)
-        {
-            var syntax = String.Format("{0} {{ add | remove | list }} symbol url user pass", PoolCommand.ToLower());
-            var parts = input.Split(' ');
-
-            if (parts.Count() >= 2)
-            {
-                var verb = parts[1];
-
-                bool add = verb.Equals(AddVerb, StringComparison.OrdinalIgnoreCase);
-                bool remove = verb.Equals(RemoveVerb, StringComparison.OrdinalIgnoreCase);
-                bool list = verb.Equals(ListVerb, StringComparison.OrdinalIgnoreCase);
-
-                if (list)
-                {
-                    var symbol = String.Empty;
-                    if (parts.Count() >= 3)
-                        symbol = parts[2];
-
-                    HandlePoolListCommand(symbol);
-                }
-                else if(parts.Count() >= 4)
-                {
-                    var symbol = parts[2];
-                    var url = parts[3];
-
-                    CoinApi.Data.CoinInformation coin = app.CoinApiInformation.SingleOrDefault(c => c.Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase));
-                    if (coin == null)
-                    {
-                        AddNotification(String.Format("Unknown coin: {0}", symbol));
-                        return; //early exit
-                    }
-
-
-                    if (add && (parts.Count() == 6))
-                    {
-                        var user = parts[4];
-                        var pass = parts[5];
-
-                        app.AddNewPool(coin, url, user, pass);
-                    }
-                    else if (remove)
-                    {
-                        var user = parts.Count() > 4 ? parts[4] : String.Empty;
-
-                        app.RemoveExistingPool(coin, url, user);
-                    }
-                    else
-                        AddNotification(syntax);
-                }
-                else
-                    AddNotification(syntax);
-            }
-            else
-                AddNotification(syntax);
-        }
-
-        private void HandlePoolListCommand(string symbol)
-        {
-            var configs = app.EngineConfiguration.CoinConfigurations
-                .Where(c => String.IsNullOrEmpty(symbol)
-                    || (c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
-                    || (c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))));
-
-            foreach (var config in configs)
-            {
-                config.Pools.ForEach((p) =>
-                {
-                    replBuffer.Add(config.PoolGroup.Id.ShortCoinSymbol().PadFitRight(8, Ellipsis) + ": " + p.Host.ShortHostFromHost());
-                });
-            }
-
-            currentScreen = Screen.Repl;
-            RenderScreen();
         }
     }
 }

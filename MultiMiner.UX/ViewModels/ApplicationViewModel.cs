@@ -965,6 +965,27 @@ namespace MultiMiner.UX.ViewModels
                 }
             };
         }
+
+        public DeviceViewModel GetDeviceById(string deviceId)
+        {
+            var index = -1;
+            var valid = int.TryParse(deviceId.Substring(1), out index);
+
+            if (!valid) return null;
+
+            index--;
+
+            var devices = GetVisibleDevices();
+            var kindId = deviceId.First().ToString();
+            var kindDevices = devices
+                .Where(d => d.Kind.ToString().StartsWith(kindId, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if ((index >= 0) && (index < kindDevices.Count))
+                return kindDevices[index];
+
+            return null;
+        }
         #endregion
 
         #region Exchange API
@@ -1352,6 +1373,20 @@ namespace MultiMiner.UX.ViewModels
                 return;
             }
 
+            SetNetworkDevicePoolIndex(networkDevice, poolIndex);
+        }
+
+        public bool SetNetworkDevicePoolIndex(DeviceViewModel networkDevice, int poolIndex)
+        {
+            if (poolIndex < 0)
+                return false; //invalid index
+
+            // networkDevicePools is keyed by IP:port, use .Path
+            List<PoolInformation> poolInformation = NetworkDevicePools[networkDevice.Path];
+
+            if ((poolInformation != null) && (poolIndex >= poolInformation.Count))
+                return false; //invalid index
+
             Uri uri = new Uri("http://" + networkDevice.Path);
             ApiContext apiContext = new ApiContext(uri.Port, uri.Host);
 
@@ -1360,6 +1395,8 @@ namespace MultiMiner.UX.ViewModels
             apiContext.LogEvent += LogApiEvent;
 
             apiContext.SwitchPool(poolIndex);
+
+            return true;
         }
 
         private List<PoolInformation> GetCachedPoolInfoFromAddress(string ipAddress, int port)
@@ -1415,6 +1452,12 @@ namespace MultiMiner.UX.ViewModels
 
         public void ToggleNetworkDeviceHidden(DeviceViewModel deviceViewModel)
         {
+            bool hidden;
+            ToggleNetworkDeviceHidden(deviceViewModel, out hidden);
+        }
+
+        public void ToggleNetworkDeviceHidden(DeviceViewModel deviceViewModel, out bool hidden)
+        {
             NetworkDevices.NetworkDevice deviceConfiguration = NetworkDevicesConfiguration.Devices.Single(
                 cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
 
@@ -1422,15 +1465,25 @@ namespace MultiMiner.UX.ViewModels
             NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
 
             ApplyDevicesToViewModel();
+
+            hidden = deviceConfiguration.Hidden;
         }
 
         public void ToggleNetworkDeviceSticky(DeviceViewModel deviceViewModel)
+        {
+            bool sticky;
+            ToggleNetworkDeviceSticky(deviceViewModel, out sticky);
+        }
+
+        public void ToggleNetworkDeviceSticky(DeviceViewModel deviceViewModel, out bool sticky)
         {
             NetworkDevices.NetworkDevice deviceConfiguration = NetworkDevicesConfiguration.Devices.Single(
                 cfg => String.Format("{0}:{1}", cfg.IPAddress, cfg.Port).Equals(deviceViewModel.Path));
 
             deviceConfiguration.Sticky = !deviceConfiguration.Sticky;
             NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+
+            sticky = deviceConfiguration.Sticky;
         }
 
         public bool RestartNetworkDevice(DeviceViewModel networkDevice)
@@ -2228,6 +2281,8 @@ namespace MultiMiner.UX.ViewModels
 
         public void StopMiningLocally()
         {
+            CancelMiningOnStartup(); //in case called during countdown
+
             miningEngine.StopMining();
 
             LocalViewModel.ClearDeviceInformationFromViewModel();
@@ -2676,6 +2731,15 @@ namespace MultiMiner.UX.ViewModels
             return hashRateText;
         }
 
+        public List<DeviceViewModel> GetVisibleDevices()
+        {
+            var minerForm = GetViewModelToView();
+            var devices = minerForm.Devices
+                .Where(d => d.Visible)
+                .ToList();
+            return devices;
+        }
+
         public int GetVisibleDeviceCount()
         {
             MinerFormViewModel viewModel = GetViewModelToView();
@@ -2736,11 +2800,23 @@ namespace MultiMiner.UX.ViewModels
             return summary;
         }
 
-        public bool RemoveExistingPool(CoinApi.Data.CoinInformation coin, string url, string user)
+        public bool RemoveExistingPool(string coinSymbol, string url, string user)
         {
-            Engine.Data.Configuration.Coin coinConfig = EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase));
+            Engine.Data.Configuration.Coin coinConfig = EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             if (coinConfig == null) return false;
 
+            MiningPool poolConfig = FindPoolConfiguration(coinConfig, url, user);
+
+            if (poolConfig == null) return false;
+
+            coinConfig.Pools.Remove(poolConfig);
+            EngineConfiguration.SaveCoinConfigurations();
+
+            return true;
+        }
+
+        public MiningPool FindPoolConfiguration(Coin coinConfig, string url, string user)
+        {
             MiningPool poolConfig = coinConfig.Pools.FirstOrDefault((p) =>
             {
                 //url may or may not have protocol, but URI ctor requires one
@@ -2758,13 +2834,7 @@ namespace MultiMiner.UX.ViewModels
                     && hostsEqual
                     && usersEqual;
             });
-
-            if (poolConfig == null) return false;
-
-            coinConfig.Pools.Remove(poolConfig);
-            EngineConfiguration.SaveCoinConfigurations();
-
-            return true;
+            return poolConfig;
         }
 
         public MiningPool AddNewPool(CoinApi.Data.CoinInformation coin, string url, string user, string pass)
@@ -2859,9 +2929,10 @@ namespace MultiMiner.UX.ViewModels
                 Context.BeginInvoke((Action)(() =>
                 {
                     //code to update UI
-                    ApiLogEntries.Add(logEntry);
-                    while (ApiLogEntries.Count > 1000)
+                    //remove then add so BindingList position is on latest entry
+                    while (ApiLogEntries.Count > MaxLogEntriesOnScreen)
                         ApiLogEntries.RemoveAt(0);
+                    ApiLogEntries.Add(logEntry);
                 }), null);
             }
 
@@ -5190,7 +5261,7 @@ namespace MultiMiner.UX.ViewModels
                     });
 
                     //only load MaxHistoryOnScreen
-                    previousHistory.RemoveRange(0, Math.Max(0, previousHistory.Count - MaxHistoryOnScreen));
+                    previousHistory.RemoveRange(0, Math.Max(0, previousHistory.Count - MaxLogEntriesOnScreen));
 
                     foreach (LogProcessCloseArgs logProcessCloseArgs in previousHistory)
                         LogCloseEntries.Add(logProcessCloseArgs);
@@ -5257,10 +5328,10 @@ namespace MultiMiner.UX.ViewModels
         #region Mining event handlers
         private void LogProcessLaunch(object sender, LogLaunchArgs ea)
         {
-            LogLaunchEntries.Add(ea);
-
-            while (LogLaunchEntries.Count > 1000)
+            //remove then add so BindingList position is on latest entry
+            while (LogLaunchEntries.Count > MaxLogEntriesOnScreen)
                 LogLaunchEntries.RemoveAt(0);
+            LogLaunchEntries.Add(ea);
 
             LogProcessLaunchToFile(ea);
         }
@@ -5271,13 +5342,13 @@ namespace MultiMiner.UX.ViewModels
             LogObjectToFile(ea, logFileName);
         }
 
-        private const int MaxHistoryOnScreen = 1000;
+        private const int MaxLogEntriesOnScreen = 1000;
         private void LogProcessClose(object sender, LogProcessCloseArgs ea)
         {
-            LogCloseEntries.Add(ea);
-
-            while (LogCloseEntries.Count > MaxHistoryOnScreen)
+            //remove then add so BindingList position is on latest entry
+            while (LogCloseEntries.Count > MaxLogEntriesOnScreen)
                 LogCloseEntries.RemoveAt(0);
+            LogCloseEntries.Add(ea);
 
             LogProcessCloseToFile(ea);
         }

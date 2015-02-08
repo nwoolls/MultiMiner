@@ -115,32 +115,35 @@ namespace MultiMiner.UX.Extensions
             
             if (text.Length > totalWidth)
             {
-                var partLen = (totalWidth - ellipsis.Length) / 2;
+                var part1Len = (int)Math.Floor((totalWidth - ellipsis.Length) / 2.0);
+                var part2Len = (int)Math.Ceiling((totalWidth - ellipsis.Length) / 2.0);
                 result = String.Format("{0}{1}{2}",
-                    text.Substring(0, partLen),
+                    text.Substring(0, part1Len),
                     ellipsis,
-                    text.Substring(text.Length - partLen));
+                    text.Substring(text.Length - part2Len));
             }
 
             return result;
         }
 
-        public static string FitLeft(this string text, int totalWidth, string ellipsis)
+        private const string Ellipsis = "..";
+
+        public static string FitLeft(this string text, int totalWidth, string ellipsis = Ellipsis)
         {
             return text.EllipsisString(totalWidth, ellipsis).PadLeft(totalWidth);
         }
 
-        public static string FitRight(this string text, int totalWidth, string ellipsis)
+        public static string FitRight(this string text, int totalWidth, string ellipsis = Ellipsis)
         {
             return text.EllipsisString(totalWidth, ellipsis).PadRight(totalWidth);
         }
 
-        public static string PadFitRight(this string text, int totalWidth, string ellipsis)
+        public static string PadFitRight(this string text, int totalWidth, string ellipsis = Ellipsis)
         {
             return text.EllipsisString(totalWidth - 1, ellipsis).PadRight(totalWidth);
         }
 
-        public static string PadFitLeft(this string text, int totalWidth, string ellipsis)
+        public static string PadFitLeft(this string text, int totalWidth, string ellipsis = Ellipsis)
         {
             return text.EllipsisString(totalWidth - 1, ellipsis).PadLeft(totalWidth);
         }

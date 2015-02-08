@@ -41,12 +41,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleApplication.cs" />
+    <Compile Include="Commands\DeviceCommand.cs" />
+    <Compile Include="Commands\NetworkCommand.cs" />
+    <Compile Include="Commands\NotificationsCommand.cs" />
+    <Compile Include="Commands\ScreenCommand.cs" />
+    <Compile Include="Commands\Settings\CoinApiCommand.cs" />
+    <Compile Include="Commands\Settings\CoinWarzCommand.cs" />
+    <Compile Include="Commands\Settings\MobileMinerCommand.cs" />
+    <Compile Include="Commands\Settings\PerksCommand.cs" />
+    <Compile Include="Commands\Settings\WhatMineCommand.cs" />
+    <Compile Include="Commands\StrategiesCommand.cs" />
+    <Compile Include="Commands\SwitchAllCommand.cs" />
+    <Compile Include="Data\CommandNames.cs" />
+    <Compile Include="Commands\PoolCommand.cs" />
+    <Compile Include="Data\PoolListEntry.cs" />
+    <Compile Include="Data\ScreenNames.cs" />
+    <Compile Include="Data\SettingNames.cs" />
     <Compile Include="MinerApplication.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleAsyncResult.cs" />
-    <Compile Include="SimpleSyncObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
