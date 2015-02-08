@@ -205,6 +205,11 @@ namespace MultiMiner.TUI
             {
                 RenderApiLogScreen();
             });
+
+            screenManager.RegisterScreen(ScreenNames.ProcLog, () =>
+            {
+                RenderProcLogScreen();
+            });
         }
 
         private void RegisterCommands()
@@ -300,7 +305,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Screen, 
                 CommandAliases.Screen,
-                "[main|repl|history|apilog]",
+                "[main|repl|history|apilog|proclog]",
                 new string[]
                 {
                     "screen main",
@@ -472,6 +477,47 @@ namespace MultiMiner.TUI
                 OutputInput(Console.WindowWidth - screenNameWidth);
         }
 
+        private void RenderProcLogScreen()
+        {
+            OutputProcLog();
+
+            screenNameWidth = OutputScreenName();
+
+            OutputInput(Console.WindowWidth - screenNameWidth);
+        }
+
+        private void OutputProcLog()
+        {
+            var printableHeight = Console.WindowHeight - 1;
+            List<Xgminer.LogLaunchArgs> logEntries = GetVisibleLogLaunchEntries(printableHeight);
+            var offset = printableHeight - logEntries.Count;
+
+            for (int i = 0; i < offset; i++)
+                ClearRow(i);
+
+            for (int i = 0; i < logEntries.Count; i++)
+            {
+                var logEntry = logEntries[i];
+
+                if (SetCursorPosition(0, i + offset))
+                    WriteText(logEntry.DateTime.ToReallyShortDateTimeString().PadFitRight(14, Ellipsis), ConsoleColor.DarkGray);
+
+                if (SetCursorPosition(14, i + offset))
+                    WriteText(logEntry.CoinName.PadFitRight(9, Ellipsis), ConsoleColor.White);
+
+                if (SetCursorPosition(23, i + offset))
+                    WriteText(System.IO.Path.GetFileName(logEntry.ExecutablePath).PadFitRight(13, Ellipsis));
+
+                var lastColWidth = 16;
+                var col = 36;
+                if (SetCursorPosition(col, i + offset))
+                    WriteText(logEntry.Arguments.PadFitRight(Console.BufferWidth - col - lastColWidth, Ellipsis), ConsoleColor.DarkGray);
+
+                if (SetCursorPosition(Console.BufferWidth - lastColWidth, i + offset))
+                    WriteText(logEntry.Reason.PadFitRight(lastColWidth, Ellipsis));
+            }
+        }
+
         private void RenderApiLogScreen()
         {
             OutputApiLog();
@@ -527,6 +573,7 @@ namespace MultiMiner.TUI
                     WriteText(devicesString.PadFitRight(Console.WindowWidth - col, Ellipsis));
             }
         }
+
         private static string GetFormattedDevicesString(List<DeviceDescriptor> deviceDescriptors)
         {
             return String.Join(" ", deviceDescriptors.Select(d => d.ToString()).ToArray());
@@ -551,8 +598,9 @@ namespace MultiMiner.TUI
                 if (SetCursorPosition(20, i + offset))
                     WriteText(logEntry.Request.PadFitRight(10, Ellipsis), ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(30, i + offset))
-                    WriteText(logEntry.Response.PadFitRight(Console.WindowWidth - 30, Ellipsis));
+                var col = 30;
+                if (SetCursorPosition(col, i + offset))
+                    WriteText(logEntry.Response.PadFitRight(Console.WindowWidth - col + 2, Ellipsis));
             }
         }
 
@@ -614,6 +662,15 @@ namespace MultiMiner.TUI
         private List<Engine.LogProcessCloseArgs> GetVisibleLogCloseEntries(int printableHeight)
         {
             var entries = app.LogCloseEntries.ToList();
+            entries.Reverse();
+            entries = entries.Take(printableHeight).ToList();
+            entries.Reverse();
+            return entries;
+        }
+
+        private List<Xgminer.LogLaunchArgs> GetVisibleLogLaunchEntries(int printableHeight)
+        {
+            var entries = app.LogLaunchEntries.ToList();
             entries.Reverse();
             entries = entries.Take(printableHeight).ToList();
             entries.Reverse();
