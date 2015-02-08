@@ -533,9 +533,11 @@ namespace MultiMiner.TUI
             var visibleDeviceCount = GetVisibleDevices().Count;
 
             if (pageUp)
-                mainOffset = Math.Max(0, mainOffset - printableHeight);
+                mainOffset = mainOffset - printableHeight;
             else
                 mainOffset = Math.Min(visibleDeviceCount - printableHeight, mainOffset + printableHeight);
+
+            mainOffset = Math.Max(0, mainOffset);
 
             RenderMainScreen();
         }
