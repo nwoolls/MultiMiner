@@ -45,7 +45,10 @@
     <Compile Include="Commands\NetworkCommand.cs" />
     <Compile Include="Commands\NotificationsCommand.cs" />
     <Compile Include="Commands\ScreenCommand.cs" />
+    <Compile Include="Commands\Settings\CoinApiCommand.cs" />
+    <Compile Include="Commands\Settings\CoinWarzCommand.cs" />
     <Compile Include="Commands\Settings\MobileMinerCommand.cs" />
+    <Compile Include="Commands\Settings\WhatMineCommand.cs" />
     <Compile Include="Commands\StrategiesCommand.cs" />
     <Compile Include="Commands\SwitchAllCommand.cs" />
     <Compile Include="Data\CommandNames.cs" />

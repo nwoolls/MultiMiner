@@ -57,9 +57,13 @@ namespace MultiMiner.TUI
                 replBuffer.Add(s);
             });
 
-            settingsProcessor = new CommandProcessor(AddNotification, (s) =>
+            var setCommand = CommandNames.Set.ToLower();
+            settingsProcessor = new CommandProcessor((s) =>
             {
-                var setCommand = CommandNames.Set.ToLower();
+                AddNotification(String.Format("{0} {1}", setCommand, s));
+            }, 
+            (s) =>
+            {
                 if (s.StartsWith("\t"))
                     replBuffer.Add(s);
                 else
@@ -252,6 +256,37 @@ namespace MultiMiner.TUI
                     }
                     return false;
                 });
+
+            settingsProcessor.RegisterCommand(
+                SettingNames.CoinApi,
+                string.Empty,
+                "coinchoose|coinwarz|whatmine|whattomine",
+                new string[]
+                {
+                    "set coinapi coinwarz",
+                    "set coinapi whattomine"
+                },
+                new Commands.Settings.CoinApiCommand(app, AddNotification).HandleCommand);
+
+            settingsProcessor.RegisterCommand(
+                SettingNames.CoinWarz,
+                string.Empty,
+                "apikey key",
+                new string[]
+                {
+                    "set coinwarz apikey 9602a70905884c4e9609d20b90163408"
+                },
+                new Commands.Settings.CoinWarzCommand(app, AddNotification).HandleCommand);
+
+            settingsProcessor.RegisterCommand(
+                SettingNames.WhatMine,
+                string.Empty,
+                "apikey key",
+                new string[]
+                {
+                    "set coinwarz whatmine 9602a70905884c4e9609d20b90163408"
+                },
+                new Commands.Settings.WhatMineCommand(app, AddNotification).HandleCommand);
         }
         
         private void RegisterCommands()
@@ -786,11 +821,16 @@ namespace MultiMiner.TUI
             if (firstWord.Equals(CommandNames.Set, StringComparison.OrdinalIgnoreCase))
             {
                 var setInput = input.Remove(0, CommandNames.Set.Length).Trim();
-                firstWord = setInput.Split(' ').First();
-                if (!settingsProcessor.ProcessCommand(setInput))
+                if (String.IsNullOrEmpty(setInput))
+                    OutputCommandHelp(settingsProcessor, input.Split(' '));
+                else
                 {
-                    AddNotification(string.Format("Unknown setting: {0}", firstWord));
-                    return false; //exit early
+                    firstWord = setInput.Split(' ').First();
+                    if (!settingsProcessor.ProcessCommand(setInput))
+                    {
+                        AddNotification(string.Format("Unknown setting: {0}", firstWord));
+                        return false; //exit early
+                    }
                 }
                 return true;
             }
