@@ -998,6 +998,7 @@ namespace MultiMiner.TUI
                     {
                         bool enabled = !device.Enabled;
                         app.ToggleDevices(new List<DeviceDescriptor> { device }, enabled);
+                        app.SaveChanges();
                         AddNotification(String.Format("{0} is now {1}",  device.Path, enabled ? "enabled" : "disabled"));
                         return true; //early exit - success
                     }
