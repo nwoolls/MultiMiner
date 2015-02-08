@@ -18,6 +18,13 @@ namespace MultiMiner.TUI
 {
     class MinerApplication : ConsoleApplication
     {
+        enum CredentialsPhase
+        {
+            None,
+            Username,
+            Password
+        }
+
         private const string Ellipsis = "..";
 
         private readonly ApplicationViewModel app = new ApplicationViewModel();
@@ -37,7 +44,12 @@ namespace MultiMiner.TUI
         private DateTime promptTime;
         private string incomeSummaryText = String.Empty;
         private int replOffset = 0;
+        private int mainOffset = 0;
         private int screenNameWidth = 0;
+
+        private CredentialsPhase credentialsPhase;
+        private DeviceViewModel credentialsTarget;
+        private string credentialsUsername;
 
         public MinerApplication()
         {
@@ -90,6 +102,14 @@ namespace MultiMiner.TUI
             {
                 currentPrompt = e;
                 promptTime = DateTime.Now;
+                RenderScreen();
+            };
+
+            app.CredentialsRequested += (object sender, CredentialsEventArgs e) =>
+            {
+                e.CredentialsProvided = false;
+                credentialsPhase = CredentialsPhase.Username;
+                credentialsTarget = app.LocalViewModel.GetNetworkDeviceByFriendlyName(e.ProtectedResource);
                 RenderScreen();
             };
 
@@ -295,7 +315,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Network, 
                 CommandAliases.Network,
-                "<start|stop|restart|reboot|hide|pin|rename> <ip[:port]> [name]", 
+                "<start|stop|restart|reboot|hide|pin|rename> <ip[:port]|id> [name]", 
                 HandeNetworkCommand);
 
             commandProcessor.RegisterCommand(
@@ -314,7 +334,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Device,
                 CommandAliases.Device,
-                "<enable|rename> <id> [name]",
+                "<enable|switch|rename> <id> [symbol|name]",
                 HandeDeviceCommand);
         }
 
@@ -503,7 +523,21 @@ namespace MultiMiner.TUI
 
         protected override void HandleScreenNavigation(bool pageUp)
         {
+            if (screenManager.CurrentScreen.Equals(ScreenNames.Main.ToLower())) HandleMainScreenNavigation(pageUp);
             if (screenManager.CurrentScreen.Equals(ScreenNames.Repl.ToLower())) HandleReplScreenNavigation(pageUp);
+        }
+
+        private void HandleMainScreenNavigation(bool pageUp)
+        {
+            var printableHeight = GetSpecialRow() - GetVisibleNotifications().Count;
+            var visibleDeviceCount = GetVisibleDevices().Count;
+
+            if (pageUp)
+                mainOffset = Math.Max(0, mainOffset - printableHeight);
+            else
+                mainOffset = Math.Min(visibleDeviceCount - printableHeight, mainOffset + printableHeight);
+
+            RenderMainScreen();
         }
 
         private void HandleReplScreenNavigation(bool pageUp)
@@ -518,8 +552,20 @@ namespace MultiMiner.TUI
             OutputReplBuffer();
         }
 
+        protected override void HandleInputCanceled()
+        {
+            credentialsPhase = CredentialsPhase.None;
+            RenderScreen();
+        }
+
         protected override bool HandleCommandInput(string input)
         {
+            if (credentialsPhase != CredentialsPhase.None)
+            {
+                HandleCredentialsInput(input);
+                return true;
+            }
+
             if (!commandProcessor.ProcessCommand(input))
             {
                 AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
@@ -531,9 +577,56 @@ namespace MultiMiner.TUI
             //successful command
             return true;
         }
+
+        private void HandleCredentialsInput(string input)
+        {
+            if (credentialsPhase == CredentialsPhase.Username)
+            {
+                credentialsUsername = input;
+                credentialsPhase = CredentialsPhase.Password;
+                RenderScreen();
+            }
+            else
+            {
+                var networkDevice = app.GetNetworkDeviceByPath(credentialsTarget.Path);
+
+                networkDevice.Username = credentialsUsername;
+                networkDevice.Password = input;
+
+                //clear prompt & render before rebooting - rebooting currently blocks
+                credentialsPhase = CredentialsPhase.None;
+                RenderScreen();
+
+                var success = app.RebootNetworkDevice(credentialsTarget);
+                
+                if (success)
+                {
+                    AddNotification(String.Format("Rebooting {0}", credentialsTarget.Path));
+                    app.NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+                }
+                else
+                {
+                    AddNotification(String.Format("Unable to reboot {0}", credentialsTarget.Path));
+                    networkDevice.Username = String.Empty;
+                    networkDevice.Password = String.Empty;
+                }
+
+            }
+        }
         #endregion
         
         private void OutputNotifications()
+        {
+            List<NotificationEventArgs> recentNotifications = GetVisibleNotifications();
+            for (int i = 0; i < recentNotifications.Count; i++)
+            {
+                var row = GetSpecialRow() - (recentNotifications.Count - i);
+                if (SetCursorPosition(0, row))
+                    WriteText(recentNotifications[i].Text.FitLeft(Console.WindowWidth, Ellipsis));
+            }
+        }
+
+        private List<NotificationEventArgs> GetVisibleNotifications()
         {
             const int NotificationCount = 5;
 
@@ -541,12 +634,7 @@ namespace MultiMiner.TUI
             recentNotifications.Reverse();
             recentNotifications = recentNotifications.Take(NotificationCount).ToList();
             recentNotifications.Reverse();
-            for (int i = 0; i < recentNotifications.Count; i++)
-            {
-                var row = GetSpecialRow() - (recentNotifications.Count - i);
-                if (SetCursorPosition(0, row))
-                    WriteText(recentNotifications[i].Text.FitLeft(Console.WindowWidth, Ellipsis));
-            }
+            return recentNotifications;
         }
 
         private bool SetCursorPosition(int left, int top)
@@ -641,28 +729,54 @@ namespace MultiMiner.TUI
         
         private void OutputSpecial()
         {
-            var output = String.Empty;
+            if (credentialsPhase != CredentialsPhase.None)
+            {
+                OutputCredentialsPrompt();
+                return; //early exit, prompt rendered
+            }
+
             if (currentPrompt != null)
             {
                 if ((DateTime.Now - promptTime).TotalSeconds > 30)
                     currentPrompt = null;
                 else
                 {
-                    var text = String.Format("{0}: {1}", currentPrompt.Caption, currentPrompt.Text);
-                    output = text.FitRight(Console.WindowWidth, Ellipsis);
-                    if (SetCursorPosition(0, GetSpecialRow()))
-                        WriteText(output, ConsoleColor.White, 
-                            currentPrompt.Icon == PromptIcon.Error 
-                            ? ConsoleColor.DarkRed 
-                            : currentPrompt.Icon == PromptIcon.Warning
-                            ? ConsoleColor.DarkYellow : ConsoleColor.DarkBlue);
+                    OutputCurrentPrompt();
                     return; //early exit, prompt rendered
                 }
             }
 
-            output = currentProgress.FitRight(Console.WindowWidth, Ellipsis);
+            OutputCurrentProgress();
+        }
+
+        private void OutputCurrentProgress()
+        {
+            var output = currentProgress.FitRight(Console.WindowWidth, Ellipsis);
             if (SetCursorPosition(0, GetSpecialRow()))
                 WriteText(output, ConsoleColor.White, String.IsNullOrEmpty(currentProgress) ? ConsoleColor.Black : ConsoleColor.DarkBlue);
+        }
+
+        private void OutputCredentialsPrompt()
+        {
+            var prompt = String.Format(credentialsPhase == CredentialsPhase.Username ? 
+                "SSH username for {0} (ESC to cancel):" : 
+                "SSH password for {0} (ESC to cancel):", 
+                credentialsTarget.Path);
+            var output = prompt.FitRight(Console.WindowWidth, Ellipsis);
+            if (SetCursorPosition(0, GetSpecialRow()))
+                WriteText(output, ConsoleColor.White, ConsoleColor.DarkBlue);
+        }
+
+        private void OutputCurrentPrompt()
+        {
+            var text = String.Format("{0}: {1}", currentPrompt.Caption, currentPrompt.Text);
+            var output = text.FitRight(Console.WindowWidth, Ellipsis);
+            if (SetCursorPosition(0, GetSpecialRow()))
+                WriteText(output, ConsoleColor.White,
+                    currentPrompt.Icon == PromptIcon.Error
+                    ? ConsoleColor.DarkRed
+                    : currentPrompt.Icon == PromptIcon.Warning
+                    ? ConsoleColor.DarkYellow : ConsoleColor.DarkBlue);
         }
 
         private static int GetSpecialRow()
@@ -686,7 +800,10 @@ namespace MultiMiner.TUI
 
             var kindCounts = new Dictionary<char, int>();
 
-            for (int i = 0; i < devices.Count; i++)
+            var firstIndex = 0 + mainOffset;
+            var row = 0;
+
+            for (int i = firstIndex; (i < devices.Count) && (row < GetSpecialRow() - GetVisibleNotifications().Count); i++)
             {
                 var device = devices[i];
                 var name = String.IsNullOrEmpty(device.FriendlyName) ? device.Name : device.FriendlyName;
@@ -700,37 +817,39 @@ namespace MultiMiner.TUI
                     kindCounts[kind]++;
                 else
                     kindCounts[kind] = 1;
-                var deviceId = kind + kindCounts[kind].ToString();
+                var deviceId = kind + (kindCounts[kind] + firstIndex).ToString();
                 var difficulty = device.Difficulty > 0 ? device.Difficulty.ToDifficultyString().Replace(" ", "") : String.Empty;
                 var temperature = device.Temperature > 0 ? device.Temperature + "°" : String.Empty;
 
-                if (SetCursorPosition(0, i))
+                if (SetCursorPosition(0, row))
                     WriteText(deviceId.ToString().PadRight(4), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(4, i))
+                if (SetCursorPosition(4, row))
                     WriteText(name.PadFitRight(12, Ellipsis), device.Enabled ? device.Kind == Xgminer.Data.DeviceKind.NET || app.MiningEngine.Mining ? ConsoleColor.White : ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(16, i))
+                if (SetCursorPosition(16, row))
                     WriteText(coinSymbol.PadFitRight(8, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(23, i))
+                if (SetCursorPosition(23, row))
                     WriteText(difficulty.PadFitLeft(8, Ellipsis), ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(31, i))
+                if (SetCursorPosition(31, row))
                     WriteText(exchange.FitCurrency(9).PadLeft(10).PadRight(11), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(42, i))
+                if (SetCursorPosition(42, row))
                     WriteText(pool.PadFitRight(10, Ellipsis), ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(51, i))
+                if (SetCursorPosition(51, row))
                     WriteText(averageHashrate.PadFitLeft(11, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
-                if (SetCursorPosition(62, i))
+                if (SetCursorPosition(62, row))
                     WriteText(effectiveHashrate.FitLeft(11, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
                 var left = 73;
-                if (SetCursorPosition(left, i))
+                if (SetCursorPosition(left, row))
                     WriteText(temperature.FitLeft(5, Ellipsis).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.DarkGray : ConsoleColor.DarkGray);
+
+                row++;
             }
 
             for (int i = devices.Count; i < GetSpecialRow(); i++)
@@ -758,9 +877,9 @@ namespace MultiMiner.TUI
             {
                 var verb = input[1];
 
-                bool add = verb.Equals(CommandNames.Add, StringComparison.OrdinalIgnoreCase);
-                bool remove = verb.Equals(CommandNames.Remove, StringComparison.OrdinalIgnoreCase);
-                bool list = verb.Equals(CommandNames.List, StringComparison.OrdinalIgnoreCase);
+                bool add = verb.Equals(ArgumentNames.Add, StringComparison.OrdinalIgnoreCase);
+                bool remove = verb.Equals(ArgumentNames.Remove, StringComparison.OrdinalIgnoreCase);
+                bool list = verb.Equals(ArgumentNames.List, StringComparison.OrdinalIgnoreCase);
 
                 if (list)
                 {
@@ -839,24 +958,24 @@ namespace MultiMiner.TUI
             if (input.Count() >= 2)
             {
                 var firstArgument = input[1];
-                if (firstArgument.Equals(CommandNames.On, StringComparison.OrdinalIgnoreCase))
+                if (firstArgument.Equals(ArgumentNames.On, StringComparison.OrdinalIgnoreCase))
                 {
                     app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = true;
                     AddNotification("Auto mining strategies enabled");
                 }
-                else if (firstArgument.Equals(CommandNames.Off, StringComparison.OrdinalIgnoreCase))
+                else if (firstArgument.Equals(ArgumentNames.Off, StringComparison.OrdinalIgnoreCase))
                 {
                     app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false;
                     AddNotification("Auto mining strategies disabled");
                 }
-                else if (firstArgument.Equals(CommandNames.Set, StringComparison.OrdinalIgnoreCase))
+                else if (firstArgument.Equals(ArgumentNames.Set, StringComparison.OrdinalIgnoreCase))
                 {
                     var lastArgument = input.Last();
-                    if (lastArgument.Equals(CommandNames.Profit, StringComparison.OrdinalIgnoreCase))
+                    if (lastArgument.Equals(ArgumentNames.Profit, StringComparison.OrdinalIgnoreCase))
                         app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Profitability;
-                    else if (lastArgument.Equals(CommandNames.Diff, StringComparison.OrdinalIgnoreCase))
+                    else if (lastArgument.Equals(ArgumentNames.Diff, StringComparison.OrdinalIgnoreCase))
                         app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Difficulty;
-                    else if (lastArgument.Equals(CommandNames.Price, StringComparison.OrdinalIgnoreCase))
+                    else if (lastArgument.Equals(ArgumentNames.Price, StringComparison.OrdinalIgnoreCase))
                         app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Price;
                     else
                         return false; //early exit, wrong syntax
@@ -879,7 +998,7 @@ namespace MultiMiner.TUI
             if (input.Count() >= 2)
             {
                 var verb = input[1];
-                if (verb.Equals(CommandNames.Clear, StringComparison.OrdinalIgnoreCase))
+                if (verb.Equals(ArgumentNames.Clear, StringComparison.OrdinalIgnoreCase))
                 {
                     notifications.Clear();
                     return true; //early exit - success
@@ -893,12 +1012,12 @@ namespace MultiMiner.TUI
                         index--; //user enters 1-based
                         if ((index >= 0) && (index < notifications.Count))
                         {
-                            if (verb.Equals(CommandNames.Remove, StringComparison.OrdinalIgnoreCase))
+                            if (verb.Equals(ArgumentNames.Remove, StringComparison.OrdinalIgnoreCase))
                             {
                                 notifications.RemoveAt(index);
                                 return true; //early exit - success
                             }
-                            else if (verb.Equals(CommandNames.Act, StringComparison.OrdinalIgnoreCase))
+                            else if (verb.Equals(ArgumentNames.Act, StringComparison.OrdinalIgnoreCase))
                             {
                                 notifications[index].ClickHandler();
                                 return true; //early exit - success
@@ -920,41 +1039,46 @@ namespace MultiMiner.TUI
                 if (!path.Contains(':')) path = path + ":4028";
 
                 var networkDevice = app.LocalViewModel.Devices.SingleOrDefault((d) => d.Visible && d.Path.Equals(path, StringComparison.OrdinalIgnoreCase));
+                if (networkDevice == null)
+                {
+                    networkDevice = GetDeviceById(input[2]);
+                    if (networkDevice.Kind != DeviceKind.NET) networkDevice = null;
+                }
 
                 if (networkDevice != null)
                 {
-                    if (verb.Equals(CommandNames.Restart, StringComparison.OrdinalIgnoreCase))
+                    if (verb.Equals(ArgumentNames.Restart, StringComparison.OrdinalIgnoreCase))
                     {
                         app.RestartNetworkDevice(networkDevice);
                         AddNotification(String.Format("Restarting {0}", networkDevice.Path));
                         return true; //early exit - success
                     }
-                    else if (verb.Equals(CommandNames.Start, StringComparison.OrdinalIgnoreCase))
+                    else if (verb.Equals(ArgumentNames.Start, StringComparison.OrdinalIgnoreCase))
                     {
                         app.StartNetworkDevice(networkDevice);
                         AddNotification(String.Format("Starting {0}", networkDevice.Path));
                         return true; //early exit - success
                     }
-                    else if (verb.Equals(CommandNames.Stop, StringComparison.OrdinalIgnoreCase))
+                    else if (verb.Equals(ArgumentNames.Stop, StringComparison.OrdinalIgnoreCase))
                     {
                         app.StopNetworkDevice(networkDevice);
                         AddNotification(String.Format("Stopping {0}", networkDevice.Path));
                         return true; //early exit - success
                     }
-                    else if (verb.Equals(CommandNames.Reboot, StringComparison.OrdinalIgnoreCase))
+                    else if (verb.Equals(ArgumentNames.Reboot, StringComparison.OrdinalIgnoreCase))
                     {
-                        app.RebootNetworkDevice(networkDevice);
-                        AddNotification(String.Format("Rebooting {0}", networkDevice.Path));
+                        if (app.RebootNetworkDevice(networkDevice))
+                            AddNotification(String.Format("Rebooting {0}", networkDevice.Path));
                         return true; //early exit - success
                     }
-                    else if (verb.Equals(CommandNames.Pin, StringComparison.OrdinalIgnoreCase))
+                    else if (verb.Equals(ArgumentNames.Pin, StringComparison.OrdinalIgnoreCase))
                     {
                         bool sticky;
                         app.ToggleNetworkDeviceSticky(networkDevice, out sticky);
                         AddNotification(String.Format("{0} is now {1}", networkDevice.Path, sticky ? "pinned" : "unpinned"));
                         return true; //early exit - success
                     }
-                    else if (verb.Equals(CommandNames.Hide, StringComparison.OrdinalIgnoreCase))
+                    else if (verb.Equals(ArgumentNames.Hide, StringComparison.OrdinalIgnoreCase))
                     {
                         //current limitations in how .Visible is treated mean we can only hide and not un-hide
                         //hiding means the entry will no longer be in the view model to un-hide
@@ -968,7 +1092,7 @@ namespace MultiMiner.TUI
                     {
                         var lastWords = String.Join(" ", input.Skip(3).ToArray());
 
-                        if (verb.Equals(CommandNames.Rename, StringComparison.OrdinalIgnoreCase))
+                        if (verb.Equals(ArgumentNames.Rename, StringComparison.OrdinalIgnoreCase))
                         {
                             app.RenameDevice(networkDevice, lastWords);
                             AddNotification(String.Format("{0} renamed to {1}", networkDevice.Path, lastWords));
@@ -992,24 +1116,49 @@ namespace MultiMiner.TUI
                 
                 if (device != null)
                 {
-                    if (verb.Equals(CommandNames.Enable, StringComparison.OrdinalIgnoreCase)
+                    if (verb.Equals(ArgumentNames.Enable, StringComparison.OrdinalIgnoreCase)
                         //can't enable/disable Network Devices
                         && (device.Kind != DeviceKind.NET))
                     {
                         bool enabled = !device.Enabled;
                         app.ToggleDevices(new List<DeviceDescriptor> { device }, enabled);
+                        app.SaveChanges();
                         AddNotification(String.Format("{0} is now {1}",  device.Path, enabled ? "enabled" : "disabled"));
                         return true; //early exit - success
                     }
                     else if (input.Count() >= 4)
-                    {
-                        var lastWords = String.Join(" ", input.Skip(3).ToArray());
-
-                        if (verb.Equals(CommandNames.Rename, StringComparison.OrdinalIgnoreCase))
+                    {                        
+                        if (verb.Equals(ArgumentNames.Switch, StringComparison.OrdinalIgnoreCase)
+                            //can't enable/disable Network Devices
+                            && (device.Kind != DeviceKind.NET))
                         {
-                            app.RenameDevice(device, lastWords);
-                            AddNotification(String.Format("{0} renamed to {1}", device.Path, lastWords));
-                            return true; //early exit - success
+                            var symbol = input[3];
+
+                            var configs = app.EngineConfiguration.CoinConfigurations
+                                .Where(c => String.IsNullOrEmpty(symbol)
+                                    || (c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
+                                    || (c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))))
+                                .ToList();
+
+                            if (configs.Count > 0)
+                            {
+                                var coinName = configs.First().PoolGroup.Name;
+                                app.SetDevicesToCoin(new List<DeviceDescriptor> { device }, coinName);
+                                app.SaveChanges();
+                                AddNotification(String.Format("{0} set to {1}: type restart to apply", device.Path, coinName));
+                                return true; //early exit - success
+                            }
+                        }
+                        else
+                        {
+                            var lastWords = String.Join(" ", input.Skip(3).ToArray());
+
+                            if (verb.Equals(ArgumentNames.Rename, StringComparison.OrdinalIgnoreCase))
+                            {
+                                app.RenameDevice(device, lastWords);
+                                AddNotification(String.Format("{0} renamed to {1}", device.Path, lastWords));
+                                return true; //early exit - success
+                            }
                         }
                     }
                 }

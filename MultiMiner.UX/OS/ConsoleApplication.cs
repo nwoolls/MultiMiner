@@ -25,6 +25,7 @@ namespace MultiMiner.UX.OS
         protected abstract void RenderScreen();
         protected abstract void RenderInput();
         protected abstract bool HandleCommandInput(string input);
+        protected abstract void HandleInputCanceled();
         protected abstract void HandleScreenNavigation(bool pageUp);
         protected abstract void SaveSettings();
         protected abstract void TearDownApplication();
@@ -119,6 +120,7 @@ namespace MultiMiner.UX.OS
                 }
                 else if (keyInfo.Key == ConsoleKey.Escape)
                 {
+                    HandleInputCanceled();
                     CurrentInput = String.Empty;
                 }
                 else if (keyInfo.Key == ConsoleKey.Enter)
