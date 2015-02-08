@@ -225,7 +225,6 @@ namespace MultiMiner.TUI.Commands
             });
 
             screenManager.SetCurrentScreen(ScreenNames.Repl);
-            screenManager.RenderScreen();
         }
     }
 }

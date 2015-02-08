@@ -31,7 +31,6 @@ namespace MultiMiner.TUI.Commands
             }
             else
                 screenManager.AdvanceCurrentScreen();
-            screenManager.RenderScreen();
             return true;
         }
     }

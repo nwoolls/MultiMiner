@@ -442,7 +442,6 @@ namespace MultiMiner.TUI
                 processor.OutputComamndHelp(input[1]);
 
             screenManager.SetCurrentScreen(ScreenNames.Repl);
-            RenderScreen();
         }
 
         protected override void LoadSettings()
