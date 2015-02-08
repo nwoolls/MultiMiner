@@ -268,7 +268,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Pools, 
                 CommandAliases.Pools,
-                "<add|remove|list> [symbol] [url] [user] [pass]",
+                "<add|remove|list> [symbol|pool_number] [url] [user] [pass]",
                 HandlePoolCommand);
 
             commandProcessor.RegisterCommand(
@@ -890,42 +890,84 @@ namespace MultiMiner.TUI
                         symbol = input[2];
 
                     HandlePoolListCommand(symbol);
+                    return true; //early exit
                 }
-                else if (input.Count() >= 4)
+                else if (remove)
+                {
+                    if (HandlePoolRemoveCommand(input))
+                        return true;
+                }
+                else if (input.Count() >= 3)
                 {
                     var symbol = input[2];
-                    var url = input[3];
 
-                    CoinApi.Data.CoinInformation coin = app.CoinApiInformation.SingleOrDefault(c => c.Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase));
+                    CoinApi.Data.CoinInformation coin = app.CoinApiInformation.SingleOrDefault(
+                        c => c.Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase)
+                        || c.Symbol.ShortCoinSymbol().Equals(symbol, StringComparison.Ordinal));
+
                     if (coin == null)
                     {
                         AddNotification(String.Format("Unknown coin: {0}", symbol));
                         return true; //early exit
                     }
-
-                    if (add && (input.Count() == 6))
+                    else if (input.Count() >= 4)
                     {
-                        var user = input[4];
-                        var pass = input[5];
+                        var url = input[3];
 
-                        app.AddNewPool(coin, url, user, pass);
-                    }
-                    else if (remove)
-                    {
-                        var user = input.Count() > 4 ? input[4] : String.Empty;
+                        if (add && (input.Count() == 6))
+                        {
+                            var user = input[4];
+                            var pass = input[5];
 
-                        app.RemoveExistingPool(coin, url, user);
+                            app.AddNewPool(coin, url, user, pass);
+                            return true; //early exit
+                        }
                     }
-                    else
-                        return false;
                 }
-                else
-                    return false;
             }
-            else
-                return false;
 
-            return true;
+            return false;
+        }
+
+        private bool HandlePoolRemoveCommand(string[] input)
+        {
+            var symbol = input[2];
+
+            var coin = app.EngineConfiguration.CoinConfigurations.SingleOrDefault(
+                c => c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
+                || c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase));
+
+            if (coin == null)
+            {
+                var index = -1;
+                if (int.TryParse(symbol, out index))
+                {
+                    index--;
+                    var fullPoolList = GetPoolList();
+                    if ((index >= 0) && (index < fullPoolList.Count))
+                    {
+                        fullPoolList[index].Configuration.Pools.Remove(fullPoolList[index].Pool);
+                        app.EngineConfiguration.SaveCoinConfigurations();
+                        AddNotification(String.Format("Pool {0}:{1} removed", fullPoolList[index].Pool.Host, fullPoolList[index].Pool.Port));
+                        return true; //early exit
+
+                    }
+                    AddNotification(String.Format("Invalid pool number: {0}", symbol));
+                    return true; //early exit
+                }
+            }
+            else if (input.Count() >= 4)
+            {
+                var url = input[3];
+                var user = input.Count() > 4 ? input[4] : String.Empty;
+
+                if (app.RemoveExistingPool(coin.PoolGroup.Id, url, user))
+                    AddNotification(String.Format("Pool {0} removed", url));
+                else
+                    AddNotification(String.Format("Pool {0} not found", url));
+                return true; //early exit
+            }
+            return false;
         }
 
         private List<PoolListEntry> GetPoolList()

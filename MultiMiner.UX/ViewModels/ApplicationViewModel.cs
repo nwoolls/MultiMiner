@@ -2755,9 +2755,9 @@ namespace MultiMiner.UX.ViewModels
             return summary;
         }
 
-        public bool RemoveExistingPool(CoinApi.Data.CoinInformation coin, string url, string user)
+        public bool RemoveExistingPool(string coinSymbol, string url, string user)
         {
-            Engine.Data.Configuration.Coin coinConfig = EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coin.Symbol, StringComparison.OrdinalIgnoreCase));
+            Engine.Data.Configuration.Coin coinConfig = EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             if (coinConfig == null) return false;
 
             MiningPool poolConfig = coinConfig.Pools.FirstOrDefault((p) =>
