@@ -205,6 +205,7 @@ namespace MultiMiner.TUI
                 CommandNames.Quit, 
                 CommandAliases.Quit,
                 String.Empty,
+                new string[] { },
                 (input) =>
             {
                 Quit();
@@ -215,6 +216,7 @@ namespace MultiMiner.TUI
                 CommandNames.Start, 
                 String.Empty,
                 String.Empty,
+                new string[] { },
                 (input) =>
             {
                 app.StartMining();
@@ -225,6 +227,7 @@ namespace MultiMiner.TUI
                 CommandNames.Stop, 
                 String.Empty,
                 String.Empty,
+                new string[] { },
                 (input) =>
             {
                 app.StopMining();
@@ -235,6 +238,7 @@ namespace MultiMiner.TUI
                 CommandNames.Restart, 
                 String.Empty,
                 String.Empty,
+                new string[] { },
                 (input) =>
             {
                 app.RestartMining();
@@ -245,6 +249,7 @@ namespace MultiMiner.TUI
                 CommandNames.Scan, 
                 String.Empty,
                 String.Empty,
+                new string[] { },
                 (input) =>
             {
                 app.ScanHardwareLocally();
@@ -255,6 +260,11 @@ namespace MultiMiner.TUI
                 CommandNames.SwitchAll, 
                 CommandAliases.SwitchAll,
                 "symbol",
+                new string[] 
+                {
+                    "switchall btc",
+                    "sa ltc"
+                },
                 (input) =>
             {
                 if (input.Count() == 2)
@@ -269,12 +279,27 @@ namespace MultiMiner.TUI
                 CommandNames.Pools, 
                 CommandAliases.Pools,
                 "add|remove|edit|list [symbol|pool#] [url] [user] [pass]",
+                new string[]
+                {
+                    "pools list",
+                    "p add btc stratum+tcp://some.pool.com:3333 my.worker pass",
+                    "p remove btc some.pool.com:3333",
+                    "p remove 3",
+                    "p edit 3 stratum+tcp://other.pool.com:3334 my.worker pass"
+                },
                 HandlePoolCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Screen, 
                 CommandAliases.Screen,
                 "[main|repl|apilog]",
+                new string[]
+                {
+                    "screen main",
+                    "sc repl",
+                    "sc apilog",
+                    "sc"
+                },
                 (input) =>
             {
                 if (input.Count() == 2)
@@ -293,6 +318,7 @@ namespace MultiMiner.TUI
                 CommandNames.ClearScreen, 
                 CommandAliases.ClearScreen,
                 String.Empty,
+                new string[] { },
                 (input) =>
             {
                 replBuffer.Clear();
@@ -303,38 +329,79 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Strategies, 
                 String.Empty,
-                "on|off|set [profit|diff|price]", 
+                "on|off|set [profit|diff|price]",
+                new string[] 
+                {
+                    "strats on",
+                    "strats off",
+                    "strats set proffit"
+                },
                 HandleStrategiesCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Notifications, 
                 String.Empty,
                 "act|remove|clear [note#]",
+                new string[] 
+                {
+                    "notes remove 1",
+                    "notes clear",
+                    "notes act 2"
+                },
                 HandeNotificationsCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Network, 
                 CommandAliases.Network,
-                "start|stop|restart|reboot|switch|hide|pin|name ip[:port]|id [pool#|name]", 
+                "start|stop|restart|reboot|switch|hide|pin|name ip[:port]|id [pool#|name]",
+                new string[] 
+                {
+                    "net start 192.168.0.99",
+                    "n stop 192.168.0.199:4029",
+                    "n restart n3",
+                    "n switch n3 2",
+                    "n hide 192.168.0.99",
+                    "n name 192.168.0.99 My Network Miner"
+                },
                 HandeNetworkCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Help, 
                 CommandAliases.Help,
-                String.Empty,
+                "[command]",
+                new string[] 
+                {
+                    "help",
+                    "h pool"
+                },
                 (input) =>
             {
-                replBuffer.Add(String.Empty);
-                commandProcessor.OutputHelp();
-                screenManager.SetCurrentScreen(ScreenNames.Repl);
-                RenderScreen();
-                return true;
+                if (input.Count() <= 2)
+                {
+                    replBuffer.Add(String.Empty);
+
+                    if (input.Count() == 1)
+                        commandProcessor.OutputHelp();
+                    else
+                        commandProcessor.OutputComamndHelp(input[1]);
+
+                    screenManager.SetCurrentScreen(ScreenNames.Repl);
+                    RenderScreen();
+                    return true;
+                }
+                return false;
             });
 
             commandProcessor.RegisterCommand(
                 CommandNames.Device,
                 CommandAliases.Device,
                 "enable|switch|name dev_id [symbol|name]",
+                new string[] 
+                {
+                    "dev enable u1",
+                    "d switch g1 ltc",
+                    "d name u2 My USB Miner"
+                },
                 HandeDeviceCommand);
         }
 
