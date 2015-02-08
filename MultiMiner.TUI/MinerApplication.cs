@@ -315,7 +315,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Network, 
                 CommandAliases.Network,
-                "<start|stop|restart|reboot|hide|pin|rename> <ip[:port]|id> [name]", 
+                "start|stop|restart|reboot|switch|hide|pin|name ip[:port]|id [pool#|name]", 
                 HandeNetworkCommand);
 
             commandProcessor.RegisterCommand(
@@ -1217,6 +1217,20 @@ namespace MultiMiner.TUI
                             app.RenameDevice(networkDevice, lastWords);
                             AddNotification(String.Format("{0} renamed to {1}", networkDevice.Path, lastWords));
                             return true; //early exit - success
+                        }
+                        else if (verb.Equals(ArgumentNames.Switch, StringComparison.OrdinalIgnoreCase))
+                        {
+                            var index = -1;
+                            if (int.TryParse(lastWords, out index))
+                            {
+                                index--;
+                                if (app.SetNetworkDevicePoolIndex(networkDevice, index))
+                                    AddNotification(String.Format("Switching {0} to pool #{1}", networkDevice.Path, lastWords));
+                                else
+                                    AddNotification(String.Format("Pool #{0} is invalid for {1}", lastWords, networkDevice.Path));
+
+                                return true; //early exit - success
+                            }
                         }
                     }
                 }
