@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace MultiMiner.Utility.Forms
+namespace MultiMiner.Win.Controls
 {
     public partial class NoFlickerListView : ListView
     {

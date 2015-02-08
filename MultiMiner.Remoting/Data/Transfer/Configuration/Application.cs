@@ -1,7 +1,7 @@
-﻿using System;
+﻿using MultiMiner.Engine.Data.Configuration;
+using System;
 using System.Drawing;
 using System.Runtime.Serialization;
-using System.Windows.Forms;
 
 namespace MultiMiner.Remoting.Data.Transfer.Configuration
 {
@@ -66,7 +66,7 @@ namespace MultiMiner.Remoting.Data.Transfer.Configuration
         public bool BriefUserInterface { get; set; }
 
         [DataMember]
-        public View ListViewStyle { get; set; }
+        public ListViewStyle ListViewStyle { get; set; }
 
         [DataMember]
         public string[] HiddenColumns { get; set; }

@@ -1,6 +1,5 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Engine.Extensions;
-using MultiMiner.Utility.Forms;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.UX.Data.Configuration;
 using MultiMiner.UX.ViewModels;

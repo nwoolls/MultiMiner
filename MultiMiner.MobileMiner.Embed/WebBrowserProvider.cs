@@ -6,7 +6,7 @@ using System.Text;
 using System.Web;
 using System.Windows.Forms;
 
-namespace MultiMiner.MobileMiner
+namespace MultiMiner.MobileMiner.Embed
 {
     public class WebBrowserProvider
     {

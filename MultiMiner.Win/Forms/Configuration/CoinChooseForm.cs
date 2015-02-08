@@ -1,13 +1,12 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Engine.Data;
-using MultiMiner.Utility.Forms;
 using MultiMiner.Engine.Extensions;
+using MultiMiner.UX.ViewModels;
 using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
-using MultiMiner.UX.ViewModels;
+using System.Linq;
 
 namespace MultiMiner.Win.Forms.Configuration
 {

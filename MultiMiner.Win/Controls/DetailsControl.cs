@@ -1,14 +1,13 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using MultiMiner.Win.Extensions;
-using MultiMiner.UX.ViewModels;
-using MultiMiner.Utility.Forms;
-using MultiMiner.Xgminer.Data;
-using MultiMiner.Engine.Data;
+﻿using MultiMiner.Engine.Data;
 using MultiMiner.Utility.Net;
+using MultiMiner.UX.ViewModels;
+using MultiMiner.Win.Extensions;
+using MultiMiner.Xgminer.Data;
+using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace MultiMiner.Win.Controls
 {

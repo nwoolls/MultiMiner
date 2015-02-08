@@ -13,7 +13,7 @@ using MultiMiner.Remoting;
 using MultiMiner.Remoting.Broadcast;
 using MultiMiner.Services;
 using MultiMiner.Stats.Data;
-using MultiMiner.Utility.Forms;
+using MultiMiner.Utility.Timers;
 using MultiMiner.Utility.Net;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
@@ -41,7 +41,6 @@ using System.ServiceModel;
 using System.Text;
 using System.Timers;
 using System.Web.Script.Serialization;
-using System.Windows.Forms;
 using Application = MultiMiner.UX.Data.Configuration.Application;
 using Broadcaster = MultiMiner.Remoting.Broadcast.Broadcaster;
 using ConfigurationEventArgs = MultiMiner.UX.Data.ConfigurationEventArgs;
@@ -68,6 +67,7 @@ namespace MultiMiner.UX.ViewModels
         public delegate void ConfigurationEventHandler(object sender, ConfigurationEventArgs ea);
         public delegate void RemoteInstanceEventHandler(object sender, InstanceChangedArgs ea);
         public delegate void InstanceModifiedEventHander(object sender, RemotingEventArgs ea);
+        public delegate void PromptEventHandler(object sender, PromptEventArgs e);
 
         //event declarations        
         public event NotificationEventHandler NotificationReceived;
@@ -86,6 +86,7 @@ namespace MultiMiner.UX.ViewModels
         public event RemoteInstanceEventHandler RemoteInstanceUnregistered;
         public event InstanceModifiedEventHander RemoteInstanceModified;
         public event EventHandler RemoteInstancesUnregistered;
+        public event PromptEventHandler PromptReceived;
         #endregion
 
         #region Fields
@@ -138,12 +139,9 @@ namespace MultiMiner.UX.ViewModels
         private readonly List<Notification> queuedNotifications = new List<Notification>();
 
         //data sources
-        private readonly List<ApiLogEntry> apiLogEntries = new List<ApiLogEntry>();
-        private readonly List<LogLaunchArgs> logLaunchEntries = new List<LogLaunchArgs>();
-        public readonly List<LogProcessCloseArgs> LogCloseEntries = new List<LogProcessCloseArgs>();
-        public readonly BindingSource ApiLogEntryBindingSource = new BindingSource();
-        public readonly BindingSource LogProcessCloseArgsBindingSource = new BindingSource();
-        public readonly BindingSource LogLaunchArgsBindingSource = new BindingSource();
+        public readonly BindingList<ApiLogEntry> ApiLogEntries = new BindingList<ApiLogEntry>();
+        public readonly BindingList<LogLaunchArgs> LogLaunchEntries = new BindingList<LogLaunchArgs>();
+        public readonly BindingList<LogProcessCloseArgs> LogCloseEntries = new BindingList<LogProcessCloseArgs>();
 
         //remoting
         private RemotingServer remotingServer;
@@ -177,7 +175,7 @@ namespace MultiMiner.UX.ViewModels
         public MinerFormViewModel RemoteViewModel { get; set; }
         
         //threading
-        public Control Context { get; set; }
+        public ISynchronizeInvoke Context { get; set; }
 
         //currently mining information
         private List<Engine.Data.Configuration.Device> miningDeviceConfigurations { get; set; }
@@ -187,10 +185,6 @@ namespace MultiMiner.UX.ViewModels
         #region Constructor
         public ApplicationViewModel()
         {
-            ApiLogEntryBindingSource.DataSource = apiLogEntries;
-            LogLaunchArgsBindingSource.DataSource = logLaunchEntries;
-            LogProcessCloseArgsBindingSource.DataSource = LogCloseEntries;
-
             coinStatsTimer.Elapsed += coinStatsTimer_Tick;
             restartTimer.Elapsed += restartTimer_Tick;
             networkRestartTimer.Elapsed += networkRestartTimer_Tick;
@@ -421,8 +415,21 @@ namespace MultiMiner.UX.ViewModels
 
             PostNotification(ex.Message, summary, () =>
             {
-                MessageBox.Show(String.Format("{0}: {1}", summary, details), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }, ToolTipIcon.Warning, apiUrl);
+                MessageBoxShow(String.Format("{0}: {1}", summary, details), "Error", PromptButtons.OK, PromptIcon.Error);
+            }, NotificationKind.Warning, apiUrl);
+        }
+
+        private PromptResult MessageBoxShow(string text, string caption, PromptButtons buttons, PromptIcon icon)
+        {
+            PromptEventArgs e = new PromptEventArgs
+            {
+                Caption = caption,
+                Text = text,
+                Buttons = buttons,
+                Icon = icon
+            };
+            PromptReceived(this, e);
+            return e.Result;
         }
 
         private void ShowMultipoolApiErrorNotification(MultipoolApi.IApiContext apiContext, Exception ex)
@@ -435,8 +442,8 @@ namespace MultiMiner.UX.ViewModels
 
             PostNotification(ex.Message, summary, () =>
             {
-                MessageBox.Show(String.Format("{0}: {1}", summary, details), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }, ToolTipIcon.Warning, apiUrl);
+                MessageBoxShow(String.Format("{0}: {1}", summary, details), "Error", PromptButtons.OK, PromptIcon.Error);
+            }, NotificationKind.Warning, apiUrl);
         }
         #endregion
 
@@ -471,8 +478,6 @@ namespace MultiMiner.UX.ViewModels
 
             if (eventArgs.ConfigurationModified)
             {
-                System.Windows.Forms.Application.DoEvents();
-
                 PathConfiguration.SavePathConfiguration();
 
                 //save settings as the "shared" config path may have changed
@@ -946,9 +951,9 @@ namespace MultiMiner.UX.ViewModels
             PostNotification(ex.Message,
                 String.Format(summary, apiName), () =>
                 {
-                    MessageBox.Show(String.Format("{0}: {1}", summary, details), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBoxShow(String.Format("{0}: {1}", summary, details), "Error", PromptButtons.OK, PromptIcon.Error);
                 },
-                ToolTipIcon.Warning, apiUrl);
+                NotificationKind.Warning, apiUrl);
         }
         #endregion
 
@@ -973,7 +978,7 @@ namespace MultiMiner.UX.ViewModels
                     //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
                     if (Context == null) return;
 
-                    Context.BeginInvoke((Action)(HandleNetworkDeviceDiscovery));
+                    Context.BeginInvoke((Action)(HandleNetworkDeviceDiscovery), null);
 
                 }, null);
         }
@@ -1010,7 +1015,7 @@ namespace MultiMiner.UX.ViewModels
                         RemoveSelfReferencingNetworkDevices();
 
                         if (DataModified != null) DataModified(this, new EventArgs());
-                    }));
+                    }), null);
 
                 }, null);
         }
@@ -1103,7 +1108,7 @@ namespace MultiMiner.UX.ViewModels
 
                 if (!String.IsNullOrEmpty(deviceViewModel.Pool))
                     CheckAndSetNetworkDifficulty(ipAddress, port, deviceViewModel.Pool);
-            }));
+            }), null);
         }
 
         private static double AdjustWorkUtilityForPoolMultipliers(double workUtility, string algorithmName)
@@ -1199,7 +1204,7 @@ namespace MultiMiner.UX.ViewModels
                         HandleNetworkDeviceDiscovery();
                         //re-enable network scan timer, we're done scanning
                         networkScanTimer.Enabled = true;
-                    }));
+                    }), null);
 
                 }, null);
         }
@@ -1547,7 +1552,7 @@ namespace MultiMiner.UX.ViewModels
                             else if ((ex is SocketException) || (ex is SshOperationTimeoutException))
                             {
                                 stop = true;
-                                PostNotification(String.Format("{0}: {1}", deviceName, ex.Message), ToolTipIcon.Error);
+                                PostNotification(String.Format("{0}: {1}", deviceName, ex.Message), NotificationKind.Danger);
                             }
                             else throw;
                         }
@@ -1607,7 +1612,7 @@ namespace MultiMiner.UX.ViewModels
             var success = command.ExitStatus == 0;
 
             if (!success)
-                PostNotification(string.Format("{0}: {1}", deviceName, command.Error), ToolTipIcon.Error);
+                PostNotification(string.Format("{0}: {1}", deviceName, command.Error), NotificationKind.Danger);
 
             return success;
         }
@@ -1716,7 +1721,7 @@ namespace MultiMiner.UX.ViewModels
             }
 
             //code to update UI
-            PostNotification(message, ToolTipIcon.Error);
+            PostNotification(message, NotificationKind.Danger);
         }
 
         private static void ClearChainStatus(DeviceViewModel networkDevice)
@@ -1727,7 +1732,7 @@ namespace MultiMiner.UX.ViewModels
         #endregion
 
         #region Notifications
-        private void PostNotification(string id, string text, Action clickHandler, ToolTipIcon kind, string informationUrl)
+        private void PostNotification(string id, string text, Action clickHandler, NotificationKind kind, string informationUrl)
         {
             NotificationEventArgs notification = new NotificationEventArgs
             {
@@ -1741,12 +1746,12 @@ namespace MultiMiner.UX.ViewModels
             if (NotificationReceived != null) NotificationReceived(this, notification);
         }
 
-        private void PostNotification(string text, ToolTipIcon icon, string informationUrl = "")
+        private void PostNotification(string text, NotificationKind icon, string informationUrl = "")
         {
             PostNotification(text, text, () => { }, icon, informationUrl);
         }
 
-        private void PostNotification(string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
+        private void PostNotification(string text, Action clickHandler, NotificationKind icon, string informationUrl = "")
         {
             PostNotification(text, text, clickHandler, icon, informationUrl);
         }
@@ -1952,7 +1957,7 @@ namespace MultiMiner.UX.ViewModels
             }
             catch (MinerLaunchException ex)
             {
-                MessageBox.Show(ex.Message, "Error Launching Miner", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxShow(ex.Message, "Error Launching Miner", PromptButtons.OK, PromptIcon.Error);
                 return;
             }
 
@@ -2190,7 +2195,7 @@ namespace MultiMiner.UX.ViewModels
                 minerProcess.FoundBlocks = foundBlocks;
 
                 PostNotification(String.Format("Block(s) found for {0} (block {1})",
-                    coinName, minerProcess.FoundBlocks), ToolTipIcon.Info);
+                    coinName, minerProcess.FoundBlocks), NotificationKind.Information);
             }
         }
 
@@ -2211,7 +2216,7 @@ namespace MultiMiner.UX.ViewModels
                 minerProcess.AcceptedShares = acceptedShares;
 
                 PostNotification(String.Format("Share(s) accepted for {0} (share {1})",
-                    coinName, minerProcess.AcceptedShares), ToolTipIcon.Info);
+                    coinName, minerProcess.AcceptedShares), NotificationKind.Information);
             }
         }
 
@@ -2250,12 +2255,12 @@ namespace MultiMiner.UX.ViewModels
             return processesKilled;
         }
 
-        private static bool ConfigFileHandled()
+        private bool ConfigFileHandled()
         {
             return MinerFactory.Instance.Miners.All(ConfigFileHandledForMiner);
         }
 
-        private static bool ConfigFileHandledForMiner(MinerDescriptor miner)
+        private bool ConfigFileHandledForMiner(MinerDescriptor miner)
         {
             const string bakExtension = ".mmbak";
             string minerName = miner.Name;
@@ -2278,9 +2283,9 @@ namespace MultiMiner.UX.ViewModels
                 string confFileName = System.IO.Path.GetFileName(confFileFilePath);
                 string confBakFileName = confFileName + bakExtension;
 
-                DialogResult dialogResult = MessageBox.Show(String.Format("A {0} file has been detected in your miner directory. This file interferes with the arguments supplied by MultiMiner. Can MultiMiner rename this file to {1}?",
-                    confFileName, confBakFileName), "External Configuration Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (dialogResult == DialogResult.No)
+                PromptResult dialogResult = MessageBoxShow(String.Format("A {0} file has been detected in your miner directory. This file interferes with the arguments supplied by MultiMiner. Can MultiMiner rename this file to {1}?",
+                    confFileName, confBakFileName), "External Configuration Detected", PromptButtons.YesNo, PromptIcon.Warning);
+                if (dialogResult == PromptResult.No)
                     return false;
 
                 string confBakFileFilePath = confFileFilePath + bakExtension;
@@ -2297,10 +2302,8 @@ namespace MultiMiner.UX.ViewModels
             {
                 StartupMiningCountdownSeconds--;
                 if (StartupMiningCountdownSeconds == 0)
-                {
-                    System.Windows.Forms.Application.DoEvents();
                     StartMiningLocally();
-                }
+
                 if (DataModified != null) DataModified(this, new EventArgs());
             }
         }
@@ -2364,7 +2367,7 @@ namespace MultiMiner.UX.ViewModels
                     //System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
                     if (Context == null) return;
 
-                    Context.BeginInvoke((Action)(UpdateApplicationFromCoinStats));
+                    Context.BeginInvoke((Action)(UpdateApplicationFromCoinStats), null);
 
                 }, null);
         }
@@ -2424,7 +2427,7 @@ namespace MultiMiner.UX.ViewModels
                 EngineConfiguration.StrategyConfiguration.MiningBasis);
             string url = successfulApiContext.GetInfoUrl();
 
-            PostNotification(id, text, ConfigureStrategies, ToolTipIcon.Info, url);
+            PostNotification(id, text, ConfigureStrategies, NotificationKind.Information, url);
         }
 
         public void SuggestCoinsToMine()
@@ -2473,7 +2476,7 @@ namespace MultiMiner.UX.ViewModels
                 {
                     Process.Start(String.Format("https://www.google.com/search?q={0}+{1}+mining+pools",
                         coin.Symbol, coin.Name));
-                }, ToolTipIcon.Info, infoUrl);
+                }, NotificationKind.Information, infoUrl);
         }
 
         private void SaveCoinStatsToKnownCoins()
@@ -2610,10 +2613,10 @@ namespace MultiMiner.UX.ViewModels
                 Context.BeginInvoke((Action)(() =>
                 {
                     //code to update UI
-                    ApiLogEntryBindingSource.Position = ApiLogEntryBindingSource.Add(logEntry);
-                    while (ApiLogEntryBindingSource.Count > 1000)
-                        ApiLogEntryBindingSource.RemoveAt(0);
-                }));
+                    ApiLogEntries.Add(logEntry);
+                    while (ApiLogEntries.Count > 1000)
+                        ApiLogEntries.RemoveAt(0);
+                }), null);
             }
 
             LogApiEventToFile(logEntry);
@@ -2722,7 +2725,7 @@ namespace MultiMiner.UX.ViewModels
                             submitMiningStatisticsDelegate.BeginInvoke(statisticsList, submitMiningStatisticsDelegate.EndInvoke, null);
                         }
 
-                    }));
+                    }), null);
 
                 }, null);
         }
@@ -3167,7 +3170,7 @@ namespace MultiMiner.UX.ViewModels
                             new List<string> { Environment.MachineName }));
                     }
 
-                    Context.BeginInvoke((Action<List<RemoteCommand>>)ProcessRemoteCommands, commands);
+                    Context.BeginInvoke((Action<List<RemoteCommand>>)ProcessRemoteCommands, new object[]{ commands });
                 }
 
                 mobileMinerSuccess = true;
@@ -3397,7 +3400,7 @@ namespace MultiMiner.UX.ViewModels
             }
             catch (SocketException ex)
             {
-                PostNotification(String.Format("Error {0}: {1}", action, ex.Message), ToolTipIcon.Error);
+                PostNotification(String.Format("Error {0}: {1}", action, ex.Message), NotificationKind.Danger);
             }
         }
 
@@ -3460,7 +3463,7 @@ namespace MultiMiner.UX.ViewModels
                 {
                     Process.Start("http://mobileminercom");
                 },
-                ToolTipIcon.Warning, "");
+                NotificationKind.Warning, "");
         }
         #endregion
 
@@ -3863,8 +3866,8 @@ namespace MultiMiner.UX.ViewModels
                 Context.BeginInvoke((Action)(() =>
                 {
                     //code to update UI
-                    PostNotification("MultiMiner Remoting signature verification failed", ToolTipIcon.Error);
-                }));
+                    PostNotification("MultiMiner Remoting signature verification failed", NotificationKind.Danger);
+                }), null);
 
                 return;
             }
@@ -3876,7 +3879,7 @@ namespace MultiMiner.UX.ViewModels
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                Context.BeginInvoke((Action)(StartMiningLocally));
+                Context.BeginInvoke((Action)(StartMiningLocally), null);
             });
         }
 
@@ -3884,7 +3887,7 @@ namespace MultiMiner.UX.ViewModels
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                Context.BeginInvoke((Action)(StopMiningLocally));
+                Context.BeginInvoke((Action)(StopMiningLocally), null);
             });
         }
 
@@ -3892,7 +3895,7 @@ namespace MultiMiner.UX.ViewModels
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                Context.BeginInvoke((Action)(RestartMiningLocally));
+                Context.BeginInvoke((Action)(RestartMiningLocally), null);
             });
         }
 
@@ -3904,7 +3907,7 @@ namespace MultiMiner.UX.ViewModels
                 {
                     //code to update UI
                     ScanHardwareLocally();
-                }));
+                }), null);
             });
         }
 
@@ -3916,7 +3919,7 @@ namespace MultiMiner.UX.ViewModels
                 {
                     //code to update UI
                     SetAllDevicesToCoinLocally(coinSymbol, disableStrategies);
-                }));
+                }), null);
             });
         }
 
@@ -3928,7 +3931,7 @@ namespace MultiMiner.UX.ViewModels
                 {
                     //code to update UI
                     SetDevicesToCoinLocally(devices, coinSymbol);
-                }));
+                }), null);
             });
         }
 
@@ -3936,7 +3939,7 @@ namespace MultiMiner.UX.ViewModels
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                Context.BeginInvoke((Action)(SaveChangesLocally));
+                Context.BeginInvoke((Action)(SaveChangesLocally), null);
             });
         }
 
@@ -3944,7 +3947,7 @@ namespace MultiMiner.UX.ViewModels
         {
             PerformRequestedCommand(ea.IpAddress, ea.Signature, () =>
             {
-                Context.BeginInvoke((Action)(CancelChangesLocally));
+                Context.BeginInvoke((Action)(CancelChangesLocally), null);
             });
         }
 
@@ -3956,7 +3959,7 @@ namespace MultiMiner.UX.ViewModels
                 {
                     //code to update UI
                     ToggleDevicesLocally(devices, enabled);
-                }));
+                }), null);
             });
         }
 
@@ -3968,7 +3971,7 @@ namespace MultiMiner.UX.ViewModels
                 {
                     //code to update UI
                     ToggleDynamicIntensityLocally(enabled);
-                }));
+                }), null);
             });
         }
 
@@ -4027,7 +4030,7 @@ namespace MultiMiner.UX.ViewModels
                     LocalViewModel.ApplyDeviceConfigurationModels(EngineConfiguration.DeviceConfigurations,
                         EngineConfiguration.CoinConfigurations);
                     if (ConfigurationModified != null) ConfigurationModified(this, new EventArgs());
-                }));
+                }), null);
             });
         }
 
@@ -4077,7 +4080,7 @@ namespace MultiMiner.UX.ViewModels
                     LocalViewModel.ApplyDeviceConfigurationModels(EngineConfiguration.DeviceConfigurations,
                         EngineConfiguration.CoinConfigurations);
                     if (ConfigurationModified != null) ConfigurationModified(this, new EventArgs());
-                }));
+                }), null);
             });
         }
 
@@ -4116,7 +4119,7 @@ namespace MultiMiner.UX.ViewModels
 
                 //this will restart the app
                 InstallMultiMinerLocally();
-            }));
+            }), null);
         }
 
         private void UpgradeBackendMinerRequested(object sender, RemoteCommandEventArgs ea)
@@ -4139,7 +4142,7 @@ namespace MultiMiner.UX.ViewModels
                 //only start mining if we stopped mining
                 if (wasMining)
                     StartMiningLocally();
-            }));
+            }), null);
         }
 
         private static bool BackendMinerHasUpdates(out string availableVersion, out string installedVersion)
@@ -4268,7 +4271,7 @@ namespace MultiMiner.UX.ViewModels
                             IpAddress = ea.IpAddress,
                             Machine = dto
                         });
-                }));
+                }), null);
             }
         }
 
@@ -4325,7 +4328,7 @@ namespace MultiMiner.UX.ViewModels
                 //code to update UI
                 if (RemoteInstanceRegistered != null) RemoteInstanceRegistered(this, ea);
                 if (DataModified != null) DataModified(this, new EventArgs());
-            }));
+            }), null);
 
             //send our hashrate back to the machine that is now Online
             if (!ea.Instance.MachineName.Equals(Environment.MachineName))
@@ -4349,7 +4352,7 @@ namespace MultiMiner.UX.ViewModels
                 //code to update UI
                 if (RemoteInstanceUnregistered != null) RemoteInstanceUnregistered(this, ea);
                 if (DataModified != null) DataModified(this, new EventArgs());
-            }));
+            }), null);
         }
         
         public void SelectRemoteInstance(Instance instance)
@@ -4440,9 +4443,9 @@ namespace MultiMiner.UX.ViewModels
                 const string message = "MultiMiner Remoting communication failed";
                 PostNotification(message, () =>
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }, ToolTipIcon.Error);
-            }));
+                    MessageBoxShow(ex.Message, "Error", PromptButtons.OK, PromptIcon.Error);
+                }, NotificationKind.Danger);
+            }), null);
         }
 
         private const uint RemotingPepper = 4108157753;
@@ -4529,7 +4532,7 @@ namespace MultiMiner.UX.ViewModels
                                         //code to update UI
                                         UpdateLocalViewFromRemoteInstance();
                                         timer.Dispose();
-                                    }));
+                                    }), null);
                                 }
                                 , null // no state required
                                 , TimeSpan.FromSeconds(seconds) // Do it in x seconds
@@ -4880,7 +4883,7 @@ namespace MultiMiner.UX.ViewModels
                 });
             try
             {
-                MultiMinerInstaller.InstallMiner(System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath));
+                MultiMinerInstaller.InstallMiner(AppDomain.CurrentDomain.BaseDirectory);
             }
             finally
             {
@@ -4947,15 +4950,8 @@ namespace MultiMiner.UX.ViewModels
                     //only load MaxHistoryOnScreen
                     previousHistory.RemoveRange(0, Math.Max(0, previousHistory.Count - MaxHistoryOnScreen));
 
-                    //add via the BindingSource, not logCloseEntries
-                    //populating logCloseEntries and then binding causes errors on Linux
-                    LogProcessCloseArgsBindingSource.SuspendBinding();
                     foreach (LogProcessCloseArgs logProcessCloseArgs in previousHistory)
-                        LogProcessCloseArgsBindingSource.Add(logProcessCloseArgs);
-                    LogProcessCloseArgsBindingSource.ResumeBinding();
-
-                    //scroll to latest entry
-                    LogProcessCloseArgsBindingSource.MoveLast();
+                        LogCloseEntries.Add(logProcessCloseArgs);
                 }
                 catch (SystemException)
                 {
@@ -4973,10 +4969,10 @@ namespace MultiMiner.UX.ViewModels
 
             if (DisownedMinersDetected())
             {
-                DialogResult messageBoxResult = MessageBox.Show("MultiMiner has detected running miners that it does not own. Would you like to kill them?",
-                    "Disowned Miners Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                PromptResult messageBoxResult = MessageBoxShow("MultiMiner has detected running miners that it does not own. Would you like to kill them?",
+                    "Disowned Miners Detected", PromptButtons.YesNo, PromptIcon.Question);
 
-                if (messageBoxResult == DialogResult.Yes)
+                if (messageBoxResult == PromptResult.Yes)
                     KillDisownedMiners();
             }
         }
@@ -5019,10 +5015,10 @@ namespace MultiMiner.UX.ViewModels
         #region Mining event handlers
         private void LogProcessLaunch(object sender, LogLaunchArgs ea)
         {
-            LogLaunchArgsBindingSource.Position = LogLaunchArgsBindingSource.Add(ea);
+            LogLaunchEntries.Add(ea);
 
-            while (LogLaunchArgsBindingSource.Count > 1000)
-                LogLaunchArgsBindingSource.RemoveAt(0);
+            while (LogLaunchEntries.Count > 1000)
+                LogLaunchEntries.RemoveAt(0);
 
             LogProcessLaunchToFile(ea);
         }
@@ -5036,10 +5032,10 @@ namespace MultiMiner.UX.ViewModels
         private const int MaxHistoryOnScreen = 1000;
         private void LogProcessClose(object sender, LogProcessCloseArgs ea)
         {
-            LogProcessCloseArgsBindingSource.Position = LogProcessCloseArgsBindingSource.Add(ea);
+            LogCloseEntries.Add(ea);
 
-            while (LogProcessCloseArgsBindingSource.Count > MaxHistoryOnScreen)
-                LogProcessCloseArgsBindingSource.RemoveAt(0);
+            while (LogCloseEntries.Count > MaxHistoryOnScreen)
+                LogCloseEntries.RemoveAt(0);
 
             LogProcessCloseToFile(ea);
         }
@@ -5100,23 +5096,23 @@ namespace MultiMiner.UX.ViewModels
                         notificationReason = String.Format("All pools for {0} configuration are down", ea.CoinName);
                     }
 
-                    PostNotification(notificationReason, ConfigurePoolsLocally, ToolTipIcon.Error);
+                    PostNotification(notificationReason, ConfigurePoolsLocally, NotificationKind.Danger);
                 }
                 else
                 {
                     if (!ApplicationConfiguration.RestartCrashedMiners)
                     {
                         //if we are not restarting miners, display a dialog
-                        MessageBox.Show(ea.Reason, "Launching Miner Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBoxShow(ea.Reason, "Launching Miner Failed", PromptButtons.OK, PromptIcon.Error);
                     }
                     else
                     {
                         //just notify - relaunching option will take care of the rest
                         PostNotification(String.Format("All pools for {0} configuration are down", ea.CoinName), 
-                            ConfigurePoolsLocally, ToolTipIcon.Error);
+                            ConfigurePoolsLocally, NotificationKind.Danger);
                     }
                 }
-            }));
+            }), null);
         }
 
         private void ProcessAuthenticationFailed(object sender, AuthenticationFailedArgs ea)
@@ -5124,8 +5120,8 @@ namespace MultiMiner.UX.ViewModels
             Context.BeginInvoke((Action)(() =>
             {
                 //code to update UI
-                PostNotification(ea.Reason, ConfigurePoolsLocally, ToolTipIcon.Error);
-            }));
+                PostNotification(ea.Reason, ConfigurePoolsLocally, NotificationKind.Danger);
+            }), null);
         }
         #endregion
 
@@ -5183,7 +5179,7 @@ namespace MultiMiner.UX.ViewModels
 
                     //this will restart the app
                     InstallMultiMinerLocally();
-                }, ToolTipIcon.Info, "http://releases.multiminerapp.com");
+                }, NotificationKind.Information, "http://releases.multiminerapp.com");
         }
 
         private bool ShouldUpdateAllRigs()
@@ -5191,9 +5187,9 @@ namespace MultiMiner.UX.ViewModels
             bool allRigs = false;
             if (RemotingEnabled && (InstanceManager.Instances.Count > 1))
             {
-                DialogResult dialogResult = MessageBox.Show("Would you like to apply this update to all of your online rigs?",
-                    "MultiMiner Remoting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (dialogResult == DialogResult.Yes)
+                PromptResult dialogResult = MessageBoxShow("Would you like to apply this update to all of your online rigs?",
+                    "MultiMiner Remoting", PromptButtons.YesNo, PromptIcon.Question);
+                if (dialogResult == PromptResult.Yes)
                     allRigs = true;
             }
             return allRigs;
@@ -5208,7 +5204,7 @@ namespace MultiMiner.UX.ViewModels
             catch (ArgumentException)
             {
                 PostNotification(String.Format("Error checking for {0} updates",
-                    MinerFactory.Instance.GetDefaultMiner().Name), ToolTipIcon.Warning);
+                    MinerFactory.Instance.GetDefaultMiner().Name), NotificationKind.Warning);
             }
         }
 
@@ -5251,7 +5247,7 @@ namespace MultiMiner.UX.ViewModels
                     //only start mining if we stopped mining
                     if (wasMining)
                         StartMiningLocally();
-                }, ToolTipIcon.Info, informationUrl);
+                }, NotificationKind.Information, informationUrl);
         }
 
         public void UpdateBackendMinerAvailability()
@@ -5296,9 +5292,9 @@ namespace MultiMiner.UX.ViewModels
             PostNotification(ex.Message,
                 notificationText, () =>
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBoxShow(ex.Message, "Error", PromptButtons.OK, PromptIcon.Error);
                 },
-                ToolTipIcon.Warning, "");
+                NotificationKind.Warning, "");
         }
         #endregion
 

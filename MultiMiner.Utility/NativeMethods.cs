@@ -8,12 +8,6 @@ namespace MultiMiner.Utility
 {
     static class NativeMethods
     {
-        [DllImport("user32.dll")]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
-
-        [DllImport("user32.dll")]
-        internal static extern bool HideCaret(IntPtr hWnd);
-
         internal struct LASTINPUTINFO
         {
             public uint cbSize;

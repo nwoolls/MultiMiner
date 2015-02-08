@@ -6,7 +6,8 @@ using MultiMiner.Engine;
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Data.Configuration;
 using MultiMiner.ExchangeApi.Data;
-using MultiMiner.Utility.Forms;
+using MultiMiner.MobileMiner.Data;
+using MultiMiner.MobileMiner.Embed;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.UX.Data;
@@ -1179,7 +1180,7 @@ namespace MultiMiner.Win.Forms
             app.SuggestCoinsToMine();
             app.SetGpuEnvironmentVariables();
 
-            SetListViewStyle(app.ApplicationConfiguration.ListViewStyle);
+            SetListViewStyle((View)app.ApplicationConfiguration.ListViewStyle);
 
             //load brief mode first, then location
             SetBriefMode(app.ApplicationConfiguration.BriefUserInterface);
@@ -1447,7 +1448,7 @@ namespace MultiMiner.Win.Forms
 
         private void launchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogLaunchArgs args = (LogLaunchArgs)app.LogLaunchArgsBindingSource.Current;
+            LogLaunchArgs args = (LogLaunchArgs)logLaunchArgsBindingSource.Current;
 
             LaunchLoggedMiner(args);
         }
@@ -2061,11 +2062,11 @@ namespace MultiMiner.Win.Forms
         private void EnsureRecentLogDataVisibility()
         {
             if (advancedTabControl.SelectedTab == historyPage)
-                app.LogProcessCloseArgsBindingSource.MoveLast();
+                logProcessCloseArgsBindingSource.MoveLast();
             else if (advancedTabControl.SelectedTab == processLogPage)
-                app.LogLaunchArgsBindingSource.MoveLast();
+                logLaunchArgsBindingSource.MoveLast();
             else if (advancedTabControl.SelectedTab == apiMonitorPage)
-                app.ApiLogEntryBindingSource.MoveLast();
+                apiLogEntryBindingSource.MoveLast();
         }
 
         private void settingsPlainButton_Click(object sender, EventArgs e)
@@ -2114,14 +2115,14 @@ namespace MultiMiner.Win.Forms
         {
             ToggleSideBarButtons(sender);
 
-            ShowWebBrowser(MobileMiner.WebBrowserProvider.DashboardController);
+            ShowWebBrowser(WebBrowserProvider.DashboardController);
         }
 
         private void metricsButton_Click(object sender, EventArgs e)
         {
             ToggleSideBarButtons(sender);
 
-            ShowWebBrowser(MobileMiner.WebBrowserProvider.HistoryController);
+            ShowWebBrowser(WebBrowserProvider.HistoryController);
         }
 
         private void apiConsoleSideButton_Click(object sender, EventArgs e)
@@ -2254,7 +2255,7 @@ namespace MultiMiner.Win.Forms
 
             LoadSettings();
             
-            SetupGridViewDataBinding();
+            SetupDataBinding();
 
             app.SetupMiningEngineEvents();
 
@@ -2327,11 +2328,37 @@ namespace MultiMiner.Win.Forms
             applicationSetup = true;
         }
 
-        private void SetupGridViewDataBinding()
+        private void SetupDataBinding()
         {
-            apiLogGridView.DataSource = app.ApiLogEntryBindingSource;
-            processLogGridView.DataSource = app.LogLaunchArgsBindingSource;
-            historyGridView.DataSource = app.LogProcessCloseArgsBindingSource;
+            apiLogEntryBindingSource.DataSource = app.ApiLogEntries;
+            app.ApiLogEntries.ListChanged += (object sender, ListChangedEventArgs e) =>
+            {
+                BeginInvoke((Action)(() =>
+                {
+                    apiLogEntryBindingSource.Position = e.NewIndex;
+                }));
+            };
+            apiLogEntryBindingSource.MoveLast();
+
+            logLaunchArgsBindingSource.DataSource = app.LogLaunchEntries;
+            app.LogLaunchEntries.ListChanged += (object sender, ListChangedEventArgs e) =>
+            {
+                BeginInvoke((Action)(() =>
+                {
+                    logLaunchArgsBindingSource.Position = e.NewIndex;
+                }));
+            };
+            logLaunchArgsBindingSource.MoveLast();
+
+            logProcessCloseArgsBindingSource.DataSource = app.LogCloseEntries;
+            app.LogCloseEntries.ListChanged += (object sender, ListChangedEventArgs e) =>
+            {
+                BeginInvoke((Action)(() =>
+                {
+                    logProcessCloseArgsBindingSource.Position = e.NewIndex;
+                }));
+            };
+            logProcessCloseArgsBindingSource.MoveLast();
         }
 
         private void SetupApplicationViewModel()
@@ -2352,8 +2379,13 @@ namespace MultiMiner.Win.Forms
             app.RemoteInstanceUnregistered += HandleRemoteInstanceUnregistered;
             app.RemoteInstanceModified += HandleRemoteInstanceModified;
             app.RemoteInstancesUnregistered += HandleRemoteInstancesUnregistered;
-        }
 
+            app.PromptReceived += (object sender, PromptEventArgs e) =>
+            {
+                e.Result = (PromptResult)MessageBox.Show(e.Text, e.Caption, (MessageBoxButtons)e.Buttons, (MessageBoxIcon)e.Icon);
+            };
+        }
+        
         private void HandleRemoteInstancesUnregistered(object sender, EventArgs e)
         {
             instancesControl.UnregisterInstances();
@@ -2531,7 +2563,7 @@ namespace MultiMiner.Win.Forms
                             popupPosition.Offset(14, 6);
                             ShowCoinPopupMenu(deviceListView, popupPosition);
                         }
-                    }, ToolTipIcon.Info);
+                    }, NotificationKind.Information);
                     app.ApplicationConfiguration.TipsShown++;
                     break;
                 case 1:
@@ -2539,14 +2571,14 @@ namespace MultiMiner.Win.Forms
                     PostNotification(tip, () =>
                     {
                         deviceListContextMenu.Show(deviceListView, 150, 100);
-                    }, ToolTipIcon.Info);
+                    }, NotificationKind.Information);
                     app.ApplicationConfiguration.TipsShown++;
                     break;
                 case 2:
                     tip = "Tip: restart mining after changing any settings";
                     PostNotification(tip, () =>
                     {
-                    }, ToolTipIcon.Info);
+                    }, NotificationKind.Information);
                     app.ApplicationConfiguration.TipsShown++;
                     break;
                 case 3:
@@ -2554,7 +2586,7 @@ namespace MultiMiner.Win.Forms
                     PostNotification(tip, () =>
                     {
                         app.ConfigurePerksLocally();
-                    }, ToolTipIcon.Info);
+                    }, NotificationKind.Information);
                     app.ApplicationConfiguration.TipsShown++;
                     break;
             }
@@ -2713,7 +2745,7 @@ namespace MultiMiner.Win.Forms
                         break;
                 }
 
-                app.ApplicationConfiguration.ListViewStyle = view;
+                app.ApplicationConfiguration.ListViewStyle = (ListViewStyle)view;
 
                 RefreshListViewFromViewModel();
             }
@@ -2805,7 +2837,7 @@ namespace MultiMiner.Win.Forms
 
         private void ShowWebBrowser(string controller)
         {
-            WebBrowser embeddedBrowser = MobileMiner.WebBrowserProvider.GetWebBrowser(
+            WebBrowser embeddedBrowser = WebBrowserProvider.GetWebBrowser(
                 controller,
                 app.ApplicationConfiguration.MobileMinerEmailAddress,
                 app.ApplicationConfiguration.MobileMinerApplicationKey);
@@ -2832,27 +2864,27 @@ namespace MultiMiner.Win.Forms
         #endregion
 
         #region Mining logic
-        private void PostNotification(string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
+        private void PostNotification(string text, Action clickHandler, NotificationKind icon, string informationUrl = "")
         {
             PostNotification(text, text, clickHandler, icon, informationUrl);
         }
 
-        private void PostNotification(string id, string text, Action clickHandler, ToolTipIcon icon, string informationUrl = "")
+        private void PostNotification(string id, string text, Action clickHandler, NotificationKind kind, string informationUrl = "")
         {
-            MobileMiner.Data.NotificationKind kind = MobileMiner.Data.NotificationKind.Information;
-            switch (icon)
+            ToolTipIcon icon = ToolTipIcon.Info;
+            switch (kind)
             {
-                case ToolTipIcon.None:
-                    kind = MobileMiner.Data.NotificationKind.Default;
+                case NotificationKind.Default:
+                    icon = ToolTipIcon.None;
                     break;
-                case ToolTipIcon.Info:
-                    kind = MobileMiner.Data.NotificationKind.Information;
+                case NotificationKind.Information:
+                    icon = ToolTipIcon.Info;
                     break;
-                case ToolTipIcon.Warning:
-                    kind = MobileMiner.Data.NotificationKind.Warning;
+                case NotificationKind.Warning:
+                    icon = ToolTipIcon.Warning;
                     break;
-                case ToolTipIcon.Error:
-                    kind = MobileMiner.Data.NotificationKind.Danger;
+                case NotificationKind.Danger:
+                    icon = ToolTipIcon.Error;
                     break;
             }
 

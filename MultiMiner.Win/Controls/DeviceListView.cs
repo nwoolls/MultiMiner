@@ -1,5 +1,4 @@
-﻿using MultiMiner.Utility.Forms;
-using MultiMiner.UX.ViewModels;
+﻿using MultiMiner.UX.ViewModels;
 using System.Collections;
 using System.Windows.Forms;
 
