@@ -287,6 +287,17 @@ namespace MultiMiner.TUI
                     "set coinwarz whatmine 9602a70905884c4e9609d20b90163408"
                 },
                 new Commands.Settings.WhatMineCommand(app, AddNotification).HandleCommand);
+
+            settingsProcessor.RegisterCommand(
+                SettingNames.Perks,
+                string.Empty,
+                "on|off|percent [percent]",
+                new string[]
+                {
+                    "set perks on",
+                    "set perks percent 2"
+                },
+                new Commands.Settings.PerksCommand(app, AddNotification).HandleCommand);
         }
         
         private void RegisterCommands()

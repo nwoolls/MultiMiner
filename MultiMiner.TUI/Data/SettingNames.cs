@@ -7,6 +7,7 @@
         public const string CoinApi = "CoinApi";
         public const string CoinWarz = "CoinWarz";
         public const string WhatMine = "WhatMine";
+        public const string Perks = "Perks";
     }
 
     class SettingArguments
@@ -20,5 +21,6 @@
         public const string WhatMine = "WhatMine";
         public const string WhatToMine = "WhatToMine";
         public const string ApiKey = "ApiKey";
+        public const string Percent = "Percent";
     }
 }
