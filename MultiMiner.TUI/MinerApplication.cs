@@ -64,6 +64,9 @@ namespace MultiMiner.TUI
         {
             RenderSplashScreen();
 
+            app.SetupMiningEngineEvents();
+            app.LoadPreviousHistory();
+
             app.DataModified += (object sender, EventArgs e) =>
             {
                 ScreenDirty = true;
@@ -165,7 +168,7 @@ namespace MultiMiner.TUI
             {
                 var versionText = String.Format(" {0}", minerVersion);
                 var copyrightText = String.Format("(C) 2013-{0} - {1}", compileDate.Year, "http://multiminerapp.com");
-                WriteText(versionText, ConsoleColor.White);
+                WriteText(versionText.PadRight(8), ConsoleColor.White);
 
                 col = versionText.Length + 2;
                 if (SetCursorPosition(col, row))
@@ -191,6 +194,11 @@ namespace MultiMiner.TUI
             screenManager.RegisterScreen(ScreenNames.Repl, () =>
             {
                 RenderReplScreen();
+            });
+
+            screenManager.RegisterScreen(ScreenNames.History, () =>
+            {
+                RenderHistoryScreen();
             });
 
             screenManager.RegisterScreen(ScreenNames.ApiLog, () =>
@@ -292,7 +300,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Screen, 
                 CommandAliases.Screen,
-                "[main|repl|apilog]",
+                "[main|repl|history|apilog]",
                 new string[]
                 {
                     "screen main",
@@ -473,6 +481,57 @@ namespace MultiMiner.TUI
             OutputInput(Console.WindowWidth - screenNameWidth);
         }
 
+        private void RenderHistoryScreen()
+        {
+            OutputHistory();
+
+            screenNameWidth = OutputScreenName();
+
+            OutputInput(Console.WindowWidth - screenNameWidth);
+        }
+
+        private void OutputHistory()
+        {
+            var printableHeight = Console.WindowHeight - 1;
+            List<Engine.LogProcessCloseArgs> logEntries = GetVisibleLogCloseEntries(printableHeight);
+            var offset = printableHeight - logEntries.Count;
+
+            for (int i = 0; i < offset; i++)
+                ClearRow(i);
+
+            for (int i = 0; i < logEntries.Count; i++)
+            {
+                var logEntry = logEntries[i];
+                
+                if (SetCursorPosition(0, i + offset))
+                    WriteText(logEntry.EndDate.ToReallyShortDateTimeString().PadFitRight(14, Ellipsis), ConsoleColor.DarkGray);
+
+                if (SetCursorPosition(14, i + offset))
+                    WriteText(logEntry.CoinSymbol.ShortCoinSymbol().PadFitRight(8, Ellipsis), ConsoleColor.White);
+
+                if (SetCursorPosition(22, i + offset))
+                    WriteText(logEntry.StartPrice.ToFriendlyString().PadFitLeft(9, Ellipsis) + " ");
+
+                TimeSpan timeSpan = logEntry.EndDate - logEntry.StartDate;
+                var duration = String.Format("{0:0.##} min", timeSpan.TotalMinutes);
+
+                if (SetCursorPosition(32, i + offset))
+                    WriteText(duration.PadFitRight(11, Ellipsis));
+
+                var devicesString = String.Empty;
+                if (logEntry.DeviceDescriptors != null)
+                    devicesString = GetFormattedDevicesString(logEntry.DeviceDescriptors);
+
+                var col = 43;
+                if (SetCursorPosition(col, i + offset))
+                    WriteText(devicesString.PadFitRight(Console.WindowWidth - col, Ellipsis));
+            }
+        }
+        private static string GetFormattedDevicesString(List<DeviceDescriptor> deviceDescriptors)
+        {
+            return String.Join(" ", deviceDescriptors.Select(d => d.ToString()).ToArray());
+        }
+
         private void OutputApiLog()
         {
             var printableHeight = Console.WindowHeight - 1;
@@ -485,10 +544,6 @@ namespace MultiMiner.TUI
             for (int i = 0; i < logEntries.Count; i++)
             {
                 var logEntry = logEntries[i];
-
-                var line = logEntry.Machine.PadFitRight(20, Ellipsis)
-                        + logEntry.Request.PadFitRight(10, Ellipsis)
-                        + logEntry.Response.PadFitRight(Console.WindowWidth - 30, Ellipsis);
 
                 if (SetCursorPosition(0, i + offset))
                     WriteText(logEntry.Machine.PadFitRight(20, Ellipsis), ConsoleColor.White);
@@ -554,6 +609,15 @@ namespace MultiMiner.TUI
             lines = lines.Take(printableHeight).ToList();
             lines.Reverse();
             return lines;
+        }
+
+        private List<Engine.LogProcessCloseArgs> GetVisibleLogCloseEntries(int printableHeight)
+        {
+            var entries = app.LogCloseEntries.ToList();
+            entries.Reverse();
+            entries = entries.Take(printableHeight).ToList();
+            entries.Reverse();
+            return entries;
         }
 
         private List<ApiLogEntry> GetVisibleApiLogEntries(int printableHeight)
