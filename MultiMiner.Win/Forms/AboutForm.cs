@@ -1,7 +1,7 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Installers;
-using MultiMiner.Win.Extensions;
+using MultiMiner.UX.Extensions;
 using System;
 using System.Diagnostics;
 using System.IO;

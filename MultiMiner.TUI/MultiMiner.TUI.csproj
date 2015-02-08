@@ -1,19 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A23B916F-0E06-43BB-97A4-F61AFE3A2F72}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{759B14BD-DAB2-4126-BD79-374036196605}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MultiMiner.UX</RootNamespace>
-    <AssemblyName>MultiMiner.UX</AssemblyName>
+    <RootNamespace>MultiMiner.TUI</RootNamespace>
+    <AssemblyName>MultiMiner.TUI</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -31,59 +33,23 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Renci.SshNet, Version=2013.4.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SSH.NET.2013.4.7\lib\net40\Renci.SshNet.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\ApiLogEntry.cs" />
-    <Compile Include="Data\ConfigurationEventArgs.cs" />
-    <Compile Include="Data\Configuration\Application.cs" />
-    <Compile Include="Data\Configuration\Metadata.cs" />
-    <Compile Include="Data\Configuration\NetworkDevices.cs" />
-    <Compile Include="Data\Configuration\Paths.cs" />
-    <Compile Include="Data\Configuration\Perks.cs" />
-    <Compile Include="Data\Configuration\PoolDefaults.cs" />
-    <Compile Include="Data\CredentialsEventArgs.cs" />
-    <Compile Include="Data\NotificationEventArgs.cs" />
-    <Compile Include="Data\PoolFeatureAnchors.cs" />
-    <Compile Include="Data\ProgressEventArgs.cs" />
-    <Compile Include="Data\PromptButtons.cs" />
-    <Compile Include="Data\PromptIcon.cs" />
-    <Compile Include="Data\PromptResult.cs" />
-    <Compile Include="Data\RemotingEventArgs.cs" />
-    <Compile Include="Data\UserAgent.cs" />
-    <Compile Include="Extensions\ApplicationConfigurationExtensions.cs" />
-    <Compile Include="Extensions\AssemblyExtensions.cs" />
-    <Compile Include="Extensions\DateTimeExtensions.cs" />
-    <Compile Include="Extensions\DeviceConfigurationExtensions.cs" />
-    <Compile Include="Extensions\DoubleExtensions.cs" />
-    <Compile Include="Extensions\EngineConfigurationExtensions.cs" />
-    <Compile Include="Extensions\IPAddressExtensions.cs" />
-    <Compile Include="Extensions\IPEndPointExtensions.cs" />
-    <Compile Include="Extensions\MiningStatisticsExtensions.cs" />
-    <Compile Include="Extensions\NetworkDeviceExtensions.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Extensions\TimeIntervalExtensions.cs" />
-    <Compile Include="Extensions\XgminerConfigurationExtensions.cs" />
-    <Compile Include="Data\PromptEventArgs.cs" />
+    <Compile Include="ConsoleApplication.cs" />
+    <Compile Include="MinerApplication.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\ApplicationViewModel.cs" />
-    <Compile Include="ViewModels\DeviceViewModel.cs" />
-    <Compile Include="ViewModels\MinerFormViewModel.cs" />
+    <Compile Include="SimpleAsyncResult.cs" />
+    <Compile Include="SimpleSyncObject.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiMiner.Blockchain\MultiMiner.Blockchain.csproj">
@@ -93,6 +59,10 @@
     <ProjectReference Include="..\MultiMiner.CoinApi\MultiMiner.CoinApi.csproj">
       <Project>{9e86f77a-68b9-4d72-82d2-855878ba8cb1}</Project>
       <Name>MultiMiner.CoinApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.Coinbase\MultiMiner.Coinbase.csproj">
+      <Project>{95f6c880-7ab3-441b-8d41-28c0ad507b62}</Project>
+      <Name>MultiMiner.Coinbase</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.Coinchoose\MultiMiner.CoinChoose.csproj">
       <Project>{d9b3f627-cb7a-454c-af8f-70c8fb584553}</Project>
@@ -142,6 +112,10 @@
       <Project>{99b0f266-eff7-4416-8c36-8356396a11ca}</Project>
       <Name>MultiMiner.Utility</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiMiner.UX\MultiMiner.UX.csproj">
+      <Project>{a23b916f-0e06-43bb-97a4-f61afe3a2f72}</Project>
+      <Name>MultiMiner.UX</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.WhatMine\MultiMiner.WhatMine.csproj">
       <Project>{4b0c2edd-9a3e-41af-b8ef-9a7a541d2e80}</Project>
       <Name>MultiMiner.WhatMine</Name>
@@ -162,9 +136,6 @@
       <Project>{0dbef993-1b34-4d80-ab6a-f662604325dc}</Project>
       <Name>MultiMiner.Xgminer</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -16,7 +16,6 @@ using MultiMiner.UX.Extensions;
 using MultiMiner.UX.ViewModels;
 using MultiMiner.Win.Controls;
 using MultiMiner.Win.Controls.Notifications;
-using MultiMiner.Win.Extensions;
 using MultiMiner.Win.Forms.Configuration;
 using MultiMiner.Xgminer;
 using MultiMiner.Xgminer.Api.Data;
@@ -38,7 +37,6 @@ namespace MultiMiner.Win.Forms
     {
         #region Private fields  
         //fields
-        private readonly double difficultyMuliplier = Math.Pow(2, 32);
         private bool applicationSetup;
         private bool instancesAreaSetup;
         private bool detailsAreaSetup;
@@ -269,15 +267,6 @@ namespace MultiMiner.Win.Forms
             deviceListView.Items.Add(listViewItem);
 
             return listViewItem;
-        }
-
-        private string GetCurrentCultureCurrency()
-        {
-            string currencySymbol = RegionInfo.CurrentRegion.ISOCurrencySymbol;
-            if ((app.SellPrices != null) && (app.SellPrices.SingleOrDefault(sp => sp.TargetCurrency.Equals(currencySymbol)) == null))
-                currencySymbol = "USD";
-
-            return currencySymbol;
         }
         
         private void RefreshViewFromViewModel()
@@ -513,7 +502,7 @@ namespace MultiMiner.Win.Forms
                     //ensure Exchange prices are available:
                     && (app.SellPrices != null))
                     {
-                        ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                        ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(app.GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
                         double btcExchangeRate = exchangeInformation.ExchangeRate;
 
                         double coinExchangeRate = deviceViewModel.Price * btcExchangeRate;
@@ -975,26 +964,8 @@ namespace MultiMiner.Win.Forms
 
             if (info != null)
             {
-                ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
-
-                if (deviceViewModel.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
-                {
-                    double difficulty = (double)item.SubItems["Difficulty"].Tag;
-                    double hashrate = deviceViewModel.CurrentHashrate * 1000;
-                    double fullDifficulty = difficulty * difficultyMuliplier;
-                    double secondsToCalcShare = fullDifficulty / hashrate;
-                    const double secondsPerDay = 86400;
-                    double sharesPerDay = secondsPerDay / secondsToCalcShare;
-                    double btcPerDay = sharesPerDay * info.Reward;
-
-                    deviceViewModel.Daily = btcPerDay;
-                }
-                else
-                {
-                    //info.Price is in BTC/Ghs/Day
-                    deviceViewModel.Daily = info.Price * deviceViewModel.CurrentHashrate / 1000 / 1000;
-                }
-
+                ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(app.GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
+                
                 if (app.PerksConfiguration.ShowExchangeRates && app.PerksConfiguration.ShowIncomeInUsd)
                 {
                     double exchangeRate = exchangeInformation.ExchangeRate;
@@ -1026,103 +997,21 @@ namespace MultiMiner.Win.Forms
 
         private void RefreshIncomeSummary()
         {
-            if (app.SellPrices == null)
-            {
-                //no internet or error parsing API
-                incomeSummaryLabel.Text = "";
-                return;
-            }
+            incomeSummaryLabel.Text = app.GetIncomeSummaryText();
 
-            if (app.CoinApiInformation == null)
-            {
-                //no internet or error parsing API
-                incomeSummaryLabel.Text = "";
-                return;
-            }
-
-            //check .Mining to allow perks for Remoting when local PC is not mining
-            if ((!app.MiningEngine.Donating && app.MiningEngine.Mining)
-                || !app.PerksConfiguration.ShowIncomeRates)
-            {
-                incomeSummaryLabel.Text = "";
-                return;
-            }
-
-            string summary = String.Empty;
-
-            Dictionary<string, double> incomeForCoins = app.GetIncomeForCoins();
-
-            if (incomeForCoins.Count == 0)
-                incomeSummaryLabel.Text = "";
-            else
-            {
-                const string addition = " + ";
-                double usdTotal = 0.00;
-                string usdSymbol = "$";
-                foreach (string coinSymbol in incomeForCoins.Keys)
-                {
-                    double coinIncome = incomeForCoins[coinSymbol];
-                    CoinInformation coinInfo = app.CoinApiInformation
-                        .ToList() //get a copy - populated async & collection may be modified
-                        .SingleOrDefault(c => c.Symbol.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
-                    if (coinInfo != null)
-                    {
-                        ExchangeInformation exchangeInformation = app.SellPrices.Single(er => er.TargetCurrency.Equals(GetCurrentCultureCurrency()) && er.SourceCurrency.Equals("BTC"));
-                        usdSymbol = exchangeInformation.TargetSymbol;
-                        double btcExchangeRate = exchangeInformation.ExchangeRate;
-                        double coinUsd = btcExchangeRate * coinInfo.Price;
-
-                        double coinDailyUsd = coinIncome * coinUsd;
-                        usdTotal += coinDailyUsd;
-
-                        if (coinIncome > 0)
-                            summary = String.Format("{0}{1} {2}{3}", summary, coinIncome.ToFriendlyString(), coinInfo.Symbol, addition);
-                    }
-                }
-
-                if (!String.IsNullOrEmpty(summary))
-                {
-                    summary = summary.Remove(summary.Length - addition.Length, addition.Length); //remove trailing " + "
-
-                    if (app.PerksConfiguration.ShowExchangeRates)
-                        summary = String.Format("{0} = {1}{2} / day", summary, usdSymbol, usdTotal.ToFriendlyString(true));
-
-                    incomeSummaryLabel.Text = summary;
-
-                    incomeSummaryLabel.AutoSize = true;
-                    incomeSummaryLabel.Padding = new Padding(0, 11, 17, 0);
-                }
-            }
+            incomeSummaryLabel.AutoSize = true;
+            incomeSummaryLabel.Padding = new Padding(0, 11, 17, 0);
         }
 
         private void RefreshStatusBarFromViewModel()
         {
-            MinerFormViewModel viewModel = app.GetViewModelToView();
-            //don't include Network Devices in the count for Remote ViewModels
-            deviceTotalLabel.Text = String.Format("{0} device(s)", viewModel.Devices.Count(d => d.Visible && ((viewModel == app.LocalViewModel) || (d.Kind != DeviceKind.NET))));
+            deviceTotalLabel.Text = String.Format("{0} device(s)", app.GetVisibleDeviceCount());
 
-            hashRateStatusLabel.Text = GetHashRateStatusText(viewModel);
+            hashRateStatusLabel.Text = app.GetHashRateStatusText();
 
             hashRateStatusLabel.AutoSize = true;
         }
-
-        private string GetHashRateStatusText(MinerFormViewModel viewModel)
-        {
-            string hashRateText = String.Empty;
-            IList<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms;
-            foreach (CoinAlgorithm algorithm in algorithms)
-            {
-                double hashRate = app.GetVisibleInstanceHashrate(algorithm.Name, viewModel == app.LocalViewModel);
-                if (hashRate > 0.00)
-                {
-                    if (!String.IsNullOrEmpty(hashRateText))
-                        hashRateText = hashRateText + "   ";
-                    hashRateText = String.Format("{0}{1}: {2}", hashRateText, algorithm.Name, hashRate.ToHashrateString());
-                }
-            }
-            return hashRateText;
-        }
-
+        
         private static void ClearCoinStatsForGridListViewItem(ListViewItem item)
         {
             item.SubItems["Difficulty"].Tag = 0.0;
@@ -2278,8 +2167,6 @@ namespace MultiMiner.Win.Forms
 
             app.SetHasChangesLocally(false);
 
-            app.LoadKnownDevicesFromFile();
-
             //ONLY if null, e.g. first launch or no XML
             //don't keep scanning on startup if there are no devices
             //maybe just using to monitor network devices
@@ -2928,10 +2815,6 @@ namespace MultiMiner.Win.Forms
                     {
                         RefreshListViewFromViewModel();
                         RefreshDetailsAreaIfVisible();
-
-                        //clean up mappings from previous device list
-                        app.DeviceDetailsMapping.Clear();
-
                         RefreshStatusBarFromViewModel();
 
                         //it may not be possible to mine after discovering devices
