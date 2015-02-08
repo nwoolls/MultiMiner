@@ -52,5 +52,6 @@
         public const string ClearScreen = "CLS";
         public const string Network = "N";
         public const string Device = "D";
+        public const string Help = "H";
     }
 }

@@ -320,7 +320,7 @@ namespace MultiMiner.TUI
 
             commandProcessor.RegisterCommand(
                 CommandNames.Help, 
-                String.Empty,
+                CommandAliases.Help,
                 String.Empty,
                 (input) =>
             {
