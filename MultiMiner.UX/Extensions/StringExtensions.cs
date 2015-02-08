@@ -126,22 +126,24 @@ namespace MultiMiner.UX.Extensions
             return result;
         }
 
-        public static string FitLeft(this string text, int totalWidth, string ellipsis)
+        private const string Ellipsis = "..";
+
+        public static string FitLeft(this string text, int totalWidth, string ellipsis = Ellipsis)
         {
             return text.EllipsisString(totalWidth, ellipsis).PadLeft(totalWidth);
         }
 
-        public static string FitRight(this string text, int totalWidth, string ellipsis)
+        public static string FitRight(this string text, int totalWidth, string ellipsis = Ellipsis)
         {
             return text.EllipsisString(totalWidth, ellipsis).PadRight(totalWidth);
         }
 
-        public static string PadFitRight(this string text, int totalWidth, string ellipsis)
+        public static string PadFitRight(this string text, int totalWidth, string ellipsis = Ellipsis)
         {
             return text.EllipsisString(totalWidth - 1, ellipsis).PadRight(totalWidth);
         }
 
-        public static string PadFitLeft(this string text, int totalWidth, string ellipsis)
+        public static string PadFitLeft(this string text, int totalWidth, string ellipsis = Ellipsis)
         {
             return text.EllipsisString(totalWidth - 1, ellipsis).PadLeft(totalWidth);
         }

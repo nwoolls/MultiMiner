@@ -25,8 +25,6 @@ namespace MultiMiner.TUI
             Password
         }
 
-        private const string Ellipsis = "..";
-
         private readonly ApplicationViewModel app = new ApplicationViewModel();
         private readonly ISynchronizeInvoke threadContext = new SimpleSyncObject();
         private readonly List<NotificationEventArgs> notifications = new List<NotificationEventArgs>();
@@ -69,7 +67,6 @@ namespace MultiMiner.TUI
             });
         }
 
-        #region ConsoleApplication overrides
         protected override void SetupApplication()
         {
             RenderSplashScreen();
@@ -235,7 +232,7 @@ namespace MultiMiner.TUI
                     "set mobileminer email user@example.org",
                     "set mobileminer appkey mr8q-lp67-bvt1"
                 },
-                HandleMobileMinerSetting);
+                new Commands.Settings.MobileMinerCommand(app, AddNotification).HandleCommand);
 
             settingsProcessor.RegisterCommand(
                 CommandNames.Help,
@@ -256,49 +253,7 @@ namespace MultiMiner.TUI
                     return false;
                 });
         }
-
-        private bool HandleMobileMinerSetting(string[] input)
-        {
-            var success = false;
-
-            if (input.Count() >= 2)
-            {
-                var arg1 = input[1];
-                if (arg1.Equals(SettingArguments.On, StringComparison.OrdinalIgnoreCase))
-                {
-                    app.ApplicationConfiguration.MobileMinerMonitoring = true;
-                    AddNotification(String.Format("MobileMiner monitoring set to: {0}", arg1));
-                    success = true;
-                }
-                else if (arg1.Equals(SettingArguments.Off, StringComparison.OrdinalIgnoreCase))
-                {
-                    app.ApplicationConfiguration.MobileMinerMonitoring = true;
-                    AddNotification(String.Format("MobileMiner monitoring set to: {0}", arg1));
-                    success = true;
-                }
-                else if (input.Count() >= 3)
-                {
-                    var arg2 = input[1];
-                    if (arg1.Equals(SettingArguments.Email, StringComparison.OrdinalIgnoreCase))
-                    {
-                        app.ApplicationConfiguration.MobileMinerEmailAddress = arg2;
-                        AddNotification(String.Format("MobileMiner email set to: {0}", arg1));
-                        success = true;
-                    }
-                    else if (arg1.Equals(SettingArguments.AppKey, StringComparison.OrdinalIgnoreCase))
-                    {
-                        app.ApplicationConfiguration.MobileMinerApplicationKey = arg2;
-                        AddNotification(String.Format("MobileMiner appkey set to: {0}", arg1));
-                        success = true;
-                    }
-                }
-            }
-
-            if (success)
-                app.ApplicationConfiguration.SaveApplicationConfiguration();
-            return success;
-        }
-
+        
         private void RegisterCommands()
         {
             commandProcessor.RegisterCommand(
@@ -365,15 +320,7 @@ namespace MultiMiner.TUI
                     "switchall btc",
                     "sa ltc"
                 },
-                (input) =>
-            {
-                if (input.Count() == 2)
-                    app.SetAllDevicesToCoin(input[1], true);
-                else
-                    return false;
-
-                return true;
-            });
+                new Commands.SwitchAllCommand(app).HandleCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Pools, 
@@ -387,7 +334,7 @@ namespace MultiMiner.TUI
                     "p remove 3",
                     "p edit 3 stratum+tcp://other.pool.com:3334 my.worker pass"
                 },
-                HandlePoolCommand);
+                new Commands.PoolCommand(app, screenManager, AddNotification, replBuffer).HandleCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Screen, 
@@ -400,19 +347,7 @@ namespace MultiMiner.TUI
                     "sc apilog",
                     "sc"
                 },
-                (input) =>
-            {
-                if (input.Count() == 2)
-                {
-                    if (!screenManager.SetCurrentScreen(input[1]))
-                        //unknown screen specified
-                        AddNotification(String.Format("unknown screen: {0}", input[1]));
-                }
-                else
-                    screenManager.AdvanceCurrentScreen();
-                RenderScreen();
-                return true;
-            });
+                new Commands.ScreenCommand(app, screenManager, AddNotification).HandleCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.ClearScreen, 
@@ -436,7 +371,7 @@ namespace MultiMiner.TUI
                     "strats off",
                     "strats set proffit"
                 },
-                HandleStrategiesCommand);
+                new Commands.StrategiesCommand(app, AddNotification).HandleCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Notifications, 
@@ -448,7 +383,7 @@ namespace MultiMiner.TUI
                     "notes clear",
                     "notes act 2"
                 },
-                HandeNotificationsCommand);
+                new Commands.NotificationsCommand(notifications).HandleCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Network, 
@@ -463,7 +398,7 @@ namespace MultiMiner.TUI
                     "n hide 192.168.0.99",
                     "n name 192.168.0.99 My Network Miner"
                 },
-                HandeNetworkCommand);
+                new Commands.NetworkCommand(app, AddNotification).HandleCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Help, 
@@ -494,7 +429,7 @@ namespace MultiMiner.TUI
                     "d switch g1 ltc",
                     "d name u2 My USB Miner"
                 },
-                HandeDeviceCommand);
+                new Commands.DeviceCommand(app, AddNotification).HandleCommand);
         }
 
         private void OutputCommandHelp(CommandProcessor processor, string[] input)
@@ -592,21 +527,21 @@ namespace MultiMiner.TUI
                 var logEntry = logEntries[i];
 
                 if (SetCursorPosition(0, i + offset))
-                    WriteText(logEntry.DateTime.ToReallyShortDateTimeString().PadFitRight(14, Ellipsis), ConsoleColor.DarkGray);
+                    WriteText(logEntry.DateTime.ToReallyShortDateTimeString().PadFitRight(14), ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(14, i + offset))
-                    WriteText(logEntry.CoinName.PadFitRight(9, Ellipsis), ConsoleColor.White);
+                    WriteText(logEntry.CoinName.PadFitRight(9), ConsoleColor.White);
 
                 if (SetCursorPosition(23, i + offset))
-                    WriteText(System.IO.Path.GetFileName(logEntry.ExecutablePath).PadFitRight(13, Ellipsis));
+                    WriteText(System.IO.Path.GetFileName(logEntry.ExecutablePath).PadFitRight(13));
 
                 var lastColWidth = 16;
                 var col = 36;
                 if (SetCursorPosition(col, i + offset))
-                    WriteText(logEntry.Arguments.PadFitRight(Console.BufferWidth - col - lastColWidth, Ellipsis), ConsoleColor.DarkGray);
+                    WriteText(logEntry.Arguments.PadFitRight(Console.BufferWidth - col - lastColWidth), ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(Console.BufferWidth - lastColWidth, i + offset))
-                    WriteText(logEntry.Reason.PadFitRight(lastColWidth, Ellipsis));
+                    WriteText(logEntry.Reason.PadFitRight(lastColWidth));
             }
         }
 
@@ -642,19 +577,19 @@ namespace MultiMiner.TUI
                 var logEntry = logEntries[i];
                 
                 if (SetCursorPosition(0, i + offset))
-                    WriteText(logEntry.EndDate.ToReallyShortDateTimeString().PadFitRight(14, Ellipsis), ConsoleColor.DarkGray);
+                    WriteText(logEntry.EndDate.ToReallyShortDateTimeString().PadFitRight(14), ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(14, i + offset))
-                    WriteText(logEntry.CoinSymbol.ShortCoinSymbol().PadFitRight(8, Ellipsis), ConsoleColor.White);
+                    WriteText(logEntry.CoinSymbol.ShortCoinSymbol().PadFitRight(8), ConsoleColor.White);
 
                 if (SetCursorPosition(22, i + offset))
-                    WriteText(logEntry.StartPrice.ToFriendlyString().PadFitLeft(9, Ellipsis) + " ");
+                    WriteText(logEntry.StartPrice.ToFriendlyString().PadFitLeft(9) + " ");
 
                 TimeSpan timeSpan = logEntry.EndDate - logEntry.StartDate;
                 var duration = String.Format("{0:0.##} min", timeSpan.TotalMinutes);
 
                 if (SetCursorPosition(32, i + offset))
-                    WriteText(duration.PadFitRight(11, Ellipsis));
+                    WriteText(duration.PadFitRight(11));
 
                 var devicesString = String.Empty;
                 if (logEntry.DeviceDescriptors != null)
@@ -662,7 +597,7 @@ namespace MultiMiner.TUI
 
                 var col = 43;
                 if (SetCursorPosition(col, i + offset))
-                    WriteText(devicesString.PadFitRight(Console.WindowWidth - col, Ellipsis));
+                    WriteText(devicesString.PadFitRight(Console.WindowWidth - col));
             }
         }
 
@@ -685,14 +620,14 @@ namespace MultiMiner.TUI
                 var logEntry = logEntries[i];
 
                 if (SetCursorPosition(0, i + offset))
-                    WriteText(logEntry.Machine.PadFitRight(20, Ellipsis), ConsoleColor.White);
+                    WriteText(logEntry.Machine.PadFitRight(20), ConsoleColor.White);
 
                 if (SetCursorPosition(20, i + offset))
-                    WriteText(logEntry.Request.PadFitRight(10, Ellipsis), ConsoleColor.DarkGray);
+                    WriteText(logEntry.Request.PadFitRight(10), ConsoleColor.DarkGray);
 
                 var col = 30;
                 if (SetCursorPosition(col, i + offset))
-                    WriteText(logEntry.Response.PadFitRight(Console.WindowWidth - col + 2, Ellipsis));
+                    WriteText(logEntry.Response.PadFitRight(Console.WindowWidth - col + 2));
             }
         }
 
@@ -737,7 +672,7 @@ namespace MultiMiner.TUI
                     WriteText(": ", ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(3, i + offset))
-                    WriteText(line.PadFitRight(Console.WindowWidth, Ellipsis));
+                    WriteText(line.PadFitRight(Console.WindowWidth));
             }
         }
 
@@ -810,7 +745,7 @@ namespace MultiMiner.TUI
         private void HandleMainScreenNavigation(bool pageUp)
         {
             var printableHeight = GetSpecialRow() - GetVisibleNotifications().Count;
-            var visibleDeviceCount = GetVisibleDevices().Count;
+            var visibleDeviceCount = app.GetVisibleDevices().Count;
 
             if (pageUp)
                 mainOffset = mainOffset - printableHeight;
@@ -905,10 +840,8 @@ namespace MultiMiner.TUI
                     networkDevice.Username = String.Empty;
                     networkDevice.Password = String.Empty;
                 }
-
             }
         }
-        #endregion
         
         private void OutputNotifications()
         {
@@ -917,7 +850,7 @@ namespace MultiMiner.TUI
             {
                 var row = GetSpecialRow() - (recentNotifications.Count - i);
                 if (SetCursorPosition(0, row))
-                    WriteText(recentNotifications[i].Text.FitLeft(Console.WindowWidth, Ellipsis));
+                    WriteText(recentNotifications[i].Text.FitLeft(Console.WindowWidth));
             }
         }
 
@@ -1004,7 +937,7 @@ namespace MultiMiner.TUI
                 if (SetCursorPosition(Prefix.Length, row))
                 {
                     var width = totalWidth - Prefix.Length - (isWindows ? 1 : 0);
-                    var text = CurrentInput.TrimStart().FitRight(width, Ellipsis);
+                    var text = CurrentInput.TrimStart().FitRight(width);
                     WriteText(text, ConsoleColor.White, ConsoleColor.DarkGray);
                 }
             }
@@ -1013,8 +946,8 @@ namespace MultiMiner.TUI
         private void OutputStatus()
         {
             const int Part1Width = 16;
-            var deviceStatus = String.Format("{0} device(s)", app.GetVisibleDeviceCount()).FitRight(Part1Width, Ellipsis);
-            var hashrateStatus = app.GetHashRateStatusText().Replace("   ", " ").FitLeft(Console.WindowWidth - deviceStatus.Length, Ellipsis);
+            var deviceStatus = String.Format("{0} device(s)", app.GetVisibleDeviceCount()).FitRight(Part1Width);
+            var hashrateStatus = app.GetHashRateStatusText().Replace("   ", " ").FitLeft(Console.WindowWidth - deviceStatus.Length);
             if (SetCursorPosition(0, Console.WindowHeight - 2))
             {
                 var text = String.Format("{0}{1}", deviceStatus, hashrateStatus);
@@ -1046,7 +979,7 @@ namespace MultiMiner.TUI
 
         private void OutputCurrentProgress()
         {
-            var output = currentProgress.FitRight(Console.WindowWidth, Ellipsis);
+            var output = currentProgress.FitRight(Console.WindowWidth);
             if (SetCursorPosition(0, GetSpecialRow()))
                 WriteText(output, ConsoleColor.White, String.IsNullOrEmpty(currentProgress) ? ConsoleColor.Black : ConsoleColor.DarkBlue);
         }
@@ -1057,7 +990,7 @@ namespace MultiMiner.TUI
                 "SSH username for {0} (ESC to cancel):" : 
                 "SSH password for {0} (ESC to cancel):", 
                 credentialsTarget.Path);
-            var output = prompt.FitRight(Console.WindowWidth, Ellipsis);
+            var output = prompt.FitRight(Console.WindowWidth);
             if (SetCursorPosition(0, GetSpecialRow()))
                 WriteText(output, ConsoleColor.White, ConsoleColor.DarkBlue);
         }
@@ -1065,7 +998,7 @@ namespace MultiMiner.TUI
         private void OutputCurrentPrompt()
         {
             var text = String.Format("{0}: {1}", currentPrompt.Caption, currentPrompt.Text);
-            var output = text.FitRight(Console.WindowWidth, Ellipsis);
+            var output = text.FitRight(Console.WindowWidth);
             if (SetCursorPosition(0, GetSpecialRow()))
                 WriteText(output, ConsoleColor.White,
                     currentPrompt.Icon == PromptIcon.Error
@@ -1078,20 +1011,17 @@ namespace MultiMiner.TUI
         {
             return Console.WindowHeight - 3;
         }
-
+        
         private void AddNotification(string text)
         {
-            notifications.Add(new NotificationEventArgs
-            {
-                Text = text
-            });
+            notifications.Add(new NotificationEventArgs { Text = text });
             replBuffer.Add(text); //so TUI-specific notes show on both screens
             RenderScreen();
         }
 
         private void OutputDevices()
         {
-            List<DeviceViewModel> devices = GetVisibleDevices();
+            List<DeviceViewModel> devices = app.GetVisibleDevices();
 
             var kindCounts = new Dictionary<char, int>();
 
@@ -1120,29 +1050,29 @@ namespace MultiMiner.TUI
                     WriteText(deviceId.ToString().PadRight(4), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(4, row))
-                    WriteText(name.PadFitRight(12, Ellipsis), device.Enabled ? device.Kind == Xgminer.Data.DeviceKind.NET || app.MiningEngine.Mining ? ConsoleColor.White : ConsoleColor.Gray : ConsoleColor.DarkGray);
+                    WriteText(name.PadFitRight(12), device.Enabled ? device.Kind == Xgminer.Data.DeviceKind.NET || app.MiningEngine.Mining ? ConsoleColor.White : ConsoleColor.Gray : ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(16, row))
-                    WriteText(coinSymbol.PadFitRight(8, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
+                    WriteText(coinSymbol.PadFitRight(8), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(23, row))
-                    WriteText(difficulty.PadFitLeft(8, Ellipsis), ConsoleColor.DarkGray);
+                    WriteText(difficulty.PadFitLeft(8), ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(31, row))
                     WriteText(exchange.FitCurrency(9).PadLeft(10).PadRight(11), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(42, row))
-                    WriteText(pool.PadFitRight(10, Ellipsis), ConsoleColor.DarkGray);
+                    WriteText(pool.PadFitRight(10), ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(51, row))
-                    WriteText(averageHashrate.PadFitLeft(11, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
+                    WriteText(averageHashrate.PadFitLeft(11), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
                 if (SetCursorPosition(62, row))
-                    WriteText(effectiveHashrate.FitLeft(11, Ellipsis), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
+                    WriteText(effectiveHashrate.FitLeft(11), device.Enabled ? ConsoleColor.Gray : ConsoleColor.DarkGray);
 
                 var left = 73;
                 if (SetCursorPosition(left, row))
-                    WriteText(temperature.FitLeft(5, Ellipsis).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.DarkGray : ConsoleColor.DarkGray);
+                    WriteText(temperature.FitLeft(5).PadRight(Console.WindowWidth - left), device.Enabled ? ConsoleColor.DarkGray : ConsoleColor.DarkGray);
 
                 row++;
             }
@@ -1151,467 +1081,10 @@ namespace MultiMiner.TUI
                 ClearRow(i);
         }
 
-        private List<DeviceViewModel> GetVisibleDevices()
-        {
-            var minerForm = app.GetViewModelToView();
-            var devices = minerForm.Devices
-                .Where(d => d.Visible)
-                .ToList();
-            return devices;
-        }
-
         private void ClearRow(int row)
         {
             if (SetCursorPosition(0, row))
                 WriteText(new string(' ', Console.WindowWidth));
-        }
-        
-        private bool HandlePoolCommand(string[] input)
-        {
-            if (input.Count() >= 2)
-            {
-                var verb = input[1];
-
-                bool add = verb.Equals(CommandArguments.Add, StringComparison.OrdinalIgnoreCase);
-                bool remove = verb.Equals(CommandArguments.Remove, StringComparison.OrdinalIgnoreCase);
-                bool list = verb.Equals(CommandArguments.List, StringComparison.OrdinalIgnoreCase);
-                bool edit = verb.Equals(CommandArguments.Edit, StringComparison.OrdinalIgnoreCase);
-
-                if (list)
-                {
-                    var symbol = String.Empty;
-                    if (input.Count() >= 3)
-                        symbol = input[2];
-
-                    HandlePoolListCommand(symbol);
-                    return true; //early exit
-                }
-                else if (remove)
-                {
-                    if (HandlePoolRemoveCommand(input))
-                        return true;
-                }
-                else if (edit)
-                {
-                    if ((input.Count() == 6) && HandlePoolEditCommand(input))
-                        return true;
-                }
-                else if (input.Count() >= 3)
-                {
-                    var symbol = input[2];
-
-                    CoinApi.Data.CoinInformation coin = app.CoinApiInformation.SingleOrDefault(
-                        c => c.Symbol.Equals(symbol, StringComparison.OrdinalIgnoreCase)
-                        || c.Symbol.ShortCoinSymbol().Equals(symbol, StringComparison.Ordinal));
-
-                    if (coin == null)
-                    {
-                        AddNotification(String.Format("Unknown coin: {0}", symbol));
-                        return true; //early exit
-                    }
-                    else if (input.Count() >= 4)
-                    {
-                        var url = input[3];
-
-                        if (add && (input.Count() == 6))
-                        {
-                            var user = input[4];
-                            var pass = input[5];
-
-                            app.AddNewPool(coin, url, user, pass);
-                            return true; //early exit
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        private bool HandlePoolEditCommand(string[] input)
-        {
-            var symbol = input[2];
-            var url = input[3];
-            var user = input[4];
-
-            var coinConfig = app.EngineConfiguration.CoinConfigurations.SingleOrDefault(
-                c => c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
-                || c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase));
-            MiningPool poolConfig = null;
-
-            if (coinConfig == null)
-            {
-                var index = -1;
-                if (int.TryParse(symbol, out index))
-                {
-                    index--;
-                    var fullPoolList = GetPoolList();
-                    if ((index >= 0) && (index < fullPoolList.Count))
-                    {
-                        coinConfig = fullPoolList[index].Configuration;
-                        poolConfig = fullPoolList[index].Pool;
-
-                    }
-                }
-            }
-            else
-                poolConfig = app.FindPoolConfiguration(coinConfig, url, String.Empty);
-
-            if (poolConfig != null)
-            {
-                var pass = input[5];
-                Uri uri = new UriBuilder(url).Uri;
-
-                poolConfig.Host = uri.GetComponents(UriComponents.AbsoluteUri & ~UriComponents.Port, UriFormat.UriEscaped);
-                poolConfig.Port = uri.Port;
-                poolConfig.Password = pass;
-                poolConfig.Username = user;
-                app.EngineConfiguration.SaveCoinConfigurations();
-
-                AddNotification(String.Format("Pool {0} updated", url));
-                
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool HandlePoolRemoveCommand(string[] input)
-        {
-            var symbol = input[2];
-
-            var coin = app.EngineConfiguration.CoinConfigurations.SingleOrDefault(
-                c => c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
-                || c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase));
-
-            if (coin == null)
-            {
-                var index = -1;
-                if (int.TryParse(symbol, out index))
-                {
-                    index--;
-                    var fullPoolList = GetPoolList();
-                    if ((index >= 0) && (index < fullPoolList.Count))
-                    {
-                        fullPoolList[index].Configuration.Pools.Remove(fullPoolList[index].Pool);
-                        app.EngineConfiguration.SaveCoinConfigurations();
-                        AddNotification(String.Format("Pool {0}:{1} removed", fullPoolList[index].Pool.Host, fullPoolList[index].Pool.Port));
-                        return true; //early exit
-
-                    }
-                    AddNotification(String.Format("Invalid pool number: {0}", symbol));
-                    return true; //early exit
-                }
-            }
-            else if (input.Count() >= 4)
-            {
-                var url = input[3];
-                var user = input.Count() > 4 ? input[4] : String.Empty;
-
-                if (app.RemoveExistingPool(coin.PoolGroup.Id, url, user))
-                    AddNotification(String.Format("Pool {0} removed", url));
-                else
-                    AddNotification(String.Format("Pool {0} not found", url));
-                return true; //early exit
-            }
-            return false;
-        }
-
-        private List<PoolListEntry> GetPoolList()
-        {
-            var result = new List<PoolListEntry>();            
-            var configs = app.EngineConfiguration.CoinConfigurations;
-            if (configs.Count() == 0) return result;
-            
-            foreach (var config in configs)
-            {
-                config.Pools.ForEach((p) =>
-                {
-                    result.Add(new PoolListEntry
-                    {
-                        Configuration = config,
-                        Pool = p
-                    });
-                });
-            }
-            
-            return result;
-        }
-
-        private void HandlePoolListCommand(string symbol)
-        {
-            var fullPoolList = GetPoolList();
-            var filteredPoolList = fullPoolList
-                .Where(p => string.IsNullOrEmpty(symbol)
-                    || (p.Configuration.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
-                    || (p.Configuration.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))))
-                .ToList();
-            
-            if (filteredPoolList.Count() == 0) return;
-
-            replBuffer.Add(String.Empty);
-
-            filteredPoolList.ForEach((p) =>
-            {
-                UriBuilder builder = new UriBuilder(p.Pool.Host.Trim());
-                builder.Port = p.Pool.Port;
-                
-                replBuffer.Add((fullPoolList.IndexOf(p) + 1).ToString().FitLeft(2, Ellipsis) + " "
-                    + p.Configuration.PoolGroup.Id.ShortCoinSymbol().PadFitRight(8, Ellipsis) 
-                    + builder.Uri.ToString().ShortHostFromHost().PadFitRight(47, Ellipsis)
-                    + p.Pool.Username.PadFitRight(20, Ellipsis));
-            });
-
-            screenManager.SetCurrentScreen(ScreenNames.Repl);
-            RenderScreen();
-        }
-
-        private bool HandleStrategiesCommand(string[] input)
-        {
-            if (input.Count() >= 2)
-            {
-                var firstArgument = input[1];
-                if (firstArgument.Equals(CommandArguments.On, StringComparison.OrdinalIgnoreCase))
-                {
-                    app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = true;
-                    AddNotification("Auto mining strategies enabled");
-                }
-                else if (firstArgument.Equals(CommandArguments.Off, StringComparison.OrdinalIgnoreCase))
-                {
-                    app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false;
-                    AddNotification("Auto mining strategies disabled");
-                }
-                else if (firstArgument.Equals(CommandArguments.Set, StringComparison.OrdinalIgnoreCase))
-                {
-                    var lastArgument = input.Last();
-                    if (lastArgument.Equals(CommandArguments.Profit, StringComparison.OrdinalIgnoreCase))
-                        app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Profitability;
-                    else if (lastArgument.Equals(CommandArguments.Diff, StringComparison.OrdinalIgnoreCase))
-                        app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Difficulty;
-                    else if (lastArgument.Equals(CommandArguments.Price, StringComparison.OrdinalIgnoreCase))
-                        app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Price;
-                    else
-                        return false; //early exit, wrong syntax
-
-                    AddNotification("Auto mining basis set to " + app.EngineConfiguration.StrategyConfiguration.MiningBasis);
-                }
-                else
-                    return false; //early exit, wrong syntax
-
-                app.EngineConfiguration.SaveStrategyConfiguration();
-            }
-            else
-                return false; //early exit, wrong syntax
-
-            return true;
-        }
-
-        private bool HandeNotificationsCommand(string[] input)
-        {
-            if (input.Count() >= 2)
-            {
-                var verb = input[1];
-                if (verb.Equals(CommandArguments.Clear, StringComparison.OrdinalIgnoreCase))
-                {
-                    notifications.Clear();
-                    return true; //early exit - success
-                }
-                else if (input.Count() == 3)
-                {
-                    var last = input.Last();
-                    var index = -1;
-                    if (Int32.TryParse(last, out index))
-                    {
-                        index--; //user enters 1-based
-                        if ((index >= 0) && (index < notifications.Count))
-                        {
-                            if (verb.Equals(CommandArguments.Remove, StringComparison.OrdinalIgnoreCase))
-                            {
-                                notifications.RemoveAt(index);
-                                return true; //early exit - success
-                            }
-                            else if (verb.Equals(CommandArguments.Act, StringComparison.OrdinalIgnoreCase))
-                            {
-                                notifications[index].ClickHandler();
-                                return true; //early exit - success
-                            }
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        private bool HandeNetworkCommand(string[] input)
-        {
-            if (input.Count() >= 3)
-            {
-                var verb = input[1];
-                var path = input[2];
-                if (!path.Contains(':')) path = path + ":4028";
-
-                var networkDevice = app.LocalViewModel.Devices.SingleOrDefault((d) => d.Visible && d.Path.Equals(path, StringComparison.OrdinalIgnoreCase));
-                if (networkDevice == null)
-                {
-                    networkDevice = GetDeviceById(input[2]);
-                    if (networkDevice.Kind != DeviceKind.NET) networkDevice = null;
-                }
-
-                if (networkDevice != null)
-                {
-                    if (verb.Equals(CommandArguments.Restart, StringComparison.OrdinalIgnoreCase))
-                    {
-                        app.RestartNetworkDevice(networkDevice);
-                        AddNotification(String.Format("Restarting {0}", networkDevice.Path));
-                        return true; //early exit - success
-                    }
-                    else if (verb.Equals(CommandArguments.Start, StringComparison.OrdinalIgnoreCase))
-                    {
-                        app.StartNetworkDevice(networkDevice);
-                        AddNotification(String.Format("Starting {0}", networkDevice.Path));
-                        return true; //early exit - success
-                    }
-                    else if (verb.Equals(CommandArguments.Stop, StringComparison.OrdinalIgnoreCase))
-                    {
-                        app.StopNetworkDevice(networkDevice);
-                        AddNotification(String.Format("Stopping {0}", networkDevice.Path));
-                        return true; //early exit - success
-                    }
-                    else if (verb.Equals(CommandArguments.Reboot, StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (app.RebootNetworkDevice(networkDevice))
-                            AddNotification(String.Format("Rebooting {0}", networkDevice.Path));
-                        return true; //early exit - success
-                    }
-                    else if (verb.Equals(CommandArguments.Pin, StringComparison.OrdinalIgnoreCase))
-                    {
-                        bool sticky;
-                        app.ToggleNetworkDeviceSticky(networkDevice, out sticky);
-                        AddNotification(String.Format("{0} is now {1}", networkDevice.Path, sticky ? "pinned" : "unpinned"));
-                        return true; //early exit - success
-                    }
-                    else if (verb.Equals(CommandArguments.Hide, StringComparison.OrdinalIgnoreCase))
-                    {
-                        //current limitations in how .Visible is treated mean we can only hide and not un-hide
-                        //hiding means the entry will no longer be in the view model to un-hide
-                        //the GUI currently has the same limitation - must unhide via XML
-                        bool hidden;
-                        app.ToggleNetworkDeviceHidden(networkDevice, out hidden);
-                        AddNotification(String.Format("{0} is now {1}", networkDevice.Path, hidden ? "hidden" : "visible"));
-                        return true; //early exit - success
-                    }
-                    else if (input.Count() >= 4)
-                    {
-                        var lastWords = String.Join(" ", input.Skip(3).ToArray());
-
-                        if (verb.Equals(CommandArguments.Name, StringComparison.OrdinalIgnoreCase))
-                        {
-                            app.RenameDevice(networkDevice, lastWords);
-                            AddNotification(String.Format("{0} renamed to {1}", networkDevice.Path, lastWords));
-                            return true; //early exit - success
-                        }
-                        else if (verb.Equals(CommandArguments.Switch, StringComparison.OrdinalIgnoreCase))
-                        {
-                            var index = -1;
-                            if (int.TryParse(lastWords, out index))
-                            {
-                                index--;
-                                if (app.SetNetworkDevicePoolIndex(networkDevice, index))
-                                    AddNotification(String.Format("Switching {0} to pool #{1}", networkDevice.Path, lastWords));
-                                else
-                                    AddNotification(String.Format("Pool #{0} is invalid for {1}", lastWords, networkDevice.Path));
-
-                                return true; //early exit - success
-                            }
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        private bool HandeDeviceCommand(string[] input)
-        {
-            if (input.Count() >= 3)
-            {
-                var verb = input[1];
-                var deviceId = input[2];
-
-                var device = GetDeviceById(deviceId);
-                
-                if (device != null)
-                {
-                    if (verb.Equals(CommandArguments.Enable, StringComparison.OrdinalIgnoreCase)
-                        //can't enable/disable Network Devices
-                        && (device.Kind != DeviceKind.NET))
-                    {
-                        bool enabled = !device.Enabled;
-                        app.ToggleDevices(new List<DeviceDescriptor> { device }, enabled);
-                        app.SaveChanges();
-                        AddNotification(String.Format("{0} is now {1}",  device.Path, enabled ? "enabled" : "disabled"));
-                        return true; //early exit - success
-                    }
-                    else if (input.Count() >= 4)
-                    {                        
-                        if (verb.Equals(CommandArguments.Switch, StringComparison.OrdinalIgnoreCase)
-                            //can't enable/disable Network Devices
-                            && (device.Kind != DeviceKind.NET))
-                        {
-                            var symbol = input[3];
-
-                            var configs = app.EngineConfiguration.CoinConfigurations
-                                .Where(c => String.IsNullOrEmpty(symbol)
-                                    || (c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
-                                    || (c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))))
-                                .ToList();
-
-                            if (configs.Count > 0)
-                            {
-                                var coinName = configs.First().PoolGroup.Name;
-                                app.SetDevicesToCoin(new List<DeviceDescriptor> { device }, coinName);
-                                app.SaveChanges();
-                                AddNotification(String.Format("{0} set to {1}: type restart to apply", device.Path, coinName));
-                                return true; //early exit - success
-                            }
-                        }
-                        else
-                        {
-                            var lastWords = String.Join(" ", input.Skip(3).ToArray());
-
-                            if (verb.Equals(CommandArguments.Name, StringComparison.OrdinalIgnoreCase))
-                            {
-                                app.RenameDevice(device, lastWords);
-                                AddNotification(String.Format("{0} renamed to {1}", device.Path, lastWords));
-                                return true; //early exit - success
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
-        private DeviceViewModel GetDeviceById(string deviceId)
-        {
-            var index = -1;
-            var valid = int.TryParse(deviceId.Substring(1), out index);
-
-            if (!valid) return null;
-
-            index--;
-
-            var devices = GetVisibleDevices();
-            var kindId = deviceId.First().ToString();
-            var kindDevices = devices
-                .Where(d => d.Kind.ToString().StartsWith(kindId, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-
-            if ((index >= 0) && (index < kindDevices.Count))
-                return kindDevices[index];
-
-            return null;         
         }
     }
 }

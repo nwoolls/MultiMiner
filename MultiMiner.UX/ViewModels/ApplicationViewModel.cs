@@ -966,6 +966,27 @@ namespace MultiMiner.UX.ViewModels
                 }
             };
         }
+
+        public DeviceViewModel GetDeviceById(string deviceId)
+        {
+            var index = -1;
+            var valid = int.TryParse(deviceId.Substring(1), out index);
+
+            if (!valid) return null;
+
+            index--;
+
+            var devices = GetVisibleDevices();
+            var kindId = deviceId.First().ToString();
+            var kindDevices = devices
+                .Where(d => d.Kind.ToString().StartsWith(kindId, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if ((index >= 0) && (index < kindDevices.Count))
+                return kindDevices[index];
+
+            return null;
+        }
         #endregion
 
         #region Exchange API
@@ -2709,6 +2730,15 @@ namespace MultiMiner.UX.ViewModels
                 }
             }
             return hashRateText;
+        }
+
+        public List<DeviceViewModel> GetVisibleDevices()
+        {
+            var minerForm = GetViewModelToView();
+            var devices = minerForm.Devices
+                .Where(d => d.Visible)
+                .ToList();
+            return devices;
         }
 
         public int GetVisibleDeviceCount()
