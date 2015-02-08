@@ -18,6 +18,13 @@ namespace MultiMiner.TUI
 {
     class MinerApplication : ConsoleApplication
     {
+        enum CredentialsPhase
+        {
+            None,
+            Username,
+            Password
+        }
+
         private const string Ellipsis = "..";
 
         private readonly ApplicationViewModel app = new ApplicationViewModel();
@@ -38,6 +45,10 @@ namespace MultiMiner.TUI
         private string incomeSummaryText = String.Empty;
         private int replOffset = 0;
         private int screenNameWidth = 0;
+
+        private CredentialsPhase credentialsPhase;
+        private DeviceViewModel credentialsTarget;
+        private string credentialsUsername;
 
         public MinerApplication()
         {
@@ -90,6 +101,14 @@ namespace MultiMiner.TUI
             {
                 currentPrompt = e;
                 promptTime = DateTime.Now;
+                RenderScreen();
+            };
+
+            app.CredentialsRequested += (object sender, CredentialsEventArgs e) =>
+            {
+                e.CredentialsProvided = false;
+                credentialsPhase = CredentialsPhase.Username;
+                credentialsTarget = app.LocalViewModel.GetNetworkDeviceByFriendlyName(e.ProtectedResource);
                 RenderScreen();
             };
 
@@ -518,8 +537,20 @@ namespace MultiMiner.TUI
             OutputReplBuffer();
         }
 
+        protected override void HandleInputCanceled()
+        {
+            credentialsPhase = CredentialsPhase.None;
+            RenderScreen();
+        }
+
         protected override bool HandleCommandInput(string input)
         {
+            if (credentialsPhase != CredentialsPhase.None)
+            {
+                HandleCredentialsInput(input);
+                return true;
+            }
+
             if (!commandProcessor.ProcessCommand(input))
             {
                 AddNotification(String.Format("Unknown command: {0}", input.Split(' ').First()));
@@ -530,6 +561,42 @@ namespace MultiMiner.TUI
 
             //successful command
             return true;
+        }
+
+        private void HandleCredentialsInput(string input)
+        {
+            if (credentialsPhase == CredentialsPhase.Username)
+            {
+                credentialsUsername = input;
+                credentialsPhase = CredentialsPhase.Password;
+                RenderScreen();
+            }
+            else
+            {
+                var networkDevice = app.GetNetworkDeviceByPath(credentialsTarget.Path);
+
+                networkDevice.Username = credentialsUsername;
+                networkDevice.Password = input;
+
+                //clear prompt & render before rebooting - rebooting currently blocks
+                credentialsPhase = CredentialsPhase.None;
+                RenderScreen();
+
+                var success = app.RebootNetworkDevice(credentialsTarget);
+                
+                if (success)
+                {
+                    AddNotification(String.Format("Rebooting {0}", credentialsTarget.Path));
+                    app.NetworkDevicesConfiguration.SaveNetworkDevicesConfiguration();
+                }
+                else
+                {
+                    AddNotification(String.Format("Unable to reboot {0}", credentialsTarget.Path));
+                    networkDevice.Username = String.Empty;
+                    networkDevice.Password = String.Empty;
+                }
+
+            }
         }
         #endregion
         
@@ -641,6 +708,12 @@ namespace MultiMiner.TUI
         
         private void OutputSpecial()
         {
+            if (credentialsPhase != CredentialsPhase.None)
+            {
+                OutputCredentialsPrompt();
+                return; //early exit, prompt rendered
+            }
+
             if (currentPrompt != null)
             {
                 if ((DateTime.Now - promptTime).TotalSeconds > 30)
@@ -662,6 +735,16 @@ namespace MultiMiner.TUI
                 WriteText(output, ConsoleColor.White, String.IsNullOrEmpty(currentProgress) ? ConsoleColor.Black : ConsoleColor.DarkBlue);
         }
 
+        private void OutputCredentialsPrompt()
+        {
+            var prompt = String.Format(credentialsPhase == CredentialsPhase.Username ? 
+                "SSH username for {0} (ESC to cancel):" : 
+                "SSH password for {0} (ESC to cancel):", 
+                credentialsTarget.Path);
+            var output = prompt.FitRight(Console.WindowWidth, Ellipsis);
+            if (SetCursorPosition(0, GetSpecialRow()))
+                WriteText(output, ConsoleColor.White, ConsoleColor.DarkBlue);
+        }
 
         private void OutputCurrentPrompt()
         {
@@ -958,8 +1041,8 @@ namespace MultiMiner.TUI
                     }
                     else if (verb.Equals(ArgumentNames.Reboot, StringComparison.OrdinalIgnoreCase))
                     {
-                        app.RebootNetworkDevice(networkDevice);
-                        AddNotification(String.Format("Rebooting {0}", networkDevice.Path));
+                        if (app.RebootNetworkDevice(networkDevice))
+                            AddNotification(String.Format("Rebooting {0}", networkDevice.Path));
                         return true; //early exit - success
                     }
                     else if (verb.Equals(ArgumentNames.Pin, StringComparison.OrdinalIgnoreCase))
