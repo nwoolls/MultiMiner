@@ -268,7 +268,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Pools, 
                 CommandAliases.Pools,
-                "<add|remove|list> [symbol|pool_number] [url] [user] [pass]",
+                "<add|remove|edit|list> [symbol|pool_number] [url] [user] [pass]",
                 HandlePoolCommand);
 
             commandProcessor.RegisterCommand(
@@ -882,6 +882,7 @@ namespace MultiMiner.TUI
                 bool add = verb.Equals(ArgumentNames.Add, StringComparison.OrdinalIgnoreCase);
                 bool remove = verb.Equals(ArgumentNames.Remove, StringComparison.OrdinalIgnoreCase);
                 bool list = verb.Equals(ArgumentNames.List, StringComparison.OrdinalIgnoreCase);
+                bool edit = verb.Equals(ArgumentNames.Edit, StringComparison.OrdinalIgnoreCase);
 
                 if (list)
                 {
@@ -895,6 +896,11 @@ namespace MultiMiner.TUI
                 else if (remove)
                 {
                     if (HandlePoolRemoveCommand(input))
+                        return true;
+                }
+                else if (edit)
+                {
+                    if ((input.Count() == 6) && HandlePoolEditCommand(input))
                         return true;
                 }
                 else if (input.Count() >= 3)
@@ -924,6 +930,54 @@ namespace MultiMiner.TUI
                         }
                     }
                 }
+            }
+
+            return false;
+        }
+
+        private bool HandlePoolEditCommand(string[] input)
+        {
+            var symbol = input[2];
+            var url = input[3];
+            var user = input[4];
+
+            var coinConfig = app.EngineConfiguration.CoinConfigurations.SingleOrDefault(
+                c => c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
+                || c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase));
+            MiningPool poolConfig = null;
+
+            if (coinConfig == null)
+            {
+                var index = -1;
+                if (int.TryParse(symbol, out index))
+                {
+                    index--;
+                    var fullPoolList = GetPoolList();
+                    if ((index >= 0) && (index < fullPoolList.Count))
+                    {
+                        coinConfig = fullPoolList[index].Configuration;
+                        poolConfig = fullPoolList[index].Pool;
+
+                    }
+                }
+            }
+            else
+                poolConfig = app.FindPoolConfiguration(coinConfig, url, String.Empty);
+
+            if (poolConfig != null)
+            {
+                var pass = input[5];
+                Uri uri = new UriBuilder(url).Uri;
+
+                poolConfig.Host = uri.GetComponents(UriComponents.AbsoluteUri & ~UriComponents.Port, UriFormat.UriEscaped);
+                poolConfig.Port = uri.Port;
+                poolConfig.Password = pass;
+                poolConfig.Username = user;
+                app.EngineConfiguration.SaveCoinConfigurations();
+
+                AddNotification(String.Format("Pool {0} updated", url));
+                
+                return true;
             }
 
             return false;
