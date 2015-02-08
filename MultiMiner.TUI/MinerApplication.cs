@@ -602,18 +602,24 @@ namespace MultiMiner.TUI
         
         private void OutputNotifications()
         {
-            const int NotificationCount = 5;
-
-            var recentNotifications = notifications.ToList();
-            recentNotifications.Reverse();
-            recentNotifications = recentNotifications.Take(NotificationCount).ToList();
-            recentNotifications.Reverse();
+            List<NotificationEventArgs> recentNotifications = GetVisibleNotifications();
             for (int i = 0; i < recentNotifications.Count; i++)
             {
                 var row = GetSpecialRow() - (recentNotifications.Count - i);
                 if (SetCursorPosition(0, row))
                     WriteText(recentNotifications[i].Text.FitLeft(Console.WindowWidth, Ellipsis));
             }
+        }
+
+        private List<NotificationEventArgs> GetVisibleNotifications()
+        {
+            const int NotificationCount = 5;
+
+            var recentNotifications = notifications.ToList();
+            recentNotifications.Reverse();
+            recentNotifications = recentNotifications.Take(NotificationCount).ToList();
+            recentNotifications.Reverse();
+            return recentNotifications;
         }
 
         private bool SetCursorPosition(int left, int top)
