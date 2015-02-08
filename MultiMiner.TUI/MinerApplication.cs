@@ -928,28 +928,47 @@ namespace MultiMiner.TUI
             return true;
         }
 
-        private void HandlePoolListCommand(string symbol)
+        private List<PoolListEntry> GetPoolList()
         {
-            var configs = app.EngineConfiguration.CoinConfigurations
-                .Where(c => String.IsNullOrEmpty(symbol)
-                    || (c.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
-                    || (c.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))));
-
-            if (configs.Count() == 0) return;
-
-            replBuffer.Add(String.Empty);
-
-            var index = 0;
+            var result = new List<PoolListEntry>();            
+            var configs = app.EngineConfiguration.CoinConfigurations;
+            if (configs.Count() == 0) return result;
+            
             foreach (var config in configs)
             {
                 config.Pools.ForEach((p) =>
                 {
-                    replBuffer.Add((++index).ToString().FitLeft(2, Ellipsis) + " "
-                        + config.PoolGroup.Id.ShortCoinSymbol().PadFitRight(8, Ellipsis) 
-                        + p.Host.ShortHostFromHost().PadFitRight(47, Ellipsis)
-                        + p.Username.PadFitRight(20, Ellipsis));
+                    result.Add(new PoolListEntry
+                    {
+                        Configuration = config,
+                        Pool = p
+                    });
                 });
             }
+            
+            return result;
+        }
+
+        private void HandlePoolListCommand(string symbol)
+        {
+            var fullPoolList = GetPoolList();
+            var filteredPoolList = fullPoolList
+                .Where(p => string.IsNullOrEmpty(symbol)
+                    || (p.Configuration.PoolGroup.Id.Equals(symbol, StringComparison.OrdinalIgnoreCase)
+                    || (p.Configuration.PoolGroup.Id.ShortCoinSymbol().Equals(symbol, StringComparison.OrdinalIgnoreCase))))
+                .ToList();
+            
+            if (filteredPoolList.Count() == 0) return;
+
+            replBuffer.Add(String.Empty);
+
+            filteredPoolList.ForEach((p) =>
+            {
+                replBuffer.Add((fullPoolList.IndexOf(p) + 1).ToString().FitLeft(2, Ellipsis) + " "
+                    + p.Configuration.PoolGroup.Id.ShortCoinSymbol().PadFitRight(8, Ellipsis) 
+                    + p.Pool.Host.ShortHostFromHost().PadFitRight(47, Ellipsis)
+                    + p.Pool.Username.PadFitRight(20, Ellipsis));
+            });
 
             screenManager.SetCurrentScreen(ScreenNames.Repl);
             RenderScreen();
