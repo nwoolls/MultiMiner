@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Web.Script.Serialization;
 
 namespace MultiMiner.Utility.Serialization
 {
@@ -21,11 +21,10 @@ namespace MultiMiner.Utility.Serialization
         public static IEnumerable<T> LoadLogFile<T>(string logFilePath)
         {
             string[] logFile = File.ReadAllLines(logFilePath);
-            List<T> result = new List<T>();
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            List<T> result = new List<T>();            
             foreach (string line in logFile)
             {
-                result.Add(serializer.Deserialize<T>(line));
+                result.Add(JsonConvert.DeserializeObject<T>(line));
             }
             return result;
         }
@@ -34,8 +33,7 @@ namespace MultiMiner.Utility.Serialization
         {
             RollOverLogFile(logFilePath);
 
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            string jsonData = serializer.Serialize(objectToLog);
+            string jsonData = JsonConvert.SerializeObject(objectToLog);
 
             try
             {

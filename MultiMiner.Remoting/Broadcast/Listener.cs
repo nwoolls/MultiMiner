@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Web.Script.Serialization;
 
 namespace MultiMiner.Remoting.Broadcast
 {
@@ -74,9 +74,8 @@ namespace MultiMiner.Remoting.Broadcast
         private void ProcessReceived(IPEndPoint source, byte[] bytes)
         {
             string jsonData = Encoding.ASCII.GetString(bytes);
-
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            Packet packet = serializer.Deserialize<Packet>(jsonData);
+                        
+            Packet packet = JsonConvert.DeserializeObject<Packet>(jsonData);
 
             if (PacketReceived != null)
             {

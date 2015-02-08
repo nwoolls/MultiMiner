@@ -40,7 +40,6 @@ using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
 using System.Timers;
-using System.Web.Script.Serialization;
 using Application = MultiMiner.UX.Data.Configuration.Application;
 using Broadcaster = MultiMiner.Remoting.Broadcast.Broadcaster;
 using ConfigurationEventArgs = MultiMiner.UX.Data.ConfigurationEventArgs;
@@ -4249,8 +4248,7 @@ namespace MultiMiner.UX.ViewModels
             Type type = typeof(Remoting.Data.Transfer.Machine);
             if (ea.Packet.Descriptor.Equals(type.FullName))
             {
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                Remoting.Data.Transfer.Machine dto = serializer.Deserialize<Remoting.Data.Transfer.Machine>(ea.Packet.Payload);
+                Remoting.Data.Transfer.Machine dto = JsonConvert.DeserializeObject<Remoting.Data.Transfer.Machine>(ea.Packet.Payload);
 
                 if ((InstanceManager.ThisPCInstance != null) &&
                     (InstanceManager.ThisPCInstance.IpAddress.Equals(ea.IpAddress)))

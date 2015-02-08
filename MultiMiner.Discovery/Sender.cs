@@ -2,8 +2,8 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Web.Script.Serialization;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace MultiMiner.Discovery
 {
@@ -27,8 +27,7 @@ namespace MultiMiner.Discovery
                 packet.Fingerprint = fingerprint;
                 packet.Verb = verb;
 
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                string jsonData = serializer.Serialize(packet);
+                string jsonData = JsonConvert.SerializeObject(packet);
                 byte[] bytes = Encoding.ASCII.GetBytes(jsonData);
 
                 IPEndPoint ip = new IPEndPoint(destination, Config.Port);
