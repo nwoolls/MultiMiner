@@ -2760,6 +2760,18 @@ namespace MultiMiner.UX.ViewModels
             Engine.Data.Configuration.Coin coinConfig = EngineConfiguration.CoinConfigurations.SingleOrDefault(c => c.PoolGroup.Id.Equals(coinSymbol, StringComparison.OrdinalIgnoreCase));
             if (coinConfig == null) return false;
 
+            MiningPool poolConfig = FindPoolConfiguration(coinConfig, url, user);
+
+            if (poolConfig == null) return false;
+
+            coinConfig.Pools.Remove(poolConfig);
+            EngineConfiguration.SaveCoinConfigurations();
+
+            return true;
+        }
+
+        public MiningPool FindPoolConfiguration(Coin coinConfig, string url, string user)
+        {
             MiningPool poolConfig = coinConfig.Pools.FirstOrDefault((p) =>
             {
                 //url may or may not have protocol, but URI ctor requires one
@@ -2777,13 +2789,7 @@ namespace MultiMiner.UX.ViewModels
                     && hostsEqual
                     && usersEqual;
             });
-
-            if (poolConfig == null) return false;
-
-            coinConfig.Pools.Remove(poolConfig);
-            EngineConfiguration.SaveCoinConfigurations();
-
-            return true;
+            return poolConfig;
         }
 
         public MiningPool AddNewPool(CoinApi.Data.CoinInformation coin, string url, string user, string pass)
