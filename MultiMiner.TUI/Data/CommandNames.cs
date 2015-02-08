@@ -18,7 +18,7 @@
         public const string Device = "Dev";
     }
 
-    class ArgumentNames
+    class CommandArguments
     {
         public const string Start = "Start";
         public const string Stop = "Stop";

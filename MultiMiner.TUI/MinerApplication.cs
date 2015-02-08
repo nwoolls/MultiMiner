@@ -1067,10 +1067,10 @@ namespace MultiMiner.TUI
             {
                 var verb = input[1];
 
-                bool add = verb.Equals(ArgumentNames.Add, StringComparison.OrdinalIgnoreCase);
-                bool remove = verb.Equals(ArgumentNames.Remove, StringComparison.OrdinalIgnoreCase);
-                bool list = verb.Equals(ArgumentNames.List, StringComparison.OrdinalIgnoreCase);
-                bool edit = verb.Equals(ArgumentNames.Edit, StringComparison.OrdinalIgnoreCase);
+                bool add = verb.Equals(CommandArguments.Add, StringComparison.OrdinalIgnoreCase);
+                bool remove = verb.Equals(CommandArguments.Remove, StringComparison.OrdinalIgnoreCase);
+                bool list = verb.Equals(CommandArguments.List, StringComparison.OrdinalIgnoreCase);
+                bool edit = verb.Equals(CommandArguments.Edit, StringComparison.OrdinalIgnoreCase);
 
                 if (list)
                 {
@@ -1266,24 +1266,24 @@ namespace MultiMiner.TUI
             if (input.Count() >= 2)
             {
                 var firstArgument = input[1];
-                if (firstArgument.Equals(ArgumentNames.On, StringComparison.OrdinalIgnoreCase))
+                if (firstArgument.Equals(CommandArguments.On, StringComparison.OrdinalIgnoreCase))
                 {
                     app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = true;
                     AddNotification("Auto mining strategies enabled");
                 }
-                else if (firstArgument.Equals(ArgumentNames.Off, StringComparison.OrdinalIgnoreCase))
+                else if (firstArgument.Equals(CommandArguments.Off, StringComparison.OrdinalIgnoreCase))
                 {
                     app.EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins = false;
                     AddNotification("Auto mining strategies disabled");
                 }
-                else if (firstArgument.Equals(ArgumentNames.Set, StringComparison.OrdinalIgnoreCase))
+                else if (firstArgument.Equals(CommandArguments.Set, StringComparison.OrdinalIgnoreCase))
                 {
                     var lastArgument = input.Last();
-                    if (lastArgument.Equals(ArgumentNames.Profit, StringComparison.OrdinalIgnoreCase))
+                    if (lastArgument.Equals(CommandArguments.Profit, StringComparison.OrdinalIgnoreCase))
                         app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Profitability;
-                    else if (lastArgument.Equals(ArgumentNames.Diff, StringComparison.OrdinalIgnoreCase))
+                    else if (lastArgument.Equals(CommandArguments.Diff, StringComparison.OrdinalIgnoreCase))
                         app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Difficulty;
-                    else if (lastArgument.Equals(ArgumentNames.Price, StringComparison.OrdinalIgnoreCase))
+                    else if (lastArgument.Equals(CommandArguments.Price, StringComparison.OrdinalIgnoreCase))
                         app.EngineConfiguration.StrategyConfiguration.MiningBasis = Engine.Data.Configuration.Strategy.CoinMiningBasis.Price;
                     else
                         return false; //early exit, wrong syntax
@@ -1306,7 +1306,7 @@ namespace MultiMiner.TUI
             if (input.Count() >= 2)
             {
                 var verb = input[1];
-                if (verb.Equals(ArgumentNames.Clear, StringComparison.OrdinalIgnoreCase))
+                if (verb.Equals(CommandArguments.Clear, StringComparison.OrdinalIgnoreCase))
                 {
                     notifications.Clear();
                     return true; //early exit - success
@@ -1320,12 +1320,12 @@ namespace MultiMiner.TUI
                         index--; //user enters 1-based
                         if ((index >= 0) && (index < notifications.Count))
                         {
-                            if (verb.Equals(ArgumentNames.Remove, StringComparison.OrdinalIgnoreCase))
+                            if (verb.Equals(CommandArguments.Remove, StringComparison.OrdinalIgnoreCase))
                             {
                                 notifications.RemoveAt(index);
                                 return true; //early exit - success
                             }
-                            else if (verb.Equals(ArgumentNames.Act, StringComparison.OrdinalIgnoreCase))
+                            else if (verb.Equals(CommandArguments.Act, StringComparison.OrdinalIgnoreCase))
                             {
                                 notifications[index].ClickHandler();
                                 return true; //early exit - success
@@ -1355,38 +1355,38 @@ namespace MultiMiner.TUI
 
                 if (networkDevice != null)
                 {
-                    if (verb.Equals(ArgumentNames.Restart, StringComparison.OrdinalIgnoreCase))
+                    if (verb.Equals(CommandArguments.Restart, StringComparison.OrdinalIgnoreCase))
                     {
                         app.RestartNetworkDevice(networkDevice);
                         AddNotification(String.Format("Restarting {0}", networkDevice.Path));
                         return true; //early exit - success
                     }
-                    else if (verb.Equals(ArgumentNames.Start, StringComparison.OrdinalIgnoreCase))
+                    else if (verb.Equals(CommandArguments.Start, StringComparison.OrdinalIgnoreCase))
                     {
                         app.StartNetworkDevice(networkDevice);
                         AddNotification(String.Format("Starting {0}", networkDevice.Path));
                         return true; //early exit - success
                     }
-                    else if (verb.Equals(ArgumentNames.Stop, StringComparison.OrdinalIgnoreCase))
+                    else if (verb.Equals(CommandArguments.Stop, StringComparison.OrdinalIgnoreCase))
                     {
                         app.StopNetworkDevice(networkDevice);
                         AddNotification(String.Format("Stopping {0}", networkDevice.Path));
                         return true; //early exit - success
                     }
-                    else if (verb.Equals(ArgumentNames.Reboot, StringComparison.OrdinalIgnoreCase))
+                    else if (verb.Equals(CommandArguments.Reboot, StringComparison.OrdinalIgnoreCase))
                     {
                         if (app.RebootNetworkDevice(networkDevice))
                             AddNotification(String.Format("Rebooting {0}", networkDevice.Path));
                         return true; //early exit - success
                     }
-                    else if (verb.Equals(ArgumentNames.Pin, StringComparison.OrdinalIgnoreCase))
+                    else if (verb.Equals(CommandArguments.Pin, StringComparison.OrdinalIgnoreCase))
                     {
                         bool sticky;
                         app.ToggleNetworkDeviceSticky(networkDevice, out sticky);
                         AddNotification(String.Format("{0} is now {1}", networkDevice.Path, sticky ? "pinned" : "unpinned"));
                         return true; //early exit - success
                     }
-                    else if (verb.Equals(ArgumentNames.Hide, StringComparison.OrdinalIgnoreCase))
+                    else if (verb.Equals(CommandArguments.Hide, StringComparison.OrdinalIgnoreCase))
                     {
                         //current limitations in how .Visible is treated mean we can only hide and not un-hide
                         //hiding means the entry will no longer be in the view model to un-hide
@@ -1400,13 +1400,13 @@ namespace MultiMiner.TUI
                     {
                         var lastWords = String.Join(" ", input.Skip(3).ToArray());
 
-                        if (verb.Equals(ArgumentNames.Name, StringComparison.OrdinalIgnoreCase))
+                        if (verb.Equals(CommandArguments.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             app.RenameDevice(networkDevice, lastWords);
                             AddNotification(String.Format("{0} renamed to {1}", networkDevice.Path, lastWords));
                             return true; //early exit - success
                         }
-                        else if (verb.Equals(ArgumentNames.Switch, StringComparison.OrdinalIgnoreCase))
+                        else if (verb.Equals(CommandArguments.Switch, StringComparison.OrdinalIgnoreCase))
                         {
                             var index = -1;
                             if (int.TryParse(lastWords, out index))
@@ -1438,7 +1438,7 @@ namespace MultiMiner.TUI
                 
                 if (device != null)
                 {
-                    if (verb.Equals(ArgumentNames.Enable, StringComparison.OrdinalIgnoreCase)
+                    if (verb.Equals(CommandArguments.Enable, StringComparison.OrdinalIgnoreCase)
                         //can't enable/disable Network Devices
                         && (device.Kind != DeviceKind.NET))
                     {
@@ -1450,7 +1450,7 @@ namespace MultiMiner.TUI
                     }
                     else if (input.Count() >= 4)
                     {                        
-                        if (verb.Equals(ArgumentNames.Switch, StringComparison.OrdinalIgnoreCase)
+                        if (verb.Equals(CommandArguments.Switch, StringComparison.OrdinalIgnoreCase)
                             //can't enable/disable Network Devices
                             && (device.Kind != DeviceKind.NET))
                         {
@@ -1475,7 +1475,7 @@ namespace MultiMiner.TUI
                         {
                             var lastWords = String.Join(" ", input.Skip(3).ToArray());
 
-                            if (verb.Equals(ArgumentNames.Name, StringComparison.OrdinalIgnoreCase))
+                            if (verb.Equals(CommandArguments.Name, StringComparison.OrdinalIgnoreCase))
                             {
                                 app.RenameDevice(device, lastWords);
                                 AddNotification(String.Format("{0} renamed to {1}", device.Path, lastWords));
