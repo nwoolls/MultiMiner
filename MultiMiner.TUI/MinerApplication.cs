@@ -964,9 +964,12 @@ namespace MultiMiner.TUI
 
             filteredPoolList.ForEach((p) =>
             {
+                UriBuilder builder = new UriBuilder(p.Pool.Host.Trim());
+                builder.Port = p.Pool.Port;
+                
                 replBuffer.Add((fullPoolList.IndexOf(p) + 1).ToString().FitLeft(2, Ellipsis) + " "
                     + p.Configuration.PoolGroup.Id.ShortCoinSymbol().PadFitRight(8, Ellipsis) 
-                    + p.Pool.Host.ShortHostFromHost().PadFitRight(47, Ellipsis)
+                    + builder.Uri.ToString().ShortHostFromHost().PadFitRight(47, Ellipsis)
                     + p.Pool.Username.PadFitRight(20, Ellipsis));
             });
 
