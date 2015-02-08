@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MultiMiner.Win.Extensions;
+using MultiMiner.UX.Extensions;
 using System.Globalization;
 using System.Threading;
 
