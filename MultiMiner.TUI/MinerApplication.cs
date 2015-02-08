@@ -254,7 +254,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.SwitchAll, 
                 CommandAliases.SwitchAll,
-                "<symbol>",
+                "symbol",
                 (input) =>
             {
                 if (input.Count() == 2)
@@ -268,7 +268,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Pools, 
                 CommandAliases.Pools,
-                "<add|remove|edit|list> [symbol|pool_number] [url] [user] [pass]",
+                "add|remove|edit|list [symbol|pool#] [url] [user] [pass]",
                 HandlePoolCommand);
 
             commandProcessor.RegisterCommand(
@@ -303,13 +303,13 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Strategies, 
                 String.Empty,
-                "<on|off|set> [profit|diff|price]", 
+                "on|off|set [profit|diff|price]", 
                 HandleStrategiesCommand);
 
             commandProcessor.RegisterCommand(
                 CommandNames.Notifications, 
                 String.Empty,
-                "<act|remove|clear> [note_number]",
+                "act|remove|clear [note#]",
                 HandeNotificationsCommand);
 
             commandProcessor.RegisterCommand(
@@ -334,7 +334,7 @@ namespace MultiMiner.TUI
             commandProcessor.RegisterCommand(
                 CommandNames.Device,
                 CommandAliases.Device,
-                "<enable|switch|rename> <id> [symbol|name]",
+                "enable|switch|name dev_id [symbol|name]",
                 HandeDeviceCommand);
         }
 
@@ -1212,7 +1212,7 @@ namespace MultiMiner.TUI
                     {
                         var lastWords = String.Join(" ", input.Skip(3).ToArray());
 
-                        if (verb.Equals(ArgumentNames.Rename, StringComparison.OrdinalIgnoreCase))
+                        if (verb.Equals(ArgumentNames.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             app.RenameDevice(networkDevice, lastWords);
                             AddNotification(String.Format("{0} renamed to {1}", networkDevice.Path, lastWords));
@@ -1273,7 +1273,7 @@ namespace MultiMiner.TUI
                         {
                             var lastWords = String.Join(" ", input.Skip(3).ToArray());
 
-                            if (verb.Equals(ArgumentNames.Rename, StringComparison.OrdinalIgnoreCase))
+                            if (verb.Equals(ArgumentNames.Name, StringComparison.OrdinalIgnoreCase))
                             {
                                 app.RenameDevice(device, lastWords);
                                 AddNotification(String.Format("{0} renamed to {1}", device.Path, lastWords));

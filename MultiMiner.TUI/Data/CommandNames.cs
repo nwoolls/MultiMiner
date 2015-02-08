@@ -35,7 +35,7 @@
         public const string Clear = "Clear";
         public const string Act = "Act";
         public const string Reboot = "Reboot";
-        public const string Rename = "Rename";
+        public const string Name = "Name";
         public const string Pin = "Pin";
         public const string Hide = "Hide";
         public const string Enable = "Enable";
