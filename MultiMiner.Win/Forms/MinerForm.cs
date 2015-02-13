@@ -1110,8 +1110,12 @@ namespace MultiMiner.Win.Forms
 
         private void SavePosition()
         {
-            if (WindowState == FormWindowState.Normal)
-                app.ApplicationConfiguration.AppPosition = new Rectangle(Location, Size);
+			//don't save position if we haven't loaded settings
+			//SetBriefMode() may trigger this and overwrite customizations
+			if (applicationSetup &&
+				//don't save position if Maximized
+				(WindowState == FormWindowState.Normal))
+				app.ApplicationConfiguration.AppPosition = new Rectangle(Location, Size);
         }
         #endregion
 
