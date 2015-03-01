@@ -106,7 +106,8 @@ var
   RootKeyName: String;
 begin
   Result := True;
-  RootKeyName := 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4.0\';
+  // v4, not v4.0 as v4.0 only has minimal Client Profile info
+  RootKeyName := 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\';
   ClientProfileInstalled := RegQueryDWordValue(HKLM, RootKeyName + 'Client', 'Install', InstallValue) and (InstallValue = 1);   
   FullProfileInstalled := RegQueryDWordValue(HKLM, RootKeyName + 'Full', 'Install', InstallValue) and (InstallValue = 1);
   if not ClientProfileInstalled and not FullProfileInstalled then
