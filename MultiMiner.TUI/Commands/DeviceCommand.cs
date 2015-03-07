@@ -40,7 +40,7 @@ namespace MultiMiner.TUI.Commands
                         app.ToggleDevices(new List<DeviceDescriptor> { device }, enabled);
                         app.SaveChanges();
 						//don't identify by device.Path (for output) - blank for GPUs
-						notificationHandler(String.Format("{0} is now {1}", device.Name, enabled ? "enabled" : "disabled"));
+						notificationHandler(String.Format("{0} is now {1}", device.EasyName, enabled ? "enabled" : "disabled"));
                         return true; //early exit - success
                     }
                     else if (input.Count() >= 4)
@@ -62,7 +62,7 @@ namespace MultiMiner.TUI.Commands
                                 var coinName = configs.First().PoolGroup.Name;
                                 app.SetDevicesToCoin(new List<DeviceDescriptor> { device }, coinName);
                                 app.SaveChanges();
-                                notificationHandler(String.Format("{0} set to {1}: type restart to apply", device.Name, coinName));
+                                notificationHandler(String.Format("{0} set to {1}: type restart to apply", device.EasyName, coinName));
                                 return true; //early exit - success
                             }
                         }
@@ -72,8 +72,9 @@ namespace MultiMiner.TUI.Commands
 
                             if (verb.Equals(CommandArguments.Name, StringComparison.OrdinalIgnoreCase))
                             {
+								var oldName = device.EasyName;
                                 app.RenameDevice(device, lastWords);
-                                notificationHandler(String.Format("{0} renamed to {1}", device.Name, lastWords));
+                                notificationHandler(String.Format("{0} renamed to {1}", oldName, lastWords));
                                 return true; //early exit - success
                             }
                         }

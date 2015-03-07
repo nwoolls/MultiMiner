@@ -87,7 +87,8 @@ namespace MultiMiner.UX.ViewModels
         //ViewModel specific
         public bool Visible { get; set; }
         public string FriendlyName { get; set; }
-        public DateTime? LastRestart { get; set; }
+		public string EasyName { get { return String.IsNullOrEmpty(FriendlyName) ? Name : FriendlyName; } }
+		public DateTime? LastRestart { get; set; }
         public DateTime? LastReboot { get; set; }
 
         public Int32 CompareTo(DeviceViewModel value)
