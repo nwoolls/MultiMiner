@@ -40,7 +40,8 @@
         public const string Pin = "Pin";
         public const string Hide = "Hide";
         public const string Enable = "Enable";
-        public const string Switch = "Switch";
+		public const string Disable = "Disable";
+		public const string Switch = "Switch";
         public const string Edit = "Edit";
     }
 
