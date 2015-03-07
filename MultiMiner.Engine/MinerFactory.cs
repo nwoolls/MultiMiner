@@ -43,11 +43,16 @@ namespace MultiMiner.Engine
 
             string algorithmName = algorithm.Name;
 
+			MinerDescriptor result = null;
+
             if (miners.ContainsKey(algorithmName))
-                return Miners.Single(m => m.Name.Equals(miners[algorithmName], StringComparison.OrdinalIgnoreCase));
-            if (algorithm.DefaultMiner != null)
-                return Miners.Single(m => m.Name.Equals(algorithm.DefaultMiner, StringComparison.OrdinalIgnoreCase));
-            return null;
+				// SingleOrDefault - the user may have a config file with a backend
+				// miner registered that no longer exists in their Miners\ folder
+				result = Miners.SingleOrDefault(m => m.Name.Equals(miners[algorithmName], StringComparison.OrdinalIgnoreCase));
+            if ((result == null) && (algorithm.DefaultMiner != null))
+				result = Miners.Single(m => m.Name.Equals(algorithm.DefaultMiner, StringComparison.OrdinalIgnoreCase));
+
+            return result;
         }
 
         public MinerDescriptor GetMiner(DeviceKind deviceKind, string algorithmName, SerializableDictionary<string, string> miners)

@@ -539,21 +539,26 @@ namespace MultiMiner.Engine
 
                     if (device.Kind == DeviceKind.PXY)
                     {
-                        Data.Configuration.Coin existingCoinConfig = engineConfiguration.CoinConfigurations.Single(cc => cc.PoolGroup.Id.Equals(existingConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
+						//we can only auto-switch a Proxy if we know the current algo
+						//so we only consider PXY configurations with an existing Symbol
+						if (!String.IsNullOrEmpty(existingConfiguration.CoinSymbol))
+						{
+							Data.Configuration.Coin existingCoinConfig = engineConfiguration.CoinConfigurations.Single(cc => cc.PoolGroup.Id.Equals(existingConfiguration.CoinSymbol, StringComparison.OrdinalIgnoreCase));
 
-                        //keep Proxies on the same algo - don't know what is pointed at them
-                        if (existingCoinConfig.PoolGroup.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase))
-                        {
-                            profitableCoin = ChooseCoinFromList(scryptProfitableCoins, scryptIterator);
+							//keep Proxies on the same algo - don't know what is pointed at them
+							if (existingCoinConfig.PoolGroup.Algorithm.Equals(AlgorithmNames.Scrypt, StringComparison.OrdinalIgnoreCase))
+							{
+								profitableCoin = ChooseCoinFromList(scryptProfitableCoins, scryptIterator);
 
-                            scryptIterator++;
-                        }
-                        else
-                        {
-                            profitableCoin = ChooseCoinFromList(sha256ProfitableCoins, sha256Iterator);
+								scryptIterator++;
+							}
+							else
+							{
+								profitableCoin = ChooseCoinFromList(sha256ProfitableCoins, sha256Iterator);
 
-                            sha256Iterator++;
-                        }
+								sha256Iterator++;
+							}
+						}
                     }
                     else if (device.SupportsAlgorithm(AlgorithmNames.Scrypt) && !device.SupportsAlgorithm(AlgorithmNames.SHA256))
                     {
