@@ -32,7 +32,9 @@ namespace MultiMiner.TUI.Commands
 
                 if (device != null)
                 {
-                    if (verb.Equals(CommandArguments.Enable, StringComparison.OrdinalIgnoreCase)
+                    if ((verb.Equals(CommandArguments.Enable, StringComparison.OrdinalIgnoreCase) ||
+						//allow "device disable" even though not in help - POLA
+						verb.Equals(CommandArguments.Disable, StringComparison.OrdinalIgnoreCase))
                         //can't enable/disable Network Devices
                         && (device.Kind != DeviceKind.NET))
                     {
