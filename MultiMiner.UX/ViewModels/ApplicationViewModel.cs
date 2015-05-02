@@ -2259,13 +2259,28 @@ namespace MultiMiner.UX.ViewModels
             {
                 string minerPath = System.IO.Path.Combine("Miners", minerName);
                 string destinationFolder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, minerPath);
-                MinerInstaller.InstallMiner(UserAgent.AgentString, miner, destinationFolder);
-                //may have been installed via Remoting - dismiss notification
-                if (NotificationDismissed != null)
-                    NotificationDismissed(this, new NotificationEventArgs
+                try
+                {
+                    MinerInstaller.InstallMiner(UserAgent.AgentString, miner, destinationFolder);
+                    //may have been installed via Remoting - dismiss notification
+                    if (NotificationDismissed != null)
+                        NotificationDismissed(this, new NotificationEventArgs
+                        {
+                            Id = BfgMinerNotificationId.ToString()
+                        });
+                }
+                catch (NotImplementedException)
+                {
+                    //don't crash on *nix when downloads get triggered
+                    PostNotification("Auto installation not supported for your OS", () => 
                     {
-                        Id = BfgMinerNotificationId.ToString()
-                    });
+                        MessageBoxShow(
+                            String.Format("You must install {0} for your OS manually.", miner.Name),
+                            "Not Implemented",
+                            PromptButtons.OK, 
+                            PromptIcon.Warning);
+                    }, NotificationKind.Warning);
+                }
             }
             finally
             {
