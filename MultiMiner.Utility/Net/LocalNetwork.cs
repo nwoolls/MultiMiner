@@ -105,6 +105,14 @@ namespace MultiMiner.Utility.Net
                         long rangeStart = network + 1;
                         long rangeEnd = broadcast - 1;
 
+                        //e.g. if host == broadcast, netmask == 255.255.255.255
+                        if (rangeEnd < rangeStart)
+                        {
+                            long swap = rangeEnd;
+                            rangeEnd = rangeStart;
+                            rangeStart = swap;
+                        }
+
                         interfaceInfo.RangeStart = new IPAddress((long)(uint)IPAddress.HostToNetworkOrder((int)rangeStart));
                         interfaceInfo.RangeEnd = new IPAddress((long)(uint)IPAddress.HostToNetworkOrder((int)rangeEnd));
 
