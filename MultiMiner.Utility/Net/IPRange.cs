@@ -30,12 +30,7 @@ namespace MultiMiner.Utility.Net
             for (int i = 0; i < 4; i++)
                 capacity *= endIp[i] - beginIp[i] + 1;
 
-			// don't assume endIp > beginIp
-			if (capacity < 0)
-				// no IPs between beginIp and endIp
-				return new List<IPAddress>();
-
-			List<IPAddress> ips = new List<IPAddress>(capacity);
+            List<IPAddress> ips = new List<IPAddress>(capacity);
             for (int i = beginIp[0]; i <= endIp[0]; i++)
                 for (int j = beginIp[1]; j <= endIp[1]; j++)
                     for (int k = beginIp[2]; k <= endIp[2]; k++)
