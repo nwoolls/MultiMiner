@@ -35,6 +35,9 @@ namespace MultiMiner.MobileMiner.Embed
                 embeddedBrowsers[controller] = embeddedBrowser;
 
                 embeddedBrowser.Navigated += HandleBrowserNavigated;
+
+                //known issues with the IE7 Compatibility Mode that WebBrowser users
+                embeddedBrowser.ScriptErrorsSuppressed = true;
             }
 
             bool postCredentials = !embeddedBrowserAuthenticated && !String.IsNullOrEmpty(emailAddress);
