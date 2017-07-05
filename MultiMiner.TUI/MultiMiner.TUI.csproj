@@ -97,10 +97,6 @@
       <Project>{dce499f9-0751-4088-b45b-67ae0e612362}</Project>
       <Name>MultiMiner.ExchangeApi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MultiMiner.MobileMiner\MultiMiner.MobileMiner.csproj">
-      <Project>{70622816-5853-4470-9432-9acda2e96089}</Project>
-      <Name>MultiMiner.MobileMiner</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.MultipoolApi\MultiMiner.MultipoolApi.csproj">
       <Project>{4af4b34a-07db-456b-9c58-b0863435fe54}</Project>
       <Name>MultiMiner.MultipoolApi</Name>

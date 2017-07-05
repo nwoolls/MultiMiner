@@ -99,6 +99,7 @@
             // 
             // checkBox5
             // 
+            this.checkBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBox5.AutoSize = true;
             this.checkBox5.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "ShowApiErrors", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.checkBox5.Location = new System.Drawing.Point(22, 188);
@@ -126,6 +127,7 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "MobileMiner";
+            this.groupBox1.Visible = false;
             // 
             // httpsMobileMinerCheck
             // 

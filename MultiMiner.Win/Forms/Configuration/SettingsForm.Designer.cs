@@ -81,6 +81,8 @@ namespace MultiMiner.Win.Forms.Configuration
             // 
             // groupBox3
             // 
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox3.Controls.Add(this.linkLabel1);
             this.groupBox3.Controls.Add(this.serviceSettingsLink);
             this.groupBox3.Controls.Add(this.pictureBox4);
@@ -110,11 +112,13 @@ namespace MultiMiner.Win.Forms.Configuration
             this.linkLabel1.TabIndex = 8;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "App key (free):";
+            this.linkLabel1.Visible = false;
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
             // 
             // serviceSettingsLink
             // 
             this.serviceSettingsLink.AccessibleName = "Advanced service settings";
+            this.serviceSettingsLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.serviceSettingsLink.AutoSize = true;
             this.serviceSettingsLink.Location = new System.Drawing.Point(36, 129);
             this.serviceSettingsLink.Name = "serviceSettingsLink";
@@ -126,6 +130,7 @@ namespace MultiMiner.Win.Forms.Configuration
             // 
             // pictureBox4
             // 
+            this.pictureBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pictureBox4.Image = global::MultiMiner.Win.Properties.Resources.list_internet;
             this.pictureBox4.Location = new System.Drawing.Point(14, 128);
             this.pictureBox4.Name = "pictureBox4";
@@ -186,6 +191,7 @@ namespace MultiMiner.Win.Forms.Configuration
             this.mobileMinerInfoLink.TabIndex = 6;
             this.mobileMinerInfoLink.TabStop = true;
             this.mobileMinerInfoLink.Text = "Learn more about MobileMiner";
+            this.mobileMinerInfoLink.Visible = false;
             this.mobileMinerInfoLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.mobileMinerInfoLink_LinkClicked);
             // 
             // pictureBox1
@@ -196,6 +202,7 @@ namespace MultiMiner.Win.Forms.Configuration
             this.pictureBox1.Size = new System.Drawing.Size(19, 18);
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Visible = false;
             // 
             // remoteMonitoringCheck
             // 
@@ -207,6 +214,7 @@ namespace MultiMiner.Win.Forms.Configuration
             this.remoteMonitoringCheck.TabIndex = 5;
             this.remoteMonitoringCheck.Text = "Enable MobileMiner monitoring";
             this.remoteMonitoringCheck.UseVisualStyleBackColor = true;
+            this.remoteMonitoringCheck.Visible = false;
             // 
             // applicationConfigurationBindingSource
             // 
@@ -220,6 +228,7 @@ namespace MultiMiner.Win.Forms.Configuration
             this.appKeyEdit.Name = "appKeyEdit";
             this.appKeyEdit.Size = new System.Drawing.Size(124, 23);
             this.appKeyEdit.TabIndex = 9;
+            this.appKeyEdit.Visible = false;
             // 
             // label8
             // 
@@ -229,6 +238,7 @@ namespace MultiMiner.Win.Forms.Configuration
             this.label8.Size = new System.Drawing.Size(82, 15);
             this.label8.TabIndex = 4;
             this.label8.Text = "Email address:";
+            this.label8.Visible = false;
             // 
             // emailAddressEdit
             // 
@@ -238,6 +248,7 @@ namespace MultiMiner.Win.Forms.Configuration
             this.emailAddressEdit.Name = "emailAddressEdit";
             this.emailAddressEdit.Size = new System.Drawing.Size(121, 23);
             this.emailAddressEdit.TabIndex = 7;
+            this.emailAddressEdit.Visible = false;
             // 
             // groupBox2
             // 

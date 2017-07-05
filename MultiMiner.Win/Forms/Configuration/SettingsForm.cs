@@ -83,6 +83,9 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
+            // adjust height for hidden MobileMiner settings
+            Height = Height - 65;
+
             PopulatePriorities(); //populate before loading settings
             LoadSettings();
             autoLaunchCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;

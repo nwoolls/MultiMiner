@@ -17,7 +17,7 @@ msbuild.updateAssemblyVersion("../MultiMiner.Xgminer/Properties/AssemblyInfo.cs"
 msbuild.updateAssemblyVersion("../MultiMiner.Xgminer.Api/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Xgminer.Discovery/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.MobileMiner/Properties/AssemblyInfo.cs", appVersion);
-msbuild.updateAssemblyVersion("../MultiMiner.MobileMiner.Embed/Properties/AssemblyInfo.cs", appVersion);
+//msbuild.updateAssemblyVersion("../MultiMiner.MobileMiner.Embed/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Stats/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Remoting/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Services/Properties/AssemblyInfo.cs", appVersion);
@@ -45,7 +45,7 @@ msbuild.rebuild("../MultiMiner.Xgminer/MultiMiner.Xgminer.csproj", { configurati
 msbuild.rebuild("../MultiMiner.Xgminer.Api/MultiMiner.Xgminer.Api.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Xgminer.Discovery/MultiMiner.Xgminer.Discovery.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.MobileMiner/MultiMiner.MobileMiner.csproj", { configuration: "Release" });
-msbuild.rebuild("../MultiMiner.MobileMiner.Embed/MultiMiner.MobileMiner.Embed.csproj", { configuration: "Release" });
+//msbuild.rebuild("../MultiMiner.MobileMiner.Embed/MultiMiner.MobileMiner.Embed.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Stats/MultiMiner.Stats.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Remoting/MultiMiner.Remoting.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Services/MultiMiner.Services.csproj", { configuration: "Release" });
@@ -92,8 +92,8 @@ file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Discovery.dll", "PF/
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Discovery.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Embed.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Embed.pdb", "PF/");
+//file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Embed.dll", "PF/");
+//file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Embed.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Stats.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Stats.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll", "PF/");
@@ -154,8 +154,8 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Discovery.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.pdb,\
-../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Embed.dll,\
-../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Embed.pdb,\
+//../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Embed.dll,\
+//../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Embed.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Stats.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Stats.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll,\

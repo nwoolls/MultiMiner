@@ -7,7 +7,7 @@ using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Data.Configuration;
 using MultiMiner.ExchangeApi.Data;
 using MultiMiner.MobileMiner.Data;
-using MultiMiner.MobileMiner.Embed;
+//using MultiMiner.MobileMiner.Embed;
 using MultiMiner.Utility.OS;
 using MultiMiner.Utility.Serialization;
 using MultiMiner.UX.Data;
@@ -2008,14 +2008,14 @@ namespace MultiMiner.Win.Forms
         {
             ToggleSideBarButtons(sender);
 
-            ShowWebBrowser(WebBrowserProvider.DashboardController);
+            //ShowWebBrowser(WebBrowserProvider.DashboardController);
         }
 
         private void metricsButton_Click(object sender, EventArgs e)
         {
             ToggleSideBarButtons(sender);
 
-            ShowWebBrowser(WebBrowserProvider.HistoryController);
+            //ShowWebBrowser(WebBrowserProvider.HistoryController);
         }
 
         private void apiConsoleSideButton_Click(object sender, EventArgs e)
@@ -2209,7 +2209,7 @@ namespace MultiMiner.Win.Forms
 
             app.SetupCoalescedTimers();
 
-            app.SubmitMobileMinerPools();
+            //app.SubmitMobileMinerPools();
 
             RefreshViewFromViewModel();
 
@@ -2726,15 +2726,15 @@ namespace MultiMiner.Win.Forms
             advancedAreaContainer.BringToFront();
         }
 
-        private void ShowWebBrowser(string controller)
-        {
-            WebBrowser embeddedBrowser = WebBrowserProvider.GetWebBrowser(
-                controller,
-                app.ApplicationConfiguration.MobileMinerEmailAddress,
-                app.ApplicationConfiguration.MobileMinerApplicationKey);
+        //private void ShowWebBrowser(string controller)
+        //{
+        //    WebBrowser embeddedBrowser = WebBrowserProvider.GetWebBrowser(
+        //        controller,
+        //        app.ApplicationConfiguration.MobileMinerEmailAddress,
+        //        app.ApplicationConfiguration.MobileMinerApplicationKey);
 
-            ShowEmbeddedBrowser(embeddedBrowser);
-        }
+        //    ShowEmbeddedBrowser(embeddedBrowser);
+        //}
 
         private void ShowEmbeddedBrowser(WebBrowser embeddedBrowser)
         {

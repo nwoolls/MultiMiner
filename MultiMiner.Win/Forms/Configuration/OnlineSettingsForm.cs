@@ -20,6 +20,9 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void OnlineSettingsForm_Load(object sender, EventArgs e)
         {
+            // adjust height for hidden MobileMiner settings
+            Height = Height - 85;
+
             applicationConfigurationBindingSource.DataSource = workingApplicationConfiguration;
 
             remoteCommandsCheck.Enabled = workingApplicationConfiguration.MobileMinerMonitoring;

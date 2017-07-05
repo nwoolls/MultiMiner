@@ -202,8 +202,8 @@
             this.adminPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sideToolStrip = new System.Windows.Forms.ToolStrip();
             this.homeSideButton = new System.Windows.Forms.ToolStripButton();
-            this.dashboardSideButton = new System.Windows.Forms.ToolStripButton();
-            this.metricsSideButton = new System.Windows.Forms.ToolStripButton();
+            //this.dashboardSideButton = new System.Windows.Forms.ToolStripButton();
+            //this.metricsSideButton = new System.Windows.Forms.ToolStripButton();
             this.apiConsoleSideButton = new System.Windows.Forms.ToolStripButton();
             this.historySideButton = new System.Windows.Forms.ToolStripButton();
             this.apiMonitorSideButton = new System.Windows.Forms.ToolStripButton();
@@ -1724,8 +1724,8 @@
             this.sideToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.sideToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.homeSideButton,
-            this.dashboardSideButton,
-            this.metricsSideButton,
+            //this.dashboardSideButton,
+            //this.metricsSideButton,
             this.apiConsoleSideButton,
             this.historySideButton,
             this.apiMonitorSideButton,
@@ -1752,25 +1752,25 @@
             // 
             // dashboardSideButton
             // 
-            this.dashboardSideButton.AccessibleName = "Dashboard";
-            this.dashboardSideButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.dashboardSideButton.Image = global::MultiMiner.Win.Properties.Resources.activity_monitor;
-            this.dashboardSideButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.dashboardSideButton.Name = "dashboardSideButton";
-            this.dashboardSideButton.Size = new System.Drawing.Size(21, 20);
-            this.dashboardSideButton.Text = "Dashboard";
-            this.dashboardSideButton.Click += new System.EventHandler(this.dashboardButton_Click);
+            //this.dashboardSideButton.AccessibleName = "Dashboard";
+            //this.dashboardSideButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            //this.dashboardSideButton.Image = global::MultiMiner.Win.Properties.Resources.activity_monitor;
+            //this.dashboardSideButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            //this.dashboardSideButton.Name = "dashboardSideButton";
+            //this.dashboardSideButton.Size = new System.Drawing.Size(21, 20);
+            //this.dashboardSideButton.Text = "Dashboard";
+            //this.dashboardSideButton.Click += new System.EventHandler(this.dashboardButton_Click);
             // 
             // metricsSideButton
             // 
-            this.metricsSideButton.AccessibleName = "Metrics";
-            this.metricsSideButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.metricsSideButton.Image = global::MultiMiner.Win.Properties.Resources.insert_chart;
-            this.metricsSideButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.metricsSideButton.Name = "metricsSideButton";
-            this.metricsSideButton.Size = new System.Drawing.Size(21, 20);
-            this.metricsSideButton.Text = "Metrics";
-            this.metricsSideButton.Click += new System.EventHandler(this.metricsButton_Click);
+            //this.metricsSideButton.AccessibleName = "Metrics";
+            //this.metricsSideButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            //this.metricsSideButton.Image = global::MultiMiner.Win.Properties.Resources.insert_chart;
+            //this.metricsSideButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            //this.metricsSideButton.Name = "metricsSideButton";
+            //this.metricsSideButton.Size = new System.Drawing.Size(21, 20);
+            //this.metricsSideButton.Text = "Metrics";
+            //this.metricsSideButton.Click += new System.EventHandler(this.metricsButton_Click);
             // 
             // apiConsoleSideButton
             // 
@@ -2237,8 +2237,8 @@
         private System.Windows.Forms.ToolStripMenuItem hiddenToolStripMenuItem;
         private System.Windows.Forms.ToolStrip sideToolStrip;
         private System.Windows.Forms.ToolStripButton homeSideButton;
-        private System.Windows.Forms.ToolStripButton dashboardSideButton;
-        private System.Windows.Forms.ToolStripButton metricsSideButton;
+        //private System.Windows.Forms.ToolStripButton dashboardSideButton;
+        //private System.Windows.Forms.ToolStripButton metricsSideButton;
         private System.Windows.Forms.ToolStripButton apiConsoleSideButton;
         private System.Windows.Forms.ToolStripButton historySideButton;
         private System.Windows.Forms.ToolStripButton apiMonitorSideButton;
