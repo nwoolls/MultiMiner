@@ -36,7 +36,7 @@ namespace MultiMiner.MobileMiner.Embed
 
                 embeddedBrowser.Navigated += HandleBrowserNavigated;
 
-                //known issues with the IE7 Compatibility Mode that WebBrowser users
+                //known issues with the IE7 Compatibility Mode that WebBrowser uses
                 embeddedBrowser.ScriptErrorsSuppressed = true;
             }
 
