@@ -154,8 +154,6 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Discovery.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.pdb,\
-//../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Embed.dll,\
-//../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Embed.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Stats.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Stats.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll,\
