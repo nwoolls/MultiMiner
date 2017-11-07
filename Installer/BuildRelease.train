@@ -183,6 +183,8 @@ shell.exec(macPackPath,
 
 folder.move("Output/MultiMiner.Win.app", "Output/MultiMiner.app");
 
+file.copy("Launcher/MultiMiner.Win", "Output/MultiMiner.app/Contents/MacOS/MultiMiner.Win");
+
 //zip the .app package up
 zip.compress("Output/MultiMiner-" + shortAppVersion + ".app.zip", "Output/", "MultiMiner.app/*", true);
 
