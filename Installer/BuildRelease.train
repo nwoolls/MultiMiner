@@ -184,7 +184,7 @@ shell.exec(macPackPath,
 folder.move("Output/MultiMiner.Win.app", "Output/MultiMiner.app");
 
 //zip the .app package up
-zip.compress("Output/MultiMiner-" + shortAppVersion + ".app.zip", "Output/", "MultiMiner.app/", true);
+zip.compress("Output/MultiMiner-" + shortAppVersion + ".app.zip", "Output/", "MultiMiner.app/*", true);
 
 //remove the .app package
 folder.remove("Output/MultiMiner.app", true);
