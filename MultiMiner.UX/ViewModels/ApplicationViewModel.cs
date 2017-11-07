@@ -107,9 +107,7 @@ namespace MultiMiner.UX.ViewModels
         private readonly Metadata metadataConfiguration = new Metadata();
 
         //Coin API contexts
-        private IApiContext coinChooseApiContext;
         private IApiContext coinWarzApiContext;
-        private IApiContext whatMineApiContext;
         private IApiContext whatToMineApiContext;
 
         //Coin API information
@@ -201,8 +199,6 @@ namespace MultiMiner.UX.ViewModels
         public void SetupCoinApi()
         {
             coinWarzApiContext = new CoinWarz.ApiContext(ApplicationConfiguration.CoinWarzApiKey);
-            coinChooseApiContext = new CoinChoose.ApiContext();
-            whatMineApiContext = new WhatMine.ApiContext(ApplicationConfiguration.WhatMineApiKey);
             whatToMineApiContext = new WhatToMine.ApiContext();
         }
 
@@ -222,12 +218,8 @@ namespace MultiMiner.UX.ViewModels
                 return successfulApiContext;
             if (ApplicationConfiguration.UseCoinWarzApi)
                 return coinWarzApiContext;
-            if (ApplicationConfiguration.UseWhatMineApi)
-                return whatMineApiContext;
-            if (ApplicationConfiguration.UseWhatToMineApi)
-                return whatToMineApiContext;
 
-            return coinChooseApiContext;
+            return whatToMineApiContext;
         }
 
         private void RefreshSingleCoinStats()
@@ -236,28 +228,18 @@ namespace MultiMiner.UX.ViewModels
             if (ApplicationConfiguration.UseCoinWarzApi)
             {
                 preferredApiContext = coinWarzApiContext;
-                backupApiContext = coinChooseApiContext;
-            }
-            else if (ApplicationConfiguration.UseWhatMineApi)
-            {
-                preferredApiContext = whatMineApiContext;
-                backupApiContext = coinChooseApiContext;
-            }
-            else if (ApplicationConfiguration.UseWhatToMineApi)
-            {
-                preferredApiContext = whatToMineApiContext;
-                backupApiContext = coinChooseApiContext;
+                backupApiContext = whatToMineApiContext;
             }
             else
             {
-                preferredApiContext = coinChooseApiContext;
+                preferredApiContext = whatToMineApiContext;
                 backupApiContext = coinWarzApiContext;
             }
 
             bool success = RefreshSingleCoinStats(preferredApiContext);
             if (!success &&
                 //don't try to use CoinWarz as a backup unless the user has entered an API key for CoinWarz
-                ((backupApiContext == coinChooseApiContext) || !String.IsNullOrEmpty(ApplicationConfiguration.CoinWarzApiKey)))
+                ((backupApiContext == whatToMineApiContext) || !String.IsNullOrEmpty(ApplicationConfiguration.CoinWarzApiKey)))
                 RefreshSingleCoinStats(backupApiContext);
 
             ApplyCoinInformationToViewModel();

@@ -8,7 +8,7 @@ msbuild.updateAssemblyVersion("../MultiMiner.CoinApi/Properties/AssemblyInfo.cs"
 msbuild.updateAssemblyVersion("../MultiMiner.ExchangeApi/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Blockchain/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Coinbase/Properties/AssemblyInfo.cs", appVersion);
-msbuild.updateAssemblyVersion("../MultiMiner.CoinChoose/Properties/AssemblyInfo.cs", appVersion);
+//msbuild.updateAssemblyVersion("../MultiMiner.CoinChoose/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.CoinWarz/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Engine/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.Win/Properties/AssemblyInfo.cs", appVersion);
@@ -25,7 +25,7 @@ msbuild.updateAssemblyVersion("../MultiMiner.Discovery/Properties/AssemblyInfo.c
 msbuild.updateAssemblyVersion("../MultiMiner.Utility/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.MultipoolApi/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.NiceHash/Properties/AssemblyInfo.cs", appVersion);
-msbuild.updateAssemblyVersion("../MultiMiner.WhatMine/Properties/AssemblyInfo.cs", appVersion);
+//msbuild.updateAssemblyVersion("../MultiMiner.WhatMine/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.WhatToMine/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.UX/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.TUI/Properties/AssemblyInfo.cs", appVersion);
@@ -35,7 +35,7 @@ msbuild.rebuild("../MultiMiner.CoinApi/MultiMiner.CoinApi.csproj", { configurati
 msbuild.rebuild("../MultiMiner.ExchangeApi/MultiMiner.ExchangeApi.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Coinbase/MultiMiner.Coinbase.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Blockchain/MultiMiner.Blockchain.csproj", { configuration: "Release" });
-msbuild.rebuild("../MultiMiner.CoinChoose/MultiMiner.CoinChoose.csproj", { configuration: "Release" });
+//msbuild.rebuild("../MultiMiner.CoinChoose/MultiMiner.CoinChoose.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.CoinWarz/MultiMiner.CoinWarz.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Engine/MultiMiner.Engine.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.Utility/MultiMiner.Utility.csproj", { configuration: "Release" });
@@ -52,7 +52,7 @@ msbuild.rebuild("../MultiMiner.Services/MultiMiner.Services.csproj", { configura
 msbuild.rebuild("../MultiMiner.Discovery/MultiMiner.Discovery.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.MultipoolApi/MultiMiner.MultipoolApi.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.NiceHash/MultiMiner.NiceHash.csproj", { configuration: "Release" });
-msbuild.rebuild("../MultiMiner.WhatMine/MultiMiner.WhatMine.csproj", { configuration: "Release" });
+//msbuild.rebuild("../MultiMiner.WhatMine/MultiMiner.WhatMine.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.WhatToMine/MultiMiner.WhatToMine.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.UX/MultiMiner.UX.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.TUI/MultiMiner.TUI.csproj", { configuration: "Release" });
@@ -78,8 +78,8 @@ file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Blockchain.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Blockchain.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Coinbase.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Coinbase.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/MultiMiner.CoinChoose.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/MultiMiner.CoinChoose.pdb", "PF/");
+//file.copy("../MultiMiner.Win/bin/Release/MultiMiner.CoinChoose.dll", "PF/");
+//file.copy("../MultiMiner.Win/bin/Release/MultiMiner.CoinChoose.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.CoinWarz.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.CoinWarz.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.Engine.dll", "PF/");
@@ -108,8 +108,8 @@ file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MultipoolApi.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.MultipoolApi.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.NiceHash.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.NiceHash.pdb", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.dll", "PF/");
-file.copy("../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.pdb", "PF/");
+//file.copy("../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.dll", "PF/");
+//file.copy("../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.WhatToMine.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.WhatToMine.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.UX.dll", "PF/");
@@ -124,7 +124,7 @@ folder.remove("PF", true);
 //create Mac .app package (requires Mono, X11 to run)
 folder.remove("Output/MultiMiner.app", true);
 folder.remove("Output/MultiMiner.Win.app", true);
-var macPackPath = "C:/Program Files (x86)/Mono-3.2.3/lib/mono/4.5/macpack.exe";
+var macPackPath = "C:/Program Files (x86)/Mono/lib/mono/4.5/macpack.exe";
 shell.exec(macPackPath, 
 
 "-o Output \
@@ -140,8 +140,8 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.Blockchain.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Coinbase.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Coinbase.pdb,\
-../MultiMiner.Win/bin/Release/MultiMiner.CoinChoose.dll,\
-../MultiMiner.Win/bin/Release/MultiMiner.CoinChoose.pdb,\
+//../MultiMiner.Win/bin/Release/MultiMiner.CoinChoose.dll,\
+//../MultiMiner.Win/bin/Release/MultiMiner.CoinChoose.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.CoinWarz.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.CoinWarz.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Engine.dll,\
@@ -154,8 +154,6 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.Discovery.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.pdb,\
-//../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Embed.dll,\
-//../MultiMiner.Win/bin/Release/MultiMiner.MobileMiner.Embed.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Stats.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Stats.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.Xgminer.dll,\
@@ -170,8 +168,8 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.MultipoolApi.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.NiceHash.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.NiceHash.pdb,\
-../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.dll,\
-../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.pdb,\
+//../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.dll,\
+//../MultiMiner.Win/bin/Release/MultiMiner.WhatMine.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.WhatToMine.dll,\
 ../MultiMiner.Win/bin/Release/MultiMiner.WhatToMine.pdb,\
 ../MultiMiner.Win/bin/Release/MultiMiner.UX.dll,\
@@ -185,8 +183,10 @@ shell.exec(macPackPath,
 
 folder.move("Output/MultiMiner.Win.app", "Output/MultiMiner.app");
 
+file.copy("Launcher/MultiMiner.Win", "Output/MultiMiner.app/Contents/MacOS/MultiMiner.Win");
+
 //zip the .app package up
-zip.compress("Output/MultiMiner-" + shortAppVersion + ".app.zip", "Output/", "MultiMiner.app/", true);
+zip.compress("Output/MultiMiner-" + shortAppVersion + ".app.zip", "Output/", "MultiMiner.app/*", true);
 
 //remove the .app package
 folder.remove("Output/MultiMiner.app", true);

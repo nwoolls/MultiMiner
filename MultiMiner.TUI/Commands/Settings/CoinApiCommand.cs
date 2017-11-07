@@ -25,24 +25,10 @@ namespace MultiMiner.TUI.Commands.Settings
             if (input.Count() == 2)
             {
                 var arg1 = input[1];
-                if (arg1.Equals(SettingArguments.CoinChoose, StringComparison.OrdinalIgnoreCase))
-                {
-                    app.ApplicationConfiguration.UseCoinWarzApi = false;
-                    app.ApplicationConfiguration.UseWhatMineApi = false;
-                    app.ApplicationConfiguration.UseWhatToMineApi = false;
-                    success = true;
-                }
-                else if (arg1.Equals(SettingArguments.CoinWarz, StringComparison.OrdinalIgnoreCase))
+                if (arg1.Equals(SettingArguments.CoinWarz, StringComparison.OrdinalIgnoreCase))
                 {
                     app.ApplicationConfiguration.UseCoinWarzApi = true;
                     app.ApplicationConfiguration.UseWhatMineApi = false;
-                    app.ApplicationConfiguration.UseWhatToMineApi = false;
-                    success = true;
-                }
-                else if (arg1.Equals(SettingArguments.WhatMine, StringComparison.OrdinalIgnoreCase))
-                {
-                    app.ApplicationConfiguration.UseCoinWarzApi = false;
-                    app.ApplicationConfiguration.UseWhatMineApi = true;
                     app.ApplicationConfiguration.UseWhatToMineApi = false;
                     success = true;
                 }
