@@ -67,18 +67,14 @@ namespace MultiMiner.Win.Forms.Configuration
             return true;
         }
 
-        private const int CoinChooseIndex = 0;
+        private const int WhatToMineIndex = 0;
         private const int CoinWarzIndex = 1;
-        private const int WhatMineIndex = 2;
-        private const int WhatToMineIndex = 3;
         
         private void SaveSettings()
         {
             minerConfiguration.Priority = (ProcessPriorityClass)priorityCombo.SelectedItem;
 
             applicationConfiguration.UseCoinWarzApi = coinApiCombo.SelectedIndex == CoinWarzIndex;
-            applicationConfiguration.UseWhatMineApi = coinApiCombo.SelectedIndex == WhatMineIndex;
-            applicationConfiguration.UseWhatToMineApi = coinApiCombo.SelectedIndex == WhatToMineIndex;
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -91,19 +87,13 @@ namespace MultiMiner.Win.Forms.Configuration
             autoLaunchCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
             sysTrayCheckBox.Enabled = OSVersionPlatform.GetGenericPlatform() != PlatformID.Unix;
 
-            coinApiCombo.SelectedIndex = applicationConfiguration.UseCoinWarzApi ? CoinWarzIndex : 
-                (applicationConfiguration.UseWhatMineApi ? WhatMineIndex : 
-                (applicationConfiguration.UseWhatToMineApi ? WhatToMineIndex :
-                CoinChooseIndex));
+            coinApiCombo.SelectedIndex = applicationConfiguration.UseCoinWarzApi ? CoinWarzIndex : WhatToMineIndex;
             PopulateApiKey();
         }
 
         private void PopulateApiKey()
         {
-            if (coinApiCombo.SelectedIndex == CoinWarzIndex)
-                apiKeyEdit.Text = applicationConfiguration.CoinWarzApiKey;
-            else if (coinApiCombo.SelectedIndex == WhatMineIndex)
-                apiKeyEdit.Text = applicationConfiguration.WhatMineApiKey;
+            apiKeyEdit.Text = applicationConfiguration.CoinWarzApiKey;
         }
 
         private void PopulatePriorities()
@@ -135,10 +125,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void apiKeyLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (coinApiCombo.SelectedIndex == CoinWarzIndex)
-                Process.Start("http://www.coinwarz.com/v1/api/documentation");
-            else if (coinApiCombo.SelectedIndex == WhatMineIndex)
-                Process.Start("http://whatmine.com/api.php");
+            Process.Start("http://www.coinwarz.com/v1/api/documentation");
         }
 
         private void advancedSettingsLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -169,18 +156,12 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void apiKeyEdit_Validated(object sender, EventArgs e)
         {
-            if (coinApiCombo.SelectedIndex == CoinWarzIndex)
-                applicationConfiguration.CoinWarzApiKey = apiKeyEdit.Text.Trim();
-            else if (coinApiCombo.SelectedIndex == WhatMineIndex)
-                applicationConfiguration.WhatMineApiKey = apiKeyEdit.Text.Trim();
+            applicationConfiguration.CoinWarzApiKey = apiKeyEdit.Text.Trim();
         }
 
         private void coinApiCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (coinApiCombo.SelectedIndex == CoinWarzIndex)
-                apiKeyLabel.Text = "CoinWarz key:";
-            else if (coinApiCombo.SelectedIndex == WhatMineIndex)
-                apiKeyLabel.Text = "WhatMine key:";
+            apiKeyLabel.Text = "CoinWarz key:";
             PopulateApiKey();
         }
     }

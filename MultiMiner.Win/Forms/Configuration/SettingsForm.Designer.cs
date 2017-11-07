@@ -172,10 +172,8 @@ namespace MultiMiner.Win.Forms.Configuration
             this.coinApiCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.coinApiCombo.FormattingEnabled = true;
             this.coinApiCombo.Items.AddRange(new object[] {
-            "CoinChoose.com",
-            "CoinWarz.com",
-            "WhatMine.com",
-            "WhatToMine.com"});
+            "WhatToMine.com",
+            "CoinWarz.com"});
             this.coinApiCombo.Location = new System.Drawing.Point(121, 25);
             this.coinApiCombo.Name = "coinApiCombo";
             this.coinApiCombo.Size = new System.Drawing.Size(124, 23);

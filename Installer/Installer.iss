@@ -43,8 +43,8 @@ Source: "..\MultiMiner.Win\bin\Release\MultiMiner.ExchangeApi.dll"; DestDir: "{a
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.ExchangeApi.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Blockchain.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.Blockchain.pdb"; DestDir: "{app}"; Flags: ignoreversion  
-Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinChoose.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinChoose.pdb"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinChoose.dll"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinChoose.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinWarz.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.CoinWarz.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MobileMiner.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -73,8 +73,8 @@ Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MultipoolApi.dll"; DestDir: "{
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.MultipoolApi.pdb"; DestDir: "{app}"; Flags: ignoreversion     
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.NiceHash.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.NiceHash.pdb"; DestDir: "{app}"; Flags: ignoreversion     
-Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatMine.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatMine.pdb"; DestDir: "{app}"; Flags: ignoreversion           
+;Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatMine.dll"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatMine.pdb"; DestDir: "{app}"; Flags: ignoreversion           
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatToMine.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.WhatToMine.pdb"; DestDir: "{app}"; Flags: ignoreversion       
 Source: "..\MultiMiner.Win\bin\Release\MultiMiner.UX.dll"; DestDir: "{app}"; Flags: ignoreversion
