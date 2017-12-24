@@ -112,7 +112,6 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void mobileMinerInfoLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://mobileminerapp.com/");
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -146,7 +145,6 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void linkLabel1_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://web.mobileminerapp.com/");
         }
 
         private void button1_Click(object sender, EventArgs e)

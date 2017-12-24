@@ -42,6 +42,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.configurePoolPage = new System.Windows.Forms.TabPage();
+            this.featuresButton = new System.Windows.Forms.Button();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.poolsLink = new System.Windows.Forms.LinkLabel();
             this.label6 = new System.Windows.Forms.Label();
@@ -53,18 +54,6 @@
             this.portEdit = new System.Windows.Forms.TextBox();
             this.passwordEdit = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.configureMobileMinerPage = new System.Windows.Forms.TabPage();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.mobileMinerInfoLink = new System.Windows.Forms.LinkLabel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.remoteCommandsCheck = new System.Windows.Forms.CheckBox();
-            this.remoteMonitoringCheck = new System.Windows.Forms.CheckBox();
-            this.appKeyEdit = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.emailAddressEdit = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
             this.configurePerksPage = new System.Windows.Forms.TabPage();
             this.label3 = new System.Windows.Forms.Label();
             this.remotingPasswordEdit = new System.Windows.Forms.TextBox();
@@ -80,19 +69,15 @@
             this.buttonPanel = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.backButton = new System.Windows.Forms.Button();
-            this.featuresButton = new System.Windows.Forms.Button();
             this.poolFeaturesMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.disableCoinbaseCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extraNonceSubscriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.disableCoinbaseCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wizardTabControl.SuspendLayout();
             this.chooseMinerPage.SuspendLayout();
             this.downloadingMinerPage.SuspendLayout();
             this.chooseCoinPage.SuspendLayout();
             this.configurePoolPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            this.configureMobileMinerPage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.configurePerksPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -129,7 +114,6 @@
             this.wizardTabControl.Controls.Add(this.downloadingMinerPage);
             this.wizardTabControl.Controls.Add(this.chooseCoinPage);
             this.wizardTabControl.Controls.Add(this.configurePoolPage);
-            this.wizardTabControl.Controls.Add(this.configureMobileMinerPage);
             this.wizardTabControl.Controls.Add(this.configurePerksPage);
             this.wizardTabControl.Controls.Add(this.whatNextPage);
             this.wizardTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -251,6 +235,16 @@
             this.configurePoolPage.Text = "Configure Pool";
             this.configurePoolPage.UseVisualStyleBackColor = true;
             // 
+            // featuresButton
+            // 
+            this.featuresButton.Location = new System.Drawing.Point(366, 114);
+            this.featuresButton.Name = "featuresButton";
+            this.featuresButton.Size = new System.Drawing.Size(81, 24);
+            this.featuresButton.TabIndex = 2;
+            this.featuresButton.Text = "Features";
+            this.featuresButton.UseVisualStyleBackColor = true;
+            this.featuresButton.Click += new System.EventHandler(this.featuresButton_Click);
+            // 
             // pictureBox2
             // 
             this.pictureBox2.Image = global::MultiMiner.Win.Properties.Resources.info;
@@ -354,137 +348,6 @@
     "u have not yet chosen a mining pool for your crypto-currency, please consult Goo" +
     "gle to find a suitable provider.";
             // 
-            // configureMobileMinerPage
-            // 
-            this.configureMobileMinerPage.Controls.Add(this.linkLabel1);
-            this.configureMobileMinerPage.Controls.Add(this.pictureBox4);
-            this.configureMobileMinerPage.Controls.Add(this.mobileMinerInfoLink);
-            this.configureMobileMinerPage.Controls.Add(this.pictureBox1);
-            this.configureMobileMinerPage.Controls.Add(this.remoteCommandsCheck);
-            this.configureMobileMinerPage.Controls.Add(this.remoteMonitoringCheck);
-            this.configureMobileMinerPage.Controls.Add(this.appKeyEdit);
-            this.configureMobileMinerPage.Controls.Add(this.label11);
-            this.configureMobileMinerPage.Controls.Add(this.emailAddressEdit);
-            this.configureMobileMinerPage.Controls.Add(this.label12);
-            this.configureMobileMinerPage.Controls.Add(this.label14);
-            this.configureMobileMinerPage.Location = new System.Drawing.Point(4, 24);
-            this.configureMobileMinerPage.Name = "configureMobileMinerPage";
-            this.configureMobileMinerPage.Padding = new System.Windows.Forms.Padding(3);
-            this.configureMobileMinerPage.Size = new System.Drawing.Size(476, 231);
-            this.configureMobileMinerPage.TabIndex = 4;
-            this.configureMobileMinerPage.Text = "Configure MobileMiner";
-            this.configureMobileMinerPage.UseVisualStyleBackColor = true;
-            // 
-            // linkLabel1
-            // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(272, 177);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(172, 15);
-            this.linkLabel1.TabIndex = 35;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Learn more about MobileMiner";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
-            // pictureBox4
-            // 
-            this.pictureBox4.Image = global::MultiMiner.Win.Properties.Resources.info;
-            this.pictureBox4.Location = new System.Drawing.Point(247, 176);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(19, 18);
-            this.pictureBox4.TabIndex = 34;
-            this.pictureBox4.TabStop = false;
-            // 
-            // mobileMinerInfoLink
-            // 
-            this.mobileMinerInfoLink.AutoSize = true;
-            this.mobileMinerInfoLink.Location = new System.Drawing.Point(63, 177);
-            this.mobileMinerInfoLink.Name = "mobileMinerInfoLink";
-            this.mobileMinerInfoLink.Size = new System.Drawing.Size(141, 15);
-            this.mobileMinerInfoLink.TabIndex = 14;
-            this.mobileMinerInfoLink.TabStop = true;
-            this.mobileMinerInfoLink.Text = "Sign up - it\'s fast and free";
-            this.mobileMinerInfoLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.mobileMinerInfoLink_LinkClicked);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::MultiMiner.Win.Properties.Resources.mail_key;
-            this.pictureBox1.Location = new System.Drawing.Point(37, 176);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(19, 18);
-            this.pictureBox1.TabIndex = 13;
-            this.pictureBox1.TabStop = false;
-            // 
-            // remoteCommandsCheck
-            // 
-            this.remoteCommandsCheck.AutoSize = true;
-            this.remoteCommandsCheck.Location = new System.Drawing.Point(271, 75);
-            this.remoteCommandsCheck.Name = "remoteCommandsCheck";
-            this.remoteCommandsCheck.Size = new System.Drawing.Size(176, 19);
-            this.remoteCommandsCheck.TabIndex = 9;
-            this.remoteCommandsCheck.Text = "Enable remote management";
-            this.remoteCommandsCheck.UseVisualStyleBackColor = true;
-            this.remoteCommandsCheck.CheckedChanged += new System.EventHandler(this.remoteCommandsCheck_CheckedChanged);
-            // 
-            // remoteMonitoringCheck
-            // 
-            this.remoteMonitoringCheck.AutoSize = true;
-            this.remoteMonitoringCheck.Location = new System.Drawing.Point(37, 75);
-            this.remoteMonitoringCheck.Name = "remoteMonitoringCheck";
-            this.remoteMonitoringCheck.Size = new System.Drawing.Size(165, 19);
-            this.remoteMonitoringCheck.TabIndex = 7;
-            this.remoteMonitoringCheck.Text = "Enable remote monitoring";
-            this.remoteMonitoringCheck.UseVisualStyleBackColor = true;
-            this.remoteMonitoringCheck.CheckedChanged += new System.EventHandler(this.remoteMonitoringCheck_CheckedChanged);
-            // 
-            // appKeyEdit
-            // 
-            this.appKeyEdit.AccessibleName = "Application key";
-            this.appKeyEdit.Enabled = false;
-            this.appKeyEdit.Location = new System.Drawing.Point(135, 137);
-            this.appKeyEdit.Name = "appKeyEdit";
-            this.appKeyEdit.Size = new System.Drawing.Size(312, 23);
-            this.appKeyEdit.TabIndex = 11;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(32, 111);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(82, 15);
-            this.label11.TabIndex = 12;
-            this.label11.Text = "Email address:";
-            // 
-            // emailAddressEdit
-            // 
-            this.emailAddressEdit.AccessibleName = "Email address";
-            this.emailAddressEdit.Enabled = false;
-            this.emailAddressEdit.Location = new System.Drawing.Point(135, 107);
-            this.emailAddressEdit.Name = "emailAddressEdit";
-            this.emailAddressEdit.Size = new System.Drawing.Size(312, 23);
-            this.emailAddressEdit.TabIndex = 10;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(32, 141);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(92, 15);
-            this.label12.TabIndex = 8;
-            this.label12.Text = "Application key:";
-            // 
-            // label14
-            // 
-            this.label14.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label14.Location = new System.Drawing.Point(3, 3);
-            this.label14.Name = "label14";
-            this.label14.Padding = new System.Windows.Forms.Padding(0, 7, 0, 0);
-            this.label14.Size = new System.Drawing.Size(470, 69);
-            this.label14.TabIndex = 33;
-            this.label14.Text = "MobileMiner allows you to remotely monitor and manage your mining from any browse" +
-    "r or phone. It\'s free and secure. Enter your MobileMiner information below or cl" +
-    "ick Next to skip this step.";
-            // 
             // configurePerksPage
             // 
             this.configurePerksPage.Controls.Add(this.label3);
@@ -507,7 +370,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(133, 199);
+            this.label3.Location = new System.Drawing.Point(133, 191);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(115, 15);
             this.label3.TabIndex = 23;
@@ -515,7 +378,7 @@
             // 
             // remotingPasswordEdit
             // 
-            this.remotingPasswordEdit.Location = new System.Drawing.Point(269, 196);
+            this.remotingPasswordEdit.Location = new System.Drawing.Point(269, 188);
             this.remotingPasswordEdit.Name = "remotingPasswordEdit";
             this.remotingPasswordEdit.Size = new System.Drawing.Size(102, 23);
             this.remotingPasswordEdit.TabIndex = 22;
@@ -524,7 +387,7 @@
             // remotingCheckBox
             // 
             this.remotingCheckBox.AutoSize = true;
-            this.remotingCheckBox.Location = new System.Drawing.Point(117, 167);
+            this.remotingCheckBox.Location = new System.Drawing.Point(117, 159);
             this.remotingCheckBox.Name = "remotingCheckBox";
             this.remotingCheckBox.Size = new System.Drawing.Size(178, 19);
             this.remotingCheckBox.TabIndex = 21;
@@ -545,7 +408,9 @@
             // incomeCheckBox
             // 
             this.incomeCheckBox.AutoSize = true;
-            this.incomeCheckBox.Location = new System.Drawing.Point(117, 138);
+            this.incomeCheckBox.Checked = true;
+            this.incomeCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.incomeCheckBox.Location = new System.Drawing.Point(117, 130);
             this.incomeCheckBox.Name = "incomeCheckBox";
             this.incomeCheckBox.Size = new System.Drawing.Size(224, 19);
             this.incomeCheckBox.TabIndex = 12;
@@ -555,7 +420,9 @@
             // exchangeApiCheckbox
             // 
             this.exchangeApiCheckbox.AutoSize = true;
-            this.exchangeApiCheckbox.Location = new System.Drawing.Point(117, 110);
+            this.exchangeApiCheckbox.Checked = true;
+            this.exchangeApiCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.exchangeApiCheckbox.Location = new System.Drawing.Point(117, 102);
             this.exchangeApiCheckbox.Name = "exchangeApiCheckbox";
             this.exchangeApiCheckbox.Size = new System.Drawing.Size(250, 19);
             this.exchangeApiCheckbox.TabIndex = 11;
@@ -565,7 +432,9 @@
             // perksCheckBox
             // 
             this.perksCheckBox.AutoSize = true;
-            this.perksCheckBox.Location = new System.Drawing.Point(96, 82);
+            this.perksCheckBox.Checked = true;
+            this.perksCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.perksCheckBox.Location = new System.Drawing.Point(96, 74);
             this.perksCheckBox.Name = "perksCheckBox";
             this.perksCheckBox.Size = new System.Drawing.Size(192, 19);
             this.perksCheckBox.TabIndex = 10;
@@ -576,7 +445,7 @@
             // smileyPicture
             // 
             this.smileyPicture.Image = global::MultiMiner.Win.Properties.Resources.smiley_happy;
-            this.smileyPicture.Location = new System.Drawing.Point(294, 83);
+            this.smileyPicture.Location = new System.Drawing.Point(294, 75);
             this.smileyPicture.Name = "smileyPicture";
             this.smileyPicture.Size = new System.Drawing.Size(20, 20);
             this.smileyPicture.TabIndex = 15;
@@ -648,16 +517,6 @@
             this.backButton.UseVisualStyleBackColor = true;
             this.backButton.Click += new System.EventHandler(this.backButton_Click);
             // 
-            // featuresButton
-            // 
-            this.featuresButton.Location = new System.Drawing.Point(366, 114);
-            this.featuresButton.Name = "featuresButton";
-            this.featuresButton.Size = new System.Drawing.Size(81, 24);
-            this.featuresButton.TabIndex = 2;
-            this.featuresButton.Text = "Features";
-            this.featuresButton.UseVisualStyleBackColor = true;
-            this.featuresButton.Click += new System.EventHandler(this.featuresButton_Click);
-            // 
             // poolFeaturesMenu
             // 
             this.poolFeaturesMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -668,14 +527,6 @@
             this.poolFeaturesMenu.Size = new System.Drawing.Size(192, 48);
             this.poolFeaturesMenu.Opening += new System.ComponentModel.CancelEventHandler(this.poolFeaturesMenu_Opening);
             // 
-            // disableCoinbaseCheckToolStripMenuItem
-            // 
-            this.disableCoinbaseCheckToolStripMenuItem.CheckOnClick = true;
-            this.disableCoinbaseCheckToolStripMenuItem.Name = "disableCoinbaseCheckToolStripMenuItem";
-            this.disableCoinbaseCheckToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.disableCoinbaseCheckToolStripMenuItem.Text = "Skip Coinbase Check";
-            this.disableCoinbaseCheckToolStripMenuItem.Click += new System.EventHandler(this.disableCoinbaseCheckToolStripMenuItem_Click);
-            // 
             // extraNonceSubscriptToolStripMenuItem
             // 
             this.extraNonceSubscriptToolStripMenuItem.CheckOnClick = true;
@@ -683,6 +534,14 @@
             this.extraNonceSubscriptToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.extraNonceSubscriptToolStripMenuItem.Text = "Extra-nonce Subscribe";
             this.extraNonceSubscriptToolStripMenuItem.Click += new System.EventHandler(this.extraNonceSubscriptToolStripMenuItem_Click);
+            // 
+            // disableCoinbaseCheckToolStripMenuItem
+            // 
+            this.disableCoinbaseCheckToolStripMenuItem.CheckOnClick = true;
+            this.disableCoinbaseCheckToolStripMenuItem.Name = "disableCoinbaseCheckToolStripMenuItem";
+            this.disableCoinbaseCheckToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.disableCoinbaseCheckToolStripMenuItem.Text = "Skip Coinbase Check";
+            this.disableCoinbaseCheckToolStripMenuItem.Click += new System.EventHandler(this.disableCoinbaseCheckToolStripMenuItem_Click);
             // 
             // WizardForm
             // 
@@ -710,10 +569,6 @@
             this.configurePoolPage.ResumeLayout(false);
             this.configurePoolPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            this.configureMobileMinerPage.ResumeLayout(false);
-            this.configureMobileMinerPage.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.configurePerksPage.ResumeLayout(false);
             this.configurePerksPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.smileyPicture)).EndInit();
@@ -732,7 +587,6 @@
         private System.Windows.Forms.TabPage downloadingMinerPage;
         private System.Windows.Forms.TabPage chooseCoinPage;
         private System.Windows.Forms.TabPage configurePoolPage;
-        private System.Windows.Forms.TabPage configureMobileMinerPage;
         private System.Windows.Forms.TabPage whatNextPage;
         private System.Windows.Forms.Panel buttonPanel;
         private System.Windows.Forms.Button closeButton;
@@ -752,15 +606,6 @@
         private System.Windows.Forms.TextBox hostEdit;
         private System.Windows.Forms.TextBox portEdit;
         private System.Windows.Forms.TextBox passwordEdit;
-        private System.Windows.Forms.LinkLabel mobileMinerInfoLink;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.CheckBox remoteCommandsCheck;
-        private System.Windows.Forms.CheckBox remoteMonitoringCheck;
-        private System.Windows.Forms.TextBox appKeyEdit;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox emailAddressEdit;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.LinkLabel poolsLink;
         private System.Windows.Forms.PictureBox pictureBox2;
@@ -774,8 +619,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox remotingPasswordEdit;
         private System.Windows.Forms.CheckBox remotingCheckBox;
-        private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button featuresButton;
         private System.Windows.Forms.ContextMenuStrip poolFeaturesMenu;

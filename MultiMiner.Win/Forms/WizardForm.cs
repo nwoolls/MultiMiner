@@ -1,7 +1,6 @@
 ﻿using MultiMiner.Engine;
 using MultiMiner.Engine.Data;
 using MultiMiner.Engine.Installers;
-using MultiMiner.MobileMiner.Helpers;
 using MultiMiner.Utility.OS;
 using MultiMiner.UX.Data;
 using MultiMiner.UX.Data.Configuration;
@@ -29,7 +28,6 @@ namespace MultiMiner.Win.Forms
 
         private void mobileMinerInfoLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://web.mobileminerapp.com/");
         }
 
         private void WizardForm_Load(object sender, EventArgs e)
@@ -39,6 +37,7 @@ namespace MultiMiner.Win.Forms
             coinComboBox.SelectedIndex = 0;
             UpdateCheckStates();
             SetupPoolDefaults();
+            UpdateThanks();
         }
 
         private void SetupPoolDefaults()
@@ -136,25 +135,6 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
 
         private bool ValidateInput()
         {
-            if (wizardTabControl.SelectedTab == configureMobileMinerPage)
-            {
-                if (emailAddressEdit.Enabled && !String.IsNullOrEmpty(emailAddressEdit.Text) &&
-                    !InputValidation.IsValidEmailAddress(emailAddressEdit.Text))
-                {
-                    emailAddressEdit.Focus();
-                    MessageBox.Show("Please specify a valid email address. This must be the same address used to register MobileMiner.", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
-                }
-
-                if (appKeyEdit.Enabled && !String.IsNullOrEmpty(appKeyEdit.Text) &&
-                    !InputValidation.IsValidApplicationKey(appKeyEdit.Text))
-                {
-                    appKeyEdit.Focus();
-                    MessageBox.Show("Please specify a valid application key. If you are unsure, copy and paste the application key from the email you received.", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
-                }
-            }
-
             return true;
         }
 
@@ -261,18 +241,10 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
 
         private void remoteMonitoringCheck_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateMobileMinerEdits();
         }
 
         private void remoteCommandsCheck_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateMobileMinerEdits();
-        }
-
-        private void UpdateMobileMinerEdits()
-        {
-            emailAddressEdit.Enabled = remoteMonitoringCheck.Checked || remoteCommandsCheck.Checked;
-            appKeyEdit.Enabled = emailAddressEdit.Enabled;
         }
 
         public void CreateConfigurations(out Engine.Data.Configuration.Engine engineConfiguration,
@@ -347,10 +319,6 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
         {
             Application applicationConfiguraion = new Application
             {
-                MobileMinerMonitoring = remoteMonitoringCheck.Checked,
-                MobileMinerRemoteCommands = remoteCommandsCheck.Checked,
-                MobileMinerEmailAddress = emailAddressEdit.Text,
-                MobileMinerApplicationKey = appKeyEdit.Text,
                 BriefUserInterface = false
             };
 
@@ -386,7 +354,6 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("http://mobileminerapp.com/");
         }
 
         private void button1_Click(object sender, EventArgs e)
