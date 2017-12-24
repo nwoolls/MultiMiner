@@ -2983,29 +2983,29 @@ namespace MultiMiner.UX.ViewModels
         #endregion
 
         #region MobileMiner API
-        private string GetMobileMinerUrl()
-        {
-            string prefix = "https://";
-            if (!ApplicationConfiguration.MobileMinerUsesHttps)
-                prefix = "http://";
+        //private string GetMobileMinerUrl()
+        //{
+        //    string prefix = "https://";
+        //    if (!ApplicationConfiguration.MobileMinerUsesHttps)
+        //        prefix = "http://";
 
-            //custom domain makes it easier to migrate hosts if needed
-            string result = prefix + "api.mobileminerapp.com";
+        //    //custom domain makes it easier to migrate hosts if needed
+        //    string result = prefix + "api.mobileminerapp.com";
 
-            if (!OSVersionPlatform.IsWindowsVistaOrHigher())
-                //SNI SSL not supported on XP
-                result = prefix + "mobileminer.azurewebsites.net/api";
+        //    if (!OSVersionPlatform.IsWindowsVistaOrHigher())
+        //        //SNI SSL not supported on XP
+        //        result = prefix + "mobileminer.azurewebsites.net/api";
 
-            return result;
-        }
+        //    return result;
+        //}
 
-        private const string MobileMinerApiKey = "P3mVX95iP7xfoI";
+        //private const string MobileMinerApiKey = "P3mVX95iP7xfoI";
 
         //don't show a dialog for a 403 after successful submissions.
         //it's not ideal but there have been two reports now of this
         //being triggered by someone who has valid credentials, and
         //i've seen it myself as well
-        private bool mobileMinerSuccess;
+        //private bool mobileMinerSuccess;
         //private void SubmitMobileMinerStatistics()
         //{
         //    //are remote monitoring enabled?
@@ -3605,26 +3605,26 @@ namespace MultiMiner.UX.ViewModels
         //    }
         //}
 
-        private void HandleMobileMinerWebException(WebException webException)
-        {
-            HttpWebResponse response = webException.Response as HttpWebResponse;
-            if (response != null)
-            {
-                if (response.StatusCode == HttpStatusCode.Forbidden)
-                {
-                    if (!mobileMinerSuccess)
-                    {
-                        ApplicationConfiguration.MobileMinerRemoteCommands = false;
-                        ApplicationConfiguration.SaveApplicationConfiguration();
-                        if (MobileMinerAuthFailed != null) MobileMinerAuthFailed(this, new EventArgs());
-                    }
-                }
-                else if (ApplicationConfiguration.ShowApiErrors)
-                {
-                    ShowMobileMinerApiErrorNotification(webException);
-                }
-            }
-        }
+        //private void HandleMobileMinerWebException(WebException webException)
+        //{
+        //    HttpWebResponse response = webException.Response as HttpWebResponse;
+        //    if (response != null)
+        //    {
+        //        if (response.StatusCode == HttpStatusCode.Forbidden)
+        //        {
+        //            if (!mobileMinerSuccess)
+        //            {
+        //                ApplicationConfiguration.MobileMinerRemoteCommands = false;
+        //                ApplicationConfiguration.SaveApplicationConfiguration();
+        //                if (MobileMinerAuthFailed != null) MobileMinerAuthFailed(this, new EventArgs());
+        //            }
+        //        }
+        //        else if (ApplicationConfiguration.ShowApiErrors)
+        //        {
+        //            ShowMobileMinerApiErrorNotification(webException);
+        //        }
+        //    }
+        //}
 
         //private void ProcessRemoteCommands(List<RemoteCommand> commands)
         //{
