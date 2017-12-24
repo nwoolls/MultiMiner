@@ -9,10 +9,59 @@ namespace MultiMiner.UX.Data.Configuration
     [XmlType(TypeName = "PerksConfiguration")]
     public class Perks
     {
-        public bool PerksEnabled { get; set; }
-        public bool ShowExchangeRates { get; set; }
-        public bool ShowIncomeRates { get; set; }
-        public bool ShowIncomeInUsd { get; set; }
+        private bool perksEnabled = true;
+        public bool PerksEnabled
+        {
+            get
+            {
+                return perksEnabled;
+            }
+            set
+            {
+                perksEnabled = value;
+            }
+        }
+
+        private bool showExchangeRates = true;
+        public bool ShowExchangeRates
+        {
+            get
+            {
+                return showExchangeRates;
+            }
+            set
+            {
+                showExchangeRates = value;
+            }
+        }
+
+        private bool showIncomeRates = true;
+        public bool ShowIncomeRates
+        {
+            get
+            {
+                return showIncomeRates;
+            }
+            set
+            {
+                showIncomeRates = value;
+            }
+        }
+
+        private bool showIncomeInUsd = true;
+        public bool ShowIncomeInUsd
+        {
+            get
+            {
+                return showIncomeInUsd;
+            }
+            set
+            {
+                showIncomeInUsd = value;
+            }
+        }
+
+
         public bool EnableRemoting { get; set; }
         public string RemotingPassword { get; set; }
         public bool AdvancedProxying { get; set; }

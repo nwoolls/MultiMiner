@@ -370,7 +370,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(133, 199);
+            this.label3.Location = new System.Drawing.Point(133, 191);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(115, 15);
             this.label3.TabIndex = 23;
@@ -378,7 +378,7 @@
             // 
             // remotingPasswordEdit
             // 
-            this.remotingPasswordEdit.Location = new System.Drawing.Point(269, 196);
+            this.remotingPasswordEdit.Location = new System.Drawing.Point(269, 188);
             this.remotingPasswordEdit.Name = "remotingPasswordEdit";
             this.remotingPasswordEdit.Size = new System.Drawing.Size(102, 23);
             this.remotingPasswordEdit.TabIndex = 22;
@@ -387,7 +387,7 @@
             // remotingCheckBox
             // 
             this.remotingCheckBox.AutoSize = true;
-            this.remotingCheckBox.Location = new System.Drawing.Point(117, 167);
+            this.remotingCheckBox.Location = new System.Drawing.Point(117, 159);
             this.remotingCheckBox.Name = "remotingCheckBox";
             this.remotingCheckBox.Size = new System.Drawing.Size(178, 19);
             this.remotingCheckBox.TabIndex = 21;
@@ -408,7 +408,9 @@
             // incomeCheckBox
             // 
             this.incomeCheckBox.AutoSize = true;
-            this.incomeCheckBox.Location = new System.Drawing.Point(117, 138);
+            this.incomeCheckBox.Checked = true;
+            this.incomeCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.incomeCheckBox.Location = new System.Drawing.Point(117, 130);
             this.incomeCheckBox.Name = "incomeCheckBox";
             this.incomeCheckBox.Size = new System.Drawing.Size(224, 19);
             this.incomeCheckBox.TabIndex = 12;
@@ -418,7 +420,9 @@
             // exchangeApiCheckbox
             // 
             this.exchangeApiCheckbox.AutoSize = true;
-            this.exchangeApiCheckbox.Location = new System.Drawing.Point(117, 110);
+            this.exchangeApiCheckbox.Checked = true;
+            this.exchangeApiCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.exchangeApiCheckbox.Location = new System.Drawing.Point(117, 102);
             this.exchangeApiCheckbox.Name = "exchangeApiCheckbox";
             this.exchangeApiCheckbox.Size = new System.Drawing.Size(250, 19);
             this.exchangeApiCheckbox.TabIndex = 11;
@@ -428,7 +432,9 @@
             // perksCheckBox
             // 
             this.perksCheckBox.AutoSize = true;
-            this.perksCheckBox.Location = new System.Drawing.Point(96, 82);
+            this.perksCheckBox.Checked = true;
+            this.perksCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.perksCheckBox.Location = new System.Drawing.Point(96, 74);
             this.perksCheckBox.Name = "perksCheckBox";
             this.perksCheckBox.Size = new System.Drawing.Size(192, 19);
             this.perksCheckBox.TabIndex = 10;
@@ -439,7 +445,7 @@
             // smileyPicture
             // 
             this.smileyPicture.Image = global::MultiMiner.Win.Properties.Resources.smiley_happy;
-            this.smileyPicture.Location = new System.Drawing.Point(294, 83);
+            this.smileyPicture.Location = new System.Drawing.Point(294, 75);
             this.smileyPicture.Name = "smileyPicture";
             this.smileyPicture.Size = new System.Drawing.Size(20, 20);
             this.smileyPicture.TabIndex = 15;

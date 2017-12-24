@@ -37,6 +37,7 @@ namespace MultiMiner.Win.Forms
             coinComboBox.SelectedIndex = 0;
             UpdateCheckStates();
             SetupPoolDefaults();
+            UpdateThanks();
         }
 
         private void SetupPoolDefaults()
