@@ -180,7 +180,7 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //BCH
-            donationConfiguration = CreateCoinConfiguration("BCH", "stratum+tcp://profit.pool.bitcoin.com", 3333);
+            donationConfiguration = CreateCoinConfiguration("BCH", "stratum+tcp://stratum.bcc.pool.bitcoin.com", 3333);
             configurations.Add(donationConfiguration);
 
             //ETH
