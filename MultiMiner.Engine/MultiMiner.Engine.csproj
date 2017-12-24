@@ -39,6 +39,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -60,6 +61,7 @@
     <Compile Include="Data\MinerNames.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\DonationPools.cs" />
+    <Compile Include="Helpers\Fingerprint.cs" />
     <Compile Include="Installers\MultiMinerInstaller.cs" />
     <Compile Include="Data\AvailableMiner.cs" />
     <Compile Include="Installers\AvailableMiners.cs" />

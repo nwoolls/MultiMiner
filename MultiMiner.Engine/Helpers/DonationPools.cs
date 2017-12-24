@@ -1,6 +1,8 @@
 ﻿using MultiMiner.Xgminer.Data;
 using System.Collections.Generic;
 using MultiMiner.Engine.Data.Configuration;
+using MultiMiner.Utility.OS;
+using System;
 
 namespace MultiMiner.Engine.Helpers
 {
@@ -186,7 +188,7 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
         }
 
-        private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls.mmdonations")
+        private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls")
         {
             Data.Configuration.Coin donationConfiguration = new Data.Configuration.Coin();
             donationConfiguration.PoolGroup.Id = coinSymbol;
@@ -195,12 +197,20 @@ namespace MultiMiner.Engine.Helpers
             {
                 Host = host + "/#skipcbcheck",
                 Port = port,
-                Username = username,
+                Username = username + "." + GetWorkerName(),
                 Password = "X"
             };
             donationConfiguration.Pools.Add(donationPool);
 
             return donationConfiguration;
+        }
+
+        private static string GetWorkerName()
+        {
+            if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
+                return "mmdonations";
+            else
+                return Fingerprint.Value().Replace("-", "");
         }
     }
 }
