@@ -44,11 +44,11 @@ if [ "$X11_MODE" -eq "1" ]; then
 # elif: Keep compatibility with previous code
 elif [ -f "$mono4_path" ]; then
         DIR=$(cd "$(dirname "$0")"; pwd)
-        "$mono4_path" --arch=32 $DIR/../Resources/"$ASSEMBLY"
+        "$mono4_path" --arch=32 "$DIR/../Resources/$ASSEMBLY"
 
 elif [ -f "$mono5_path" ]; then
         DIR=$(cd "$(dirname "$0")"; pwd)
-        "$mono5_path" --arch=32 $DIR/../Resources/"$ASSEMBLY"
+        "$mono5_path" --arch=32 "$DIR/../Resources/$ASSEMBLY"
 
 else
 	if [ ! -d "./bin" ]; then mkdir bin ; fi
