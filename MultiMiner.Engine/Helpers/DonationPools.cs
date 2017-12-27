@@ -284,6 +284,11 @@ namespace MultiMiner.Engine.Helpers
             //BCC
             donationConfiguration = CreateCoinConfiguration("BCC", "stratum+tcp://stratum.bcc.pool.bitcoin.com", 3333);
             configurations.Add(donationConfiguration);
+
+            //NVC
+            donationConfiguration = CreateCoinConfiguration("NVC", "stratum+tcp://stratum.khore.org", 3335);
+            configurations.Add(donationConfiguration);
+
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls")
