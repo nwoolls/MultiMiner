@@ -31,6 +31,22 @@ namespace MultiMiner.Engine.Helpers
             donationConfiguration = CreateCoinConfiguration("SRC", "stratum+tcp://mine2.coinmine.pl", 6020);
             configurations.Add(donationConfiguration);
 
+            //DCR
+            donationConfiguration = CreateCoinConfiguration("DCR", "stratum+tcp://dcr.coinmine.pl", 2222);
+            configurations.Add(donationConfiguration);
+
+            //LBC
+            donationConfiguration = CreateCoinConfiguration("LBC", "stratum+tcp://lbc.coinmine.pl", 8787);
+            configurations.Add(donationConfiguration);
+
+            //PPC
+            donationConfiguration = CreateCoinConfiguration("PPC", "stratum+tcp://mine1.coinmine.pl", 6050);
+            configurations.Add(donationConfiguration);
+
+            //UBQ
+            donationConfiguration = CreateCoinConfiguration("UBQ", "stratum+tcp://ubiq.mixpools.org", 2120);
+            configurations.Add(donationConfiguration);
+
             //MiningPoolHub
             //DRK
             donationConfiguration = CreateCoinConfiguration("DRK", "stratum+tcp://us-east1.darkcoin.miningpoolhub.com", 20465);
