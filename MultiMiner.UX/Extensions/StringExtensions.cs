@@ -150,35 +150,41 @@ namespace MultiMiner.UX.Extensions
 
         public static bool ParseHostAndPort(this string hostAndPort, out string host, out int port)
         {
-            const char Separator = ':';
-            host = String.Empty;
-            port = 0;
-
-            if (hostAndPort.Contains(Separator))
+            host = null;
+            port = -1;
+            string prefix = "";
+            if (!hostAndPort.Contains("://"))
             {
-                string[] parts = hostAndPort.Split(Separator);
-                int newPort = 0;
-
-                if (Int32.TryParse(parts.Last(), out newPort))
-                {
-                    string newHost = String.Empty;
-
-                    //loop through all but last (- 1)
-                    for (int i = 0; i < parts.Length - 1; i++)
-                    {
-                        if (!String.IsNullOrEmpty(newHost))
-                            newHost = newHost + Separator;
-                        newHost = newHost + parts[i];
-                    }
-
-                    host = newHost;
-                    port = newPort;
-                    
-                    return true;
-                }
+                prefix = "dummy://";
+            }
+            Uri uri;
+            try
+            {
+                uri = new Uri(prefix + hostAndPort);
+            }
+            catch (UriFormatException)
+            {
+                return false;
+            }
+            if (uri.Port == -1)
+            {
+                return false;
             }
 
-            return false;
+            port = uri.Port;
+            host = uri.Host + uri.PathAndQuery + uri.Fragment;
+
+            if (String.IsNullOrEmpty(prefix))
+            {
+                host = uri.Scheme + "://" + host;
+            }
+
+            if (host.Last().Equals('/'))
+            {
+                host = host.Substring(0, host.Length - 1);
+            }
+
+            return true;
         }
 
     }
