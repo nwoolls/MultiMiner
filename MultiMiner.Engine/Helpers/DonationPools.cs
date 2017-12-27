@@ -15,7 +15,7 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //LTC
-            donationConfiguration = CreateCoinConfiguration("LTC", "stratum+tcp://ltc.poolmining.org", 3042, "LXFY6GZY1A9Wnp4UhQqnwhC528z57LwZU7");
+            donationConfiguration = CreateCoinConfiguration("LTC", "stratum+tcp://us.litecoinpool.org", 3333, "mmdonations", "nwoolls");
             configurations.Add(donationConfiguration);
 
             //BQC
@@ -293,6 +293,11 @@ namespace MultiMiner.Engine.Helpers
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls")
         {
+            return CreateCoinConfiguration(coinSymbol, host, port, GetWorkerName(), username);
+        }
+
+        private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string workerName, string username = "nwoolls")
+        {
             Data.Configuration.Coin donationConfiguration = new Data.Configuration.Coin();
             donationConfiguration.PoolGroup.Id = coinSymbol;
 
@@ -300,7 +305,7 @@ namespace MultiMiner.Engine.Helpers
             {
                 Host = host + "/#skipcbcheck",
                 Port = port,
-                Username = username + "." + GetWorkerName(),
+                Username = username + "." + workerName,
                 Password = "X"
             };
             donationConfiguration.Pools.Add(donationPool);
