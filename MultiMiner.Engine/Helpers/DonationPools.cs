@@ -22,6 +22,7 @@ namespace MultiMiner.Engine.Helpers
             donationConfiguration = CreateCoinConfiguration("BQC", "stratum+tcp://www.bbqpool.net", 3333);
             configurations.Add(donationConfiguration);
 
+            //Coinmine.pl
             //ZET
             donationConfiguration = CreateCoinConfiguration("ZET", "stratum+tcp://mine1.coinmine.pl", 6000);
             configurations.Add(donationConfiguration);
@@ -30,10 +31,7 @@ namespace MultiMiner.Engine.Helpers
             donationConfiguration = CreateCoinConfiguration("SRC", "stratum+tcp://mine2.coinmine.pl", 6020);
             configurations.Add(donationConfiguration);
 
-            //VTC
-            donationConfiguration = CreateCoinConfiguration("VTC", "stratum+tcp://pool.verters.com", 4444);
-            configurations.Add(donationConfiguration);
-
+            //MiningPoolHub
             //DRK
             donationConfiguration = CreateCoinConfiguration("DRK", "stratum+tcp://us-east1.darkcoin.miningpoolhub.com", 20465);
             configurations.Add(donationConfiguration);
@@ -42,11 +40,115 @@ namespace MultiMiner.Engine.Helpers
             donationConfiguration = CreateCoinConfiguration("MAX", "stratum+tcp://us-east1.maxcoin.miningpoolhub.com", 20461);
             configurations.Add(donationConfiguration);
 
-            //GRS
-            donationConfiguration = CreateCoinConfiguration("GRS", "stratum+tcp://grs.suprnova.cc", 5544);
+            //SXC
+            donationConfiguration = CreateCoinConfiguration("SXC", "stratum+tcp://us-east1.sexcoin.miningpoolhub.com", 20463);
             configurations.Add(donationConfiguration);
 
-            //NiceHash / WestHash
+            //ETH
+            donationConfiguration = CreateCoinConfiguration("ETH", "stratum+tcp://us-east.ethash-hub.miningpoolhub.com", 20535);
+            configurations.Add(donationConfiguration);
+
+            //ADZ
+            donationConfiguration = CreateCoinConfiguration("ADZ", "stratum+tcp://hub.miningpoolhub.com", 20529);
+            configurations.Add(donationConfiguration);
+
+            //AUR
+            donationConfiguration = CreateCoinConfiguration("AUR", "stratum+tcp://hub.miningpoolhub.com", 20592);
+            configurations.Add(donationConfiguration);
+
+            //BTG
+            donationConfiguration = CreateCoinConfiguration("BTG", "stratum+tcp://us-east.equihash-hub.miningpoolhub.com", 20595);
+            configurations.Add(donationConfiguration);
+
+            //DASH
+            donationConfiguration = CreateCoinConfiguration("DASH", "stratum+tcp://hub.miningpoolhub.com", 20465);
+            configurations.Add(donationConfiguration);
+
+            //ETN
+            donationConfiguration = CreateCoinConfiguration("ETN", "stratum+tcp://us-east.cryptonight-hub.miningpoolhub.com", 20596);
+            configurations.Add(donationConfiguration);
+
+            //ETC
+            donationConfiguration = CreateCoinConfiguration("ETC", "stratum+tcp://us-east.ethash-hub.miningpoolhub.com", 20555);
+            configurations.Add(donationConfiguration);
+
+            //EXP
+            donationConfiguration = CreateCoinConfiguration("EXP", "stratum+tcp://us-east.ethash-hub.miningpoolhub.com", 20565);
+            configurations.Add(donationConfiguration);
+
+            //FTC
+            donationConfiguration = CreateCoinConfiguration("FTC", "stratum+tcp://hub.miningpoolhub.com", 20510);
+            configurations.Add(donationConfiguration);
+
+            //GAME
+            donationConfiguration = CreateCoinConfiguration("GAME", "stratum+tcp://hub.miningpoolhub.com", 20576);
+            configurations.Add(donationConfiguration);
+
+            //GEO
+            donationConfiguration = CreateCoinConfiguration("GEO", "stratum+tcp://hub.miningpoolhub.com", 20524);
+            configurations.Add(donationConfiguration);
+
+            //BSTY
+            donationConfiguration = CreateCoinConfiguration("BSTY", "stratum+tcp://hub.miningpoolhub.com", 20543);
+            configurations.Add(donationConfiguration);
+
+            //BSTY
+            donationConfiguration = CreateCoinConfiguration("BSTY", "stratum+tcp://hub.miningpoolhub.com", 20543);
+            configurations.Add(donationConfiguration);
+
+            //GRS
+            donationConfiguration = CreateCoinConfiguration("GRS", "stratum+tcp://hub.miningpoolhub.com", 20486);
+            configurations.Add(donationConfiguration);
+
+            //GRS
+            donationConfiguration = CreateCoinConfiguration("GRS", "stratum+tcp://hub.miningpoolhub.com", 20486);
+            configurations.Add(donationConfiguration);
+
+            //MONA
+            donationConfiguration = CreateCoinConfiguration("MONA", "stratum+tcp://hub.miningpoolhub.com", 20593);
+            configurations.Add(donationConfiguration);
+
+            //XMR
+            donationConfiguration = CreateCoinConfiguration("XMR", "stratum+tcp://us-east.cryptonight-hub.miningpoolhub.com", 20580);
+            configurations.Add(donationConfiguration);
+
+            //MUSIC
+            donationConfiguration = CreateCoinConfiguration("MUSIC", "stratum+tcp://us-east.ethash-hub.miningpoolhub.com", 20585);
+            configurations.Add(donationConfiguration);
+
+            //SC
+            donationConfiguration = CreateCoinConfiguration("SC", "stratum+tcp://hub.miningpoolhub.com", 20550);
+            configurations.Add(donationConfiguration);
+
+            //START
+            donationConfiguration = CreateCoinConfiguration("START", "stratum+tcp://hub.miningpoolhub.com", 20509);
+            configurations.Add(donationConfiguration);
+
+            //XVG
+            donationConfiguration = CreateCoinConfiguration("XVG", "stratum+tcp://hub.miningpoolhub.com", 20523);
+            configurations.Add(donationConfiguration);
+
+            //VTC
+            donationConfiguration = CreateCoinConfiguration("VTC", "stratum+tcp://hub.miningpoolhub.com", 20507);
+            configurations.Add(donationConfiguration);
+
+            //ZEC
+            donationConfiguration = CreateCoinConfiguration("ZEC", "stratum+tcp://us-east.equihash-hub.miningpoolhub.com", 20570);
+            configurations.Add(donationConfiguration);
+
+            //ZCL
+            donationConfiguration = CreateCoinConfiguration("ZCL", "stratum+tcp://us-east.equihash-hub.miningpoolhub.com", 20575);
+            configurations.Add(donationConfiguration);
+
+            //XZC
+            donationConfiguration = CreateCoinConfiguration("XZC", "stratum+tcp://us-east.lyra2z-hub.miningpoolhub.com", 20581);
+            configurations.Add(donationConfiguration);
+
+            //ZEN
+            donationConfiguration = CreateCoinConfiguration("ZEN", "stratum+tcp://us-east.equihash-hub.miningpoolhub.com", 20594);
+            configurations.Add(donationConfiguration);
+
+            //NiceHash
             //Scrypt
             donationConfiguration = CreateCoinConfiguration("NiceHash:Scrypt", "stratum+tcp://scrypt.usa.nicehash.com/#xnsub", 3333, "1LRtJBNQm9ALYt9gQjVK1TdRyQ6UPGUNCw");
             configurations.Add(donationConfiguration);
@@ -175,20 +277,12 @@ namespace MultiMiner.Engine.Helpers
             donationConfiguration = CreateCoinConfiguration("NiceHash:Skunk", "stratum+tcp://skunk.usa.nicehash.com/#xnsub", 3362, "1LRtJBNQm9ALYt9gQjVK1TdRyQ6UPGUNCw");
             configurations.Add(donationConfiguration);
 
-            //SXC
-            donationConfiguration = CreateCoinConfiguration("SXC", "stratum+tcp://us-east1.sexcoin.miningpoolhub.com", 20463);
-            configurations.Add(donationConfiguration);
-
             //BCH
             donationConfiguration = CreateCoinConfiguration("BCH", "stratum+tcp://stratum.bcc.pool.bitcoin.com", 3333);
             configurations.Add(donationConfiguration);
 
             //BCC
             donationConfiguration = CreateCoinConfiguration("BCC", "stratum+tcp://stratum.bcc.pool.bitcoin.com", 3333);
-            configurations.Add(donationConfiguration);
-
-            //ETH
-            donationConfiguration = CreateCoinConfiguration("ETH", "stratum+tcp://us-east.ethash-hub.miningpoolhub.com", 20535);
             configurations.Add(donationConfiguration);
         }
 
