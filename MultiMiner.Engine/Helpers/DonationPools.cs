@@ -92,10 +92,6 @@ namespace MultiMiner.Engine.Helpers
             donationConfiguration = CreateCoinConfiguration("BSTY", "stratum+tcp://hub.miningpoolhub.com", 20543);
             configurations.Add(donationConfiguration);
 
-            //BSTY
-            donationConfiguration = CreateCoinConfiguration("BSTY", "stratum+tcp://hub.miningpoolhub.com", 20543);
-            configurations.Add(donationConfiguration);
-
             //GRS
             donationConfiguration = CreateCoinConfiguration("GRS", "stratum+tcp://hub.miningpoolhub.com", 20486);
             configurations.Add(donationConfiguration);
