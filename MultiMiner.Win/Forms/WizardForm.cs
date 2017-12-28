@@ -275,10 +275,10 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
 
             Engine.Data.Configuration.Coin coinConfiguration = new Engine.Data.Configuration.Coin();
 
-            PoolGroup coin = null;
+            PoolGroup coin = coins.SingleOrDefault(c => c.Name.Equals(coinComboBox.Text));
 
-            //no Internet connection - only BTC and LTC were available
-            if (coins.Count == 0)
+            //no Internet connection (or coin API offline) - only BTC and LTC were available
+            if (coin == null)
             {
                 coin = new PoolGroup();
                 coin.Name = coinComboBox.Text;
