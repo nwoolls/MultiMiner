@@ -519,6 +519,7 @@
             this.hostEdit.Name = "hostEdit";
             this.hostEdit.Size = new System.Drawing.Size(174, 23);
             this.hostEdit.TabIndex = 5;
+            this.hostEdit.Validating += new System.ComponentModel.CancelEventHandler(this.hostEdit_Validating);
             this.hostEdit.Validated += new System.EventHandler(this.hostEdit_Validated);
             // 
             // textBox2

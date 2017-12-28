@@ -590,5 +590,30 @@ namespace MultiMiner.Win.Forms.Configuration
             if (dialogResult == DialogResult.OK)
                 AddCoinConfiguration(multipoolChooseForm.SelectedMultipool);
         }
+
+        private void hostEdit_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            string hostText = ((TextBox)sender).Text;
+            e.Cancel = !ValidateHostText(hostText);
+        }
+
+        private bool ValidateHostText(string hostText)
+        {
+            string prefix = "";
+            if (!hostText.Contains("://"))
+            {
+                prefix = "dummy://";
+            }
+            try
+            {
+                new Uri(prefix + hostText);
+            }
+            catch (UriFormatException)
+            {
+                MessageBox.Show(String.Format("The specified value '{0}' is not a valid URI.", hostText), "Invalid URI", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
+        }
     }
 }
