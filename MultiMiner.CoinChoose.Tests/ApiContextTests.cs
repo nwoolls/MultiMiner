@@ -9,22 +9,24 @@ namespace MultiMiner.CoinChoose.Api.Tests
     [TestClass]
     public class ApiContextTests
     {
-        [TestMethod]
-        public void GetCoinInformation_ReturnsCoinInformation()
-        {
-            //act
-            List<CoinInformation> coinInformation = new ApiContext().GetCoinInformation().ToList();
+        // CoinChoose is offline
 
-            //assert
-            Assert.IsTrue(coinInformation.Count > 0);
-            Assert.IsTrue(coinInformation.Count(c => c.AdjustedProfitability > 0.00) > 0);
-            Assert.IsTrue(coinInformation.Count(c => c.Price > 0.00) > 0);
-            Assert.IsTrue(coinInformation.Count(c => c.Profitability > 0.00) > 0);
-            Assert.IsTrue(coinInformation.Count(c => c.AverageProfitability > 0.00) > 0);
-            Assert.IsTrue(coinInformation.Count(c => c.Difficulty > 0.00) > 0);
-            Assert.IsTrue(coinInformation.Count(c => c.Algorithm.Equals("scrypt")) > 0);
-            Assert.IsTrue(coinInformation.Count(c => c.Algorithm.Equals("SHA-256")) > 0);
-        }
+        //[TestMethod]
+        //public void GetCoinInformation_ReturnsCoinInformation()
+        //{
+        //    //act
+        //    List<CoinInformation> coinInformation = new ApiContext().GetCoinInformation().ToList();
+
+        //    //assert
+        //    Assert.IsTrue(coinInformation.Count > 0);
+        //    Assert.IsTrue(coinInformation.Count(c => c.AdjustedProfitability > 0.00) > 0);
+        //    Assert.IsTrue(coinInformation.Count(c => c.Price > 0.00) > 0);
+        //    Assert.IsTrue(coinInformation.Count(c => c.Profitability > 0.00) > 0);
+        //    Assert.IsTrue(coinInformation.Count(c => c.AverageProfitability > 0.00) > 0);
+        //    Assert.IsTrue(coinInformation.Count(c => c.Difficulty > 0.00) > 0);
+        //    Assert.IsTrue(coinInformation.Count(c => c.Algorithm.Equals("scrypt")) > 0);
+        //    Assert.IsTrue(coinInformation.Count(c => c.Algorithm.Equals("SHA-256")) > 0);
+        //}
 
         [TestMethod]
         public void GetInfoUrl_ReturnsUrl()
