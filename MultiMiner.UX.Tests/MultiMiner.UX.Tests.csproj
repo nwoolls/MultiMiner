@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="DateTimeExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringExtensionsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiMiner.UX\MultiMiner.UX.csproj">

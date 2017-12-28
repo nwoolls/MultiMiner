@@ -4,7 +4,7 @@ using MultiMiner.UX.Extensions;
 using System.Globalization;
 using System.Threading;
 
-namespace MultiMiner.Win.Tests
+namespace MultiMiner.UX.Tests
 {
     [TestClass]
     public class DateTimeExtensionsTests
