@@ -2565,6 +2565,8 @@ namespace MultiMiner.UX.ViewModels
                 return;
             if (CoinApiInformation == null) //no network connection
                 return;
+            if (successfulApiContext == null) //no network connection / coin API offline
+                return;
 
             IEnumerable<CoinInformation> coinsToMine = CoinSuggestions.GetCoinsToMine(
                 CoinApiInformation
