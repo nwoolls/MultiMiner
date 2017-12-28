@@ -241,7 +241,18 @@ namespace MultiMiner.Xgminer
 
                 //trim Host to ensure proper formatting
                 //don't just concatenate - we need to support URI paths and #anchors
-                UriBuilder builder = new UriBuilder(pool.Host.Trim());
+                UriBuilder builder;
+                string hostText = pool.Host.Trim();
+                try
+                {
+                    builder = new UriBuilder(hostText);
+                }
+                catch (UriFormatException ex)
+                {
+                    throw new MinerLaunchException(String.Format("The '{0}' pool host '{1}' is not a valid URI.", this.minerConfiguration.CoinName, hostText) 
+                        + Environment.NewLine + Environment.NewLine + ex.Message);
+                }
+
                 builder.Port = pool.Port;
 
                 //automatically add the #xnsub fragment to pool URIs when mining NiceHash with BFGMiner

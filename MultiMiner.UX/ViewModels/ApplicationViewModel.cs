@@ -2503,8 +2503,17 @@ namespace MultiMiner.UX.ViewModels
         {
             if (MiningEngine.Mining && EngineConfiguration.StrategyConfiguration.AutomaticallyMineCoins)
             {
-                bool changed = MiningEngine.ApplyMiningStrategy(CoinApiInformation
-                    .ToList()); //get a copy - populated async & collection may be modified)
+                bool changed;
+                try
+                {
+                    changed = MiningEngine.ApplyMiningStrategy(CoinApiInformation
+                        .ToList()); //get a copy - populated async & collection may be modified)
+                }
+                catch (MinerLaunchException ex)
+                {
+                    MessageBoxShow(ex.Message, "Error Launching Miner", PromptButtons.OK, PromptIcon.Error);
+                    return;
+                }
 
                 //save any changes made by the engine
                 EngineConfiguration.SaveDeviceConfigurations();

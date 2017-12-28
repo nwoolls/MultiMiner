@@ -774,7 +774,7 @@ namespace MultiMiner.Engine
 
                     if ((donationPercent == 0) && (index > 0))
                     {
-                        throw new Exception(AdvancedProxiesRequirePerksMessage);
+                        throw new Xgminer.MinerLaunchException(AdvancedProxiesRequirePerksMessage);
                     }
 
                     MultiMiner.Engine.Data.Configuration.Xgminer.ProxyDescriptor proxyDescriptor = engineConfiguration.XgminerConfiguration.StratumProxies[index];
