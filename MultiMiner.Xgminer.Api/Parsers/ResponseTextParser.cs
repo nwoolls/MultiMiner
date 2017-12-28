@@ -57,13 +57,14 @@ namespace MultiMiner.Xgminer.Api.Parsers
             if (responsePart == "\0")
                 return new Dictionary<string,string>();
 
-            //remove dupes using Distinct(), seen dupes with user API logs
-            IEnumerable<string> partAttributes = responsePart.Split(',').ToList().Distinct();
+            IEnumerable<string> partAttributes = responsePart.Split(',');
 
             Dictionary<string, string> keyValuePairs = partAttributes
               .Where(value => value.Contains('='))
               .Select(value => value.Split('='))
-              .ToDictionary(pair => pair[0], pair => pair[1]);
+              //remove dupe keys (with diff values) using GroupBy(), seen dupes with user stack traces
+              .GroupBy(pair => pair[0])
+              .ToDictionary(grp => grp.Key, grp => grp.First()[1]);
 
             return keyValuePairs;
         }
