@@ -243,6 +243,13 @@ namespace MultiMiner.Xgminer
                 //don't just concatenate - we need to support URI paths and #anchors
                 UriBuilder builder = new UriBuilder(pool.Host.Trim());
                 builder.Port = pool.Port;
+
+                //automatically add the #xnsub fragment to pool URIs when mining NiceHash with BFGMiner
+                if (!legacyApi && pool.Host.ToLower().Contains("nicehash.com"))
+                {
+                    builder.Fragment = "xnsub";
+                }
+
                 string poolUri = builder.Uri.ToString();
                 
                 if (pool.QuotaEnabled)
