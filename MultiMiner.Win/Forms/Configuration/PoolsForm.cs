@@ -201,6 +201,8 @@ namespace MultiMiner.Win.Forms.Configuration
         {
             if (coinConfigurationBindingSource.Current == null)
                 return;
+            //prevents a crash under Mono on macOS - "System.IndexOutOfRangeException: list position"
+            poolListBox.SelectedItem = null;
 
             Engine.Data.Configuration.Coin currentConfiguration = (Engine.Data.Configuration.Coin)coinConfigurationBindingSource.Current;
             adjustProfitCombo.SelectedIndex = (int)currentConfiguration.ProfitabilityAdjustmentType;
@@ -218,6 +220,9 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void MoveSelectedPool(int offset)
         {
+            if (miningPoolBindingSource.Current == null)
+                return;
+
             Object currentObject = miningPoolBindingSource.Current;
             int currentIndex = miningPoolBindingSource.IndexOf(currentObject);
             int newIndex = currentIndex + offset;
@@ -423,6 +428,10 @@ namespace MultiMiner.Win.Forms.Configuration
         private void userNameCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
             MiningPool currentPool = (MiningPool)miningPoolBindingSource.Current;
+            if (currentPool == null)
+            {
+                return;
+            }
 
             //if the password is blank
             if (String.IsNullOrEmpty(currentPool.Password))
