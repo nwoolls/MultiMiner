@@ -70,7 +70,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.hostEdit = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.portEdit = new System.Windows.Forms.TextBox();
             this.passwordEdit = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.coinConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -320,7 +320,7 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.hostEdit);
-            this.groupBox1.Controls.Add(this.textBox2);
+            this.groupBox1.Controls.Add(this.portEdit);
             this.groupBox1.Controls.Add(this.passwordEdit);
             this.groupBox1.Location = new System.Drawing.Point(196, 63);
             this.groupBox1.Name = "groupBox1";
@@ -522,14 +522,15 @@
             this.hostEdit.Validating += new System.ComponentModel.CancelEventHandler(this.hostEdit_Validating);
             this.hostEdit.Validated += new System.EventHandler(this.hostEdit_Validated);
             // 
-            // textBox2
+            // portEdit
             // 
-            this.textBox2.AccessibleName = "Port";
-            this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.miningPoolBindingSource, "Port", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox2.Location = new System.Drawing.Point(346, 98);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(81, 23);
-            this.textBox2.TabIndex = 6;
+            this.portEdit.AccessibleName = "Port";
+            this.portEdit.Location = new System.Drawing.Point(346, 98);
+            this.portEdit.Name = "portEdit";
+            this.portEdit.Size = new System.Drawing.Size(81, 23);
+            this.portEdit.TabIndex = 6;
+            this.portEdit.Validating += new System.ComponentModel.CancelEventHandler(this.portEdit_Validating);
+            this.portEdit.Validated += new System.EventHandler(this.portEdit_Validated);
             // 
             // passwordEdit
             // 
@@ -728,7 +729,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox hostEdit;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox portEdit;
         private System.Windows.Forms.TextBox passwordEdit;
         private System.Windows.Forms.BindingSource miningPoolBindingSource;
         private System.Windows.Forms.TextBox textBox3;
