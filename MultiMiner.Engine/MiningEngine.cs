@@ -560,14 +560,16 @@ namespace MultiMiner.Engine
 							}
 						}
                     }
-                    else if (device.SupportsAlgorithm(AlgorithmNames.Scrypt) && !device.SupportsAlgorithm(AlgorithmNames.SHA256))
+                    else if (device.SupportsAlgorithm(AlgorithmNames.Scrypt) && !device.SupportsAlgorithm(AlgorithmNames.SHA256) &&
+                        (scryptProfitableCoins.Count > 0))
                     {
                         //scrypt only
                         profitableCoin = ChooseCoinFromList(scryptProfitableCoins, scryptIterator);
 
                         scryptIterator++;
                     }
-                    else if (device.SupportsAlgorithm(AlgorithmNames.Scrypt) && device.SupportsAlgorithm(AlgorithmNames.SHA256))
+                    else if (device.SupportsAlgorithm(AlgorithmNames.Scrypt) && device.SupportsAlgorithm(AlgorithmNames.SHA256) &&
+                        (allProfitableCoins.Count > 0))
                     {
                         //sha256 or scrypt
                         profitableCoin = ChooseCoinFromList(allProfitableCoins, comboAlgoIterator);
