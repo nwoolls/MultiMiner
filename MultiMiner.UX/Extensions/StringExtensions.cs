@@ -179,10 +179,7 @@ namespace MultiMiner.UX.Extensions
                 host = uri.Scheme + "://" + host;
             }
 
-            if (host.Last().Equals('/'))
-            {
-                host = host.Substring(0, host.Length - 1);
-            }
+            host = host.TrimEnd('/');
 
             return true;
         }

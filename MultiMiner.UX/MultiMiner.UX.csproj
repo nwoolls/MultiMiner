@@ -59,7 +59,6 @@
     <Compile Include="Data\Configuration\PoolDefaults.cs" />
     <Compile Include="Data\CredentialsEventArgs.cs" />
     <Compile Include="Data\NotificationEventArgs.cs" />
-    <Compile Include="Data\PoolFeatureAnchors.cs" />
     <Compile Include="Data\ProgressEventArgs.cs" />
     <Compile Include="Data\PromptButtons.cs" />
     <Compile Include="Data\PromptIcon.cs" />

@@ -51,6 +51,7 @@
     <Compile Include="Data\Device\DevicePlatform.cs" />
     <Compile Include="Data\KnownAlgorithm.cs" />
     <Compile Include="Data\KnownAlgorithms.cs" />
+    <Compile Include="Data\PoolFeatures.cs" />
     <Compile Include="LaunchFailedArgs.cs" />
     <Compile Include="LogLaunchArgs.cs" />
     <Compile Include="MinerLaunchException.cs" />

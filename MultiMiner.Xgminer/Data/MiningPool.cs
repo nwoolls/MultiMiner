@@ -21,5 +21,23 @@ namespace MultiMiner.Xgminer.Data
         public int Quota { get; set; } //see bfgminer README about quotas
         public bool QuotaEnabled { get; set; }
         public string MinerFlags { get; set; }
+
+        public string BuildPoolUri()
+        {
+            //trim Host to ensure proper formatting
+            //don't just concatenate - we need to support URI paths and #fragments
+            string hostText = Host.Trim();
+
+            UriBuilder builder = new UriBuilder(hostText);
+            builder.Port = Port;
+            string poolUri = builder.Uri
+                .ToString()
+                .TrimEnd('/');
+
+            // any fragment at this point will be URI encoded - e.g. %23xnsub - but BFGMiner only looks for #
+            poolUri = Uri.UnescapeDataString(poolUri);
+
+            return poolUri;
+        }
     }
 }

@@ -239,30 +239,24 @@ namespace MultiMiner.Xgminer
             {
                 string argument;
 
-                //trim Host to ensure proper formatting
-                //don't just concatenate - we need to support URI paths and #anchors
-                UriBuilder builder;
-                string hostText = pool.Host.Trim();
+                string poolUri;
                 try
                 {
-                    builder = new UriBuilder(hostText);
+                    poolUri = pool.BuildPoolUri();
                 }
                 catch (UriFormatException ex)
                 {
-                    throw new MinerLaunchException(String.Format("The '{0}' pool host '{1}' is not a valid URI.", this.minerConfiguration.CoinName, hostText) 
+                    throw new MinerLaunchException(String.Format("The '{0}' pool host '{1}' is not a valid URI.", this.minerConfiguration.CoinName, pool.Host)
                         + Environment.NewLine + Environment.NewLine + ex.Message);
                 }
 
-                builder.Port = pool.Port;
-
-                //automatically add the #xnsub fragment to pool URIs when mining NiceHash with BFGMiner
+                //automatically add the #xnsub & #skipcbcheck fragments to pool URIs when mining NiceHash with BFGMiner
                 if (!legacyApi && pool.Host.ToLower().Contains("nicehash.com"))
                 {
-                    builder.Fragment = "xnsub";
+                    poolUri = PoolFeatures.UpdatePoolFeature(poolUri, PoolFeatures.XNSubFragment, true);
+                    poolUri = PoolFeatures.UpdatePoolFeature(poolUri, PoolFeatures.SkipCBCheckFragment, true);
                 }
 
-                string poolUri = builder.Uri.ToString();
-                
                 if (pool.QuotaEnabled)
                     argument = string.Format("--quota \"{2};{0}\" -u {1}", poolUri, pool.Username, pool.Quota);
                 else

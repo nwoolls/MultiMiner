@@ -565,13 +565,13 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void poolFeaturesMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            extraNonceSubscriptToolStripMenuItem.Checked = hostEdit.Text.Contains(PoolFeatureAnchors.ExtraNonceSubscribe);
-            disableCoinbaseCheckToolStripMenuItem.Checked = hostEdit.Text.Contains(PoolFeatureAnchors.SkipCoinbaseCheck);
+            extraNonceSubscriptToolStripMenuItem.Checked = hostEdit.Text.Contains(PoolFeatures.XNSubFragment);
+            disableCoinbaseCheckToolStripMenuItem.Checked = hostEdit.Text.Contains(PoolFeatures.SkipCBCheckFragment);
         }
 
         private void extraNonceSubscriptToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdatePoolFeature(PoolFeatureAnchors.ExtraNonceSubscribe, extraNonceSubscriptToolStripMenuItem.Checked);
+            UpdatePoolFeature(PoolFeatures.XNSubFragment, extraNonceSubscriptToolStripMenuItem.Checked);
         }
 
         private void featuresButton_Click(object sender, EventArgs e)
@@ -585,7 +585,7 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void disableCoinbaseCheckToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdatePoolFeature(PoolFeatureAnchors.SkipCoinbaseCheck, disableCoinbaseCheckToolStripMenuItem.Checked);
+            UpdatePoolFeature(PoolFeatures.SkipCBCheckFragment, disableCoinbaseCheckToolStripMenuItem.Checked);
         }
 
         private void UpdatePoolFeature(string anchor, bool enabled)

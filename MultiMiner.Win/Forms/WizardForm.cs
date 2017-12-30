@@ -372,27 +372,23 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
 
         private void poolFeaturesMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            extraNonceSubscriptToolStripMenuItem.Checked = hostEdit.Text.Contains(PoolFeatureAnchors.ExtraNonceSubscribe);
-            disableCoinbaseCheckToolStripMenuItem.Checked = hostEdit.Text.Contains(PoolFeatureAnchors.SkipCoinbaseCheck);
+            extraNonceSubscriptToolStripMenuItem.Checked = hostEdit.Text.Contains(PoolFeatures.XNSubFragment);
+            disableCoinbaseCheckToolStripMenuItem.Checked = hostEdit.Text.Contains(PoolFeatures.SkipCBCheckFragment);
         }
 
-        private void UpdatePoolFeature(string anchor, bool enabled)
+        private void UpdatePoolFeature(string fragment, bool enabled)
         {
-            string uriSegment = "/" + anchor;
-            if (enabled)
-                hostEdit.Text = hostEdit.Text + uriSegment;
-            else
-                hostEdit.Text = hostEdit.Text.Replace(uriSegment, String.Empty);
+            hostEdit.Text = PoolFeatures.UpdatePoolFeature(hostEdit.Text, fragment, enabled);
         }
 
         private void extraNonceSubscriptToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdatePoolFeature(PoolFeatureAnchors.ExtraNonceSubscribe, extraNonceSubscriptToolStripMenuItem.Checked);
+            UpdatePoolFeature(PoolFeatures.XNSubFragment, extraNonceSubscriptToolStripMenuItem.Checked);
         }
 
         private void disableCoinbaseCheckToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UpdatePoolFeature(PoolFeatureAnchors.SkipCoinbaseCheck, disableCoinbaseCheckToolStripMenuItem.Checked);
+            UpdatePoolFeature(PoolFeatures.SkipCBCheckFragment, disableCoinbaseCheckToolStripMenuItem.Checked);
         }
     }
 }
