@@ -3154,10 +3154,14 @@ namespace MultiMiner.UX.ViewModels
                     .FirstOrDefault(cc =>
                         cc.Pools
                             .Any((p) => {
-                                //trim trailing slashes
-                                string configurationPool = String.Format("{0}:{1}", p.Host.ShortHostFromHost(), p.Port).TrimEnd('/');
-                                string comparisonPool = poolUrl.ShortHostFromHost().TrimEnd('/');
-                                return configurationPool.Equals(comparisonPool, StringComparison.OrdinalIgnoreCase);
+                                UriBuilder poolUri = new UriBuilder(poolUrl);
+                                UriBuilder compareUri = new UriBuilder(p.Host);
+                                int poolPort = poolUri.Port;
+                                int comparePort = p.Port;
+                                string poolHost = poolUri.Host;
+                                string compareHost = compareUri.Host;
+                                return poolPort == comparePort &&
+                                    poolHost.Equals(compareHost, StringComparison.OrdinalIgnoreCase);
                                 })
                     );
 
