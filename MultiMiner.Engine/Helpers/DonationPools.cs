@@ -15,7 +15,7 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //LTC
-            donationConfiguration = CreateCoinConfiguration("LTC", "stratum+tcp://us.litecoinpool.org", 3333, "mmdonations", "nwoolls");
+            donationConfiguration = CreateCoinConfiguration("LTC", "stratum+tcp://us.litecoinpool.org", 3333, "nwoolls", "mmdonations");
             configurations.Add(donationConfiguration);
 
             //BQC
@@ -24,27 +24,27 @@ namespace MultiMiner.Engine.Helpers
 
             //Coinmine.pl
             //ZET
-            donationConfiguration = CreateCoinConfiguration("ZET", "stratum+tcp://mine1.coinmine.pl", 6000);
+            donationConfiguration = CreateCoinConfiguration("ZET", "stratum+tcp://mine1.coinmine.pl", 6000, "nwoolls", "mmdonations");
             configurations.Add(donationConfiguration);
 
             //SRC
-            donationConfiguration = CreateCoinConfiguration("SRC", "stratum+tcp://mine2.coinmine.pl", 6020);
+            donationConfiguration = CreateCoinConfiguration("SRC", "stratum+tcp://mine2.coinmine.pl", 6020, "nwoolls", "mmdonations");
             configurations.Add(donationConfiguration);
 
             //DCR
-            donationConfiguration = CreateCoinConfiguration("DCR", "stratum+tcp://dcr.coinmine.pl", 2222);
+            donationConfiguration = CreateCoinConfiguration("DCR", "stratum+tcp://dcr.coinmine.pl", 2222, "nwoolls", "mmdonations");
             configurations.Add(donationConfiguration);
 
             //LBC
-            donationConfiguration = CreateCoinConfiguration("LBC", "stratum+tcp://lbc.coinmine.pl", 8787);
+            donationConfiguration = CreateCoinConfiguration("LBC", "stratum+tcp://lbc.coinmine.pl", 8787, "nwoolls", "mmdonations");
             configurations.Add(donationConfiguration);
 
             //PPC
-            donationConfiguration = CreateCoinConfiguration("PPC", "stratum+tcp://mine1.coinmine.pl", 6050);
+            donationConfiguration = CreateCoinConfiguration("PPC", "stratum+tcp://mine1.coinmine.pl", 6050, "nwoolls", "mmdonations");
             configurations.Add(donationConfiguration);
 
             //UBQ
-            donationConfiguration = CreateCoinConfiguration("UBQ", "stratum+tcp://ubiq.mixpools.org", 2120);
+            donationConfiguration = CreateCoinConfiguration("UBQ", "stratum+tcp://ubiq.mixpools.org", 2120, "nwoolls", "mmdonations");
             configurations.Add(donationConfiguration);
 
             //MiningPoolHub
@@ -305,10 +305,10 @@ namespace MultiMiner.Engine.Helpers
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls")
         {
-            return CreateCoinConfiguration(coinSymbol, host, port, GetWorkerName(), username);
+            return CreateCoinConfiguration(coinSymbol, host, port, username, GetWorkerName());
         }
 
-        private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string workerName, string username = "nwoolls")
+        private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username, string workerName)
         {
             Data.Configuration.Coin donationConfiguration = new Data.Configuration.Coin();
             donationConfiguration.PoolGroup.Id = coinSymbol;
