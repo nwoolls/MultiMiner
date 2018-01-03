@@ -140,7 +140,17 @@ namespace MultiMiner.Utility.Net
                 //OS X
                 string configFilePath = @"/Library/Preferences/SystemConfiguration/com.apple.smb.server.plist";
                 PlistParser parser = new PlistParser(configFilePath);
-                result = parser["Workgroup"].ToString();
+
+                const string workgroupKey = "Workgroup";
+                if (parser.ContainsKey(workgroupKey))
+                {
+                    result = parser[workgroupKey].ToString();
+                }
+                else
+                {
+                    const string defaultWorkgroup = "WORKGROUP";
+                    result = defaultWorkgroup;
+                }
             }
             else if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
             {
