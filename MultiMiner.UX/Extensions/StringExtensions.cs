@@ -181,6 +181,9 @@ namespace MultiMiner.UX.Extensions
 
             host = host.TrimEnd('/');
 
+            // #A/#B going in would come out #A/%23B under .NET 4 (but not 4.5)
+            host = Uri.UnescapeDataString(host);
+
             return true;
         }
 

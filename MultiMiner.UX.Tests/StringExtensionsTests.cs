@@ -121,5 +121,22 @@ namespace MultiMiner.UX.Tests
             // assert
             Assert.IsFalse(result);
         }
+
+        [TestMethod]
+        public void ParseHostAndPort_H_Succeeds()
+        {
+            // arrange
+            var hostAndPort = "stratum+tcp://stratum.kano.is:81/#xnsub/#skipcbcheck";
+
+            // act
+            string host;
+            int port;
+            bool result = hostAndPort.ParseHostAndPort(out host, out port);
+
+            // assert
+            Assert.AreEqual("stratum+tcp://stratum.kano.is/#xnsub/#skipcbcheck", host);
+            Assert.AreEqual(81, port);
+            Assert.IsTrue(result);
+        }
     }
 }
