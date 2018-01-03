@@ -257,13 +257,6 @@ namespace MultiMiner.Xgminer
                     poolUri = PoolFeatures.UpdatePoolFeature(poolUri, PoolFeatures.SkipCBCheckFragment, true);
                 }
 
-                //automatically remove the #xnsub & #skipcbcheck fragments from non-BFGMiner miners
-                if (legacyApi)
-                {
-                    poolUri = PoolFeatures.UpdatePoolFeature(poolUri, PoolFeatures.XNSubFragment, false);
-                    poolUri = PoolFeatures.UpdatePoolFeature(poolUri, PoolFeatures.SkipCBCheckFragment, false);
-                }
-                
                 if (pool.QuotaEnabled)
                     argument = string.Format("--quota \"{2};{0}\" -u {1}", poolUri, pool.Username, pool.Quota);
                 else
