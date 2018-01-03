@@ -3155,14 +3155,24 @@ namespace MultiMiner.UX.ViewModels
                         cc.Pools
                             .Any((p) => {
                                 UriBuilder poolUri = new UriBuilder(poolUrl);
-                                UriBuilder compareUri = new UriBuilder(p.Host);
+
+                                UriBuilder compareUri;
+                                try
+                                {
+                                    compareUri = new UriBuilder(p.Host);
+                                }
+                                catch (UriFormatException)
+                                {
+                                    return false;
+                                }
+
                                 int poolPort = poolUri.Port;
                                 int comparePort = p.Port;
                                 string poolHost = poolUri.Host;
                                 string compareHost = compareUri.Host;
                                 return poolPort == comparePort &&
                                     poolHost.Equals(compareHost, StringComparison.OrdinalIgnoreCase);
-                                })
+                            })
                     );
 
             return coinConfiguration;
