@@ -471,6 +471,7 @@ namespace MultiMiner.Win.Forms.Configuration
             {
                 currentPool.Host = newHost;
                 currentPool.Port = newPort;
+                PopulatePort(); // we don't data-bind port, crashes on mono for invalid values
 
                 //required since we are validating this edit
                 hostEdit.Text = newHost;
