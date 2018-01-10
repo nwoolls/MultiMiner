@@ -1420,7 +1420,15 @@ namespace MultiMiner.Win.Forms
             {
                 string logDirectory = app.GetLogDirectory();
                 string logFilePath = Path.Combine(logDirectory, fileName);
-                Process.Start(logFilePath);
+                try
+                {
+                    // attempt to open with the app associated with .json
+                    Process.Start(logFilePath);
+                } catch (Win32Exception)
+                {
+                    // no app associated for .json - use Notepad (we're on Windows if we got this exception)
+                    Process.Start("notepad", logFilePath);
+                }
             }
         }
 
