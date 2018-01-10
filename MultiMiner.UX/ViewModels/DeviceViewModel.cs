@@ -59,7 +59,7 @@ namespace MultiMiner.UX.ViewModels
             }
             set
             {
-                int rootValue = Convert.ToInt32(Math.Truncate(value));
+                double rootValue = Math.Truncate(value);
 
                 if (value > (rootValue + 0.99))
                     lastShareDifficulty = rootValue + 1;
