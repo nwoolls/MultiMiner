@@ -16,6 +16,8 @@
         public const string Nist5 = "Nist5";
         public const string NeoScrypt = "NeoScrypt";
         public const string Lyra2RE = "Lyra2RE";
+        public const string Ethash = "Ethash";
+        public const string CryptoNight = "CryptoNight";
     }
 
     public static class AlgorithmFullNames
@@ -34,6 +36,8 @@
         public const string Nist5 = "Nist5";
         public const string NeoScrypt = "NeoScrypt";
         public const string Lyra2RE = "Lyra2RE";
+        public const string Ethash = "Ethash";
+        public const string CryptoNight = "CryptoNight";
     }
 
     //how difficult is each algo on the same hardware relative to SHA256

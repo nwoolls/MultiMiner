@@ -14,5 +14,7 @@
         public const string AlgorithmX15 = "--algorithm x15";
         public const string AlgorithmNeoScrypt = "--algorithm neoscrypt";
         public const string AlgorithmLyra2RE = "--algorithm lyra2re";
+        public const string AlgorithmEthash = "--algorithm ethash";
+        public const string AlgorithmCryptoNight = "--algorithm cryptonight";
     }
 }

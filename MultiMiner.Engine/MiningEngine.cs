@@ -141,6 +141,16 @@ namespace MultiMiner.Engine
             algorithm.DefaultMiner = MinerNames.SGMiner5;
             algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmLyra2RE;
             algorithm.BuiltIn = true;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Ethash, AlgorithmFullNames.Ethash, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm.DefaultMiner = MinerNames.SGMinerGM;
+            algorithm.MinerArguments[MinerNames.SGMinerGM] = AlgorithmParameter.AlgorithmEthash;
+            algorithm.BuiltIn = true;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.CryptoNight, AlgorithmFullNames.CryptoNight, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm.DefaultMiner = MinerNames.SGMinerGM;
+            algorithm.MinerArguments[MinerNames.SGMinerGM] = AlgorithmParameter.AlgorithmCryptoNight;
+            algorithm.BuiltIn = true;
         }
 
         private static void RegisterMiners()
@@ -155,6 +165,7 @@ namespace MultiMiner.Engine
             factory.RegisterMiner(MinerNames.SPHSGMiner, MinerNames.SGMiner, true);
             factory.RegisterMiner(MinerNames.MaxcoinCGMiner, MinerNames.CGMiner, true);
             factory.RegisterMiner(MinerNames.SGMiner5, MinerNames.SGMiner, true);
+            factory.RegisterMiner(MinerNames.SGMinerGM, MinerNames.SGMiner, true);
 
             string minersDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Miners");
             factory.RegisterMiners(minersDirectory);
