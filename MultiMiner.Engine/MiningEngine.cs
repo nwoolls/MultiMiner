@@ -973,15 +973,22 @@ namespace MultiMiner.Engine
 
             SetupConfigurationPools(minerConfiguration, coinConfiguration);
 
-            SetupConfigurationArguments(minerConfiguration, coinConfiguration);
+            SetupConfigurationArguments(minerConfiguration, coinConfiguration, miner);
 
             return minerConfiguration;
         }
 
-        private void SetupConfigurationArguments(Xgminer.Data.Configuration.Miner minerConfiguration, Data.Configuration.Coin coinConfiguration)
+        private void SetupConfigurationArguments(Xgminer.Data.Configuration.Miner minerConfiguration, Data.Configuration.Coin coinConfiguration,
+            MinerDescriptor miner)
         {
             string arguments = string.Empty;
 
+            //apply algorithm kernel arguments
+            if (minerConfiguration.Algorithm.MinerArguments.ContainsKey(miner.Name))
+            {
+                arguments = String.Format("{0} {0} {1}", arguments, minerConfiguration.Algorithm.MinerArguments[miner.Name], arguments.TrimStart());
+            }
+            
             //apply algorithm-specific parameters
             if (engineConfiguration.XgminerConfiguration.AlgorithmFlags.ContainsKey(coinConfiguration.PoolGroup.Algorithm))
                 arguments = String.Format("{0} {1}", arguments,
