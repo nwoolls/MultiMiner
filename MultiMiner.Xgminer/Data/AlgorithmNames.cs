@@ -18,6 +18,7 @@
         public const string Lyra2RE = "Lyra2RE";
         public const string Ethash = "Ethash";
         public const string CryptoNight = "CryptoNight";
+        public const string Equihash = "Equihash";
     }
 
     public static class AlgorithmFullNames
@@ -38,6 +39,7 @@
         public const string Lyra2RE = "Lyra2RE";
         public const string Ethash = "Ethash";
         public const string CryptoNight = "CryptoNight";
+        public const string Equihash = "Equihash";
     }
 
     //how difficult is each algo on the same hardware relative to SHA256

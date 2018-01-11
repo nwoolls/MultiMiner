@@ -190,6 +190,13 @@ namespace MultiMiner.Engine
             algorithm.DefaultMiner = MinerNames.SGMinerGM;
             algorithm.MinerArguments[MinerNames.SGMinerGM] = AlgorithmParameter.AlgorithmCryptoNight;
             algorithm.BuiltIn = true;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Equihash, AlgorithmFullNames.Equihash);
+            algorithm.PoolMultiplier = Math.Pow(2, 20);
+            algorithm.DifficultyMultiplier = Math.Pow(2, 13);
+            algorithm.DefaultMiner = MinerNames.SGMinerGM;
+            algorithm.MinerArguments[MinerNames.SGMinerGM] = AlgorithmParameter.AlgorithmEquihash;
+            algorithm.BuiltIn = true;
         }
 
         private static void RegisterMiners()
