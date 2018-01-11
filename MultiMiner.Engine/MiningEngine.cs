@@ -55,9 +55,18 @@ namespace MultiMiner.Engine
                 {
                     CoinAlgorithm existingAlgorithm = existingAlgorithms.SingleOrDefault(ea => ea.Name.Equals(customAlgorithm.Name, StringComparison.OrdinalIgnoreCase));
                     if (existingAlgorithm != null)
-                        //don't override our Family - user may have added an algo before we support it
+                    {
                         //don't override BuiltIn - user may have added an algo before we support it
-                        ObjectCopier.CopyObject(customAlgorithm, existingAlgorithm, "Family", "BuiltIn");
+                        //don't override Multipliers - user may have added an algo before we introduced these
+                        ObjectCopier.CopyObject(customAlgorithm, existingAlgorithm, "BuiltIn", "PoolMultiplier", "DifficultyMultiplier");
+
+                        //we still need to support the user customizing these while also introducing defaults for OOTB
+                        if (customAlgorithm.PoolMultiplier > 0)
+                            existingAlgorithm.PoolMultiplier = customAlgorithm.PoolMultiplier;
+
+                        if (customAlgorithm.DifficultyMultiplier > 0)
+                            existingAlgorithm.DifficultyMultiplier = customAlgorithm.DifficultyMultiplier;
+                    }
                     else
                         existingAlgorithms.Add(customAlgorithm);
                 }
@@ -78,76 +87,106 @@ namespace MultiMiner.Engine
         {
             MinerFactory factory = MinerFactory.Instance;
 
-            CoinAlgorithm algorithm = factory.RegisterAlgorithm(AlgorithmNames.SHA256, AlgorithmFullNames.SHA256, CoinAlgorithm.AlgorithmFamily.SHA2);
+            CoinAlgorithm algorithm = factory.RegisterAlgorithm(AlgorithmNames.SHA256, AlgorithmFullNames.SHA256);
+            algorithm.PoolMultiplier = 1;
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.BFGMiner;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Scrypt, AlgorithmFullNames.Scrypt, CoinAlgorithm.AlgorithmFamily.Scrypt);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Scrypt, AlgorithmFullNames.Scrypt);
+            algorithm.PoolMultiplier = Math.Pow(2, 16);
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.BFGMiner;
             algorithm.MinerArguments[MinerNames.BFGMiner] = AlgorithmParameter.Scrypt;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Keccak, AlgorithmFullNames.Keccak, CoinAlgorithm.AlgorithmFamily.SHA3);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Keccak, AlgorithmFullNames.Keccak);
+            algorithm.PoolMultiplier = Math.Pow(2, 8);
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.SGMiner5;
             algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmKeccak;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Groestl, AlgorithmFullNames.Groestl, CoinAlgorithm.AlgorithmFamily.SHA3);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Groestl, AlgorithmFullNames.Groestl);
+            algorithm.PoolMultiplier = Math.Pow(2, 8);
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.SGMiner5;
             algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmGroestlcoin;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.ScryptN, AlgorithmFullNames.ScryptN, CoinAlgorithm.AlgorithmFamily.Scrypt);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.ScryptN, AlgorithmFullNames.ScryptN);
+            algorithm.PoolMultiplier = Math.Pow(2, 16);
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.SGMiner5;
             algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmScryptNFactor11;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.ScryptJane, AlgorithmFullNames.ScryptJane, CoinAlgorithm.AlgorithmFamily.Scrypt);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.ScryptJane, AlgorithmFullNames.ScryptJane);
+            algorithm.PoolMultiplier = Math.Pow(2, 16);
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.KalrothSJCGMiner;
             algorithm.MinerArguments[MinerNames.KalrothSJCGMiner] = AlgorithmParameter.ScryptJane;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Quark, AlgorithmFullNames.Quark, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Quark, AlgorithmFullNames.Quark);
+            algorithm.PoolMultiplier = 1;
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.SGMiner5;
             algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmQuarkcoin;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.X11, AlgorithmFullNames.X11, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.X11, AlgorithmFullNames.X11);
+            algorithm.PoolMultiplier = 1;
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.SGMiner5;
             algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmX11;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.X13, AlgorithmFullNames.X13, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.X13, AlgorithmFullNames.X13);
+            algorithm.PoolMultiplier = 1;
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.SGMiner5;
             algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmX13;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.X14, AlgorithmFullNames.X14, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.X14, AlgorithmFullNames.X14);
+            algorithm.PoolMultiplier = 1;
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.SGMiner5;
             algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmX14;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.X15, AlgorithmFullNames.X15, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.X15, AlgorithmFullNames.X15);
+            algorithm.PoolMultiplier = 1;
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.SGMiner5;
             algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmX15;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.NeoScrypt, AlgorithmFullNames.NeoScrypt, CoinAlgorithm.AlgorithmFamily.Scrypt);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.NeoScrypt, AlgorithmFullNames.NeoScrypt);
+            algorithm.PoolMultiplier = Math.Pow(2, 16);
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.SGMiner5;
             algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmNeoScrypt;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Lyra2RE, AlgorithmFullNames.Lyra2RE, CoinAlgorithm.AlgorithmFamily.Lyra2);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Lyra2RE, AlgorithmFullNames.Lyra2RE);
+            algorithm.PoolMultiplier = Math.Pow(2, 7);
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.SGMiner5;
             algorithm.MinerArguments[MinerNames.SGMiner5] = AlgorithmParameter.AlgorithmLyra2RE;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Ethash, AlgorithmFullNames.Ethash, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Ethash, AlgorithmFullNames.Ethash);
+            algorithm.PoolMultiplier = Math.Pow(2, 32);
+            algorithm.DifficultyMultiplier = 1;
             algorithm.DefaultMiner = MinerNames.SGMinerGM;
             algorithm.MinerArguments[MinerNames.SGMinerGM] = AlgorithmParameter.AlgorithmEthash;
             algorithm.BuiltIn = true;
 
-            algorithm = factory.RegisterAlgorithm(AlgorithmNames.CryptoNight, AlgorithmFullNames.CryptoNight, CoinAlgorithm.AlgorithmFamily.Unknown);
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.CryptoNight, AlgorithmFullNames.CryptoNight);
+            algorithm.PoolMultiplier = Math.Pow(2, 32);
+            algorithm.DifficultyMultiplier = 1;
             algorithm.DefaultMiner = MinerNames.SGMinerGM;
             algorithm.MinerArguments[MinerNames.SGMinerGM] = AlgorithmParameter.AlgorithmCryptoNight;
             algorithm.BuiltIn = true;

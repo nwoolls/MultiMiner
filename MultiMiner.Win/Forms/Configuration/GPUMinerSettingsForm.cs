@@ -73,7 +73,7 @@ namespace MultiMiner.Win.Forms.Configuration
         private void PopulateAlgorithmList()
         {
             //don't list SHA256 - we use BFGMiner for ASICs
-            IEnumerable<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms.Where(a => a.Family != CoinAlgorithm.AlgorithmFamily.SHA2);
+            IEnumerable<CoinAlgorithm> algorithms = MinerFactory.Instance.Algorithms.Where(a => a.Name != AlgorithmNames.SHA256);
 
             algoListView.Items.Clear();
 
@@ -98,13 +98,14 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void minerCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateKernelArguments();
-            SaveMinerChoice();
+            string algorithmName = SelectedAlgorithmName();
+            UpdateKernelArguments(algorithmName);
+            UpdateAlgoMultipliers(algorithmName);
+            SaveMinerChoice(algorithmName);
         }
 
-        private void UpdateKernelArguments()
+        private void UpdateKernelArguments(string algorithmName)
         {
-            string algorithmName = SelectedAlgorithmName();
             CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
             string minerName = minerCombo.Text;
             if (algorithm.MinerArguments.ContainsKey(minerName))
@@ -113,9 +114,15 @@ namespace MultiMiner.Win.Forms.Configuration
                 kernelArgsEdit.Text = String.Empty;
         }
 
-        private void SaveMinerChoice()
+        private void UpdateAlgoMultipliers(string algorithmName)
         {
-            string algorithmName = SelectedAlgorithmName();
+            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
+            poolMultEdit.Text = algorithm.PoolMultiplier.ToString();
+            diffMultEdit.Text = algorithm.DifficultyMultiplier.ToString();
+        }
+
+        private void SaveMinerChoice(string algorithmName)
+        {
             workingMinerConfiguration.AlgorithmMiners[algorithmName] = minerCombo.Text;
         }
 
@@ -138,6 +145,8 @@ namespace MultiMiner.Win.Forms.Configuration
             bool algoSelected = algoListView.SelectedItems.Count > 0;
             minerCombo.Enabled = algoSelected;
             kernelArgsEdit.Enabled = algoSelected;
+            poolMultEdit.Enabled = algoSelected;
+            diffMultEdit.Enabled = algoSelected;
             addButton.Enabled = true;
 
             if (algoSelected)
@@ -166,7 +175,7 @@ namespace MultiMiner.Win.Forms.Configuration
             // (you can set any default properties that you want to here)
             string algorithmName = "Unnamed";
 
-            MinerFactory.Instance.RegisterAlgorithm(algorithmName, algorithmName, CoinAlgorithm.AlgorithmFamily.Unknown);
+            MinerFactory.Instance.RegisterAlgorithm(algorithmName, algorithmName);
 
             ListViewItem item = algoListView.Items.Add(algorithmName);
             item.ImageIndex = 0;
@@ -213,6 +222,52 @@ namespace MultiMiner.Win.Forms.Configuration
         private void disableGpuCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             UpdateAutoCheckBox();
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void poolMultEdit_Validated(object sender, EventArgs e)
+        {
+            string algorithmName = SelectedAlgorithmName();
+            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
+            algorithm.PoolMultiplier = Convert.ToDouble(poolMultEdit.Text);
+        }
+
+        private void diffMultEdit_Validated(object sender, EventArgs e)
+        {
+            string algorithmName = SelectedAlgorithmName();
+            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
+            algorithm.DifficultyMultiplier = Convert.ToDouble(diffMultEdit.Text);
+        }
+
+        private void poolMultEdit_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            string editedValue = ((TextBox)sender).Text;
+            e.Cancel = !ValidateMultiplierText(editedValue);
+        }
+
+        private bool ValidateMultiplierText(string multValue)
+        {
+            double multiplier;
+            bool isValid = Double.TryParse(multValue, out multiplier);
+            if (isValid)
+            {
+                return true;
+            }
+            else
+            {
+                MessageBox.Show(String.Format("The specified value '{0}' is not a valid multiplier.", multValue), "Invalid Multiplier", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        private void diffMultEdit_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            string editedValue = ((TextBox)sender).Text;
+            e.Cancel = !ValidateMultiplierText(editedValue);
         }
     }
 }

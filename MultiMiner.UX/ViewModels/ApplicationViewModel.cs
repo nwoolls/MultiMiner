@@ -931,14 +931,16 @@ namespace MultiMiner.UX.ViewModels
             {
                 if (device.Coin.Kind == PoolGroup.PoolGroupKind.SingleCoin)
                 {
+                    CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(device.Coin.Algorithm);
+
                     double hashrate = device.CurrentHashrate * 1000;
-                    double fullDifficulty = device.Difficulty * DifficultyMuliplier;
+                    double fullDifficulty = info.Difficulty * algorithm.DifficultyMultiplier;
                     double secondsToCalcShare = fullDifficulty / hashrate;
                     const double secondsPerDay = 86400;
                     double sharesPerDay = secondsPerDay / secondsToCalcShare;
-                    double btcPerDay = sharesPerDay * info.Reward;
+                    double coinsPerDay = sharesPerDay * info.Reward;
 
-                    device.Daily = btcPerDay;
+                    device.Daily = coinsPerDay;
                 }
                 else
                 {
@@ -1167,28 +1169,7 @@ namespace MultiMiner.UX.ViewModels
         private static double AdjustWorkUtilityForPoolMultipliers(double workUtility, string algorithmName)
         {
             CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(algorithmName);
-            if (algorithm.Family == CoinAlgorithm.AlgorithmFamily.Scrypt)
-            {
-                //2^16
-                const int dumbScryptMultiplier = 65536;
-                return workUtility / dumbScryptMultiplier;
-            }
-
-            if (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3)
-            {
-                //2^8
-                const int dumbSha3Multiplier = 256;
-                return workUtility / dumbSha3Multiplier;
-            }
-
-            if (algorithm.Family == CoinAlgorithm.AlgorithmFamily.Lyra2)
-            {
-                //2^7
-                const int dumbLyra2Multiplier = 128;
-                return workUtility / dumbLyra2Multiplier;
-            }
-
-            return workUtility;
+            return workUtility / algorithm.PoolMultiplier;
         }
 
         private VersionInformation GetCachedMinerVersionFromAddress(string ipAddress, int port)
@@ -3251,44 +3232,44 @@ namespace MultiMiner.UX.ViewModels
             return versionInformation;
         }
 
-        private void AddLocalMinerStatistics(List<MiningStatistics> statisticsList)
-        {
-            //call ToList() so we can get a copy - otherwise risk:
-            //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
-            List<MinerProcess> minerProcesses = MiningEngine.MinerProcesses.ToList();
+        //private void AddLocalMinerStatistics(List<MiningStatistics> statisticsList)
+        //{
+        //    //call ToList() so we can get a copy - otherwise risk:
+        //    //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+        //    List<MinerProcess> minerProcesses = MiningEngine.MinerProcesses.ToList();
 
-            foreach (MinerProcess minerProcess in minerProcesses)
-            {
-                List<DeviceInformation> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
+        //    foreach (MinerProcess minerProcess in minerProcesses)
+        //    {
+        //        List<DeviceInformation> deviceInformationList = GetDeviceInfoFromProcess(minerProcess);
 
-                if (deviceInformationList == null) //handled failure getting API info
-                    continue;
+        //        if (deviceInformationList == null) //handled failure getting API info
+        //            continue;
 
-                //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
-                List<DeviceDetails> processDevices = GetProcessDeviceDetails(minerProcess, deviceInformationList);
+        //        //starting with bfgminer 3.7 we need the DEVDETAILS response to tie things from DEVS up with -d? details
+        //        List<DeviceDetails> processDevices = GetProcessDeviceDetails(minerProcess, deviceInformationList);
 
-                if (processDevices == null) //handled failure getting API info
-                    continue;
+        //        if (processDevices == null) //handled failure getting API info
+        //            continue;
 
-                foreach (DeviceInformation deviceInformation in deviceInformationList)
-                {
-                    MiningStatistics miningStatistics = new MiningStatistics { MachineName = Environment.MachineName };
-                    PopulateMobileMinerStatistics(miningStatistics, deviceInformation, GetCoinNameForApiContext(minerProcess.ApiContext));
+        //        foreach (DeviceInformation deviceInformation in deviceInformationList)
+        //        {
+        //            MiningStatistics miningStatistics = new MiningStatistics { MachineName = Environment.MachineName };
+        //            PopulateMobileMinerStatistics(miningStatistics, deviceInformation, GetCoinNameForApiContext(minerProcess.ApiContext));
 
-                    DeviceDetails deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
-                        && (d.ID == deviceInformation.ID));
-                    int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails, minerProcess);
-                    Device device = Devices[deviceIndex];
-                    Coin coinConfiguration = CoinConfigurationForDevice(device);
+        //            DeviceDetails deviceDetails = processDevices.SingleOrDefault(d => d.Name.Equals(deviceInformation.Name, StringComparison.OrdinalIgnoreCase)
+        //                && (d.ID == deviceInformation.ID));
+        //            int deviceIndex = GetDeviceIndexForDeviceDetails(deviceDetails, minerProcess);
+        //            Device device = Devices[deviceIndex];
+        //            Coin coinConfiguration = CoinConfigurationForDevice(device);
 
-                    miningStatistics.FullName = GetFriendlyDeviceName(device);
+        //            miningStatistics.FullName = GetFriendlyDeviceName(device);
 
-                    miningStatistics.PoolName = GetPoolNameByIndex(coinConfiguration, deviceInformation.PoolIndex).DomainFromHost();
+        //            miningStatistics.PoolName = GetPoolNameByIndex(coinConfiguration, deviceInformation.PoolIndex).DomainFromHost();
 
-                    statisticsList.Add(miningStatistics);
-                }
-            }
-        }
+        //            statisticsList.Add(miningStatistics);
+        //        }
+        //    }
+        //}
 
         private static string GetPoolNameByIndex(Coin coinConfiguration, int poolIndex)
         {
@@ -3460,32 +3441,32 @@ namespace MultiMiner.UX.ViewModels
             return deviceInformationList;
         }
 
-        private void PopulateMobileMinerStatistics(MiningStatistics miningStatistics, DeviceInformation deviceInformation,
-            string coinName)
-        {
-            miningStatistics.MinerName = "MultiMiner";
-            miningStatistics.CoinName = coinName;
-            Coin coinConfiguration = EngineConfiguration.CoinConfigurations.Single(c => c.PoolGroup.Name.Equals(coinName));
-            PoolGroup coin = coinConfiguration.PoolGroup;
+        //private void PopulateMobileMinerStatistics(MiningStatistics miningStatistics, DeviceInformation deviceInformation,
+        //    string coinName)
+        //{
+        //    miningStatistics.MinerName = "MultiMiner";
+        //    miningStatistics.CoinName = coinName;
+        //    Coin coinConfiguration = EngineConfiguration.CoinConfigurations.Single(c => c.PoolGroup.Name.Equals(coinName));
+        //    PoolGroup coin = coinConfiguration.PoolGroup;
 
-            //don't send non-coin Ids to MobileMiner
-            if (coin.Kind != PoolGroup.PoolGroupKind.MultiCoin)
-                miningStatistics.CoinSymbol = coin.Id;
+        //    //don't send non-coin Ids to MobileMiner
+        //    if (coin.Kind != PoolGroup.PoolGroupKind.MultiCoin)
+        //        miningStatistics.CoinSymbol = coin.Id;
 
-            CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(coin.Algorithm);
+        //    CoinAlgorithm algorithm = MinerFactory.Instance.GetAlgorithm(coin.Algorithm);
 
-            //MobileMiner currently only supports SHA and Scrypt
-            //attempt to treat them as "Families" for now
-            if ((algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA2) ||
-                (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3))
-                //SHA family algorithms grouped together
-                miningStatistics.Algorithm = AlgorithmFullNames.SHA256;
-            else
-                //assume Scrypt for rest until MobileMiner supports more
-                miningStatistics.Algorithm = AlgorithmFullNames.Scrypt;
+        //    //MobileMiner currently only supports SHA and Scrypt
+        //    //attempt to treat them as "Families" for now
+        //    if ((algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA2) ||
+        //        (algorithm.Family == CoinAlgorithm.AlgorithmFamily.SHA3))
+        //        //SHA family algorithms grouped together
+        //        miningStatistics.Algorithm = AlgorithmFullNames.SHA256;
+        //    else
+        //        //assume Scrypt for rest until MobileMiner supports more
+        //        miningStatistics.Algorithm = AlgorithmFullNames.Scrypt;
 
-            miningStatistics.PopulateFrom(deviceInformation);
-        }
+        //    miningStatistics.PopulateFrom(deviceInformation);
+        //}
 
         //private Action<List<MiningStatistics>> submitMiningStatisticsDelegate;
 

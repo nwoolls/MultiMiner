@@ -88,13 +88,12 @@ namespace MultiMiner.Engine
             return Algorithms.SingleOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
-        public CoinAlgorithm RegisterAlgorithm(string name, string fullName, CoinAlgorithm.AlgorithmFamily family)
+        public CoinAlgorithm RegisterAlgorithm(string name, string fullName)
         {
             CoinAlgorithm algorithm = new CoinAlgorithm()
             {
                 Name = name,
-                FullName = fullName,
-                Family = family
+                FullName = fullName
             };
             Algorithms.Add(algorithm);
             return algorithm;

@@ -5,18 +5,13 @@ namespace MultiMiner.Xgminer.Data
     public class CoinAlgorithm
     {
         //used for determining work utility / effective hashrate
-        public enum AlgorithmFamily
-        {
-            Unknown,
-            SHA2,
-            SHA3,
-            Scrypt,
-            Lyra2
-        }
+        public double PoolMultiplier { get; set; }
+
+        //used for determining profitability from hashrate
+        public double DifficultyMultiplier { get; set; }
 
         //general info
         public string Name { get; set; }
-        public AlgorithmFamily Family { get; set; }
         public bool BuiltIn { get; set; }
         
         //coin API info

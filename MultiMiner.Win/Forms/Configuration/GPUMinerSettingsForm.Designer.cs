@@ -49,6 +49,10 @@
             this.label3 = new System.Windows.Forms.Label();
             this.autoDesktopCheckBox = new System.Windows.Forms.CheckBox();
             this.applicationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label4 = new System.Windows.Forms.Label();
+            this.poolMultEdit = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.diffMultEdit = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.xgminerConfigurationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.applicationBindingSource)).BeginInit();
@@ -61,10 +65,10 @@
             this.panel1.Controls.Add(this.saveButton);
             this.panel1.Controls.Add(this.cancelButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 295);
+            this.panel1.Location = new System.Drawing.Point(0, 333);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(337, 54);
-            this.panel1.TabIndex = 7;
+            this.panel1.TabIndex = 10;
             // 
             // button1
             // 
@@ -103,10 +107,10 @@
             // 
             this.checkBox2.AutoSize = true;
             this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.xgminerConfigurationBindingSource, "TerminateGpuMiners", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox2.Location = new System.Drawing.Point(12, 265);
+            this.checkBox2.Location = new System.Drawing.Point(178, 300);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(144, 19);
-            this.checkBox2.TabIndex = 7;
+            this.checkBox2.TabIndex = 9;
             this.checkBox2.Text = "Terminate GPU miners";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
@@ -118,10 +122,10 @@
             // 
             this.disableGpuCheckbox.AutoSize = true;
             this.disableGpuCheckbox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.xgminerConfigurationBindingSource, "DisableGpu", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.disableGpuCheckbox.Location = new System.Drawing.Point(12, 238);
+            this.disableGpuCheckbox.Location = new System.Drawing.Point(12, 300);
             this.disableGpuCheckbox.Name = "disableGpuCheckbox";
             this.disableGpuCheckbox.Size = new System.Drawing.Size(131, 19);
-            this.disableGpuCheckbox.TabIndex = 6;
+            this.disableGpuCheckbox.TabIndex = 8;
             this.disableGpuCheckbox.Text = "Disable GPU mining";
             this.disableGpuCheckbox.UseVisualStyleBackColor = true;
             this.disableGpuCheckbox.CheckedChanged += new System.EventHandler(this.disableGpuCheckbox_CheckedChanged);
@@ -130,9 +134,9 @@
             // 
             this.minerCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.minerCombo.FormattingEnabled = true;
-            this.minerCombo.Location = new System.Drawing.Point(126, 136);
+            this.minerCombo.Location = new System.Drawing.Point(134, 136);
             this.minerCombo.Name = "minerCombo";
-            this.minerCombo.Size = new System.Drawing.Size(197, 23);
+            this.minerCombo.Size = new System.Drawing.Size(189, 23);
             this.minerCombo.TabIndex = 3;
             this.minerCombo.SelectedIndexChanged += new System.EventHandler(this.minerCombo_SelectedIndexChanged);
             // 
@@ -147,9 +151,9 @@
             // 
             // kernelArgsEdit
             // 
-            this.kernelArgsEdit.Location = new System.Drawing.Point(126, 169);
+            this.kernelArgsEdit.Location = new System.Drawing.Point(134, 169);
             this.kernelArgsEdit.Name = "kernelArgsEdit";
-            this.kernelArgsEdit.Size = new System.Drawing.Size(197, 23);
+            this.kernelArgsEdit.Size = new System.Drawing.Size(189, 23);
             this.kernelArgsEdit.TabIndex = 4;
             this.kernelArgsEdit.Validated += new System.EventHandler(this.kernelArgsEdit_Validated);
             // 
@@ -228,10 +232,10 @@
             this.autoDesktopCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.autoDesktopCheckBox.AutoSize = true;
             this.autoDesktopCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationBindingSource, "AutoSetDesktopMode", true));
-            this.autoDesktopCheckBox.Location = new System.Drawing.Point(12, 209);
+            this.autoDesktopCheckBox.Location = new System.Drawing.Point(12, 271);
             this.autoDesktopCheckBox.Name = "autoDesktopCheckBox";
             this.autoDesktopCheckBox.Size = new System.Drawing.Size(267, 19);
-            this.autoDesktopCheckBox.TabIndex = 5;
+            this.autoDesktopCheckBox.TabIndex = 7;
             this.autoDesktopCheckBox.Text = "Set Dynamic Intensity based on computer use";
             this.autoDesktopCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -239,12 +243,53 @@
             // 
             this.applicationBindingSource.DataSource = typeof(MultiMiner.UX.Data.Configuration.Application);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(11, 205);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(88, 15);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Pool multiplier:";
+            // 
+            // poolMultEdit
+            // 
+            this.poolMultEdit.Location = new System.Drawing.Point(134, 202);
+            this.poolMultEdit.Name = "poolMultEdit";
+            this.poolMultEdit.Size = new System.Drawing.Size(189, 23);
+            this.poolMultEdit.TabIndex = 5;
+            this.poolMultEdit.Validating += new System.ComponentModel.CancelEventHandler(this.poolMultEdit_Validating);
+            this.poolMultEdit.Validated += new System.EventHandler(this.poolMultEdit_Validated);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(11, 238);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(112, 15);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "Difficulty multiplier:";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
+            // 
+            // diffMultEdit
+            // 
+            this.diffMultEdit.Location = new System.Drawing.Point(134, 235);
+            this.diffMultEdit.Name = "diffMultEdit";
+            this.diffMultEdit.Size = new System.Drawing.Size(189, 23);
+            this.diffMultEdit.TabIndex = 6;
+            this.diffMultEdit.Validating += new System.ComponentModel.CancelEventHandler(this.diffMultEdit_Validating);
+            this.diffMultEdit.Validated += new System.EventHandler(this.diffMultEdit_Validated);
+            // 
             // GPUMinerSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(337, 349);
+            this.ClientSize = new System.Drawing.Size(337, 387);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.diffMultEdit);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.poolMultEdit);
             this.Controls.Add(this.autoDesktopCheckBox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.algoListView);
@@ -294,5 +339,9 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox autoDesktopCheckBox;
         private System.Windows.Forms.BindingSource applicationBindingSource;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox poolMultEdit;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox diffMultEdit;
     }
 }
