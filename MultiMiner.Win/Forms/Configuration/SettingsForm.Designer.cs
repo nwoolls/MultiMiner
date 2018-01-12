@@ -1,4 +1,6 @@
 ﻿using MultiMiner.Engine.Data;
+using MultiMiner.Win.Controls;
+
 namespace MultiMiner.Win.Forms.Configuration
 {
     partial class SettingsForm
@@ -32,6 +34,9 @@ namespace MultiMiner.Win.Forms.Configuration
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.urlParmsEdit = new MultiMiner.Win.Controls.CueTextBox();
+            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.serviceSettingsLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
@@ -42,7 +47,6 @@ namespace MultiMiner.Win.Forms.Configuration
             this.mobileMinerInfoLink = new System.Windows.Forms.LinkLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.remoteMonitoringCheck = new System.Windows.Forms.CheckBox();
-            this.applicationConfigurationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.appKeyEdit = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.emailAddressEdit = new System.Windows.Forms.TextBox();
@@ -69,9 +73,9 @@ namespace MultiMiner.Win.Forms.Configuration
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -83,6 +87,8 @@ namespace MultiMiner.Win.Forms.Configuration
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox3.Controls.Add(this.label1);
+            this.groupBox3.Controls.Add(this.urlParmsEdit);
             this.groupBox3.Controls.Add(this.linkLabel1);
             this.groupBox3.Controls.Add(this.serviceSettingsLink);
             this.groupBox3.Controls.Add(this.pictureBox4);
@@ -102,6 +108,30 @@ namespace MultiMiner.Win.Forms.Configuration
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Online Services";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(10, 61);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(93, 15);
+            this.label1.TabIndex = 21;
+            this.label1.Text = "URL parameters:";
+            // 
+            // urlParmsEdit
+            // 
+            this.urlParmsEdit.AccessibleName = "Email address";
+            this.urlParmsEdit.CueText = "e.g. sha256HashRate=1&&scryptHashRate=1000 - see API docs";
+            this.urlParmsEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "MobileMinerEmailAddress", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.urlParmsEdit.Location = new System.Drawing.Point(121, 58);
+            this.urlParmsEdit.Name = "urlParmsEdit";
+            this.urlParmsEdit.Size = new System.Drawing.Size(348, 23);
+            this.urlParmsEdit.TabIndex = 22;
+            this.urlParmsEdit.Validated += new System.EventHandler(this.urlParmsEdit_Validated);
+            // 
+            // applicationConfigurationBindingSource
+            // 
+            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.UX.Data.Configuration.Application);
             // 
             // linkLabel1
             // 
@@ -141,9 +171,9 @@ namespace MultiMiner.Win.Forms.Configuration
             // apiKeyEdit
             // 
             this.apiKeyEdit.AccessibleName = "API key";
-            this.apiKeyEdit.Location = new System.Drawing.Point(345, 25);
+            this.apiKeyEdit.Location = new System.Drawing.Point(323, 25);
             this.apiKeyEdit.Name = "apiKeyEdit";
-            this.apiKeyEdit.Size = new System.Drawing.Size(124, 23);
+            this.apiKeyEdit.Size = new System.Drawing.Size(146, 23);
             this.apiKeyEdit.TabIndex = 2;
             this.apiKeyEdit.Validated += new System.EventHandler(this.apiKeyEdit_Validated);
             // 
@@ -152,10 +182,10 @@ namespace MultiMiner.Win.Forms.Configuration
             this.apiKeyLabel.AutoSize = true;
             this.apiKeyLabel.Location = new System.Drawing.Point(253, 29);
             this.apiKeyLabel.Name = "apiKeyLabel";
-            this.apiKeyLabel.Size = new System.Drawing.Size(82, 15);
+            this.apiKeyLabel.Size = new System.Drawing.Size(49, 15);
             this.apiKeyLabel.TabIndex = 1;
             this.apiKeyLabel.TabStop = true;
-            this.apiKeyLabel.Text = "CoinWarz key:";
+            this.apiKeyLabel.Text = "API key:";
             this.apiKeyLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.apiKeyLabel_LinkClicked);
             // 
             // label11
@@ -206,17 +236,13 @@ namespace MultiMiner.Win.Forms.Configuration
             // 
             this.remoteMonitoringCheck.AutoSize = true;
             this.remoteMonitoringCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.applicationConfigurationBindingSource, "MobileMinerMonitoring", true));
-            this.remoteMonitoringCheck.Location = new System.Drawing.Point(14, 60);
+            this.remoteMonitoringCheck.Location = new System.Drawing.Point(12, 61);
             this.remoteMonitoringCheck.Name = "remoteMonitoringCheck";
             this.remoteMonitoringCheck.Size = new System.Drawing.Size(195, 19);
             this.remoteMonitoringCheck.TabIndex = 5;
             this.remoteMonitoringCheck.Text = "Enable MobileMiner monitoring";
             this.remoteMonitoringCheck.UseVisualStyleBackColor = true;
             this.remoteMonitoringCheck.Visible = false;
-            // 
-            // applicationConfigurationBindingSource
-            // 
-            this.applicationConfigurationBindingSource.DataSource = typeof(MultiMiner.UX.Data.Configuration.Application);
             // 
             // appKeyEdit
             // 
@@ -242,9 +268,9 @@ namespace MultiMiner.Win.Forms.Configuration
             // 
             this.emailAddressEdit.AccessibleName = "Email address";
             this.emailAddressEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.applicationConfigurationBindingSource, "MobileMinerEmailAddress", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.emailAddressEdit.Location = new System.Drawing.Point(120, 91);
+            this.emailAddressEdit.Location = new System.Drawing.Point(121, 91);
             this.emailAddressEdit.Name = "emailAddressEdit";
-            this.emailAddressEdit.Size = new System.Drawing.Size(121, 23);
+            this.emailAddressEdit.Size = new System.Drawing.Size(124, 23);
             this.emailAddressEdit.TabIndex = 7;
             this.emailAddressEdit.Visible = false;
             // 
@@ -439,9 +465,9 @@ namespace MultiMiner.Win.Forms.Configuration
             this.priorityCombo.Items.AddRange(new object[] {
             "CGMiner",
             "BFGMiner"});
-            this.priorityCombo.Location = new System.Drawing.Point(345, 48);
+            this.priorityCombo.Location = new System.Drawing.Point(323, 48);
             this.priorityCombo.Name = "priorityCombo";
-            this.priorityCombo.Size = new System.Drawing.Size(124, 23);
+            this.priorityCombo.Size = new System.Drawing.Size(146, 23);
             this.priorityCombo.TabIndex = 3;
             // 
             // checkBox2
@@ -522,9 +548,9 @@ namespace MultiMiner.Win.Forms.Configuration
             this.Load += new System.EventHandler(this.SettingsForm_Load);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationConfigurationBindingSource)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
@@ -575,5 +601,7 @@ namespace MultiMiner.Win.Forms.Configuration
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label1;
+        private CueTextBox urlParmsEdit;
     }
 }

@@ -3,6 +3,7 @@ using MultiMiner.CoinApi.Data;
 using MultiMiner.Utility.Net;
 using MultiMiner.WhatToMine.Extensions;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace MultiMiner.WhatToMine
@@ -10,6 +11,12 @@ namespace MultiMiner.WhatToMine
     public class ApiContext : IApiContext
     {
         public static string ScryptNFactor = "Scrypt-N";
+
+        private readonly string urlParms;
+        public ApiContext(string urlParms = "")
+        {
+            this.urlParms = urlParms;
+        }
 
         public IEnumerable<CoinInformation> GetCoinInformation(string userAgent = "")
         {
@@ -45,12 +52,12 @@ namespace MultiMiner.WhatToMine
 
         public string GetApiUrl()
         {
-            return "https://www.whattomine.com/coins.json";
+            return String.Format(@"https://www.whattomine.com/coins.json?{0}", urlParms);
         }
 
         public string GetAsicApiUrl()
         {
-            return "https://www.whattomine.com/asic.json";
+            return String.Format(@"https://www.whattomine.com/asic.json?{0}", urlParms);
         }
 
         public string GetInfoUrl()

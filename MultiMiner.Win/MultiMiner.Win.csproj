@@ -50,6 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\CueTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\DeviceListView.cs" />
     <Compile Include="Controls\DeviceListView.Designer.cs">
       <DependentUpon>DeviceListView.cs</DependentUpon>
