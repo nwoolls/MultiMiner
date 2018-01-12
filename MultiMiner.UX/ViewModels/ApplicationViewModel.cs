@@ -198,8 +198,8 @@ namespace MultiMiner.UX.ViewModels
         #region Coin API
         public void SetupCoinApi()
         {
-            coinWarzApiContext = new CoinWarz.ApiContext(ApplicationConfiguration.CoinWarzApiKey);
-            whatToMineApiContext = new WhatToMine.ApiContext();
+            coinWarzApiContext = new CoinWarz.ApiContext(ApplicationConfiguration.CoinWarzApiKey, ApplicationConfiguration.CoinWarzUrlParms);
+            whatToMineApiContext = new WhatToMine.ApiContext(ApplicationConfiguration.WhatToMineUrlParms);
         }
 
         private void RefreshAllCoinStats()

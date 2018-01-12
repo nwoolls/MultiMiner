@@ -80,7 +80,7 @@ namespace MultiMiner.Win.Forms.Configuration
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             // adjust height for hidden MobileMiner settings
-            Height = Height - 65;
+            Height = Height - 35;
 
             PopulatePriorities(); //populate before loading settings
             LoadSettings();
@@ -89,11 +89,35 @@ namespace MultiMiner.Win.Forms.Configuration
 
             coinApiCombo.SelectedIndex = applicationConfiguration.UseCoinWarzApi ? CoinWarzIndex : WhatToMineIndex;
             PopulateApiKey();
+            PopulateUrlParms();
         }
 
         private void PopulateApiKey()
         {
-            apiKeyEdit.Text = applicationConfiguration.CoinWarzApiKey;
+            if (coinApiCombo.SelectedIndex == CoinWarzIndex)
+            {
+                apiKeyEdit.Enabled = true;
+                apiKeyLabel.Enabled = true;
+                apiKeyEdit.Text = applicationConfiguration.CoinWarzApiKey;
+            }
+            else
+            {
+                apiKeyEdit.Enabled = false;
+                apiKeyLabel.Enabled = false;
+                apiKeyEdit.Text = String.Empty;
+            }
+        }
+
+        private void PopulateUrlParms()
+        {
+            if (coinApiCombo.SelectedIndex == CoinWarzIndex)
+            {
+                urlParmsEdit.Text = applicationConfiguration.CoinWarzUrlParms;
+            }
+            else
+            {
+                urlParmsEdit.Text = applicationConfiguration.WhatToMineUrlParms;
+            }
         }
 
         private void PopulatePriorities()
@@ -159,8 +183,25 @@ namespace MultiMiner.Win.Forms.Configuration
 
         private void coinApiCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            apiKeyLabel.Text = "CoinWarz key:";
             PopulateApiKey();
+            PopulateUrlParms();
+        }
+
+        private void urlParmsEdit_Validated(object sender, EventArgs e)
+        {
+            SaveUrlParms();
+        }
+
+        private void SaveUrlParms()
+        {
+            if (coinApiCombo.SelectedIndex == CoinWarzIndex)
+            {
+                applicationConfiguration.CoinWarzUrlParms = urlParmsEdit.Text;
+            }
+            else
+            {
+                applicationConfiguration.WhatToMineUrlParms = urlParmsEdit.Text;
+            }
         }
     }
 }
