@@ -295,8 +295,14 @@ namespace MultiMiner.Win.Forms
             RefreshCoinApiLabel();
 
             if (apiConsoleControl != null)
-                apiConsoleControl.PopulateMiners(app.MiningEngine.MinerProcesses, app.NetworkDevicesConfiguration.Devices, app.LocalViewModel);
-            
+            {
+                //call ToList() so we can get a copy - otherwise risk:
+                //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+                List<MinerProcess> minerProcesses = app.MiningEngine.MinerProcesses.ToList();
+                List<NetworkDevices.NetworkDevice> networkDevices = app.NetworkDevicesConfiguration.Devices.ToList();
+                apiConsoleControl.PopulateMiners(minerProcesses, networkDevices, app.LocalViewModel);
+            }
+
             instancesContainer.Panel1Collapsed = !app.PerksConfiguration.EnableRemoting || (app.InstanceManager.Instances.Count <= 1);
             instancesControl.Visible = !instancesContainer.Panel1Collapsed;
             if (instancesControl.Visible)
@@ -2720,7 +2726,13 @@ namespace MultiMiner.Win.Forms
         private void ShowApiConsole()
         {
             if (apiConsoleControl == null)
-                apiConsoleControl = new ApiConsoleControl(app.MiningEngine.MinerProcesses, app.NetworkDevicesConfiguration.Devices, app.LocalViewModel);
+            {
+                //call ToList() so we can get a copy - otherwise risk:
+                //System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+                List<MinerProcess> minerProcesses = app.MiningEngine.MinerProcesses.ToList();
+                List<NetworkDevices.NetworkDevice> networkDevices = app.NetworkDevicesConfiguration.Devices.ToList();
+                apiConsoleControl = new ApiConsoleControl(minerProcesses, networkDevices, app.LocalViewModel);
+            }
 
             apiConsoleControl.Dock = DockStyle.Fill;
             apiConsoleControl.Parent = this;
