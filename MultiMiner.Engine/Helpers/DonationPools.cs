@@ -11,7 +11,7 @@ namespace MultiMiner.Engine.Helpers
         public static void Seed(List<Data.Configuration.Coin> configurations)
         {
             //BTC
-            Coin donationConfiguration = CreateCoinConfiguration("BTC", "stratum+tcp://connect.pool.bitcoin.com", 3333);
+            Coin donationConfiguration = CreateCoinConfiguration("BTC", "stratum+tcp://stratum.slushpool.com", 3333);
             configurations.Add(donationConfiguration);
 
             //LTC
