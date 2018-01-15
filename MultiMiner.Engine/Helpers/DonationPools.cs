@@ -489,6 +489,10 @@ namespace MultiMiner.Engine.Helpers
             //ETP
             donationConfiguration = CreateCoinConfiguration("ETP", "stratum+tcp://etp.dodopool.com", 8008, "MLmsFE9UPCQCfrtzB4BmBoSjQHWarRSYT7");
             configurations.Add(donationConfiguration);
+
+            //XJO
+            donationConfiguration = CreateCoinConfiguration("XJO", "stratum+tcp://thecoin.pw", 3680, "nwoolls", "mmdonations");
+            configurations.Add(donationConfiguration);
         }
 
         private static Data.Configuration.Coin CreateCoinConfiguration(string coinSymbol, string host, int port, string username = "nwoolls")
