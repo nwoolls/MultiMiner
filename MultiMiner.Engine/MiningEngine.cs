@@ -197,6 +197,13 @@ namespace MultiMiner.Engine
             algorithm.DefaultMiner = MinerNames.SGMinerGM;
             algorithm.MinerArguments[MinerNames.SGMinerGM] = AlgorithmParameter.AlgorithmEquihash;
             algorithm.BuiltIn = true;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Pascal, AlgorithmFullNames.Pascal);
+            algorithm.PoolMultiplier = 1;
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
+            algorithm.DefaultMiner = MinerNames.SGMinerPascal;
+            algorithm.MinerArguments[MinerNames.SGMinerPascal] = AlgorithmParameter.AlgorithmPascal;
+            algorithm.BuiltIn = true;
         }
 
         private static void RegisterMiners()
@@ -212,6 +219,7 @@ namespace MultiMiner.Engine
             factory.RegisterMiner(MinerNames.MaxcoinCGMiner, MinerNames.CGMiner, true);
             factory.RegisterMiner(MinerNames.SGMiner5, MinerNames.SGMiner, true);
             factory.RegisterMiner(MinerNames.SGMinerGM, MinerNames.SGMiner, true);
+            factory.RegisterMiner(MinerNames.SGMinerPascal, MinerNames.SGMiner, true);
 
             string minersDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Miners");
             factory.RegisterMiners(minersDirectory);
