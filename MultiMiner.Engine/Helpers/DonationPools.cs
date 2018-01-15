@@ -222,6 +222,10 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //ScryptJaneNf16
+            donationConfiguration = CreateCoinConfiguration("NiceHash:ScryptJane", "stratum+tcp://scryptjanenf16.usa.nicehash.com/#xnsub", 3348, "3HunzSEmwwYjcQPJWLyLf6MX8UyQVPFbj9");
+            configurations.Add(donationConfiguration);
+
+            //ScryptJaneNf16
             donationConfiguration = CreateCoinConfiguration("NiceHash:ScryptJaneNf16", "stratum+tcp://scryptjanenf16.usa.nicehash.com/#xnsub", 3348, "3HunzSEmwwYjcQPJWLyLf6MX8UyQVPFbj9");
             configurations.Add(donationConfiguration);
 
@@ -243,6 +247,10 @@ namespace MultiMiner.Engine.Helpers
 
             //DaggerHashimoto
             donationConfiguration = CreateCoinConfiguration("NiceHash:DaggerHashimoto", "stratum+tcp://daggerhashimoto.usa.nicehash.com/#xnsub", 3353, "3HunzSEmwwYjcQPJWLyLf6MX8UyQVPFbj9");
+            configurations.Add(donationConfiguration);
+
+            //Ethash
+            donationConfiguration = CreateCoinConfiguration("NiceHash:Ethash", "stratum+tcp://daggerhashimoto.usa.nicehash.com/#xnsub", 3353, "3HunzSEmwwYjcQPJWLyLf6MX8UyQVPFbj9");
             configurations.Add(donationConfiguration);
 
             //Decred
