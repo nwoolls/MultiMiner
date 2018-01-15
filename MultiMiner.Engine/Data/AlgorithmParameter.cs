@@ -17,5 +17,6 @@
         public const string AlgorithmEthash = "--algorithm ethash";
         public const string AlgorithmCryptoNight = "--algorithm cryptonight";
         public const string AlgorithmEquihash = "--algorithm equihash";
+        public const string AlgorithmPascal = "--algorithm pascal";
     }
 }
