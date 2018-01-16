@@ -108,10 +108,6 @@ namespace MultiMiner.Engine.Helpers
             donationConfiguration = CreateCoinConfiguration("GRS", "stratum+tcp://hub.miningpoolhub.com", 20486);
             configurations.Add(donationConfiguration);
 
-            //GRS
-            donationConfiguration = CreateCoinConfiguration("GRS", "stratum+tcp://hub.miningpoolhub.com", 20486);
-            configurations.Add(donationConfiguration);
-
             //MONA
             donationConfiguration = CreateCoinConfiguration("MONA", "stratum+tcp://hub.miningpoolhub.com", 20593);
             configurations.Add(donationConfiguration);
@@ -415,10 +411,6 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //MAR
-            donationConfiguration = CreateCoinConfiguration("MAR", "stratum+tcp://stratum.aikapool.com", 7944);
-            configurations.Add(donationConfiguration);
-
-            //MAR
             donationConfiguration = CreateCoinConfiguration("MAR", "stratum+tcp://stratum.aikapool.com", 7932);
             configurations.Add(donationConfiguration);
 
@@ -467,7 +459,7 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //UBQ
-            donationConfiguration = CreateCoinConfiguration("UBQ", "stratum+tcp://ubiq.mixpools.org", 2120, "nwoolls", "mmdonations");
+            donationConfiguration = CreateCoinConfiguration("UBQ", "stratum+tcp://ubiq.mixpools.org", 2120, "0x7fc389fe473278b14a62ddb3e2d73170905e4c97", "");
             configurations.Add(donationConfiguration);
 
             //BCH
@@ -479,7 +471,7 @@ namespace MultiMiner.Engine.Helpers
             configurations.Add(donationConfiguration);
 
             //NVC
-            donationConfiguration = CreateCoinConfiguration("NVC", "stratum+tcp://stratum.khore.org", 3335);
+            donationConfiguration = CreateCoinConfiguration("NVC", "stratum+tcp://stratum.khore.org", 3335, "nwoolls", "mmdonations");
             configurations.Add(donationConfiguration);
 
             //DEM
@@ -509,9 +501,15 @@ namespace MultiMiner.Engine.Helpers
             {
                 Host = host + "/#skipcbcheck",
                 Port = port,
-                Username = username + "." + workerName,
+                Username = username,
                 Password = "X"
             };
+
+            if (!String.IsNullOrEmpty(workerName))
+            {
+                donationPool.Username += "." + workerName;
+            }
+
             donationConfiguration.Pools.Add(donationPool);
 
             return donationConfiguration;
