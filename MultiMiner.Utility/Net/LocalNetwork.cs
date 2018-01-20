@@ -134,7 +134,8 @@ namespace MultiMiner.Utility.Net
         
         public static string GetWorkGroupName()
         {
-            string result = String.Empty;
+            string result = "WORKGROUP";
+
             if (OSVersionPlatform.GetConcretePlatform() == PlatformID.MacOSX)
             {
                 //OS X
@@ -146,18 +147,16 @@ namespace MultiMiner.Utility.Net
                 {
                     result = parser[workgroupKey].ToString();
                 }
-                else
-                {
-                    const string defaultWorkgroup = "WORKGROUP";
-                    result = defaultWorkgroup;
-                }
             }
             else if (OSVersionPlatform.GetGenericPlatform() == PlatformID.Unix)
             {
                 //Linux
                 string configFilePath = @"/etc/samba/smb.conf";
-                IniFileParser parser = new IniFileParser(configFilePath);
-                result = parser.GetValue("Global", "Workgroup");
+                if (File.Exists(configFilePath))
+                {
+                    IniFileParser parser = new IniFileParser(configFilePath);
+                    result = parser.GetValue("Global", "Workgroup");
+                }
             }
             else
             {
