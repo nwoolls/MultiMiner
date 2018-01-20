@@ -35,3 +35,4 @@ Installer/Output/
 *.psess
 *.userprefs
 *.sln.ide/
+.vs/
