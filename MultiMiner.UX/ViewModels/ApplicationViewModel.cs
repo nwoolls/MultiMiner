@@ -2864,38 +2864,38 @@ namespace MultiMiner.UX.ViewModels
         #endregion
 
         #region Stats API
-        public void SubmitMultiMinerStatistics()
-        {
-            string installedVersion = MultiMinerInstaller.GetInstalledMinerVersion();
-            if (installedVersion.Equals(ApplicationConfiguration.SubmittedStatsVersion))
-                return;
+        //public void SubmitMultiMinerStatistics()
+        //{
+        //    string installedVersion = MultiMinerInstaller.GetInstalledMinerVersion();
+        //    if (installedVersion.Equals(ApplicationConfiguration.SubmittedStatsVersion))
+        //        return;
 
-            Machine machineStat = new Machine
-            {
-                Name = Environment.MachineName,
-                MinerVersion = installedVersion
-            };
+        //    Machine machineStat = new Machine
+        //    {
+        //        Name = Environment.MachineName,
+        //        MinerVersion = installedVersion
+        //    };
 
-            if (submitMinerStatisticsDelegate == null)
-                submitMinerStatisticsDelegate = SubmitMinerStatistics;
+        //    if (submitMinerStatisticsDelegate == null)
+        //        submitMinerStatisticsDelegate = SubmitMinerStatistics;
 
-            submitMinerStatisticsDelegate.BeginInvoke(machineStat, submitMinerStatisticsDelegate.EndInvoke, null);
-        }
-        private Action<Machine> submitMinerStatisticsDelegate;
+        //    submitMinerStatisticsDelegate.BeginInvoke(machineStat, submitMinerStatisticsDelegate.EndInvoke, null);
+        //}
+        //private Action<Machine> submitMinerStatisticsDelegate;
 
-        private void SubmitMinerStatistics(Machine machineStat)
-        {
-            try
-            {
-                //plain text so users can see what we are posting - transparency
-                Stats.ApiContext.SubmitMinerStatistics("http://multiminerstats.azurewebsites.net/api/", machineStat);
-                ApplicationConfiguration.SubmittedStatsVersion = machineStat.MinerVersion;
-            }
-            catch (WebException)
-            {
-                //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
-            }
-        }
+        //private void SubmitMinerStatistics(Machine machineStat)
+        //{
+        //    try
+        //    {
+        //        //plain text so users can see what we are posting - transparency
+        //        Stats.ApiContext.SubmitMinerStatistics("http://multiminerstats.azurewebsites.net/api/", machineStat);
+        //        ApplicationConfiguration.SubmittedStatsVersion = machineStat.MinerVersion;
+        //    }
+        //    catch (WebException)
+        //    {
+        //        //could be error 400, invalid app key, error 500, internal error, Unable to connect, endpoint down
+        //    }
+        //}
         #endregion
 
         #region Mining event handlers

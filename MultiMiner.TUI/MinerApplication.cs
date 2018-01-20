@@ -519,7 +519,7 @@ namespace MultiMiner.TUI
             app.SetupNetworkDeviceDetection();
             app.CheckForUpdates();
             app.SetupMiningOnStartup();
-			app.SubmitMultiMinerStatistics();
+            //app.SubmitMultiMinerStatistics();
 
             mineOnStartTimer.Enabled = true;
         }

@@ -2214,7 +2214,7 @@ namespace MultiMiner.Win.Forms
                 ScanHardwareLocally();
 
             //after refreshing devices
-            app.SubmitMultiMinerStatistics();
+            //app.SubmitMultiMinerStatistics();
 
             //scan for Network Devices after scanning for local hardware
             //makes more sense visually
