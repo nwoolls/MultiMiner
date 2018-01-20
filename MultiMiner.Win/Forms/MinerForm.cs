@@ -559,9 +559,23 @@ namespace MultiMiner.Win.Forms
             listViewItem.SubItems["Fan"].Text = deviceViewModel.FanPercent > 0 ? deviceViewModel.FanPercent + "%" : String.Empty;
             listViewItem.SubItems["Intensity"].Text = deviceViewModel.Intensity;
 
-            listViewItem.SubItems["Pool"].Text = deviceViewModel.Pool.DomainFromHost();
+            RefreshPoolColumnForDeviceViewModel(listViewItem, deviceViewModel);
 
             PopulateIncomeForListViewItem(listViewItem, deviceViewModel);
+        }
+
+        private void RefreshPoolColumnForDeviceViewModel(ListViewItem listViewItem, DeviceViewModel deviceViewModel)
+        {
+            var pool = deviceViewModel.Pool.DomainFromHost();
+            if (app.ApplicationConfiguration.ShowPoolPort)
+            {
+                var port = deviceViewModel.Pool.PortFromHost();
+                if (port.HasValue)
+                {
+                    pool = String.Format("{0}:{1}", pool, port.Value);
+                }
+            }
+            listViewItem.SubItems["Pool"].Text = pool;
         }
 
         private void RefreshDetailsAreaIfVisible()
@@ -1558,6 +1572,14 @@ namespace MultiMiner.Win.Forms
                 app.RefreshAllDeviceStats();
                 AutoSizeListViewColumns();
                 RefreshDetailsAreaIfVisible();
+            }
+            else if (e.Column == poolColumnHeader.Index)
+            {
+                app.ApplicationConfiguration.ShowPoolPort = !app.ApplicationConfiguration.ShowPoolPort;
+                app.ApplicationConfiguration.SaveApplicationConfiguration();
+                
+                app.RefreshAllDeviceStats();
+                AutoSizeListViewColumns();
             }
         }
 

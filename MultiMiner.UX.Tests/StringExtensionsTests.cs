@@ -138,5 +138,31 @@ namespace MultiMiner.UX.Tests
             Assert.AreEqual(81, port);
             Assert.IsTrue(result);
         }
+
+        [TestMethod]
+        public void PortFromHost_WithPort_ReturnsPort()
+        {
+            // arrange
+            var hostAndPort = "stratum+tcp://stratum.kano.is:81/#xnsub/#skipcbcheck";
+
+            // act
+            int? port = hostAndPort.PortFromHost();
+
+            // assert
+            Assert.AreEqual(81, port);
+        }
+
+        [TestMethod]
+        public void PortFromHost_WithoutPort_ReturnsNull()
+        {
+            // arrange
+            var hostAndPort = "stratum+tcp://stratum.kano.is/#xnsub/#skipcbcheck";
+
+            // act
+            int? port = hostAndPort.PortFromHost();
+
+            // assert
+            Assert.IsFalse(port.HasValue);
+        }
     }
 }

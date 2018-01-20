@@ -67,6 +67,7 @@ namespace MultiMiner.UX.Data.Configuration
         public bool AllowMultipleInstances { get; set; }
         public string SubmittedStatsVersion { get; set; }
         public bool ShowWorkUtility { get; set; }
+        public bool ShowPoolPort { get; set; }
         public bool NetworkDeviceDetection { get; set; }
         public bool NetworkDeviceScanClassB { get; set; }
         public bool NetworkDeviceScanClassA { get; set; }

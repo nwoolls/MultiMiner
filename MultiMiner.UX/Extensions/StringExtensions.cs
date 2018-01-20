@@ -29,7 +29,7 @@ namespace MultiMiner.UX.Extensions
 
             string domainName = host.Trim();
 
-            if (!host.Contains(":"))
+            if (!host.Contains("://"))
                 host = "http://" + host;
 
             try
@@ -61,6 +61,38 @@ namespace MultiMiner.UX.Extensions
             hostDomainNames[host] = domainName;
 
             return domainName;
+        }
+
+        private readonly static Dictionary<string, int> hostPorts = new Dictionary<string, int>();
+
+        public static int? PortFromHost(this string host)
+        {
+            if (String.IsNullOrEmpty(host))
+                return null;
+
+            if (hostPorts.ContainsKey(host))
+                return hostPorts[host];
+
+            int? port = null;
+
+            if (!host.Contains("://"))
+                host = "http://" + host;
+
+            try
+            {
+                Uri uri = new Uri(host);
+                if (uri.Port >= 0)
+                {
+                    port = uri.Port;
+                }
+            }
+            catch (UriFormatException)
+            {
+                // System.UriFormatException: Invalid URI: The hostname could not be parsed.
+                // don't crash - fall back on domainName = host (initialized above)
+            }
+
+            return port;
         }
 
         public static string ShortHostFromHost(this string host)
