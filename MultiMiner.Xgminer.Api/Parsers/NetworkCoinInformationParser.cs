@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MultiMiner.Xgminer.Api.Parsers
 {
-    class NetworkCoinInformationParser : ResponseTextParser
+    public class NetworkCoinInformationParser : ResponseTextParser
     {
         public static void ParseTextForCoinNetworkInformation(string text, NetworkCoinInformation coinInformation)
         {
@@ -21,7 +21,18 @@ namespace MultiMiner.Xgminer.Api.Parsers
                 
                 keyValuePairs = GetDictionaryFromTextChunk(textChunks[1]);
 
-                coinInformation.Algorithm = keyValuePairs["Hash Method"];
+                // user reported a network device that does / may not return "Hash Method"
+                // see: https://github.com/nwoolls/MultiMiner/issues/336
+                const string hashMethodKey = "Hash Method";
+                if (keyValuePairs.ContainsKey(hashMethodKey))
+                {
+                    coinInformation.Algorithm = keyValuePairs[hashMethodKey];
+                }
+                else
+                {
+                    coinInformation.Algorithm = NetworkCoinInformation.UnknownAlgorithm;
+                }
+
                 coinInformation.CurrentBlockTime = TryToParseInt(keyValuePairs, "Current Block Time", 0);
                 coinInformation.CurrentBlockHash = keyValuePairs["Current Block Hash"];
                 coinInformation.LongPoll = keyValuePairs["LP"].Equals("true", StringComparison.OrdinalIgnoreCase);
