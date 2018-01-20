@@ -11,7 +11,7 @@ MultiMiner also offers several views, allowing you to display as much or as litt
 
 ![Brief View](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Brief%20View.png "Brief View")
 
-For new users, MultiMiner includes a Getting Started wizard that walks you through selecting an engine, a coin, a pool, and configuring [MobileMiner][14].
+For new users, MultiMiner includes a Getting Started wizard that walks you through selecting an engine, a coin, and a pool.
 
 ![Getting Started](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Getting%20Started.png "Getting Started")
 
@@ -34,16 +34,6 @@ MultiMiner also supports features such as relaunching crashed miners, starting w
 You can also use the interface provided by MultiMiner to adjust advanced settings such as API white-listing, disabling GPU mining, and automatically adjusting mining intensity based on the computer's idle time.
 
 ![Advanced Miner Settings](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Advanced%20Miner%20Settings.png "Advanced Miner Settings")
-
-Finally, MultiMiner supports [MobileMiner][14], an open API with mobile apps for remotely monitoring and controlling your rigs.
-
-![MobileMiner](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/MobileMiner.png "MobileMiner")
-
-![MobileMiner - Android](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/MobileMiner%20-%20Android.png "MobileMiner - Android")
-
-![MobileMiner - Windows Phone](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/MobileMiner%20-%20Windows%20Phone.png "MobileMiner - Windows Phone")
-
-By entering your MobileMiner email address and application key in the Configure Settings dialog, you will be able to remotely monitor and control your rigs _without having to open any firewalls or forward any ports_.
 
 Downloads
 ----------------
@@ -130,7 +120,6 @@ The source code is structured in such a way that it should be fairly easy to use
 * __MultiMiner.Xgminer__ is an assembly for controlling the bfgminer executable - e.g. launching and enumerating devices
 * __MultiMiner.Xgminer.Api__ assists in communicating with the underlying miner via the RPC API
 * __MultiMiner.Coinchoose__ assists in consuming the cypto-currency information available at [CoinChoose.com][9]
-* __MultiMiner.MobileMiner__ facilitates communicating with the [MobileMiner][14] REST API
 * __MultiMiner.Engine__ is an assembly that can be used to interact with all functionality found in MultiMiner, but without a UI - useful for creating front-ends for other OS's
 * __MultiMiner.Win__ is the Windows Forms application
 
@@ -290,7 +279,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [11]: https://www.dropbox.com/s/o08inghtw7ut1an/MultiMiner-1.0.7.exe
 [12]: https://github.com/nwoolls/MultiMiner/releases
 [13]: http://xgminer.com
-[14]: http://www.mobileminerapp.com
 [15]: http://talk.multiminerapp.com
 [16]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Xgminer
 [17]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Xgminer.Api

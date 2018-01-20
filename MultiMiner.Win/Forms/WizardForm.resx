@@ -143,7 +143,7 @@ You can configure additional crypto-coins and pools by clicking the Coins button
 
 If you'd like to try using MultiMiner to mine the most profitable coin, click the Strategies toolbar button.
 
-Finally, you can adjust general program settings, including your MobileMiner settings, by clicking the Settings button in the toolbar.</value>
+Finally, you can adjust general program settings by clicking the Settings button in the toolbar.</value>
   </data>
   <metadata name="poolFeaturesMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
