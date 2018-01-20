@@ -2271,7 +2271,7 @@ namespace MultiMiner.Win.Forms
             app.NotificationReceived += HandleApplicationNotification;
             app.NotificationDismissed += HandleNotificationDismissed;
             app.CredentialsRequested += HandleCredentialsRequested;
-            app.MobileMinerAuthFailed += HandleMobileMinerAuthFailed;
+            //app.MobileMinerAuthFailed += HandleMobileMinerAuthFailed;
             app.DataModified += HandleAppViewModelModified;
             app.ProgressStarted += HandleProgressStarted;
             app.ProgressCompleted += HandleProgressCompleted;
@@ -2381,21 +2381,21 @@ namespace MultiMiner.Win.Forms
             RefreshViewFromViewModel();
         }
 
-        private void HandleMobileMinerAuthFailed(object sender, EventArgs e)
-        {
-            MessageBox.Show(String.Format(@"Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog.{0}{0}MobileMiner remote commands will now be disabled.", Environment.NewLine), 
-                @"Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //private void HandleMobileMinerAuthFailed(object sender, EventArgs e)
+        //{
+        //    MessageBox.Show(String.Format(@"Your MobileMiner credentials are incorrect. Please check your MobileMiner settings in the Settings dialog.{0}{0}MobileMiner remote commands will now be disabled.", Environment.NewLine), 
+        //        @"Invalid Credentails", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
-            //check to make sure there are no modal windows already
-            if (!ShowingModalDialog())
-            {
-                BeginInvoke((Action)(() =>
-                {
-                    //code to update UI
-                    app.ConfigureSettingsLocally();
-                }));
-            }
-        }
+        //    //check to make sure there are no modal windows already
+        //    if (!ShowingModalDialog())
+        //    {
+        //        BeginInvoke((Action)(() =>
+        //        {
+        //            //code to update UI
+        //            app.ConfigureSettingsLocally();
+        //        }));
+        //    }
+        //}
 
         private static bool ShowingModalDialog()
         {

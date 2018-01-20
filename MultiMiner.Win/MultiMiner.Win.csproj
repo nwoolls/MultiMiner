@@ -354,10 +354,6 @@
       <Project>{95F6C880-7AB3-441B-8D41-28C0AD507B62}</Project>
       <Name>MultiMiner.Coinbase</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MultiMiner.Coinchoose\MultiMiner.CoinChoose.csproj">
-      <Project>{D9B3F627-CB7A-454C-AF8F-70C8FB584553}</Project>
-      <Name>MultiMiner.CoinChoose</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MultiMiner.CoinWarz\MultiMiner.CoinWarz.csproj">
       <Project>{5B2B2592-689A-4DE2-815C-259427A3D101}</Project>
       <Name>MultiMiner.CoinWarz</Name>
@@ -405,10 +401,6 @@
     <ProjectReference Include="..\MultiMiner.UX\MultiMiner.UX.csproj">
       <Project>{a23b916f-0e06-43bb-97a4-f61afe3a2f72}</Project>
       <Name>MultiMiner.UX</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MultiMiner.WhatMine\MultiMiner.WhatMine.csproj">
-      <Project>{4b0c2edd-9a3e-41af-b8ef-9a7a541d2e80}</Project>
-      <Name>MultiMiner.WhatMine</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiMiner.WhatToMine\MultiMiner.WhatToMine.csproj">
       <Project>{6b967bb0-692a-4ad5-99ee-93c054f05792}</Project>
