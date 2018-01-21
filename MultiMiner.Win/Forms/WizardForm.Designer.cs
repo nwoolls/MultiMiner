@@ -240,7 +240,7 @@
             this.featuresButton.Location = new System.Drawing.Point(366, 114);
             this.featuresButton.Name = "featuresButton";
             this.featuresButton.Size = new System.Drawing.Size(81, 24);
-            this.featuresButton.TabIndex = 3;
+            this.featuresButton.TabIndex = 4;
             this.featuresButton.Text = "Features";
             this.featuresButton.UseVisualStyleBackColor = true;
             this.featuresButton.Click += new System.EventHandler(this.featuresButton_Click);
@@ -336,7 +336,7 @@
             this.passwordEdit.Location = new System.Drawing.Point(135, 144);
             this.passwordEdit.Name = "passwordEdit";
             this.passwordEdit.Size = new System.Drawing.Size(182, 23);
-            this.passwordEdit.TabIndex = 4;
+            this.passwordEdit.TabIndex = 3;
             // 
             // label10
             // 
