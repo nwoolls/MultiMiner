@@ -1670,7 +1670,7 @@ namespace MultiMiner.Win.Forms
         private bool briefMode;
         private void detailsToggleButton_ButtonClick(object sender, EventArgs e)
         {
-            SetBriefMode(!briefMode);
+            SetBriefMode(!briefMode, true);
             RefreshDetailsToggleButton();
         }
 
@@ -2555,7 +2555,7 @@ namespace MultiMiner.Win.Forms
                 app.ApplicationConfiguration.SaveApplicationConfiguration();
                 app.PerksConfiguration.SavePerksConfiguration();
 
-                SetBriefMode(app.ApplicationConfiguration.BriefUserInterface);
+                SetBriefMode(app.ApplicationConfiguration.BriefUserInterface, true);
             }
         }
 
@@ -2589,7 +2589,7 @@ namespace MultiMiner.Win.Forms
         #endregion
 
         #region Application logic
-        private void SetBriefMode(bool newBriefMode)
+        private void SetBriefMode(bool newBriefMode, bool fromUI = false)
         {
             briefMode = newBriefMode;
             RefreshDetailsToggleButton();
@@ -2603,19 +2603,23 @@ namespace MultiMiner.Win.Forms
 
                 CloseDetailsArea();
                 HideAdvancedPanel();
-                WindowState = FormWindowState.Normal;
 
-                int newWidth = deviceListView.Columns.Cast<ColumnHeader>().Sum(column => column.Width);
-                newWidth += 40; //needs to be pretty wide for e.g. Aero Basic
-                newWidth = Math.Max(newWidth, 300);
-                //don't (automatically) set the width to crop notifications
-                newWidth = Math.Max(newWidth, notificationsControl.Width + 24);
+                if (fromUI)
+                {
+                    WindowState = FormWindowState.Normal;
 
-                Size = new Size(newWidth, 400);
+                    int newWidth = deviceListView.Columns.Cast<ColumnHeader>().Sum(column => column.Width);
+                    newWidth += 40; //needs to be pretty wide for e.g. Aero Basic
+                    newWidth = Math.Max(newWidth, 300);
+                    //don't (automatically) set the width to crop notifications
+                    newWidth = Math.Max(newWidth, notificationsControl.Width + 24);
+
+                    Size = new Size(newWidth, 400);
+                }
             }
             else
             {
-                if (WindowState != FormWindowState.Maximized)
+                if (fromUI && (WindowState != FormWindowState.Maximized))
                 {
                     //use Math.Max so it won't size smaller to show more
                     Size = new Size(Math.Max(Size.Width, 720), Math.Max(Size.Height, 500));
