@@ -335,7 +335,7 @@
             this.featuresButton.Location = new System.Drawing.Point(346, 127);
             this.featuresButton.Name = "featuresButton";
             this.featuresButton.Size = new System.Drawing.Size(81, 24);
-            this.featuresButton.TabIndex = 7;
+            this.featuresButton.TabIndex = 8;
             this.featuresButton.Text = "Features";
             this.featuresButton.UseVisualStyleBackColor = true;
             this.featuresButton.Click += new System.EventHandler(this.featuresButton_Click);
@@ -376,7 +376,7 @@
             this.userNameCombo.Name = "userNameCombo";
             this.userNameCombo.Size = new System.Drawing.Size(174, 23);
             this.userNameCombo.Sorted = true;
-            this.userNameCombo.TabIndex = 8;
+            this.userNameCombo.TabIndex = 7;
             this.userNameCombo.SelectedIndexChanged += new System.EventHandler(this.userNameCombo_SelectedIndexChanged);
             // 
             // miningPoolBindingSource
