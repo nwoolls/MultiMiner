@@ -1,33 +1,73 @@
-MultiMiner
-==========
-### Your coins. Your pools. Your way.
-__MultiMiner__ is a graphical application for crypto-coin mining on Windows, OS X and Linux. MultiMiner simplifies switching individual devices (GPUs, ASICs, FPGAs) between crypto-currencies such as Bitcoin and Litecoin.
+## MultiMiner
 
-MultiMiner uses the underlying mining engine ([bfgminer][2]) to detect available mining devices and then presents a user interface for selecting the coins you'd like to mine.
+### Your coins. Your pools. Your way.
+
+**MultiMiner** is a graphical application for crypto-coin mining on Windows, OS X and Linux. MultiMiner simplifies switching individual devices (**GPUs**, **ASICs**, **FPGAs**, **CPUs**) between crypto-currencies such as Bitcoin, Litecoin, Ethereum, Monero, Zcash, and more, while also allowing you to manage any mining appliances on your network (**AntMiners**, **G-Black**, Raspberry **Pi controllers**, **Spondoolies** and more).
+
+* [Installation](https://github.com/nwoolls/MultiMiner/wiki/Installation)
+* [Getting Started](https://github.com/nwoolls/MultiMiner/wiki/Getting-Started)
+* [Local Devices](https://github.com/nwoolls/MultiMiner/wiki/Local-Devices)
+* [Network Devices](https://github.com/nwoolls/MultiMiner/wiki/Network-Devices)
+* [Remote Management](https://github.com/nwoolls/MultiMiner/wiki/Remote-Management)
+* [Contributing](https://github.com/nwoolls/MultiMiner/wiki/Contributing)
+* [Tips & Tricks](https://github.com/nwoolls/MultiMiner/wiki/Tips-and-Tricks)
+
+MultiMiner uses the underlying mining engine ([BFGMiner](https://github.com/luke-jr/bfgminer)) to detect available mining devices and then presents a user interface for selecting the coins you'd like to mine.
 
 ![Main Screen](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen.png "Main Screen")
 
-MultiMiner also offers several views, allowing you to display as much or as little information as you like.
+MultiMiner supports mining coins that use the following algorithms out-of-the-box:
+
+* SHA256
+* Scrypt
+* CryptoNight
+* Equihash
+* Ethash
+* Pascal
+* Groestl
+* Keccak
+* Lyra2RE
+* NeoScrypt
+* Quark
+* Scrypt-Jane
+* Scrypt-N
+* X11
+* X13
+* X14
+* X15
+
+Additionally, MultiMiner allows the user to add any unsupported algorithm, coin, and miner, as long as there is a CGMiner, BFGMiner or SGMiner fork that supports the algorithm.
+
+See the following topics for more information on adding unsupported algorithms:
+
+* [GPU Algorithms](https://github.com/nwoolls/MultiMiner/wiki/GPU-Algorithms)
+* [Backend Miners](https://github.com/nwoolls/MultiMiner/wiki/Backend-Miners)
+
+MultiMiner ships with a [console application](https://github.com/nwoolls/MultiMiner/wiki/Console-Mode-(TUI)#console-mode-tui) (TUI) for low power devices such as ARM-based miners.
+
+![Console Application](https://raw.githubusercontent.com/nwoolls/MultiMiner/master/Screenshots/TUI%20Main%20Screen.png "Console Application")
+
+MultiMiner offers several views, allowing you to display as much or as little information as you like.
 
 ![Brief View](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Brief%20View.png "Brief View")
 
-For new users, MultiMiner includes a Getting Started wizard that walks you through selecting an engine, a coin, and a pool.
+For new users, MultiMiner includes a [Getting Started](https://github.com/nwoolls/MultiMiner/wiki/Getting-Started#getting-started) wizard that walks you through selecting an engine, a coin, and a pool.
 
 ![Getting Started](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Getting%20Started.png "Getting Started")
 
-MultiMiner will automatically download and install the latest version of [bfgminer][2], making it simple for the new user to get started.
+MultiMiner will automatically download and install the latest version of [BFGMiner][2], making it simple for the new user to get started.
 
 ![Downloading and Installing Cgminer](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Downloading%20and%20Installing%20Bfgminer.png "Downloading and Installing Cgminer")
 
-You can then use the Configure Coins dialog to setup each coin that you would like to mine along with their pools, including support for load balancing.
+You can then use the [Configure Pools](https://github.com/nwoolls/MultiMiner/wiki/Pools#pools) dialog to setup each coin that you would like to mine along with their pools, including support for load balancing.
 
 ![Configure Coins](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Configure%20Coins.png "Configure Coins")
 
-MultiMiner supports automatically mining the most profitable coins based on a set of configurable strategies. Profitability information is updated regularly from [CoinChoose.com][9].
+MultiMiner supports automatically mining the most profitable coins based on a set of configurable strategies. Profitability information is updated regularly from CoinWarz and WhatToMine.
 
 ![Configure Strategies](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Configure%20Strategies.png "Configure Strategies")
 
-MultiMiner also supports features such as relaunching crashed miners, starting with Windows, minimizing to the notification area, and mining on startup.
+MultiMiner supports features such as relaunching crashed miners, starting with Windows, minimizing to the notification area, and mining on startup.
 
 ![Settings](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Settings.png "Settings")
 
@@ -35,113 +75,67 @@ You can also use the interface provided by MultiMiner to adjust advanced setting
 
 ![Advanced Miner Settings](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Advanced%20Miner%20Settings.png "Advanced Miner Settings")
 
-Downloads
-----------------
+### Downloads
+
 You can download installers and zip files for Windows, OS X, Linux and Mono on the [GitHub Releases page][12].
 
-Drivers
--------
+### Drivers
+
 Depending on your OS and the mining devices you plan on using you will need one or more of the following drivers / kernel extensions installed:
 
-* [Block Erupter][20]
-* [Blue / Red Fury][21]
-* [BFL / Bitforce][22]
-* [HashBuster Micro][23]
-* [Bi•Fury][25]
-* [AMD GPU][24]
+* [Drivers](https://github.com/nwoolls/MultiMiner/wiki/Drivers)
 
-Windows Installation
---------------------
-1. Download and run the installer (.exe) file at the above link and follow instructions
+### Installation
 
-The installer runs without needing admin rights and does not install to Program Files so as not to be intrusive. However, if you prefer you can use the zip file:
+* [Windows](https://github.com/nwoolls/MultiMiner/wiki/Installation#windows)
+* [Linux](https://github.com/nwoolls/MultiMiner/wiki/Installation#linux-installation-debian-based)
+* [OS X](https://github.com/nwoolls/MultiMiner/wiki/Installation#mac-os-x)
+* [ARM Installation (BeagleBone, Raspberry Pi)](https://github.com/nwoolls/MultiMiner/wiki/Installation#arm-installation-beaglebone-raspberry-pi)
+* [Generic Mono](https://github.com/nwoolls/MultiMiner/wiki/Installation#generic-mono-installation)
 
-1. Download and extract the .zip file at the [GitHub Releases page][12]
-2. Launch MultiMiner.Win.exe to get started
-
-OS X Installation
------------------
-1. Install Xquartz available [here][7]
-2. Install the latest version of [Mono][8]
-3. Download and extract the __.app__.zip file at the [GitHub Releases page][12]
-4. Launch MultiMiner.app to get started
-
-MultiMiner will automatically download redistributable binaries of bfgminer from the [xgminer-osx][13] project.
-
-![Main Screen - OS X](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen%20-%20OS%20X.png "Main Screen - OS X")
-
-Linux Installation (Debian-Based)
----------------------------------
-1. Install the latest version of [Mono][8]
-
-        sudo apt-get install mono-complete
-        
-2. Install your chosen mining engine
-
-        sudo add-apt-repository ppa:unit3/bfgminer
-        sudo apt-get update
-        sudo apt-get install bfgminer
-        
-3. Download and extract the .zip file at the [GitHub Releases page][12]
-4. Run MultiMiner.Win.exe using mono:
-
-        mono MultiMiner.Win.exe
-        
-![Main Screen - Linux](https://github.com/nwoolls/MultiMiner/raw/master/Screenshots/Main%20Screen%20-%20Linux.png "Main Screen - Linux")
-        
-Generic Mono Installation
--------------------------------
-1. Download and extract the zip file at the [GitHub Releases page][12]
-2. Install bfgminer. For OS X, you can find packages and for doing so [here][5] and instructions for using them [here][6].
-3. Install X11. Under OS X you should install Xquartz available [here][7].
-4. Install the latest version of [Mono][8].
-5. Run MultiMiner.Win.exe using mono:
-
-        mono MultiMiner.Win.exe
-        
-FAQ
--------
+### FAQ
 
 * How do I restart the setup wizard? How do I delete all my MultiMiner settings and start over?
     * Reset settings by deleting the contents of %appdata%\MultiMiner (type that into the address bar in Windows Explorer). Be sure to quit MultiMiner before you delete the contents. Then, restart MultiMiner.
 * Should I modify my GPU settings (overclock, undervolt, etc) with a utility like MSI Afterburner, or via config flags in MultiMiner?
-    * Utilities like MSI Afterburner are recommended. Relying on bfgminer (via the config flags in MultiMiner) to do the clocking and fan speed does work, but if the bfgminer crashes it leaves things over/under-clocked/volted. GPU utilities seems to be more reliable.
+    * Utilities like MSI Afterburner are recommended. Relying on BFGMiner (via the config flags in MultiMiner) to do the clocking and fan speed does work, but if the BFGMiner crashes it leaves things over/under-clocked/volted. GPU utilities seems to be more reliable.
 * I found a question and answer in the Support thread below (or through gosh darned trial and error) that I wish had been here in the FAQ - how do I save the next visitor all the trouble I went through?
     * Simple! Make a pull request to add to the FAQ, or email your Q and A to cooper dot marcus at gmail dot com (Qs without As will be ignored) and he'll add it to the FAQ for you.
 
-Support
--------
-The official forums for MultiMiner can be found [here][15].
+### Support
+
+Please report bugs and request enhancements at [issues.multiminerapp.com](http://issues.multiminerapp.com). For peer support and discussion, official forums for MultiMiner can be found [here][15].
         
-Source Code
------------
+### Source Code
+
 The source code is structured in such a way that it should be fairly easy to use and re-use for other projects:
 
-* __MultiMiner.Xgminer__ is an assembly for controlling the bfgminer executable - e.g. launching and enumerating devices
+* __MultiMiner.Xgminer__ is an assembly for controlling the BFGMiner executable - e.g. launching and enumerating devices
 * __MultiMiner.Xgminer.Api__ assists in communicating with the underlying miner via the RPC API
-* __MultiMiner.Coinchoose__ assists in consuming the cypto-currency information available at [CoinChoose.com][9]
+* __MultiMiner.CoinWarz__ assists in consuming the cypto-currency information available at [CoinWarz.com](https://www.coinwarz.com/)
+* __MultiMiner.WhatToMine__ assists in consuming the cypto-currency information available at [WhatToMine.com](http://whattomine.com/)
 * __MultiMiner.Engine__ is an assembly that can be used to interact with all functionality found in MultiMiner, but without a UI - useful for creating front-ends for other OS's
 * __MultiMiner.Win__ is the Windows Forms application
 
-Source Code Example
--------------
-This simple example shows how to use [MultiMiner.Xgminer.dll][16] and [MultiMiner.Xgminer.Api.dll][17] to install bfgminer, iterate through available mining devices, and launch the miner.
+### Source Code Example
 
-Afterwards the bfgminer [RPC API][18] is used to output the miner hashrate for a minute before the mining process is stopped. You can try this code out yourself in the [MultiMiner.Example][19] project.
+This simple example shows how to use [MultiMiner.Xgminer.dll][16] and [MultiMiner.Xgminer.Api.dll][17] to install BFGMiner, iterate through available mining devices, and launch the miner.
+
+Afterwards the BFGMiner [RPC API][18] is used to output the miner hashrate for a minute before the mining process is stopped. You can try this code out yourself in the [MultiMiner.Example][19] project.
 
 ![MultiMiner.Api.Example](https://raw.github.com/nwoolls/MultiMiner/master/Screenshots/MultiMiner.Api.Example.png "MultiMiner.Api.Example")
 
 ```csharp
 //examples of using MultiMiner.Xgminer.dll and MultiMiner.Xgminer.Api.dll
 
-//download and install the latest version of bfgminer
+//download and install the latest version of BFGMiner
 const string executablePath = @"D:\bfgminer\";
 const string executableName = "bfgminer.exe";
 
 Console.WriteLine("Downloading and installing {0} from {1} to the directory {2}",
     executableName, Xgminer.Installer.GetMinerDownloadRoot(), executablePath);
 
-//download and install bfgminer from the official website
+//download and install BFGMiner from the official website
 Xgminer.Installer.InstallMiner(executablePath);
 try
 {
@@ -255,8 +249,8 @@ Console.WriteLine("Press any key to exit");
 Console.ReadKey();
 ```
 
-License
--------
+### License
+
 Copyright (C) 2013 Nathanial Woolls
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -270,15 +264,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [2]: https://github.com/luke-jr/bfgminer
 [3]: https://www.dropbox.com/s/ne5eywfx8v7hneb/MultiMiner-1.0.7.zip
 [4]: http://ck.kolivas.org/apps/cgminer/
-[5]: http://homebrew.xgminer.com
-[6]: http://howto.xgminer.com
+[5]: https://github.com/nwoolls/homebrew-xgminer
+[6]: http://blog.nwoolls.com/2013/04/24/bitcoin-mining-on-mac-os-x-cgminer-bfgminer/
 [7]: http://xquartz.macosforge.org/
 [8]: http://www.mono-project.com/Main_Page
 [9]: http://coinchoose.com/
 [10]: http://luke.dashjr.org/programs/bitcoin/files/bfgminer/
 [11]: https://www.dropbox.com/s/o08inghtw7ut1an/MultiMiner-1.0.7.exe
 [12]: https://github.com/nwoolls/MultiMiner/releases
-[13]: http://xgminer.com
+[13]: https://github.com/nwoolls/xgminer-osx/
 [15]: http://talk.multiminerapp.com
 [16]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Xgminer
 [17]: https://github.com/nwoolls/MultiMiner/tree/master/MultiMiner.Xgminer.Api
