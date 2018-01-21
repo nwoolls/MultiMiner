@@ -415,5 +415,22 @@ To install " + MinerNames.BFGMiner + @" on Linux please consult the website for 
             }
             return true;
         }
+
+        private void hostEdit_Validated(object sender, EventArgs e)
+        {
+            ParseHostForPort();
+        }
+
+        private void ParseHostForPort()
+        {
+            int newPort;
+            string newHost;
+
+            if (hostEdit.Text.ParseHostAndPort(out newHost, out newPort))
+            {
+                hostEdit.Text = newHost;
+                portEdit.Text = newPort.ToString();
+            }
+        }
     }
 }

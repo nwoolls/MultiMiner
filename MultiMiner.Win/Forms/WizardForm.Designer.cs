@@ -319,6 +319,7 @@
             this.hostEdit.TabIndex = 0;
             this.hostEdit.TextChanged += new System.EventHandler(this.hostEdit_TextChanged);
             this.hostEdit.Validating += new System.ComponentModel.CancelEventHandler(this.hostEdit_Validating);
+            this.hostEdit.Validated += new System.EventHandler(this.hostEdit_Validated);
             // 
             // portEdit
             // 
