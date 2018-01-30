@@ -4,6 +4,7 @@ using MultiMiner.Engine.Installers;
 using MultiMiner.Utility.OS;
 using MultiMiner.UX.Data;
 using MultiMiner.UX.Data.Configuration;
+using MultiMiner.UX.Extensions;
 using MultiMiner.Xgminer.Data;
 using System;
 using System.Collections.Generic;
