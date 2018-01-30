@@ -116,6 +116,8 @@ file.copy("../MultiMiner.Win/bin/Release/MultiMiner.UX.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/MultiMiner.UX.pdb", "PF/");
 file.copy("../MultiMiner.TUI/bin/Release/MultiMiner.TUI.exe", "PF/");
 file.copy("../MultiMiner.TUI/bin/Release/MultiMiner.TUI.pdb", "PF/");
+file.copy("../MultiMiner.Xgminer.Api.Client/bin/Release/MultiMiner.Xgminer.Api.Client.exe", "PF/");
+file.copy("../MultiMiner.Xgminer.Api.Client/bin/Release/MultiMiner.Xgminer.Api.Client.pdb", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll", "PF/");
 file.copy("../MultiMiner.Win/bin/Release/Renci.SshNet.dll", "PF/");
 zip.compress("Output/MultiMiner-" + shortAppVersion + ".zip", "PF/", "*.*", true);
@@ -176,6 +178,8 @@ shell.exec(macPackPath,
 ../MultiMiner.Win/bin/Release/MultiMiner.UX.pdb,\
 ../MultiMiner.TUI/bin/Release/MultiMiner.TUI.exe,\
 ../MultiMiner.TUI/bin/Release/MultiMiner.TUI.pdb,\
+../MultiMiner.Xgminer.Api.Client/bin/Release/MultiMiner.Xgminer.Api.Client.exe,\
+../MultiMiner.Xgminer.Api.Client/bin/Release/MultiMiner.Xgminer.Api.Client.pdb,\
 ../MultiMiner.Win/bin/Release/Newtonsoft.Json.dll,\
 ../MultiMiner.Win/bin/Release/Renci.SshNet.dll \
 -i ../MultiMiner.Win/MultiMiner.icns \
