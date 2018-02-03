@@ -569,7 +569,7 @@ namespace MultiMiner.Win.Forms
             var pool = deviceViewModel.Pool.DomainFromHost();
             if (app.ApplicationConfiguration.ShowPoolPort)
             {
-                var port = deviceViewModel.Pool.PortFromHost();
+                var port = deviceViewModel.Url.PortFromHost();
                 if (port.HasValue)
                 {
                     pool = String.Format("{0}:{1}", pool, port.Value);
