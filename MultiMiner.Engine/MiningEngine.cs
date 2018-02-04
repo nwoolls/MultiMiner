@@ -207,14 +207,14 @@ namespace MultiMiner.Engine
 
             // required editing lbry.cl, ripemd160.cl and wolf-sha512.cl
             algorithm = factory.RegisterAlgorithm(AlgorithmNames.LBRY, AlgorithmFullNames.LBRY);
-            algorithm.PoolMultiplier = 1;
-            algorithm.DifficultyMultiplier = Math.Pow(2, 9);
+            algorithm.PoolMultiplier = Math.Pow(2, 9);
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.SGMinerNH;
             algorithm.MinerArguments[MinerNames.SGMinerNH] = AlgorithmParameter.AlgorithmLbry;
             algorithm.BuiltIn = true;
 
             algorithm = factory.RegisterAlgorithm(AlgorithmNames.Lyra2REv2, AlgorithmFullNames.Lyra2REv2);
-            algorithm.PoolMultiplier = 1;
+            algorithm.PoolMultiplier = Math.Pow(2, 9);
             algorithm.DifficultyMultiplier = Math.Pow(2, 32);
             algorithm.DefaultMiner = MinerNames.SGMinerNH;
             algorithm.MinerArguments[MinerNames.SGMinerNH] = AlgorithmParameter.AlgorithmLyra2REv2;
