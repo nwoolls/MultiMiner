@@ -164,5 +164,31 @@ namespace MultiMiner.UX.Tests
             // assert
             Assert.IsFalse(port.HasValue);
         }
+
+        [TestMethod]
+        public void DomainFromHost_WithSubdomain_Succeeds()
+        {
+            // arrange
+            var hostAndPort = "stratum+tcp://stratum.slushpool.com";
+
+            // act
+            var host = hostAndPort.DomainFromHost();
+
+            // assert
+            Assert.AreEqual("slushpool", host);
+        }
+
+        [TestMethod]
+        public void DomainFromHost_WithoutSubdomain_Succeeds()
+        {
+            // arrange
+            var hostAndPort = "stratum+tcp://omegapool.cc";
+
+            // act
+            var host = hostAndPort.DomainFromHost();
+
+            // assert
+            Assert.AreEqual("omegapool", host);
+        }
     }
 }

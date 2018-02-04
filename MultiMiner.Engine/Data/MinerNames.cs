@@ -13,5 +13,6 @@
         public const string MaxcoinCGMiner = "MaxcoinCGMiner";
         public const string SGMinerGM = "SGMinerGM";
         public const string SGMinerPascal = "SGMinerPascal";
+        public const string SGMinerNH = "SGMinerNH";
     }
 }
