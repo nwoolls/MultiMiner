@@ -29,6 +29,7 @@ msbuild.updateAssemblyVersion("../MultiMiner.NiceHash/Properties/AssemblyInfo.cs
 msbuild.updateAssemblyVersion("../MultiMiner.WhatToMine/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.UX/Properties/AssemblyInfo.cs", appVersion);
 msbuild.updateAssemblyVersion("../MultiMiner.TUI/Properties/AssemblyInfo.cs", appVersion);
+msbuild.updateAssemblyVersion("../MultiMiner.Xgminer.Api.Client/Properties/AssemblyInfo.cs", appVersion);
 
 //rebuild each .NET project - Release configurations
 msbuild.rebuild("../MultiMiner.CoinApi/MultiMiner.CoinApi.csproj", { configuration: "Release" });
@@ -56,6 +57,7 @@ msbuild.rebuild("../MultiMiner.NiceHash/MultiMiner.NiceHash.csproj", { configura
 msbuild.rebuild("../MultiMiner.WhatToMine/MultiMiner.WhatToMine.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.UX/MultiMiner.UX.csproj", { configuration: "Release" });
 msbuild.rebuild("../MultiMiner.TUI/MultiMiner.TUI.csproj", { configuration: "Release" });
+msbuild.rebuild("../MultiMiner.Xgminer.Api.Client/MultiMiner.Xgminer.Api.Client.csproj", { configuration: "Release" });
 
 //export environment variable for InnoSetup to use for app version
 export("MM_AppVersion", shortAppVersion);
