@@ -18,5 +18,8 @@
         public const string AlgorithmCryptoNight = "--algorithm cryptonight";
         public const string AlgorithmEquihash = "--algorithm equihash";
         public const string AlgorithmPascal = "--algorithm pascal";
+        public const string AlgorithmLbry = "--algorithm lbry";
+        public const string AlgorithmLyra2REv2 = "--algorithm lyra2rev2";
+        public const string AlgorithmNist5 = "--algorithm nist5";
     }
 }

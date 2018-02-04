@@ -204,6 +204,28 @@ namespace MultiMiner.Engine
             algorithm.DefaultMiner = MinerNames.SGMinerPascal;
             algorithm.MinerArguments[MinerNames.SGMinerPascal] = AlgorithmParameter.AlgorithmPascal;
             algorithm.BuiltIn = true;
+
+            // required editing lbry.cl, ripemd160.cl and wolf-sha512.cl
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.LBRY, AlgorithmFullNames.LBRY);
+            algorithm.PoolMultiplier = 1;
+            algorithm.DifficultyMultiplier = Math.Pow(2, 9);
+            algorithm.DefaultMiner = MinerNames.SGMinerNH;
+            algorithm.MinerArguments[MinerNames.SGMinerNH] = AlgorithmParameter.AlgorithmLbry;
+            algorithm.BuiltIn = true;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Lyra2REv2, AlgorithmFullNames.Lyra2REv2);
+            algorithm.PoolMultiplier = 1;
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
+            algorithm.DefaultMiner = MinerNames.SGMinerNH;
+            algorithm.MinerArguments[MinerNames.SGMinerNH] = AlgorithmParameter.AlgorithmLyra2REv2;
+            algorithm.BuiltIn = true;
+
+            algorithm = factory.RegisterAlgorithm(AlgorithmNames.Nist5, AlgorithmFullNames.Nist5);
+            algorithm.PoolMultiplier = 1;
+            algorithm.DifficultyMultiplier = Math.Pow(2, 32);
+            algorithm.DefaultMiner = MinerNames.SGMinerNH;
+            algorithm.MinerArguments[MinerNames.SGMinerNH] = AlgorithmParameter.AlgorithmNist5;
+            algorithm.BuiltIn = true;
         }
 
         private static void RegisterMiners()
@@ -220,6 +242,7 @@ namespace MultiMiner.Engine
             factory.RegisterMiner(MinerNames.SGMiner5, MinerNames.SGMiner, true);
             factory.RegisterMiner(MinerNames.SGMinerGM, MinerNames.SGMiner, true);
             factory.RegisterMiner(MinerNames.SGMinerPascal, MinerNames.SGMiner, true);
+            factory.RegisterMiner(MinerNames.SGMinerNH, MinerNames.SGMiner, true);
 
             string minersDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Miners");
             factory.RegisterMiners(minersDirectory);
