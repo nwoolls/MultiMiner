@@ -52,12 +52,12 @@ namespace MultiMiner.NiceHash
 
         public string GetApiUrl()
         {
-            return String.Format(@"https://www.nicehash.com/api?method=stats.global.current");
+            return String.Format(@"https://api2.nicehash.com/main/api/v2/public/stats/global/current");
         }
 
         public string GetInfoUrl()
         {
-            return String.Format(@"https://nicehash.com/index.jsp?p=api");
+            return String.Format(@"https://api2.nicehash.com/main/api/v2/public/simplemultialgo/info");
         }
 
         public string GetApiName()
