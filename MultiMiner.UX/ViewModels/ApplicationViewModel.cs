@@ -249,7 +249,10 @@ namespace MultiMiner.UX.ViewModels
 
         private void RefreshMultiCoinStats()
         {
-            RefreshNiceHashStats();
+            // Disabled on 2/3/2020 - NiceHash changed their API endpoint URLs and the JSON payload format.
+            // Open to PRs to use the new API, disabling in the meantime.
+
+            //RefreshNiceHashStats();
         }
 
         private void RefreshNiceHashStats()
