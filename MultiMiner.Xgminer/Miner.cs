@@ -250,13 +250,6 @@ namespace MultiMiner.Xgminer
                         + Environment.NewLine + Environment.NewLine + ex.Message);
                 }
 
-                //automatically add the #xnsub & #skipcbcheck fragments to pool URIs when mining NiceHash with BFGMiner
-                if (!legacyApi && pool.Host.ToLower().Contains("nicehash.com"))
-                {
-                    poolUri = PoolFeatures.UpdatePoolFeature(poolUri, PoolFeatures.XNSubFragment, true);
-                    poolUri = PoolFeatures.UpdatePoolFeature(poolUri, PoolFeatures.SkipCBCheckFragment, true);
-                }
-
                 if (pool.QuotaEnabled)
                     argument = string.Format("--quota \"{2};{0}\" -u {1}", poolUri, pool.Username, pool.Quota);
                 else
