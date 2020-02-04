@@ -6,6 +6,15 @@ namespace MultiMiner.Utility.Net
 {
     public class ApiWebClient : WebClient
     {
+        public ApiWebClient()
+        {
+            // enable TLS 1.1 and 1.2 - they are not enabled by default and required for the Blockchain.info API
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                    | SecurityProtocolType.Tls11
+                    | SecurityProtocolType.Tls12
+                    | SecurityProtocolType.Ssl3;
+        }
+
         protected override WebRequest GetWebRequest(Uri uri)
         {
             WebRequest w = base.GetWebRequest(uri);
