@@ -9,7 +9,7 @@ namespace MultiMiner.WhatToMine.Extensions
     {
         public static void PopulateFromJson(this CoinInformation coinInformation, Data.ApiCoinInformation apiCoinInformation)
         {
-            coinInformation.Symbol = apiCoinInformation.Tag;
+            coinInformation.Symbol = FixSymbolName(apiCoinInformation.Tag, apiCoinInformation.Algorithm);
             coinInformation.Algorithm = FixAlgorithmName(apiCoinInformation.Algorithm);
             coinInformation.CurrentBlocks = apiCoinInformation.Last_Block;
             coinInformation.Difficulty = apiCoinInformation.Difficulty;
@@ -26,11 +26,25 @@ namespace MultiMiner.WhatToMine.Extensions
                 coinInformation.Price = apiCoinInformation.Exchange_Rate;
         }
 
+        private static string FixSymbolName(string symbol, string algorithm)
+        {
+            string result = symbol;
+
+            if ("NICEHASH".Equals(result))
+            {
+                result = "NiceHash:" + algorithm.Replace(AlgorithmFullNames.SHA256, AlgorithmNames.SHA256);
+            }
+
+            return result;
+        }
+
         private static string FixAlgorithmName(string algorithm)
         {
             string result = algorithm;
             if (algorithm.Equals(ApiContext.ScryptNFactor, StringComparison.OrdinalIgnoreCase))
+            {
                 result = AlgorithmFullNames.ScryptN;
+            }
             else
             {
                 KnownAlgorithm knownAlgorithm = KnownAlgorithms.Algorithms.SingleOrDefault(a => a.Name.Equals(algorithm, StringComparison.OrdinalIgnoreCase));
