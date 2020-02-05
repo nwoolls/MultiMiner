@@ -30,7 +30,10 @@ namespace MultiMiner.Engine.Installers
             return availableMiners;
         }
 
-        private static void FixDownloadUrls(List<AvailableMiner> availableMiners) => FixBFGMinerDownloadUrl(availableMiners);
+        private static void FixDownloadUrls(List<AvailableMiner> availableMiners)
+        {
+            FixBFGMinerDownloadUrl(availableMiners);
+        }
 
         private static void FixBFGMinerDownloadUrl(List<AvailableMiner> availableMiners)
         {
